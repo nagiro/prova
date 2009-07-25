@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * Agendatelefonicadades form.
+ *
+ * @package    intranet
+ * @subpackage form
+ * @author     Your name here
+ * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
+ */
+class AgendatelefonicadadesForm extends BaseFormPropel
+{
+  public function setup()
+  {
+    $this->setWidgets(array(
+      'AgendaTelefonicaDadesID'             => new sfWidgetFormInputHidden(),
+      'AgendaTelefonica_AgendaTelefonicaID' => new sfWidgetFormPropelChoice(array('model' => 'Agendatelefonica', 'add_empty' => false, 'method'=>'hola')),
+      'Tipus'                               => new sfWidgetFormChoice(array('choices'=> AgendatelefonicadadesPeer::select())),
+      'Dada'                                => new sfWidgetFormInput(),
+      'Notes'                               => new sfWidgetFormInput(),
+    ));
+
+    $this->setValidators(array(
+      'AgendaTelefonicaDadesID'             => new sfValidatorPropelChoice(array('model' => 'Agendatelefonicadades', 'column' => 'AgendaTelefonicaDadesID', 'required' => false)),
+      'AgendaTelefonica_AgendaTelefonicaID' => new sfValidatorPropelChoice(array('model' => 'Agendatelefonica', 'column' => 'AgendaTelefonicaID')),
+      'Tipus'                               => new sfValidatorString(array('required' => false)),
+      'Dada'                                => new sfValidatorString(array('required' => false)),
+      'Notes'                               => new sfValidatorString(array('required' => false)),
+    ));
+        
+    $this->widgetSchema->setNameFormat("agendatelefonicadades[%s]");
+    $this->widgetSchema->setFormFormatterName('Horizontal');
+
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);            
+
+    unset($this['AgendaTelefonica_AgendaTelefonicaID']);
+    
+    parent::setup();
+  }
+
+  
+  public function getModelName()
+  {
+    return 'Agendatelefonicadades';
+  }
+}

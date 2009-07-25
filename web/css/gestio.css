@@ -1,0 +1,70 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big,
+cite, code, del, dfn, em, font, img,
+ins, kbd, q, s, samp, small, strike,
+strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+center, u, b, i {  margin: 0; padding: 0; border: 0; outline: 0; font-weight: normal; font-style: normal; font-size: 100%; font-family: inherit; vertical-align: baseline; }
+body { line-height: 1 }
+:focus { outline: 0 }
+ol, ul {list-style: none }
+table { border-collapse: collapse; border-spacing: 0 }
+blockquote:before, blockquote:after, q:before, q:after { content: "" }
+blockquote, q { quotes: "" "" }
+input, textarea { margin: 0; padding: 0 }
+hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; height: 1px }
+
+
+/***********************************/
+/* Disseny de taules i formularis  */
+/***********************************/
+
+
+* { font-size:10px; }
+.REQUADRE { border:5px solid #CCCCCC; margin:20px; padding:20px; width:90% }
+.REQUADRE .TITOL { font-size:10px; font-weight:bold; margin-bottom:10px;  }
+.FORMULARI { width:90% }
+.FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; }
+.FORMULARI TD {  }
+.DADES { width:100%; }
+.DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
+.DADES TD A { text-decoration:none; color:black; font-weight:bold; }
+.DADES TD.PAR { background-color:#DDDDDD; }
+.DADES TD.IPAR { background-color:White; }
+.text { width:100%; }
+
+a.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
+a.tt2 span { display:none; }
+
+
+/**********************/
+/* Disseny del Layout */
+/**********************/
+
+
+body { background-color: #680000; font-family: Verdana; font-size: 10px; }
+.TAULA { width:1024px; border-collapse: collapse;}
+.DEGRADAT_SUPERIOR {  }
+.CAPCALERA { background-color: #ae1912; height:65px; width:25%; border-left:4px solid #ae1912; border-top:4px solid #ae1912; border-right:4px solid #ae1912; }
+.MENU_CAPCALERA { background-color: #ae1912; height:65px; width:25%; border-left:4px solid #ae1912; border-top:4px solid #ae1912; border-right:4px solid #ae1912; vertical-align:bottom; }
+.FOTOS { border:4px solid white; height:80px; background-color:gray; }
+.MENU { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align:top; } 
+.CONTINGUT { background-color:white; vertical-align: top; padding-top:20px; border-right:4px solid white; }    
+.CALENDARI { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align: top; }        
+.PEU { height:25px; background-color:#1f1a17; border-left:4px solid #1f1a17; border-right:4px solid #1f1a17; border-top:4px solid #1f1a17; color: white; text-align:center; font-size: 10px; }    
+.DEGRADAT_INFERIOR { background-image: url(DifuminatInferior.png); background-repeat: repeat-x; }
+       
+.FOTOS .IMG_FOTO { width:250px; height:80px; }
+       
+.MENU_TABLE { border-collapse: collapse; margin-top:20px; }
+.SUBMENU1   { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }
+.SUBMENU2   { font-size:9px; border:1px solid black; width:165px; height:20px; vertical-align:middle; padding-left:20px; background-color: white; border:1px solid white; }
+#REGISTRAT  { font-size:9px; background-color: #680000; border:2px solid white; height:20px; width:175px; text-align:center; display: table-cell; vertical-align: middle; }
+#REGISTRAT a { color:white; font-size:9px; text-decoration: none; }
+#REGISTRAT a:visited { color:white; font-size:9px; text-decoration: none; }
+.MENU_TABLE A { color:black; font-size:9px; text-decoration: none; }
+.MENU_TABLE A:hover { color:black; font-size:9px; text-decoration: none; }
+.MENU_TABLE A:visited { color:black; font-size:9px; text-decoration: none; }    
+A IMG { border:0px; }
