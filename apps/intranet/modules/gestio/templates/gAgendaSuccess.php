@@ -4,6 +4,7 @@
 </STYLE>
 
 <?php use_helper('Javascript'); ?>
+<?php use_helper('Form'); ?>
 
    
     <TD colspan="3" class="CONTINGUT">
@@ -31,14 +32,17 @@
                 <?=$FAgenda?>                								
                 <tr>
                 	<td></td>
-	            	<td><input type="submit" name="BSAVE" value="Prem per guardar" /></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gAgenda',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
 	            </tr>                	 
       		</TABLE>
       	</DIV>
      </form>    
     
-  <?php ENDIF; ?>
-      
+  <?php ELSE: ?>
       
       <DIV class="REQUADRE">
         <DIV class="TITOL">Llistat contactes</DIV>
@@ -64,6 +68,8 @@
       	
       	</TABLE>      
       </DIV>
+               
+  <?php ENDIF; ?>
                
       <DIV STYLE="height:40px;"></DIV>
                 
