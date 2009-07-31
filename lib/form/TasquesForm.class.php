@@ -19,7 +19,7 @@ class TasquesForm extends sfFormPropel
       'QuiMana'                => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
       'QuiFa'                  => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
       'Titol'                  => new sfWidgetFormInput(array(), array('class'=>'text')),
-      'Accio'                  => new sfWidgetFormTextarea(array(),array('class'=>'text')),
+      'Accio'                  => new sfWidgetFormTextarea(array(),array('class'=>'text','rows'=>'5')),
       'Reaccio'                => new sfWidgetFormInputHidden(),
       'Estat'                  => new sfWidgetFormInputHidden(),
       'Aparicio'               => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),

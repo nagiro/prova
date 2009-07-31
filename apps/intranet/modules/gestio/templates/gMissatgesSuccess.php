@@ -1,3 +1,5 @@
+<?php use_helper('Form'); ?>
+
 <STYLE>
 .cent { width:100%; }
 .noranta { width:90%; }
@@ -28,11 +30,13 @@
       
 	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">      
 		<DIV class="REQUADRE">
-			<table class="FORMULARI">
+			<table class="FORMULARI" width="70%">
 				<?php echo $FMissatge ?>
         		<tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BSAVE" value="Prem per guardar" />	            		
+	            	<td colspan="2" class="dreta">
+	            		<br>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMissatges',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>				
 			</table>				

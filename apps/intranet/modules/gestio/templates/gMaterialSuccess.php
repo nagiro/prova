@@ -1,3 +1,4 @@
+<?php use_helper('Form')?>
 <STYLE>
 .cent { width:100%; }
 .vuitanta { width:80%; }
@@ -47,140 +48,55 @@
 	            <tr>
 	            	<td colspan="2">
 	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou contacte" />
+	            		<input type="submit" name="BNOU" value="Nou material" />
 	            	</td>
 	            </tr>
 	        </table>
 	     </DIV>
      </form>   
-  
-  
-        <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Llistat de material (<?=$MATERIALS->getNbResults() ?>)</DIV>
-                <TABLE class="DADES">
-                <? if($MATERIALS->getNbResults() == 0): ?><TR><TD colspan = "2" class="LINIA">No s'ha trobat material disponible.</TD></TR><? endif; ?> 				
-                <? foreach($MATERIALS->getResults() as $M): ?>
-					<TR><TD class="LINIA"><?=link_to($M->getIdentificador(),'gestio/gMaterial'.getParam('E',$M->getIdmaterial(),$TIPUS,$PAGINA))?></TD>
-					    <TD class="LINIA"><?=$M->getNom()?></TD></TR>                                	
-                <? endforeach; ?>                
-                <TR><TD colspan="3" class="TITOL"><?=gestorPagines($TIPUS , $MATERIALS);?></TD></TR>
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
-  
-  
+    
       
 <?php IF( $NOU || $EDICIO ): ?>
       
-<TABLE class="BOX">
-  <TR>
-    <TD class="NOTICIA">
-      <TR>
-        <TD class="NOTICIA">
-          <TABLE width="100%">
-            <TR>
-              <?php IF(!$NOU) ECHO input_hidden_tag( 'IDM' , $MATERIAL->getIdmaterial() , $EDICIO ); ELSE  ECHO input_hidden_tag( 'IDM' , 0 );  ?>
-              <TD class="TITOL" colspan="3">                CATEGORIA GLOBAL
-                <BR />
-                <?php ECHO select_tag('D[MATERIALGENERIC]',options_for_select(MaterialgenericPeer::select() , $MATERIAL->getMaterialgenericIdmaterialgeneric() ) , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" >                IDENTIFICADOR
-                <BR />
-                <?php ECHO input_tag( 'D[IDENTIFICADOR]' , $MATERIAL->getIdentificador() , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                NO SERIE
-                <BR />
-                <?php ECHO input_tag( 'D[NUMSERIE]' , $MATERIAL->getNumserie() , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                NOM
-                <BR />
-                <?php ECHO input_tag( 'D[NOM]' , $MATERIAL->getNom() , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" colspan="3" >                LOCALITZACIÓ
-                <BR />
-                <?php ECHO input_tag( 'D[UBICACIO]' , $MATERIAL->getUbicacio() , ARRAY( 'rich'=>TRUE, 'class' => 'cent' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" >                DATA COMPRA
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATACOMPRA]' , $MATERIAL->getDatacompra() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                DATA FI GARANTIA
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATAGARANTIA]' , $MATERIAL->getDatagarantia() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                DATA PRÒXIMA REVISIÓ
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATAREVISIO]' , $MATERIAL->getDatarevisio() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" >                NUM. FACTURA
-                <BR />
-                <?php ECHO input_tag( 'D[NUMFACTURA]' , $MATERIAL->getNumfactura() , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                PREU
-                <BR />
-                <?php ECHO input_tag( 'D[PREU]' , $MATERIAL->getPreu() , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                NOTES MANTENIMENT
-                <BR />
-                <?php ECHO input_tag( 'D[NOTESMANTENIMENT]' , $MATERIAL->getNotesmanteniment() , ARRAY( 'class' => 'cent' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" >                CEDIT A
-                <BR />
-                <?php ECHO input_tag( 'D[CEDIT]' , $MATERIAL->getCedit() , ARRAY( 'rich'=>TRUE, 'class' => 'cent' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                DATA CESSIÓ
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATACESSIO]' , $MATERIAL->getDatacessio() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                DATA RETORN
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATARETORN]' , $MATERIAL->getDataretorn() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" >                DATA BAIXA
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATABAIXA]' , $MATERIAL->getDatabaixa() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                EN REPARACIO FINS
-                <BR />
-                <?php ECHO input_date_tag( 'D[DATAREPARACIO]' , $MATERIAL->getDatareparacio() , ARRAY( 'rich'=>TRUE, 'class' => 'vuitanta' ) ); ?>
-              </TD>
-              <TD class="TITOL" >                DISPONIBLE
-                <BR />
-                <?php ECHO checkbox_tag( 'D[DISPONIBLE]' , TRUE , $MATERIAL->getDisponible() ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" colspan="3">                DESCRIPCIÓ
-                <BR />
-                <?php ECHO textarea_tag( 'D[DESCRIPCIO]' , $MATERIAL->getDescripcio() , ARRAY( 'class' => 'cent HTEXT' ) ); ?>
-              </TD>
-            </TR>
-            <TR>
-              <TD class="TITOL" colspan="2">
-                <?php ECHO submit_tag( 'Guarda' , ARRAY(  'name' => 'BSAVE' , 'class' => 'cent' ) );  ?>
-              </TD>
-              <TD class="TITOL">
-                <?php ECHO submit_tag( 'Esborrar' , ARRAY(  'name' => 'BDELETE' , 'class' => 'cent' , 'onClick' => "return confirm('Segur que vols esborrar aquest registre?');" ));  ?>
-              </TD>
-            </TR>
-          </TABLE>
-        </TD>
-      </TR>
-</TABLE>
+	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST">            
+	 	<DIV class="REQUADRE">
+	    	<table class="FORMULARI" width="550px">
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <?=$FMaterial?>                								
+                <tr>
+                	<td></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMaterial',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+     </form>    
+
+<?php ELSE: ?>
+
+      <DIV class="REQUADRE">
+        <DIV class="TITOL">Llistat de material</DIV>
+      	<TABLE class="DADES">
+ 			<?php 
+				if( empty( $MATERIALS ) ):
+					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat material disponible.</TD></TR>';
+				else: 
+					$i = 0;
+					foreach($MATERIALS->getResults() as $M):
+                      	$PAR = ParImpar($i++);	                      	
+                      	echo "<TR>
+                      			<TD class=\"$PAR\">".link_to($M->getIdentificador(), 'gestio/gMaterial'.getParam('E',$M->getIdmaterial(),$TIPUS,$PAGINA))."</TD>
+                      			<TD class=\"$PAR\">{$M->getNom()}</TD>                      			
+                      		  </TR>";
+                    endforeach;
+                 endif;                     
+             ?>      
+              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($TIPUS , $MATERIALS);?></TD></TR>    	
+      	</TABLE>      
+      </DIV>
 
 <?php ENDIF; ?>
     
@@ -201,6 +117,13 @@ function getParam( $accio = "" , $IDM = "" , $TIPUS = "" , $PAGINA = 1)
     
     RETURN "?".implode( "&" , $opt);
 }
+
+function ParImpar($i)
+{
+	if($i % 2 == 0) return "PAR";
+	else return "IPAR";
+}
+
 
 function gestorPagines($TIPUS , $MATERIALS)
 {

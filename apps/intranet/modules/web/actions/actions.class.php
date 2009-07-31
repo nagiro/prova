@@ -166,6 +166,7 @@ class webActions extends sfActions
      $this->setTemplate('index');
 
      $this->FLogin = new LoginForm();
+     $this->ERROR = "";
      
      if($request->hasParameter('form_login_new')):
      	$this->redirect('web/registre');
@@ -178,14 +179,19 @@ class webActions extends sfActions
      	$this->FLogin->bind($request->getParameter('login'));
      	if($this->FLogin->isValid()):
      		 $L = $request->getParameter('login');     		 
-     		 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password']);
-     		 $this->getUser()->setAttribute('idU',$USUARI->getUsuariid());     		
-	     	 $this->getUser()->setAuthenticated(true);
-			 if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
-		     if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }	    		   			    		
-	         $this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
-             $this->redirectif( $USUARI->getNivellsIdnivells() == 2 , 'web/index?accio=gd');	         
+     		 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password']);     		 
+     		 if($USUARI instanceof Usuaris):
+     		 	$this->getUser()->setAttribute('idU',$USUARI->getUsuariid());     		
+     		 	$this->getUser()->setAuthenticated(true);
+     		 	if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
+     		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }	    		   			    		
+     		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
+     		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 2 , 'web/index?accio=gd');
+     		 else: 
+     		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
+     		 endif;
         else:
+        	 $this->ERROR = "El DNI o la contrasenya són incorrectes";
 			 $this->ACCIO = 'login';
         endif;     		 
      endif;

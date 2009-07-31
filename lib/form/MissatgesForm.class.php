@@ -36,11 +36,15 @@ class MissatgesForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
+    
     $this->widgetSchema->setLabels(array(
     	'Titol' 	=> 'Títol: ',
     	'Text' 		=> 'Text: ',
     	'Publicacio'=> 'Data de publicació: ', 
     ));
+    
+    $this->widgetSchema->setAttribute('width','60px');
+   
     
     $this->setDefaults(array(
     	'Titol' 		=> '',

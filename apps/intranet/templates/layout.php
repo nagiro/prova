@@ -14,8 +14,7 @@
   	.Titol_N1 { font-size:14px; margin-right:40px; font-weight: bold; margin-bottom:20px; padding-top:20px; }
   	.Titol_N2 { font-size:12px; margin-right:40px; font-weight: bold; margin-bottom:10px; padding-top:10px; } 
   	.Text { font-size:11px; margin-right:40px; text-align: justify; }
-  
-  
+   	.error { color:red; font-style: italic; }  
   	//CSS	a.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
 	a.tt2 span { display:none; }
 	

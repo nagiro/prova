@@ -13,30 +13,33 @@ class MaterialForm extends sfFormPropel
 	
   public function setup()
   {
+  	$Fdata = array('format'=>'%day%/%month%/%year%');
+  	
     $this->setWidgets(array(
       'idMaterial'                        => new sfWidgetFormInputHidden(),
-      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormPropelChoice(array('model' => 'Materialgeneric', 'add_empty' => false)),
-      'Nom'                               => new sfWidgetFormTextarea(),
-      'Descripcio'                        => new sfWidgetFormTextarea(),
-      'Responsable'                       => new sfWidgetFormTextarea(),
-      'Ubicacio'                          => new sfWidgetFormTextarea(),
-      'DataCompra'                        => new sfWidgetFormDate(),
-      'Identificador'                     => new sfWidgetFormTextarea(),
-      'NumSerie'                          => new sfWidgetFormTextarea(),
-      'DataGarantia'                      => new sfWidgetFormDate(),
-      'DataRevisio'                       => new sfWidgetFormDate(),
-      'Cedit'                             => new sfWidgetFormTextarea(),
-      'DataCessio'                        => new sfWidgetFormDate(),
-      'DataRetorn'                        => new sfWidgetFormDate(),
-      'NumFactura'                        => new sfWidgetFormTextarea(),
+      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormInputHidden(),
+      'Identificador'                     => new sfWidgetFormInput(),
+      'Nom'                               => new sfWidgetFormInput(),
+	  'Ubicacio'                          => new sfWidgetFormInput(),
+      'Responsable'                       => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
+      'Disponible'                        => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
+      'Descripcio'                        => new sfWidgetFormTextarea(array(),array('cols'=>'60','rows'=>'10')),
+      'NumSerie'                          => new sfWidgetFormInput(),      
+      'DataCompra'                        => new sfWidgetFormDate($Fdata),
+      'DataGarantia'                      => new sfWidgetFormDate($Fdata),
+      'DataRevisio'                       => new sfWidgetFormDate($Fdata),
+      'Cedit'                             => new sfWidgetFormInputHidden(),
+      'DataCessio'                        => new sfWidgetFormInputHidden(),
+      'DataRetorn'                        => new sfWidgetFormInputHidden(),
+      'NumFactura'                        => new sfWidgetFormInput(),
       'Preu'                              => new sfWidgetFormInput(),
-      'NotesManteniment'                  => new sfWidgetFormTextarea(),
-      'DataBaixa'                         => new sfWidgetFormDate(),
-      'DataReparacio'                     => new sfWidgetFormDate(),
-      'Disponible'                        => new sfWidgetFormInput(),
-      'AltaRegistre'                      => new sfWidgetFormDate(),
+      'DataBaixa'                         => new sfWidgetFormDate($Fdata),
+      'DataReparacio'                     => new sfWidgetFormInputHidden(),
+      'AltaRegistre'                      => new sfWidgetFormInputHidden(),
+      'NotesManteniment'                  => new sfWidgetFormTextarea(array(),array('cols'=>'60','rows'=>'5')),
     ));
 
+    
     $this->setValidators(array(
       'idMaterial'                        => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial', 'required' => false)),
       'MaterialGeneric_idMaterialGeneric' => new sfValidatorPropelChoice(array('model' => 'Materialgeneric', 'column' => 'idMaterialGeneric')),
@@ -61,6 +64,30 @@ class MaterialForm extends sfFormPropel
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
     ));
 
+    $this->widgetSchema->setLabels(array(            
+      'Identificador'                     => 'Identificador: ',
+      'Nom'                               => 'Nom: ',
+	  'Ubicacio'                          => 'Ubicació: ',
+      'Responsable'                       => 'Responsable: ',
+      'Disponible'                        => 'Disponible? ',
+      'Descripcio'                        => 'Descripció: ',
+      'NumSerie'                          => 'Núm. sèrie: ',      
+      'DataCompra'                        => 'Compra: ',
+      'DataGarantia'                      => 'Fi garantia: ',
+      'DataRevisio'                       => 'Propera revisió: ',      
+      'NumFactura'                        => 'Núm. factura: ',
+      'Preu'                              => 'Preu: ',
+      'DataBaixa'                         => 'Baixa: ',      
+      'NotesManteniment'                  => 'Notes: ',
+    ));
+    
+    $this->widgetSchema->setDefaults(array(            
+	  'Ubicacio'                          => 'Magatzem',      
+      'Disponible'                        => 1,
+      'DataCompra'                        => date('d-m-Y',time()),                        
+    ));
+    
+    
     $this->widgetSchema->setNameFormat('material[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

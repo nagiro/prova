@@ -1,3 +1,4 @@
+<?php use_helper('Form') ?>
 <STYLE>
 .cent { width:100%; }
 .vuitanta { width:80%; }
@@ -97,11 +98,14 @@
       
  	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST">      
 		<DIV class="REQUADRE">
-			<table class="FORMULARI">
+			<table class="FORMULARI" width="80%">
+				<tr><td width="15%"></td><td width="60%"></td></tr>
 				<?php echo $FTasca ?>
         		<tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BSAVE" value="Prem per guardar" />	            		
+	            	<td colspan="2" class="dreta">
+	            		<br>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gTasques',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>				
 			</table>				
