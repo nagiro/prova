@@ -1192,7 +1192,8 @@ class gestioActions extends sfActions
       			endif;
 
       			$this->FAgenda->bind($request->getParameter('agendatelefonica'));
-				$this->FAgenda->save();      			      															                
+				$this->FAgenda->save();
+				$this->MISSATGE = "El registre s'ha modificat correctament.";      			      															                
                 $this->MODE['EDICIO'] = true;      
                 break;         
       case 'D': 
@@ -1288,6 +1289,52 @@ class gestioActions extends sfActions
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
   
+  public function ParReqSesForm($request, $nomCamp, $default = "",  $formulari = null) 
+  {
+
+  	$RET = "";
+  	
+  	if(!is_null($formulari)): 
+
+  	  	if($request->hasParameter($formulari)):
+
+  	  		$C = $request->getParameter($formulari);
+  			$RET = $C[$nomCamp]; 
+  			$this->getUser()->setAttribute('cerca',$this->TIPUS); 
+
+  		elseif($this->getUser()->hasAttribute($nomCamp)): 
+  			
+  			$RET = $this->getUser()->getAttribute('cerca');
+  			
+  		else:
+  		
+  			$RET = $default;
+
+  		endif;
+  	
+  	else:
+  		if($request->hasParameter($nomCamp)):
+  			 
+  			$RET = $request->getParameter($nomCamp); 
+  			$this->getUser()->setAttribute('cerca',$this->TIPUS); 
+
+  		elseif($this->getUser()->hasAttribute($nomCamp)): 
+  			
+  			$RET = $this->getUser()->getAttribute('cerca');
+  			
+  		else:
+  		
+  			$RET = $default;
+
+  		endif;
+  			
+  	endif;
+  	
+  	return $RET;
+  	
+  }
+  
+  
   /**
    * Gestió de l'inventari i del material
    * In:  PAGINA , TIPUS, BCERCA, BNOU, BSAVE, BDELETE, IDM , D
@@ -1300,22 +1347,20 @@ class gestioActions extends sfActions
     
     $this->setLayout('gestio');
         
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $this->TIPUS = $this->ParReqSesForm($request,'text',1,'cerca');
+    
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaChoiceForm();
-    $this->FCerca->setChoice(MaterialgenericPeer::select());
-	$this->FCerca->bind($request->getParameter('cerca'));
+    $this->FCerca->setChoice(MaterialgenericPeer::select());    
+	$this->FCerca->bind(array('text'=>$this->TIPUS));
 	
-	$this->TIPUS = $this->FCerca->getValue('cerca[text]');
-
 	//Inicialitzem variables
     $this->CONSULTA = true; 
     $this->NOU = false; 
     $this->EDICIO = false;
     $this->CESSIO = false;
 
-    //Gestió de la paginació
-     if($request->hasParameter('PAGINA')) $this->PAGINA = $request->getParameter('PAGINA');
-     else $this->PAGINA = 1;
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
 	    $accio = $request->getParameter('accio');
@@ -1324,7 +1369,7 @@ class gestioActions extends sfActions
 	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
 	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
 	endif;                
-    
+	
     switch($accio){
     	case 'N':
     			$OMaterial = new Material();
@@ -1338,21 +1383,19 @@ class gestioActions extends sfActions
 				$this->FMaterial = new MaterialForm($OMaterial);   			
     			$this->EDICIO = true;
     		break;
-    	case 'S':    			
-    			$this->MATERIAL = $this->saveMaterial($this->getRequestParameter('D'),$this->getRequestParameter('IDM'));
+    	case 'S':    			    		        		  
+    		    $this->FMaterial = new MaterialForm(MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM')));
+    		    $this->FMaterial->bind($request->getParameter('material'));
+    		    if($this->FMaterial->isValid()) $this->FMaterial->save();    		        		    
     			$this->EDICIO = true;
     		break;
-    	case 'D':
-    	        $this->IDM = $this->getRequestParameter('IDM');
-    	        $M = MaterialPeer::retrieveByPK($this->IDM);
-    	        if(!is_null($M)) $M->delete();
+    	case 'D': 
+    	        MaterialPeer::retrieveByPK($request->getRequest('IDM'))->delete();    	        
     	        break;    	         	 
     }
-    
-    ECHO var_dump($this->TIPUS);
+        
     $this->MATERIALS = MaterialPeer::getMaterial($this->TIPUS, $this->PAGINA);
     
-  
   }
   
   
