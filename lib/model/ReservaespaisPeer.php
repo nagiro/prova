@@ -37,7 +37,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       return ReservaespaisPeer::doSelect($C);
    }
    
-   static function getReservesSelect($CERCA = "")
+   static function getReservesSelect($CERCA = "" , $Pagina = 1)
    {
       $C = new Criteria();
       $C1 = $C->getNewCriterion(self::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
@@ -59,7 +59,13 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       
       $C->addDescendingOrderByColumn(self::DATAALTA);
       
-      return self::doSelectJoinUsuaris($C);
+                 
+      $P = new sfPropelPager('Reservaespais', 10);
+      $P->setPeerMethod('doSelectJoinUsuaris');
+      $P->setCriteria($C);
+      $P->setPage($Pagina);
+      $P->init();
+      return $P;      
             
    }
    
@@ -72,7 +78,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     */
    static function getReserves($Pagina = 0)
    {
-        $C = new Criteria();        
+        $C = new Criteria();           
         $P = new sfPropelPager('Reservaespais', 10);
         $P->setCriteria($C);
         $P->setPage($Pagina);

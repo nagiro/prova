@@ -1,3 +1,6 @@
+<?php use_helper('Form')?>
+<?php use_javascript('/sfFormExtraPlugin/js/double_list.js') ?>
+
 <STYLE>
 .cent { width:100%; }
 .vuitanta { width:80%; }
@@ -7,55 +10,64 @@
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
-    
-<?php use_helper('ModalBox') ?>
-<?php echo link_to('Add Comment', 'gestio/gCessio', array('title'=>'Add Personal Note','onclick'=>'Modalbox.show(this.href, {title: this.title, width: 500}); return false;')); ?>
-                             
-      <?php echo nice_form_tag('gestio/gCessio',array('method'=>'post','onSubmit'=>'return ValidaFormulari(this)')) ?>
+                                 
+    <form action="<?php echo url_for('gestio/gCessio') ?>" method="POST">
+	    <DIV class="REQUADRE">
+	    	<table class="FORMULARI">          
+	            <?php echo $FCerca ?>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
+	            		<input type="submit" name="BNOU" value="Nova cessió" />
+	            	</td>
+	            </tr>
+	        </table>
+	     </DIV>
+     </form>   
   
-        <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL"><?=link_to(image_tag('tango/16x16/actions/document-new.png'),'gestio/gCessio'.getParam('N',null,null)) ?> Llistat de cessions (<?=$CESSIONS->getNbResults() ?>)</DIV>
-                <TABLE class="DADES">
-                <? if($CESSIONS->getNbResults() == 0): ?><TR><TD colspan = "2" class="LINIA">No s'ha trobat cap cessió.</TD></TR><? endif; ?> 				
-                <? foreach($CESSIONS->getResults() as $C):  ?>
-					<TR>
-						<TD class="LINIA"><?=link_to($C->getTitol(),'gestio/gCessions'.getParam( 'E' , $I->getIdcessiomaterial() , $PAGINA ))?></TD>
-					    <TD class="LINIA"><?=$I->getEstatText()?></TD></TR>                                	
-                <? endforeach; ?>                
-                <TR><TD colspan="3" class="TITOL"><?=gestorPagines($CESSIONS);?></TD></TR>
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
-  
-  
+  <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
       
-  <?php IF( $NOU || $EDICIO ): ?>
-      
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Gestor de cessions</DIV>
-                <TABLE class="DADES" width="100%">                  
-                  <?php echo input_hidden_tag( 'IDC' , $CESSIO->getIdcessiomaterial() ); ?>
-                  <?php echo input_hidden_tag( 'NOU' , $NOU ); ?>                                      
-                  <TR><TD class="LINIA" >Què es cedeix</TD><td><?=select_tag( 'D[MATERIAL]' , options_for_select(MaterialPeer::select() , $CESSIO->getMaterialIdmaterial()) ); ?></TD></TR>
-                  <TR><TD class="LINIA" >A qui es cedeix</td><td><?=input_tag( 'D[CEDITA]' , $CESSIO->getCedita() ); ?></TD></TR>
-                  <TR><TD class="LINIA" >Data de cessió</td><td><?=input_date_tag('D[DATACESSIO]',$CESSIO->getDatacessio() , array('rich'=>true,'class'=>'cinquanta')); ?></TD></TR>
-                  <TR><TD class="LINIA" >Data de retorn</td><td><?=input_date_tag('D[DATARETORN]',$CESSIO->getDataretorn() , array('rich'=>true,'class'=>'cinquanta')); ?></TD></TR>
-                  <TR><TD class="LINIA" >Notes d'estat</td><td><?=input_tag( 'D[ESTAT]' , $CESSIO->getEstat() ); ?></TD></TR>
-                  <TR><TD class="LINIA" >Retornat?</td><td><?=select_tag('D[RETORNAT]', options_for_select(array(1=>'Sí',0=>'No'),$CESSIO->getRetornat() ) ); ?></TD></TR>                                                      
-                </TABLE>                                                                  
-                
-                <div class="BOTONS">
-                	<?=submit_image_tag('template/accept.png',array('name'=>'BSAVE')); ?>
-                	<?=submit_image_tag('template/cancel.png',array('name'=>'RETURN')); ?>
-    			</div>            
-                                
-            </TD>
-        </TR>
-      </TABLE>
-    
+	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST">            
+	 	<DIV class="REQUADRE">
+	    	<table class="FORMULARI" width="550px">
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <?=$FCessiomaterial?>                								
+                <tr>
+                	<td></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCessio',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+     </form>    
+
+  <?php else: ?>    
+
+      <DIV class="REQUADRE">
+        <DIV class="TITOL">Llistat de cessions</DIV>
+      	<TABLE class="DADES">
+ 			<?php 
+				if( empty( $CESSIONS ) ):
+					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat material disponible.</TD></TR>';
+				else: 
+					$i = 0;
+					foreach($CESSIONS->getResults() as $C):												
+                      	$PAR = ParImpar($i++);	                      	
+                      	echo "<TR>
+                      			<TD class=\"$PAR\">".link_to($C->getMaterial()->getNom(), 'gestio/gCessio'.getParam('E',$C->getIdcessiomaterial(),$PAGINA))."</TD>                      			
+                      			<TD class=\"$PAR\">".$C->getCedita()."</TD>
+                      			<TD class=\"$PAR\">".$C->getDatacessio()."</TD>
+                      			<TD class=\"$PAR\">".$C->getDataretorn()."</TD>								                      			
+                      		  </TR>";
+                    endforeach;
+                 endif;                     
+             ?>      
+              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($CESSIONS);?></TD></TR>    	
+      	</TABLE>      
+      </DIV>
 
   <?php ENDIF; ?>
   
@@ -86,6 +98,13 @@ function gestorPagines($CESSIONS)
      echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gIncidencies'.getParam( null , null , $INCIDENCIES->getNextPage()));
   }
 }
+
+function ParImpar($i)
+{
+	if($i % 2 == 0) return "PAR";
+	else return "IPAR";
+}
+
 
 ?>
  

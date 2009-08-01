@@ -9,4 +9,5 @@
  */ 
 class Cessiomaterial extends BaseCessiomaterial
 {
+	
 }

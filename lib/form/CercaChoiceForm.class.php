@@ -5,7 +5,7 @@ class CercaChoiceForm extends sfForm
   public function configure()
   {
     $this->setWidgets(array(
-      'text'    => new sfWidgetFormChoice(array('choices'=>array()))      
+      'text'    => new sfWidgetFormChoice(array('choices'=>array()))            
     ));
     
         

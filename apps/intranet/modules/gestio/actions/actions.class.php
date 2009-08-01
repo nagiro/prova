@@ -1359,7 +1359,6 @@ class gestioActions extends sfActions
     $this->CONSULTA = true; 
     $this->NOU = false; 
     $this->EDICIO = false;
-    $this->CESSIO = false;
 
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
@@ -1397,43 +1396,7 @@ class gestioActions extends sfActions
     $this->MATERIALS = MaterialPeer::getMaterial($this->TIPUS, $this->PAGINA);
     
   }
-  
-  
-  public function saveMaterial($D,$IDM)
-  {  	
-  	
-  	$M = new Material();  	
-  	if($IDM > 0) { $M = MaterialPeer::retrieveByPK($IDM); $M->setNew(false); }  	 
-  	
-  	foreach($D as $K=>$D2):
-  	   if(empty($D2)) $D[$K] = null;
-  	endforeach;
-  	
-  	$M->setIdentificador($D['IDENTIFICADOR']);
-  	$M->setNumserie($D['NUMSERIE']);
-  	$M->setNom($D['NOM']);
-	$M->setUbicacio($D['UBICACIO']);
-	$M->setDatacompra($D['DATACOMPRA']);
-	$M->setDatagarantia($D['DATAGARANTIA']);
-	$M->setDatarevisio($D['DATAREVISIO']);                  
-    $M->setCedit($D['CEDIT']);                                    
-	$M->setDatacessio($D['DATACESSIO']);
-	$M->setDataretorn($D['DATARETORN']);
-	$M->setDescripcio($D['DESCRIPCIO']);
-	$M->setMaterialgenericIdmaterialgeneric($D['MATERIALGENERIC']);	
-	$M->setNotesmanteniment($D['NOTESMANTENIMENT']);
-	$M->setPreu($D['PREU']);
-	$M->setNumfactura($D['NUMFACTURA']);	
-	$M->setDatabaixa($D['DATABAIXA']);
-	$M->setDatareparacio($D['DATAREPARACIO']);
-	$M->setDisponible(isset($D['DISPONIBLE']));
-	$M->save();
     
-	return $M;
-  	
-  }
-  
-  
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
   
@@ -1497,30 +1460,55 @@ class gestioActions extends sfActions
     $CURS->save();  	  	
   }
   
-  public function executeGReserves()
+  public function executeGReserves(sfWebRequest $request)
   {
+  	
     $this->setLayout('gestio');
+        
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $this->CERCA = $this->ParReqSesForm($request,'text',1,'cerca');
     
-    $this->CERCA = ""; $this->NOU = false; $this->EDICIO = false;
-
-    $this->accio = $this->getRequestParameter('accio');
-    $this->IDR = $this->getRequestParameter('IDR');
-    $this->CERCA = $this->getRequestParameter('CERCA');
-    
-    if($this->getRequest()->hasParameter('BNOU')) $this->accio = 'N';    
-    if($this->getRequest()->hasParameter('BSAVE')) $this->accio = 'S';
-    if($this->getRequest()->hasParameter('BDELETE')) $this->accio = 'D';
-       
-	switch($this->accio){								
-		case 'N' : $this->RESERVA = new Reservaespais(); $this->NOU = true; $this->IDR = 0; break;
-		case 'E' : $this->RESERVA = ReservaespaisPeer::retrieveByPK($this->IDR); $this->EDICIO = true; break;
-		case 'S' : $this->RESERVA = ReservaespaisPeer::save( $this->getRequestParameter("D") , $this->getUser()->getAttribute('idU') , $this->IDR );  $this->EDICIO = true; break;
-		case 'D' : CursosPeer::retrieveByPK($this->getRequestParameter('IDC'))->delete(); break;			 		
-	}
-	 
-	if(empty($this->CERCA))	$this->RESERVES = ReservaespaisPeer::getReservesPendents();
-	else $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA);
+    //Inicialitzem el formulari de cerca
+    $this->FCerca = new CercaForm();        
+	$this->FCerca->bind($request->getParameter('cerca'));
 	
+	//Inicialitzem variables
+	$this->MODE = array('CONSULTA'=>true,'NOU'=>false,'EDICIO'=>false);
+        
+    if($request->isMethod('POST') || $request->isMethod('GET')):
+	    $accio = $request->getParameter('accio');
+	    if($request->hasParameter('BCERCA'))    $accio = 'C';
+	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
+	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
+	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
+	endif;                
+	
+    switch($accio){
+    	case 'N':
+    			$OReserva = new Reservaespais();    			
+    			$this->FReserva = new ReservaespaisForm($OReserva);    			
+    			$this->MODE['NOU'] = true;
+    		break;
+    	case 'E':    			
+    			$this->getUser()->setAttribute('IDR',$request->getParameter('IDR'));
+    			$OReserva = ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('IDR'));
+				$this->FReserva = new ReservaespaisForm($OReserva);   			
+    			$this->MODE['EDICIO'] = true;
+    		break;
+    	case 'S':    			    		        		  
+    		    $this->FReserva = new ReservaespaisForm(ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('IDR')));
+    		    $this->FReserva->bind($request->getParameter('reservaespais'));
+    		    if($this->FReserva->isValid()) $this->FReserva->save();    		        		    
+    			$this->MODE['EDICIO'] = true;
+    		break;
+    	case 'D': 
+    	        ReservaespaisPeer::retrieveByPK($request->getRequest('IDR'))->delete();    	        
+    	        break;    	         	 
+    }
+        
+    $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA,$this->PAGINA);
+    
+  		
   }
 
   /**
@@ -1708,68 +1696,62 @@ class gestioActions extends sfActions
   }
 
     
-  public function executeGCessio()  
+  public function executeGCessio(sfWebRequest $request)  
   {
     
-    $this->setLayout('gestio');
+  	$this->setLayout('gestio');
+        
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $this->CERCA = $this->ParReqSesForm($request,'text',1,'cerca');
     
-    $this->CONSULTA = true; $this->NOU = false; $this->EDICIO = false;    
+    //Inicialitzem el formulari de cerca
+    $this->FCerca = new CercaForm();
+	$this->FCerca->bind($request->getParameter('cerca'));
+	
+	//Inicialitzem variables
+	$this->MODE = array('CONSULTA'	=> true,
+						'NOU'		=> false, 
+						'EDICIO' 	=> false, 
+						'CESSIO' 	=> false
+					);
 
-     if($this->hasRequestParameter('PAGINA')) $this->PAGINA = $this->getRequestParameter('PAGINA');
-     else $this->PAGINA = 1;
-            
-    $accio = $this->getRequestParameter('accio');
-    if($this->getRequest()->hasParameter('BNOU')) 	    $accio = 'N';
-    if($this->getRequest()->hasParameter('BSAVE')) 	    $accio = 'S';
-    if($this->getRequest()->hasParameter('BDELETE')) 	$accio = 'D';
-                
+    
+    if($request->isMethod('POST') || $request->isMethod('GET')):
+	    $accio = $request->getParameter('accio');
+	    if($request->hasParameter('BCERCA'))    $accio = 'C';
+	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
+	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
+	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
+	endif;                
+	
     switch($accio){
     	case 'N':
-    			$this->CESSIO = new Cessiomaterial();    			
-    			$this->NOU = true;
+    			$OCessio = new Cessiomaterial();
+    			$OCessio->setDatacessio(date('m/d/Y',time()));
+    			$OCessio->setDataretorn(date('m/d/Y',time()));    			    			    	    			
+    			$this->FCessiomaterial = new CessiomaterialForm($OCessio);    			
+    			$this->MODE['NOU'] = true;
     		break;
-    	case 'E':
-    			$this->CESSIO = CessiomaterialPeer::retrieveByPK($this->getRequestParameter('IDC'));
-    			$this->EDICIO = true;
+    	case 'E':    			
+    			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
+    			$OCessio = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+				$this->FCessiomaterial = new CessiomaterialForm($OCessio);   			
+    			$this->MODE['EDICIO'] = true;
     		break;
-    	case 'S':
-    			$this->CESSIO = $this->saveCessio($this->getRequestParameter('D'),$this->getRequestParameter('IDC'),$this->getRequestParameter('NOU'));
-    			$this->EDICIO = true;
+    	case 'S':    			    		        		  
+    		    $this->FCessiomaterial = new CessiomaterialForm(CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
+    		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
+    		    if($this->FCessiomaterial->isValid()) $this->FCessiomaterial->save();
+    		    $this->MODE['EDICIO'] = true;    		        		        			
     		break;
-    	case 'D':
-    	        $this->IDC = $this->getRequestParameter('IDC');
-    	        $C = CessiomaterialPeer::retrieveByPK($this->IDC);
-    	        if(!is_null($C)) $C->delete();
+    	case 'D': 
+    	        CessiomaterialPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
     	        break;    	         	 
     }
+
     
     $this->CESSIONS = CessiomaterialPeer::getCessions($this->PAGINA);
   
-  }
-  
-  
-  public function saveCessio($D,$IDC,$NOU=true)
-  {  	
-  	
-  	$C = new Material();  	
-  	if($NOU) { $C = CessiomaterialPeer::retrieveByPK($IDC); $C->setNew(false); }  	 
-  	
-    $C->setMaterialIdmaterial($IDC);
-    $C->setCedita($D['CEDITA']);
-    $C->setDatacessio($D['DATACESSIO']);
-    $C->setDataretorn($D['DATARETORN']);
-    $C->setEstat($D['ESTAT']);
-    $C->setRetornat($D['RETORNAT']);    	
-	$C->save();    
-	
-	return $C;
-  	
-  }
-  
-  
-  
-  
-  
-  
+  }  
   
 }
