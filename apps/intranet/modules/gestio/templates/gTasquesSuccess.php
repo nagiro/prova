@@ -94,7 +94,7 @@
   	</DIV>     
      
            
-  <?php ELSEIF( $NOU || $EDICIO ): ?>
+  <?php ELSE: ?>
       
  	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST">      
 		<DIV class="REQUADRE">

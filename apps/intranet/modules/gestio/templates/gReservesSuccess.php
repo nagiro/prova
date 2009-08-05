@@ -56,7 +56,7 @@
   <?php ELSE: ?>
     
       <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistat de reserves (<?=$RESERVES->getNbResults()?>)</DIV>
+        <DIV class="TITOL">Llistat de reserves </DIV>
       	<TABLE class="DADES">
  			<?php 
 				if( empty( $RESERVES ) ):
@@ -65,10 +65,10 @@
 					$i = 0;
 					foreach($RESERVES->getResults() as $R):												
                       	$PAR = ParImpar($i++); ?>	                      	
-                      	<TR><TD class="LINIA"><?=link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid())?></TD>
-                      	    <TD class="LINIA"><?=$R->getUsuaris()->getNomComplet()?></TD>
-                      	    <TD class="LINIA"><?=$R->getDataactivitat()?></TD>
-                      	    <TD class="LINIA"><?=$R->getEstatText()?><TD>
+                      	<TR><TD class="<?=$PAR?>"><?=link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid())?></TD>
+                      	    <TD class="<?=$PAR?>"><?=$R->getUsuaris()->getNomComplet()?></TD>
+                      	    <TD class="<?=$PAR?>"><?=$R->getDataactivitat()?></TD>
+                      	    <TD class="<?=$PAR?>"><?=$R->getEstatText()?><TD>
                       	</TR>
                     <? endforeach;
                  endif;                    

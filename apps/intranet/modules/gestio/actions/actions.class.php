@@ -10,6 +10,7 @@
  */
 class gestioActions extends sfActions
 {
+		
   /**
    * Executes index action
    */
@@ -1288,51 +1289,55 @@ class gestioActions extends sfActions
     
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
-  
-  public function ParReqSesForm($request, $nomCamp, $default = "",  $formulari = null) 
+    
+  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "",  $formulari = null) 
   {
 
-  	$RET = "";
+  	$RET = ""; 	    	
   	
-  	if(!is_null($formulari)): 
-
-  	  	if($request->hasParameter($formulari)):
-
-  	  		$C = $request->getParameter($formulari);
-  			$RET = $C[$nomCamp]; 
-  			$this->getUser()->setAttribute('cerca',$this->TIPUS); 
-
-  		elseif($this->getUser()->hasAttribute($nomCamp)): 
-  			
-  			$RET = $this->getUser()->getAttribute('cerca');
-  			
-  		else:
-  		
-  			$RET = $default;
-
-  		endif;
+  	//Recuperem el nom del camp tant si és dins un formulari com si és fora. 
+  	if(!is_null($formulari)) $PAR = $formulari.'['.$nomCamp.']';
+  	else $PAR = $nomCamp;
+    	
+  	//Si existeix el paràmetre carreguem el nom actual
+  	if($request->hasParameter($PAR)):
   	
-  	else:
-  		if($request->hasParameter($nomCamp)):
-  			 
-  			$RET = $request->getParameter($nomCamp); 
-  			$this->getUser()->setAttribute('cerca',$this->TIPUS); 
-
-  		elseif($this->getUser()->hasAttribute($nomCamp)): 
-  			
-  			$RET = $this->getUser()->getAttribute('cerca');
-  			
-  		else:
+  		$CAMP = $request->getParameter($PAR);
+  		$this->getUser()->setAttribute($nomCamp,$CAMP);
+  		$RET = $CAMP;
+  
+  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+  	elseif($this->getUser()->hasAttribute($nomCamp)):
   		
-  			$RET = $default;
+  		$RET = $this->getUser()->getAttribute($nomCamp);
+  		
+  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+  	else: 
+  	
+  		$this->getUser()->setAttribute($nomCamp, $default);
+  		$RET = $default;
 
-  		endif;
-  			
+  	
   	endif;
   	
   	return $RET;
-  	
   }
+  
+  public function ParSesForm($valor, $nomCamp, $default = "") 
+  {
+
+  	$RET = ""; 	    	
+  	   	
+  	if($this->getUser()->hasAttribute($nomCamp)):
+  		$RET = $this->getUser()->getAttribute($nomCamp); 
+  	else:   	
+  		$this->getUser()->setAttribute($nomCamp, $default);
+  		$RET = $default;
+  	endif;
+  	
+  	return $RET;
+  }
+  
   
   
   /**
@@ -1346,6 +1351,7 @@ class gestioActions extends sfActions
   {
     
     $this->setLayout('gestio');
+    $this->setOnsoc($this->getActionName());
         
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $this->TIPUS = $this->ParReqSesForm($request,'text',1,'cerca');
@@ -1399,66 +1405,74 @@ class gestioActions extends sfActions
     
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
-  
-  public function executeGCursos()  
+    
+  public function executeGCursos(sfWebRequest $request)  
   {
-    
-    $this->setLayout('gestio');
-    
-    $this->CERCA = ""; $this->NOU = false; $this->EDICIO = false; $this->LLISTAT = false;
 
-    if($this->hasRequestParameter('PAGINA'))
-         $this->PAGINA = $this->getRequestParameter('PAGINA');
-    else $this->PAGINA = 1;
+    $this->setLayout('gestio');
+
+    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');
+    $this->SELECT = $this->ParReqSesForm($request,'select',1,'cerca');
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $accio  = $this->ParReqSesForm($request,'accio','CA');    
     
-    $this->accio = $this->getRequestParameter('accio');
-    $this->IDC = $this->getRequestParameter('IDC');
-    if($this->getRequest()->hasParameter('BCERCAACTIUS')) $this->accio = 'CA';
-    if($this->getRequest()->hasParameter('BCERCAINACTIUS')) $this->accio = 'CI';
-    if($this->getRequest()->hasParameter('BNOU')) $this->accio = 'NC';    
-    if($this->getRequest()->hasParameter('BSAVE')) $this->accio = 'S';
-    if($this->getRequest()->hasParameter('BDELETE')) $this->accio = 'D';
-       
-	switch($this->accio){						
-		case 'CI' : $this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA ); $this->ISACTIU = false; break;		//Cursos inactius
-		case 'CAC': $this->MATRICULES = CursosPeer::getMatricules($this->getRequestParameter('IDC')); break;		//Cerca alumnes d'un curs
-		case 'NC' : $this->CURS = new Cursos(); $this->NOU = true; break;		// Intentem donar d'alta un nou curs.
-		case 'S'  : $this->saveCurs($this->getRequestParameter('IDC'));  break;
-		case 'D'  : CursosPeer::retrieveByPK($this->getRequestParameter('IDC'))->delete(); break;			 		
-		case 'E'  : $this->CURS = CursosPeer::retrieveByPK($this->getRequestParameter('IDC')); $this->EDICIO = true; break;
-		case 'L'  : $this->CURS = CursosPeer::retrieveByPK($this->getRequestParameter('IDC')); $this->LLISTAT = true; break;
-	}
+    //Inicialitzem el formulari de cerca
+    $this->FCerca = new CercaTextChoiceForm();       
+    $this->FCerca->setChoice(array(1=>'Actius',2=>'Inactius')); 
+	$this->FCerca->bind(array('text'=>$this->CERCA,'select'=>$this->SELECT));
+	
+	//Inicialitzem variables
+	$this->MODE = array('CONSULTA'=>true,'NOU'=>false,'EDICIO'=>false,'LLISTAT_ALUMNES'=>false);
+
+    if($request->isMethod('POST')){
+	    if($request->hasParameter('BCERCA')) { $accio = ( $this->SELECT == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NC';
+	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';
+	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
+    }                
+    
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    $this->getUser()->setAttribute('accio',$accio);
+    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova  
+    
+    switch($accio){
+    	case 'NC':    			
+    			$OCurs = new Cursos();    			
+    			$this->FCurs = new CursosForm($OCurs);    			
+    			$this->MODE['NOU'] = true;
+    		break;
+    	case 'E':    			
+    			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
+    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+				$this->FCurs = new CursosForm($OCurs);   			
+    			$this->MODE['EDICIO'] = true;
+    		break;
+    	case 'S':    			    		        		  
+    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
+    		    $this->FCurs->bind($request->getParameter('cursos'));
+    		    if($this->FCurs->isValid()) $this->FCurs->save();    		        		    
+    			$this->MODE['EDICIO'] = true;
+    		break;
+    	case 'D': 
+    	        CursosPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
+    	    break;
+		case 'CI' :	
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA );
+				$this->MODE['CONSULTA'];				 
+			break;		
+		case 'CA' :
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA );
+				$this->MODE['CONSULTA'];
+			break;					
+		case 'L': 
+				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));
+				$this->MODE['LLISTAT_ALUMNES'] = true; 
+			break;
+    }
+        
+  }
 	 
 	
-	if($this->accio <> 'CI'){
-	   $this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA);
-	   $this->ISACTIU = true;
-	}
-	
-  }
-  
-  private function saveCurs($IDC = 0){
-  	
-  	$D = $this->getRequestParameter('D');
-  	$CURS = new Cursos();
-  	  	
-  	if(!empty($IDC)) { $CURS = CursosPeer::retrieveByPK($IDC); $CURS->setNew(false);  } else $CURS->setNew(true);
-  	
-  	$CURS->setTitolcurs($D['TITOL']);
-  	$CURS->setIsactiu($D['ACTIU']);
-  	$CURS->setPlaces($D['PLACES']);
-  	$CURS->setCodi($D['CODI']);
-  	$CURS->setDescripcio($D['DESCRIPCIO']);
- 	$CURS->setPreu($D['PREU']);
-  	$CURS->setPreur($D['PREUR']);
-  	$CURS->setHoraris($D['HORARIS']);
-  	$CURS->setCategoria($D['CATEGORIA']);
-  	$CURS->setDataaparicio($D['DATAAPARICIO']);
-  	$CURS->setDatadesaparicio($D['DATADESAPARICIO']);
-  	$CURS->setDatafimatricula($D['DATAFIMATRICULA']);
-  	$CURS->setDatainici($D['DATAINICI']);
-    $CURS->save();  	  	
-  }
   
   public function executeGReserves(sfWebRequest $request)
   {
@@ -1515,7 +1529,99 @@ class gestioActions extends sfActions
    * Matrícules
    *
    */
+   
   
+  public function executeGMatricules(sfWebRequest $request)
+  {
+  
+    $this->setLayout('gestio');
+
+    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');
+    $this->SELECT = $this->ParReqSesForm($request,'select',1,'cerca');
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $accio  = $this->ParReqSesForm($request,'accio','CA');    
+    
+    //Inicialitzem el formulari de cerca
+    $this->FCerca = new CercaTextChoiceForm();       
+    $this->FCerca->setChoice(array(1=>'Cursos',2=>'Alumnes')); 
+	$this->FCerca->bind(array('text'=>$this->CERCA,'select'=>$this->SELECT));
+	
+	//Inicialitzem variables
+	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false, 'LMATRICULES'=>false);
+
+    if($request->isMethod('POST')){
+	    if($request->hasParameter('BCERCA')) { $accio = ( $this->SELECT == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    $accio = 'N';
+	    elseif($request->hasParameter('BSUBMIT')) 	$accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
+	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
+    }                
+    
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    $this->getUser()->setAttribute('accio',$accio);
+    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova  
+    
+    switch($accio){
+    	case 'N': 
+    			$this->getUser()->setAttribute('IDM',0);   			
+    			$OMatricula = new Matricules();
+    			$OMatricula->setDatainscripcio(time());
+    			$OMatricula->setDescompte(0);    			    			
+    			$this->FMatricula = new MatriculesForm($OMatricula);    			
+    			$this->MODE['NOU'] = true;
+    		break;
+    	case 'E':    			
+    			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
+    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+				$this->FCurs = new CursosForm($OCurs);   			
+    			$this->MODE['EDICIO'] = true;
+    		break;
+    	case 'S':
+    			$OMatricula = ($this->getUser()->getAttribute('IDM') == 0)?new Matricules():MatriculesPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));    		    
+    			$this->FMatricula = new MatriculesForm($OMatricula);
+    		    $this->FMatricula->bind($request->getParameter('matricules'));    		    
+    		    if($this->FMatricula->isValid()) $this->GuardaMatricula($this->FMatricula);    		        		        		    
+    			$this->MODE['EDICIO'] = true;
+    		break;
+    	case 'D': 
+    	        CursosPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
+    	    break;
+		case 'CA':	
+				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA , $this->PAGINA );
+				$this->MODE['CONSULTA'] = true;				 
+			break;		
+		case 'CC':
+				$this->CURSOS = MatriculesPeer::cercaCursos($this->CERCA , $this->PAGINA );
+				$this->MODE['CONSULTA'] = true;
+			break;
+		case 'LMA':
+				$this->MATRICULES = MatriculesPeer::getMatriculesUsuari($request->getParameter('IDA'));				
+				$this->MODE['LMATRICULES'] = true; 
+			break;
+		case 'LMC':
+				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC'));
+				$this->MODE['LMATRICULES'] = true;
+			break;
+    }
+  	
+  
+  }
+  
+  public function GuardaMatricula(sfFormPropel $Matricula)
+  {
+  	$Matricula->updateObject();
+  	$OM = $Matricula->getObject();
+  	
+  	//Agafem el DNI i busquem el valor que té d'usuari 
+  	$OM->setUsuarisUsuariid(UsuarisPeer::cercaDNI($Matricula->getValue('Usuaris_usuariID'))->getUsuariid());   	
+  	
+//  	try {
+  		$OM->save();
+//  	} catch (Exception $e) { return $e->getMessage(); }
+  	
+  	
+  }
+  
+/*  
   public function executeGMatricules()
   {
            
@@ -1627,31 +1733,8 @@ class gestioActions extends sfActions
      $this->MATRICULES = MatriculesPeer::cercaMatricules($this->CERCA);
      
   }
-  
-  private function guardaMatricula( $DADES_MATRICULA , $EDIT = false , $IDMATRICULA = 0 )
-  {
-     $matricules = ARRAY();     
-     
-     foreach(explode('@',$DADES_MATRICULA['CURSOS']) as $C):
-
-        $M = new Matricules();	     
-	    $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);          
-	    $M->setEstat(MatriculesPeer::PROCES_PAGAMENT);        
-	    $M->setComentari($DADES_MATRICULA['COMENTARI']);
-	    $M->setDatainscripcio($DADES_MATRICULA['DATA']);     
-	    $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
-	    $M->setTpagament($DADES_MATRICULA['MODALITAT']);
-	          
-        $M->setCursosIdcursos($C);
-        $M->save();
-        $matricules[] = $M->getIdmatricules();
-         
-     endforeach;
-     
-     return $matricules;
-     
-  }
-      
+*/  
+        
   public function executeGNoticies()
   {     
      $this->setLayout('gestio');
@@ -1671,28 +1754,60 @@ class gestioActions extends sfActions
           
   }
   
-  public function executeGIncidencies()
+  public function executeGIncidencies(sfWebRequest $request)
   {
      
-     $this->setLayout('gestio');
-     $this->CERCA  = $this->getRequestParameter('CERCA');
-     $this->PAGINA = $this->getRequestParameter('PAGINA');
-     $this->accio  = $this->getRequestParameter('accio');
-     $this->IDI    = $this->getRequestParameter('IDI');
-     $this->NOU = false; $this->EDICIO = false; $this->IDU = $this->getUser()->getAttribute('idU');
-     
-    if($this->getRequest()->hasParameter('BNOU')) $this->accio = 'N';    
-    if($this->getRequest()->hasParameter('BSAVE')) $this->accio = 'S';
-    if($this->getRequest()->hasParameter('BDELETE')) $this->accio = 'D';
-       
-	switch($this->accio){								
-		case 'N' : $this->INCIDENCIA = new Incidencies(); $this->NOU = true; $this->IDI = 0; break;
-		case 'E' : $this->INCIDENCIA = IncidenciesPeer::retrieveByPK($this->IDI); $this->IDI = $this->INCIDENCIA->getIdincidencia(); $this->EDICIO = true; break;
-		case 'S' : $this->INCIDENCIA = IncidenciesPeer::save( $this->getRequestParameter("D") , $this->IDI );  $this->EDICIO = true; break;					 		
+	$this->setLayout('gestio');
+	        
+	    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+	    $this->CERCA = $this->ParReqSesForm($request,'text',1,'cerca');
+	    
+	    //Inicialitzem el formulari de cerca
+	    $this->FCerca = new CercaForm();
+		$this->FCerca->bind($request->getParameter('cerca'));
+		
+		//Inicialitzem variables
+		$this->MODE = array('CONSULTA'	=> true,
+							'NOU'		=> false, 
+							'EDICIO' 	=> false
+						);
+	    
+	if($request->isMethod('POST') || $request->isMethod('GET')):
+		$accio = $request->getParameter('accio');
+		if($request->hasParameter('BCERCA'))    $accio = 'C';
+		if($request->hasParameter('BNOU')) 	    $accio = 'N';
+		if($request->hasParameter('BSAVE')) 	$accio = 'S';
+		if($request->hasParameter('BDELETE')) 	$accio = 'D';
+	endif;                
+		
+	switch($accio){
+	    case 'N':
+	    		$OIncidencia = new Incidencies();
+	    		$OIncidencia->setDataalta(time());
+	    		$OIncidencia->setQuiinforma($this->getUser()->getAttribute('idU'));	    			    		    			    			    	    		
+	    		$this->FIncidencia = new IncidenciesForm($OIncidencia);    			
+	    		$this->MODE['NOU'] = true;
+	    	break;
+	    case 'E':    			
+	    		$this->getUser()->setAttribute('IDI',$request->getParameter('IDI'));
+	    		$OIncidencia = IncidenciesPeer::retrieveByPK($this->getUser()->getAttribute('IDI'));
+	    		$this->FIncidencia = new IncidenciesForm($OIncidencia);   			
+				$this->MODE['EDICIO'] = true;
+			break;
+		case 'S':    			    		        		  
+			    $this->FIncidencia = new IncidenciesForm(IncidenciesPeer::retrieveByPK($this->getUser()->getAttribute('IDI')));
+			    $this->FIncidencia->bind($request->getParameter('incidencies'));
+			    if($this->FIncidencia->isValid()) $this->FIncidencia->save();
+			    $this->MODE['EDICIO'] = true;    		        		        			
+			break;
+		case 'D': 
+		        IncidenciesPeer::retrieveByPK($request->getRequest('IDI'))->delete();    	        
+		        break;    	         	 
 	}
-               
-     $this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA , $this->PAGINA );
-          
+	
+	    
+	$this->INCIDENCIES = IncidenciesPeer::getIncidencies($this->CERCA, $this->PAGINA);
+  
   }
 
     

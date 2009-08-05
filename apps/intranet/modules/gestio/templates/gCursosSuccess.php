@@ -1,3 +1,4 @@
+<?php use_helper('Form') ?>
 <STYLE>
 .cent { width:100%; }
 .vuitanta { width:80%; }
@@ -50,104 +51,89 @@
    
     <TD colspan="3" class="CONTINGUT">
     
-      <?php echo nice_form_tag('gestio/gCursos',array('method'=>'post')); ?>
+	<form action="<?php echo url_for('gestio/gCursos') ?>" method="POST">
+	    <DIV class="REQUADRE">
+	    	<table class="FORMULARI">          
+	            <?php echo $FCerca ?>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
+	            		<input type="submit" name="BNOU" value="Nou curs" />
+	            	</td>
+	            </tr>
+	        </table>
+	     </DIV>
+     </form>  
 
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">        		
-        		<div class="TITOL">Cerca cursos</DIV>                                                              
-				<div class="CERCA"><?php echo input_tag('CERCA', $CERCA , array('class'=>'cinquanta')).' '.submit_tag('Cerca actius',array('name'=>'BCERCAACTIUS')).' '.submit_tag('Cerca inactius',array('name'=>'BCERCAINACTIUS')).' '.submit_tag('Nou curs',array('name'=>'BNOU')); ?></DIV>										 
-            </TD>
-        </TR>
-      </TABLE>
-          
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Llistat de cursos (<?=$CURSOS->getNbResults() ?>)</DIV>
-                <TABLE class="DADES">
-                <? if($CURSOS->getNbResults() == 0 ): ?> <TR><TD class="LINIA">No hi ha cursos disponibles.</TD></TR><? endif; ?>
-				<? $CAT_ANT = ""; ?>                 									                           
-                <? foreach($CURSOS->getResults() as $C): ?>
-                <? if($CAT_ANT <> $C->getCategoria()): ?> <TR><TD colspan="4" class="TITOL"><?=$C->getCategoria()?></TD></TR> <? endif; ?>
-                <? $SPAN = ""; $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>                 	
-				<TR>
-					<TD class="LINIA"><?=link_to($C->getCodi().$SPAN , "gestio/gCursos".getParam( 'E' , $C->getIdcursos() , $CERCA ) , array('class' => 'tt2') )?></TD>
-					<TD class="LINIA"><?=$C->getTitolcurs()?></TD>
-					<TD class="LINIA"><?=$C->getPreu()?>€ </TD>
-					<TD class="LINIA"><?=$PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>							
-					<TD class="LINIA"><?=$C->getDatainici('d-m-Y')?></TD>
-					<TD class="LINIA"><?=link_to('L','gestio/gCursos'.getParam('L' , $C->getIdcursos() , $CERCA ))?></TD>
-				</TR>                		                 										
-					<? $CAT_ANT = $C->getCategoria(); ?>
-				<? endforeach; ?>                
-                <TR><TD colspan="3" class="TITOL"><?=gestorPagines($CERCA , $CURSOS , $ISACTIU);?></TD></TR> 
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
-
-  <?php IF( $NOU || $EDICIO ): ?>
+  <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
             
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Gestor de cursos</DIV>				
-  				<?php echo input_hidden_tag('IDC',$IDC); ?>
-				<TABLE class="NOTICIA" width="100%">
-                  	<TR>
-    					<TD class="TITOL" colspan="2">CODI<br /><?php echo input_tag( 'D[CODI]' , $CURS->getCodi() , array( 'class' => 'cent' ) ); ?></TD>
-                    	<TD class="TITOL" colspan="6">TITOL<br /><?php echo input_tag( 'D[TITOL]' , $CURS->getTitolcurs() , array( 'class' => 'cent' ) ); ?></TD>                    	
-					</TR>                    					
-					<TR>
-						<TD class="TITOL" colspan="2">ACTIU<br /><?php echo select_tag( 'D[ACTIU]' , options_for_select(array(1=>'Sí',0=>'No'), $CURS->getIsactiu() ) , array( 'class' => 'cent' ) ); ?></TD>
-						<TD class="TITOL" colspan="2">PLACES<br /><?php echo input_tag( 'D[PLACES]' , $CURS->getPlaces() , array('class'=>'cent') ); ?></TD>
-						<TD class="TITOL" colspan="2">PREU<br /><?php echo input_tag( 'D[PREU]' , $CURS->getPreu() , array('class'=>'cent') ); ?></TD>
-						<TD class="TITOL" colspan="2">PREU REDUIT<br /><?php echo input_tag( 'D[PREUR]' , $CURS->getPreur() , array('class'=>'cent') ); ?></TD>											                                       
-	                </TR>                                    
-                  	<TR>
-    					<TD class="TITOL" colspan="4">HORARIS<br /><?php echo input_tag( 'D[HORARIS]' , $CURS->getHoraris() , array( 'class' => 'cent' ) ); ?></TD>
-                    	<TD class="TITOL" colspan="4">CATEGORIA<br /><?php echo select_tag( 'D[CATEGORIA]' , options_for_select(CursosPeer::getSelectCategories() , $CURS->getCategoria() ) , array( 'class' => 'cent' ) ); ?></TD>                    	
-					</TR>
-					<TR>
-    					<TD class="TITOL" colspan="2">DATA APARICIO<br /><?php echo input_date_tag( 'D[DATAAPARICIO]' , $CURS->getDataaparicio() , array( 'class' => 'setanta' , 'rich' => true ) ); ?></TD>
-                    	<TD class="TITOL" colspan="2">DATA DESAPARICIO<br /><?php echo input_date_tag( 'D[DATADESAPARICIO]' , $CURS->getDatadesaparicio() , array( 'class' => 'setanta' , 'rich' => true ) ); ?></TD>                    	
-                    	<TD class="TITOL" colspan="2">DATA FI MATRÍCULA<br /><?php echo input_date_tag( 'D[DATAFIMATRICULA]' , $CURS->getDatafimatricula() , array( 'class' => 'setanta' , 'rich' => true ) ); ?></TD>
-                    	<TD class="TITOL" colspan="2">DATA INICI<br /><?php echo input_date_tag( 'D[DATAINICI]' , $CURS->getDatainici() , array( 'class' => 'setanta' , 'rich' => true ) ); ?></TD>
-					</TR>
-					<TR>
-    					<TD class="TITOL" colspan="8">DESCRIPCIO<br /><?php echo textarea_tag( 'D[DESCRIPCIO]' , $CURS->getDescripcio() , array( 'class' => 'cent' ) ); ?></TD>                    	                    	
-					</TR>                    										                    					
-					<TR>
-						<TD colspan="6"><?php echo submit_tag('Guarda',array( 'name'=>'BSAVE' , 'class'=>'cent' , 'onClick'=>'return ValidaFormulari(this);' )); ?></TD>
-						<TD colspan="2"><?php echo submit_tag( 'Esborrar' , array(  'name' => 'BDELETE' , 'class' => 'cent' , 'onClick' => "return confirm('Segur que vols esborrar aquest registre?');" ));  ?> </TD>						
-					</TR>
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
+   	<form action="<?php echo url_for('gestio/gCursos') ?>" method="POST">            
+	 	<DIV class="REQUADRE">
+	    	<table class="FORMULARI" width="550px">
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <?=$FCurs?>                								
+                <tr>
+                	<td></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+     </form>         
       
-    <?php ELSEIF( $LLISTAT ): ?>
-            
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Llistat d'alumnes matriculats</DIV>
-                <TABLE class="DADES">
-                <? if( $CURS->countMatriculats() == 0 ): ?>
-                <TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>
-                <? endif; ?>  
-                 									                           
-                <? foreach($CURS->getMatriculats() as $M): ?>                	 
-                <?    $U = $M->getUsuaris(); $TEXT_REDUCCIO = ""; ?>
-                <?    if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $CURS->getPreu(); } else { $PREU = $CURS->getPreur(); $TEXT_REDUCCIO = ' |R'; } ?>
+    <?php ELSEIF( $MODE['LLISTAT_ALUMNES'] ): ?>
+
+     <DIV class="REQUADRE">
+        <DIV class="TITOL">Llistat d'alumnes </DIV>
+      	<TABLE class="DADES">
+ 			<? if( sizeof($MATRICULES) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>'; endif; ?>  
+			<? foreach($MATRICULES as $M): ?>
+			<? $C = $M->getCursos(); ?>
+			<? $U = $M->getUsuaris(); ?>
+			<? $TEXT_REDUCCIO ="";    ?>
+			<? if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; } ?>
 				<TR>
 					<TD class="LINIA" width="15%"><?=$U->getDni()?></TD>
 					<TD class="LINIA" width="40%"><?=$U->getNomComplet()?><BR /><?=$U->getTelefon()?> | <?=$M->getDatainscripcio()?></TD>
-					<TD class="LINIA" width="45%"><?=$CURS->getCodi()?> <?=$CURS->getTitolcurs()?> (<?=$PREU.'€'.$TEXT_REDUCCIO?>) <br />
+					<TD class="LINIA" width="45%"><?=$C->getCodi()?> <?=$C->getTitolcurs()?> (<?=$PREU.'€'.$TEXT_REDUCCIO?>) <br />
 					                     		  <?=MatriculesPeer::getEstatText($M->getEstat())?> <?=$M->getComentari()?></TD>							
-				</TR>                		                 															
-				<? endforeach; ?>				           
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
+				</TR>
+			<? endforeach; ?>                        	
+      	</TABLE>      
+      </DIV>
+      
+  <?php ELSE: ?>
+
+     <DIV class="REQUADRE">
+        <DIV class="TITOL">Llistat de cursos </DIV>
+      	<TABLE class="DADES">
+ 			<?php 
+				if( empty( $CURSOS ) ){
+					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap curs amb aquestes dades.</TD></TR>';
+				} else { 
+					$i = 0;
+					$CAT_ANT = "";
+					foreach($CURSOS->getResults() as $C):
+						if($CAT_ANT <> $C->getCategoria()): ?> <TR><TD colspan="6" class="TITOLCAT"><?=$C->getCategoria()?></TD></TR> <? endif;
+						$CAT_ANT = $C->getCategoria(); $SPAN = ""; $PLACES = CursosPeer::getPlaces($C->getIdcursos());											
+                      	$PAR = ParImpar($i++); ?>	                      	
+						<TR>
+							<TD class="<?=$PAR?>"><?=link_to($C->getCodi().$SPAN , "gestio/gCursos".getParam( 'E' , $C->getIdcursos() , $CERCA ) , array('class' => 'tt2') )?></TD>
+							<TD class="<?=$PAR?>"><?=$C->getTitolcurs()?></TD>
+							<TD class="<?=$PAR?>"><?=$C->getPreu()?>€ </TD>
+							<TD class="<?=$PAR?>"><?=$PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>							
+							<TD class="<?=$PAR?>"><?=$C->getDatainici('d-m-Y')?></TD>
+							<TD class="<?=$PAR?>"><?=link_to('L','gestio/gCursos'.getParam('L' , $C->getIdcursos() ))?></TD>
+						</TR>
+				<? endforeach;
+				}                    
+             ?>      
+              <TR><TD colspan="6" class="TITOL"><?=gestorPagines($CURSOS);?></TD></TR>    	
+      	</TABLE>      
+      </DIV>
 
   <?php ENDIF; ?>
   
@@ -157,25 +143,32 @@
 
 <?php 
 
-function getParam( $accio = "" , $IDC = "" , $CERCA = "" , $PAGINA = 1 )
+function getParam( $accio = "" , $IDC = "" , $PAGINA = 1 )
 {
     $opt = array();
     if(!empty($accio)) $opt[] = "accio=$accio";
     if(!empty($IDC)) $opt['IDC'] = "IDC=$IDC";
-    if(!empty($CERCA)) $opt['CERCA'] = "CERCA=$CERCA";
     if(!empty($PAGINA)) $opt['PAGINA'] = "PAGINA=$PAGINA";
     
     RETURN "?".implode( "&" , $opt);
 }
 
-function gestorPagines($CERCA , $CURSOS , $ACTIU)
+function gestorPagines($CURSOS)
 {
   if($CURSOS->haveToPaginate())
   {       
-     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gCursos'.getParam(($ACTIU)?'CA':'CI',NULL,$CERCA , $CURSOS->getPreviousPage()));
+     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gCursos'.getParam(NULL, NULL, $CURSOS->getPreviousPage()));
      echo " ";
-     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gCursos'.getParam(($ACTIU)?'CA':'CI',NULL,$CERCA, $CURSOS->getNextPage()));
+     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gCursos'.getParam(NULL, NULL, $CURSOS->getNextPage()));
   }
 }
+
+
+function ParImpar($i)
+{
+	if($i % 2 == 0) return "PAR";
+	else return "IPAR";
+}
+
 
 ?>

@@ -12,56 +12,6 @@
   
   <link rel="shortcut icon" href="/favicon.ico" />
   
-  <STYLE>	
- 	
-	
-/*    
-            
-    .BOX { border-collapse:collapse; border:5px solid #f3f3f3; margin-bottom:10px; width:90%; }
-    .BOX .FOTO { width:130px; vertical-align:top; }
-    .BOX .FOTO .IMG_FOTO { width:120px; border:10px solid white; }
-    .BOX .NOTICIA { padding:10px; }    
-    .BOX .DATA { color:#a3c101; font-size:11px; margin-bottom:20px; }
-    .BOX .TITOL { color:black; font-size:11px; font-weight:bold; margin-bottom:10px; vertical-align: top; padding:4px; }
-    .BOX .TEXT { color:black; font-size:11px; margin-bottom:10px; }
-    .BOX .PEU { background-color:white; border:0px; }
-    .BOX TD { padding-top:4px; padding-bottom:4px; }         
-    .BOX .BOTONS { text-align: right; }
-    
-    .BOX .NOTICIA_MENU { margin:0px; padding-top:0px; padding-bottom: 10px; padding-left:0px; padding-right:10px; }
-    .BOX .SUBMEN { border-collapse:collapse; border: 4px #F3F3F3 solid; border-left-width:0px; border-top-width: 0px; padding:5px;  }
-    .BOX TD.SUBMEN { padding:5px; padding-left:10px; padding-right:10px; background-color: #F3F3F3; text-align: left; font-size:11px; font-weight: bold; }
-    .BOX TD.SUBMEN1 { padding:5px; padding-left:10px; padding-right:10px; background-color: white; text-align: left; font-size:11px; font-weight: bold; }
-   
-    
-    .CAL { width:175px; margin-top:20px; }
-    .CAL .CERCA { width:152px; margin-bottom:10px; }
-    .CAL .CALENDARI { margin-bottom:10px; }
-    .CAL .BANNER { margin-bottom:5px; width:175px; height:70px; }
-            
-    #logo { padding-left:10px; }
-    
-    A.white { text-decoration:none; color:white; }
-    A.white:hover { font-weight:bold; text-decoration: underline; color:white; }
-    A.white:visited { color:white; text-decoration:none; }
-    A.black  { text-decoration:none; color:black; }
-    A.black:hover { text-decoration: underline; font-weight:bold; color:black; }
-    A.black:visited { color:black; text-decoration:none; }
-    A.verd  { text-decoration:none; color:#a3c101; }
-    A.verd:hover { text-decoration: underline; font-weight:bold; color:#a3c101; }
-    A.verd:visited { color:#a3c101; text-decoration:none; }
-    
-    .DADES { border-collapse:collapse; width:100%; }
-    .DADES .LINIA { color:black; font-size:11px; border-bottom: 2px #F3F3F3 dotted; vertical-align: top; }
-    .DADES .LINIA A { text-decoration:none; color:black; }
-    .DADES .LINIA A:hover { text-decoration:none; font-weight:bold; }
-    .DADES .LINIA A:visited { text-decoration:none; color:black; }           
-    .DADES .ERRORS { color:red; font-size:11px; border-bottom: 2px #F3F3F3 dotted; }
-    .DADES TR:hover { background-color: #F3F3F3; }     
-*/   
-  </STYLE>
-
-  
   <title></title>
     <base href="http://localhost/intranet_dev.php" />  
     <!--   	<base href="http://servidor.casadecultura.cat/intranet/intranet_dev.php" /> -->
