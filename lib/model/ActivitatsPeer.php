@@ -59,4 +59,9 @@ class ActivitatsPeer extends BaseActivitatsPeer
       return $RET; 
    }
    
+   static function getSelectEstats()
+   {
+   		return array('1'=>'Acceptada','2'=>'PreReserva');
+   }
+   
 }

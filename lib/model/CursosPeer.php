@@ -126,6 +126,7 @@ class CursosPeer extends BaseCursosPeer
       }                  
   }
   
+  
   static function CalculaTotalPreus($CURSOS,$DESCOMPTE)
   {   
      $Preu = 0;

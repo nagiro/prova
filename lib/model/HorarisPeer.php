@@ -112,9 +112,10 @@ class HorarisPeer extends BaseHorarisPeer
          else:	         
 	        $titol = $H->getActivitats()->getTweb();	        	         
          endif;             
-         if(!empty($titol)):         
-	        $RET[$H->getDia()][$H->getActivitatsActivitatid()]['TITOL'] =  $titol; //Guardem el dia que es fa l'activitat      
-		    $RET[$H->getDia()][$H->getActivitatsActivitatid()]['HORA']  = $H->getHorainici(); //Guardem el dia que es fa l'activitat
+         if(!empty($titol)):              
+            $dia = mktime(0,0,0,$H->getDia('m'),$H->getDia('d'),$H->getDia('Y'));
+	        $RET[$dia][$H->getActivitatsActivitatid()]['TITOL'] =  $titol; //Guardem el dia que es fa l'activitat      
+		    $RET[$dia][$H->getActivitatsActivitatid()]['HORA']  = $H->getHorainici(); //Guardem el dia que es fa l'activitat
 	     endif;	     
       endforeach;
       return $RET;

@@ -112,6 +112,9 @@ class MatriculesPeer extends BaseMatriculesPeer
      
      $C->add($C1);
      
+     $C->addJoin( array( UsuarisPeer::USUARIID ) , array( self::USUARIS_USUARIID ) , CRITERIA::RIGHT_JOIN );
+//     self::doSelectJoinCursos()
+     
      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
      
@@ -198,7 +201,7 @@ class MatriculesPeer extends BaseMatriculesPeer
    * @param STRING $NOM
    * @return ARRAY
    */
-  static function getTPV($PREU , $NOM , $matricules, $WEB = true)
+  static function getTPV($PREU , $NOM , $matricula, $WEB = true)
   {
      $TPV = array();
      
@@ -217,7 +220,7 @@ class MatriculesPeer extends BaseMatriculesPeer
      $TPV['Ds_Merchant_ProductDescription'] = 'Matrícula Casa de Cultura';
      $TPV['Ds_Merchant_Titular'] = $NOM;
      $TPV['Ds_Merchant_MerchantName'] = 'Casa de Cultura';
-     $TPV['Ds_Merchant_MerchantData'] = implode("@",$matricules);
+     $TPV['Ds_Merchant_MerchantData'] = $matricula;
               
      $message =  $TPV['Ds_Merchant_Amount'].
                  $TPV['Ds_Merchant_Order'].

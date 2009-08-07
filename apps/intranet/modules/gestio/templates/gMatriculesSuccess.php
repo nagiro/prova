@@ -168,12 +168,11 @@
 	      </DIV>
   
   
-  <?php ELSEIF( $VERIFICACIO ):
+  <?php ELSEIF( $MODE['VERIFICA'] ):
 
-  
-     //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant
+     //Si hem fet una matrícula amb targeta, haurem de pagar per TPV i hem de canviar el form. 
 
-     if($DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TARGETA || $DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TELEFON ):
+     if($FMatricula->getValue('tPagament') == MatriculesPeer::PAGAMENT_TARGETA || $FMatricula->getValue('tPagament') == MatriculesPeer::PAGAMENT_TELEFON ):
      	 
          echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
 //         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
@@ -182,44 +181,26 @@
          
      else:
      
-         echo nice_form_tag('gestio/gMatricules',array('method'=>'POST'));
-         
+     	 echo '<form action="'.url_for('gestio/gMatricules').'" method="POST">';         
          
      endif;
-
-     //Carreguem totes les dades de matrícula
-     foreach($DADES_MATRICULA as $K => $V) { $str = "DADES_MATRICULA[".$K."]"; echo input_hidden_tag($str,$V); }
-     
-		   
+	   
 	?>	
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Verificació de la matrícula</DIV>				
-				<TABLE class="DADES" width="100%">
-					<?php  ?>
-                  	<TR><TD class="LINIA"><span class="TITOL">DNI </span></TD>     <TD class="LINIA"><?php echo $DADES_MATRICULA['DNI']; ?></TD></TR>
-                  	<TR><TD class="LINIA"><span class="TITOL">NOM </span></TD>     <TD class="LINIA"><?php echo $DADES_MATRICULA['NOM']; ?></TD></TR>
-                  	<TR><TD class="LINIA"><span class="TITOL">PAGAMENT </span></TD><TD class="LINIA"><?php echo MatriculesPeer::textPagament($DADES_MATRICULA['MODALITAT']); ?></TD></TR>
-                  	<TR><TD class="LINIA"><span class="TITOL">IMPORT </span></TD>  <TD class="LINIA"><?php echo $DADES_MATRICULA['PREU'].'€'; ?></TD></TR>
-                  	<TR><TD class="LINIA"><span class="TITOL">DATA </span></TD>    <TD class="LINIA"><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
-                  	<TR><TD class="LINIA"><span class="TITOL">DESCOMPTE </span></TD>  <TD class="LINIA"><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
-                  	<TR><TD class="LINIA"><span class="TITOL">CURSOS </span></TD>  <TD class="LINIA">
-                  								<TABLE width="100%">
-                  								<?php foreach(explode('@',$DADES_MATRICULA['CURSOS']) as $C): ?>
-                  								<?php $CURS = CursosPeer::retrieveByPK($C);      ?>                  								
-	                  								<TR>
-	                  									<TD class="LINIA"><?php echo $CURS->getCodi(); ?></TD>
-	                  									<TD class="LINIA"><?php echo $CURS->getTitolcurs(); ?></TD>
-	                  									<TD class="LINIA"><?php echo CursosPeer::CalculaPreu($C , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
-	                  								</TR>                  								                  								
-                  	                           <?php endforeach; ?>
-                  	                           </TABLE>
-                  	                           </TD></TR>
-                  		<TR><TD colspan="6"><?php echo submit_tag('Matricular',array('NAME'=>'BSAVE')); ?></TD></TR>                  	                                             	
-                </TABLE>			                                  
-            </TD>
-        </TR>
-      </TABLE>
+	 <form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+	    <DIV class="REQUADRE">
+	    	<DIV class="TITOL">Verificació de matrícula</DIV>	    
+	    	<table class="FORMULARI">
+	    		<tr><td width="100px"></td><td></td></tr>	    			    		        
+	            <?php echo $FMatricula ?>	            
+	            <tr>
+	            	<td colspan="2" class="dreta">
+	            		<br>	            	
+	            			<?=submit_tag('Pagar',array('name'=>'BPAGAR'))?>	            				            		
+	            	</td>
+	            </tr>
+	        </table>
+	     </DIV>
+     </form>
       
   <?php ENDIF; ?>
   

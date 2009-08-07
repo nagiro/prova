@@ -1,3 +1,5 @@
+<?php use_helper('Form') ?>
+<?php use_helper('Javascript')?>
 <STYLE>
 .CALENDARI { font-size: 8px; }
 .CALENDARI A { text-decoration:none; color:black; }
@@ -17,31 +19,31 @@
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
-    
-      <?php echo nice_form_tag('gestio/gActivitats',array('method'=>'post' , 'multipart'=>true )); ?>
-    
+       
+  <?php IF ($MODE['CONSULTA']): ?>
 
-  <?php IF ($CONSULTA): ?>
-
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                                                              
-                <DIV class="TITOL">Cerca a les activitats </DIV>                
-                <DIV class="CERCA"><?php echo input_tag('CERCA',$CERCA, array('size'=>'50%')).submit_tag('Cerca',array('name'=>'BCERCA')).' '.submit_tag('Nova activitat',array('name'=>'BNOU')); ?></DIV>                                                                 
-              </TD>
-        </TR>
-      </TABLE>
+	<form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
+	    <DIV class="REQUADRE">
+	    	<table class="FORMULARI">          
+	            <?php echo $FCerca ?>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
+	            		<input type="submit" name="BNOU" value="Nova activitat" />
+	            	</td>
+	            </tr>
+	        </table>
+	     </DIV>
+     </form>  
       
     
       <TABLE class="BOX">
         <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData( $CERCA , $PAGINA , $IDA , 'CC' , NULL , NULL , NULL , $DATAI );  ?></SPAN></DIV>
+                <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI);  ?></SPAN></DIV>
                 <TABLE class="CALENDARI">
                 <?php                 
                   
-                  $DATA = explode("-",$DATAI);
-                  $MES = intval($DATA[1]); 
-                  $ANY = intval($DATA[0]);
-                  echo llistaCalendariH($MES, $ANY , $CERCA , $CALENDARI , $DATAI , $PAGINA , $IDA , $ACCIO);                                              
+                  echo llistaCalendariH($DATAI,$CALENDARI);                                              
 
                 ?>
                 </TABLE>                                                                  
@@ -49,38 +51,68 @@
         </TR>
       </TABLE>
 
-  <?php ENDIF; IF( $NOU || $EDICIO && !$CICLES ): ?>
+  <?php ENDIF; IF( $MODE['NOU'] || $MODE['EDICIO'] && !$MODE['CICLES'] ): ?>
       
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA_MENU">                
-                <TABLE CLASS="SUBMEN"><TR>
-                  <TR><TD class="NOTICIA_MENU">
-                  	<TABLE CLASS="SUBMEN">
-                  		<TR><?php menu(1,$ACTIVITAT,$EDICIO); ?></TR>
-                  	</TABLE>
-                 </TD></TR>
-                 </TABLE>
-         </TD></TR>
-        <TR><TD class="NOTICIA">                                                
-                <?php echo input_hidden_tag('accio','S'); ?>
-                <?php echo input_hidden_tag('IDA',$ACTIVITAT->getActivitatid()); ?>
-                <TABLE class="DADES">
-                  <?php if(isset($ERRORS)) echo '<TR><TD class="ERRORS" colspan="2">'.implode("<br />",$ERRORS).'</TD>'; ?>
-                  <TR><TD class="LINIA"> Nom </TD><TD> <?=input_tag('NOM',$ACTIVITAT->getNom()); ?> </TD>
-                  <TR><TD class="LINIA"> Estat </TD><TD><?=select_tag('ESTAT',options_for_select(array('P'=>'PreReserva','A'=>'Activa')),$ACTIVITAT->getEstat()); ?></TD>
-                  <TR><TD class="LINIA"> Projecte </TD><TD><?=select_tag('CICLE',options_for_select(CiclesPeer::getSelect()),$ACTIVITAT->getCiclesCicleid()); ?></TD>
-                  <TR><TD class="LINIA"> Format </TD><TD><?=select_tag('TIPUS',options_for_select(TipusactivitatPeer::getSelect(),$ACTIVITAT->getTipusactivitatIdtipusactivitat())); ?></TD>                  
-                  <TR><TD class="LINIA"> Preu </TD><TD> <?=input_tag('PREU',$ACTIVITAT->getPreu()); ?> </TD>
-                  <TR><TD class="LINIA"> Preu reduït </TD><TD> <?=input_tag('PREUREDUIT',$ACTIVITAT->getPreureduit()); ?> </TD>
-                  <TR><TD class="LINIA"> Publicable </TD><TD> <?=checkbox_tag('PUBLICABLE',true,$ACTIVITAT->getPublicable()); ?> </TD>                                   
-                  <TR><TD class="LINIA"></TD><TD><?php echo submit_tag('GUARDA',array('name'=>'BGUARDAA')); ?> </TD>                                              
-                </TABLE>                                          
-              </TD>
-        </TR>
-      </TABLE>
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
+	 	<div class="REQUADRE">
+	 		<div class="MENU"><?php menu(1,$MODE['EDICIO']); ?></div>	 		
+	    	<table class="FORMULARI" width="600px">                  			    	
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <?=$FActivitat?>                								
+                <tr>
+                	<td></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>	            		
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
+	            </tr>                	 
+      		</table>      		
+      	</div>
+     </form>         
     
-    
-  <?php ELSEIF( $HORARIS ): ?>    
+  <?php ELSEIF( $MODE['HORARIS'] ): ?>
+  
+	<DIV class="REQUADRE">
+		<DIV class="TITOL">Horaris actuals</DIV>
+      	<TABLE class="DADES">
+ 			<? if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
+			<? foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais(); ?>			
+				<TR>
+					<TD class="<?php $PAR ?>" width=""><?=link_to($H->getHorarisid(),'gestio/gActivitats?IDH='.$H->getHorarisid())?></TD>
+					<TD class="<?php $PAR ?>" width=""><?=$H->getDia('d/m/Y')?></TD>
+					<TD class="<?php $PAR ?>" width=""><?=$H->getHorapre('H:m') ?></TD>
+					<TD class="<?php $PAR ?>" width=""><?=$H->getHorainici('H:m') ?></TD>
+					<TD class="<?php $PAR ?>" width=""><?=$H->getHorafi('H:m') ?></TD>
+					<TD class="<?php $PAR ?>" width=""><?=$H->getHorapost('H:m') ?></TD>
+					<TD class="<?php $PAR ?>" width=""><? foreach($HE as $HESPAI) { if(is_object($HESPAI->getEspais())) echo $HESPAI->getEspais()->getNom().'<br />'; } ?></TD>
+					<TD class="<?php $PAR ?>" width=""><? foreach($M as $MATERIAL) { if(is_object($MATERIAL->getMaterial())) echo $MATERIAL->getMaterial()->getNom().'<br />'; } ?></TD>
+				</TR>
+			<? endforeach; ?>                        	
+    	</TABLE>      
+	</DIV>
+
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
+	 	<div class="REQUADRE">	 		
+	 		<DIV class="TITOL">Edició horaris</DIV>
+	    	<table class="FORMULARI" width="550x">                  			    	
+	    	<tr><td width="100px"></td><td width="450x"></td></tr>
+               	<?=$FHorari?>
+                <tr>
+                	<td></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>	            		
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
+	            </tr>                	 
+      		</table>      		
+      	</div>
+     </form>         
+  
+  
+      
+  <?php ELSEIF( $MODE['HORARIS2'] ): ?>    
 
 	<TABLE class="BOX">
         <TR><TD class="NOTICIA">                
@@ -207,7 +239,7 @@
       
             
       
-  <?php ELSEIF( $TEXTOS ): ?>
+  <?php ELSEIF( $MODE['TEXTOS'] ): ?>
       
       <?php echo input_hidden_tag('IDA',$IDA); ?>
       <TABLE class="BOX">
@@ -243,7 +275,7 @@
         </TR>
       </TABLE>
 
-  <?php ELSEIF( $CICLES ): ?>
+  <?php ELSEIF( $MODE['CICLES'] ): ?>
       
       <?php echo input_hidden_tag('IDA',$IDA); ?>
       <TABLE class="BOX">
@@ -265,49 +297,46 @@
         </TR>
       </TABLE>      
     
-  <?php ELSEIF( $LLISTA ): ?>
+  <?php ELSEIF( $MODE['LLISTA'] ): ?>
 
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Llistat d'activitats</DIV>
-                <TABLE class="DADES">
-                <?php                 
 
-                  if(sizeof($ACTIVITATS) == 0):
-                    echo '<TR><TD class="LINIA" colspan="5">No s\'ha trobat cap activitat.</TD></TR>'; 
-                  endif;
-                  
-                  $i = 1;
-                  foreach($ACTIVITATS as $A):      					                 
-                  	if($i > 10*($PAGINA-1) && $i <= (10*($PAGINA-1)+10)  ):
-                  		$AVIS = ""; $ESP = ""; $MAT = "";	
-                  		if(!empty($A['ESPAIS'])) $ESP = implode("<br />",$A['ESPAIS']);
-                  		if(!empty($A['MATERIAL'])) $MAT = implode("<br />",$A['MATERIAL']);                  		 
-                  		if(strlen($A['AVIS'])>2) { $AVIS = link_to( image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span>',"#",array('class'=>'tt2')); } else { $AVIS = ""; }                     
-                  		echo '<TR>';                      	
-	                  	echo '<TD class="LINIA">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats'.getPar($CERCA , $PAGINA , $A['ID'] , 'E' , null , null , null , $DATAI )).$AVIS.'</TD>';
-	                    echo '<TD class="LINIA">'.$A['DIA'].'</TD>';
-	                  	echo '<TD class="LINIA">'.$A['HORA_INICI'].'</TD>';
-	                    echo '<TD class="LINIA">'.$ESP.'</TD>';
-	                    echo '<TD class="LINIA">'.$MAT.'</TD>';						            
-	                    echo '</TR>';
-                    endif;
-                    $i++;
-                  endforeach;   
-                  $sof = sizeof($ACTIVITATS);
-                  $TALL = intval($sof/20)+1;
+     <DIV class="REQUADRE">
+        <DIV class="TITOL">Llistat d'activitats </DIV>
+      	<TABLE class="DADES">
+ 			<? if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; ?>
+ 			<?php $i = 0; $j=0; $Tall = 10; ?> 			   			
+			<? foreach($ACTIVITATS as $A):			
+                  if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
+                    
+                  	$AVIS = ""; $ESP = ""; $MAT = "";	
+                  	if(!empty($A['ESPAIS'])) $ESP = implode("<br />",$A['ESPAIS']);
+                  	if(!empty($A['MATERIAL'])) $MAT = implode("<br />",$A['MATERIAL']);                  		 
+                  	if(strlen($A['AVIS'])>2) { $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; } else { $AVIS = ""; }
+                  	$PAR = ParImpar($j++);                  	
+                  	?>                     
+                  	<TR>                      	
+	               		<TD class="<?=$PAR?>"><?=link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CA&IDA='.$A['ID']).$AVIS ?> </TD>
+	                	<TD class="<?=$PAR?>"> <?=$A['DIA']?> </TD>
+	               		<TD class="<?=$PAR?>"> <?=$A['HORA_INICI']?> </TD>
+	                	<TD class="<?=$PAR?>"> <?=$ESP?> </TD>
+	                	<TD class="<?=$PAR?>"> <?=$MAT?> </TD>						            
+	                </TR>
+                   <? endif;
+                   $i++;
+			 endforeach; 
+			 
+			 $sof = sizeof($ACTIVITATS);			 
+                  $TALL = intval($sof/$Tall)+1;                  
                   if($TALL > 1):
-	                  echo '<TR><TD class="LINIA" colspan="5" align="CENTER">';	                                                     
-	                  for($i = 1; $i < $TALL ; $i++ ):
-	                  	echo link_to("pàg ".$i." - ",'gestio/gActivitats'.getPar($CERCA , $i , $IDA , 'C' , $ANY , $MES , NULL , $DATAI ));                  	
+	                  ?><TR><TD class="LINIA" colspan="5" align="CENTER"><?	                                                     
+	                  for($i = 1; $i <= $TALL ; $i++ ):
+	                  	echo link_to("pàg ".$i." - ",'gestio/gActivitats?PAGINA='.$i);                  	
 	                  endfor;
-                  	echo '</TD></TR>';
+                  	 ?></TD></TR><?
                   endif;
-                ?>
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
+                ?>            	
+      	</TABLE>      
+      </DIV>
 
   <?php ENDIF; ?>
   
@@ -326,22 +355,22 @@
 
 <?php 
 
-function menu($seleccionat = 1,$ACTIVITAT,$edicio = true)
+function menu($seleccionat = 1,$edicio = true)
 {     
       if($edicio): 
-	    if($seleccionat == 1) echo '<TD class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=E&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';
-	    else  echo '<TD class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=E&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';             
-        if($seleccionat == 2) echo '<TD class="SUBMEN1">'.link_to('Horaris','gestio/gActivitats?accio=H&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';
-        else echo '<TD class="SUBMEN">'.link_to('Horaris','gestio/gActivitats?accio=H&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';
-        if($seleccionat == 3) echo '<TD class="SUBMEN1">'.link_to('Descripció','gestio/gActivitats?accio=T&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';
-        else echo '<TD class="SUBMEN">'.link_to('Descripció','gestio/gActivitats?accio=T&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';
-        if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';
-        else echo '<TD class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC&IDA='.$ACTIVITAT->getActivitatid()).'</TD>';        
+	    if($seleccionat == 1) echo '<SPAN class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</SPAN>';
+	    else  echo '<SPAN class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</SPAN>';             
+        if($seleccionat == 2) echo '<TD class="SUBMEN1">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</SPAN>';
+        else echo '<SPAN class="SUBMEN">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</SPAN>';
+        if($seleccionat == 3) echo '<TD class="SUBMEN1">'.link_to('Descripció','gestio/gActivitats?accio=T').'</SPAN>';
+        else echo '<SPAN class="SUBMEN">'.link_to('Descripció','gestio/gActivitats?accio=T').'</SPAN>';
+        if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';
+        else echo '<SPAN class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';        
       else:
-        if($seleccionat == 1) echo '<TD class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</TD>';
-	    else  echo '<TD class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</TD>';
-	    if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</TD>';
-        else echo '<TD class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</TD>';                             
+        if($seleccionat == 1) echo '<TD class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</SPAN>';
+	    else  echo '<SPAN class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</SPAN>';
+	    if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';
+        else echo '<SPAN class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';                             
       endif;
 }
 
@@ -363,12 +392,13 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 }
 
 
-  function llistaCalendariH($mes = null, $year = null, $CERCA = NULL, $CALENDARI = NULL, $DATAI = NULL, $PAGINA , $IDA , $ACCIO )
+  function llistaCalendariH($DATAI, $CALENDARI)
   {
     
-    //Agafo un mes... marco els dies blanc i començo a escriure
-    if($mes==null) $mes = date("m",time());
-    if($year == NULL) $year = date('Y',time());        
+    //Inicialitzem variables i marquem els dies en blanc
+    $mes  = date('m',$DATAI);
+    $year = date('Y',$DATAI);
+              
     $mesI = $mes; $any = $year;
     $mesF = date('m',mktime(0,0,0,$mes+3,1,$year));
     if($mesF > 12) $mesF = $mesF-12;      
@@ -381,7 +411,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
     
     for($mes = $mesI; $mes < $mesF; $mes++):
       
-      $dies = cal_days_in_month(CAL_GREGORIAN, $mes, $any );                            //Mirem quants dies té el mes      
+      $dies = cal_days_in_month(CAL_GREGORIAN, $mes, $any );                           //Mirem quants dies té el mes      
       $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mes , 1 , $any) , 0 );       //Marquem quants blancs volem tenir      
       if($diaSetmana == 0) $blancs = 6-1; else  $blancs = $diaSetmana-2;
       
@@ -398,7 +428,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
           $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mes , $diaA , $any) , 0 );
           if( $diaSetmana == 6 || $diaSetmana == 0) $background="beige"; else $background = "white"; 
           
-          $CalDia = date('Y-m-d',mktime(0,0,0,$mes,$diaA,$any));
+          $CalDia = mktime(0,0,0,$mes,$diaA,$any);
           $SPAN = ""; $color = "";
           
           if(isset($CALENDARI[$CalDia])) { $SELECCIONAT = "SELECCIONAT";
@@ -407,7 +437,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
             $SPAN .= '</span>';
           } else { $SELECCIONAT = ""; }
                                         
-          $RET .= '<TD class="DIES" style="background-color:'.$background.';">'.link_to($diaA.$SPAN,"gestio/gActivitats".getPar($CERCA , $PAGINA , $IDA , 'C' , $any , $mes , $diaA , $DATAI ) , array('class'=>"tt2 $SELECCIONAT")).'</TD>';
+          $RET .= '<TD class="DIES" style="background-color:'.$background.';">'.link_to($diaA.$SPAN,"gestio/gActivitats?accio=CD&DIA=".$CalDia , array('class'=>"tt2 $SELECCIONAT")).'</TD>';
           
         endif;    
       endfor;
@@ -420,18 +450,31 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
       
   }
 
-  function getSelData($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY = NULL , $MES = NULL , $DIA = NULL , $DATAI = NULL)
+  function ParImpar($i)
+{
+	if($i % 2 == 0) return "PAR";
+	else return "IPAR";
+}
+  
+  
+  /**
+   * A partir d'una DataI generem els enllaços del menú
+   * @param time() $DATAI
+   * @return string
+   */
+  
+  function getSelData($DATAI = NULL)
   {
-  	 $DATA = explode("-",$DATAI);
-     $MES = intval($DATA[1]); 
-     $ANY = intval($DATA[0]);     
+
+     $MES = date('m',$DATAI); 
+     $ANY = date('Y',$DATAI);            
      
      $RET = "";
-     $RET = link_to($ANY-1,'gestio/gActivitats'.getPar($CERCA , $PAGINA , $IDA , $ACCIO , $ANY , $MES , $DIA , date('Y-m-d',mktime(0,0,0,1,1,$ANY-1))),array('class'=>'black'))." ";
+     $RET = link_to($ANY-1,'gestio/gActivitats?DATAI='.mktime(0,0,0,1,1,$ANY-1),array('class'=>'black'))." ";
      for($any = $ANY ; $any < $ANY+2 ; $any++ ):
-     	$RET .= link_to($any,'gestio/gActivitats'.getPar($CERCA , $PAGINA , $IDA , $ACCIO , $ANY , $MES , $DIA , date('Y-m-d',mktime(0,0,0,1,1,$any))),array('class'=>'black'))." ";
+     	$RET .= link_to($any,'gestio/gActivitats?DATAI='.mktime(0,0,0,1,1,$any),array('class'=>'black'))." ";
      	for($mes = 1; $mes < 13; $mes++):
-     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats".getPar($CERCA , $PAGINA , $IDA , $ACCIO , $ANY , $MES , $DIA , date('Y-m-d',mktime(0,0,0,$mes,1,$any)) ),array('class'=>'black'))." ";
+     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats?DATAI=".mktime(0,0,0,$mes,1,$any),array('class'=>'black'))." ";
      	endfor;     
      endfor;
       
