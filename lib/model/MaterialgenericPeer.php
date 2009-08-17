@@ -24,6 +24,21 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
       
   }
   
+  static public function selectAjax()
+  {
+    $C = new Criteria();
+    $C->addAscendingOrderByColumn(self::NOM);
+    $MG = self::doSelect($C);
+    $RET = '<option value="-1">Escull...</option>';
+    foreach($MG as $M):
+      $RET .= '<option value="'.$M->getIdmaterialgeneric().'">'.$M->getNom().'</option>';      
+    endforeach;
+    
+    return $RET;    
+      
+  }
+  
+  
   static public function selectMaterial()
   {
     $MG = self::doSelect(new Criteria());

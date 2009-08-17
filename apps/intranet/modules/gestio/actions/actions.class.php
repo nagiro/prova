@@ -749,6 +749,20 @@ class gestioActions extends sfActions
   
   }
   
+  
+  public function executeSelectMaterial(sfWebRequest $request)
+  {
+  	
+  	$C = new Criteria();
+  	$C->add(MaterialPeer::MATERIALGENERIC_IDMATERIALGENERIC, $request->getParameter('id'));
+  	$RESPOSTA = array(0=>array('key'=>-1,'value'=>0));  	
+  	foreach(MaterialPeer::doSelect($C) as $M) $RESPOSTA[] = array('key'=>$M->getIdmaterial() ,'value'=>$M->getIdentificador().'-'.$M->getNom());
+  	$RESPOSTA[0]['value'] = (sizeof($RESPOSTA)-1).' resultats.';  	  	  
+    $this->getResponse()->setContent(json_encode($RESPOSTA));
+    return sfView::NONE;
+    
+  }
+  
   public function executeGActivitats(sfWebRequest $request)
   {
 
@@ -760,8 +774,9 @@ class gestioActions extends sfActions
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $this->DATAI  = $this->ParReqSesForm($request,'DATAI',time());    
     $this->DIA    = $this->ParReqSesForm($request,'DIA',time());
-    $this->IDA    = $this->ParReqSesForm($request,'IDA',0);    
-    $accio  = $this->ParReqSesForm($request,'accio','C');    
+    $this->IDA    = $this->ParReqSesForm($request,'IDA',0);        
+    $accio  = $this->ParReqSesForm($request,'accio','C');
+    $this->ACTIVITAT_NOVA = false;    
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
@@ -772,10 +787,12 @@ class gestioActions extends sfActions
 
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $accio = 'C'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NC';
+	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NA';
 	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';
 	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
 	    elseif($request->hasParameter('BSAVEACTIVITAT')) $accio = 'CH';
+	    elseif($request->hasParameter('BSAVEHORARIS_x')) $accio = 'SH';
+	    elseif($request->hasParameter('BDELETEHORARIS')) $accio = 'DH';
     }                
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
@@ -786,9 +803,8 @@ class gestioActions extends sfActions
     $this->getUser()->setAttribute('accio',$accio);    
     $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova
     $this->getUser()->setAttribute('DATAI',$this->DATAI);  
-    $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre és 3 mesos superior a la inicial
-        
-    
+    $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre és 3 mesos superior a la inicial    
+   
     switch($accio){
     	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
@@ -807,23 +823,49 @@ class gestioActions extends sfActions
                 $this->MODE['CONSULTA'] = true;
                 $this->MODE['LLISTA'] = true;                                     
     		break;
-    	case 'CA':
-    			$this->getUser()->setAttribute('IDA',$request->getParameter('IDA'));
-    			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
+    	//Constulta una activitat
+    	case 'CA':    			
+    			$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);    			
     			$this->FActivitat = new ActivitatsForm($OActivitat);
     			$this->MODE['EDICIO'] = true;
     		break;
-    		
+
+    	//Consulta els horaris
     	case 'CH':
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));    			
     			$this->HORARIS = $OActivitat->getHorariss();
     			$this->MODE['HORARIS'] = true;
+    			$this->FHorari = new HorarisForm(new Horaris());
+    			$this->HORARI = new Horaris();    			
     			if($request->hasParameter('IDH')):
-    				$H = HorarisPeer::retrieveByPK($request->getParameter('IDH'));
+    				$H = HorarisPeer::retrieveByPK($request->getParameter('IDH'));    				
     				$this->FHorari = new HorarisForm($H);
+    				$this->HORARI  = $H;
     			endif;    		    		
     		break;
+
+    	//Save Horaris
+    	case 'SH':
+    			$OHoraris = $request->getParameter('horaris');
+    			$this->VerificaHoraris($request->getParameter('horaris'),$request->getParameter('material'));
+    			    			
+    		break;
+
+    	//Delete Horaris
+    	case 'DH':
+    			$OHoraris = $request->getParameter('horaris');
+    			
+    		break;
     		
+
+    		
+    	case 'NA':    			
+    			$OActivitat = new Activitats();    			
+    			$this->FActivitat = new ActivitatsForm($OActivitat);    			
+    			$this->MODE['NOU'] = true;
+    			$this->ACTIVITAT_NOVA = true;
+    		break;
+    			
     	case 'EH':
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));    			
     			$this->HORARIS = $OActivitat->getHorariss();
@@ -831,11 +873,7 @@ class gestioActions extends sfActions
 
     		break;
     		
-    	case 'NC':    			
-    			$OCurs = new Cursos();    			
-    			$this->FCurs = new CursosForm($OCurs);    			
-    			$this->MODE['NOU'] = true;
-    		break;
+    	
     	case 'E':    			
     			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
     			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
@@ -865,6 +903,15 @@ class gestioActions extends sfActions
 			break;
     }
   
+  }
+
+  
+  public function VerificaHoraris($horaris , $material)
+  {
+  	print_r($horaris);
+  	print_r($material);
+  
+    
   }
   
 /*  

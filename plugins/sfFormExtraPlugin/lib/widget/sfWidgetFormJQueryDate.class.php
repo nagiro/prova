@@ -100,6 +100,8 @@ class sfWidgetFormJQueryDate extends sfWidgetFormDate
 
   jQuery(document).ready(function() {
     jQuery("#%s").datepicker(jQuery.extend({}, {
+      flat: true,
+      mode: 'multiple',
       minDate:    new Date(%s, 1 - 1, 1),
       maxDate:    new Date(%s, 12 - 1, 31),
       beforeShow: wfd_%s_read_linked,

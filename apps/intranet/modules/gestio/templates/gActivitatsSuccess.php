@@ -1,5 +1,9 @@
 <?php use_helper('Form') ?>
 <?php use_helper('Javascript')?>
+<?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick.js')?>
+<?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick-ca.js')?>
+
+
 <STYLE>
 .CALENDARI { font-size: 8px; }
 .CALENDARI A { text-decoration:none; color:black; }
@@ -19,7 +23,60 @@
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
-       
+
+	<script type="text/javascript">
+
+	function jq(myid)
+	  { return '#'+myid.replace(/:/g,"\\:").replace(/\./g,"\\.");}
+	
+	 $(document).ready(function() {	
+		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1
+		 ajax($("#generic\\[1\\]"),1);												//Inicialitzem la segona llista pel primer valor							
+		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari		 	 
+	 });
+
+	 //Funció que controla la crida AJAX 
+	function ajax(d, iCtrl)
+	{
+												
+		$.getJSON(
+				 "<?=url_for('gestio/selectMaterial') ?>",						//Url que visita 
+				 { id: d.value }, 												//Valor seleccionat a la primera llista
+				 function(data,textStatus) { updateJSON( data, textStatus, iCtrl );  } //Carreguem les dades JSON
+				);
+	}
+
+
+	function updateJSON(data, textStatus, iCtrl ){		
+		var options = "";						
+		for (var i = 0; i < data.length; i++) {
+	        options += '<option value="' + data[i].key + '">' + data[i].value + '</option>';				
+		}						
+								
+		$("select#material\\["+iCtrl+"\\]").html(options);								//Actualitzem el control iCtrl
+	}
+
+	function creaFormMaterial()
+	{
+		
+		var id = $("#id").val();
+		id = (parseInt(id) + parseInt(1));
+		$("#id").val(id);
+		
+		var options = '<?=MaterialgenericPeer::selectAjax(); ?>';
+		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></spa n>');
+		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer
+																			
+	}
+
+	function esborraLinia(id)
+	{	
+		$("row\\["+id+"\\]").remove();
+	}
+	
+	</script>
+	           
+        
   <?php IF ($MODE['CONSULTA']): ?>
 
 	<form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
@@ -35,7 +92,6 @@
 	        </table>
 	     </DIV>
      </form>  
-      
     
       <TABLE class="BOX">
         <TR><TD class="NOTICIA">                
@@ -53,9 +109,10 @@
 
   <?php ENDIF; IF( $MODE['NOU'] || $MODE['EDICIO'] && !$MODE['CICLES'] ): ?>
       
+      <?php menu(1,$ACTIVITAT_NOVA); ?>
+      
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
-	 	<div class="REQUADRE">
-	 		<div class="MENU"><?php menu(1,$MODE['EDICIO']); ?></div>	 		
+	 	<div class="REQUADRE">	 			 		
 	    	<table class="FORMULARI" width="600px">                  			    	
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?=$FActivitat?>                								
@@ -73,6 +130,7 @@
     
   <?php ELSEIF( $MODE['HORARIS'] ): ?>
   
+    <?php menu(2,$ACTIVITAT_NOVA); ?>
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Horaris actuals</DIV>
       	<TABLE class="DADES">
@@ -92,153 +150,51 @@
     	</TABLE>      
 	</DIV>
 
+<script type="text/javascript">
+	$(function() {
+               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?=image_path('template/calendar_1.png')?>'});               			
+    });   
+</script>
+	 
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
 	 	<div class="REQUADRE">	 		
 	 		<DIV class="TITOL">Edició horaris</DIV>
 	    	<table class="FORMULARI" width="550x">                  			    	
 	    	<tr><td width="100px"></td><td width="450x"></td></tr>
+
                	<?=$FHorari?>
+             
+             <tr>
+             	<td>Material: </td><td>
+             		<input type="button" id="mesmaterial" value="+"></input><br />
+             		
+             		<? 	$j=0; ?>
+             		<? 	foreach($HORARI->getMaterials() as $M): ?>
+             		<?php print_r($M); ?>         			             		             		                       		
+             		<?php endforeach; ?>
+             		
+             		<span id="row[1]">             			    
+					    <select onChange="ajax(this,1)" name="generic[1]" id="generic[1]"><?=MaterialgenericPeer::selectAjax(); ?></select>
+					    <select name="material[1]" id="material[1]"></select>
+					    <input type="button" onClick="esborraLinia(1);" id="mesmaterial" value="-"></input>
+				    </span>				    				   
+   					<input type="hidden" id="id" value="1"></input>   					
+				    <div id="divTxt"></div>   
+             		
+             	</td>
+             </tr>  				
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats',array('name'=>'BDELETEHORARI','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</table>      		
       	</div>
      </form>         
-  
-  
-      
-  <?php ELSEIF( $MODE['HORARIS2'] ): ?>    
-
-	<TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Gestor d'horaris</DIV>
-                <TABLE class="NOTICIA" width="100%">
-                <?php
-                     if(!empty($ERRORS)):
-	                     echo '<TR>';
-	                     echo "<TD class=\"ERRORS LINIA_ERROR\" colspan=\"8\">"; foreach($ERRORS as $E){ echo $E.'<BR />'; } echo '</TD>';
-	                     echo '</TR>';   
-	                 endif;          
-                 ?>
-                  <TR>
-                  	<TD colspan="4" class="TITOL">Avís<BR /><?php echo input_tag('D[AVIS]',$D['AVIS'],array('style'=>"width:400px;")); ?></TD>
-                  	<TD colspan="1" class="TITOL">Espectadors<BR><?php echo input_tag('D[ESPECTADORS]',$D['ESPECTADORS'],array('style'=>"width:40px;")); ?></TD></TR>
-                  <TR>
-                  	<TD class="TITOL">Dia</TD>
-                  	<TD class="TITOL">Muntatge</TD>
-                  	<TD class="TITOL">Inici</TD>
-                  	<TD class="TITOL">Finalització</TD>
-                  	<TD class="TITOL">Desmuntatge</TD>
-                  </TR>
-                  <TR>
-                    <TD class="LINIA">
-                    	<input type="text" name="D[DIA]" id="calendari" value="<?php echo $D['DIA']; ?>" size="12" style="width:80px;" /><button type="button" disabled=disabled onclick="return false" id="trigger">...</button>
-                    	<!-- <?php input_date_tag('hola','',array('rich'=>true)); ?> Això només hi és per a què carregui el jscalendar :D -->                    
-					</TD>
-					<TD class="LINIA"><?php echo input_tag('D[HORAPRE]',$D['HORAPRE'],array('style'=>"width:40px;")); ?> </TD>
-					<TD class="LINIA"><?php echo input_tag('D[HORAIN]',$D['HORAIN'],array('style'=>"width:40px;")); ?> </TD>
-					<TD class="LINIA"><?php echo input_tag('D[HORAFI]',$D['HORAFI'],array('style'=>"width:40px;")); ?> </TD>
-					<TD class="LINIA"><?php echo input_tag('D[HORAPOST]',$D['HORAPOST'],array('style'=>"width:40px;")); ?></TD>
-				  </TR>
-				  <TR>
-					<TD class="TITOL" colspan="2">Espais</TD><TD class="TITOL" colspan="3">Material</TD>
-				  </TR>
-				  <TR>                    					
-                    	<?php
-
-                    	   echo '<TD colspan="2" class="LINIA" id="field">';
-                    	   
-                    	   //Guardem l'idH si n'hi ha per saber que hem fet una edició
-                    	   if(!empty($D['idH'])) echo input_hidden_tag('D[idH]',$D['idH']);
-                    	   
-                    	   $OFS = EspaisPeer::select();
-                    	               	
-                    	   for( $i=0 ; $i < sizeof($D['ESPAIS']) ; $i++ ):                    			 
-						      echo select_tag("D[ESPAIS][$i]" , options_for_select($OFS , $D['ESPAIS'][$i] , array('include_blank' => true)) , array('multiple'=>false , 'class'=>'CENT')).'<BR>'; 
-						   endfor;							
-						   if(!empty($D['ESPAIS'])) echo select_tag("D[ESPAIS][$i]" , options_for_select($OFS , NULL , array('include_blank' => true)) , array('multiple'=>false , 'class'=>'CENT')).'<BR>';
-						   else echo select_tag("D[ESPAIS][$i]" , options_for_select($OFS , NULL , array('include_blank' => true)) , array('multiple'=>false , 'class'=>'CENT')).'<BR>';
-							
-						   echo '</TD>';					                    
-							
-		                   echo '<TD colspan="3" class="LINIA">';
-		                   $OFS = MaterialgenericPeer::selectMaterial();
-		                   for( $i=0 ; $i < sizeof($D['MATERIAL']) ; $i++ ):                    			 
-						      echo select_tag("D[MATERIAL][$i]" , options_for_select($OFS , $D['MATERIAL'][$i] , array('include_blank' => true)) , array('multiple'=>false , 'class'=>'CENT')).'<BR>'; 
-						   endfor;
-						   if(!empty($D['MATERIAL'])) echo select_tag("D[MATERIAL][$i]" , options_for_select($OFS , NULL , array('include_blank' => true)) , array('multiple'=>false , 'class'=>'CENT')).'<BR>';
-						   else echo select_tag("D[MATERIAL][$i]" , options_for_select($OFS , NULL , array('include_blank' => true)) , array('multiple'=>false , 'class'=>'CENT')).'<BR>'; 							
-						   echo '</TD>';
-						                       							
-						?>
-                  </TR>                  
-                  <TR><TD colspan="5"><?php 
-                  				echo submit_tag('+',array('name'=>'BAFEGIRESPAI'));
-                                echo submit_tag('Verifica',array('name'=>'BVERIFICA'));
-                                if(isset($D['idH'])) echo submit_tag('Elimina',array('name'=>'BELIMINA'));
-                      ?></TD></TR>
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
-
-      
-      <TABLE class="BOX">
-                <TR><TD class="NOTICIA_MENU"><TABLE CLASS="SUBMEN"><TR><?php menu(2,$ACTIVITAT); ?></TR></table></TD></TR>                
-        <TR><TD class="NOTICIA">
-        	    <?php echo input_hidden_tag('accio','VH'); ?>
-                <?php echo input_hidden_tag('IDA',$IDA); ?>
-                <TABLE class="DADES">
-                  <?php 
-                          
-                      $i = 0;
-                      foreach($LINIES as $K=>$L):
-                                                                        
-                          if(isset($L['idH'])) echo input_hidden_tag("L[$i][idH]",$L['idH']);
-                          echo input_hidden_tag("L[$i][DIA]",$L['DIA']);
-                          echo input_hidden_tag("L[$i][HORAPRE]",$L['HORAPRE']);
-                          echo input_hidden_tag("L[$i][HORAIN]",$L['HORAIN']);
-                          echo input_hidden_tag("L[$i][HORAFI]",$L['HORAFI']);
-                          echo input_hidden_tag("L[$i][HORAPOST]",$L['HORAPOST']);
-                          echo input_hidden_tag("L[$i][AVIS]",$L['AVIS']);
-                          echo input_hidden_tag("L[$i][ESPECTADORS]",$L['ESPECTADORS']);
-                          foreach($L['ESPAIS'] AS $E) { echo input_hidden_tag("L[$i][ESPAIS][]",$E); }                          
-                          foreach($L['MATERIAL'] as $M) { echo input_hidden_tag("L[$i][MATERIAL][]",$M); }                                                                                                                             
-                                                                                                                                    
-                          $class = "LINIA";
-                          echo '<TR>';                          
-                          
-                          echo "<TD class=\"$class\">".$L['DIA'].'</TD>';
-                          echo "<TD class=\"$class\">".$L['HORAPRE'].'</TD>';
-                          echo "<TD class=\"$class\">".$L['HORAIN'].'</TD>';
-                          echo "<TD class=\"$class\">".$L['HORAFI'].'</TD>';
-                          echo "<TD class=\"$class\">".$L['HORAPOST'].'</TD>';
-                          echo "<TD class=\"$class\">"; foreach($L['ESPAIS'] AS $E) { if($E>0) echo EspaisPeer::retrieveByPK($E)->getNom(); echo "<BR />"; } echo '</TD>';                          
-                          echo "<TD class=\"$class\">"; foreach($L['MATERIAL'] as $M) { if($M>0) echo MaterialPeer::retrieveByPK($M)->getNom(); echo "<br />"; } echo '</TD>';
-                          echo "<TD class=\"$class\">"; echo radiobutton_tag("REDICIO",$i,($REDICIO==$i)?true:false); echo '</TD>';                                                                                  
-                          echo '</TR>';                        
-                          
-                          $i++;                                                                                              
-                                                                                              
-                      endforeach;                      
-                  ?>        
-                       
-                       
-                       <TR><TD class="LINIA" colspan="7"><?php echo submit_tag('FINALITZA',array('name'=>'BGUARDAH','width'=>'100%')); ?></TD>
-                       	   <TD class="LINIA" colspan="1"><?php echo submit_tag('Edita',array('name'=>'BEDITAH','style'=>'width:50px')); ?></TD>
-                       </TR>                                                                                                             
-                </TABLE>                                          
-              </TD>
-        </TR>
-      </TABLE>
-      
-            
-      
+    
   <?php ELSEIF( $MODE['TEXTOS'] ): ?>
       
       <?php echo input_hidden_tag('IDA',$IDA); ?>
@@ -355,23 +311,27 @@
 
 <?php 
 
-function menu($seleccionat = 1,$edicio = true)
+function menu($seleccionat = 1,$nova = false)
 {     
-      if($edicio): 
-	    if($seleccionat == 1) echo '<SPAN class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</SPAN>';
-	    else  echo '<SPAN class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</SPAN>';             
-        if($seleccionat == 2) echo '<TD class="SUBMEN1">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</SPAN>';
-        else echo '<SPAN class="SUBMEN">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</SPAN>';
-        if($seleccionat == 3) echo '<TD class="SUBMEN1">'.link_to('Descripció','gestio/gActivitats?accio=T').'</SPAN>';
-        else echo '<SPAN class="SUBMEN">'.link_to('Descripció','gestio/gActivitats?accio=T').'</SPAN>';
-        if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';
-        else echo '<SPAN class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';        
+	echo "<TABLE class=\"REQUADRE\"><tr>";
+		
+	if(!$nova): 
+	    if($seleccionat == 1) echo '<td class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</td>';
+	    else  echo '<td class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</td>';             
+        if($seleccionat == 2) echo '<td class="SUBMEN1">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</td>';
+        else echo '<td class="SUBMEN">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</td>';
+        if($seleccionat == 3) echo '<td class="SUBMEN1">'.link_to('Descripció','gestio/gActivitats?accio=T').'</td>';
+        else echo '<td class="SUBMEN">'.link_to('Descripció','gestio/gActivitats?accio=T').'</td>';
+        if($seleccionat == 4) echo '<td class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';
+        else echo '<td class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';        
       else:
-        if($seleccionat == 1) echo '<TD class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</SPAN>';
-	    else  echo '<SPAN class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</SPAN>';
-	    if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';
-        else echo '<SPAN class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</SPAN>';                             
+        if($seleccionat == 1) echo '<TD class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</td>';
+	    else  echo '<td class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</td>';
+	    if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';
+        else echo '<td class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';                             
       endif;
+     
+     echo "</tr></table>";
 }
 
 
@@ -532,50 +492,3 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 
 
 ?>
-
-<script type="text/javascript">
-  //
-    // the default multiple dates selected, first time the calendar is instantiated
-    var MA = [];
-
-    function closed(cal) {
-
-      // here we'll write the output; this is only for example.  You
-      // will normally fill an input field or something with the dates.
-      var el = document.getElementById("calendari");
-
-      // reset initial content.
-      el.innerHTML = "";
-      el.value = "";
-      // Reset the "MA", in case one triggers the calendar again.
-      // CAREFUL!  You don't want to do "MA = [];".  We need to modify
-      // the value of the current array, instead of creating a new one.
-      // Calendar.setup is called only once! :-)  So be careful.
-      MA.length = 0;
-
-      // walk the calendar's multiple dates selection hash
-      for (var i in cal.multiple) {
-        var d = cal.multiple[i];
-        // sometimes the date is not actually selected, that's why we need to check.
-        if (d) {
-          // OK, selected.  Fill an input field.  Or something.  Just for example,
-          // we will display all selected dates in the element having the id "output".
-          el.value += d.print("%Y-%m-%d") + " ";
-
-          // and push it in the "MA", in case one triggers the calendar again.
-          MA[MA.length] = d;
-        }
-      }
-      cal.hide();
-      return true;
-    };
-
-    document.getElementById("trigger").disabled = false;
-    Calendar.setup({
-      align      : " ",
-      showOthers : true,
-      multiple   : MA, // pass the initial or computed array of multiple dates to be initially selected
-      onClose    : closed,
-      button     : "trigger"
-    });
-  </script>

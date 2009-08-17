@@ -15,10 +15,10 @@ class HorarisForm extends sfFormPropel
     $this->setWidgets(array(
       'HorarisID'              => new sfWidgetFormInputHidden(),
       'Activitats_ActivitatID' => new sfWidgetFormInputHidden(),
-//      'Dia'                    => new sfWidgetformJQueryDate(array('image'=>FormDate(),
+      'Dia'                    => new sfWidgetFormInput(array(),array('id'=>'multi999Datepicker','style'=>'width:400px')),
+      'HoraPre'                => new sfWidgetFormTime(),
       'HoraInici'              => new sfWidgetFormTime(),
       'HoraFi'                 => new sfWidgetFormTime(),
-      'HoraPre'                => new sfWidgetFormTime(),
       'HoraPost'               => new sfWidgetFormTime(),
       'Avis'                   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
       'Espectadors'            => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
@@ -38,12 +38,22 @@ class HorarisForm extends sfFormPropel
       'Places'                 => new sfValidatorInteger(),
     ));
 
-    $this->widgetSchema['Dia']  = new sfWidgetFormJQueryDate(array('image'=>'asdf'),array()); 
+    
+    $this->widgetSchema->setLabels(array(
+      'Dia'                    => 'Dies: ',
+      'HoraInici'              => 'Hora d\'inici: ',
+      'HoraFi'                 => 'Hora finalització: ',
+      'HoraPre'                => 'Hora preparació: ',
+      'HoraPost'               => 'Hora recollida: ',
+      'Avis'                   => 'Avís: ',
+      'Espectadors'            => 'Espectadors: ',
+      'Places'                 => 'Places: ',
+    ));
+    
     
     $this->widgetSchema->setNameFormat('horaris[%s]');
 
-    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
-      
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);      
 
     parent::setup();
   }
