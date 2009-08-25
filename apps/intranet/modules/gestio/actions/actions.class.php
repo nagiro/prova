@@ -1297,7 +1297,7 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
     $this->DIES = array(); $this->ESPAIS = array();  $this->MESOS = array(); $this->DADES = array();
 
-    if($this->hasRequestParameter('CERCA_ANY')) $this->CERCA_ANY = date('Y',time());
+    if(!$this->hasRequestParameter('CERCA_ANY')) $this->CERCA_ANY = date('Y',time());
 
     $this->CERCA_ANY = $this->getRequestParameter('CERCA_ANY');
     $this->CERCA_MES = $this->getRequestParameter('CERCA_MES');

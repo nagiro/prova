@@ -171,10 +171,17 @@ class HorarisPeer extends BaseHorarisPeer
      	 WHERE ".self::HORARISID." = ".HorarisespaisPeer::HORARIS_HORARISID."
      	   AND YEAR(".self::DIA.") = '$any'          
      ";
-     $con = Propel::getConnection();
-     $stmt = $con->createStatement();
-     $rs = $stmt->executeQuery($SQL,ResultSet::FETCHMODE_ASSOC);
 
+     
+     $con = Propel::getConnection();
+     $stmt = $con->prepare($SQL);
+     $stmt->execute();
+     $rs = $stmt->fetch(PDO::FETCH_OBJ);
+
+     
+     echo $SQL;
+     print_r($rs);
+     
      while($rs->next()):
         if(isset($RET[$rs->get('mes')][$rs->get('espai')][$rs->get('activitat')]))                        
            $RET[$rs->get('mes')][$rs->get('espai')][$rs->get('activitat')] += 1;
@@ -197,9 +204,12 @@ class HorarisPeer extends BaseHorarisPeer
            AND ".HorarisespaisPeer::ESPAIS_ESPAIID." = $espai
      ";
      $con = Propel::getConnection();
-     $stmt = $con->createStatement();
-     $rs = $stmt->executeQuery($SQL,ResultSet::FETCHMODE_ASSOC);
+     $stmt = $con->prepare($SQL);
+     $stmt->execute();
+     $rs = $stmt->fetch(PDO::FETCH_OBJ);
 
+     print_r($rs);
+     
      while($rs->next()):                        
         if(isset($RET[$rs->get('mes')][$rs->get('dia')][$rs->get('activitat')]))
            $RET[$rs->get('mes')][$rs->get('dia')][$rs->get('activitat')] += 1;
