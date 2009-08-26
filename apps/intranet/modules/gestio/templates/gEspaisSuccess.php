@@ -1,3 +1,4 @@
+<?php use_helper('Form')?>
 <STYLE>
 
 #FDATA { width:80px; }
@@ -9,28 +10,33 @@
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
-    
-      <?php echo nice_form_tag('gestio/gEspais',array('method'=>'post')); ?>
-    
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                                                              
-                <DIV class="TITOL">Cerca espais</DIV>                
-                <DIV class="CERCA">
-	            	<?php echo select_tag('CERCA_ANY',options_for_select( selectAnys() , $CERCA_ANY ) , array('class'=>'cinquanta')); ?>                	
-                	<?php echo select_tag('CERCA_ESPAI',options_for_select( EspaisPeer::select() , $CERCA_ESPAI , array('include_custom'=>'Tots els espais') ) , array('class'=>'cinquanta')); ?>
-                	<?php echo select_tag('CERCA_MES',options_for_select( selectMesos() , $CERCA_MES , array('include_custom'=>'Tots els mesos')  ) , array('class'=>'cinquanta')); ?>
-                	<?php echo submit_tag('Cerca'); ?>                	                                                                 
-                </DIV>
-              </TD>
-        </TR>
-      </TABLE>
+
+
+    <form action="<?php echo url_for('gestio/gEspais') ?>" method="POST">
+	    <DIV class="REQUADRE">
+	    	<table class="FORMULARI">          
+	            <tr><td>                                                              
+                	<DIV class="TITOL">Cerca espais</DIV>                
+                	<DIV class="CERCA">
+	            		<?php echo select_tag('CERCA_ANY',options_for_select( selectAnys() , $CERCA_ANY ) , array('class'=>'cinquanta')); ?>                	
+                		<?php echo select_tag('CERCA_ESPAI',options_for_select( EspaisPeer::select() , $CERCA_ESPAI , array('include_custom'=>'Tots els espais') ) , array('class'=>'cinquanta')); ?>
+                		<?php echo select_tag('CERCA_MES',options_for_select( selectMesos() , $CERCA_MES , array('include_custom'=>'Tots els mesos')  ) , array('class'=>'cinquanta')); ?>                	                                                                 
+                	</DIV>
+              	</td></tr>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA" value="Prem per buscar" />	            		
+	            	</td>
+	            </tr>
+	        </table>
+	     </DIV>
+     </form>   
     
 <?php if(isset($DADES_MESOS_DIES)): ?>
-      
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Calendari d'activitats</DIV>
-        		<table class="DADES">
+
+      <DIV class="REQUADRE">
+        <DIV class="TITOL">Calendari d'activitats</DIV>
+      	<TABLE class="DADES">
         		<?php
         		
         		//Linia d'espais
@@ -55,18 +61,14 @@
         		endforeach;
         		echo '</TR>';                   		
         		?>
-                 </TABLE>
-                 </DIV>
-         </TD>
-         </TR>
-         </TABLE>                                                                                                                                            
+      	</TABLE>      
+      </DIV>
 
 <?php elseif(isset($DADES_MESOS_ESPAIS)): ?>
 
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Calendari d'activitats</DIV>
-        		<table class="DADES">
+      <DIV class="REQUADRE">
+        <DIV class="TITOL">Calendari d'activitats</DIV>
+      	<TABLE class="DADES">
         		<?php
         		
         		//Linia d'espais
@@ -91,11 +93,8 @@
         		endforeach;
         		echo '</TR>';                   		
         		?>
-                 </TABLE>
-                 </DIV>
-         </TD>
-         </TR>
-         </TABLE>
+      	</TABLE>      
+      </DIV>
 
 <?php endif; ?>    
   

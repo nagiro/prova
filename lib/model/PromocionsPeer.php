@@ -10,6 +10,14 @@
 class PromocionsPeer extends BasePromocionsPeer
 {
 
+  static function selectOrdre($NOU = false)
+  {
+     $RET = array();     
+     foreach(self::getAllByOrdre() as $P) $RET[$P->getOrdre()] = $P->getOrdre();     
+     if($NOU): $RET[sizeof($RET)+1] = sizeof($RET)+1; endif;
+     return $RET;
+  }
+	
   static function retrieveByOrdre($ordre = 1)
   {
     $c = new Criteria;
@@ -35,28 +43,17 @@ class PromocionsPeer extends BasePromocionsPeer
     return $rs->getInt('max');
   }
   
-  static function Reordena($Ordrei,$Ordref)
-  {  
-    
-    $C = new Criteria();
-    //Si fem un moviment amunt, haurem de desplaçar de final fins a inicial-1 amb un +1
-    //Si fem un movimetn avall, haurem de desplaçar d'incial fins a final amb un -1
-    if($Ordref < $Ordrei) $C->add(self::ORDRE, $Ordref, CRITERIA::GREATER_EQUAL); //Si volem fer un moviment cap enrrera, haurem de desplaçar tots fins a l'actual + 1
-    else                  $C->add(self::ORDRE, $Ordrei, CRITERIA::GREATER_EQUAL); //Si anem endavant, haurem de desplaçar enrrara tots de i a f (+1) i a partir de f (-1)
-                          $C->addAscendingOrderByColumn(self::ORDRE);
-    foreach(self::doSelect($C) as $P)
-    {
-      if ($Ordref <  $Ordrei && $P->getOrdre() < $Ordrei){ 
-          $P->setOrdre($P->getOrdre()+1);
-          $P->save();  
-      }
-      elseif($Ordref >= $Ordrei && $P->getOrdre() <=  $Ordref)
-      {       
-          $P->setOrdre($P->getOrdre()-1);
-          $P->save();
-      }                                 
-    }    
+  static function gestionaOrdre( $desti , $actual )
+  {   
+     foreach(self::getAllByOrdre() as $P):
+        $Ordre = $P->getOrdre();     
+	    if($actual == 0){ if($Ordre >= $desti) $P->setOrdre($Ordre+1); }            
+	    elseif($actual < $desti) { if($Ordre > $actual && $Ordre <= $desti) $P->setOrdre($Ordre-1); } 
+	    elseif($actual > $desti) { if($Ordre >= $desti && $Ordre < $actual) $P->setOrdre($Ordre+1); }	    
+	    $P->save();     
+     endforeach;
   }
- 
-
+  
+  
+  
 }

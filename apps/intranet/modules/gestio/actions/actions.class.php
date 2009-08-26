@@ -226,32 +226,31 @@ class gestioActions extends sfActions
   // GESTIO DE LES PROMOCIONS ****************************************************************
   //******************************************************************************************
   
-  public function executeGPromocions()
+  public function executeGPromocions(sfWebRequest $request)
   {
   
     $this->setLayout('gestio');
         
     $this->ERRORS = array(); $this->EDICIO = false; $this->NOU = false; $this->LLISTES = false; $this->CURSOS = false; $this->PROMOCIO = new Promocions();
     
-    if($this->getRequestParameter('accio')=='N'):      
-      $this->PROMOCIO = new Promocions();    
+    if($request->getParameter('accio')=='N'):      
+      $this->FPromocio = new PromocionsForm();
+      $this->getUser()->setAttribute('idP',0);    
       $this->NOU = true;
-    elseif($this->getRequestParameter('accio')=='E'):
-      $this->PROMOCIO = PromocionsPeer::retrieveByPK($this->getRequestParameter('idP'));
+    elseif($request->getParameter('accio')=='E'):
+      $OPromocio = PromocionsPeer::retrieveByPK($request->getParameter('IDP'));
+      $this->getUser()->setAttribute('idP',$OPromocio->getPromocioId());
+      $this->FPromocio = new PromocionsForm($OPromocio);
       $this->EDICIO = true;
-    elseif($this->getRequestParameter('accio')=='P'): //Puja
-      $this->pujaPromocio($this->getRequestParameter('idP'));
-    elseif($this->getRequestParameter('accio')=='B'): //Baixa
-      $this->baixaPromocio($this->getRequestParameter('idP'));
-    elseif($this->getRequestParameter('accio')=='D'): //Esborra
-      $this->PROMOCIO = PromocionsPeer::retrieveByPK($this->getRequestParameter('idP'));
+    elseif($request->getParameter('accio')=='D'): //Esborra
+      $this->PROMOCIO = PromocionsPeer::retrieveByPK($request->getParameter('IDP'));
       $this->PROMOCIO->delete();      
     endif;
     
-    if($this->getRequest()->hasParameter('SavePromocio')):
-      $this->RET = $this->guardaPromocio($this->getRequestParameter('idP'),$this->getRequestParameter('NOU'));
-      $this->PROMOCIO = $this->RET['PROMOCIO'];
-      $this->ERRORS = $this->RET['ERRORS'];      
+    if($request->hasParameter('BSAVE_x')):
+      $this->FPromocio = new PromocionsForm();
+      $this->FPromocio->bind($request->getParameter('promocions'),$request->getFiles('promocions'));
+      if($this->FPromocio->isValid()) $this->FPromocio->save();
       $this->EDICIO = true;      
     endif;
     
@@ -261,114 +260,47 @@ class gestioActions extends sfActions
     if(is_null($this->PROMOCIONS)) $this->PROMOCIONS = new Promocions();
         
   }
-      
-  private function pujaPromocio($idPromocio)
-  {
-    $C = new Criteria();
-    $P1 = PromocionsPeer::retrieveByPK($idPromocio);  
-    $O1 = $P1->getOrdre(); $O2 = $O1-1;
-    $C->add(PromocionsPeer::ORDRE, $O2);          
-    
-    
-    $P2 = PromocionsPeer::doSelectOne($C);
-    if(!is_null($P2)):
-      $P2->setNew(false); $P2->setOrdre($O1); $P2->save();
-      $P1->setNew(false); $P1->setOrdre($O2); $P1->save();    
-    endif;
-  }
-  
-  private function baixaPromocio($idPromocio)
-  {
-    $C = new Criteria();
-    $P1 = PromocionsPeer::retrieveByPK($idPromocio);            
-    $O1 = $P1->getOrdre(); $O2 = $O1+1;
-    $C->add(PromocionsPeer::ORDRE, $O2);
-        
-    $P2 = PromocionsPeer::doSelectOne($C);
-    if(!is_null($P2)):
-      $P2->setNew(false); $P2->setOrdre($O1); $P2->save();
-      $P1->setNew(false); $P1->setOrdre($O2); $P1->save();
-    endif;
-  }
-    
-  private function guardaPromocio($idPromocions, $NOU)
-  {
-    $P = new Promocions();
-
-    if($NOU):    
-      $MAX = PromocionsPeer::getMaximOrdre();
-      $P->setOrdre($MAX);
-    else:
-      $P = PromocionsPeer::retrieveByPK($idPromocions); 
-      $P->setNew(false);
-    endif;    
-                    
-    $P->setNom($this->getRequestParameter('NOM'));                		
-    $P->setIsactiva($this->getRequestParameter('ISACTIVA'));    
-    $P->setIsfixa($this->getRequestParameter('ISFIXA'));
-    $P->setUrl($this->getRequestParameter('URL'));
-    $P->save();    
-                  
-    //Creem el nom del fitxer
-    $aFiles = $this->getRequest()->getFiles();                                  
-    if(strlen($aFiles['ARXIU']['name']) > 5){			   
-	    $fileName = $P->getPromocioid().'.'.self::findexts($aFiles['ARXIU']['name']);
-			$this->getRequest()->moveFile('ARXIU', sfConfig::get('sf_web_dir').'/images/banners/'.$fileName);  						   
-			
-	    //Actualitzem amb el nou nom
-	    $P->setExtensio($fileName);
-    }    
-    $P->save();
-         
-    $RET = array();
-    $RET['PROMOCIO'] = $P;
-    $RET['ERRORS'] = array();
-            
-    return $RET;
-    
-  }  
-  
-  //Funció que retorna l'extensió del document
-  private function findexts ($filename) 
-  { 
-    $filename = strtolower($filename) ; 
-    $exts = split("[/\\.]", $filename) ; 
-    $n = count($exts)-1; 
-    $exts = $exts[$n]; 
-    return $exts; 
-  }
-    
+          
   //******************************************************************************************
   // GESTIO DEL WEB **************************************************************************
   //******************************************************************************************
   
-  public function executeGEstructura() 
+  public function executeGEstructura(sfWebRequest $request) 
   {
     $this->setLayout('gestio');
     $this->ERRORS = array(); $this->NOU = false; $this->EDICIO = false; $this->HTML = false;
            
-    if($this->getRequestParameter('accio')=='N'):
-      $this->NODE = new Nodes();                  
+    if($request->getParameter('accio')=='N'):
+      $this->getUser()->setAttribute('idN',0);  
+      $this->FNode = new NodesForm();                
       $this->NOU = true;
-    elseif($this->getRequestParameter('accio')=='E'):
-      $this->NODE = NodesPeer::retrieveByPK($this->getRequestParameter('idN'));
+    elseif($request->getParameter('accio')=='E'):               
+      $ONode = NodesPeer::retrieveByPK($request->getParameter('idN'));  
+      $this->FNode = new NodesForm($ONode);
+      $this->getUser()->setAttribute('idN',$ONode->getIdnodes());      
       $this->EDICIO = true;
-    elseif($this->getRequestParameter('accio')=='H'):
-      $this->NODE = NodesPeer::retrieveByPK($this->getRequestParameter('idN'));
+    elseif($request->getParameter('accio')=='H'):      
+      $this->NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));
+      $this->getUser()->setAttribute('idN',$this->NODE->getIdnodes());
       $this->HTML = true;
-    elseif($this->getRequestParameter('accio')=='D'):
-      $this->NODE = NodesPeer::retrieveByPK($this->getRequestParameter('idN'));
+    elseif($request->getParameter('accio')=='D'):
+      $this->NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));      
       $this->NODE->delete();
       $this->NODE = new Nodes();                 
     endif;
     
-    if($this->getRequest()->hasParameter('SaveNode')): 
-      $this->RET = $this->SaveNode($this->getRequestParameter('idN'), $this->getRequestParameter('NOU'));
-      $this->NODE = $this->RET['NODE'];
-      $this->ERRORS = $this->RET['ERRORS'];      
+    if($request->hasParameter('BSAVE_x')):
+      $IDN = $this->getUser()->getAttribute('idN');
+      $ONode = NodesPeer::retrieveByPK($IDN);
+      if($IDN > 0) $this->FNode = new NodesForm($ONode);
+      else $this->FNode = new NodesForm();      
+            
+      $this->FNode->bind($request->getParameter('nodes'));
+      if($this->FNode->isValid()) $this->FNode->save();             
       $this->EDICIO = true;                
-    elseif($this->getRequest()->hasParameter('SaveHTML')):      
-      $this->RET = $this->SaveHTML($this->getRequestParameter('idN'));
+    elseif($request->hasParameter('SaveHTML')):      
+      $IDN = $this->getUser()->getAttribute('idN');
+      $this->RET = $this->SaveHTML($IDN);
       $this->NODE = $this->RET['NODE'];
       $this->ERRORS = $this->RET['ERRORS'];      
       $this->HTML = true;                
@@ -377,40 +309,7 @@ class gestioActions extends sfActions
     $this->NODES = NodesPeer::retornaMenu();
     
   }  
-  
-  public function gestionaOrdre($Ordre)
-  {
-     foreach(NodesPeer::retornaMenu() as $N):
-        if($N->getOrdre() >= $Ordre):
-           $N->setOrdre($N->getOrdre()+1);
-           $N->save();      
-        endif;
-     endforeach;
-  }
-  
-  public function SaveNode( $idNode , $NOU )
-  {
-
-    if($NOU) $N = new Nodes(); 
-    else { $N = NodesPeer::retrieveByPK($idNode); $N->setNew(false); }      
-            
-    $N->setTitolmenu($this->getRequestParameter('TITOLMENU'));    
-    $N->setisCategoria($this->hasRequestParameter('ISCATEGORIA'));
-    $N->setisPhp($this->hasRequestParameter('ISPHP'));
-    $N->setisActiva($this->hasRequestParameter('ISACTIVA'));    
-    NodesPeer::gestionaOrdre($this->getRequestParameter('ORDRE'), $N->getOrdre());            
-    $N->setOrdre($this->getRequestParameter('ORDRE'));
-    $N->setNivell($this->getRequestParameter('NIVELL'));
     
-    //Comprovem les dades i després retornem l'objecte o bé els errors
-    $RET['ERRORS'] = $N->Check($NOU);
-    if(empty($RET['ERRORS'])) $N->save();      
-    $RET['NODE'] = $N;
-    
-    return $RET;
-  
-  }
-  
   public function SaveHTML($idNode)
   {
       $N = NodesPeer::retrieveByPK($idNode); 
@@ -1298,8 +1197,8 @@ class gestioActions extends sfActions
     $this->DIES = array(); $this->ESPAIS = array();  $this->MESOS = array(); $this->DADES = array();
 
     if(!$this->hasRequestParameter('CERCA_ANY')) $this->CERCA_ANY = date('Y',time());
-
-    $this->CERCA_ANY = $this->getRequestParameter('CERCA_ANY');
+    else $this->CERCA_ANY = $this->getRequestParameter('CERCA_ANY'); 
+    
     $this->CERCA_MES = $this->getRequestParameter('CERCA_MES');
     $this->CERCA_ESPAI = $this->getRequestParameter('CERCA_ESPAI');
 

@@ -173,20 +173,14 @@ class HorarisPeer extends BaseHorarisPeer
      ";
 
      
-     $con = Propel::getConnection();
-     $stmt = $con->prepare($SQL);
-     $stmt->execute();
-     $rs = $stmt->fetch(PDO::FETCH_OBJ);
-
-     
-     echo $SQL;
-     print_r($rs);
-     
-     while($rs->next()):
-        if(isset($RET[$rs->get('mes')][$rs->get('espai')][$rs->get('activitat')]))                        
-           $RET[$rs->get('mes')][$rs->get('espai')][$rs->get('activitat')] += 1;
+     $con = Propel::getConnection(); $stmt = $con->prepare($SQL); $stmt->execute();     
+	 
+     while($rs = $stmt->fetch(PDO::FETCH_OBJ)): 
+          
+        if(isset($RET[$rs->mes][$rs->espai][$rs->activitat]))                        
+           $RET[$rs->mes][$rs->espai][$rs->activitat] += 1;
         else
-           $RET[$rs->get('mes')][$rs->get('espai')][$rs->get('activitat')] = 0;
+           $RET[$rs->mes][$rs->espai][$rs->activitat] = 0;
      endwhile;
      
      return $RET;     
@@ -206,15 +200,12 @@ class HorarisPeer extends BaseHorarisPeer
      $con = Propel::getConnection();
      $stmt = $con->prepare($SQL);
      $stmt->execute();
-     $rs = $stmt->fetch(PDO::FETCH_OBJ);
-
-     print_r($rs);
      
-     while($rs->next()):                        
-        if(isset($RET[$rs->get('mes')][$rs->get('dia')][$rs->get('activitat')]))
-           $RET[$rs->get('mes')][$rs->get('dia')][$rs->get('activitat')] += 1;
+     while($rs = $stmt->fetch(PDO::FETCH_OBJ)):                        
+        if(isset($RET[$rs->mes][$rs->dia][$rs->activitat]))
+           $RET[$rs->mes][$rs->dia][$rs->activitat] += 1;
         else
-           $RET[$rs->get('mes')][$rs->get('dia')][$rs->get('activitat')] = 0;        
+           $RET[$rs->mes][$rs->dia][$rs->activitat] = 0;        
      endwhile;
      
      return $RET;     
