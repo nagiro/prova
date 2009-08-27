@@ -248,9 +248,15 @@ class gestioActions extends sfActions
     endif;
     
     if($request->hasParameter('BSAVE_x')):
-      $this->FPromocio = new PromocionsForm();
+      $IDP = $this->getUser()->getAttribute('idP');
+      if($IDP == 0) $OPromocio = new Promocions();
+      else $OPromocio = PromocionsPeer::retrieveByPK($IDP);
+      $this->FPromocio = new PromocionsForm($OPromocio);
       $this->FPromocio->bind($request->getParameter('promocions'),$request->getFiles('promocions'));
-      if($this->FPromocio->isValid()) $this->FPromocio->save();
+      
+      if($this->FPromocio->isValid()) { try { $this->FPromocio->save(); } catch (Exception $e) { echo $e->getMessage(); } }
+      else echo "merda";
+         
       $this->EDICIO = true;      
     endif;
     

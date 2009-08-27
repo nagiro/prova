@@ -37,7 +37,7 @@ class PromocionsForm extends sfFormPropel
   	if($OPromocio instanceOf Promocions)
   		 $this->setWidget('Extensio', new sfWidgetFormInputFileEditable(array('file_src'=>'/intranet/web/images/banners/'.$OPromocio->getExtensio(),'edit_mode'=>true,'is_image'=>true,'with_delete'=>false)));
 	else $this->setWidget('Extensio', new sfWidgetFormInputFile());		  		
-	$this->validatorSchema['Extensio'] = new sfValidatorFile(array('path' => '/intranet/web/images/banners', 'required' => false));
+	$this->validatorSchema['Extensio'] = new sfValidatorFile(array('required' => false));
     
     
     $this->widgetSchema->setNameFormat('promocions[%s]');
@@ -55,14 +55,18 @@ class PromocionsForm extends sfFormPropel
   public function save($conn = null)
   {
   	
-  	 $file = $this->getValue('Extensio');  	 
-  	 if($file instanceof sfWidgetFormInputFile)
-  	 {
+  	 $file = $this->getValue('Extensio');
+  	 
+  	 print_r($this['Extensio']);
+  	 
+  	 if($file instanceof sfValidatedFile)
+  	 {  	 	  	 	 
 	   	 $filename = 'banner_'.sha1($file->getOriginalName());
   		 $extension = $file->getExtension($file->getOriginalExtension());
-     	 $file->save('/intranet/web/images/banner/'.$filename.$extension);
+     	 $file->save(sfConfig::get('sf_web_dir').'/images/banners/'.$filename.$extension);
+     	 $this['Extensio'] = $filename;     	 
   	 }
-  	  	  	
+  	 
   	 $OPromocions = $this->getObject();  	
   	 PromocionsPeer::gestionaOrdre($this->getValue('Ordre'),$OPromocions->getOrdre());
   	   		  	

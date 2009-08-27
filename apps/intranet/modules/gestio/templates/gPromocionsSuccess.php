@@ -1,8 +1,7 @@
 <?php use_helper('Form')?>
 
 <TD colspan="3" class="CONTINGUT">
-    
-            
+          
      <form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL"><?=link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gPromocions?accio=N') ?> Llistat de promocions</DIV>
