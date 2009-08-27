@@ -11,5 +11,10 @@ class Nivells extends BaseNivells
 {
 	const ADMIN = 1;
 	const USER = 2;
-	const RUSER = 3; //Restricted user ( només pot accedir a lo seu )
+	const RUSER = 3; //Restricted user ( nomï¿½s pot accedir a lo seu )
+	
+	public function __toString()
+	{
+		return $this->getNom();	
+	}
 }

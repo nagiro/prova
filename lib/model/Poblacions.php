@@ -9,4 +9,9 @@
  */ 
 class Poblacions extends BasePoblacions
 {
+	public function __toString()
+	{
+		return $this->getNom();
+	}
+
 }

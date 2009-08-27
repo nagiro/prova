@@ -62,17 +62,17 @@ class UsuarisllistesPeer extends BaseUsuarisllistesPeer
   
   static public function getUsuarisNoLlista( $CERCA , $IDL , $PAGINA )
   {
-     //$C = new Criteria();
-     
-     $C = self::CercaUsuaris($CERCA);
-     $C->addGroupByColumn(UsuarisPeer::USUARIID);
-     
+  	
+  	 $SQL = "UsuariID not in (SELECT Usuaris_UsuarisID FROM usuarisllistes where Llistes_idLlistes = $IDL) ";
+    	
+  	 $C = self::CercaUsuaris($CERCA);     
+     $C->add(UsuarisPeer::USUARIID, $SQL , Criteria::CUSTOM);     
+
      $pager = new sfPropelPager('Usuaris', 10);
      $pager->setCriteria($C);
      $pager->setPage($PAGINA);
      $pager->init();
      return $pager;
-
   } 
   
   

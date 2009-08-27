@@ -1,3 +1,5 @@
+<?php use_helper('Form')?>
+
 <style>
 
 #submit { width:100px; }
@@ -6,13 +8,12 @@
 
     <TD colspan="3" class="CONTINGUT">
     
-      <?php echo nice_form_tag('gestio/gNoticies',array('method'=>'post')); ?>
 
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Llistat de notícies al web principal actives</DIV>
-                <TABLE class="DADES">
-                <?php
+     <form action="<?php echo url_for('gestio/gNoticies') ?>" method="post" enctype="multipart/form-data">
+	    <DIV class="REQUADRE">
+	    <DIV class="TITOL">Notícies actives a portada</DIV>
+	    	<table class="DADES">
+	    	<?php           
                 if(sizeof($NOTICIES) == 0 ) { echo '<TR><TD class="LINIA">No hi ha cap notícia activa.</TD></TR>'; }
                  									                           
                 foreach($NOTICIES as $N):                                      
@@ -23,7 +24,8 @@
 				endforeach;				
                 ?>         
                 <TR><TD><?=submit_tag('Desactiva',array('name'=>'BDESACTIVA','id'=>'submit'))?></TD><TD></TD></TR>       
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
+	        </table>
+	     </DIV>
+     </form>                  
+
+	</TD>

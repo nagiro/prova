@@ -119,108 +119,82 @@ class gestioActions extends sfActions
   // GESTIO DELS USUARIS *********************************************************************
   //******************************************************************************************
   
-  public function executeGUsuaris()
+  public function executeGUsuaris(sfWebRequest $request)
   {    
-
+	
     $this->setLayout('gestio');
 
-    $this->CERCA = $this->getRequestParameter('CERCA'); 
-    $this->PAGINA = $this->getRequestParameter('PAGINA');
-    $this->ERRORS = null;    $this->EDICIO = false; $this->NOU = false; 
-    $this->LLISTES = false;  $this->CURSOS = false; $this->REGISTRES = false;    
+    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');    
+    $this->IDU    = $this->ParReqSesForm($request,'IDU');            
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $accio  = $this->ParReqSesForm($request,'accio','C');
+            
+    //Inicialitzem el formulari de cerca
+    $this->FCerca = new CercaForm();            
+	$this->FCerca->bind(array('text'=>$this->CERCA));
+	
+	//Inicialitzem variables
+	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTES'=>false,'CURSOS'=>FALSE,'REGISTRES'=>FALSE);    
+		
+    if($request->hasParameter('BNOU')) 			{ $accio = "N"; }
+    if($request->hasParameter('BCERCA')) 		{ $accio = "FC"; $this->PAGINA = 1; }
+    if($request->hasParameter('BDESVINCULA')) 	{ $accio = "DL"; }
+    if($request->hasParameter('BVINCULA')) 		{ $accio = "VL"; }
+    if($request->hasParameter('BSAVE_x'))     	{ $accio = "S"; }
     
-    $this->IDU = $this->getRequestParameter('IDU');
-        
-    $accio = $this->getRequestParameter('accio');
-    
-    if($this->hasRequestParameter('NOU')) $accio = "N";
-    if($this->hasRequestParameter('BCERCA')) $accio = "FC";
-    if($this->hasRequestParameter('BDESVINCULA')) $accio = "DL";
-    if($this->hasRequestParameter('BVINCULA')) $accio = "VL";
+    $this->getUser()->setAttribute('accio',$accio);
+    $this->getUser()->setAttribute('pagina',$this->PAGINA);
     
     switch($accio){
        case 'N':
-             $this->NOU = true;
-             $this->CERCA = null;
-             $this->IDU = 0;
-             $this->USUARI = new Usuaris();
+             $this->MODE['NOU'] = true;
+             $this->getUser()->setAttribute('FidU',0);                          
+             $this->FUsuari = new UsuarisForm();             
              break;
        case 'E':
-             $this->EDICIO = true;    
-             $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
-             $this->IDU = $this->USUARI->getUsuariid();
-             $this->EDICIO = true;
+             $this->MODE['EDICIO'] = true;    
+             $USUARI = UsuarisPeer::retrieveByPK($this->IDU);
+             $this->FUsuari = new UsuarisForm($USUARI);                          
              break;
        case 'L': 
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->LLISTAT_LLISTES = LlistesPeer::getLlistesDisponibles($this->IDU);
-             $this->LLISTES = true;
+             $this->MODE['LLISTES'] = true;
              break;
        case 'C':
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
-             $this->CURSOS = true;
+             $this->MODE['CURSOS'] = true;
              break; 
        case 'R':
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
-             $this->REGISTRES = true;
+             $this->MODE['REGISTRES'] = true;
              break;
        case 'S':
-             $this->RET = $this->GuardaUsuari($this->IDU);
-		     $this->USUARI = $this->RET['USUARI'];
-		     $this->ERRORS = $this->RET['ERRORS'];
-		     $this->IDU = $this->USUARI->getUsuariid();
-		     $this->EDICIO = true;      
+       	
+       		 $OUsuari = UsuarisPeer::retrieveByPk($this->IDU);
+       		 if($OUsuari instanceof Usuaris) $this->FUsuari = new UsuarisForm($OUsuari); 
+       		 else $this->FUsuari = new UsuarisForm();
+       		        		  
+             $this->FUsuari->bind($request->getParameter('usuaris'));             
+		     if($this->FUsuari->isValid()) $this->FUsuari->save();		     
+		     $this->MODE['EDICIO'] = true;      
+		     
              break;       
        case 'DL':   //Desvincula una llista de correu
-             $D = $this->getRequestParameter('D');
-             foreach($D['IDL'] as $IDL) LlistesPeer::desvincula($D['IDU'],$IDL);
-             $this->redirect("gestio/gUsuaris?CERCA={$this->CERCA}&PAGINA={$this->PAGINA}&IDU={$D['IDU']}&accio=L");                            
+             $D = $request->getParameter('D');
+             foreach($D['IDL'] as $IDL) LlistesPeer::desvincula($this->IDU,$IDL);
+             $this->redirect("gestio/gUsuaris?accio=L");                            
              break;
        case 'VL':   //Vincula a una llista de correu
-             $D = $this->getRequestParameter('D');
-             foreach($D['IDL'] as $IDL) LlistesPeer::vincula($D['IDU'],$IDL);
-             $this->redirect("gestio/gUsuaris?CERCA={$this->CERCA}&PAGINA={$this->PAGINA}&IDU={$D['IDU']}&accio=L");                            
+             $D = $request->getParameter('D');
+             foreach($D['IDL'] as $IDL) LlistesPeer::vincula($this->IDU,$IDL);
+             $this->redirect("gestio/gUsuaris?accio=L");                            
              break;              
     }
 
     $this->PAGER_USUARIS = UsuarisPeer::cercaTotsCamps( $this->CERCA , $this->PAGINA );
-        
-            
-  }
-  
-  //Guarda usuari, retorna un array amb [E] = ERRORS i [U] = USUARI
-  public function GuardaUsuari($idU = NULL)
-  {
-  
-    $U = new Usuaris();
-    $new = is_null($idU); //Si no hi ha idU és un registre nou 
-    if(!$new) { $U = UsuarisPeer::retrieveByPK($idU); $U->setNew(false); }
-         
-    $U->setNivellsIdnivells($this->getRequestParameter('NIVELL'));
-    $U->setDNI($this->getRequestParameter('DNI'));    
-    $U->setPasswd($this->getRequestParameter('PASSWD'));
-    $U->setNom($this->getRequestParameter('NOM'));
-    $U->setCog1($this->getRequestParameter('COG1'));
-    $U->setCog2($this->getRequestParameter('COG2'));
-    $U->setEmail($this->getRequestParameter('EMAIL'));
-    $U->setAdreca($this->getRequestParameter('ADRECA'));
-    $U->setCodiPostal($this->getRequestParameter('CODIPOSTAL'));
-    $U->setPoblacio($this->getRequestParameter('POBLACIO'));
-    $U->setPoblaciotext($this->getRequestParameter('POBLACIOT'));
-    $U->setTelefon($this->getRequestParameter('TELEFON'));
-    $U->setMobil($this->getRequestParameter('MOBIL'));
-    $U->setEntitat($this->getRequestParameter('ENTITAT'));
-    $U->setHabilitat(TRUE);    
-    
-    //Comprovem les dades i després retornem l'objecte o bé els errors
-    $RET['ERRORS'] = $U->Check($new);
-    if(empty($RET['ERRORS'])) $U->save();      
-    $RET['USUARI'] = $U;
-    
-    return $RET;
-  
-  }
-  
+                    
+  }  
 
   //******************************************************************************************
   // GESTIO DE LES PROMOCIONS ****************************************************************
@@ -331,84 +305,84 @@ class gestioActions extends sfActions
   // GESTIO DE LES LLISTES *******************************************************************
   //******************************************************************************************
   
-  public function executeGLlistes()
+  public function executeGLlistes(sfWebRequest $request)
   {
     $this->setLayout('gestio');
-    $this->LLISTES = array(); $this->LLISTA = new Llistes(); $this->IDL = null;
-    $this->ERRORS = array(); $this->NOU = false; $this->EDICIO = false; $this->USUARIS = false; $this->MISSATGES = array();
-    $this->CERCA = ""; $this->MISSATGE = new Missatgesllistes(); $this->LLISTAT = false;
-    $this->PAGINA = 1; $this->PAGINA2 = 1; $this->PAGINA3 = 1; $this->ENVIAT = false;
-  
-    if($this->hasRequestParameter('PAGINA'))  $this->PAGINA = $this->getRequestParameter('PAGINA');
-    else $this->PAGINA = 1;
-    if($this->hasRequestParameter('PAGINA2'))  $this->PAGINA2 = $this->getRequestParameter('PAGINA2');
-    else $this->PAGINA2 = 1;
-    if($this->hasRequestParameter('PAGINA3'))  $this->PAGINA3 = $this->getRequestParameter('PAGINA3');
-    else $this->PAGINA3 = 1;
+
+    $this->IDL    = $this->ParReqSesForm($request,'IDL');    
+    $this->PAGINA = $request->getParameter('PAGINA');
     
-    $accio = $this->getRequestParameter('accio');
-    if($this->hasRequestParameter('BCERCA')) $accio = 'U';
-    if($this->hasRequestParameter('BSAVE')) $accio = 'SM';
-    if($this->hasRequestParameter('BSEND')) $accio = 'SEND';
-    if($this->hasRequestParameter('BVINCULA')) $accio = 'VINCULA';
-    if($this->hasRequestParameter('BDESVINCULA')) $accio = 'DESVINCULA';            
+    //Inicialitzem variables
+	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTAT'=>false,'ENVIAT'=>FALSE,'MISSATGES'=>false,'USUARIS'=>false);    
+    
+    $accio = $request->getParameter('accio');
+    if($request->hasParameter('BCERCA')) $accio = 'U';
+    if($request->hasParameter('BSAVE_LLISTA_x')) $accio = 'S';
+    if($request->hasParameter('BSAVE_MISSATGE_x')) $accio = 'SM';
+    if($request->hasParameter('BSEND')) $accio = 'SEND';
+    if($request->hasParameter('BVINCULA')) $accio = 'VINCULA';
+    if($request->hasParameter('BDESVINCULA')) $accio = 'DESVINCULA';            
     
     switch($accio)
     {
-      case 'N': 
-                $this->LLISTA = new Llistes();
-                $this->NOU = true;
+      case 'N':      			
+      			$this->FLlista = new LlistesForm();
+      			$this->getUser()->setAttribute('idL',0);                 
+                $this->MODE['NOU'] = true;
                 break;
       case 'E': 
-                $this->LLISTA = LlistesPeer::retrieveByPK($this->getRequestParameter('IDL'));                
-                $this->EDICIO = true; 
+                $OLlista = LlistesPeer::retrieveByPK($request->getParameter('IDL'));
+                $this->getUser()->setAttribute('idL',$OLlista->getIdllistes());
+                $this->FLlista = new LlistesForm($OLlista);                
+                $this->MODE['EDICIO'] = true; 
                 break;                      
-      case 'VINCULA':
-               $this->IDL = $this->getRequestParameter('IDL');
-               $ALTA_USUARIS = $this->getRequestParameter('ALTA_USUARI');
+      case 'VINCULA':               
+               $ALTA_USUARIS = $request->getParameter('ALTA_USUARI');
                foreach($ALTA_USUARIS as $U) UsuarisllistesPeer::Vincula($U,$this->IDL);                             
             break;
-      case 'DESVINCULA':               
-               $this->IDL = $this->getRequestParameter('IDL');
-               $BAIXA_USUARIS = $this->getRequestParameter('BAIXA_USUARI');               
+      case 'DESVINCULA':                              
+               $BAIXA_USUARIS = $request->getParameter('BAIXA_USUARI');               
                foreach($BAIXA_USUARIS as $U) UsuarisllistesPeer::Desvincula($U,$this->IDL);               
             break;
       case 'M':
-                $this->IDL = $this->getRequestParameter('IDL');
-                $this->LLISTA_MISSATGES = LlistesPeer::getMissatges($this->IDL , LlistesPeer::TOTS,$this->PAGINA3);
-                $this->MISSATGE = new Missatgesllistes(); 
-                $this->MISSATGES = true;
+      			$OMissatge = MissatgesllistesPeer::retrieveByPK($request->getParameter('IDM'));
+      			if($OMissatge instanceof Missatgesllistes) $this->FMissatge = new MissatgesllistesForm($OMissatge);
+      			else $this->FMissatge = new MissatgesllistesForm();      			       			                               
+                $this->MODE['MISSATGES'] = true;
                 break;
-      case 'MV':                
-                $this->IDL = $this->getRequestParameter('IDL');
+      case 'MV':                               
                 $this->LLISTA_MISSATGES = LlistesPeer::getMissatges($this->IDL , LlistesPeer::TOTS,$this->PAGINA3);         
-                $this->MISSATGE = MissatgesllistesPeer::retrieveByPK($this->getRequestParameter('IDM'));
-                $this->MISSATGES = true;                
+                $this->MISSATGE = MissatgesllistesPeer::retrieveByPK($this->getRequestParameter('IDM'));                
+                $this->MODE['MISSATGES'] = true;        
                 break;                
       case 'S': 
-                $RET = $this->saveLlista();
-                $this->LLISTA = $RET['LLISTA'];
-                $this->ERRORS = $RET['ERRORS'];
+                $IDL = $this->getUser()->getAttribute('idL');
+                $OLlista = LlistesPeer::retrieveByPK($IDL);
+                if($OLlista instanceof Llistes) $this->FLlista = new LlistesForm($OLlista);
+                else $this->FLlista = new LlistesForm();                
+                $this->FLlista->bind($request->getParameter('llistes'));
+                if($this->FLlista->isValid()) $this->FLlista->save();
+                $this->MODE['EDICIO'] = true;                
                 break; 
-      case 'SU':
-                
-                $RET = $this->saveUsuaris();
-                $this->ERRORS = $RET['ERRORS'];
-                $this->USUARIS = true;                
-                break;
-      case 'SM':
-                $RET = $this->saveMissatges();
-                $this->ERRORS = $RET['ERRORS'];
-                $this->MISSATGE = $RET['MISSATGE'];
-                $this->IDL = $this->getRequestParameter('IDL');
-                $this->LLISTA_MISSATGES = LlistesPeer::getMissatges( $this->IDL , LlistesPeer::TOTS , $this->PAGINA3 );                         
-                $this->MISSATGES = true;
-                break;
+      case 'SM':      	         	        
+                $OMissatgeLlista = MissatgesllistesPeer::retrieveByPK($request->getParameter('IDM'));
+                if($OMissatgeLlista instanceof Missatgesllistes) $this->FMissatge = new MissatgesllistesForm($OMissatgeLlista);
+                else $this->FMissatge = new MissatgesllistesForm();
+
+                $ML = $request->getParameter('missatgesllistes');
+                $ML['Date'] = time();
+                $ML['Enviat'] = null;
+                $ML['Llistes_idLlistes'] = $this->getUser()->getAttribute('idL');
+
+                $this->FMissatge->bind($ML);
+                if($this->FMissatge->isValid()) $this->FMissatge->save();
+                $this->MODE['MISSATGES'] = true;                
+                break;                 
       case 'L': 
                $IDL = $this->getRequestParameter('IDL');
                $this->LLISTA = LlistesPeer::retrieveByPK($IDL);
                $this->LMISSATGES = $this->LLISTA->getMissatgesllistess();               
-               $this->LLISTAT = true;
+               $this->MODE['LLISTAT'] = true;
                break;
       case 'SEND':               
                $this->MAILS = LlistesPeer::EnviaMissatge($this->getRequestParameter('IDM'));
@@ -417,31 +391,29 @@ class gestioActions extends sfActions
     
     }        
   
-        //Inicialitzem els valors comuns
-    $this->LLISTES = LlistesPeer::doSelect(new Criteria());
 
+    //Inicialitzem els valors comuns
+	$this->LLISTES = LlistesPeer::doSelect(new Criteria());
+    
     if($accio == 'U' || $accio == 'VINCULA' || $accio == 'DESVINCULA'):
-         if($this->hasRequestParameter('CERCA_TIPUS')):
-            $this->CERCA_TIPUS = $this->getRequestParameter('CERCA_TIPUS');
-            $this->CERCA       = $this->getRequestParameter('CERCA');
-            if($this->CERCA_TIPUS == 'llista'):
-               $this->CERCA_LLISTA = $this->CERCA;
-               $this->CERCA_DISPON = "";
-            else:
-               $this->CERCA_LLISTA = "";
-               $this->CERCA_DISPON = $this->CERCA;
-            endif;
-         else: $this->CERCA_TIPUS = 'llista';
-               $this->CERCA       = "";
-               $this->CERCA_LLISTA = "";
-               $this->CERCA_DISPON = "";
-         endif;
-
-         $this->IDL = $this->getRequestParameter('IDL');                
-
-         $this->USUARIS_LLISTA = UsuarisllistesPeer::getUsuarisLlista( $this->CERCA_LLISTA ,  $this->IDL , $this->PAGINA );
-         $this->USUARIS_DISPONIBLES = UsuarisllistesPeer::getUsuarisNoLlista( $this->CERCA_DISPON , $this->IDL , $this->PAGINA2 );
-         $this->USUARIS = true;                
+        	    
+	    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array(''));
+	    $this->getUser()->setAttribute('cerca',array());
+	    $this->FCerca  = new CercaTextChoiceForm();
+	    $this->FCerca->bind($this->CERCA);
+	    $this->FCerca->setChoice(array('llista'=>'Usuaris pertanyents','nollista'=>'Usuaris no pertanyents'));
+	    $this->CERCA = $this->FCerca->getValue('text');
+	            
+    	if($this->FCerca->getValue('select') == 'llista'):
+    		$this->USUARIS_LLISTA = UsuarisllistesPeer::getUsuarisLlista( $this->CERCA ,  $this->IDL , $this->PAGINA );
+    		$this->LLISTA = true;
+    	else:
+         	$this->USUARIS_DISPONIBLES = UsuarisllistesPeer::getUsuarisNoLlista( $this->CERCA , $this->IDL , $this->PAGINA );
+         	$this->LLISTA = false;
+    	endif;
+    	
+    	$this->MODE['USUARIS'] = true;
+    	                
     endif;
   
   }
@@ -1729,13 +1701,13 @@ class gestioActions extends sfActions
   }
   
         
-  public function executeGNoticies()
+  public function executeGNoticies(sfWebRequest $request)  
   {     
      $this->setLayout('gestio');
      
-     if($this->hasRequestParameter('BDESACTIVA')) 
+     if($request->hasParameter('BDESACTIVA')) 
      {
-        foreach($this->getRequestParameter('NOTICIA') AS $N):
+        foreach($request->getParameter('NOTICIA') AS $N):
            $A = ActivitatsPeer::retrieveByPK($N);           
            $A->setPublicaweb(false);
            $A->save();
