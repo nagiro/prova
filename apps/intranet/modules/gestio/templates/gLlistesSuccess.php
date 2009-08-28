@@ -14,7 +14,6 @@
                                 <TD class="OPCIONS">'.creaOpcions($L->getIdllistes()).'</TD>
                             </TR>';                                   
                   endforeach;                                  
-                  
                 ?>
     
 	        </table>
@@ -99,8 +98,8 @@
 
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
-	 	<DIV class="REQUADRE">
-	    	<table class="FORMULARI" width="600px">
+	 	<DIV class="REQUADRE">	 	
+	    	<table class="FORMULARI" width="600px">	    	
                 <?=$FMissatge?>                								
                 <tr>
                 	<td width="100px"></td>               	
@@ -112,6 +111,7 @@
 	            </tr>                	 
       		</TABLE>
       	</DIV>
+      	
      </form>  
 
     
@@ -129,7 +129,15 @@
                   <?php foreach($LMISSATGES as $M):  ?>                                                       
                   	<TR>
                   		<TD class="LINIA"><?=link_to($M->getTitol(),'gestio/gLlistes?accio=M&IDM='.$M->getIdmissatgesllistes().'&IDL='.$M->getLlistesIdllistes())?></TD>
-						<TD class="LINIA"><?=$M->getEnviat('d/m/Y')?></TD>
+						<TD class="LINIA">
+							<? 
+								if(!is_null($M->getEnviat('d/m/Y'))):
+									echo $M->getEnviat('d/m/Y');
+								else:
+									echo button_to('Envia','gestio/gLlistes?accio=SEND&IDM='.$M->getIdmissatgesllistes());
+								endif;
+							?>
+						</TD>
               		</TR>
                   <?php endforeach; ?>
                   <TR>                	                   	  

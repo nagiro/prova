@@ -127,14 +127,14 @@ class gestioActions extends sfActions
     $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');    
     $this->IDU    = $this->ParReqSesForm($request,'IDU');            
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $accio  = $this->ParReqSesForm($request,'accio','C');
+    $accio  = $this->ParReqSesForm($request,'accio','FC');
             
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
 	$this->FCerca->bind(array('text'=>$this->CERCA));
 	
 	//Inicialitzem variables
-	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTES'=>false,'CURSOS'=>FALSE,'REGISTRES'=>FALSE);    
+	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTES'=>false,'CURSOS'=>false,'REGISTRES'=>false);    
 		
     if($request->hasParameter('BNOU')) 			{ $accio = "N"; }
     if($request->hasParameter('BCERCA')) 		{ $accio = "FC"; $this->PAGINA = 1; }
@@ -143,7 +143,7 @@ class gestioActions extends sfActions
     if($request->hasParameter('BSAVE_x'))     	{ $accio = "S"; }
     
     $this->getUser()->setAttribute('accio',$accio);
-    $this->getUser()->setAttribute('pagina',$this->PAGINA);
+    $this->getUser()->setAttribute('pagina',$this->PAGINA);        
     
     switch($accio){
        case 'N':
@@ -169,8 +169,7 @@ class gestioActions extends sfActions
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->MODE['REGISTRES'] = true;
              break;
-       case 'S':
-       	
+       case 'S':       	
        		 $OUsuari = UsuarisPeer::retrieveByPk($this->IDU);
        		 if($OUsuari instanceof Usuaris) $this->FUsuari = new UsuarisForm($OUsuari); 
        		 else $this->FUsuari = new UsuarisForm();
@@ -347,7 +346,7 @@ class gestioActions extends sfActions
       case 'M':
       			$OMissatge = MissatgesllistesPeer::retrieveByPK($request->getParameter('IDM'));
       			if($OMissatge instanceof Missatgesllistes) $this->FMissatge = new MissatgesllistesForm($OMissatge);
-      			else $this->FMissatge = new MissatgesllistesForm();      			       			                               
+      			else $this->FMissatge = new MissatgesllistesForm();      			      			       			                               
                 $this->MODE['MISSATGES'] = true;
                 break;
       case 'MV':                               
@@ -399,7 +398,7 @@ class gestioActions extends sfActions
         	    
 	    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array(''));
 	    $this->getUser()->setAttribute('cerca',array());
-	    $this->FCerca  = new CercaTextChoiceForm();
+	    $this->FCerca = new CercaTextChoiceForm();
 	    $this->FCerca->bind($this->CERCA);
 	    $this->FCerca->setChoice(array('llista'=>'Usuaris pertanyents','nollista'=>'Usuaris no pertanyents'));
 	    $this->CERCA = $this->FCerca->getValue('text');
@@ -670,6 +669,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BSAVEACTIVITAT')) $accio = 'CH';
 	    elseif($request->hasParameter('BSAVEHORARIS_x')) $accio = 'SH';
 	    elseif($request->hasParameter('BDELETEHORARIS')) $accio = 'DH';
+	    elseif($request->hasParameter('BSAVEDESCRIPCIO_x')) $accio = 'ST';
     }                
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
@@ -721,6 +721,21 @@ class gestioActions extends sfActions
     			endif;    		    		
     		break;
 
+    	//Consulta els textos del web
+    	case 'T':                
+                $OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
+                $this->FActivitat = new ActivitatsTextosForm($OActivitat);                
+                $this->MODE['TEXTOS'] = TRUE;       
+            break;
+		//Guarda els textos del web            
+    	case 'ST':
+    			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
+    			$this->FActivitat = new ActivitatsTextosForm($OActivitat);
+    			$this->FActivitat->bind($request->getParameter('activitats'));
+    			if($this->FActivitat->isValid()) $tihs->FActivitat->save();
+    			$this->MODE['TEXTOS'] = true;
+    		break;
+    		
     	//Save Horaris
     	case 'SH':
     			$OHoraris = $request->getParameter('horaris');
@@ -778,6 +793,7 @@ class gestioActions extends sfActions
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));
 				$this->MODE['LLISTAT_ALUMNES'] = true; 
 			break;
+        
     }
   
   }

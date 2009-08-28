@@ -5,7 +5,7 @@
 
 
 <STYLE>
-.CALENDARI { font-size: 8px; }
+.CALENDARI { font-size: 7px; }
 .CALENDARI A { text-decoration:none; color:black; }
 .CALENDARI A:hover { text-decoration:none; color:black; font-weight: bolder; }
 .CALENDARI A:visited {text-decoration:none; color:black; }
@@ -93,20 +93,19 @@
 	     </DIV>
      </form>  
     
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI);  ?></SPAN></DIV>
-                <TABLE class="CALENDARI">
+     <form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">
+	    <DIV class="REQUADRE">
+	    <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI);  ?></SPAN></DIV>
+	    	<table class="CALENDARI">          
                 <?php                 
                   
                   echo llistaCalendariH($DATAI,$CALENDARI);                                              
 
                 ?>
-                </TABLE>                                                                  
-            </TD>
-        </TR>
-      </TABLE>
-
+	        </table>
+	     </DIV>
+     </form>                  
+     
   <?php ENDIF; IF( $MODE['NOU'] || $MODE['EDICIO'] && !$MODE['CICLES'] ): ?>
       
       <?php menu(1,$ACTIVITAT_NOVA); ?>
@@ -131,6 +130,7 @@
   <?php ELSEIF( $MODE['HORARIS'] ): ?>
   
     <?php menu(2,$ACTIVITAT_NOVA); ?>
+    
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Horaris actuals</DIV>
       	<TABLE class="DADES">
@@ -169,8 +169,7 @@
              		<input type="button" id="mesmaterial" value="+"></input><br />
              		
              		<? 	$j=0; ?>
-             		<? 	foreach($HORARI->getMaterials() as $M): ?>
-             		<?php print_r($M); ?>         			             		             		                       		
+             		<? 	foreach($HORARI->getMaterials() as $M): ?>         			             		             		                       		
              		<?php endforeach; ?>
              		
              		<span id="row[1]">             			    
@@ -196,41 +195,26 @@
      </form>         
     
   <?php ELSEIF( $MODE['TEXTOS'] ): ?>
+
+     <?php menu(3,$ACTIVITAT_NOVA); ?>
+
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">            
+	 	<div class="REQUADRE">	 			 		
+	    	<table class="FORMULARI" width="600px">                  			    	
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <?=$FActivitat?>                								
+                <tr>
+                	<td></td>
+	            	<td colspan="2" class="dreta">
+	            		<br>	            		
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT'))?>
+	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            	</td>
+	            </tr>                	 
+      		</table>      		
+      	</div>
+     </form>
       
-      <?php echo input_hidden_tag('IDA',$IDA); ?>
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA_MENU"><TABLE CLASS="SUBMEN"><TR><?php menu(3,$ACTIVITAT); ?></TR></table></TD></TR>
-            <TR><TD class="NOTICIA">                
-                <TABLE>
-                <?php
-                	$URL =  $ACTIVITAT->getImatge(); $URL2 = $ACTIVITAT->getPdf();
-                	$IMATGE = link_to_if( $URL != NULL , "arxiu" , image_path('noticies/'.$URL , true ) , array('target'=>'_NEW') );
-                	$PDF    = link_to_if( $URL2 != NULL , "arxiu" ,  image_path('noticies/'.$URL2 , true )  , array('target'=>'_NEW') );                	                	
-                ?>
-                	
-                <TR>
-                	<TD class="TITOL"><CENTER>Activa Notícia<br /><?php echo checkbox_tag('PUBLICA',true,$ACTIVITAT->getPublicaweb()) ?></CENTER></TD>                	
-                	<TD class="TITOL">Imatge<?php echo ' ('.$IMATGE.')<br>'.input_file_tag('IMATGE'); ?></TD>                	
-                	<TD class="TITOL">PDF<?php echo ' ('.$PDF.')<br>'.input_file_tag('PDF'); ?></TD>
-                </TR>
-                <TR><TD class="TITOL" colspan="3">Text notícies</TD></TR>
-                <TR><TD colspan="3"><?php echo input_tag('TITOL_NOTICIA',$ACTIVITAT->getTnoticia(),array('class'=>'cent')); ?></TD></TR>
-                <TR><TD colspan="3"><?php echo textarea_tag('TEXT_NOTICIA',$ACTIVITAT->getDnoticia(),array('rich'=>true, 'size'=>'100%x10' , 'tinymce_options'=>' theme:"simple"')); ?></TD></TR>
-
-				<TR><TD class="TITOL" colspan="3">Text web</TD></TR>
-				<TR><TD colspan="3"><?php echo input_tag('TITOL_WEB',$ACTIVITAT->getTweb(),array('class'=>'cent')); ?></TD></TR>
-                <TR><TD colspan="3"><?php echo textarea_tag('TEXT_WEB',$ACTIVITAT->getDweb(),array('rich'=>true, 'size'=>'100%x10' , 'tinymce_options'=>' theme:"simple"')); ?></TD></TR>
-                
-                <TR><TD class="TITOL" colspan="3">Text general</TD></TR>
-                <TR><TD colspan="3"><?php echo input_tag('TITOL_GENERAL',$ACTIVITAT->getTgeneral(),array('class'=>'cent')); ?></TD></TR>
-                <TR><TD colspan="3"><?php echo textarea_tag('TEXT_GENERAL',$ACTIVITAT->getDgeneral(),array('rich'=>true, 'size'=>'100%x10' , 'tinymce_options'=>' theme:"simple"')); ?></TD></TR>
-
-                <TR><TD colspan="3"><?php echo submit_tag('Guarda',array('name'=>'BGUARDAT')); ?></TD></TR>
-                </TABLE>                                                                                                  
-            </TD>
-        </TR>
-      </TABLE>
-
   <?php ELSEIF( $MODE['CICLES'] ): ?>
       
       <?php echo input_hidden_tag('IDA',$IDA); ?>
@@ -253,7 +237,7 @@
         </TR>
       </TABLE>      
     
-  <?php ELSEIF( $MODE['LLISTA'] ): ?>
+  <?php ELSEIF( $MODE['LLISTAT'] ): ?>
 
 
      <DIV class="REQUADRE">

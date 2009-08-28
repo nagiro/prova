@@ -97,25 +97,24 @@ class LlistesPeer extends BaseLlistesPeer
   
   static public function EnviaMissatge($IDM)
   {
-     
-     $M = MissatgesllistesPeer::retrieveByPK($IDM);       
-     
-     $mail = new sfMail();
-     $mail->initialize();
-     $mail->setMailer('sendmail');
-     $mail->setCharset('utf-8');
+
+    $M = MissatgesllistesPeer::retrieveByPK($IDM);  	  
+  	      	     	
+    require_once('lib/vendor/swift/swift_init.php'); # needed due to symfony autoloader
+  	$mailer = Swift_Mailer::newInstance(Swift_MailTransport::newInstance());
  
-     $mail->setSender('informatica@casadecultura.cat', 'Albert Johé');
-     $mail->setFrom('informatica@casadecultura.cat', 'Casa de Cultura');
- 
-     $MAILS = UsuarisllistesPeer::getUsuarisLlistaEmail($M->getLlistesIdllistes()); 
-     foreach($MAILS as $Email) $mail->addAddress($Email);
- 
-     $mail->setSubject($M->getTitol());
-     $mail->setBody($M->getText());
-     
-     if(sizeof($MAILS) > 0) $mail->send();
-     
+	$MAILS = UsuarisllistesPeer::getUsuarisLlistaEmail($M->getLlistesIdllistes()); 
+	foreach($MAILS as $Email) {
+     	
+    	$message = Swift_Message::newInstance($M->getTitol())
+        	 	->setFrom(array('informatica@casadeculutra.org' => 'CCG :: Informació'))
+         		->setTo($Email)
+         		->setBody($M->getText() , 'text/html');
+         		  
+	  	$mailer->send($message);
+     	
+     }
+         
      $M->setEnviat(date('Y-m-d',time()));
      $M->save();
      
