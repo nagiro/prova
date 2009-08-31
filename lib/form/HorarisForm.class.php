@@ -15,7 +15,7 @@ class HorarisForm extends sfFormPropel
     $this->setWidgets(array(
       'HorarisID'              => new sfWidgetFormInputHidden(),
       'Activitats_ActivitatID' => new sfWidgetFormInputHidden(),
-      'Dia'                    => new sfWidgetFormInput(array(),array('id'=>'multi999Datepicker','style'=>'width:400px')),
+      'Dia'                    => new sfWidgetFormInputDatePropi(array(),array('id'=>'multi999Datepicker','style'=>'width:400px')),
       'HoraPre'                => new sfWidgetFormTime(),
       'HoraInici'              => new sfWidgetFormTime(),
       'HoraFi'                 => new sfWidgetFormTime(),

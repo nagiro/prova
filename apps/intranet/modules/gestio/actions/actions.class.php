@@ -689,7 +689,7 @@ class gestioActions extends sfActions
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                                                                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
-                $this->MODE['LLISTA'] = true;                                              
+                $this->MODE['LLISTAT'] = true;                                              
                 break;
     		break;
     	//Consulta que em mostra les activitats d'un dia seleccionat del calendari
@@ -698,7 +698,7 @@ class gestioActions extends sfActions
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
-                $this->MODE['LLISTA'] = true;                                     
+                $this->MODE['LLISTAT'] = true;
     		break;
     	//Constulta una activitat
     	case 'CA':    			
@@ -713,11 +713,16 @@ class gestioActions extends sfActions
     			$this->HORARIS = $OActivitat->getHorariss();
     			$this->MODE['HORARIS'] = true;
     			$this->FHorari = new HorarisForm(new Horaris());
-    			$this->HORARI = new Horaris();    			
+    			$this->HORARI = new Horaris();
+    			$this->ESPAIS = array(); $this->MATERIAL = array();    			
     			if($request->hasParameter('IDH')):
     				$H = HorarisPeer::retrieveByPK($request->getParameter('IDH'));    				
     				$this->FHorari = new HorarisForm($H);
-    				$this->HORARI  = $H;
+    				$this->HORARI  = $H;    				
+    				foreach($H->getHorarisespaiss() as $HE):    					
+    					$this->ESPAIS[] = $HE->getEspaisEspaiid();
+    					$this->MATERIAL[] = $HE->getMaterialIdmaterial();
+    				endforeach;
     			endif;    		    		
     		break;
 
@@ -737,9 +742,11 @@ class gestioActions extends sfActions
     		break;
     		
     	//Save Horaris
-    	case 'SH':
-    			$OHoraris = $request->getParameter('horaris');
-    			$this->VerificaHoraris($request->getParameter('horaris'),$request->getParameter('material'));
+    	case 'SH':  		
+			
+   			$RET = $this->GuardaHorari($request->getParameter('horaris'),$request->getParameter('material'),$request->getParameter('espais'));
+   			if(empty($RET)) echo "OK";
+   			else print_r($RET);    		
     			    			
     		break;
 
@@ -796,159 +803,8 @@ class gestioActions extends sfActions
         
     }
   
-  }
-
+  }  
   
-  public function VerificaHoraris($horaris , $material)
-  {
-  	print_r($horaris);
-  	print_r($material);
-  
-    
-  }
-  
-/*  
-  public function executeGActivitats()
-  {    
-    
-    $this->setLayout('gestio');
-    
-    $this->CALENDARI = NULL; $this->VARIAMES = 0; $this->VARIAANY = 0; 
-    $this->IDA = NULL; $this->ACCIO = NULL; $this->ACTIVITATS = array(); $this->ACTIVITAT = new Activitats(); 
-    $this->NOU = false; $this->EDICIO = false; $this->LLISTA = FALSE; $this->HORARIS = false; $this->CONSULTA = false; $this->LINIES = array();
-    $this->D = array('AVIS'=>'' , 'ESPECTADORS'=>'' , 'DIA'=>'' , 'HORAPRE'=>'' , 'HORAIN'=>'' , 'HORAFI'=>'' , 'HORAPOST'=>'' , 'ESPAIS'=>ARRAY() , 'MATERIAL'=>ARRAY());
-    $this->REDICIO = false; $this->CANVI_EDICIO_HORARI = false; $this->TEXTOS = false; $this->FEINES = false; $this->TASQUES = new Tasques();  $this->CICLES = false;        
-    
-    if($this->getRequest()->hasParameter('PAGINA')) $this->PAGINA = $this->getRequestParameter('PAGINA'); else $this->PAGINA = 1;
-    if($this->getRequest()->hasParameter('CERCA')) $this->CERCA = $this->getRequestParameter('CERCA'); ELSE $this->CERCA = "";
-    
-	if($this->getRequest()->hasParameter('DATAI')) $this->DATAI = $this->getRequestParameter('DATAI');
-	else $this->DATAI = date('Y-m-01',time());
-	
-    $this->DATAF = $this->sumarmesos($this->DATAI,6);
-    $this->IDA = $this->getRequestParameter('IDA');
-    if( $this->IDA > 0 ) $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($this->getRequestParameter('IDA'));
-    
-    $accio = $this->getRequestParameter('accio');
-    if($this->getRequest()->hasParameter('BCERCA')) $accio = 'CC';
-    if($this->getRequest()->hasParameter('BNOU')) $accio = 'N';    
-    if($this->getRequest()->hasParameter('BGUARDAH')) $accio = 'GH';
-    if($this->getRequest()->hasParameter('BEDITAH')) $accio = 'EH';
-    if($this->getRequest()->hasParameter('BVERIFICA')) $accio = 'VH';
-    if($this->getRequest()->hasParameter('BELIMINA')) $accio = 'VE';    
-    if($this->getRequest()->hasParameter('BGUARDAT')) $accio = 'ST';
-    if($this->getRequest()->hasParameter('BFEINES')) $accio = 'SF';
-    if($this->getRequest()->hasParameter('BAFEGIRESPAI')) $accio = '+';
-    if($this->hasRequestParameter('BCICLESAVE')) $accio = 'ACS';
-        
-    switch($accio)
-    {
-       case 'AC':
-                $this->LLISTA_CICLES = CiclesPeer::doSelect(new Criteria());
-                $this->CICLE = new Cicles();
-                $this->CICLES = true;
-                if($this->hasRequestParameter('IDA')) $this->EDICIO = true; else $this->EDICIO = false;                
-                break;
-       case 'ACS':
-                $this->saveCicle();
-                $this->LLISTA_CICLES = CiclesPeer::doSelect(new Criteria());
-                $this->CICLE = new Cicles();
-                $this->CICLES = true;
-                break;
-       case 'C':       			               
-                $DIA = $this->getRequestParameter('DIA');
-                $MES = $this->getRequestParameter('MES');
-                $ANY = $this->getRequestParameter('ANY');
-                if(empty($DIA)) $DIA = NULL; else $DIA = $ANY.'-'.$MES.'-'.$DIA;
-                $HORARIS = HorarisPeer::getActivitats($DIA , $this->CERCA, $this->DATAI, $this->DATAF, $this->IDA);                                
-                $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
-                $this->CALENDARI = $HORARIS['CALENDARI'];
-                $this->CONSULTA = true;
-                $this->LLISTA = true;
-                $this->DIA = $DIA;                                               
-                break;
-         //Consulta quan prems un mes
-       case 'CC':       			               
-                $DIA = $this->getRequestParameter('DIA');
-                $MES = $this->getRequestParameter('MES');
-                $ANY = $this->getRequestParameter('ANY');
-                if(empty($DIA)) $DIA = NULL; else $DIA = $ANY.'-'.$MES.'-'.$DIA;
-                $this->CALENDARI = HorarisPeer::getCalendari($DIA , $this->CERCA, $this->DATAI, $this->DATAF, $this->IDA ,true );                                                                                
-                $this->CONSULTA = true;
-                $this->LLISTA = false;
-                $this->DIA = $DIA;                                               
-                break;                
-      case 'N':
-                $this->ACTIVITAT = new Activitats();
-                $this->NOU = true;
-                break;
-      case 'S': 
-                $RET = $this->guardaActivitat();
-                $this->ACTIVITAT = $RET['ACTIVITAT'];
-                $this->ERRORS = $RET['ERRORS'];
-                $this->EDICIO = true;                
-                break;
-      case 'E':         
-                $this->EDICIO = true;                
-                break;
-      case 'H':                                 
-                //Carreguem els que ja tenim a l'estructura i després treballem només amb els que s'entren.
-                $this->L = $this->CarregaHorarisLlista(); 
-                $this->HORARI = $this->ACTIVITAT->getHorariss();                                
-                $this->HORARIS = true;
-                break;                
-      case 'VH': 
-                //Guarda els horaris                           
-                $this->ERRORS = $this->GuardaHorari();   
-                $this->L = $this->CarregaHorarisLlista();             
-                $this->HORARI = $this->ACTIVITAT->getHorariss();                                
-                $this->HORARIS = true;
-                break;                         
-      case 'VE': 
-                //Esborra un horari
-                $D = $this->getRequestParameter('D');                           
-                if(isset($D['idH'])) HorarisPeer::retrieveByPK($D['idH'])->delete();
-                $this->L = $this->CarregaHorarisLlista();             
-                $this->HORARI = $this->ACTIVITAT->getHorariss();                                
-                $this->HORARIS = true;
-                break;                
-       case 'GH':
-                $this->GuardaHorari();                
-                $this->redirect('gestio/gActivitats');
-                break;
-       case 'EH':                                
-                if($this->getRequest()->hasParameter('REDICIO')):                                    //Sí té el botó premut. Si no hi ha botó, no faig res
-                  $this->REDICIO = $this->getRequestParameter('REDICIO');                            //Agafa el valor que estic editant
-                  $L = $this->getRequestParameter('L');                                              //Carrego les dades del llistat
-                  $this->D = $L[$this->REDICIO];                                                     //Ho passo a D per editar.
-                  $this->CANVI_EDICIO_HORARI = true;                                                 //Activo la edició d'horari
-                endif;
-                  $this->HORARIS = true;                                                             //Obro el formulari d'HORARIS
-                  $this->LINIES = $this->getRequestParameter('L');                                   //Torno a carregar les mateixes Linies ( encara no he fet cap canvi )
-                break; 
-       case 'T':                
-                $this->ACTIVITAT = $this->ACTIVITAT;                              
-                $this->TEXTOS = TRUE;       
-                break;        
-       case 'ST':
-                $this->ACTIVITAT = $this->GuardaText($this->IDA);
-                $this->TEXTOS = true;
-                break;
-       case '+':
-       			 //Guarda els horaris       			               			      
-                $this->D = $this->getRequestParameter('D');                                                                               
-                $this->HORARIS = true;
-                break;                
-       			
-     default:   $this->CALENDARI = HorarisPeer::getCalendari( null , null , $this->DATAI, $this->DATAF, null , true );         			                					
-    			$this->LLISTA = false;
-    			$this->CONSULTA = true;
-    			break;                    
-    }
-    
-  }
-  */
-
   public function saveCicle()
   {
      $C = new Cicles();
@@ -961,135 +817,62 @@ class gestioActions extends sfActions
 	 endif;     
   }
   
-  public function GuardaHorari()
+  public function GuardaHorari($horaris, $material, $espais)
   {
-      
-      //Captem el paràmetre D amb les dades.
-     $D = $this->getRequestParameter('D');
-     
-     //Agafo el codi de l'activitat que estem guardant
-     $IdA = $this->getRequestParameter('IDA');
 
-     //Segmentem els dies per crear per cada dia, un registre a la BDD
-     $DIES = explode(" ", $D['DIA']); if(sizeof($DIES)>1) array_pop($DIES); //Traiem l'últim que és un espai en blanc      
+  	$ERRORS = array();
+  	$DIES = explode(',',$horaris['Dia']);
+  	$DBDD[] = array();  	  	
+  	
+  	if( empty($DIES) ): $ERRORS[] = "No has entrat cap data"; endif;  	
+  	
+  	foreach($DIES as $D):  		
+  		list($dia,$mes,$any) = explode('/',$D);  		
+  	  	if(!($any > 2000 && $mes < 13 && $dia < 31 )) $ERRORS[] = "La data que has entrat és incorrecta";
+  		$DBDD['DIES'][] = "$any-$mes-$dia";  		  		
+  	endforeach;  	             
 
-     //Migrem les dades a format línia de BDD          
-     foreach($DIES as $DIA):
-        $this->LINIES[] = array('DIA'=>$DIA,'HORAPRE'=>$D['HORAPRE'],'HORAIN'=>$D['HORAIN'],'HORAFI'=>$D['HORAFI'],'HORAPOST'=>$D['HORAPOST'],'ESPAIS'=>$D['ESPAIS'], 'MATERIAL'=>$D['MATERIAL'], 'AVIS'=>$D['AVIS'], 'ESPECTADORS'=>$D['ESPECTADORS']);     
-      endforeach;
-     
-    $ERRORS = array();
+  	$DBDD['HoraPre']  = $horaris['HoraPre']['hour'].':'.$horaris['HoraPre']['minute'];
+  	$DBDD['HoraIn']   = $horaris['HoraInici']['hour'].':'.$horaris['HoraInici']['minute'];
+  	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
+  	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
+  			              
+    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )   $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
+    if( $DBDD['HoraIn']  > $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran que la d'acabament.";
+    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] ) $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";
+                                
+    //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
+    foreach($DBDD['DIES'] as $D):
     
-   
-   //Per cada línia que hem de guardar a la BDD comprovem la validesa de les dades. Si hi ha algun error, no es guardaran les dades.  
-    foreach($this->LINIES as $K=>$L):
-        
-      if( empty($L['DIA']) ) $ERRORS[] = "No has entrat cap dia";
-      if( empty($L['HORAPRE'])  ) $ERRORS[] = "No has entrat cap hora PRE";
-      if( empty($L['HORAIN'])   ) $ERRORS[] = "No has entrat cap hora IN";
-      if( empty($L['HORAFI'])   ) $ERRORS[] = "No has entrat cap hora FI";
-      if( empty($L['HORAPOST']) ) $ERRORS[] = "No has entrat cap hora POST";
-      if( $L['HORAPRE']   > $L['HORAIN'] ) $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
-      if( $L['HORAIN']    > $L['HORAFI'] ) $ERRORS[] = "L'hora d'inici no pot ser més gran que la d'acabament.";
-      if( $L['HORAFI']    > $L['HORAPOST'] ) $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";
-      
-      list($any,$mes,$dia) = explode("-",$L['DIA']);
-      if(!($any > 2000 && $mes < 13 && $dia < 31 )) $ERRORS[] = "La data que has entrat és incorrecta";      
-      
-      list($hora,$minuts) = explode(":",$L['HORAPRE']);
-      if(!($hora < 24 && $minuts < 60)) $ERRORS[] = "L'hora PRE és incorrecta";
-      list($hora,$minuts) = explode(":",$L['HORAIN']);
-      if(!($hora < 24 && $minuts < 60)) $ERRORS[] = "L'hora IN és incorrecta";
-      list($hora,$minuts) = explode(":",$L['HORAFI']);
-      if(!($hora < 24 && $minuts < 60)) $ERRORS[] = "L'hora FI és incorrecta";
-      list($hora,$minuts) = explode(":",$L['HORAPOST']);
-      if(!($hora < 24 && $minuts < 60)) $ERRORS[] = "L'hora POST és incorrecta";
-      
-       
-      //Mirem que la data no es solapi amb alguna altra activitat al mateix espai                                         
-      $C = new Criteria();
-      $C->add(HorarisPeer::DIA,$L['DIA']);
-      
-      // -------
-      //----
-      $C1 = $C->getNewCriterion(HorarisPeer::HORAPRE,$L['HORAPRE'],CRITERIA::GREATER_EQUAL);          
-      $C2 = $C->getNewCriterion(HorarisPeer::HORAPRE, $L['HORAPOST'],CRITERIA::LESS_EQUAL);
-      $C1->addAnd($C2);
-      
-      // -------
-      //      ----
-      $C3 = $C->getNewCriterion(HorarisPeer::HORAPOST,$L['HORAPRE'],CRITERIA::GREATER_EQUAL);          
-      $C4 = $C->getNewCriterion(HorarisPeer::HORAPOST, $L['HORAPOST'],CRITERIA::LESS_EQUAL);
-      $C3->addAnd($C4);
-      
-      // ------
-      //   --
-      $C5 = $C->getNewCriterion(HorarisPeer::HORAPRE, $L['HORAPRE'] ,CRITERIA::LESS_EQUAL);          
-      $C6 = $C->getNewCriterion(HorarisPeer::HORAPOST, $L['HORAPOST'],CRITERIA::GREATER_EQUAL);
-      $C5->addAnd($C6);
+    	foreach($espais as $E=>$idE):
+	    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] ) > 0 ):
+	    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
+	    		$ERRORS[] = "El dia $D coincideix a l'espai $Espai amb una altra activitat";
+	    	endif;
 
-      // -------
-      //---------
-      $C7 = $C->getNewCriterion(HorarisPeer::HORAPRE, $L['HORAPRE'] ,CRITERIA::GREATER_EQUAL);          
-      $C8 = $C->getNewCriterion(HorarisPeer::HORAPOST, $L['HORAPOST'],CRITERIA::LESS_EQUAL);
-      $C7->addAnd($C8);
-      
-      
-      $C->addOr($C1); $C1->addOr($C3); $C1->addOr($C5); $C1->addOr($C7);
-      $C->add( HorarisPeer::ACTIVITATS_ACTIVITATID , $IdA , Criteria::NOT_EQUAL );
-      
-      $HORARIS_SOLAPAMENT_TEMPORAL = HorarisespaisPeer::doSelectJoinHoraris($C);
-      
-      //Un cop capturats els horaris que encaixen amb altres, mirem si el material també encaixa
-      foreach($HORARIS_SOLAPAMENT_TEMPORAL as $H):
-         $idE = $H->getEspaisEspaiid();                  
-	     if( isset($idE) && in_array( $idE , $L['ESPAIS'] ) ) $ERRORS[$idE.$L['DIA'].'ESPAI'] = "Solapament temporal a ".EspaisPeer::retrieveByPK( $idE )->getNom().' el dia '.$L['DIA'];	     
+	    	foreach($material as $M=>$idM):
+	    		if( HorarisPeer::validaMaterial( $D , $idE , $idM , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
+	    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
+	    			$Mater = MaterialPeer::retrieveByPK($idM)->getNom();
+	    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
+    			endif;
+	    	
+	    	endforeach;     	
+    	endforeach;
+        	    	
+    endforeach;
 
-	     $idM = $H->getMaterialIdmaterial();	     
-         if( isset($idM) && in_array( $idM , $L['MATERIAL'] ) ) $ERRORS[$idM.$L['DIA'].'MATERIAL'] = "El material ".MaterialPeer::retrieveByPK( $idM )->getNom().' no disponible el dia '.$L['DIA'];
-
-      endforeach;
-                  
+    foreach($material as $M):
+    
+    
     endforeach;
            
     //Si no hem trobat cap error, guardem els registres d'ocupació. 
     if(empty($ERRORS)):
-            
-      //Si tinc un registre a D que és idH vol dir que estic fent una edició d'un horari. Simplement l'esborro perquè l'estic modificant
-      if(!empty($D['idH'])): HorarisPeer::retrieveByPK($D['idH'])->delete(); endif; 
-            
-      //Com que abans he esborrat l'antic, ara entro el nou que pot tenir més línies      
-      foreach( $this->LINIES as $L ):               
-        $H = new Horaris();
-        $H->setNew(true);  
-        $H->setActivitatsactivitatid($IdA);
-        $H->setDia($L['DIA']);
-        $H->setHorapre($L['HORAPRE']);
-        $H->setHorainici($L['HORAIN']);
-        $H->setHorafi($L['HORAFI']);
-        $H->setHorapost($L['HORAPOST']);
-        $H->setAvis($L['AVIS']);
-        $H->setEspectadors($L['ESPECTADORS']);
-        $H->setPlaces(null);
-        $H->save();        
-                
-        foreach($L['ESPAIS'] as $K=>$V):
-           $HE = new Horarisespais(); $HE->setNew(true);
-           if( $V > 0 ):
-	           $HE->setHorarisHorarisid($H->getHorarisid());
-	           $HE->setEspaisEspaiid($V);
-	           if(!empty($L['MATERIAL'][$K])) $HE->setMaterialIdmaterial($L['MATERIAL'][$K]);            //Entrem com a material el que hi ha a la mateixa línia de l'espai
-	           $HE->save();
-	       endif;                
-        endforeach;
 
-       endforeach;
-
-       else:
+ //   	HorarisPeer::save( $DBDD , $MATERIAL , $ESPAIS );
        
-       $this->D = $this->getRequestParameter('D');
-       
-       endif;
+    endif;
   
     return $ERRORS;
      

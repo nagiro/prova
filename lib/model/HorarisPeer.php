@@ -211,4 +211,66 @@ class HorarisPeer extends BaseHorarisPeer
      return $RET;     
   }  
   
+  static public function validaDia( $DIA , $idE , $HoraPre , $HoraPost , $idH )
+  {
+  
+	$SQL = "  SELECT count(*) as Va
+				FROM horarisespais he, horaris h
+    		   WHERE h.DIA = '$DIA'
+    			 AND h.HorarisID = he.Horaris_HorarisID
+    			 AND (
+						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPre <= '$HoraPost' ) ) OR
+						( ( h.horaPost >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) ) OR
+						( ( h.horaPre <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
+						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
+        			)
+        		 AND he.Espais_EspaiID = $idE
+        		 AND he.Horaris_HorarisID <> $idH        			        			
+        	";
+    
+     $con = Propel::getConnection();
+     $stmt = $con->prepare($SQL);
+     $stmt->execute();
+
+     $rs = $stmt->fetch(PDO::FETCH_OBJ);
+     return $rs->Va;  	
+  
+  }
+  
+  static public function validaMaterial( $DIA , $idE , $idM , $HoraPre , $HoraPost , $idH)
+  {
+  	
+	$SQL = "  SELECT count(*) as Va
+				FROM horarisespais he, horaris h
+    		   WHERE h.DIA = '$DIA'
+    			 AND h.HorarisID = he.Horaris_HorarisID
+    			 AND (
+						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPre <= '$HoraPost' ) ) OR
+						( ( h.horaPost >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) ) OR
+						( ( h.horaPre <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
+						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
+        			)
+        		 AND he.Espais_EspaiID = $idE
+        		 AND he.Material_idMaterial = $idM     
+        		 AND he.Horaris_HorarisID <> $idH   			
+        	";
+	
+	
+     $con = Propel::getConnection();
+     $stmt = $con->prepare($SQL);
+     $stmt->execute();
+
+     $rs = $stmt->fetch(PDO::FETCH_OBJ);
+     return $rs->Va;  	
+  	
+  }
+  
+  
+  static public function save( $DBDD , $MATERIAL , $ESPAIS )
+  {
+  
+  	
+  	
+  }
+  
 }

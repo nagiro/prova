@@ -32,7 +32,9 @@
 	 $(document).ready(function() {	
 		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1
 		 ajax($("#generic\\[1\\]"),1);												//Inicialitzem la segona llista pel primer valor							
-		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari		 	 
+		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
+		 $("#mesespais").click( function () { creaFormEspais(); });
+
 	 });
 
 	 //Funció que controla la crida AJAX 
@@ -64,19 +66,27 @@
 		$("#id").val(id);
 		
 		var options = '<?=MaterialgenericPeer::selectAjax(); ?>';
-		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></spa n>');
-		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer
-																			
+		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
+		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
 	}
 
-	function esborraLinia(id)
-	{	
-		$("row\\["+id+"\\]").remove();
+	function creaFormEspais()
+	{
+				
+		var id = $("#idE").val();
+		id = (parseInt(id) + parseInt(1));
+		$("#idE").val(id);
+		
+		var options = '<?=EspaisPeer::selectJavascript(); ?>';
+		$("#divTxtE").append('<span id="rowE['+id+']"><select name="espais['+id+']" id="espais['+id+']">'+ options +'</select><input type="button" onClick="esborraLiniaE('+id+');" id="mesespais" value="-"></input><br /></span>');
+
 	}
 	
+	function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
+	function esborraLiniaE(id) { $("#rowE\\["+id+"\\]").remove(); }
+	
 	</script>
-	           
-        
+	                   
   <?php IF ($MODE['CONSULTA']): ?>
 
 	<form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
@@ -165,20 +175,54 @@
                	<?=$FHorari?>
              
              <tr>
-             	<td>Material: </td><td>
-             		<input type="button" id="mesmaterial" value="+"></input><br />
+             	<td>Espais: </td><td>
+             	
+             	<?php 
+					$id = 1;  $VAL = "";            	
+             		foreach($ESPAIS AS $E=>$idE):
+
+             		$VAL .= '<span id="rowE['.$id.']">
+             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($idE).'</select>
+             					<input type="button" onClick="esborraLiniaE('.$id.');" id="mesespais" value="-"></input>
+             					<br />
+             			  	 </span>
+             			  ';
+             		      $id++;      	
+             		      	
+             		endforeach;
+
+             		echo '<input type="button" id="mesespais" value="+"></input><br />';             		             		             		             		    				   
+   					echo '<input type="hidden" id="idE" value="'.$id.'"></input>';   					
+				    echo '<div id="divTxtE">'.$VAL.'</div>';
+             	?>             	             	            
              		
-             		<? 	$j=0; ?>
-             		<? 	foreach($HORARI->getMaterials() as $M): ?>         			             		             		                       		
-             		<?php endforeach; ?>
-             		
-             		<span id="row[1]">             			    
-					    <select onChange="ajax(this,1)" name="generic[1]" id="generic[1]"><?=MaterialgenericPeer::selectAjax(); ?></select>
-					    <select name="material[1]" id="material[1]"></select>
-					    <input type="button" onClick="esborraLinia(1);" id="mesmaterial" value="-"></input>
-				    </span>				    				   
-   					<input type="hidden" id="id" value="1"></input>   					
-				    <div id="divTxt"></div>   
+				 </td>
+			</tr>   
+			 <tr>
+			 <td>Material: </td><td>		
+
+             	<?php 
+					$id = 1;  $VAL = "";
+					            	
+             		foreach($MATERIAL AS $M=>$idM):
+
+             		$VAL .= '
+  	 	  	        		<span id="row['.$id.']">
+  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.$options.'</select>
+  	 	  	        			<select name="material['.$id.']" id="material['.$id.']"></select>	
+  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
+  	 	  	        			<br />
+  	 	  	        		</span>
+             			  ';
+             		      $id++;      	
+             		      	
+             		endforeach;
+
+             		echo '<input type="button" id="mesmaterial" value="+"></input><br />';
+             		echo '<input type="hidden" id="id" value="'.$id.'"></input>';   					
+				    echo '<div id="divTxt">'.$VAL.'</div>';
+             						    
+             	?>             	             	            
              		
              	</td>
              </tr>  				
