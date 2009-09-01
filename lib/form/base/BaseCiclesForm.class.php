@@ -16,12 +16,14 @@ class BaseCiclesForm extends BaseFormPropel
       'CicleID'    => new sfWidgetFormInputHidden(),
       'Nom'        => new sfWidgetFormTextarea(),
       'Descripcio' => new sfWidgetFormTextarea(),
+      'Baixa'      => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
       'CicleID'    => new sfValidatorPropelChoice(array('model' => 'Cicles', 'column' => 'CicleID', 'required' => false)),
       'Nom'        => new sfValidatorString(array('required' => false)),
       'Descripcio' => new sfValidatorString(array('required' => false)),
+      'Baixa'      => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('cicles[%s]');

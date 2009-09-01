@@ -19,7 +19,7 @@ class ActivitatsForm extends sfFormPropel
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
       'Preu'                            => new sfWidgetFormInput(),
       'PreuReduit'                      => new sfWidgetFormInput(),
-      'Publicable'                      => new sfWidgetFormInputCheckbox(),
+      'Publicable'                      => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>array(ActivitatsPeer::getSelectEstats()))),
     ));
 

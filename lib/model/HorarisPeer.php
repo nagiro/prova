@@ -224,10 +224,11 @@ class HorarisPeer extends BaseHorarisPeer
 						( ( h.horaPre <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
 						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
         			)
-        		 AND he.Espais_EspaiID = $idE
-        		 AND he.Horaris_HorarisID <> $idH        			        			
+        		 AND he.Espais_EspaiID = $idE        			        			
         	";
-    
+	
+   	 if( $idH > 0 ) $SQL .= " AND he.Horaris_HorarisID <> $idH";
+			
      $con = Propel::getConnection();
      $stmt = $con->prepare($SQL);
      $stmt->execute();
@@ -251,11 +252,11 @@ class HorarisPeer extends BaseHorarisPeer
 						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
         			)
         		 AND he.Espais_EspaiID = $idE
-        		 AND he.Material_idMaterial = $idM     
-        		 AND he.Horaris_HorarisID <> $idH   			
+        		 AND he.Material_idMaterial = $idM        			
         	";
 	
-	
+	 if( $idH > 0 ) $SQL .= " AND he.Horaris_HorarisID <> $idH";
+	 
      $con = Propel::getConnection();
      $stmt = $con->prepare($SQL);
      $stmt->execute();
@@ -266,10 +267,59 @@ class HorarisPeer extends BaseHorarisPeer
   }
   
   
-  static public function save( $DBDD , $MATERIAL , $ESPAIS )
+  static public function save( $HORARIS, $DBDD , $MATERIAL , $ESPAIS )
   {
-  
+	echo 'Horaris: '.$HORARIS['HorarisID'];
+  	//Esborrem les dades dels antics horaris sempre i quant sigui nou  	
+	if($HORARIS['HorarisID'] > 0) //Si l'horari NO és nou, l'esborrem
+	{ 
+		
+		$OH = HorarisPeer::retrieveByPK($HORARIS['HorarisID']);		
+		foreach($OH->getHorarisespaiss() as $HE):
+			$HE->delete();
+		endforeach;
+		$OH->delete();
+		
+	}	 	
   	
+  	//Per cada un dels dies que ha entrat, creem un horari
+  	foreach($DBDD['DIES'] as $D):  		
+  		  			  
+	  	$OH = new Horaris();
+	  	$OH->setNew(true);
+	  	$NOU = true;	    
+	  	  	
+	  	$OH->setActivitatsActivitatid($HORARIS['Activitats_ActivitatID']);
+	  	$OH->setHorainici($DBDD['HoraIn']);
+	  	$OH->setHorapre($DBDD['HoraPre']);
+	  	$OH->setHorapost($DBDD['HoraPost']);
+	  	$OH->setHorafi($DBDD['HoraFi']);
+	  	$OH->setAvis($HORARIS['Avis']);
+	  	$OH->setEspectadors($HORARIS['Espectadors']);
+	  	$OH->setPlaces($HORARIS['Places']);
+		$OH->setDia($D);
+		$OH->save();  //Guardem
+  	
+  		foreach($ESPAIS as $K=>$idE):  			
+  			foreach($MATERIAL as $K=>$idM):
+  				$OHE = new Horarisespais();				//Creem  un registre per espai i per material de l'horari del dia
+  				$OHE->setNew(true);  			
+  				$OHE->setMaterialIdmaterial($idM);
+  				$OHE->setEspaisEspaiid($idE);
+  				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+  				$OHE->save();
+  			endforeach;
+  			if(empty($MATERIAL)):
+  				$OHE = new Horarisespais();				//Creem  un registre per espai i per material de l'horari del dia
+  				$OHE->setNew(true);  			
+  				$OHE->setMaterialIdmaterial(NULL);
+  				$OHE->setEspaisEspaiid($idE);
+  				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+  				$OHE->save();
+  			endif;
+  		endforeach;
+  			
+  	endforeach;
   	
   }
   

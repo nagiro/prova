@@ -23,4 +23,11 @@ class CiclesPeer extends BaseCiclesPeer
         
   }
   
+  static public function getCiclesActius(Criteria $C = null)
+  {  	
+  	if(is_null($C)) $C = new Criteria();
+  	$C->add(self::BAIXA,0);
+  	return self::doSelect($C);
+  }
+  
 }

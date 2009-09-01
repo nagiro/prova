@@ -16,10 +16,10 @@ class HorarisForm extends sfFormPropel
       'HorarisID'              => new sfWidgetFormInputHidden(),
       'Activitats_ActivitatID' => new sfWidgetFormInputHidden(),
       'Dia'                    => new sfWidgetFormInputDatePropi(array(),array('id'=>'multi999Datepicker','style'=>'width:400px')),
-      'HoraPre'                => new sfWidgetFormTime(),
-      'HoraInici'              => new sfWidgetFormTime(),
-      'HoraFi'                 => new sfWidgetFormTime(),
-      'HoraPost'               => new sfWidgetFormTime(),
+      'HoraPre'                => new sfWidgetFormTime(array('can_be_empty'=>false)),
+      'HoraInici'              => new sfWidgetFormTime(array('can_be_empty'=>false)),
+      'HoraFi'                 => new sfWidgetFormTime(array('can_be_empty'=>false)),
+      'HoraPost'               => new sfWidgetFormTime(array('can_be_empty'=>false)),
       'Avis'                   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
       'Espectadors'            => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
       'Places'                 => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
@@ -28,14 +28,14 @@ class HorarisForm extends sfFormPropel
     $this->setValidators(array(
       'HorarisID'              => new sfValidatorPropelChoice(array('model' => 'Horaris', 'column' => 'HorarisID', 'required' => false)),
       'Activitats_ActivitatID' => new sfValidatorPropelChoice(array('model' => 'Activitats', 'column' => 'ActivitatID')),
-      'Dia'                    => new sfValidatorDate(array('required' => false)),
+      'Dia'                    => new sfValidatorString(array('required' => false)),
       'HoraInici'              => new sfValidatorTime(array('required' => false)),
       'HoraFi'                 => new sfValidatorTime(array('required' => false)),
       'HoraPre'                => new sfValidatorTime(array('required' => false)),
       'HoraPost'               => new sfValidatorTime(array('required' => false)),
-      'Avis'                   => new sfValidatorString(),
-      'Espectadors'            => new sfValidatorInteger(),
-      'Places'                 => new sfValidatorInteger(),
+      'Avis'                   => new sfValidatorString(array('required'=>false)),
+      'Espectadors'            => new sfValidatorInteger(array('required'=>false)),
+      'Places'                 => new sfValidatorInteger(array('required'=>false)),
     ));
 
     

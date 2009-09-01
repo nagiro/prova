@@ -31,7 +31,7 @@
 	
 	 $(document).ready(function() {	
 		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1
-		 ajax($("#generic\\[1\\]"),1);												//Inicialitzem la segona llista pel primer valor							
+		 //ajax($("#generic\\[1\\]"),1);												//Inicialitzem la segona llista pel primer valor							
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
 		 $("#mesespais").click( function () { creaFormEspais(); });
 
@@ -61,10 +61,10 @@
 	function creaFormMaterial()
 	{
 		
-		var id = $("#id").val();
+		var id = $("#idV").val();		
 		id = (parseInt(id) + parseInt(1));
-		$("#id").val(id);
-		
+		$("#idV").val(id);		
+				
 		var options = '<?=MaterialgenericPeer::selectAjax(); ?>';
 		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
 		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
@@ -86,8 +86,9 @@
 	function esborraLiniaE(id) { $("#rowE\\["+id+"\\]").remove(); }
 	
 	</script>
-	                   
+	                   	                   
   <?php IF ($MODE['CONSULTA']): ?>
+
 
 	<form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
 	    <DIV class="REQUADRE">
@@ -147,7 +148,7 @@
  			<? if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
 			<? foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais(); ?>			
 				<TR>
-					<TD class="<?php $PAR ?>" width=""><?=link_to($H->getHorarisid(),'gestio/gActivitats?IDH='.$H->getHorarisid())?></TD>
+					<TD class="<?php $PAR ?>" width=""><?=link_to($H->getHorarisid(),'gestio/gActivitats?accio=CH&IDH='.$H->getHorarisid())?></TD>
 					<TD class="<?php $PAR ?>" width=""><?=$H->getDia('d/m/Y')?></TD>
 					<TD class="<?php $PAR ?>" width=""><?=$H->getHorapre('H:m') ?></TD>
 					<TD class="<?php $PAR ?>" width=""><?=$H->getHorainici('H:m') ?></TD>
@@ -168,8 +169,9 @@
 	 
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
 	 	<div class="REQUADRE">	 		
-	 		<DIV class="TITOL">Edició horaris</DIV>
-	    	<table class="FORMULARI" width="550x">                  			    	
+	 		<DIV class="TITOL">Edició horaris <?=link_to('Nou horari','gestio/gActivitats?accio=CH') ?></DIV>
+	    	<table class="FORMULARI" width="550x">
+	    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
 	    	<tr><td width="100px"></td><td width="450x"></td></tr>
 
                	<?=$FHorari?>
@@ -178,8 +180,9 @@
              	<td>Espais: </td><td>
              	
              	<?php 
-					$id = 1;  $VAL = "";            	
-             		foreach($ESPAIS AS $E=>$idE):
+					$id = 1;  $VAL = "";
+					if(!isset($ESPAISOUT)) $ESPAISOUT = array();            	
+             		foreach($ESPAISOUT AS $E=>$idE):
 
              		$VAL .= '<span id="rowE['.$id.']">
              					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($idE).'</select>
@@ -203,23 +206,22 @@
 
              	<?php 
 					$id = 1;  $VAL = "";
-					            	
-             		foreach($MATERIAL AS $M=>$idM):
+					if(!isset($MATERIALOUT)) $MATERIALOUT = array();            	
+             		foreach($MATERIALOUT AS $M=>$idM):
 
              		$VAL .= '
   	 	  	        		<span id="row['.$id.']">
-  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.$options.'</select>
-  	 	  	        			<select name="material['.$id.']" id="material['.$id.']"></select>	
+  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
+  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select>	
   	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
   	 	  	        			<br />
-  	 	  	        		</span>
+  	 	  	        		</span>  	 	  	        			
              			  ';
-             		      $id++;      	
-             		      	
-             		endforeach;
-
+             		      $id++;      	             		      
+             		                   		      	
+             		endforeach;					
              		echo '<input type="button" id="mesmaterial" value="+"></input><br />';
-             		echo '<input type="hidden" id="id" value="'.$id.'"></input>';   					
+             		echo '<input type="hidden" id="idV" value="'.$id.'"></input>';   					
 				    echo '<div id="divTxt">'.$VAL.'</div>';
              						    
              	?>             	             	            
@@ -251,7 +253,7 @@
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT'))?>
+	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEDESCRIPCIO'))?>
 	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
@@ -260,26 +262,28 @@
      </form>
       
   <?php ELSEIF( $MODE['CICLES'] ): ?>
-      
-      <?php echo input_hidden_tag('IDA',$IDA); ?>
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA_MENU"><TABLE CLASS="SUBMEN"><TR><?php menu(4,$ACTIVITAT,$EDICIO); ?></TR></table></TD></TR>
-            <TR><TD class="NOTICIA">                
-                <TABLE class="DADES">
-                <?php
-                   echo '<TR><TD class="TITOL">NOM</TD><TD class="TITOL">DESCRIPCIO</TD></TR>';
+
+     <?php menu(4,$ACTIVITAT_NOVA); ?>
+
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
+	 	<div class="REQUADRE">	 			 		
+	    	<table class="DADES" width="600px">                  			    	
+	    	<tr><td width="150px"></td><td width="400px"></td></tr>
+              <?php
+              	                                      
                    foreach($LLISTA_CICLES as $C):
                       
-                      echo '<TR><TD class="LINIA">'.$C->getNom().'</TD><TD class="LINIA">'.$C->getDescripcio().'</TD></TR>';
+                      echo '<TR><TD>'.link_to(image_tag('template/bin_closed.png'),'gestio/gActivitats?accio=DC&idC='.$C->getCicleid()).' '.$C->getNom().'</TD><TD>'.$C->getDescripcio().'</TD></TR>';
                    
                    endforeach;
-                   echo '<TR><TD class="LINIA">'.input_tag('NOM',$CICLE->getNom()).'</TD><TD class="LINIA">'.input_tag('DESCRIPCIO',$CICLE->getDescripcio()).'</TD></TR>';
+                   echo '<TR><TD class="LINIA">'.input_tag('NOM',$C->getNom()).'</TD><TD class="LINIA">'.input_tag('DESCRIPCIO',$C->getDescripcio()).'</TD></TR>';
                    echo '</TABLE>';
-                   echo submit_tag('Afegir cicle',array('name'=>'BCICLESAVE'));                   
-                  ?>                                                                
-            </TD>
-        </TR>
-      </TABLE>      
+                   echo submit_tag('Afegir cicle',array('name'=>'BSAVECICLE'));                   
+                  ?>                                                                           								                	 
+      		</table>      		
+      	</div>
+     </form>
+       
     
   <?php ELSEIF( $MODE['LLISTAT'] ): ?>
 

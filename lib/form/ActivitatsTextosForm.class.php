@@ -13,8 +13,8 @@ class ActivitatsTextosForm extends sfFormPropel
   public function setup()
   {
   	
-  	$URL_IMATGE = sfConfig::get('web_dir').'/images/noticies/'.$this->getValue('Imatge');
-  	$URL_PDF    = sfConfig::get('web_dir').'/images/noticies/'.$this->getValue('PDF');
+  	$URL_IMATGE = sfConfig::get('sf_web_dir').'/images/noticies'; 
+  	$URL_PDF    = sfConfig::get('sf_web_dir').'/images/noticies'; 
   	
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
@@ -27,8 +27,8 @@ class ActivitatsTextosForm extends sfFormPropel
       'Estat'                           => new sfWidgetFormInputHidden(),
       'Descripcio'                      => new sfWidgetFormInputHidden(),
 	  'PublicaWEB'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',2=>'No'))),
-      'Imatge'                          => new sfWidgetFormInputFileEditable(array('file_src'=>$URL_IMATGE , 'is_image'=>true,'with_delete'=>false)),
-      'PDF'                             => new sfWidgetFormInputFileEditable(array('file_src'=>$URL_PDF , 'is_image'=>false,'with_delete'=>false)),                  
+      'Imatge'                          => new sfWidgetFormInputFileEditable(array('file_src'=>sfConfig::get('sf_webroot').'/images/noticies/'.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false)),
+      'PDF'                             => new sfWidgetFormInputFileEditable(array('file_src'=>sfConfig::get('sf_webroot').'/images/noticies/'.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),                  
       'tWEB'                            => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
       'dWEB'                            => new sfWidgetFormTextareaTinyMCE(),
       'tNoticia'                        => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
@@ -46,16 +46,16 @@ class ActivitatsTextosForm extends sfFormPropel
       'PreuReduit'                      => new sfValidatorNumber(array('required' => false)),
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),
       'Estat'                           => new sfValidatorString(array('max_length' => 1, 'required' => false)),
-      'Descripcio'                      => new sfValidatorString(),
-      'Imatge'                          => new sfValidatorString(),
-      'PDF'                             => new sfValidatorString(),
-      'PublicaWEB'                      => new sfValidatorInteger(),
-      'tWEB'                            => new sfValidatorString(),
-      'dWEB'                            => new sfValidatorString(),
-      'tNoticia'                        => new sfValidatorString(),
-      'dNoticia'                        => new sfValidatorString(),
-      'tGENERAL'                        => new sfValidatorString(),
-      'dGENERAL'                        => new sfValidatorString(),
+      'Descripcio'                      => new sfValidatorString(array('required' => false)),
+      'Imatge'                          => new sfValidatorFile(array('path'=>$URL_IMATGE , 'required' => false)),
+      'PDF'                             => new sfValidatorFile(array('path'=>$URL_PDF , 'required' => false)),
+      'PublicaWEB'                      => new sfValidatorInteger(array('required' => false)),
+      'tWEB'                            => new sfValidatorString(array('required' => false)),
+      'dWEB'                            => new sfValidatorString(array('required' => false)),
+      'tNoticia'                        => new sfValidatorString(array('required' => false)),
+      'dNoticia'                        => new sfValidatorString(array('required' => false)),
+      'tGENERAL'                        => new sfValidatorString(array('required' => false)),
+      'dGENERAL'                        => new sfValidatorString(array('required' => false)),
     ));
 
     $this->widgetSchema->setLabels(array(
@@ -83,11 +83,5 @@ class ActivitatsTextosForm extends sfFormPropel
   {
     return 'Activitats';
   }
-	
-  public function save($conn= NULL)
-  {
-  
-  	parent::save();
-  }
-  
+	  
 }

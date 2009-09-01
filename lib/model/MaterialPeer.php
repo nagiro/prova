@@ -24,12 +24,26 @@ class MaterialPeer extends BaseMaterialPeer
     $MG = self::doSelect(new Criteria());
     $RET = array();
     foreach($MG as $M):
-      $RET[$M->getIdmaterial()] = $M->getIdentificador();    
-    endforeach;
-    
+      $RET[$M->getIdmaterial()] = $M->getIdentificador().' - '.$M->getNom();    
+    endforeach;    
     return $RET;    
       
   } 
+  
+  static public function selectGeneric($idG)
+  {
+	  	
+    $C = new Criteria();
+    $C->add(self::MATERIALGENERIC_IDMATERIALGENERIC , $idG);
+    $RET = array();
+  	foreach(self::doSelect($C) as $M):
+  		$RET[$M->getIdmaterial()] = $M->getIdentificador().' - '.$M->getNom();
+  	endforeach;
+  	
+  	return $RET;
+  	
+  }
+  
   
   static public function getMaterial($MATERIALGENERIC , $PAGINA = 1)
   {
