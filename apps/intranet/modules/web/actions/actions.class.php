@@ -13,7 +13,7 @@ class webActions extends sfActions
 {
   /**
    * Executes index action
-   *
+   * 
    */
    
   public function LoadWEB()
@@ -115,47 +115,34 @@ class webActions extends sfActions
   
   public function executeRegistre()
   {
+
      $this->LoadWEB();
      $this->setTemplate('index');     
      $this->ACCIO = 'registre';
-     $this->DADES_USUARI = new Usuaris();
+     $this->FUSUARI = new ClientUsuarisForm();
      $this->ESTAT = '---'; 
   }
   
-  public function executeRegistrat()
+  public function executeRegistrat(sfWebRequest $request)
   {
-     
-     $U = new Usuaris();
-         
-     $U->setDni($this->getRequestParameter('DNI'));
-     $U->setPasswd($this->getRequestParameter('PASSWD'));
-     $U->setNom($this->getRequestParameter('NOM'));
-     $U->setCog1($this->getRequestParameter('COG1'));
-     $U->setCog2($this->getRequestParameter('COG2'));
-     $U->setEmail($this->getRequestParameter('EMAIL'));
-     $U->setTelefon($this->getRequestParameter('TELEFON'));
-     $U->setMobil($this->getRequestParameter('MOBIL'));
-     $U->setAdreca($this->getRequestParameter('ADRECA'));
-     $U->setCodipostal($this->getRequestParameter('CODIPOSTAL'));
-     $U->setPoblacio($this->getRequestParameter('POBLACIO'));
-     $U->setPoblaciotext($this->getRequestParameter('POBLACIOT'));
-     $U->setNivellsIdnivells(2);
-     $U->setHabilitat(1);     
+  	//Inicialitzem l'usuari per defecte.
+  	$OU = new Usuaris();
+  	$OU->setNivells(Nivells::USER);
+  	$OU->setHabilitat(true);
+  	
+  	//Creem el formulari usuari
+  	$this->FUSUARI = new ClientUsuarisForm($OUsuaris);
+  	$this->FUSUARI->bind($request->getParameter('usuaris'));
 
-     //Comprovem que el DNI no existeixi. Si ja existeix informem l'usuari
+  	//Comprovem que el DNI no existeixi. Si ja existeix informem l'usuari
      $C = new Criteria();
-     $C->add(UsuarisPeer::DNI , $this->getRequestParameter('DNI'));
-     
-     if(UsuarisPeer::doCount($C) > 0):
-         $this->LoadWEB(); $this->setTemplate('index'); $this->ACCIO = 'registre';      
-         $this->DADES_USUARI = $U;
-         $this->ESTAT = 'ERROR';                           
-      else:
-	     $U->save();     
-	     $this->LoadWEB(); $this->setTemplate('index'); $this->ACCIO = 'registre';      
-         $this->DADES_USUARI = $U;                  
-         $this->ESTAT = 'OK';         
-     endif;
+     $C->add(UsuarisPeer::DNI , $this->FUSUARI->getValue('DNI'));
+  	
+  	$DUPLICAT = (UsuarisPeer::doCount($C) > 0);
+  	if($this->FUSUARI->isValid() && !$DUPLICAT) $this->FUSUARI->save();
+
+  	 if($DUPLICAT) $this->ESTAT = 'ERROR'; else $this->ESTAT = 'OK';  	     
+     $this->LoadWEB(); $this->setTemplate('index'); $this->ACCIO = 'registre';           
      
   }
   
@@ -219,8 +206,7 @@ class webActions extends sfActions
             break;
 
        //Mostra les activitats quan cliquem un dia del calendari
-	   case 'ca':
-//	        if($this->CERCA <> '') $this->CarregaCerca(true,$this->DATACALENDARI);	        	    		        	    
+	   case 'ca':	        	    		        	    
 	    	$this->ACTIVITATS_LLISTAT = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI));
 	    	$this->ACCIO = 'activitats';
 	       break;

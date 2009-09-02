@@ -28,7 +28,7 @@
 	switch($ACCIO){
 	   case 'web'        : $calendar = true;  include_partial('pagina'  ,  array( 'PAGINA' => $PAGINA )); break;
 	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'USUARI' => $USUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'RESERVA' => $RESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS ) ); break;
-	   case 'login'      : $calendar = true;  include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
+	   case 'login'      : $calendar = false;  include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
 	   case 'agenda'     : $calendar = true;  include_partial('agenda'  ,  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT , 'QUANTES' => $QUANTES , 'DATA' => $DATA )); break;
 	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;
 	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV )); break;
@@ -36,7 +36,7 @@
 	   case 'cursos'	 : $calendar = false; include_partial('cursos'); break;
 	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT)); break;
 	   case 'activitats' : $calendar = true;  include_partial('activitats' , array('ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;
-	   case 'registre'   : $calendar = false; include_partial('registre' , array('DADES_USUARI'=>$DADES_USUARI, 'ESTAT' => $ESTAT)); break;
+	   case 'registre'   : $calendar = false; include_partial('registre' , array('FUSUARI'=>$FUSUARI, 'ESTAT' => $ESTAT)); break;
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE));	   	    
 	}

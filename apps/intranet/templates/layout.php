@@ -45,7 +45,7 @@
             
     #ESPAI { margin-top:20px; }
    
-	.MENU_TABLE { border-collapse: collapse; }
+	.MENU_TABLE {  }
     .SUBMENU1   { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }
     .SUBMENU1T  { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }
     .SUBMENU2   { font-size:9px; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; background-color: white; border:1px solid white; }

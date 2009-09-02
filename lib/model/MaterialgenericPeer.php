@@ -24,15 +24,21 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
       
   }
   
-  static public function selectAjax()
+  static public function selectAjax($seleccionat)
   {
     $C = new Criteria();
     $C->addAscendingOrderByColumn(self::NOM);
     $MG = self::doSelect($C);
     $RET = '<option value="-1">Escull...</option>';
     foreach($MG as $M):
-      $RET .= '<option value="'.$M->getIdmaterialgeneric().'">'.$M->getNom().'</option>';      
+    	if($seleccionat == $M->getIdmaterialgeneric()):
+    		$RET .= '<option SELECTED value="'.$M->getIdmaterialgeneric().'">'.$M->getNom().'</option>';
+    	else:
+    		$RET .= '<option value="'.$M->getIdmaterialgeneric().'">'.$M->getNom().'</option>';
+    	endif;      
     endforeach;
+    
+    $RET = str_replace("'","\'",$RET);
     
     return $RET;    
       

@@ -2,7 +2,7 @@
 <TD class="CALENDARI">
 	<CENTER>
 
-	<form action="<?php echo url_for('web/gAgenda') ?>" method="POST" name="form_calendari">
+	<form action="<?php echo url_for('web/index') ?>" method="POST" name="form_calendari">
     	
       <TABLE class="CAL">
         <TR><TD><input type="text" name="CERCA"></input>

@@ -1,17 +1,20 @@
+<?php use_helper('Form')?>
+
 <script type="text/javascript">
 
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}  
 
 	function ValidaReserva(){	
-		if(valida_nif_cif_nie(fRegistre.DNI.value) < 1) { alert("El DNI entrat no és correcte"); return false; }		
-		if(vacio(fRegistre.PASSWD.value)== false){ alert("Has d\'entrar una contrasenya"); return false; }
-		if(vacio(fRegistre.NOM.value)== false){ alert("Has d'omplir el nom"); return false; }
-		if(vacio(fRegistre.COG1.value)== false){ alert("Has d'omplir el primer cognom"); return false; }
-		if(vacio(fRegistre.COG2.value)== false){ alert("Has d'omplir el segon cognom"); return false; }
-		if(isValidEmail(fRegistre.EMAIL.value) == false){ alert("L'adreça de correu electrònic és incorrecta"); return false; }
-		if(vacio(fRegistre.ADRECA.value)== false){ alert("Has d'omplir l'adreça postal"); return false; }
-		if(vacio(fRegistre.CODIPOSTAL.value)== false){ alert("Has d'omplir el codi postal"); return false; }
-		if(fRegistre.POBLACIO.selectedIndex<1){ alert("Has d'escollir alguna població"); return false; }		
+		if(valida_nif_cif_nie(fRegistre.usuaris_DNI.value) < 1) { alert("El DNI entrat no és correcte"); return false; }		
+		if(vacio(fRegistre.usuaris_Passwd.value)== false){ alert("Has d\'entrar una contrasenya"); return false; }
+		if(vacio(fRegistre.usuaris_Nom.value)== false){ alert("Has d'omplir el nom"); return false; }
+		if(vacio(fRegistre.usuaris.Cog1.value)== false){ alert("Has d'omplir el primer cognom"); return false; }
+		if(vacio(fRegistre.usuaris.Cog2.value)== false){ alert("Has d'omplir el segon cognom"); return false; }
+		if(isValidEmail(fRegistre.usuaris.Email.value) == false){ alert("L'adreça de correu electrònic és incorrecta"); return false; }
+		if(vacio(fRegistre.usuaris.Adreca.value)== false){ alert("Has d'omplir l'adreça postal"); return false; }
+		if(vacio(fRegistre.usuaris.Codipostal.value)== false){ alert("Has d'omplir el codi postal"); return false; }
+		if(fRegistre.usuaris_Poblacio.selectedIndex<1){ alert("Has d'escollir alguna població"); return false; }				
+		if(vacio(fRegistre.usuaris.Telefon.value)== false){ alert("Has d'omplir el telèfon"); return false; }
 		if(fRegistre.VLOGIN.value != 'c!#G1'){ alert("El text de verificació no correspòn a la imatge"); return false; }
 	
 		return true;
@@ -48,30 +51,24 @@
 </script>
 
 <TD colspan="3" class="CONTINGUT">
+   
+   <form action="<?=url_for('web/registrat')?>" method="post" name="fRegistre" onSubmit="return ValidaReserva(this);">
       
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>
-   <?=form_tag('web/registrat',array('method'=>'POST','name'=>'fRegistre','onSubmit'=>'return ValidaReserva(this);')); ?>
+   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>   
    <TABLE class="FORMULARI">
-	<? 
+   	<?
+   	 
 	   if($ESTAT == 'OK'):
 	      ?><TR><TD colspan="2">Usuari donat d'alta correctament<BR /><BR /></TD></TR><?
        elseif($ESTAT == 'ERROR'):
 	      ?><TR><TD colspan="2">L'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui <?=link_to('aquí','web/reenviaContrasenya?DNI='.$DADES_USUARI->getDni(),array('class'=>'taronja'))?>.<BR /><BR /></TD></TR><?       
        endif;	
-	?>
-
-	   <TR><TD width="40%"><b>DNI</b></TD><TD><?php echo input_tag('DNI',$DADES_USUARI->getDni(),array('disabled'=>false)); ?></TD></TR>        
-	   <TR><TD><b>Contrasenya</b></TD><TD><?php echo input_password_tag('PASSWD',$DADES_USUARI->getPasswd()); ?></TD></TR>
-	   <TR><TD><b>Nom</b></TD><TD><?php echo input_tag('NOM',$DADES_USUARI->getNom()); ?></TD></TR>
-	   <TR><TD><b>Primer cognom</b></TD><TD><?php echo input_tag('COG1',$DADES_USUARI->getCog1()); ?></TD></TR>
-	   <TR><TD><b>Segon cognom</b></TD><TD><?php echo input_tag('COG2',$DADES_USUARI->getCog2()); ?></TD></TR>
-	   <TR><TD><b>Correu electrònic</b></TD><TD><?php echo input_tag('EMAIL',$DADES_USUARI->getEmail()); ?></TD></TR>
-	   <TR><TD><b>Telèfon</b></TD><TD><?php echo input_tag('TELEFON',$DADES_USUARI->getTelefon()); ?></TD></TR>
-	   <TR><TD><b>Mòbil</b></TD><TD><?php echo input_tag('MOBIL',$DADES_USUARI->getMobil()); ?></TD></TR>
-	   <TR><TD><b>Adreça postal</b></TD><TD><?php echo input_tag('ADRECA',$DADES_USUARI->getAdreca()); ?></TD></TR>
-	   <TR><TD><b>Codi postal</b></TD><TD><?php echo input_tag('CODIPOSTAL',$DADES_USUARI->getCodipostal()); ?></TD></TR>
-	   <TR><TD><b>Població</b></TD><TD><?php echo select_tag('POBLACIO',options_for_select(PoblacionsPeer::select(),$DADES_USUARI->getPoblacio())); echo input_tag('POBLACIOT',$DADES_USUARI->getPoblaciotext()); ?></TD></TR>                        
-	   <TR><TD><b>Verificació</b></TD><TD><?php echo image_tag('intranet/verificaLogin.png'); echo "<br />Escriu el text de la imatge: ".input_tag('VLOGIN','',array('style'=>'width:30%')); ?></TD></TR>
+       
+       echo $FUSUARI;
+    
+    ?>
+   
+	<TR><TD><b>Verificació</b></TD><TD><?php echo image_tag('intranet/verificaLogin.png'); echo "<br />Escriu el text de la imatge: ".input_tag('VLOGIN','',array('style'=>'width:30%')); ?></TD></TR>
    </TABLE>      
    </FIELDSET>       
 

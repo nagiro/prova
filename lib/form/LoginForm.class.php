@@ -11,7 +11,7 @@ class LoginForm extends sfForm
 
     
     $this->setValidator('password' , new sfValidatorString(array('required'=>false)));	    	    
-    $this->setValidator('nick',new sfValidatorString(array('required'=>true)));    
+    $this->setValidator('nick',new sfValidatorString(array('required'=>false)));    
 					
     					
     $this->widgetSchema->setlabels(array('nick'=>'DNI: ', 'password'=>'CONTRASENYA: '));

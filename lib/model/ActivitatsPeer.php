@@ -29,9 +29,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    static function getActivitatsDia($dia)
    {
       $RET = array();
-       
-      $con = Propel::getConnection();
-      $stmt = $con->createStatement();
+
       $SQL = "
             SELECT A.* , E.*, H.*
               FROM espais E, horarisespais HE, horaris H, activitats A 
@@ -40,21 +38,22 @@ class ActivitatsPeer extends BaseActivitatsPeer
                   AND HE.Espais_EspaiID = E.EspaiID                  
                   AND H.Dia = '$dia'
                   AND A.tWEB <> '' ";
-      $rs = $stmt->executeQuery($SQL,ResultSet::FETCHMODE_ASSOC);
-                        
-      while($rs->next())
-      {
-         $RET[$rs->get('ActivitatID')]['DADES']['ID'] = $rs->get('ActivitatID'); 
-         $RET[$rs->get('ActivitatID')]['DADES']['TITOL'] = $rs->get('tWEB');
-         $RET[$rs->get('ActivitatID')]['DADES']['TEXT'] = $rs->get('dWEB');
-         $RET[$rs->get('ActivitatID')]['DADES']['TEXT'] = $rs->get('Imatge');
-         $RET[$rs->get('ActivitatID')]['DADES']['TEXT'] = $rs->get('PDF');
+      
+     $con = Propel::getConnection(); $stmt = $con->prepare($SQL); $stmt->execute();     
+	 
+     while($rs = $stmt->fetch(PDO::FETCH_OBJ)): 
+     
+         $RET[$rs->ActivitatID]['DADES']['ID'] = $rs->ActivitatID; 
+         $RET[$rs->ActivitatID]['DADES']['TITOL'] = $rs->tWEB;
+         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->dWEB;
+         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->Imatge;
+         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->PDF;
          
-         $RET[$rs->get('ActivitatID')]['HORARIS'][$rs->get('HorarisID')]['ESPAIS'][] = $rs->get('Nom');
-         $RET[$rs->get('ActivitatID')]['HORARIS'][$rs->get('HorarisID')]['HORAI'] = $rs->get('HoraInici');
-         $RET[$rs->get('ActivitatID')]['HORARIS'][$rs->get('HorarisID')]['HORAF'] = $rs->get('HoraFi');
+         $RET[$rs->ActivitatID]['HORARIS'][$rs->HorarisID]['ESPAIS'][] = $rs->Nom;
+         $RET[$rs->ActivitatID]['HORARIS'][$rs->HorarisID]['HORAI'] = $rs->HoraInici;
+         $RET[$rs->ActivitatID]['HORARIS'][$rs->HorarisID]['HORAF'] = $rs->HoraFi;
          
-      }
+      endwhile;
           
       return $RET; 
    }
