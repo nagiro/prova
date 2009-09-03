@@ -30,10 +30,10 @@ class ClientUsuarisForm extends sfFormPropel
       'Entitat'           => new sfWidgetFormInput(array(),array('style'=>'width:200px')),
       'Habilitat'         => new sfWidgetFormInputHidden(),
     ));
-
+        
     $this->setValidators(array(
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
-      'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
+      'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required'=>false)),
       'DNI'               => new sfValidatorString(array('max_length' => 12, 'required' => false)),
       'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => false)),
       'Nom'               => new sfValidatorString(array('max_length' => 30, 'required' => false)),
@@ -78,5 +78,14 @@ class ClientUsuarisForm extends sfFormPropel
   {
     return 'Usuaris';
   }
-	
+
+  public function save($conn = null)
+  {
+  	$this->updateObject();
+  	$OU = $this->getObject();  	
+  	$OU->setNivellsIdnivells(Nivells::USER);
+  	$OU->setHabilitat(true);
+  	$OU->save();  
+  }
+  
 }

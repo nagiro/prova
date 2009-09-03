@@ -31,13 +31,13 @@
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?=$FCessiomaterial?>                								
+                <?php echo $FCessiomaterial?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCessio',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCessio',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -65,7 +65,7 @@
                     endforeach;
                  endif;                     
              ?>      
-              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($CESSIONS);?></TD></TR>    	
+              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($CESSIONS);?></TD></TR>    	
       	</TABLE>      
       </DIV>
 

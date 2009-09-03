@@ -2,8 +2,9 @@
     
       
     <?php 
-    	    
-    	if($PAGINA->getHtml() <> "") echo $PAGINA->getHtml();
+		
+    	$WEB = sfConfig::get('sf_web_dir').$PAGINA->getHtml();
+    	if(file_exists($WEB)) include($WEB);
     	else echo "Encara no hi ha continguts..."; 
     	
     ?>

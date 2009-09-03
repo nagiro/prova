@@ -4,7 +4,7 @@
           
      <form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL"><?=link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gPromocions?accio=N') ?> Llistat de promocions</DIV>
+	    <DIV class="TITOL"><?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gPromocions?accio=N') ?> Llistat de promocions</DIV>
 	    	<table class="DADES">          
                 <?php                                                   
                   foreach($PROMOCIONS as $P):                  	                                         
@@ -21,13 +21,13 @@
 	<form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">            
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="500px">
-                <?=$FPromocio?>                								
+                <?php echo $FPromocio?>                								
                 <tr>
                 	<td width="50px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gPromocions',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gPromocions',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

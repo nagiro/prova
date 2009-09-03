@@ -52,44 +52,44 @@
 <?php IF( !$NOU && !$EDICIO ): ?>     
      
   	<DIV class="REQUADRE">
-  	<DIV class="TITOL">Llistat de tasques encomanades </DIV>
+  	<DIV class="TITOL">Llistat de tasques que has encomanat </DIV>
   		<table class="DADES">
-                <? if($TASQUES_ENCOMANADES->getNbResults() == 0): ?> 
+                <?php if($TASQUES_ENCOMANADES->getNbResults() == 0): ?> 
                 	<TR><TD>No s'ha trobat cap resultat.</TD></TR>
-                <? endif; ?>                 
-                <? foreach($TASQUES_ENCOMANADES->getResults() as $T): ?>	                
-                <?    $U = $T->getUsuarisRelatedByQuifa()->getNom()." ".$T->getUsuarisRelatedByQuifa()->getCog1(); ?>
-                <?    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>
-					<TR><TD><?=link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-					    <TD><?=$U?></TD></TR> 											
-				<? endforeach; ?>
-				<TR><TD class="TITOL"><?=gestorPagines($CERCA , $TASQUES_ENCOMANADES);?></TD></TR>     			
+                <?php endif; ?>                 
+                <?php foreach($TASQUES_ENCOMANADES->getResults() as $T): ?>	                
+                <?php    $U = $T->getUsuarisRelatedByQuifa()->getNom()." ".$T->getUsuarisRelatedByQuifa()->getCog1(); ?>
+                <?php    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>
+					<TR><TD><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+					    <TD><?php echo $U?></TD></TR> 											
+				<?php endforeach; ?>
+				<TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_ENCOMANADES);?></TD></TR>     			
   		</table>
   	</DIV>
 
   	<DIV class="REQUADRE">
-  	<DIV class="TITOL">Llistat de tasques per fer </DIV>
+  	<DIV class="TITOL">Llistat de tasques que t'han encomanat </DIV>
   		<table class="DADES">
-                <? if($TASQUES_PERFER->getNbResults() == 0): ?> 
+                <?php if($TASQUES_PERFER->getNbResults() == 0): ?> 
                 	<TR><TD>No s'ha trobat cap resultat.</TD></TR> 
-                <? endif; ?>
-                <? foreach($TASQUES_PERFER->getResults() as $T): ?>
-                <?    $U = $T->getUsuarisRelatedByQuimana()->getNom()." ".$T->getUsuarisRelatedByQuimana()->getCog1(); ?>	                
-                <?    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>                                						
-                <?    if($T->getIsfeta()): ?>
+                <?php endif; ?>
+                <?php foreach($TASQUES_PERFER->getResults() as $T): ?>
+                <?php    $U = $T->getUsuarisRelatedByQuimana()->getNom()." ".$T->getUsuarisRelatedByQuimana()->getCog1(); ?>	                
+                <?php    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>                                						
+                <?php    if($T->getIsfeta()): ?>
                 	<TR>
-                		<TD class="FETA"><?=link_to('O','gestio/gTasques'.getParam( 'F' , $T->getTasquesid() , $CERCA ))?></TD>
-                	    <TD class="FETA"><?=link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-                	    <TD class="FETA"><?=$U?></TD>
+                		<TD class="FETA"><?php echo link_to('O','gestio/gTasques'.getParam( 'F' , $T->getTasquesid() , $CERCA ))?></TD>
+                	    <TD class="FETA"><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+                	    <TD class="FETA"><?php echo $U?></TD>
                 	</TR>
-                <?    else: ?> 
+                <?php    else: ?> 
                 	<TR>
-                		<TD><?=link_to('O','gestio/gTasques'.getParam( 'F' , $T->getTasquesid() , $CERCA ))?></TD>
-                		<TD><?=link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-                		<TD><?=$U ?></TD></TR>
-				<?    endif; ?>                	 											
-				<? endforeach; ?>
-                <TR><TD class="TITOL"><?=gestorPagines($CERCA , $TASQUES_PERFER);?></TD></TR>
+                		<TD><?php echo link_to('O','gestio/gTasques'.getParam( 'F' , $T->getTasquesid() , $CERCA ))?></TD>
+                		<TD><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+                		<TD><?php echo $U ?></TD></TR>
+				<?php    endif; ?>                	 											
+				<?php endforeach; ?>
+                <TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_PERFER);?></TD></TR>
 		</table>
   	</DIV>     
      
@@ -104,8 +104,8 @@
         		<tr>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gTasques',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gTasques?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>				
 			</table>				

@@ -3,7 +3,6 @@
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick.js')?>
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick-ca.js')?>
 
-
 <STYLE>
 .CALENDARI { font-size: 7px; }
 .CALENDARI A { text-decoration:none; color:black; }
@@ -30,8 +29,7 @@
 	  { return '#'+myid.replace(/:/g,"\\:").replace(/\./g,"\\.");}
 	
 	 $(document).ready(function() {	
-		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1
-		 //ajax($("#generic\\[1\\]"),1);												//Inicialitzem la segona llista pel primer valor							
+		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1								
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
 		 $("#mesespais").click( function () { creaFormEspais(); });
 
@@ -42,7 +40,7 @@
 	{
 												
 		$.getJSON(
-				 "<?=url_for('gestio/selectMaterial') ?>",						//Url que visita 
+				 "<?php echo url_for('gestio/selectMaterial') ?>",						//Url que visita 
 				 { id: d.value }, 												//Valor seleccionat a la primera llista
 				 function(data,textStatus) { updateJSON( data, textStatus, iCtrl );  } //Carreguem les dades JSON
 				);
@@ -65,7 +63,7 @@
 		id = (parseInt(id) + parseInt(1));
 		$("#idV").val(id);		
 				
-		var options = '<?=MaterialgenericPeer::selectAjax(); ?>';
+		var options = '<?php echo MaterialgenericPeer::selectAjax(); ?>';
 		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
 		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
 	}
@@ -77,7 +75,7 @@
 		id = (parseInt(id) + parseInt(1));
 		$("#idE").val(id);
 		
-		var options = '<?=EspaisPeer::selectJavascript(); ?>';
+		var options = '<?php echo EspaisPeer::selectJavascript(); ?>';
 		$("#divTxtE").append('<span id="rowE['+id+']"><select name="espais['+id+']" id="espais['+id+']">'+ options +'</select><input type="button" onClick="esborraLiniaE('+id+');" id="mesespais" value="-"></input><br /></span>');
 
 	}
@@ -106,7 +104,7 @@
     
      <form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI);  ?></SPAN></DIV>
+	    <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI); ?></SPAN></DIV>
 	    	<table class="CALENDARI">          
                 <?php                 
                   
@@ -125,13 +123,13 @@
 	 	<div class="REQUADRE">	 			 		
 	    	<table class="FORMULARI" width="600px">                  			    	
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?=$FActivitat?>                								
+                <?php echo $FActivitat ?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT')) ?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?')) ?>
 	            	</td>
 	            </tr>                	 
       		</table>      		
@@ -145,43 +143,45 @@
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Horaris actuals</DIV>
       	<TABLE class="DADES">
- 			<? if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
-			<? foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais(); ?>			
-				<TR>
-					<TD class="<?php $PAR ?>" width=""><?=link_to($H->getHorarisid(),'gestio/gActivitats?accio=CH&IDH='.$H->getHorarisid())?></TD>
-					<TD class="<?php $PAR ?>" width=""><?=$H->getDia('d/m/Y')?></TD>
-					<TD class="<?php $PAR ?>" width=""><?=$H->getHorapre('H:m') ?></TD>
-					<TD class="<?php $PAR ?>" width=""><?=$H->getHorainici('H:m') ?></TD>
-					<TD class="<?php $PAR ?>" width=""><?=$H->getHorafi('H:m') ?></TD>
-					<TD class="<?php $PAR ?>" width=""><?=$H->getHorapost('H:m') ?></TD>
-					<TD class="<?php $PAR ?>" width=""><? foreach($HE as $HESPAI) { if(is_object($HESPAI->getEspais())) echo $HESPAI->getEspais()->getNom().'<br />'; } ?></TD>
-					<TD class="<?php $PAR ?>" width=""><? foreach($M as $MATERIAL) { if(is_object($MATERIAL->getMaterial())) echo $MATERIAL->getMaterial()->getNom().'<br />'; } ?></TD>
-				</TR>
-			<? endforeach; ?>                        	
+ 			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
+			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
+						echo '<TR>
+								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=CH&IDH='.$H->getHorarisid()).'</TD>
+								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
+								<TD class="" width="">'.$H->getHorapre('H:m').'</TD>
+								<TD class="" width="">'.$H->getHorainici('H:m').'</TD>
+								<TD class="" width="">'.$H->getHorafi('H:m').'</TD>
+								<TD class="" width="">'.$H->getHorapost('H:m').'</TD>
+								<TD class="" width="">'; foreach($HE as $HESPAI): if(is_object($HESPAI->getEspais())): echo $HESPAI->getEspais()->getNom().'<br />'; endif; endforeach; echo '</TD>'; 
+						echo 	'<TD class="" width="">'; foreach($M as $MATERIAL): if(is_object($MATERIAL->getMaterial())): echo $MATERIAL->getMaterial()->getNom().'<br />'; endif; endforeach; echo '</TD>'; 
+						echo '</TR>';
+					endforeach;
+				
+			?>                        	
     	</TABLE>      
 	</DIV>
 
 <script type="text/javascript">
 	$(function() {
-               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?=image_path('template/calendar_1.png')?>'});               			
+               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo image_path('template/calendar_1.png')?>'});               			
     });   
 </script>
 	 
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
 	 	<div class="REQUADRE">	 		
-	 		<DIV class="TITOL">Edició horaris <?=link_to('Nou horari','gestio/gActivitats?accio=CH') ?></DIV>
+	 		<DIV class="TITOL">Edició horaris <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH') ?></DIV>
 	    	<table class="FORMULARI" width="550x">
 	    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
 	    	<tr><td width="100px"></td><td width="450x"></td></tr>
 
-               	<?=$FHorari?>
+               	<?php echo $FHorari?>
              
              <tr>
              	<td>Espais: </td><td>
              	
              	<?php 
 					$id = 1;  $VAL = "";
-					if(!isset($ESPAISOUT)) $ESPAISOUT = array();            	
+					if(!isset($ESPAISOUT)): $ESPAISOUT = array(); endif;            	
              		foreach($ESPAISOUT AS $E=>$idE):
 
              		$VAL .= '<span id="rowE['.$id.']">
@@ -206,7 +206,7 @@
 
              	<?php 
 					$id = 1;  $VAL = "";
-					if(!isset($MATERIALOUT)) $MATERIALOUT = array();            	
+					if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
              		foreach($MATERIALOUT AS $M=>$idM):
 
              		$VAL .= '
@@ -232,8 +232,8 @@
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats',array('name'=>'BDELETEHORARI','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats',array('name'=>'BDELETEHORARI','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</table>      		
@@ -248,13 +248,13 @@
 	 	<div class="REQUADRE">	 			 		
 	    	<table class="FORMULARI" width="600px">                  			    	
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?=$FActivitat?>                								
+                <?php echo $FActivitat ?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEDESCRIPCIO'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEDESCRIPCIO'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</table>      		
@@ -279,7 +279,7 @@
                    echo '<TR><TD class="LINIA">'.input_tag('NOM',$C->getNom()).'</TD><TD class="LINIA">'.input_tag('DESCRIPCIO',$C->getDescripcio()).'</TD></TR>';
                    echo '</TABLE>';
                    echo submit_tag('Afegir cicle',array('name'=>'BSAVECICLE'));                   
-                  ?>                                                                           								                	 
+               ?>                                                                           								                	 
       		</table>      		
       	</div>
      </form>
@@ -291,38 +291,39 @@
      <DIV class="REQUADRE">
         <DIV class="TITOL">Llistat d'activitats </DIV>
       	<TABLE class="DADES">
- 			<? if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; ?>
- 			<?php $i = 0; $j=0; $Tall = 10; ?> 			   			
-			<? foreach($ACTIVITATS as $A):			
-                  if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
-                    
-                  	$AVIS = ""; $ESP = ""; $MAT = "";	
-                  	if(!empty($A['ESPAIS'])) $ESP = implode("<br />",$A['ESPAIS']);
-                  	if(!empty($A['MATERIAL'])) $MAT = implode("<br />",$A['MATERIAL']);                  		 
-                  	if(strlen($A['AVIS'])>2) { $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; } else { $AVIS = ""; }
-                  	$PAR = ParImpar($j++);                  	
-                  	?>                     
-                  	<TR>                      	
-	               		<TD class="<?=$PAR?>"><?=link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CA&IDA='.$A['ID']).$AVIS ?> </TD>
-	                	<TD class="<?=$PAR?>"> <?=$A['DIA']?> </TD>
-	               		<TD class="<?=$PAR?>"> <?=$A['HORA_INICI']?> </TD>
-	                	<TD class="<?=$PAR?>"> <?=$ESP?> </TD>
-	                	<TD class="<?=$PAR?>"> <?=$MAT?> </TD>						            
-	                </TR>
-                   <? endif;
-                   $i++;
-			 endforeach; 
-			 
-			 $sof = sizeof($ACTIVITATS);			 
-                  $TALL = intval($sof/$Tall)+1;                  
-                  if($TALL > 1):
-	                  ?><TR><TD class="LINIA" colspan="5" align="CENTER"><?	                                                     
-	                  for($i = 1; $i <= $TALL ; $i++ ):
-	                  	echo link_to("pàg ".$i." - ",'gestio/gActivitats?PAGINA='.$i);                  	
-	                  endfor;
-                  	 ?></TD></TR><?
-                  endif;
-                ?>            	
+ 			<?php 	if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; 
+ 					$i = 0; $j=0; $Tall = 10;  			   			
+					foreach($ACTIVITATS as $A):			
+	                  	if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
+	                    
+		                  	$AVIS = ""; $ESP = ""; $MAT = "";	
+		                  	if( !empty( $A['ESPAIS'] ) ):     $ESP = implode("<br />",$A['ESPAIS']); endif;
+		                  	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
+		                  	if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+		                  	$PAR = ParImpar($j++);                  	
+		                             
+		                  	echo '	<TR>                      	
+					               		<TD class="'.$PAR.'">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CA&IDA='.$A['ID']).$AVIS.'</TD>
+					                	<TD class="'.$PAR.'">'.$A['DIA'].'</TD>
+					               		<TD class="'.$PAR.'">'.$A['HORA_INICI'].'</TD>
+					                	<TD class="'.$PAR.'">'.$ESP.'</TD>
+					                	<TD class="'.$PAR.'">'.$MAT.'</TD>						            
+					                </TR>';
+		                  	
+	                 	endif;
+	                 	$i++;
+				 	endforeach; 
+				 
+				 	$sof = sizeof($ACTIVITATS);			 
+	                	$TALL = intval($sof/$Tall)+1;                  
+	                  	if($TALL > 1):
+		                	echo '<TR><TD class="LINIA" colspan="5" align="CENTER">';	                                                     
+		                  	for($i = 1; $i <= $TALL ; $i++ ):
+		                  		echo link_to("pàg ".$i." - ",'gestio/gActivitats?PAGINA='.$i);                  	
+		                  	endfor;
+	                  	 echo '</TD></TR>';
+	                  endif;
+	                ?>            	
       	</TABLE>      
       </DIV>
 
@@ -330,17 +331,6 @@
   
       <DIV STYLE="height:40px;"></DIV>
                 
-<!--  </TD> -->        
-    
-<!-- FI CONTINGUT -->
-<!-- CALENDARI -->
- <!-- >
-    <TD class="CALENDARI">          
-      
-    </TD>
--->
-<!-- FI CALENDARI -->
-
 <?php 
 
 function menu($seleccionat = 1,$nova = false)
@@ -442,11 +432,8 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
       
   }
 
-  function ParImpar($i)
-{
-	if($i % 2 == 0) return "PAR";
-	else return "IPAR";
-}
+
+  function ParImpar($i){ if($i % 2 == 0) return "PAR"; else return "IPAR"; }
   
   
   /**
@@ -522,5 +509,4 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
     return image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE'));    
   }
 
-
-?>
+  ?>

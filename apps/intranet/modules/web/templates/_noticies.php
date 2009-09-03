@@ -7,31 +7,31 @@
 
     <TD colspan="2" class="CONTINGUT">
     
-	 <? if(empty($ACTIVITATS_LLISTAT)): ?> <DIV>No hi ha cap notícia activa.<DIV> <? endif; ?>    							
+	 <?php if(empty($ACTIVITATS_LLISTAT)): ?> <DIV>No hi ha cap notícia activa.<DIV> <?php endif; ?>    							
 		
-     <? foreach($ACTIVITATS_LLISTAT as $A): ?>
-     <?   $n = $A->getTnoticia(); $imatge = $A->getImatge(); $pdf = $A->getPdf(); $descripcio = $A->getDnoticia(); ?>
-     <?   if(!empty($n)): ?>    	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      			
+     <?php foreach($ACTIVITATS_LLISTAT as $A): ?>
+     <?php   $n = $A->getTnoticia(); $imatge = $A->getImatge(); $pdf = $A->getPdf(); $descripcio = $A->getDnoticia(); ?>
+     <?php   if(!empty($n)): ?>    	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      			
     		<TABLE class="BOX">
 		    <TR>  
-	 <? if(!empty($imatge)): ?>	    
-	 			<TD class="FOTO"><?=image_tag('noticies/'.$A->getImatge(), array('class'=>'IMG_FOTO'))?></TD>
-	 <? endif; ?>
+	 <?php if(!empty($imatge)): ?>	    
+	 			<TD class="FOTO"><?php echo image_tag('noticies/'.$A->getImatge(), array('class'=>'IMG_FOTO'))?></TD>
+	 <?php endif; ?>
 		        <TD class="NOTICIA">			    
-				<DIV class="TITOL"><?=$A->getTnoticia()?></DIV>
-		    	<DIV class="TEXT"><?=substr( $descripcio , 0 , 100 )?><SPAN id="DIV<?$A->getActivitatID()?>" class="AMAGAT"><?=substr( $descripcio , 100 )?></SPAN></DIV>
-	 <? if(sizeof($descripcio) > 100): ?>		    	
-		    	<DIV class="PEU"><?=link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$A->getActivitatID().')'))?>
-	 <? endif; ?>
-	 <? if(!empty($pdf)): ?> 
-	 			<?=link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A->getPdf() , true) , array('target'=>'_NEW'))?>
-	 <? endif; ?>
+				<DIV class="TITOL"><?php echo $A->getTnoticia()?></DIV>
+		    	<DIV class="TEXT"><?php echo substr( $descripcio , 0 , 100 )?><SPAN id="DIV<?$A->getActivitatID()?>" class="AMAGAT"><?php echo substr( $descripcio , 100 )?></SPAN></DIV>
+	 <?php if(sizeof($descripcio) > 100): ?>		    	
+		    	<DIV class="PEU"><?php echo link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$A->getActivitatID().')'))?>
+	 <?php endif; ?>
+	 <?php if(!empty($pdf)): ?> 
+	 			<?php echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A->getPdf() , true) , array('target'=>'_NEW'))?>
+	 <?php endif; ?>
 				</DIV>
 		     	</TD>
 		    </TR>
 		    </TABLE>
-	 <?   endif; ?>     	                
-     <? endforeach; ?>
+	 <?php   endif; ?>     	                
+     <?php endforeach; ?>
 
       <DIV STYLE="height:40px;"></DIV>
                 

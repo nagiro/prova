@@ -5,7 +5,7 @@
 
     <form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL"><?=link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gEstructura?accio=N') ?> Estructura</DIV>
+	    <DIV class="TITOL"><?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gEstructura?accio=N'); ?> Estructura</DIV>
 	    	<table class="DADES">          
                   <?php echo llistaNodes($NODES); ?>
 	        </table>
@@ -17,13 +17,13 @@
 	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="POST">            
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="500px">
-                <?=$FNode?>                								
+                <?php echo $FNode; ?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gEstructura',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gEstructura',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -38,11 +38,19 @@
       	<TABLE class="DADES">
       	<tr><td>
  			<?php echo input_hidden_tag('idN',$NODE->getIdnodes());
-            		if($NODE->getIsphp())
-                  		echo input_tag('HTML',$NODE->getHTML(),array('width'=>'100%'));                         
-                        else echo textarea_tag('HTML',$NODE->getHTML(),array('rich'=>true,'size'=>'100x50')); ?>
-                  <BR />
-                  <?php echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?>
+ 				$nom = sfConfig::get('sf_web_dir').$NODE->getHTML();
+ 				if(file_exists($nom)):
+ 				  	$handle = fopen($nom, "r");
+					$contents = fread($handle, filesize($nom));
+					fclose($handle);
+				else:
+					$contents = "No s'ha trobat la pàgina.";
+				endif;
+
+					echo textarea_tag('HTML',$contents,array('rich'=>true,'size'=>'100x50'));
+					
+                 	echo '<BR />';
+                  	echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?>
         </td></tr>        
         </TABLE>      
       </DIV>

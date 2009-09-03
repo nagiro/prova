@@ -1,14 +1,14 @@
     <TD colspan="2" class="CONTINGUT">
     
-    <? if(empty($ACTIVITATS_LLISTAT)): ?> <DIV>No hi ha cap activitat pública.<DIV> <? endif; ?>		
+    <?php if(empty($ACTIVITATS_LLISTAT)): ?> <DIV>No hi ha cap activitat pública.<DIV> <?php endif; ?>		
 		
-	<? foreach($ACTIVITATS_LLISTAT as $A): ?>
+	<?php foreach($ACTIVITATS_LLISTAT as $A): ?>
      
     		<TABLE class="BOX">
 		    <TR>  
-	 <? if(!empty($A['DADES']['IMATGE'])): ?>	    
+	 <?php if(!empty($A['DADES']['IMATGE'])): ?>	    
 	 			<TD class="FOTO"><?=image_tag('noticies/'.$A['DADES']['IMATGE'], array('class'=>'IMG_FOTO'))?></TD>
-	 <? endif; ?>
+	 <?php endif; ?>
 		        <TD class="NOTICIA">
 		        <DIV class="DATA">
 		        	   <?php 
@@ -21,17 +21,17 @@
 				</DIV>
 				<DIV class="TITOL"><?=$A['DADES']['TITOL']?></DIV>
 		    	<DIV class="TEXT"><?=substr( $A['DADES']['TEXT'] , 0 , 100 )?><SPAN id="DIV<?$A['DADES']['ID']?>" class="AMAGAT"><?=substr( $A['DADES']['TEXT'] , 100 )?></SPAN></DIV>
-	 <? if(sizeof($A['DADES']['TEXT']) > 100): ?>		    	
+	 <?php if(sizeof($A['DADES']['TEXT']) > 100): ?>		    	
 		    	<DIV class="PEU"><?=link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$A['DADES']['ID'].')'))?>
-	 <? endif; ?>
-	 <? if(!empty($A['DADES']['PDF'])): ?> 
-	 			<?=link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A['DADES']['PDF'] , true) , array('target'=>'_NEW'))?>
-	 <? endif; ?>
+	 <?php endif; ?>
+	 <?php if(!empty($A['DADES']['PDF'])): ?> 
+	 			<?php echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A['DADES']['PDF'] , true) , array('target'=>'_NEW'))?>
+	 <?php endif; ?>
 				</DIV>
 		     	</TD>
 		    </TR>
 		    </TABLE>	      	                
-	<? endforeach; ?>
+	<?php endforeach; ?>
       
       <DIV STYLE="height:40px;"></DIV>
                 

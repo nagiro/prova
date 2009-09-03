@@ -7,11 +7,11 @@
 
 	
 	<TABLE class="DADES">    
-	<TR><TD class="LINIA">Durant el mes <?=generaMes($DATA)?> hi ha <?=$QUANTES?> activitats coincidents de les quals <?=sizeof($ACTIVITATS_LLISTAT)?> són consultables. </TD></TR>
+	<TR><TD class="LINIA">Durant el mes <?php echo generaMes($DATA)?> hi ha <?php echo $QUANTES?> activitats coincidents de les quals <?php echo sizeof($ACTIVITATS_LLISTAT)?> són consultables. </TD></TR>
 
-	<? foreach($ACTIVITATS_LLISTAT as $ACTIVITAT): ?>	
+	<?php foreach($ACTIVITATS_LLISTAT as $ACTIVITAT): ?>	
 		<TR>
-			<TD class="LINIA"><?=link_to($ACTIVITAT['TITOL'].'<SPAN><BR />'.$ACTIVITAT['TEXT'].'<br /><br />'.implode(' - ',$ACTIVITAT['DIES']).'</SPAN>','#',array('class'=>'tt2')); ?></TD>			
+			<TD class="LINIA"><?php echo link_to($ACTIVITAT['TITOL'].'<SPAN><BR />'.$ACTIVITAT['TEXT'].'<br /><br />'.implode(' - ',$ACTIVITAT['DIES']).'</SPAN>','#',array('class'=>'tt2')); ?></TD>			
 		</TR>						   	      	
 	<? endforeach; ?>
 	</TABLE>

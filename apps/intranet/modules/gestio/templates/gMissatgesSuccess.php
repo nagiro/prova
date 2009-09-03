@@ -35,8 +35,8 @@
         		<tr>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMissatges',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMissatges?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>				
 			</table>				

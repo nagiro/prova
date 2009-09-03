@@ -13,6 +13,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
   const EN_ESPERA = 0;
   const ACCEPTADA = 1;
   const DENEGADA  = 2; 
+  const ANULADA   = 3;
 
   
   static function selectEstat()
@@ -20,7 +21,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
      return array(
                     self::EN_ESPERA => 'En espera' ,
                     self::ACCEPTADA => 'Acceptada' ,
-                    self::DENEGADA  => 'Denegada' 
+                    self::DENEGADA  => 'Denegada',
+                    self::ANULADA   => 'Anul·lada', 
      );
   }
   

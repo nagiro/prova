@@ -20,22 +20,22 @@ FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
         	<TD class="TITOL">Places</TD>
         </TR>
 
-   <? $CAT_ANT = ""; ?>   
-   <? foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
-   <?    if($CAT_ANT <> $C->getCategoria()): ?>
-   <?       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
-			<TR><TD colspan="5" class="TITOL_CATEGORIA"><?=$C->getCategoria()?></TD></TR>
-   <?    endif; ?>
+   <?php $CAT_ANT = ""; ?>   
+   <?php foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
+   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
+   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
+			<TR><TD colspan="5" class="TITOL_CATEGORIA"><?php echo $C->getCategoria()?></TD></TR>
+   <?php    endif; ?>
                        	
    		<TR>
-      		<TD class="LINIA"><?=$C->getCodi()?></TD>
-      		<TD class="LINIA"><?=$C->getTitolcurs()?> ( <?=$C->getHoraris()?> ) </TD>
-      		<TD class="LINIA"><?=$C->getPreu()?></TD>      							
-      		<TD class="LINIA"><?=$C->getDatainici('d-m-Y')?></TD>
-      		<TD class="LINIA"><?=$PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
+      		<TD class="LINIA"><?php echo $C->getCodi()?></TD>
+      		<TD class="LINIA"><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
+      		<TD class="LINIA"><?php echo $C->getPreu()?></TD>      							
+      		<TD class="LINIA"><?php echo $C->getDatainici('d-m-Y')?></TD>
+      		<TD class="LINIA"><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
       	</TR>                		                 										
-   <? $CAT_ANT = $C->getCategoria(); ?>			   
-   <? endforeach; ?>                              
+   <?php $CAT_ANT = $C->getCategoria(); ?>			   
+   <?php endforeach; ?>                              
    </TABLE>         
    </FIELDSET>
    

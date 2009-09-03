@@ -31,13 +31,13 @@
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?=$FIncidencia?>                								
+                <?php echo $FIncidencia ?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gIncidencies',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE')) ?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gIncidencies',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?')) ?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -55,13 +55,14 @@
 				else: 
 					$i = 0;
 					foreach($INCIDENCIES->getResults() as $I):												
-                      	$PAR = ParImpar($i++); ?>	                      	
-  							<TR><TD class="<?=$PAR?>"><?=link_to($I->getTitol(),'gestio/gIncidencies'.getParam( 'E' , $I->getIdincidencia() , $PAGINA ))?></TD>
-						    <TD class="<?=$PAR?>"><?=$I->getEstatText()?></TD></TR>                                	
-                      <? endforeach;
+                      	$PAR = ParImpar($i++);
+                      	echo '<TR><TD class="'.$PAR.'">'.link_to($I->getTitol(),'gestio/gIncidencies'.getParam( 'E' , $I->getIdincidencia() , $PAGINA )).'</TD>
+						    	  <TD class="'.$PAR.'">'.$I->getEstatText().'</TD></TR>';                                	
+                    endforeach;
+                    
                  endif;                    
              ?>      
-              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($INCIDENCIES);?></TD></TR>    	
+              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($INCIDENCIES);?></TD></TR>    	
       	</TABLE>      
       </DIV>
   

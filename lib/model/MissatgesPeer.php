@@ -14,7 +14,7 @@ class MissatgesPeer extends BaseMissatgesPeer
   {
      $C = new Criteria();
      $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
-     $C->add(self::ALTAREGISTRE , $time , Criteria::GREATER_EQUAL );
+     $C->add(self::DATE , $time , Criteria::GREATER_EQUAL );
      $C->add(self::USUARIS_USUARIID , $idU);
      return self::doCount($C);
   }

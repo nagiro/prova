@@ -15,7 +15,7 @@ class CursosForm extends sfFormPropel
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
       'TitolCurs'       => new sfWidgetFormInput(),
-      'isActiu'         => new sfWidgetFormInputCheckbox(),
+      'isActiu'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Places'          => new sfWidgetFormInput(),
       'Codi'            => new sfWidgetFormInput(),
       'Descripcio'      => new sfWidgetFormTextarea(),
@@ -33,7 +33,7 @@ class CursosForm extends sfFormPropel
     $this->setValidators(array(
       'idCursos'        => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
       'TitolCurs'       => new sfValidatorString(array('required' => false)),
-      'isActiu'         => new sfValidatorBoolean(array('required' => false)),
+      'isActiu'         => new sfValidatorString(array('required' => false)),
       'Places'          => new sfValidatorInteger(array('required' => false)),
       'Codi'            => new sfValidatorString(array('required' => false)),
       'Descripcio'      => new sfValidatorString(array('required' => false)),

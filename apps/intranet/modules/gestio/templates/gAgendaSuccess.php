@@ -11,7 +11,7 @@
      	 
     <form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">
 	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
+	    	<table class="FORMULARI">	    	         
 	            <?php echo $FCerca ?>
 	            <tr>
 	            	<td colspan="2">
@@ -27,15 +27,15 @@
   <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
       
 	<form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">            
-	 	<DIV class="REQUADRE">
-	    	<table class="FORMULARI" width="500px">
-                <?=$FAgenda?>                								
+	 	<DIV class="REQUADRE">	 		
+	    	<table class="FORMULARI" width="500px">	    			    		
+                <?php echo $FAgenda?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gAgenda',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gAgenda?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

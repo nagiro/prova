@@ -16,8 +16,8 @@ class IncidenciesForm extends sfFormPropel
       'idIncidencia'  => new sfWidgetFormInputHidden(),
       'quiinforma'    => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
       'quiresol'      => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
-      'titol'         => new sfWidgetFormInput(),
-      'descripcio'    => new sfWidgetFormTextarea(),
+      'titol'         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
+      'descripcio'    => new sfWidgetFormTextarea(array(),array('style'=>'width:400px')),
       'estat'         => new sfWidgetFormChoice(array('choices'=>IncidenciesPeer::getEstatSelect())),
       'dataalta'      => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'dataresolucio' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
@@ -34,6 +34,16 @@ class IncidenciesForm extends sfFormPropel
       'dataresolucio' => new sfValidatorDate(),
     ));
 
+    $this->widgetSchema->setLabels(array(      
+      'quiinforma'    => 'Afectat: ',
+      'quiresol'      => 'Responsable: ',
+      'titol'         => 'Titol: ',
+      'descripcio'    => 'Descripció: ',
+      'estat'         => 'Estat: ',
+      'dataalta'      => 'Data d\'alta',
+      'dataresolucio' => 'Data resolució: ',
+    ));
+    
     $this->widgetSchema->setNameFormat('incidencies[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

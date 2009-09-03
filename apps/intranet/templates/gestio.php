@@ -36,7 +36,7 @@
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Reserves','gestio/gReserves'); ?></TD></TR>                                                                      
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies'); ?></TD></TR>
             <TR><TD class="SUBMENU1"><?php echo imgSub1().' ACTIVITATS'; ?></TD></TR>
-              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos'); ?></TD></TR>
+              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=CA'); ?></TD></TR>
 			  <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Matricules','gestio/gMatricules'); ?></TD></TR>
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Activitats','gestio/gActivitats?accio=C'); ?></TD></TR>             
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Espais','gestio/gEspais'); ?></TD></TR>

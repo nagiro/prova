@@ -76,21 +76,24 @@
 	        <DIV class="TITOL">Llistat d'alumnes</DIV>
 	      	<TABLE class="DADES">
 	 			<?php 
-					if( $ALUMNES->getNbResults() == 0 ):
-						echo '<TR><TD class="LINIA" colspan="3">No hi ha cap alumne amb aquests paràmetres.</TD></TR>';
-					else: 
+					if( $ALUMNES->getNbResults() == 0 ):					
+						echo '<TR><TD class="LINIA" colspan="3">No hi ha cap alumne amb aquests paràmetres.</TD></TR>';						
+					else:					 
 						echo '<TR><TD class="TITOL">DNI</TD><TD class="TITOL">Nom</TD></TR>';
-						$i = 0;
-						foreach($ALUMNES->getResults() as $A):
-	                      	$PAR = ParImpar($i++); ?>	                      	
-	                    	<TR>							
-								<TD class="LINIA"><?=link_to($A->getDni(),'gestio/gMatricules?accio=LMA&IDA='.$A->getUsuariid())?></TD>
-								<TD class="LINIA"><?=$A->getNomComplet()?></TD>
-							</TR>                		                 															                		                 															
-	                  <? endforeach;
+						
+						$i = 0;						
+						foreach($ALUMNES->getResults() as $A):						
+	                      	$PAR = ParImpar($i++);                	
+	                    	echo '<TR>							
+									<TD class="LINIA">'.link_to($A->getDni(),'gestio/gMatricules?accio=LMA&IDA='.$A->getUsuariid()).'</TD>
+								    <TD class="LINIA">'.$A->getNomComplet().'</TD>
+							      </TR>';
+							                		                 															                		                 															
+	                    endforeach;
+	                  
 	                 endif;                     
 	             ?>      
-	              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($ALUMNES);?></TD></TR>    	
+	              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($ALUMNES);?></TD></TR>    	
 	      	</TABLE>      
 	      </DIV>
 
@@ -106,16 +109,16 @@
 						echo '<TR><TD class="TITOL">CODI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD></TR>';
 						$i = 0;
 						foreach($CURSOS->getResults() as $C):
-	                      	$PAR = ParImpar($i++); ?>	                      	
-	                    	<TR>							
-								<TD class="LINIA"><?=link_to($C->getCodi(),'gestio/gMatricules?accio=LMC&IDC='.$C->getIdcursos())?></TD>
-								<TD class="LINIA"><?=$C->getTitolcurs()?></TD>
-								<TD class="LINIA"><?=$C->getDatainici('d/m/Y')?></TD>
-							</TR>                		                 															                		                 															
-	                  <? endforeach;
+	                      	$PAR = ParImpar($i++);
+	                      	echo '<TR>							
+									<TD class="LINIA">'.link_to($C->getCodi(),'gestio/gMatricules?accio=LMC&IDC='.$C->getIdcursos()).'</TD>
+									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
+									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
+								  </TR>';                		                 															                		                 															
+	                    endforeach;
 	                 endif;                     
 	             ?>      
-	              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($CURSOS);?></TD></TR>    	
+	              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($CURSOS);?></TD></TR>    	
 	      	</TABLE>      
 	      </DIV>
 
@@ -131,8 +134,8 @@
 	            <tr>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            	
-	            			<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSUBMIT'))?>
-	            			<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>	            		
+	            			<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSUBMIT'))?>
+	            			<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>	            		
 	            	</td>
 	            </tr>
 	        </table>
@@ -154,16 +157,16 @@
 				            $C = $M->getCursos();
 				            $U = $M->getUsuaris();
 				            $TEXT_REDUCCIO ="";
-				            if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; } ?>
-							<TR>
-								<TD class="LINIA" width="15%"><?=$U->getDni()?></TD>
-								<TD class="LINIA" width="40%"><?=$U->getNomComplet()?><BR /><?=$U->getTelefon()?> | <?=$M->getDatainscripcio()?></TD>
-								<TD class="LINIA" width="45%"><?=$C->getCodi()?> <?=$C->getTitolcurs()?> (<?=$PREU.'€'.$TEXT_REDUCCIO?>) <br />
-								                     		  <?=MatriculesPeer::getEstatText($M->getEstat())?> <?=$M->getComentari()?></TD>							
-							</TR>                		                 															                		                 															
-	                  <? endforeach; ?>	                  
-	                 <? endif; ?>      
-	                  	
+				            if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; }
+				            echo '<TR>
+									<TD class="LINIA" width="15%">'.$U->getDni().'</TD>
+									<TD class="LINIA" width="40%">'.$U->getNomComplet().'<BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>
+									<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
+								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>							
+								  </TR>';                		                 															                		                 															
+	                   endforeach; 	                  
+	                 endif;       
+	            ?>
 	      	</TABLE>      
 	      </DIV>
   
@@ -195,7 +198,7 @@
 	            <tr>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            	
-	            			<?=submit_tag('Pagar',array('name'=>'BPAGAR'))?>	            				            		
+	            			<?php echo submit_tag('Pagar',array('name'=>'BPAGAR'))?>	            				            		
 	            	</td>
 	            </tr>
 	        </table>

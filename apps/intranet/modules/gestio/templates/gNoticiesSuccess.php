@@ -23,7 +23,7 @@
 						  </TR>';                		                 															
 				endforeach;				
                 ?>         
-                <TR><TD><?=submit_tag('Desactiva',array('name'=>'BDESACTIVA','id'=>'submit'))?></TD><TD></TD></TR>       
+                <TR><TD><?php echo submit_tag('Desactiva',array('name'=>'BDESACTIVA','id'=>'submit'))?></TD><TD></TD></TR>       
 	        </table>
 	     </DIV>
      </form>                  

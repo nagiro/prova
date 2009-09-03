@@ -34,11 +34,12 @@ class Reservaespais extends BaseReservaespais
 
    public function getEstatText()
    {
-      switch(ReservaespaisPeer::ESTAT){
+      switch($this->getEstat()){
          case ReservaespaisPeer::EN_ESPERA: return 'En espera';
          case ReservaespaisPeer::ACCEPTADA: return 'Acceptada';
-         case ReservaespaisPeer::DENEGADA: return 'Denegada';         
-      }
+         case ReservaespaisPeer::DENEGADA: return 'Denegada';
+         case ReservaespaisPeer::ANULADA:  return 'Anul·lada';
+   		}
    }
    
 }

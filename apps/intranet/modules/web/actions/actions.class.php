@@ -22,8 +22,8 @@ class webActions extends sfActions
     $this->setLayout('layout'); $this->ERRORS = array(); $this->FOTOS = array();
     $this->ACCIO = 'noticies'; $this->TIPUS_MENU = 'WEB';  $this->CERCA = "";      
     $this->ACTIVITATS_CALENDARI = array(); $this->LLISTES = array(); $this->RESERVES = ARRAY(); 
-    $this->MATRICULES = array(); $this->CURSOS = array(); $this->USUARI = new Usuaris(); $this->MISSATGE = array();
-    $this->RESERVA = new Reservaespais(); $this->DADES_MATRICULA = array();
+    $this->MATRICULES = array(); $this->CURSOS = array(); $this->FUSUARI = new ClientUsuarisForm(); $this->MISSATGE = array();
+    $this->FRESERVA = new ClientReservesForm(); $this->DADES_MATRICULA = array();
     $this->OBERT = 0; $this->SELECCIONAT = 0;
 
     //Escollim les 4 fotos de la capçalera
@@ -125,15 +125,10 @@ class webActions extends sfActions
   
   public function executeRegistrat(sfWebRequest $request)
   {
-  	//Inicialitzem l'usuari per defecte.
-  	$OU = new Usuaris();
-  	$OU->setNivells(Nivells::USER);
-  	$OU->setHabilitat(true);
-  	
-  	//Creem el formulari usuari
-  	$this->FUSUARI = new ClientUsuarisForm($OUsuaris);
+  	//Inicialitzem l'usuari per defecte.  	  	
+  	$this->FUSUARI = new ClientUsuarisForm(new Usuaris());
   	$this->FUSUARI->bind($request->getParameter('usuaris'));
-
+  	
   	//Comprovem que el DNI no existeixi. Si ja existeix informem l'usuari
      $C = new Criteria();
      $C->add(UsuarisPeer::DNI , $this->FUSUARI->getValue('DNI'));
@@ -173,7 +168,7 @@ class webActions extends sfActions
      		 	if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
      		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }	    		   			    		
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
-     		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 2 , 'web/index?accio=gd');
+     		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 2 , 'web/gestio?accio=gd');
      		 else: 
      		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
      		 endif;
@@ -209,11 +204,13 @@ class webActions extends sfActions
 	   case 'ca':	        	    		        	    
 	    	$this->ACTIVITATS_LLISTAT = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI));
 	    	$this->ACCIO = 'activitats';
-	       break;
+	       	break;
 
        //Mostra les activitats quan cliquem la cerca
-	   case 'se': $this->CarregaCerca(false,$this->DATACALENDARI); break;
-	   
+	   case 'se': 
+	   		$this->CarregaCerca(false,$this->DATACALENDARI); 
+	   		break;
+	   	   
 	   //Per defecte mostrem les notícies
 	   default: $this->CarregaNoticies();  break;	   
    }
@@ -270,7 +267,7 @@ class webActions extends sfActions
           
   }
   
-  public function executeGestio()
+  public function executeGestio(sfWebRequest $request)
   {
      $this->LoadWEB();
      $this->setTemplate('index');
@@ -281,11 +278,12 @@ class webActions extends sfActions
        case 'gd':
 		    $this->MODUL = 'gestiona_dades';
 		    $this->ACCIO = 'gestio';
-		    $this->USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));       	       	     
+		    $OU = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
+		    $this->FUSUARI = new ClientUsuarisForm($OU);       	       	     
 	        break;
 	   case 'gc':
 	        $this->MODUL = 'gestiona_cursos';
-            $this->ACCIO = 'gestio';            
+            $this->ACCIO = 'gestio';                        
             $this->MATRICULES = MatriculesPeer::getMatriculesUsuari($this->getUser()->getAttribute('idU'));                                                               
             break;
 	   case 'gl':
@@ -297,30 +295,69 @@ class webActions extends sfActions
 	        $this->MODUL = 'gestiona_reserves';
 	        $this->ACCIO = 'gestio';	        
 	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
-	        if($this->hasRequestParameter('idR')) $this->RESERVA = ReservaespaisPeer::retrieveByPK($this->getRequestParameter('idR'));	        
+	        $this->getUser()->setAttribute('idR',0);
+	        if($request->getParameter('idR')){
+	        	$OR = ReservaespaisPeer::retrieveByPK($this->getRequestParameter('idR'));
+	        	$this->FRESERVA = new ClientReservesForm($OR);
+	        	$this->getUser()->setAttribute('idR',$OR->getReservaespaiid());	        		        
+	        } 	        
 	        break;
 	   case 'sd':
-	        $this->saveUsuari();
-	        $this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';
-		    $this->USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
-		    $this->MISSATGE[] = "Dades modificades correctament";
+	   		$this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';		    		    
+	   		$OU = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
+	   		$this->FUSUARI = new ClientUsuarisForm($OU);
+	   		$this->FUSUARI->bind($request->getParameter('usuaris'));
+	   		if($this->FUSUARI->isValid()) { $this->FUSUARI->save(); $this->MISSATGE[] = "Dades modificades correctament"; }
+	   		else $this->MISSATGE[] = 'Hi ha algun error a les dades';     
 	        break;       	                    	             	        
 	   case 'sl':
-	        UsuarisllistesPeer::saveUsuarisLlistes($this->getRequestParameter('LLISTA'), $this->getUser()->getAttribute('idU'));
+	        UsuarisllistesPeer::saveUsuarisLlistes($request->getParameter('LLISTA'), $this->getUser()->getAttribute('idU'));
 	        $this->MODUL = 'gestiona_llistes'; $this->ACCIO = 'gestio';
 		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getAttribute('idU'));
 		    $this->MISSATGE[] = "Dades modificades correctament";
 	        break;
-	   case 'sr':	        	         
-	        $this->RESERVA = ReservaespaisPeer::save($this->getRequestParameter('D'),$this->getUser()->getAttribute('idU') );	        
+	   case 'sr':
+	   	
+	   		//Carreguem el formulari que hem carregat per edició o res per nou	
+			$OR = ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('idR'));
+			
+			//Si en trobem un, creem el formulari altrament un de nou
+			if($OR instanceof Reservaespais) $this->FRESERVA = new ClientReservesForm($OR);
+			else $this->FRESERVA = new ClientReservesForm(new Reservaespais());
+
+			//Entrem les dades del formulari	
+			$this->FRESERVA->bind($request->getParameter('reservaespais'));
+			
+			//Si és correcte el guardem
+			if($this->FRESERVA->isValid()):
+				$this->FRESERVA->setUser($this->getUser()->getAttribute('idU'));
+				$this->FRESERVA->save();
+				$this->MISSATGE[] = "Dades modificades correctament";
+			else:
+				$this->MISSATGE[] = "Hi ha alguna dada incorrecta al formulari";	
+			endif;			
+			
+			//Posem les dades de càrrega del mòdul
 	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
-	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';
-		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getAttribute('idU'));
-		    if(sizeof($this->MISSATGE)==0) $this->MISSATGE[] = "Dades modificades correctament";		       
+	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';		    
+		    		       
 	        break;
 
+	   //Anul·la la reserva
+	   case 'ar':
+	   		$RE = ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('idR'));	   			   		
+	   		if($RE instanceof Reservaespais):
+	   			$RE->setEstat(ReservaespaisPeer::ANULADA);
+	   			$RE->save();
+	   		endif;
+	   		
+			//Posem les dades de càrrega del mòdul
+	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
+	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';		    	   		
+	   		break;
+	   		
 	   case 'im':   //Iniciem la matrícula	                                    
-            $D = $this->getRequestParameter('D');            
+            $D = $request->getParameter('D');            
             $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
             $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
             $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();

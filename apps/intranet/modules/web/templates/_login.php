@@ -9,7 +9,7 @@
 		<form action="<?php echo url_for('web/login') ?>" method="POST" name="form_login">    
 		    <DIV class="REQUADRE" style="width:400px">
 		    	<table class="FORMULARI">
-		    	<?php if($ERROR != ""): ?><tr><td class="error" colspan="2"><?=$ERROR?></td></td><?php endif; ?>          
+		    	<?php if($ERROR != ""): ?><tr><td class="error" colspan="2"><?php echo $ERROR?></td></td><?php endif; ?>          
 		           <?php echo $FLogin ?>
 		           <tr>
 		            	<td colspan="2">

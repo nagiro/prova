@@ -25,13 +25,13 @@
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="500px">
-                <?=$FLlista ?>                								
+                <?php echo $FLlista ?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE_LLISTA'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gLlistes',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE_LLISTA'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gLlistes',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -58,34 +58,34 @@
 	<?php if($LLISTA): ?>
 	     
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Usuaris a la llista (<?=$USUARIS_LLISTA->getNbResults()?>)</DIV>
+	    <DIV class="TITOL">Usuaris a la llista (<?php echo $USUARIS_LLISTA->getNbResults()?>)</DIV>
 	    	<table class="DADES">          
                   <?php foreach($USUARIS_LLISTA->getResults() as $U): ?>                                                       
                   	<TR>
-                  		<TD width="10%" class="LINIA"><?=checkbox_tag('BAIXA_USUARI[]',$U->getUsuariid())?></TD>
-                  		<TD width="15%" class="LINIA"><?=$U->getDni()?></TD>
-                  		<TD width="75%" class="LINIA"><?=$U->getNomComplet()?></TD>                  		
+                  		<TD width="10%" class="LINIA"><?php echo checkbox_tag('BAIXA_USUARI[]',$U->getUsuariid())?></TD>
+                  		<TD width="15%" class="LINIA"><?php echo $U->getDni()?></TD>
+                  		<TD width="75%" class="LINIA"><?php echo $U->getNomComplet()?></TD>                  		
                   	</TR>
                   <?php endforeach; ?>
                 	<TR>
-                		<TD><?=gestorPaginesUsuarisLlista( $USUARIS_LLISTA )?></TD>
-                		<TD></TD><TD><?=submit_tag('DESVINCULA',array('name'=>'BDESVINCULA'))?></TD></TR>                   	  
+                		<TD><?php echo gestorPaginesUsuarisLlista( $USUARIS_LLISTA )?></TD>
+                		<TD></TD><TD><?php echo submit_tag('DESVINCULA',array('name'=>'BDESVINCULA'))?></TD></TR>                   	  
 	        </table>
 	     </DIV>
                      
 	<?php else: ?>                     
                      
 		<DIV class="REQUADRE">
-	    <DIV class="TITOL">Usuaris disponibles (<?=$USUARIS_DISPONIBLES->getNbResults()?>)</DIV>
+	    <DIV class="TITOL">Usuaris disponibles (<?php echo $USUARIS_DISPONIBLES->getNbResults()?>)</DIV>
 	    	<table class="DADES">          
             <?php foreach($USUARIS_DISPONIBLES->getResults() as $U):   // $U = new Usuaris(); ?>                                                       
                   	<TR>
-                  		<TD width="10%" class="LINIA"><?=checkbox_tag('ALTA_USUARI[]',$U->getUsuariid())?></TD>
-                  		<TD width="15%" class="LINIA"><?=$U->getDni()?></TD>
-                  		<TD width="75%" class="LINIA"><?=$U->getNomComplet()?></TD>                  		
+                  		<TD width="10%" class="LINIA"><?php echo checkbox_tag('ALTA_USUARI[]',$U->getUsuariid())?></TD>
+                  		<TD width="15%" class="LINIA"><?php echo $U->getDni()?></TD>
+                  		<TD width="75%" class="LINIA"><?php echo $U->getNomComplet()?></TD>                  		
                   	</TR>
                   <?php endforeach; ?>    
-	                <TR><TD><?=gestorPaginesUsuarisNoLlista( $USUARIS_DISPONIBLES )?></TD><TD></TD><TD><?=submit_tag('VINCULA',array('name'=>'BVINCULA'))?></TD></TR>                   	  
+	                <TR><TD><?php echo gestorPaginesUsuarisNoLlista( $USUARIS_DISPONIBLES )?></TD><TD></TD><TD><?php echo submit_tag('VINCULA',array('name'=>'BVINCULA'))?></TD></TR>                   	  
 	        </table>
 	     </DIV>
 
@@ -100,13 +100,13 @@
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
 	 	<DIV class="REQUADRE">	 	
 	    	<table class="FORMULARI" width="600px">	    	
-                <?=$FMissatge?>                								
+                <?php echo $FMissatge?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>	            		
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE_MISSATGE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gLlistes',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE_MISSATGE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gLlistes',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -118,7 +118,7 @@
   <?php ENDIF; ?>
   <?php IF( $MODE['ENVIAT'] ): ?>
     
-      <TABLE class="BOX"><TR><TD class="NOTICIA">MISSATGE ENVIAT A <?=$MAILS?> PERSONES.</TD></TR></TABLE>      
+      <TABLE class="BOX"><TR><TD class="NOTICIA">MISSATGE ENVIAT A <?php echo $MAILS?> PERSONES.</TD></TR></TABLE>      
 
   <?php ENDIF; ?>
   <?php IF( $MODE['LLISTAT'] ): ?>
@@ -128,7 +128,7 @@
 	    	<table class="DADES">          
                   <?php foreach($LMISSATGES as $M):  ?>                                                       
                   	<TR>
-                  		<TD class="LINIA"><?=link_to($M->getTitol(),'gestio/gLlistes?accio=M&IDM='.$M->getIdmissatgesllistes().'&IDL='.$M->getLlistesIdllistes())?></TD>
+                  		<TD class="LINIA"><?php echo link_to($M->getTitol(),'gestio/gLlistes?accio=M&IDM='.$M->getIdmissatgesllistes().'&IDL='.$M->getLlistesIdllistes())?></TD>
 						<TD class="LINIA">
 							<? 
 								if(!is_null($M->getEnviat('d/m/Y'))):

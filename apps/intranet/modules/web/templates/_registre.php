@@ -8,15 +8,15 @@
 		if(valida_nif_cif_nie(fRegistre.usuaris_DNI.value) < 1) { alert("El DNI entrat no és correcte"); return false; }		
 		if(vacio(fRegistre.usuaris_Passwd.value)== false){ alert("Has d\'entrar una contrasenya"); return false; }
 		if(vacio(fRegistre.usuaris_Nom.value)== false){ alert("Has d'omplir el nom"); return false; }
-		if(vacio(fRegistre.usuaris.Cog1.value)== false){ alert("Has d'omplir el primer cognom"); return false; }
-		if(vacio(fRegistre.usuaris.Cog2.value)== false){ alert("Has d'omplir el segon cognom"); return false; }
-		if(isValidEmail(fRegistre.usuaris.Email.value) == false){ alert("L'adreça de correu electrònic és incorrecta"); return false; }
-		if(vacio(fRegistre.usuaris.Adreca.value)== false){ alert("Has d'omplir l'adreça postal"); return false; }
-		if(vacio(fRegistre.usuaris.Codipostal.value)== false){ alert("Has d'omplir el codi postal"); return false; }
+		if(vacio(fRegistre.usuaris_Cog1.value)== false){ alert("Has d'omplir el primer cognom"); return false; }
+		if(vacio(fRegistre.usuaris_Cog2.value)== false){ alert("Has d'omplir el segon cognom"); return false; }
+		if(isValidEmail(fRegistre.usuaris_Email.value) == false){ alert("L'adreça de correu electrònic és incorrecta"); return false; }
+		if(vacio(fRegistre.usuaris_Adreca.value)== false){ alert("Has d'omplir l'adreça postal"); return false; }
+		if(vacio(fRegistre.usuaris_CodiPostal.value)== false){ alert("Has d'omplir el codi postal"); return false; }
 		if(fRegistre.usuaris_Poblacio.selectedIndex<1){ alert("Has d'escollir alguna població"); return false; }				
-		if(vacio(fRegistre.usuaris.Telefon.value)== false){ alert("Has d'omplir el telèfon"); return false; }
+		if(vacio(fRegistre.usuaris_Telefon.value)== false){ alert("Has d'omplir el telèfon"); return false; }
 		if(fRegistre.VLOGIN.value != 'c!#G1'){ alert("El text de verificació no correspòn a la imatge"); return false; }
-	
+		
 		return true;
 			
 	}
@@ -52,16 +52,16 @@
 
 <TD colspan="3" class="CONTINGUT">
    
-   <form action="<?=url_for('web/registrat')?>" method="post" name="fRegistre" onSubmit="return ValidaReserva(this);">
+   <form action="<?php echo url_for('web/registrat')?>" method="post" name="fRegistre" onSubmit="return ValidaReserva(this);">
       
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>   
    <TABLE class="FORMULARI">
    	<?
    	 
 	   if($ESTAT == 'OK'):
-	      ?><TR><TD colspan="2">Usuari donat d'alta correctament<BR /><BR /></TD></TR><?
+	      ?><TR><TD class="OK" colspan="2">Usuari donat d'alta correctament<BR /><BR /></TD></TR><?
        elseif($ESTAT == 'ERROR'):
-	      ?><TR><TD colspan="2">L'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui <?=link_to('aquí','web/reenviaContrasenya?DNI='.$DADES_USUARI->getDni(),array('class'=>'taronja'))?>.<BR /><BR /></TD></TR><?       
+	      ?><TR><TD class="ERROR" colspan="2">L'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui <?php echo link_to('aquí','web/reenviaContrasenya?DNI='.$FUSUARI->getValue('DNI'),array('class'=>'taronja'))?>.<BR /><BR /></TD></TR><?php       
        endif;	
        
        echo $FUSUARI;

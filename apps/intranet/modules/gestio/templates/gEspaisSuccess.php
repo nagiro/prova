@@ -1,4 +1,5 @@
-<?php use_helper('Form')?>
+<?php use_helper('Form') ?>
+
 <STYLE>
 
 #FDATA { width:80px; }

@@ -279,7 +279,7 @@ class gestioActions extends sfActions
       $this->EDICIO = true;                
     elseif($request->hasParameter('SaveHTML')):      
       $IDN = $this->getUser()->getAttribute('idN');
-      $this->RET = $this->SaveHTML($IDN);
+      $this->RET = $this->SaveHTML($IDN,$request->getParameter('HTML'));
       $this->NODE = $this->RET['NODE'];
       $this->ERRORS = $this->RET['ERRORS'];      
       $this->HTML = true;                
@@ -289,11 +289,14 @@ class gestioActions extends sfActions
     
   }  
     
-  public function SaveHTML($idNode)
+  public function SaveHTML( $idNode , $HTML )
   {
       $N = NodesPeer::retrieveByPK($idNode); 
       $N->setNew(false);
-      $N->setHTML($this->getRequestParameter('HTML'));
+      
+      $fd = fopen(sfConfig::get('sf_web_dir').'/pagines/'.$idNode.'.php',"w");
+      fwrite($fd,$HTML);
+      $N->setHTML('/pagines/'.$idNode.'.php');      
       $N->save();
       $RET['ERRORS'] = array();
       $RET['NODE'] = $N;      
@@ -565,8 +568,7 @@ class gestioActions extends sfActions
     
     	$accio = $request->getParameter('accio');
 	    if($request->getParameter('BNOU'))		$accio = "N";    
-	    if($request->getParameter('BSAVE')) 	$accio = 'S';            
-	    if($request->getParameter('BDELETE'))	$accio = 'D';    
+	    if($request->getParameter('BSAVE_x')) 	$accio = 'S';               
 
 	endif;
 	    
@@ -1012,8 +1014,7 @@ class gestioActions extends sfActions
         
   	//Definim l'acció segons el botó premut  	
     if( $this->getRequest()->hasParameter('BNOU') ) $accio = 'N';
-    if( $this->getRequest()->hasParameter('BSAVE') ) $accio = 'S';
-    if( $this->getRequest()->hasParameter('BDELETE') ) $accio = 'D';
+    if( $this->getRequest()->hasParameter('BSAVE_x') ) $accio = 'S';    
 
     switch( $accio )
     {
@@ -1043,7 +1044,7 @@ class gestioActions extends sfActions
                 $this->MODE['EDICIO'] = true;      
                 break;         
       case 'D': 
-                $this->AID = $this->getRequestParameter('AID');
+                $this->AID = $this->getUser()->getAttribute('AID');
                 $A = AgendatelefonicaPeer::retrieveByPK($this->AID);
                 if(!is_null($A)) $A->delete();  
                 break; 
@@ -1067,7 +1068,7 @@ class gestioActions extends sfActions
   
   public function executeGMissatges(sfWebRequest $request)  
   {
-   	sfCoreAutoload::make(); 
+  	   	
     $this->setLayout('gestio');
     
     //Actualitzem el requadre de cerca
@@ -1080,8 +1081,7 @@ class gestioActions extends sfActions
     	$accio = $request->getParameter('accio');
     	if( $request->hasParameter('BCERCA') ) 		$accio = 'C';
 	    if( $request->hasParameter('BNOU') )  		$accio = 'N';
-	    if( $request->hasParameter('BSAVE') ) 		$accio = 'S';
-	    if( $request->hasParameter('BDELETE') ) 	$accio = 'D';
+	    if( $request->hasParameter('BSAVE_x') ) 		$accio = 'S';
 	    
     endif;
 
@@ -1116,7 +1116,7 @@ class gestioActions extends sfActions
                 $this->EDICIO = true;      
                 break;
       case 'D':
-                $this->IDM = $response->getParameter('IDM');
+      			$this->IDM = $this->getUser()->getAttribute('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
                 if(!is_null($M)) $M->delete();                
                 break;                    
@@ -1195,8 +1195,7 @@ class gestioActions extends sfActions
   public function executeGMaterial(sfWebRequest $request)  
   {
     
-    $this->setLayout('gestio');
-    $this->setOnsoc($this->getActionName());
+    $this->setLayout('gestio');    
         
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $this->TIPUS = $this->ParReqSesForm($request,'text',1,'cerca');
@@ -1216,8 +1215,7 @@ class gestioActions extends sfActions
 	    $accio = $request->getParameter('accio');
 	    if($request->hasParameter('BCERCA'))    $accio = 'C';
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
-	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
-	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
+	    if($request->hasParameter('BSAVE_x')) 	$accio = 'S';	    
 	endif;                
 	
     switch($accio){
@@ -1225,22 +1223,27 @@ class gestioActions extends sfActions
     			$OMaterial = new Material();
     			$OMaterial->setMaterialgenericIdmaterialgeneric($this->TIPUS);
     			$this->FMaterial = new MaterialForm($OMaterial);    			
+    			$this->getUser()->setAttribute('IDM',0);
     			$this->NOU = true;
+    			
     		break;
     	case 'E':    			
     			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
     			$OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));
-				$this->FMaterial = new MaterialForm($OMaterial);   			
+				$this->FMaterial = new MaterialForm($OMaterial);
+				$this->getUser()->setAttribute('IDM',$OMaterial->getIdmaterial());   			
     			$this->EDICIO = true;
     		break;
-    	case 'S':    			    		        		  
-    		    $this->FMaterial = new MaterialForm(MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM')));
+    	case 'S':
+    			$OMaterial = new Material();
+    			if($this->getUser()->getAttribute('IDM') > 0): $OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM')); endif;      			    		        		  
+    		    $this->FMaterial = new MaterialForm($OMaterial);
     		    $this->FMaterial->bind($request->getParameter('material'));
     		    if($this->FMaterial->isValid()) $this->FMaterial->save();    		        		    
     			$this->EDICIO = true;
     		break;
-    	case 'D': 
-    	        MaterialPeer::retrieveByPK($request->getRequest('IDM'))->delete();    	        
+    	case 'D':     			
+    	        MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM'))->delete();  	        
     	        break;    	         	 
     }
         
@@ -1272,8 +1275,7 @@ class gestioActions extends sfActions
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $accio = ( $this->SELECT == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
 	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NC';
-	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';
-	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
+	    elseif($request->hasParameter('BSAVE_x')) 	$accio = 'S';	    
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -1299,15 +1301,17 @@ class gestioActions extends sfActions
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'D': 
-    	        CursosPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
+    	        CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA );
+				$this->MODE['CONSULTA'] = true;				     	            	          	        
     	    break;
 		case 'CI' :	
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA );
-				$this->MODE['CONSULTA'];				 
+				$this->MODE['CONSULTA'] = true;				 
 			break;		
 		case 'CA' :
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA );
-				$this->MODE['CONSULTA'];
+				$this->MODE['CONSULTA'] = true;
 			break;					
 		case 'L': 
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));
@@ -1338,7 +1342,7 @@ class gestioActions extends sfActions
 	    $accio = $request->getParameter('accio');
 	    if($request->hasParameter('BCERCA'))    $accio = 'C';
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
-	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
+	    if($request->hasParameter('BSAVE_x')) 	$accio = 'S';
 	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
 	endif;                
 	
@@ -1356,7 +1360,7 @@ class gestioActions extends sfActions
     		break;
     	case 'S':    			    		        		  
     		    $this->FReserva = new ReservaespaisForm(ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('IDR')));
-    		    $this->FReserva->bind($request->getParameter('reservaespais'));
+    		    $this->FReserva->bind($request->getParameter('reservaespais'));    		    
     		    if($this->FReserva->isValid()) $this->FReserva->save();    		        		    
     			$this->MODE['EDICIO'] = true;
     		break;
@@ -1599,16 +1603,17 @@ class gestioActions extends sfActions
     			$OCessio = new Cessiomaterial();
     			$OCessio->setDatacessio(date('m/d/Y',time()));
     			$OCessio->setDataretorn(date('m/d/Y',time()));    			    			    	    			
-    			$this->FCessiomaterial = new CessiomaterialForm($OCessio);    			
+    			$this->FCessiomaterial = new CessiomaterialForm($OCessio);
+    			$this->getUser()->setAttribute('IDC',0);    			
     			$this->MODE['NOU'] = true;
     		break;
     	case 'E':    			
     			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
     			$OCessio = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
-				$this->FCessiomaterial = new CessiomaterialForm($OCessio);   			
+				$this->FCessiomaterial = new CessiomaterialForm($OCessio);				   			
     			$this->MODE['EDICIO'] = true;
     		break;
-    	case 'S':    			    		        		  
+    	case 'S':    			    	    				        		  
     		    $this->FCessiomaterial = new CessiomaterialForm(CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
     		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
     		    if($this->FCessiomaterial->isValid()) $this->FCessiomaterial->save();

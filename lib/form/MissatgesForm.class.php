@@ -18,18 +18,16 @@ class MissatgesForm extends sfFormPropel
       'Titol'            => new sfWidgetFormInput(array(),array('class'=>'text')),
       'Text'             => new sfWidgetFormTextarea(array(),array('class'=>'text')),
       'Date'             => new sfWidgetFormInputHidden(),
-      'Publicacio'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
-      'AltaRegistre'     => new sfWidgetFormInputHidden(),
+      'Publicacio'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),           
     ));
 
     $this->setValidators(array(
-      'MissatgeID'       => new sfValidatorString(),
+      'MissatgeID'       => new sfValidatorPropelChoice(array('model' => 'Missatges', 'column' => 'MissatgeID', 'required' => false)),
       'Usuaris_UsuariID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'Titol'            => new sfValidatorString(array('required' => true)),
       'Text'             => new sfValidatorString(array('required' => false)),
-      'Date'             => new sfValidatorDateTime(array('required' => false)),
+      'Date'             => new sfValidatorDate(array('required' => false)),
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
-      'AltaRegistre'     => new sfValidatorDate(array('required' => false)),
     ));
         
     $this->widgetSchema->setNameFormat('missatges[%s]');
@@ -49,7 +47,7 @@ class MissatgesForm extends sfFormPropel
     $this->setDefaults(array(
     	'Titol' 		=> '',
     	'Text'  		=> '',
-    	'Date'			=> date('Y-m-d',time()).' '.time(),
+    	'Date'			=> date('Y-m-d',time()),
     	'Publicacio' 	=> date('Y-m-d',time()),    	    	
     ));
     
@@ -58,12 +56,12 @@ class MissatgesForm extends sfFormPropel
   
   public function save($conn = null)
   {
-  	$MO = $this->getObject();
-
-  	//Si és un nou registre, posem la data d'alta d'avui
-  	if($MO->isNew()) $MO->setAltaregistre(date('Y-m-d',time()));
-  
-  	parent::save();
+  	
+  	$this->updateObject();
+  	$OM = $this->getObject();  	  	  	  	  	
+  	$OM->setDate(date('Y-m-d',time()));
+  	$OM->save();
+  	  	  	  	  	   	
   }
   
 	public function getModelName()

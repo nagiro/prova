@@ -1,3 +1,4 @@
+<?php use_helper('Form'); ?>
 <style>
 	fieldset { border:3px solid #F3F3F3; margin-right:40px; padding:10px; }
 	.MISSAT { color:black; font-weight:bold; font-size:10px; vertical-align:middle; text-align:center; background-color:White; padding-bottom:10px; }
@@ -16,10 +17,10 @@
 	<?php  
 		
 	   switch($MODUL){
-	      case 'gestiona_dades': gestiona_dades( $USUARI , $MISSATGE ); break;
+	      case 'gestiona_dades': gestiona_dades( $FUSUARI , $MISSATGE ); break;
 	      case 'gestiona_cursos': gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGE ); break;
 	      case 'gestiona_llistes': gestiona_llistes( $LLISTES , $MISSATGE ); break;
-	      case 'gestiona_reserves': gestiona_reserves( $RESERVA , $RESERVES , $MISSATGE ); break;
+	      case 'gestiona_reserves': gestiona_reserves( $FRESERVA , $RESERVES , $MISSATGE ); break;
 	      case 'gestiona_verificacio' : gestiona_verificacio($DADES_MATRICULA , $TPV); break;    
 	   }
 		
@@ -32,136 +33,149 @@
 
 <?php 
 
-function gestiona_dades($USUARI,$MISSATGE){
-   echo nice_form_tag('web/gestio?accio=sd',array('method'=>'POST'));   
-   ?> 
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades personals</LEGEND>
-   <TABLE class="DADES">
-   <?php if(!empty($MISSATGE)): ?> 
-   		<TR>
-   			<TD class="MISSAT" colspan="2">
-   				<? foreach($MISSATGE as $M): echo $M."<BR>";  endforeach; ?>    				
-   			</TD>
-   		</TR>
-   	<? endif; ?>   
-   <TR><TD class="LINIA">DNI</TD>                <TD class="LINIA"><?php echo input_tag('DNI',$USUARI->getDni(),array('disabled'=>false)); ?></TD></TR>      
-   <TR><TD class="LINIA">Contrasenya</TD>        <TD class="LINIA"><?php echo input_password_tag('PASSWD',$USUARI->getPasswd()); ?></TD></TR>
-   <TR><TD class="LINIA">Nom</TD>                <TD class="LINIA"><?php echo input_tag('NOM',$USUARI->getNom()); ?></TD></TR>
-   <TR><TD class="LINIA">Primer cognom</TD>      <TD class="LINIA"><?php echo input_tag('COG1',$USUARI->getCog1()); ?></TD></TR>
-   <TR><TD class="LINIA">Segon cognom</TD>       <TD class="LINIA"><?php echo input_tag('COG2',$USUARI->getCog2()); ?></TD></TR>
-   <TR><TD class="LINIA">Correu electrònic</TD>  <TD class="LINIA"><?php echo input_tag('EMAIL',$USUARI->getEmail()); ?></TD></TR>
-   <TR><TD class="LINIA">Adreça postal</TD>      <TD class="LINIA"><?php echo input_tag('ADRECA',$USUARI->getAdreca()); ?></TD></TR>
-   <TR><TD class="LINIA">Codi postal</TD>        <TD class="LINIA"><?php echo input_tag('CODIPOSTAL',$USUARI->getCodiPostal()); ?></TD></TR>
-   <TR><TD class="LINIA">Població</TD>           <TD class="LINIA"><?php echo select_tag('POBLACIO',options_for_select(PoblacionsPeer::select(),$USUARI->getPoblacio())); echo input_tag('POBLACIOT',$USUARI->getPoblaciotext()); ?></TD></TR>
-   <TR><TD class="LINIA">Telèfon</TD>            <TD class="LINIA"><?php echo input_tag('TELEFON',$USUARI->getTelefon()); ?></TD></TR>
-   <TR><TD class="LINIA">Mòbil</TD>              <TD class="LINIA"><?php echo input_tag('MOBIL',$USUARI->getMobil()); ?></TD></TR>
-   <TR><TD class="LINIA">Entitat</TD>            <TD class="LINIA"><?php echo input_tag('ENTITAT',$USUARI->getEntitat()); ?></TD></TR>                        
-   </TABLE>   
-   
-   </FIELDSET>
-   
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades personals</LEGEND>
-   <TABLE class="FORMULARI">
-	   <TR><TD></TD><TD><?php echo submit_tag('Modifica',array('style'=>'width:100px;')); ?> </TD>                        
-   </TABLE>      
-   </FIELDSET>
+function gestiona_dades($FUSUARI,$MISSATGE){
+?> 
+
+	<form name="gDades" action="<?php echo url_for('web/gestio?accio=sd') ?>" method="post">
+       
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades personals</LEGEND>
+	   
+		   <TABLE class="FORMULARI">
+		   <?php echo missatge($MISSATGE); ?>		      
+		   <?php echo $FUSUARI; ?>                        
+		   </TABLE>   
+	   
+	   </FIELDSET>
+	   
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>
+	   
+		   <TABLE class="FORMULARI">
+			   <TR><TD></TD><TD><?php echo submit_tag('Modifica',array('style'=>'width:100px;')); ?> </TD>                        
+		   </TABLE>
+		         
+	   </FIELDSET>
+	   
+	</form>	 
    
    <?php  
 } 
 
 function gestiona_llistes( $LLISTES , $MISSATGE ){
-   
-  echo nice_form_tag('web/gestio?accio=sl',array('method'=>'POST')); ?>
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Llistes de correu</LEGEND>   
-	<table class="FORMULARI">   
-      <? foreach(LlistesPeer::select() as $K=>$L): ?>          
-		<TR><TD><?=checkbox_tag('LLISTA[]',$K,isset($LLISTES[$K]))?></TD><TD><?=$L?></TD></TR>      	
-      <? endforeach; ?>	
-	</table>         
-   </FIELDSET>
+?>
+	<form name="gDades" action="<?php echo url_for('web/gestio?accio=sl') ?>" method="post">
+	  
+		<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Llistes de correu</LEGEND>
+		   
+			<table class="FORMULARI">
+			
+				<?php echo missatge($MISSATGE); ?>
+			   
+				<?php foreach(LlistesPeer::select() as $K=>$L): ?>
+				          
+					<TR><TD><?php echo checkbox_tag('LLISTA[]',$K,isset($LLISTES[$K]))?></TD><TD><?php echo $L?></TD></TR>
+					      	
+				<?php endforeach; ?>
+					
+			</table>
+			         
+		</FIELDSET>
+	
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>
+	      
+		<table class="FORMULARI">
+		   
+			<TR><TD colspan="2"><?php echo submit_tag('Modifica', array('style'=>'width:100px;')); ?></TD></TR>
+			
+		</table>
+		         
+	   </FIELDSET>
 
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>   
-	<table class="FORMULARI">   
-		<TR><TD colspan="2"><?=submit_tag('Modifica', array('style'=>'width:100px;')); ?></TD></TR>
-	</table>         
-   </FIELDSET>
-
+	</form>
 
    <?
 }
 
-function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {   
-   echo nice_form_tag('web/gestio?accio=im',array('method'=>'POST'));
+function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
    ?>
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats</LEGEND>           
-   <TABLE class="FORMULARI">
-   <? if(sizeof($MATRICULES)==0): ?>
-		<TR><TD class="LINIA">No has fet cap curs a la Casa de Cultura. Si no és així, si us plau notifica'ns-ho. </TD></TR>                                   
-   <? endif; ?>
-   <? foreach($MATRICULES as $M): ?>
-      <? $CURSOS = $M->getCursos(); ?>                           
-   		<TR><TD><?=$CURSOS->getCodi()?></TD>
-      		<TD class="LINIA"><?=$CURSOS->getTitolCurs()?></TD>
-      		<TD class="LINIA"><?=MatriculesPeer::getEstatText( $M->getEstat() )?></TD>
-      		<TD class="LINIA"><?=$M->getDataInscripcio()?></TD>
-      		<TD class="LINIA"><?=$M->getDescompte()?></TD>                                                                                             
-	     </TR>                                   
-   <? endforeach; ?>                              
-   </TABLE>   
-   </FIELDSET>
-      
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles</LEGEND>   
-   <TABLE class="DADES">
-   <? $CAT_ANT = ""; ?>   
-   <? foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
-   <?    if($CAT_ANT <> $C->getCategoria()): ?>
-   <?       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
-			<TR><TD colspan="4" class="TITOL"><?=$C->getCategoria()?></TD></TR>
-   <?    endif; ?>
-                       	
-   		<TR>
-      		<TD class="LINIA CURS"><?=checkbox_tag('D[CURSOS][]',$C->getIdcursos(),false)?></TD>
-      		<TD class="LINIA CURS"><?=$C->getCodi()?></TD>
-      		<TD class="LINIA CURS"><?=$C->getTitolcurs()?> ( <?=$C->getHoraris()?> ) </TD>
-      		<TD class="LINIA CURS"><?=$C->getPreu()?></TD>      							
-      		<TD class="LINIA CURS"><?=$C->getDatainici('d-m-Y')?></TD>
-      		<TD class="LINIA CURS"><?=$PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
-      	</TR>                		                 										
-   <? $CAT_ANT = $C->getCategoria(); ?>			   
-   <? endforeach; ?>        
-   <TR><TD colspan="2" class="LINIA"><b>DESCOMPTE</b></TD><TD colspan="4"><?=select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>                      
-   </TABLE>         
-   </FIELDSET>
+   <form method="post" action="<?php echo url_for('web/gestio?accio=im') ?>">
    
-	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>   
-	<TABLE class="FORMULARI"><TR><TD><?=submit_tag('Matricula\'m',array('name'=>'BMATRICULA' , 'style'=>'width:100px'))?></TD></TR></TABLE>         
-   	</FIELDSET>
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats</LEGEND>
+	              
+		   <TABLE class="DADES">
+		   
+		   <?php if(sizeof($MATRICULES)==0): ?>
+				<TR><TD>No has fet cap curs a la Casa de Cultura. Si no és així, si us plau notifica'ns-ho. </TD></TR>                                   
+		   <?php endif; ?>
+		   
+		   <?php foreach($MATRICULES as $M): ?>
+		      <?php $CURSOS = $M->getCursos(); ?>                           
+		   		<TR><TD><?php echo $CURSOS->getCodi()?></TD>
+		      		<TD><?php echo $CURSOS->getTitolCurs()?></TD>
+		      		<TD><?php echo MatriculesPeer::getEstatText( $M->getEstat() )?></TD>
+		      		<TD><?php echo $M->getDataInscripcio()?></TD>
+		      		<TD><?php echo $M->getDescompte()?></TD>                                                                                             
+			     </TR>                                   
+		   <?php endforeach; ?>                              
+		   </TABLE>
+		      
+	   </FIELDSET>
+	      
+	      
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles</LEGEND>
+	      
+		   <TABLE class="DADES">
+		   <?php $CAT_ANT = ""; ?>   
+		   <?php foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
+		   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
+		   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
+					<TR><TD colspan="4" class="TITOL"><?php echo $C->getCategoria()?></TD></TR>
+		   <?php    endif; ?>
+		                       	
+		   		<TR>
+		      		<TD><?php echo checkbox_tag('D[CURSOS][]',$C->getIdcursos(),false)?></TD>
+		      		<TD><?php echo $C->getCodi()?></TD>
+		      		<TD><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
+		      		<TD><?php echo $C->getPreu()?></TD>      							
+		      		<TD><?php echo $C->getDatainici('d-m-Y')?></TD>
+		      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
+		      	</TR>                		                 										
+		   <?php $CAT_ANT = $C->getCategoria(); ?>			   
+		   <?php endforeach; ?>        
+		   <TR><TD colspan="2" class="LINIA"><b>DESCOMPTE</b></TD><TD colspan="4"><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>                      
+		   </TABLE>
+		            
+	   </FIELDSET>
+	   
+		<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>   
+			<TABLE class="FORMULARI"><TR><TD><?php echo submit_tag('Matricula\'m',array('name'=>'BMATRICULA' , 'style'=>'width:100px'))?></TD></TR></TABLE>         
+	   	</FIELDSET>
+	   	
+   	</form>
    
-<?  
+<?php  
 }
 
 
 function gestiona_verificacio($DADES_MATRICULA , $TPV)
 {
+
      //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant     
      if($DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TARGETA || $DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TELEFON ):
      	 
          echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
 //         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
-                  
+                           
          foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
          
      else:
      
-         echo nice_form_tag('gestio/gMatricules',array('method'=>'POST'));
-         
-         
+        echo '<form method="post" action="gestio/gMatricules">'; 
+     	                  
      endif;
 
      //Carreguem totes les dades de matrícula
      foreach($DADES_MATRICULA as $K => $V) { $str = "DADES_MATRICULA[".$K."]"; echo input_hidden_tag($str,$V); }
-     
-		   
+
 	?>	
       <TABLE class="BOX">
         <TR><TD class="NOTICIA">                
@@ -202,10 +216,10 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}  
 
 	function ValidaReserves(){		
-		if(vacio(fReserves.D_NOM.value)== false){ alert('El nom d\'activitat no pot estar buit.'); return false; }
-		if(vacio(fReserves.D_DATAACTIVITAT.value)== false){ alert('La data d\'activitat no pot estar buit.'); return false; }
-		if(vacio(fReserves.D_HORARIACTIVITAT.value)== false){ alert('L\'hora d\'activitat no pot estar buida.'); return false; }
-		if(fReserves.D_ESPAIS.selectedIndex<0){ alert('Has d\'escollir com a mínim un espai on realitzar l\'acte'); return false; }		
+		if(vacio(fReserves.reservaespais_Nom.value)== false){ alert('El nom d\'activitat no pot estar buit.'); return false; }
+		if(vacio(fReserves.reservaespais_DataActivitat.value)== false){ alert('La data d\'activitat no pot estar buit.'); return false; }
+		if(vacio(fReserves.reservaespais_HorariActivitat.value)== false){ alert('L\'hora d\'activitat no pot estar buida.'); return false; }
+		if(fReserves.reservaespais_EspaisSolicitats.selectedIndex<0){ alert('Has d\'escollir com a mínim un espai on realitzar l\'acte'); return false; }		
 	}
 
 </script>
@@ -220,64 +234,64 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 //RESERVES hi ha un llistat d'objectes reserva
 //MISSATGE Missatge que informa d'algun problema o bé que tot ha anat bé
 
-function gestiona_reserves( $RESERVA , $RESERVES , $MISSATGE = array() ){   
+function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array() ){   
       
-   if($RESERVA->getReservaespaiid() > 0) $ENABLED = false; else $ENABLED = true;  
-   if($ENABLED) echo nice_form_tag('web/gestio?accio=sr',array('method'=>'POST','onSubmit'=>'return ValidaReserves(this);','ID'=>'fReserves'));
+   if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
+   if($ENABLED) echo '<form name="fReserves" id="fReserves" action="'.url_for('web/gestio?accio=sr').'" method="post" onSubmit="return ValidaReserves(this);" >';      
       
-   $ESPAIS = explode('@',$RESERVA->getEspaissolicitats());
-   $MATERIAL= explode('@',$RESERVA->getMaterialsolicitat());
+   $ESPAIS = explode('@',$FRESERVA->getValue('EspaisSolicitats'));
+   $MATERIAL= explode('@',$FRESERVA->getValue('MaterialSolicitat'));
       ?> 
-  
-	<FIELDSET><LEGEND class="LEGEND">Reserves anteriors</LEGEND>
+      		  
+	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Reserves anteriors</LEGEND>
 		<TABLE class="DADES">
      	<TR><TD class="TITOL">Nom activitat</TD><TD class="TITOL">Data sol·licitud</TD><TD class="TITOL">Estat</TD></TR>
      	
-	    <? if(empty($RESERVES)): ?>
+	    <?php if(empty($RESERVES)): ?>
 	    <TR><TD class="LINIA">No s'han trobat reserves anteriors</TD></TR>
-	    <? endif; ?> 
+	    <?php endif; ?> 
      
-     	<? foreach($RESERVES as $R): ?>
-        <TR><TD class="LINIA"><?=link_to($R->getNom(),'web/gestio?accio=gr&idR='.$R->getReservaespaiid())?></TD><TD class="LINIA"><?=$R->getDataalta('d/m/Y')?></TD><TD class="LINIA"><?=$R->getEstatText()?></TD></TR> 
-		<? endforeach; ?>
+     	<?php foreach($RESERVES as $R):     			
+     			echo '<TR>';     			
+     			echo '	<TD>'.link_to($R->getNom(),'web/gestio?accio=gr&idR='.$R->getReservaespaiid()).'</TD>';
+     			echo '	<TD>'.$R->getDataalta('d/m/Y').'</TD>';
+     			echo '	<TD>'.$R->getEstatText().'</TD>';
+     			echo '</TR>'; 
+		endforeach; ?>
      
      	</TABLE>     
 	</FIELDSET>
-          
+
+
+	<?php if($ESTAT = 'NOU'): ?>          
   
-	<FIELDSET><LEGEND class="LEGEND">Dades reserva</LEGEND>
-		<TABLE class="DADES">
-        <? if(!empty($MISSATGE)): ?>
-        <TR><TD class="MISSAT" colspan="2"><UL> <? foreach($MISSATGE as $M): ?> <LI><?=$M?></li><? endforeach ?> </TD></TR>   
-		<? endif; ?>
-		<TR><TD class="LINIA">Nom de l'activitat</TD>     <TD class="LINIA"><?php echo input_tag('D[NOM]',$RESERVA->getNom()); ?></TD></TR>
-		<TR><TD class="LINIA">Data de l'activitat</TD>    <TD class="LINIA"><?php echo input_tag('D[DATAACTIVITAT]',$RESERVA->getDataactivitat()); ?></TD></TR>
-		<TR><TD class="LINIA">Horari de l'activitat</TD>  <TD class="LINIA"><?php echo input_tag('D[HORARIACTIVITAT]',$RESERVA->getHorariactivitat()); ?></TD></TR>
-		<TR><TD class="LINIA">Espais (<?=link_to("veure'ls",'web/espais',array('class'=>'blue','target'=>'_NEW'))?>)</TD>                 <TD class="LINIA"><?php echo select_tag('D[ESPAIS][]',options_for_select(EspaisPeer::select(),$ESPAIS),  array('multiple'=>true,'size'=>'3')); ?></TD></TR>
-		<TR><TD class="LINIA">Material</TD>               <TD class="LINIA"><?php echo select_tag('D[MATERIAL][]',options_for_select(MaterialgenericPeer::select(),$MATERIAL),  array('multiple'=>true,'size'=>'3')); ?></TD></TR>
-		<TR><TD class="LINIA">Tipus d'acte</TD>           <TD class="LINIA"><?php echo input_tag('D[TIPUSACTE]',$RESERVA->getTipusacte()); ?></TD></TR>
-		<TR><TD class="LINIA">Es enregistrable?</TD>      <TD class="LINIA"><?php echo select_tag('D[ISENREGISTRABLE]',options_for_select(array('0'=>'No','1'=>'Sí'),$RESERVA->getIsenregistrable())); ?></TD></TR>
-		<TR><TD class="LINIA">En representació de </TD>   <TD class="LINIA"><?php echo input_tag('D[REPRESENTACIO]',$RESERVA->getRepresentacio()); ?></TD></TR>      
-		<TR><TD class="LINIA">Responsable</TD>            <TD class="LINIA"><?php echo input_tag('D[RESPONSABLE]',$RESERVA->getResponsable()); ?></TD></TR>
-		<TR><TD class="LINIA">Organitzadors</TD>          <TD class="LINIA"><?php echo input_tag('D[ORGANITZADORS]',$RESERVA->getOrganitzadors()); ?></TD></TR>
-		<TR><TD class="LINIA">Personal autoritzat</TD>    <TD class="LINIA"><?php echo input_tag('D[PERSONALAUTORITZAT]',$RESERVA->getPersonalautoritzat()); ?></TD></TR>
-		<TR><TD class="LINIA">Previsió assistents</TD>    <TD class="LINIA"><?php echo input_tag('D[PREVISIOASSISTENTS]',$RESERVA->getPrevisioassistents()); ?></TD></TR>
-		<TR><TD class="LINIA">Es un cicle?</TD>           <TD class="LINIA"><?php echo select_tag('D[ESCICLE]',options_for_select(array('0'=>'No','1'=>'Sí'),$RESERVA->getEscicle())); ?></TD></TR>
-		<TR><TD class="LINIA">Exempció de pagament</TD>   <TD class="LINIA"><?php echo select_tag('D[EXEMPCIO]',options_for_select(array('0'=>'No','1'=>'Sí'),$RESERVA->getExempcio())); ?></TD></TR>
-		<TR><TD class="LINIA">Necessiteu pressupost?</TD> <TD class="LINIA"><?php echo select_tag('D[PRESSUPOST]',options_for_select(array('0'=>'No','1'=>'Sí'),$RESERVA->getPressupost())); ?></TD></TR>
-		<TR><TD class="LINIA">Col·laboració CCG?</TD>     <TD class="LINIA"><?php echo select_tag('D[COLLABORACIO]',options_for_select(array('0'=>'No','1'=>'Sí'),$RESERVA->getColaboracioccg())); ?></TD></TR>
-		<TR><TD class="LINIA">Comentaris</TD>             <TD class="LINIA"><?php echo textarea_tag('D[COMENTARIS]','',array($ENABLED)); ?></TD></TR>                                    
+	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades reserva</LEGEND>
+		<TABLE class="FORMULARI">
+		<td style="width:20%;"></td><td style="width:80%;"></td>
+		<?php echo missatge($MISSATGE); ?>
+		<?php echo $FRESERVA; ?>        		                                    
 		</TABLE>      
 	</FIELDSET>
 
+	<?php endif; ?>
+
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>
-		<TABLE class="FORMULARI"><TR><TD></TD><TD><?php if($ENABLED) echo submit_tag('Fes reserva',array('style'=>'width:100px;')); ?> </TD></TABLE>
+		<TABLE class="FORMULARI">
+			<TR>
+				<TD></TD>
+				<TD>
+					<?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::ACCEPTADA): ?> 
+					<?php 	echo submit_tag('Sol·licita la reserva',array()); ?>
+					<?php endif; ?>
+					<INPUT TYPE="BUTTON" VALUE="Feu una nova reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=gr') ?>'"> 					 
+					<INPUT TYPE="BUTTON" VALUE="Anuleu la reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=ar') ?>'">
+				</TD>
+			</TR>
+		</TABLE>
 	</FIELDSET>
-
   
-<?      
+<?php      
 }
-
 ?>
 
     
@@ -319,5 +333,15 @@ function gestiona_reserves( $RESERVA , $RESERVES , $MISSATGE = array() ){
 		
 	}
 
+	function missatge($MISSATGE)
+	{
+		if(!empty($MISSATGE))
+		{
+			echo '<TR>';
+		   	echo '<TD class="MISSAT" colspan="2">';
+		   	foreach($MISSATGE as $M): echo $M."<BR>";  endforeach;    				
+		   	echo '</TD></TR>';			
+		}		
+	}
 
 ?>

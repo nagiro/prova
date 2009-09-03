@@ -62,13 +62,13 @@
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?=$FMaterial?>                								
+                <?php echo $FMaterial?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMaterial',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMaterial?accio=D',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -94,7 +94,7 @@
                     endforeach;
                  endif;                     
              ?>      
-              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($TIPUS , $MATERIALS);?></TD></TR>    	
+              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($TIPUS , $MATERIALS);?></TD></TR>    	
       	</TABLE>      
       </DIV>
 

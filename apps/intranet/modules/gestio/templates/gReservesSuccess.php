@@ -27,7 +27,7 @@
 	            <tr>
 	            	<td colspan="2">
 	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nova reserva" />
+	            	<!-- <input type="submit" name="BNOU" value="Nova reserva" /> -->
 	            	</td>
 	            </tr>
 	        </table>
@@ -40,13 +40,18 @@
 	 	<DIV class="REQUADRE">
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?=$FReserva?>                								
+	    		<tr><TD>Qui sol·licita?</TD>
+	    			<TD><?php  
+	    				$OUsuari = UsuarisPeer::retrieveByPK($FReserva->getObject()->getUsuarisusuariid());
+	    				if($OUsuari instanceof Usuaris) echo $OUsuari->getDni().' - '.$OUsuari->getNomComplet(); 
+	    			 ?></TD></tr>
+                <?php echo $FReserva?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?=submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?=link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gReserves',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
+	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gReserves',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -63,17 +68,17 @@
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap reserva amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;
-					foreach($RESERVES->getResults() as $R):												
-                      	$PAR = ParImpar($i++); ?>	                      	
-                      	<TR><TD class="<?=$PAR?>"><?=link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid())?></TD>
-                      	    <TD class="<?=$PAR?>"><?=$R->getUsuaris()->getNomComplet()?></TD>
-                      	    <TD class="<?=$PAR?>"><?=$R->getDataactivitat()?></TD>
-                      	    <TD class="<?=$PAR?>"><?=$R->getEstatText()?><TD>
-                      	</TR>
-                    <? endforeach;
+					foreach($RESERVES->getResults() as $R):																	
+                      	$PAR = ParImpar($i++); 	                      	
+                      	echo '<TR><TD class="'.$PAR.'">'.link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</TD>
+                      	    	  <TD class="'.$PAR.'">'.$R->getUsuaris()->getNomComplet().'</TD>
+                      	          <TD class="'.$PAR.'">'.$R->getDataactivitat().'</TD>
+                      	          <TD class="'.$PAR.'">'.$R->getEstatText().'<TD>
+                      	      </TR>';
+                    endforeach;
                  endif;                    
              ?>      
-              <TR><TD colspan="3" class="TITOL"><?=gestorPagines($RESERVES);?></TD></TR>    	
+              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($RESERVES);?></TD></TR>    	
       	</TABLE>      
       </DIV>
 

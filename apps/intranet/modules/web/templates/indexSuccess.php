@@ -27,7 +27,7 @@
 	$calendar = false;
 	switch($ACCIO){
 	   case 'web'        : $calendar = true;  include_partial('pagina'  ,  array( 'PAGINA' => $PAGINA )); break;
-	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'USUARI' => $USUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'RESERVA' => $RESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS ) ); break;
+	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'FUSUARI' => $FUSUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'FRESERVA' => $FRESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS ) ); break;
 	   case 'login'      : $calendar = false;  include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
 	   case 'agenda'     : $calendar = true;  include_partial('agenda'  ,  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT , 'QUANTES' => $QUANTES , 'DATA' => $DATA )); break;
 	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;

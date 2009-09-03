@@ -19,7 +19,7 @@ class IncidenciesPeer extends BaseIncidenciesPeer
   {
      $C = new Criteria();
      $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
-     $C->add(self::DATAALTA , $time , Criteria::GREATER_EQUAL );
+     $C->add(self::DATAALTA , $time , Criteria::GREATER_EQUAL );     
      return self::doCount($C);
   }
    

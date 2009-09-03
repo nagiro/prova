@@ -17,8 +17,8 @@
 	    <TR><TD>Aforament:</TD><TD> 110 persones</TD></TR>
 	    <TR><TD>Escenari: </TD><TD> òval de 36 metres quadrats</TD></TR>
 	    <TR><TD>Equipament: </TD><TD>Piano Steinway and sons de gran cua<br />Megafonia<br>Taula de so digital de 16 canals<br>Aire condicionat </TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/Auditori.jpg' , array('class'=>'fotoEspai')), image_path('intranet/espais/Auditori.jpg' , true))?></TD></TR>    				
-	    <TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/Auditori.jpg' , array('class'=>'fotoEspai')), image_path('intranet/espais/Auditori.jpg' , true))?></TD></TR>    				
+	    <TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
 	    </table>    
   	</P>
 
@@ -29,8 +29,8 @@
     	<TR><TD>Aforament:</TD><TD> 148 persones</TD></TR>
     	<TR><TD>Escenari: </TD><TD> rectangular de 15 metres quadrats</TD></TR>
     	<TR><TD>Equipament: </TD><TD> Piano Grotian-Steinweg de gran cua<br />Megafonia<br />Taula de so de 6 canals<br />Pantalla de cinema i projector<br />Aire condicionat<br />Opcional: 	Portàtil, Projector, DVD, Internet</TD></TR>
-    	<TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/AulaMagna.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaMagna.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+    	<TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaMagna.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaMagna.jpg' , true))?></TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>	  
 
@@ -40,8 +40,8 @@
     	<TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> 100 persones</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD> Megafonia<br />Taula de so de 8 canals<br />Opcional: 	Portàtil, Projector, DVD, Internet</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/AulaB.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaB.jpg' , true))?> <?=link_to(image_tag('intranet/espais/AulaB2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaB2.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaB.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaB.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/AulaB2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaB2.jpg' , true))?></TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>	
 
@@ -51,8 +51,8 @@
     	<TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> 40 persones</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD>Opcional: 	Portàtil, Projector, DVD, Internet</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/AulaC.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaC.jpg' , true))?> <?=link_to(image_tag('intranet/espais/AulaC2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaC2.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaC.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaC.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/AulaC2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaC2.jpg' , true))?></TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
    	</P>	
 
@@ -62,15 +62,15 @@
     	<TR><TD>Situació:</TD><TD> Segon pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> entre 20 i 50 persones</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD>Portàtil, Projector, DVD, Internet (Aula 2)</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD>    <?=link_to(image_tag('intranet/espais/Aula1.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula1.jpg' , true))?> 
-	                                      <?=link_to(image_tag('intranet/espais/Aula2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula2.jpg' , true))?>
-	                                      <?=link_to(image_tag('intranet/espais/Aula3.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula3.jpg' , true))?>
-	                                      <?=link_to(image_tag('intranet/espais/Aula4.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula4.jpg' , true))?>
-	                                      <?=link_to(image_tag('intranet/espais/Aula5.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula5.jpg' , true))?>
-	                                      <?=link_to(image_tag('intranet/espais/Aula6.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula6.jpg' , true))?>
-	                                      <?=link_to(image_tag('intranet/espais/Aula7.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula7.jpg' , true))?>
+	    <TR><TD>Fotografies: </TD><TD>    <?php echo link_to(image_tag('intranet/espais/Aula1.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula1.jpg' , true))?> 
+	                                      <?php echo link_to(image_tag('intranet/espais/Aula2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula2.jpg' , true))?>
+	                                      <?php echo link_to(image_tag('intranet/espais/Aula3.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula3.jpg' , true))?>
+	                                      <?php echo link_to(image_tag('intranet/espais/Aula4.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula4.jpg' , true))?>
+	                                      <?php echo link_to(image_tag('intranet/espais/Aula5.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula5.jpg' , true))?>
+	                                      <?php echo link_to(image_tag('intranet/espais/Aula6.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula6.jpg' , true))?>
+	                                      <?php echo link_to(image_tag('intranet/espais/Aula7.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula7.jpg' , true))?>
 	    </TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>		 			
 
@@ -80,8 +80,8 @@
     	<TR><TD>Situació:</TD><TD> Segon pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> 8 alumnes</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD>8 ordinadors per a l'alumnat i un ordinador per al professor.</TD></TR>
-		<TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/AulaInformatica.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaInformatica.jpg' , true))?> <?=link_to(image_tag('intranet/espais/AulaInformatica2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaInformatica2.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+		<TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaInformatica.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaInformatica.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/AulaInformatica2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaInformatica2.jpg' , true))?></TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     				</table>    
   	 </P>		 			
 
@@ -90,8 +90,8 @@
     	<table class="Text">
     	<TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
     	<TR><TD>Característiques:</TD><TD> 90 metres quadrats de superficie i 24 metres lineals d’exposició<br />Focus halògens direccionables</TD></TR>
-		<TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/SalaFita.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaFita.jpg' , true))?> </TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+		<TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/SalaFita.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaFita.jpg' , true))?> </TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>			
 
@@ -100,8 +100,8 @@
 	    <table class="Text">
 	    <TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
 	    <TR><TD>Característiques:</TD><TD>380 metres quadrats de superfície Pidits en dues sales connectades en forma de L: Sala 1, amb 50 metres lineals d’exposició, i sala 2, amb 60 metres lineals d’exposició.<br />Megafonia<br />Focus fixos<br />Endolls per a il•luminació suplementària<br />Mesclador de so de 6 canals</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/SalaExposicions.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions.jpg' , true))?> <?=link_to(image_tag('intranet/espais/SalaExposicions2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions2.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/SalaExposicions.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/SalaExposicions2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions2.jpg' , true))?></TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
 	    </table>    
   	 </P>				
 
@@ -109,8 +109,8 @@
     <P class="Text">
     	<table class="Text">    				
     	<TR><TD>Característiques:</TD><TD>Superfície de 310 metres quadrats. </TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?=link_to(image_tag('intranet/espais/Pati.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Pati.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?=link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/Pati.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Pati.jpg' , true))?></TD></TR>
+		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>					
 
