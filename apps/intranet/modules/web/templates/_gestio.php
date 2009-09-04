@@ -92,7 +92,7 @@ function gestiona_llistes( $LLISTES , $MISSATGE ){
 
 	</form>
 
-   <?
+   <?php
 }
 
 function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {

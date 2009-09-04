@@ -1,3 +1,4 @@
+<?php use_helper('Form')?>
 <style>
 .LEGEND { font-size:12px; font-weight:bold; padding:10px 10px 10px 10px; }
 FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
@@ -10,7 +11,7 @@ FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
 
 <TD colspan="3" class="CONTINGUT">
 
-   <FIELDSET><LEGEND class="LEGEND">Cursos disponibles</LEGEND>   
+   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles</LEGEND>   
    <TABLE class="DADES">
            <TR>
         	<TD class="TITOL">Codi</TD>
@@ -38,18 +39,20 @@ FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
    <?php endforeach; ?>                              
    </TABLE>         
    </FIELDSET>
-   
-   <FIELDSET><LEGEND class="LEGEND">Matricula't</LEGEND>
-   <?=form_tag('web/matriculat',array('method'=>'POST')); ?>   
-   <TABLE class="DADES">
-   	<TR><TD><?=submit_tag('Sóc un nou usuari',array('name'=>'BNOUALUMNE'))?></TD><TD><?=submit_tag('Sóc usuari registrat',array('name'=>'BREGISTRAT'))?></TD></TR>           
-   </TABLE>         
+
+	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Matricula't</LEGEND>
+		<form method="post" action="<?php echo url_for('web/matriculat') ?>">         
+		   <TABLE class="DADES">
+		   	<TR><TD>Per matricular-se, vostè ha de ser usuari registrat del web de la Casa de Cultura. Si no n'és cliqui a "Sóc un nou usuari"</TD></TR>
+		   	<TR><TD><?php echo submit_tag('Sóc un nou usuari',array('name'=>'BNOUALUMNE')); echo submit_tag('Sóc usuari registrat',array('name'=>'BREGISTRAT'))?></TD></TR>           
+		   </TABLE>         
+		</form>
    </FIELDSET>
-   </FORM>
+   
    
 	<DIV id="VULLMATRICULARME"></DIV>
 
-   <DIV id="MATRICULACIO">Per matricular-se, vostè ha de ser usuari registrat del web de la Casa de Cultura. </DIV>
+   <DIV id="MATRICULACIO"> </DIV>
    
    <DIV STYLE="height:40px;"></DIV>
    

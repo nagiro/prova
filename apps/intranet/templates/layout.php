@@ -56,8 +56,8 @@
     .MENU_TABLE A:hover { color:black; font-size:9px; text-decoration: none; }
     .MENU_TABLE A:visited { color:black; font-size:9px; text-decoration: none; }    
      A IMG { border:0px; }
-                
-    .BOX { border-collapse:collapse; border:5px solid #f3f3f3; margin-bottom:10px; width:100%; }
+                   
+    .BOX { border-collapse:collapse; border:3px solid #CCCCCC; margin-bottom:10px; width:100%; }
     .BOX .FOTO { width:130px; vertical-align:top; }
     .BOX .FOTO .IMG_FOTO { width:120px; border:10px solid white; }
     .BOX .NOTICIA { padding:10px; vertical-align:top; }    

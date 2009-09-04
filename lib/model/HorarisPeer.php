@@ -24,10 +24,13 @@ class HorarisPeer extends BaseHorarisPeer
    */
   static public function getCerca($DIA, $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
+  	 //Fem la cerca
      $HORARIS = self::cerca($DIA, $TEXT, $DATAI, $DATAF, $IDACTIVITAT);
-     $RET = array( 'CALENDARI'=>array() , 'ACTIVITATS' => array() );    
+     $RET = array( 'CALENDARI'=>array() , 'ACTIVITATS' => array() );
+     //Carreguem al calendari quan hi ha les activitats    
      $RET['CALENDARI'] = self::calendari($HORARIS);     
      $ANT = "";
+     //Fem la recerca de les activitats agrupades per activitat i carregant les dades
      foreach($HORARIS as $H):
         if($ANT <> $H->getActivitatsActivitatid()) {           
            $A = $H->getActivitats();

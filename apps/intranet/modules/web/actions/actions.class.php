@@ -212,21 +212,16 @@ class webActions extends sfActions
 	   		break;
 	   	   
 	   //Per defecte mostrem les notícies
-	   default: $this->CarregaNoticies();  break;	   
+	   default: 
+	   	    $this->ACTIVITATS_LLISTAT = ActivitatsPeer::getNoticies();             
+	 		$this->ACCIO = 'noticies';	         
+	 		$this->getUser()->setAttribute('HEFETCERCA',false);	 	   	
+			break;	   
    }
                           
   }
   
-  
-  public function CarregaNoticies()
-  {
-     
-     $this->ACTIVITATS_LLISTAT = ActivitatsPeer::getNoticies();             
-	 $this->ACCIO = 'noticies';	         
-	 $this->getUser()->setAttribute('HEFETCERCA',false);	 
-	 
-  }
-  
+    
   /**
    * Funció crdidada des de Index que em retorna la cerca. Si entrem CONSULTADIA només tornarà 
    *
@@ -246,7 +241,7 @@ class webActions extends sfActions
 		 $SOL = HorarisPeer::getCerca( null , $this->CERCA , $Di , $Df , null );	    		    		    
 		 $this->ACTIVITATS_CALENDARI = $SOL['CALENDARI']; 
 		 if(!$CONSULTADIA) $this->ACTIVITATS_LLISTAT = $SOL['ACTIVITATS'];
-		 $this->QUANTES = sizeof($SOL['CALENDARI']);
+		 $this->QUANTES = sizeof($SOL['ACTIVITATS']);
 		 $this->DATA    = $DATA;
 		 $this->ACCIO = 'agenda';
 		 $this->getUser()->setAttribute('HEFETCERCA',true);		 

@@ -1,38 +1,44 @@
     <TD colspan="2" class="CONTINGUT">
-    
-    <?php if(empty($ACTIVITATS_LLISTAT)): ?> <DIV>No hi ha cap activitat pública.<DIV> <?php endif; ?>		
+    <?php 
+
+    if(empty($ACTIVITATS_LLISTAT)): echo '<DIV>Aquest dia no hi ha cap activitat pública.<DIV>'; endif;		
 		
-	<?php foreach($ACTIVITATS_LLISTAT as $A): ?>
-     
-    		<TABLE class="BOX">
-		    <TR>  
-	 <?php if(!empty($A['DADES']['IMATGE'])): ?>	    
-	 			<TD class="FOTO"><?=image_tag('noticies/'.$A['DADES']['IMATGE'], array('class'=>'IMG_FOTO'))?></TD>
-	 <?php endif; ?>
-		        <TD class="NOTICIA">
-		        <DIV class="DATA">
-		        	   <?php 
-		        	      foreach($A['HORARIS'] as $H): 
-		        	         echo implode(',',$H['ESPAIS']);
-		        	         echo ' a les '.$H['HORAI']; 
-		        	      endforeach; 
-		        	      
-		        	   ?>		                   
-				</DIV>
-				<DIV class="TITOL"><?=$A['DADES']['TITOL']?></DIV>
-		    	<DIV class="TEXT"><?=substr( $A['DADES']['TEXT'] , 0 , 100 )?><SPAN id="DIV<?$A['DADES']['ID']?>" class="AMAGAT"><?=substr( $A['DADES']['TEXT'] , 100 )?></SPAN></DIV>
-	 <?php if(sizeof($A['DADES']['TEXT']) > 100): ?>		    	
-		    	<DIV class="PEU"><?=link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$A['DADES']['ID'].')'))?>
-	 <?php endif; ?>
-	 <?php if(!empty($A['DADES']['PDF'])): ?> 
-	 			<?php echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A['DADES']['PDF'] , true) , array('target'=>'_NEW'))?>
-	 <?php endif; ?>
-				</DIV>
-		     	</TD>
-		    </TR>
-		    </TABLE>	      	                
-	<?php endforeach; ?>
-      
+	foreach($ACTIVITATS_LLISTAT as $A):
+  
+		printr($A);
+	
+		echo '<TABLE class="BOX">';
+		echo '<TR>';
+		  
+	 	if(!empty($A['DADES']['IMATGE'])):	    
+			echo '<TD class="FOTO">'.image_tag('noticies/'.$A['DADES']['IMATGE'], array('class'=>'IMG_FOTO')).'</TD>';
+	 	endif;
+
+	 	echo '<TD class="NOTICIA">';
+		echo '	<DIV class="DATA">';
+					foreach($A['HORARIS'] as $H): echo implode(',',$H['ESPAIS']).' a les '.$H['HORAI']; endforeach; 		        	      		        			                   
+		echo '  </DIV>';
+		echo '  <DIV class="TITOL">'.$A['DADES']['TITOL'].'</DIV>';
+		echo ' 	<DIV class="TEXT">'.substr( $A['DADES']['TEXT'] , 0 , 100 ).'<SPAN id="DIV'.$A['DADES']['ID'].'" class="AMAGAT">'.substr( $A['DADES']['TEXT'] , 100 ).'</SPAN></DIV>';
+	 	if(sizeof($A['DADES']['TEXT']) > 100):		    	
+			echo '  <DIV class="PEU">'.link_to(
+												image_tag('intranet/llegirmes.png', array('style'=>'float:left')),
+												'web/index',
+												array(
+														'onClick'=>'visible('.$A['DADES']['ID'].'); return false; ',
+														'anchor'=>false
+													 )
+											   );
+	 	endif;
+	 	if(!empty($A['DADES']['PDF'])): 
+			echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A['DADES']['PDF'] , true) , array('target'=>'_NEW'));
+		endif;
+		echo '</DIV>';
+		echo '</TD>';
+		echo '</TR>';
+		echo '</TABLE>';	      	                
+	endforeach;
+    ?>
       <DIV STYLE="height:40px;"></DIV>
                 
     </TD>

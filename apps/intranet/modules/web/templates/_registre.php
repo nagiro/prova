@@ -56,7 +56,7 @@
       
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>   
    <TABLE class="FORMULARI">
-   	<?
+   	<?php
    	 
 	   if($ESTAT == 'OK'):
 	      ?><TR><TD class="OK" colspan="2">Usuari donat d'alta correctament<BR /><BR /></TD></TR><?
