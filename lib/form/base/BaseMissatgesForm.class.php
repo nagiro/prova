@@ -19,7 +19,6 @@ class BaseMissatgesForm extends BaseFormPropel
       'Text'             => new sfWidgetFormTextarea(),
       'Date'             => new sfWidgetFormDateTime(),
       'Publicacio'       => new sfWidgetFormDate(),
-      'AltaRegistre'     => new sfWidgetFormDate(),
     ));
 
     $this->setValidators(array(
@@ -29,7 +28,6 @@ class BaseMissatgesForm extends BaseFormPropel
       'Text'             => new sfValidatorString(array('required' => false)),
       'Date'             => new sfValidatorDateTime(array('required' => false)),
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
-      'AltaRegistre'     => new sfValidatorDate(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('missatges[%s]');

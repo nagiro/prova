@@ -34,7 +34,7 @@
 	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV )); break;
 	   case 'registrat'  : $calendar = true;  include_partial('registrats'); break;
 	   case 'cursos'	 : $calendar = false; include_partial('cursos'); break;
-	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT)); break;
+	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT , 'FConsulta'=>$FConsulta)); break;
 	   case 'activitats' : $calendar = true;  include_partial('activitats' , array('ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;
 	   case 'registre'   : $calendar = false; include_partial('registre' , array('FUSUARI'=>$FUSUARI, 'ESTAT' => $ESTAT)); break;
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;

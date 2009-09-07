@@ -52,4 +52,15 @@ class NodesPeer extends BaseNodesPeer
      endforeach;
   }
   
+  static function getIsCategoria($IDN)
+  {
+  	return self::retrieveByPK($IDN)->getIscategoria();  
+  }
+  
+  static function getIsExterna($IDN)
+  {
+  	$URL = self::retrieveByPK($IDN)->getUrl();  	
+  	return (strlen($URL)>4);  
+  }
+  
 }

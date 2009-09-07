@@ -48,7 +48,7 @@
 	.MENU_TABLE {  }
     .SUBMENU1   { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }
     .SUBMENU1T  { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }
-    .SUBMENU2   { font-size:9px; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; background-color: white; border:1px solid white; }
+    .SUBMENU2   { font-size:9px; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; background-color: white; border:1px solid white; }    .SUBMENU3   { font-size:9px; border:1px solid black; width:165px; height:20px; vertical-align:middle; padding-left:30px; background-color: white; border:1px solid white; }
     #REGISTRAT  { font-size:9px; background-color: #680000; border:2px solid white; height:30px; width:175px; text-align:center; display: table-cell; vertical-align: middle; }
     #REGISTRAT a { color:white; font-size:9px; text-decoration: none; }
     #REGISTRAT a:visited { color:white; font-size:9px; text-decoration: none; }

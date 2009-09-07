@@ -6,7 +6,7 @@
     	
       <TABLE class="CAL">
         <TR><TD><input type="text" name="CERCA"></input>
-        		<?php echo submit_image_tag('intranet/lupa.png',array('value'=>'CERCA')) ?>         		
+        		<?php echo submit_image_tag('intranet/lupa.png',array('value'=>'BCERCA','name'=>'BCERCA')) ?>         		
         		<br /><br />
         	</TD>
         </TR>                         

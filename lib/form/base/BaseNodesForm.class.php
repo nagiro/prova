@@ -21,6 +21,7 @@ class BaseNodesForm extends BaseFormPropel
       'isActiva'    => new sfWidgetFormInput(),
       'Ordre'       => new sfWidgetFormInput(),
       'Nivell'      => new sfWidgetFormInput(),
+      'Url'         => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
@@ -32,6 +33,7 @@ class BaseNodesForm extends BaseFormPropel
       'isActiva'    => new sfValidatorInteger(array('required' => false)),
       'Ordre'       => new sfValidatorInteger(array('required' => false)),
       'Nivell'      => new sfValidatorInteger(),
+      'Url'         => new sfValidatorString(),
     ));
 
     $this->widgetSchema->setNameFormat('nodes[%s]');

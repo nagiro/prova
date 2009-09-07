@@ -16,12 +16,13 @@ class NodesForm extends sfFormPropel
     $this->setWidgets(array(
       'idNodes'     => new sfWidgetFormInputHidden(),
       'TitolMenu'   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
-      'Nivell'      => new sfWidgetFormChoice(array('choices'=>array(1=>'1',2=>'2'))),      
+      'Nivell'      => new sfWidgetFormChoice(array('choices'=>array(1=>'1',2=>'2',3=>'3'))),      
       'Ordre'       => new sfWidgetFormChoice(array('choices'=>NodesPeer::selectOrdre($this->isNew()))),      
       'isCategoria' => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
-      'isPhp'       => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
+      'isPhp'       => new sfWidgetFormInputHidden(),
       'isActiva'    => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
       'HTML'        => new sfWidgetFormInputHidden(),
+      'Url'         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
     ));
 
     $this->setValidators(array(
@@ -33,6 +34,7 @@ class NodesForm extends sfFormPropel
       'isActiva'    => new sfValidatorPass(),
       'Ordre'       => new sfValidatorInteger(array('required' => false)),
       'Nivell'      => new sfValidatorInteger(),
+      'Url'			=> new sfValidatorString(array('required'=>false)),
     ));
 
     
@@ -41,8 +43,8 @@ class NodesForm extends sfFormPropel
       'Nivell'      => '1',      
       'Ordre'       => '1',      
       'isCategoria' => false,
-      'isPhp'       => false,
       'isActiva'    => true,      
+      'Url'         => "",
     ));
     
     $this->widgetSchema->setLabels(array(      
@@ -52,6 +54,7 @@ class NodesForm extends sfFormPropel
       'isCategoria' => 'És una categoria?',
       'isPhp'       => 'Hi ha codi php?',
       'isActiva'    => 'Està activa?',
+      'URL'         => 'Adreça?',
     ));
     
     $this->widgetSchema->setNameFormat('nodes[%s]');

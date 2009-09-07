@@ -4,7 +4,8 @@
     <?php 
 		
     	$WEB = sfConfig::get('sf_web_dir').$PAGINA->getHtml();
-    	if(file_exists($WEB)) include($WEB);
+    	$P = $PAGINA->getHtml();    	
+    	if(!empty($P) && file_exists($WEB)) include($WEB);
     	else echo "Encara no hi ha continguts..."; 
     	
     ?>

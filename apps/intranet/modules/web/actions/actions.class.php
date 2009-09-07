@@ -16,7 +16,7 @@ class webActions extends sfActions
    * 
    */
    
-  public function LoadWEB()
+  public function LoadWEB(sfWebRequest $request)
   {
 
     $this->setLayout('layout'); $this->ERRORS = array(); $this->FOTOS = array();
@@ -24,7 +24,7 @@ class webActions extends sfActions
     $this->ACTIVITATS_CALENDARI = array(); $this->LLISTES = array(); $this->RESERVES = ARRAY(); 
     $this->MATRICULES = array(); $this->CURSOS = array(); $this->FUSUARI = new ClientUsuarisForm(); $this->MISSATGE = array();
     $this->FRESERVA = new ClientReservesForm(); $this->DADES_MATRICULA = array();
-    $this->OBERT = 0; $this->SELECCIONAT = 0;
+    $this->OBERT = array(); $this->SELECCIONAT = 0;
 
     //Escollim les 4 fotos de la capçalera
 	$this->FOTOS = $this->getFotos();	
@@ -34,6 +34,7 @@ class webActions extends sfActions
 
 	//Carreguem el menú
 	$this->MENU = NodesPeer::retornaMenu();
+	$this->OBERT = $this->getUser()->getAttribute('NODES',array());
 
 	//Comprovem si està autentificat o no per mostrar el menú.
     if($this->getUser()->isAuthenticated()){
@@ -41,7 +42,7 @@ class webActions extends sfActions
     }
    
     $this->DATACALENDARI = time();
-    $this->CERCA         = $this->getRequestParameter('CERCA');
+    $this->CERCA         = $request->getParameter('CERCA');
     
         //Emmagatzemo la data
     if($this->hasRequestParameter('DATACALENDARI')) $this->DATACALENDARI = $this->getRequestParameter('DATACALENDARI');
@@ -50,59 +51,52 @@ class webActions extends sfActions
     $this->getUser()->setAttribute('DATACAL', $this->DATACALENDARI);
 
     //Emmagatzemo la CERCA    
-    if($this->hasRequestParameter('CERCA')) $this->CERCA = $this->getRequestParameter('CERCA');
+    if($request->hasParameter('CERCA')) $this->CERCA = $request->getParameter('CERCA');
     elseif($this->getUser()->hasAttribute('CERCA')) $this->CERCA = $this->getUser()->getAttribute('CERCA');
     else $this->CERCA = "";    
     $this->getUser()->setAttribute('CERCA',$this->CERCA);
     
-    
-    
   }
 
-  public function executeCursos()
+  public function executeCursos(sfWebRequest $request)
   {
-     $this->LoadWeb();
+     $this->LoadWeb($request);
      $this->setTemplate('index');
      $this->ACCIO = 'cursos';
      
   }
 
-  public function executeEnviaContacte()
+  public function executeEnviaContacte(sfWebRequest $request)
   {
 
-     $this->LoadWeb();
+     $this->LoadWeb($request);
      $this->setTemplate('index');
      $this->ACCIO = 'contacte';
      $this->ENVIAT = true;
-     
-     // Class initialization
-     $mail = new sfMail();
-     $mail->initialize();
-     $mail->setMailer('sendmail');
-     $mail->setCharset('utf-8');
- 
-     // Definition of the required parameters
-     $mail->setSender('contacte_web@casadecultura.cat', 'Formulari contacte WEB');
-     $mail->setFrom('contacte_web@casadecultura.cat', 'Formulari contacte WEB');
-     $mail->addReplyTo('informatica@casadecultura.org'); 
-     $mail->addAddress('informatica@casadecultura.org');
- 
-     $mail->setSubject('CCG :: Formulari contacte WEB');
-     
-     $mail->setBody("El senyor/a {$this->getRequestParameter('COGNOMS')}, {$this->getRequestParameter('NOM')}".
-                    " amb telèfon {$this->getRequestParameter('TELEFON')} i correu electrònic {$this->getRequestParameter('EMAIL')}".
-                    " vol fer el següent comentari : {$this->getRequestParameter('COMENTARI')} ");
- 
-     // Send the Email
-     $mail->send();
-     
+     $FConsulta = new ConsultaForm();
+     $FConsulta->bind($request->getParameter('consulta'));
+
+     $BODY = "El senyor/a {$FConsulta->getValue('Cognoms')}, {$FConsulta->getValue('Nom')}".
+             " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('EMAIL')}".
+             " vol fer el següent comentari : {$FConsulta->getValue('Missatge')} "; 
+          
+	try {
+	 
+	  $mailer = new Swift(new Swift_Connection_NativeMail());
+	  $message = new Swift_Message(' CCG :: Formulari contacte Web ', $BODY, 'text/html');
+	 
+	  $mailer->send($message, 'informatica@casadecultura.org', 'web@casadecultura.cat');
+	  $mailer->disconnect();
+	} catch (Exception $e) {  $mailer->disconnect(); }     
+          
   }
   
-  public function executeContacte()
+  public function executeContacte(sfWebRequest $request)
   {
-     $this->LoadWeb();
+     $this->LoadWeb($request);
      $this->setTemplate('index');
-     $this->ACCIO = 'contacte';     
+     $this->ACCIO = 'contacte';
+     $this->FConsulta = new ConsultaForm();     
      $this->ENVIAT = false;
   }
   
@@ -113,10 +107,10 @@ class webActions extends sfActions
 	 $this->redirect('web/index');
   }
   
-  public function executeRegistre()
+  public function executeRegistre(sfWebRequest $request)
   {
 
-     $this->LoadWEB();
+     $this->LoadWEB($request);
      $this->setTemplate('index');     
      $this->ACCIO = 'registre';
      $this->FUSUARI = new ClientUsuarisForm();
@@ -137,14 +131,14 @@ class webActions extends sfActions
   	if($this->FUSUARI->isValid() && !$DUPLICAT) $this->FUSUARI->save();
 
   	 if($DUPLICAT) $this->ESTAT = 'ERROR'; else $this->ESTAT = 'OK';  	     
-     $this->LoadWEB(); $this->setTemplate('index'); $this->ACCIO = 'registre';           
+     $this->LoadWEB($request); $this->setTemplate('index'); $this->ACCIO = 'registre';           
      
   }
   
   
   public function executeLogin(sfWebRequest $request)
   {
-     $this->LoadWEB();
+     $this->LoadWEB($request);
      $this->setTemplate('index');
 
      $this->FLogin = new LoginForm();
@@ -181,22 +175,22 @@ class webActions extends sfActions
   }
     
   
-  public function executeIndex()
+  public function executeIndex(sfWebRequest $request)
   {      
     
-    $this->LoadWEB();    
+    $this->LoadWEB($request);    
 
-    $accio = $this->getRequestParameter('accio');    
+    $accio = $request->getParameter('accio');    
         
-    if($this->hasRequestParameter('form_calendari_x') || $this->CERCA <> "" ) $accio = 'se';                
+    if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
     
     switch($accio){
 
       //Consulta una pàgina determinada
-      case 'cp':
+      case 'cp':      		
             $this->PAGINA = NodesPeer::retrieveByPK($this->getRequestParameter('node'));
             $this->ACCIO  = 'web';
-            $this->OBERT = $this->getRequestParameter('obert');
+            $this->gestionaNodes($request->getParameter('node'));            
             $this->SELECCIONAT = $this->getRequestParameter('node');
             break;
 
@@ -215,13 +209,30 @@ class webActions extends sfActions
 	   default: 
 	   	    $this->ACTIVITATS_LLISTAT = ActivitatsPeer::getNoticies();             
 	 		$this->ACCIO = 'noticies';	         
-	 		$this->getUser()->setAttribute('HEFETCERCA',false);	 	   	
-			break;	   
+	 		$this->getUser()->setAttribute('HEFETCERCA',false);
+	 		$this->getUser()->setAttribute('NODES',array());	 	   	
+			break;		
    }
+   
+   $this->OBERT = $this->getUser()->getAttribute('NODES',array());
                           
   }
   
-    
+  public function gestionaNodes($NO)
+  {  	
+	$NODES = $this->getUser()->getAttribute('NODES',array());
+	
+	if(in_array($NO,$NODES)):
+		unset($NODES[$NO]);
+	else:
+		$NODES[$NO] = $NO;
+	endif;
+		
+	$this->getUser()->setAttribute('NODES',$NODES);
+		
+  }
+  
+  
   /**
    * Funció crdidada des de Index que em retorna la cerca. Si entrem CONSULTADIA només tornarà 
    *
@@ -254,17 +265,17 @@ class webActions extends sfActions
    * 
    */
   
-  public function executeMatriculat()  
+  public function executeMatriculat(sfWebRequest $request)  
   {
      
-     $this->redirectif($this->hasRequestParameter('BNOUALUMNE'), 'web/registre' );     
-     $this->redirectif($this->hasRequestParameter('BREGISTRAT'), 'web/gestio?accio=gc');
+     $this->redirectif($request->hasParameter('BNOUALUMNE'), 'web/registre' );     
+     $this->redirectif($request->hasParameter('BREGISTRAT'), 'web/gestio?accio=gc');
           
   }
   
   public function executeGestio(sfWebRequest $request)
   {
-     $this->LoadWEB();
+     $this->LoadWEB($request);
      $this->setTemplate('index');
      
      $accio = $this->getRequestParameter('accio');
@@ -397,29 +408,7 @@ class webActions extends sfActions
      return $matricules;
      
   }
-    
-        
-  private function saveUsuari()
-  {
-     $C = new Criteria();
-     $C->add( UsuarisPeer::DNI , trim($this->getRequestParameter('DNI')) , CRITERIA::LIKE ); 
-     $U = UsuarisPeer::doSelectOne($C);          
-     $U->setPasswd($this->getRequestParameter('PASSWD'));
-     $U->setNom($this->getRequestParameter('NOM'));
-     $U->setCog1($this->getRequestParameter('COG1'));
-     $U->setCog2($this->getRequestParameter('COG2'));
-     $U->setEmail($this->getRequestParameter('EMAIL'));
-     $U->setAdreca($this->getRequestParameter('ADRECA'));
-     $U->setCodipostal($this->getRequestParameter('CODIPOSTAL'));
-     $U->setPoblacio($this->getRequestParameter('POBLACIO'));
-     $U->setPoblaciotext($this->getRequestParameter('POBLACIOTEXT'));
-     $U->setTelefon($this->getRequestParameter('TELEFON'));
-     $U->setMobil($this->getRequestParameter('MOBIL'));
-     $U->setEntitat($this->getRequestParameter('ENTITAT'));      
-     $U->save();
-     
-  }
-  
+      
   
   private function getFotos()
   {
@@ -467,17 +456,16 @@ class webActions extends sfActions
 	return $BANNERS;
   }
   
-   public function executeEspais()
+   public function executeEspais(sfWebRequest $request)
    {
-      $this->LoadWEB();            
+      $this->LoadWEB($request);            
       $this->setTemplate('index');
       $this->ACCIO = 'espais';
-   
    }
    
-   public function executeReenviaContrasenya()
+   public function executeReenviaContrasenya(sfWebRequest $request)
    {
-      $this->LoadWEB();
+      $this->LoadWEB($request);
       $this->setTemplate('index');
       $this->ACCIO = 'missatge';      
       
@@ -516,9 +504,9 @@ class webActions extends sfActions
       
    }
   
-   public function executeFuncionament()
+   public function executeFuncionament(sfWebRequest $request)
    {
-      $this->LoadWEB();
+      $this->LoadWEB($request);
       $this->setTemplate('index');
       $this->ACCIO = 'funcionament';      
    }

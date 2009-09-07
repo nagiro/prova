@@ -41,38 +41,64 @@ function showElement(theClass) {
 
 <?php	   endif; ?>
 
-		</center></TD>
+		</center><br /><br /></TD>
 		
 <?php	endif;
   
 
   function llistaMenu($Menu, $OBERT = 0 , $SELECCIONAT = 0)
   {
-  	
+  	  	
   	foreach($Menu as $M):
-  		if($M->getNivell() == 1) { 
-  			$RET[$M->getIdnodes()]['TITOL'] = $M->getTitolmenu(); 
-  			$RET[$M->getIdnodes()]['NODE'] = $M->getIdnodes();
-  			$RET[$M->getIdnodes()]['NIVELL2'] = array();  			 
-  			$PrimerNivell = $M->getIdnodes(); }
-  		else { 
-  			$RET[$PrimerNivell]['NIVELL2'][$M->getIdnodes()]['NODE'] = $M->getIdnodes(); 
-  			$RET[$PrimerNivell]['NIVELL2'][$M->getIdnodes()]['TITOL'] = $M->getTitolmenu();  			
-  		}
-  	endforeach; 	  	 	
+  		$RET[$M->getIdnodes()]['TITOL'] = $M->getTitolMenu();
+  		$RET[$M->getIdnodes()]['NODE'] = $M->getIdnodes();
+  		$RET[$M->getIdnodes()]['NIVELL'] = $M->getNivell();
+  		$RET[$M->getIdnodes()]['URL'] = $M->getUrl();
+  		  		  		  	
+  	endforeach;
+
+  	$Obert = array(1=>false,2=>false); $NivellAnt = 0;
   	
   	echo '<TABLE class="MENU_TABLE">';
-  	foreach($RET as $M1 => $D):
-  		echo '<TR><TD class="SUBMENU1">'.link_to(image_tag('intranet/Submenu1T.png').' '.$D['TITOL'] , 'web/index' , array('onClick'=> 'javascript:showElement(\'Menu'.$M1.'\'); return false;','anchor'=>true));
-  		foreach($D['NIVELL2'] as $M2 => $D2):  			
-  			$style = ($OBERT == $M1)?'style="display:block"':'style="display:none"';
-  			echo '<TR><TD class="SUBMENU2" name="Menu'.$M1.'" '.$style.'>'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$D2['TITOL'], 'web/index?accio=cp&node='.$M2.'&obert='.$M1).'</TD></TR>';  			
-  		endforeach;
-  		echo '</td></tr>';
-  	endforeach;  	
   	
+  	foreach($RET as $N => $D):
+  		  		
+  		if($D['NIVELL'] == 1):  			 
+  			echo generaURL($D);
+  			if(array_key_exists($D['NODE'],$OBERT)) $Obert['1'] = true;
+  			else $Obert['1'] = false;
+  		elseif($D['NIVELL'] == 2):
+			if($Obert['1']) echo generaURL($D); 	  		
+			if(array_key_exists($D['NODE'],$OBERT)) $Obert['2'] = true;
+  			else $Obert['2'] = false;
+  		else:
+  			if($Obert['2']) echo generaURL($D);  
+  		endif;
+  	endforeach;		  		  
     		
   }
 
+  function generaURL( $NODE )
+  {
+  	   	
+  	switch($NODE['NIVELL']){
+  		case 1:
+  			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU1">'.link_to(image_tag('intranet/Submenu1.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';  
+			else return '<TR><TD class="SUBMENU1">'.link_to(image_tag('intranet/Submenu1.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';  			 
+  			break;
+  		case 2:
+  			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>'; 
+  			else return '<TR><TD class="SUBMENU2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';  			
+  			break;
+  		case 3:
+  			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';  
+  			else return '<TR><TD class="SUBMENU3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';
+  			break; 
+  	}
+  	
+  	
+  	
+  }
+  
 
 ?>

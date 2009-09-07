@@ -3,16 +3,7 @@
 <TD colspan="3" class="CONTINGUT">
           
 
-    <form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
-	    <DIV class="REQUADRE">
-	    <DIV class="TITOL"><?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gEstructura?accio=N'); ?> Estructura</DIV>
-	    	<table class="DADES">          
-                  <?php echo llistaNodes($NODES); ?>
-	        </table>
-	     </DIV>
-     </form>                
-
-  <?php IF( $NOU || $EDICIO ): ?>
+<?php IF( $NOU || $EDICIO ): ?>
 
 	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="POST">            
 	 	<DIV class="REQUADRE">
@@ -30,7 +21,18 @@
       	</DIV>
      </form>    
 
-  <?php ELSEIF($HTML): ?>
+<?php ENDIF; ?>
+
+    <form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
+	    <DIV class="REQUADRE">
+	    <DIV class="TITOL"><?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gEstructura?accio=N'); ?> Estructura</DIV>
+	    	<table class="DADES">          
+                  <?php echo llistaNodes($NODES); ?>
+	        </table>
+	     </DIV>
+     </form>                
+
+    <?php IF($HTML): ?>
 
 	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
       <DIV class="REQUADRE">
@@ -67,7 +69,7 @@
 function creaOpcions($IDN)
 {      
   $R  = link_to(image_tag('tango/32x32/actions/edit-find-replace.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=E');
-  $R .= link_to(image_tag('tango/32x32/apps/internet-web-browser.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=H');
+  if(!NodesPeer::getIsCategoria($IDN) && !NodesPeer::getIsExterna($IDN)) $R .= link_to(image_tag('tango/32x32/apps/internet-web-browser.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=H');  
   $R .= link_to(image_tag('tango/32x32/places/user-trash.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=D',array('confirm'=>'Segur que vols esborrar el node?'));
 
   return $R;
