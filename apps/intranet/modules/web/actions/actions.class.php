@@ -41,8 +41,7 @@ class webActions extends sfActions
     	$this->TIPUS_MENU = 'ADMIN';
     }
    
-    $this->DATACALENDARI = time();
-    $this->CERCA         = $request->getParameter('CERCA');
+    $this->DATACALENDARI = time();    
     
         //Emmagatzemo la data
     if($this->hasRequestParameter('DATACALENDARI')) $this->DATACALENDARI = $this->getRequestParameter('DATACALENDARI');
@@ -136,6 +135,45 @@ class webActions extends sfActions
   }
   
   
+  public function executeRemember(sfWebRequest $request)
+  {
+  	
+  	 $this->LoadWEB($request);
+     $this->setTemplate('index');
+	 $this->ACCIO = 'remember';
+	 $this->dni = $request->getParameter('dni');
+	 
+	 if($request->getMethod('post') && $request->hasParameter('BREMEMBER')):	 
+	 	$dni = $request->getParameter('dni');
+	    if(empty($dni)):	    
+	    	$this->ERROR = "No ha entrat cap DNI.";
+	    	$this->ENVIAT = false;
+	    else: 
+	    	$OUsuari = UsuarisPeer::cercaDNI($dni);
+	    	if($OUsuari instanceof Usuaris): 
+	 				    			    	
+	 			$BODY = "Benvolgut/da, \n\n La seva contrasenya és : {$OUsuari->getPasswd()}.\n\n Cordialment, Casa de Cultura de Girona. ";          
+				try {
+						$mailer = new Swift(new Swift_Connection_NativeMail());
+						$message = new Swift_Message(' CCG :: Recordatori de contrasenya ', $BODY, 'text/html');
+	 
+						$mailer->send($message, $OUsuari->getEmail(), 'informatica@casadecultura.org');
+	  					$mailer->disconnect();
+					} catch (Exception $e) {  $mailer->disconnect(); }
+					$this->ENVIAT = true;
+					 
+			else: 
+				$this->ERROR = "L'usuari amb aquest DNI no existeix.";
+				$this->ENVIAT = false; 			
+			endif;
+		endif;	 		 	
+	 else:
+	 	$this->ERROR = "";
+	 	$this->ENVIAT = false; 
+	 endif;
+         
+  }
+  
   public function executeLogin(sfWebRequest $request)
   {
      $this->LoadWEB($request);
@@ -143,6 +181,10 @@ class webActions extends sfActions
 
      $this->FLogin = new LoginForm();
      $this->ERROR = "";
+     
+     if($request->hasParameter('form_login_remember')):
+     	$this->redirect('web/remember');     
+     endif;
      
      if($request->hasParameter('form_login_new')):
      	$this->redirect('web/registre');
@@ -206,6 +248,7 @@ class webActions extends sfActions
 	   		break;
 	   	   
 	   //Per defecte mostrem les notícies
+	   case 'no':	   		
 	   default: 
 	   	    $this->ACTIVITATS_LLISTAT = ActivitatsPeer::getNoticies();             
 	 		$this->ACCIO = 'noticies';	         
