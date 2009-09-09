@@ -38,22 +38,9 @@
       <DIV class="REQUADRE">
         <DIV class="TITOL">HTML - <?php echo $NODE->getTitolmenu(); ?></DIV>
       	<TABLE class="DADES">
-      	<tr><td>
- 			<?php echo input_hidden_tag('idN',$NODE->getIdnodes());
- 				$nom = sfConfig::get('sf_web_dir').$NODE->getHTML();
- 				if(file_exists($nom)):
- 				  	$handle = fopen($nom, "r");
-					$contents = fread($handle, filesize($nom));
-					fclose($handle);
-				else:
-					$contents = "No s'ha trobat la pàgina.";
-				endif;
-
-					echo textarea_tag('HTML',$contents,array('rich'=>true,'size'=>'100x50'));
-					
-                 	echo '<BR />';
-                  	echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?>
-        </td></tr>        
+      		<?php echo $FHtml ?>
+      		<tr><td></td><td><?php echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?></td></tr>        
+      		
         </TABLE>      
       </DIV>
    </form>

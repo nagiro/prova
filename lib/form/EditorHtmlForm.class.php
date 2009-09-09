@@ -5,7 +5,7 @@ class EditorHtmlForm extends sfForm
   public function configure()
   {
     $this->setWidgets(array(
-      'titol'    => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
+      'titol' => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
       'html'  => new sfWidgetFormTextareaTinyMCE(array(),array()),            
     ));
     
@@ -14,7 +14,7 @@ class EditorHtmlForm extends sfForm
     $this->setValidator('titol',new sfValidatorString(array('required'=>false)));
     $this->setValidator('html',new sfValidatorString(array('required'=>false)));
 
-    $this->widgetSchema->setlabels(array('text'=>'Titol: ','html'=>'Cos: '));
+    $this->widgetSchema->setLabels(array('text'=>'Titol: ','html'=>'Cos: '));
     $this->widgetSchema->setNameFormat('editor[%s]');    
     
   }
@@ -23,6 +23,7 @@ class EditorHtmlForm extends sfForm
   {
   	$this['select']->getWidget()->setOption('choices',$Choice);  	  
   }
+  
   
 }
 

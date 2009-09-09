@@ -126,9 +126,7 @@
 	li.CERCA { border:2px solid #CCCCCC; padding:10px; }
     
     .bold { font-weight:bold; }    
-      </STYLE>    <title></title>
-   <base href="http://localhost/intranet_dev.php" />
-   <!-- <base href="http://servidor.casadecultura.cat/intranet/intranet_dev.php" /> -->      </head>  <body>  <center>  	    <TABLE class="TAULA">    <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>    <TR>
+      </STYLE>    <title></title>      </head>  <body>  <center>  	    <TABLE class="TAULA">    <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>    <TR>
     	<TD class="CAPCALERA"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'web/index?accio=no'); ?></TD>
     	<TD class="CAPCALERA"></TD>
     	<TD class="MENU_CAPCALERA" style="text-align:right;">

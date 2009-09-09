@@ -258,10 +258,22 @@ class gestioActions extends sfActions
       $this->FNode = new NodesForm($ONode);
       $this->getUser()->setAttribute('idN',$ONode->getIdnodes());      
       $this->EDICIO = true;
-    elseif($request->getParameter('accio')=='H'):      
-      $this->NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));
-      $this->getUser()->setAttribute('idN',$this->NODE->getIdnodes());
-      $this->HTML = true;
+    elseif($request->getParameter('accio')=='H'):          
+      	$NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));
+      	$nom = sfConfig::get('sf_web_dir').$NODE->getHTML();
+		if(file_exists($nom)):
+			$handle = fopen($nom, "r");
+			$contents = fread($handle, filesize($nom));
+			fclose($handle);
+		else:
+			$contents = "No s'ha trobat la pàgina.";
+		endif;      
+      
+		$this->FHtml = new EditorHtmlForm();
+		$this->FHtml->bind(array('titol'=>$NODE->getTitolmenu(),'html'=>$contents));				
+      	$this->getUser()->setAttribute('idN',$NODE->getIdnodes());
+      	$this->NODE = $NODE;                       
+      	$this->HTML = true;
     elseif($request->getParameter('accio')=='D'):
       $this->NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));      
       $this->NODE->delete();
@@ -277,32 +289,24 @@ class gestioActions extends sfActions
       $this->FNode->bind($request->getParameter('nodes'));
       if($this->FNode->isValid()) $this->FNode->save();             
       $this->EDICIO = true;                
-    elseif($request->hasParameter('SaveHTML')):      
-      $IDN = $this->getUser()->getAttribute('idN');
-      $this->RET = $this->SaveHTML($IDN,$request->getParameter('HTML'));
-      $this->NODE = $this->RET['NODE'];
-      $this->ERRORS = $this->RET['ERRORS'];      
+    elseif($request->hasParameter('SaveHTML')):
+      $idN = $this->getUser()->getAttribute('idN');
+      $this->FHtml = new EditorHtmlForm();
+      $this->FHtml->bind($request->getParameter('editor'));
+	  $this->NODE = NodesPeer::retrieveByPK($idN);
+	  $this->NODE->setNew(false);                        
+      $fd = fopen(sfConfig::get('sf_web_dir').'/pagines/'.$idN.'.php',"w");
+      fwrite($fd,$this->FHtml->getValue('html'));
+      $this->NODE->setHTML('/pagines/'.$idN.'.php');
+      $this->NODE->setTitolmenu($this->FHtml->getValue('titol'));      
+      $this->NODE->save();                        
       $this->HTML = true;                
     endif;
 
     $this->NODES = NodesPeer::retornaMenu();
     
   }  
-    
-  public function SaveHTML( $idNode , $HTML )
-  {
-      $N = NodesPeer::retrieveByPK($idNode); 
-      $N->setNew(false);
       
-      $fd = fopen(sfConfig::get('sf_web_dir').'/pagines/'.$idNode.'.php',"w");
-      fwrite($fd,$HTML);
-      $N->setHTML('/pagines/'.$idNode.'.php');      
-      $N->save();
-      $RET['ERRORS'] = array();
-      $RET['NODE'] = $N;      
-      return $RET;
-  }
-  
   //******************************************************************************************
   // GESTIO DE LES LLISTES *******************************************************************
   //******************************************************************************************
@@ -1464,10 +1468,12 @@ class gestioActions extends sfActions
     	    break;
 		case 'CA':					
 				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA , $this->PAGINA );
+				$this->SELECT = 2;
 				$this->MODE['CONSULTA'] = true;				 
 			break;		
 		case 'CC':
 				$this->CURSOS = MatriculesPeer::cercaCursos($this->CERCA , $this->PAGINA );
+				$this->SELECT = 1;
 				$this->MODE['CONSULTA'] = true;
 			break;
 		case 'LMA':

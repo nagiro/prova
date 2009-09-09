@@ -204,7 +204,7 @@ class webActions extends sfActions
      		 	if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
      		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }	    		   			    		
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
-     		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 2 , 'web/gestio?accio=gd');
+     		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=gd');
      		 else: 
      		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
      		 endif;

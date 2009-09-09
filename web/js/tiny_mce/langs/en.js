@@ -1,60 +1,60 @@
-tinyMCE.addI18n({en:{
+tinyMCE.addI18n({ca:{
 common:{
-edit_confirm:"Do you want to use the WYSIWYG mode for this textarea?",
-apply:"Apply",
-insert:"Insert",
-update:"Update",
-cancel:"Cancel",
-close:"Close",
-browse:"Browse",
-class_name:"Class",
-not_set:"-- Not set --",
-clipboard_msg:"Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?",
-clipboard_no_support:"Currently not supported by your browser, use keyboard shortcuts instead.",
-popup_blocked:"Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.",
-invalid_data:"Error: Invalid values entered, these are marked in red.",
-more_colors:"More colors"
+edit_confirm:"Estàs segur que vols utilitzar el mode WYSIWYG per aquest Textarea?",
+apply:"Aplicar",
+insert:"Inserir",
+update:"Modificar",
+cancel:"Cancel·lar",
+close:"Tancar",
+browse:"Navegar",
+class_name:"Classe",
+not_set:"-- No definit --",
+clipboard_msg:"Copiar/Tallar/Enganxar no estan disponibles en Mozilla and Firefox.\nVols més informació sobre aquest problema?",
+clipboard_no_support:"Actualment el teu navegador no està suportat per utilitzar dreceres de teclat.",
+popup_blocked:"El teu navegador està bloquejant una finestra emergent.",
+invalid_data:"Error: Dades entrades equivocades, marcades en vermell.",
+more_colors:"Més colors"
 },
 contextmenu:{
-align:"Alignment",
-left:"Left",
-center:"Center",
-right:"Right",
-full:"Full"
+align:"Alineació",
+left:"Esquerra",
+center:"Centre",
+right:"Dreta",
+full:"Justificat"
 },
 insertdatetime:{
 date_fmt:"%Y-%m-%d",
 time_fmt:"%H:%M:%S",
-insertdate_desc:"Insert date",
-inserttime_desc:"Insert time",
-months_long:"January,February,March,April,May,June,July,August,September,October,November,December",
-months_short:"Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
-day_long:"Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-day_short:"Sun,Mon,Tue,Wed,Thu,Fri,Sat,Sun"
+insertdate_desc:"Insereix data",
+inserttime_desc:"Insereix hora",
+months_long:"Gener,Febrer,Març,Abril,Maig,Juny,Juliol,Agost,Setembre,Octubre,Novembre,Desembre",
+months_short:"Gen,Feb,Mar,Abr,Mai,Jun,Jul,Ago,Set,Oct,Nov,Des",
+day_long:"Diumenge,Dillun,Dimarts,Dimecres,Dijous,Divendres,Dissabte,Diumenge",
+day_short:"Dg,Dll,Dm,Dc,Dj,Dv,Ds,Dg"
 },
 print:{
-print_desc:"Print"
+print_desc:"Imprimir"
 },
 preview:{
-preview_desc:"Preview"
+preview_desc:"Previsualitzar"
 },
 directionality:{
-ltr_desc:"Direction left to right",
-rtl_desc:"Direction right to left"
+ltr_desc:"Direcció esquerra a dreta",
+rtl_desc:"Direcció dreta a esquerra"
 },
 layer:{
-insertlayer_desc:"Insert new layer",
-forward_desc:"Move forward",
-backward_desc:"Move backward",
-absolute_desc:"Toggle absolute positioning",
-content:"New layer..."
+insertlayer_desc:"Insereix nova capa",
+forward_desc:"Moure endavant",
+backward_desc:"Moure enrrera",
+absolute_desc:"Posició absoluta",
+content:"Nova capa..."
 },
 save:{
-save_desc:"Save",
-cancel_desc:"Cancel all changes"
+save_desc:"Guarda",
+cancel_desc:"Cancel·la tots les canvis"
 },
 nonbreaking:{
-nonbreaking_desc:"Insert non-breaking space character"
+nonbreaking_desc:""
 },
 iespell:{
 iespell_desc:"Run spell checking",
@@ -71,7 +71,7 @@ search_desc:"Find",
 replace_desc:"Find/Replace"
 },
 advimage:{
-image_desc:"Insert/edit image"
+image_desc:"Insereix/edita imatge"
 },
 advlink:{
 link_desc:"Insert/edit link"
@@ -85,7 +85,7 @@ ins_desc:"Insertion",
 attribs_desc:"Insert/Edit Attributes"
 },
 style:{
-desc:"Edit CSS Style"
+desc:"Edita l'estil CSS"
 },
 paste:{
 paste_text_desc:"Paste as Plain Text",
@@ -98,26 +98,26 @@ text_linebreaks:"Keep linebreaks",
 word_title:"Use CTRL+V on your keyboard to paste the text into the window."
 },
 table:{
-desc:"Inserts a new table",
-row_before_desc:"Insert row before",
-row_after_desc:"Insert row after",
-delete_row_desc:"Delete row",
-col_before_desc:"Insert column before",
-col_after_desc:"Insert column after",
-delete_col_desc:"Remove column",
-split_cells_desc:"Split merged table cells",
-merge_cells_desc:"Merge table cells",
-row_desc:"Table row properties",
-cell_desc:"Table cell properties",
-props_desc:"Table properties",
-paste_row_before_desc:"Paste table row before",
-paste_row_after_desc:"Paste table row after",
-cut_row_desc:"Cut table row",
-copy_row_desc:"Copy table row",
-del:"Delete table",
-row:"Row",
-col:"Column",
-cell:"Cell"
+desc:"Insereix nova taula",
+row_before_desc:"Insereix fila abans",
+row_after_desc:"Insereix fila després",
+delete_row_desc:"Esborra fila",
+col_before_desc:"Insereix columna abans",
+col_after_desc:"Insereix columna després",
+delete_col_desc:"Esborra columna",
+split_cells_desc:"Divideix la cel·la",
+merge_cells_desc:"Uneix les cel·les",
+row_desc:"Propietats de fila",
+cell_desc:"Propietats de cel·la",
+props_desc:"Propietats de taula",
+paste_row_before_desc:"Enganxa fila abans",
+paste_row_after_desc:"Enganxa fila després",
+cut_row_desc:"Talla fila",
+copy_row_desc:"Copia fila",
+del:"Esborra fila",
+row:"Fila",
+col:"Columna",
+cell:"Cel·la"
 },
 autosave:{
 unload_msg:"The changes you made will be lost if you navigate away from this page."
@@ -126,8 +126,8 @@ fullscreen:{
 desc:"Toggle fullscreen mode"
 },
 media:{
-desc:"Insert / edit embedded media",
-edit:"Edit embedded media"
+desc:"Insereix / edita embedded media",
+edit:"Edita embedded media"
 },
 fullpage:{
 desc:"Document properties"
