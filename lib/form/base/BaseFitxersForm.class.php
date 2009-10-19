@@ -14,8 +14,7 @@ class BaseFitxersForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'FitxersID'                      => new sfWidgetFormInputHidden(),
-      'Multimedia_idMultimedia'        => new sfWidgetFormPropelChoice(array('model' => 'Multimedia', 'add_empty' => false)),
-      'Cluber_idClubber'               => new sfWidgetFormPropelChoice(array('model' => 'Cluber', 'add_empty' => false)),
+      'Usuaris_idUsuari'               => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
       'EsDocument'                     => new sfWidgetFormInput(),
       'URL'                            => new sfWidgetFormTextarea(),
       'Nom'                            => new sfWidgetFormTextarea(),
@@ -28,8 +27,7 @@ class BaseFitxersForm extends BaseFormPropel
 
     $this->setValidators(array(
       'FitxersID'                      => new sfValidatorPropelChoice(array('model' => 'Fitxers', 'column' => 'FitxersID', 'required' => false)),
-      'Multimedia_idMultimedia'        => new sfValidatorPropelChoice(array('model' => 'Multimedia', 'column' => 'idMultimedia')),
-      'Cluber_idClubber'               => new sfValidatorPropelChoice(array('model' => 'Cluber', 'column' => 'idClubber')),
+      'Usuaris_idUsuari'               => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'EsDocument'                     => new sfValidatorInteger(array('required' => false)),
       'URL'                            => new sfValidatorString(array('required' => false)),
       'Nom'                            => new sfValidatorString(array('required' => false)),

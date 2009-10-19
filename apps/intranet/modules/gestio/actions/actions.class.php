@@ -1310,11 +1310,11 @@ class gestioActions extends sfActions
 				$this->MODE['CONSULTA'] = true;				     	            	          	        
     	    break;
 		case 'CI' :	
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA );
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA , $this->CERCA);
 				$this->MODE['CONSULTA'] = true;				 
 			break;		
 		case 'CA' :
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA );
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA );
 				$this->MODE['CONSULTA'] = true;
 			break;					
 		case 'L': 
@@ -1423,9 +1423,10 @@ class gestioActions extends sfActions
     			$this->MODE['NOU'] = true;
     		break;
     	case 'E':    			
-    			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
-    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
-				$this->FCurs = new CursosForm($OCurs);   			
+    			$IDM = $request->getParameter('IDM');
+    			$this->getUser()->setAttribute('IDM',$IDM);
+    			$OMatricula = MatriculesPeer::retrieveByPK($IDM);
+				$this->FMatricula = new MatriculesForm($OMatricula);   			
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'S':
@@ -1483,7 +1484,7 @@ class gestioActions extends sfActions
 		case 'LMC':
 				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC'));
 				$this->MODE['LMATRICULES'] = true;
-			break;
+			break;		
     }
   	
   
@@ -1501,21 +1502,55 @@ class gestioActions extends sfActions
   
         
   public function executeGNoticies(sfWebRequest $request)  
-  {     
-     $this->setLayout('gestio');
-     
-     if($request->hasParameter('BDESACTIVA')) 
-     {
-        foreach($request->getParameter('NOTICIA') AS $N):
-           $A = ActivitatsPeer::retrieveByPK($N);           
-           $A->setPublicaweb(false);
-           $A->save();
-        endforeach;
-     }
-     
-     $C = new Criteria();
-     $C->add(ActivitatsPeer::PUBLICAWEB , true);
-     $this->NOTICIES = ActivitatsPeer::doSelect($C);
+  { 
+  	    
+    $this->setLayout('gestio');
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+	$this->CERCA = $this->ParReqSesForm($request,'text','cerca');
+	$this->accio = $this->ParReqSesForm($request,'accio','ca');
+	$this->MODE = 'CERCA';
+	
+	
+    if($request->isMethod('POST')){	      	    
+	    if($request->hasParameter('BSUBMIT')) 		$this->accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
+	    elseif($request->hasParameter('BDELETE')) 	$this->accio = 'D';
+	    elseif($request->hasParameter('BADD'))		$this->accio = 'N';
+	    elseif($request->hasParameter('BEDIT'))		$this->accio = 'E';
+    }                
+
+	switch($this->accio){
+		case 'N':
+			$ONoticia = new Noticies();
+			$ONoticia->setDatapublicacio(date('Y-m-d',time()));
+			$ONoticia->setDatadesaparicio(date('Y-m-d',time()));
+			$this->FORMULARI = new NoticiesForm($ONoticia);
+			$this->MODE = 'FORMULARI';
+			$this->getUser()->setAttribute('idN',0); 
+			break;
+		case 'E': 
+			$this->getUser()->setAttribute('idN',$request->getParameter('idN'));
+			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($request->getParameter('idN')));			
+			$this->MODE = 'FORMULARI';			
+			break;
+		case 'S':
+			$idN = $this->getUser()->getAttribute('idN');						
+			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($idN));						
+			$this->FORMULARI->bind($request->getParameter('noticies'),$request->getFiles('noticies'));
+			if($this->FORMULARI->isValid()):
+				$this->FORMULARI->save();
+				$this->getUser()->setAttribute('idN',$this->FORMULARI->getObject()->getIdnoticia());				
+			endif; 
+			
+			$this->MODE = 'FORMULARI';			
+			break;
+		case 'D':
+			$idN = $request->getParameter('idN');
+			NoticiesPeer::retrieveByPk($idN)->delete();			
+			break;
+						
+	}
+             
+    $this->NOTICIES = NoticiesPeer::getNoticies("",$this->PAGINA);
           
   }
   

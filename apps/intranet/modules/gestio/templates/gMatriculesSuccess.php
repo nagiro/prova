@@ -145,13 +145,13 @@
   <?php ELSEIF( $MODE['LMATRICULES']): ?>
   
   	     <DIV class="REQUADRE">
-	        <DIV class="TITOL">Llistat de cursos </DIV>
+	        <DIV class="TITOL">Llistat de matriculats </DIV>
 	      	<TABLE class="DADES">
 	 			<?php 
 					if( sizeof($MATRICULES) == 0):
 						echo '<TR><TD class="LINIA" colspan="3">No hi ha cap matrícula amb aquests paràmetres.</TD></TR>';
 					else: 
-						echo '<TR><TD class="TITOL">CODI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD></TR>';
+						echo '<TR><TD class="TITOL">DNI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD></TR>';
 						$i = 0;
 						foreach($MATRICULES as $M):
 				            $C = $M->getCursos();
@@ -159,7 +159,7 @@
 				            $TEXT_REDUCCIO ="";
 				            if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; }
 				            echo '<TR>
-									<TD class="LINIA" width="15%">'.$U->getDni().'</TD>
+									<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>
 									<TD class="LINIA" width="40%">'.$U->getNomComplet().'<BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>
 									<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
 								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>							

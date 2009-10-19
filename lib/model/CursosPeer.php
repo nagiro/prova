@@ -29,17 +29,37 @@ class CursosPeer extends BaseCursosPeer
   
   static function getSelectCategories()
   {
-     $CATEGORIES = array(
-        'Artesania i arts aplicades' => 'Artesania i arts aplicades' ,
-        'Noves tecnologies' => 'Noves tecnologies' ,
-        'Artesania i arts aplicades' => 'Artesania i arts aplicades' ,
-     	'Estudi de Fotografia' => 'Estudi de Fotografia' ,
-     	'Humanitats' => 'Humanitats' ,
-     	'Idiomes' => 'Idiomes' ,        
-     	'Psicologia Aplicada' => 'Psicologia Aplicada' ,
-     	'Sociologia i psicologia aplicades' => 'Sociologia i psicologia aplicades' );
-     
-     return $CATEGORIES;
+  	
+  	$RET = array();
+  	$C = new Criteria();
+  	$C->add(TipusPeer::TIPUSNOM , 'curs_cat');
+  	
+  	foreach(tipusPeer::doSelect($C) as $Cat):
+  		$RET[$Cat->getIdtipus()] = $Cat->getTipusDesc();
+  	endforeach;
+  	
+  	return $RET;
+    
+  }
+  
+  static function getSelectCursos()
+  {
+  	
+	$RET = array();
+	$C = new Criteria();
+		  	  	  
+  	$C->addAscendingOrderByColumn( self::CATEGORIA );
+  	$C->addDescendingOrderByColumn( self::DATADESAPARICIO );  	  	
+  	$C->addDescendingOrderByColumn( self::TITOLCURS );
+  		
+  	foreach(self::doSelect($C) as $CURS):
+  		$DATA = $CURS->getDatafimatricula();
+  		list($year,$month,$day) = explode("-",$DATA); 
+  		$RET[$CURS->getIdcursos()] = $CURS->getCodi().'('.$year.'-'.$month.') - '.$CURS->getTitolcurs();
+  	endforeach;
+  	
+  	return $RET;  	
+  	
   }
   
   static function getSelectCursosActius()
@@ -58,12 +78,20 @@ class CursosPeer extends BaseCursosPeer
   	
   }
   
-  static function getCursos($mode = self::ACTIU , $PAGINA = 1)
+  static function getCursos($mode = self::ACTIU , $PAGINA = 1, $CERCA = "")
   {
   	$C = new Criteria();  	
   	if($mode == self::ACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;  	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addDescendingOrderByColumn( self::DATAAPARICIO );
+  	$C->addDescendingOrderByColumn( self::DATADESAPARICIO );
+  	$C->addAscendingOrderByColumn( self::CODI );
+  	
+  	
+  	if(!empty($CERCA)):
+  		$C1 = $C->getNewCriterion(self::CODI, "%$CERCA%" , CRITERIA::LIKE);
+  		$C2 = $C->getNewCriterion(self::TITOLCURS , "%$CERCA%" , CRITERIA::LIKE );
+		$C1->addOr($C2); $C->add($C1);  		  	
+  	endif; 
 
   	$pager = new sfPropelPager('Cursos', 30);
 	$pager->setCriteria($C);

@@ -15,26 +15,26 @@ class MatriculesForm extends sfFormPropel
   	
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
-  	  'Usuaris_usuariID' => new sfWidgetFormInput(),
-  	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursosActius())),
+  	  'Usuaris_usuariID' => new sfWidgetFormInputHidden(),
+  	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursos())),
       'Estat'            => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::getEstatsSelect())),
       'Comentari'        => new sfWidgetFormTextarea(),
       'DataInscripcio'   => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
-      'Descompte'        => new sfWidgetFormInput(),
+      'Pagat'        	 => new sfWidgetFormInput(),
       'tReduccio'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectDescomptes())),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
     ));
 
-    $this->setValidators(array(
+    $this->setValidators(array(      
       'idMatricules'     => new sfValidatorPropelChoice(array('model' => 'Matricules', 'column' => 'idMatricules', 'required' => false)),
-      'Usuaris_usuariID' => new sfValidatorPropelChoice(array('model'=>'Usuaris','column'=>'DNI'),array('invalid'=>'El DNI és incorrecte')),
-      'Cursos_idCursos'  => new sfValidatorString(),
-      'Estat'            => new sfValidatorString(array('max_length' => 1, 'required' => false)),
+      'Usuaris_UsuariID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
+      'Cursos_idCursos'  => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos')),
+      'Estat'            => new sfValidatorInteger(array('required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
       'DataInscripcio'   => new sfValidatorDateTime(array('required' => false)),
-      'Descompte'        => new sfValidatorNumber(array('required' => false),array('invalid'=>'No és un número')),
-      'tReduccio'        => new sfValidatorString(array('max_length' => 1)),
-      'tPagament'        => new sfValidatorString(array('max_length' => 1)),
+      'Pagat'            => new sfValidatorNumber(array('required' => false)),
+      'tReduccio'        => new sfValidatorInteger(),
+      'tPagament'        => new sfValidatorInteger(),    
     ));
 
     $this->setDefaults(array('Usuaris_usuariID'=>'99999999A'));

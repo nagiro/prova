@@ -113,7 +113,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 		      		<TD><?php echo $CURSOS->getTitolCurs()?></TD>
 		      		<TD><?php echo MatriculesPeer::getEstatText( $M->getEstat() )?></TD>
 		      		<TD><?php echo $M->getDataInscripcio()?></TD>
-		      		<TD><?php echo $M->getDescompte()?></TD>                                                                                             
+		      		<TD><?php echo MatriculesPeer::textDescomptes($M->getTReduccio()) ?></TD>                                                                                             
 			     </TR>                                   
 		   <?php endforeach; ?>                              
 		   </TABLE>
@@ -123,32 +123,38 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 	      
 	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles</LEGEND>
 	      
-		   <TABLE class="DADES">
-		   <?php $CAT_ANT = ""; ?>   
-		   <?php foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
-		   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
-		   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
-					<TR><TD colspan="4" class="TITOL"><?php echo $C->getCategoria()?></TD></TR>
-		   <?php    endif; ?>
-		                       	
-		   		<TR>
-		      		<TD><?php echo checkbox_tag('D[CURSOS][]',$C->getIdcursos(),false)?></TD>
-		      		<TD><?php echo $C->getCodi()?></TD>
-		      		<TD><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
-		      		<TD><?php echo $C->getPreu()?></TD>      							
-		      		<TD><?php echo $C->getDatainici('d-m-Y')?></TD>
-		      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
-		      	</TR>                		                 										
-		   <?php $CAT_ANT = $C->getCategoria(); ?>			   
-		   <?php endforeach; ?>        
-		   <TR><TD colspan="2" class="LINIA"><b>DESCOMPTE</b></TD><TD colspan="4"><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>                      
-		   </TABLE>
+	       	<?php $LCURSOS = CursosPeer::getCursos()->getResults(); ?>
+	       	<?php if(empty($LCURSOS)): echo "Actualment no es pot matricular a cap curs. "; ?>
+			<?php else: ?>	      
+					   <TABLE class="DADES">
+					   <?php $CAT_ANT = ""; ?>   
+					   <?php foreach($LCURSOS as $C): ?>                      
+					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
+					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
+								<TR><TD colspan="4" class="TITOL"><?php echo $C->getCategoria()?></TD></TR>
+					   <?php    endif; ?>
+					                       	
+					   		<TR>
+					      		<TD><?php echo checkbox_tag('D[CURSOS][]',$C->getIdcursos(),false)?></TD>
+					      		<TD><?php echo $C->getCodi()?></TD>
+					      		<TD><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
+					      		<TD><?php echo $C->getPreu()?></TD>      							
+					      		<TD><?php echo $C->getDatainici('d-m-Y')?></TD>
+					      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
+					      	</TR>                		                 										
+					   <?php $CAT_ANT = $C->getCategoria(); ?>			   
+					   <?php endforeach; ?>        
+					   <TR><TD colspan="2" class="LINIA"><b>DESCOMPTE</b></TD><TD colspan="4"><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>                      
+					   </TABLE>
+			<?php endif; ?>
 		            
 	   </FIELDSET>
 	   
+	   <?php if(!empty($LCURSOS)): ?>
 		<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>   
 			<TABLE class="FORMULARI"><TR><TD><?php echo submit_tag('Matricula\'m',array('name'=>'BMATRICULA' , 'style'=>'width:100px'))?></TD></TR></TABLE>         
 	   	</FIELDSET>
+	   <?php endif; ?>
 	   	
    	</form>
    

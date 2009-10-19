@@ -14,26 +14,26 @@ class BaseMatriculesForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
-      'Usuaris_UsuariID' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
-      'Cursos_idCursos'  => new sfWidgetFormPropelChoice(array('model' => 'Cursos', 'add_empty' => false)),
+      'Usuaris_UsuariID' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
+      'Cursos_idCursos'  => new sfWidgetFormPropelChoice(array('model' => 'Cursos', 'add_empty' => true)),
       'Estat'            => new sfWidgetFormInput(),
       'Comentari'        => new sfWidgetFormTextarea(),
       'DataInscripcio'   => new sfWidgetFormDateTime(),
-      'Descompte'        => new sfWidgetFormInput(),
+      'Pagat'            => new sfWidgetFormInput(),
       'tReduccio'        => new sfWidgetFormInput(),
       'tPagament'        => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
       'idMatricules'     => new sfValidatorPropelChoice(array('model' => 'Matricules', 'column' => 'idMatricules', 'required' => false)),
-      'Usuaris_UsuariID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
-      'Cursos_idCursos'  => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos')),
-      'Estat'            => new sfValidatorString(array('max_length' => 1, 'required' => false)),
+      'Usuaris_UsuariID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
+      'Cursos_idCursos'  => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
+      'Estat'            => new sfValidatorInteger(array('required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
       'DataInscripcio'   => new sfValidatorDateTime(array('required' => false)),
-      'Descompte'        => new sfValidatorNumber(array('required' => false)),
-      'tReduccio'        => new sfValidatorString(array('max_length' => 1)),
-      'tPagament'        => new sfValidatorString(array('max_length' => 1)),
+      'Pagat'            => new sfValidatorNumber(array('required' => false)),
+      'tReduccio'        => new sfValidatorInteger(),
+      'tPagament'        => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('matricules[%s]');

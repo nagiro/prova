@@ -31,4 +31,10 @@ class Cursos extends BaseCursos
      return self::getMatriculess($C);
   }
   
+  public function getCategoriaText()
+  {
+  	$idCat = $this->getCategoria();
+  	return TipusPeer::retrieveByPk($idCat)->getTipusDesc();
+  }
+  
 }

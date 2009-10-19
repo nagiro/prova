@@ -10,24 +10,25 @@
 class MatriculesPeer extends BaseMatriculesPeer
 {
 
-   const ACCEPTAT_PAGAT = "A";
-   const ACCEPTAT_NO_PAGAT = "B";
-   const EN_ESPERA = "C";   
-   const ERROR = "D";
-   const BAIXA = "B";
-   const CANVI_GRUP = "G";
+   const ACCEPTAT_PAGAT = "8";
+   const ACCEPTAT_NO_PAGAT = " ";
+   const EN_ESPERA = "14";   
+   const ERROR = "10";
+   const BAIXA = "9";
+   const CANVI_GRUP = "13";
    const PROCES_PAGAMENT = "P";            //Truncat abans del pagament
+   const DEVOLUCIO = '11';
       
-   const REDUCCIO_CAP             = '0';
-   const REDUCCIO_MENOR_25_ANYS   = '1';
-   const REDUCCIO_JUBILAT         = '2';
-   const REDUCCIO_ATURAT          = '3';
-   const REDUCCIO_GRATUIT         = '4';
+   const REDUCCIO_CAP             = '16';
+   const REDUCCIO_MENOR_25_ANYS   = '18';
+   const REDUCCIO_JUBILAT         = '17';
+   const REDUCCIO_ATURAT          = '19';
+   const REDUCCIO_GRATUIT         = '24';
    
-   const PAGAMENT_METALIC         = '0';
-   const PAGAMENT_TARGETA         = '1';
-   const PAGAMENT_TELEFON         = '2';
-   const PAGAMENT_TRANSFERENCIA   = '3';
+   const PAGAMENT_METALIC         = '21';
+   const PAGAMENT_TARGETA         = '20';
+   const PAGAMENT_TELEFON         = '23';
+   const PAGAMENT_TRANSFERENCIA   = '24';
    
    
   static function QuantesAvui()
@@ -56,6 +57,7 @@ class MatriculesPeer extends BaseMatriculesPeer
          case self::REDUCCIO_MENOR_25_ANYS : return 'Estudiant menor de 25 anys';
          case self::REDUCCIO_JUBILAT : return 'Jubilat';
          case self::REDUCCIO_ATURAT : return 'Aturat';
+         default: return 'Desconegut'; 
       }
   }
   
@@ -117,6 +119,7 @@ class MatriculesPeer extends BaseMatriculesPeer
      
      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
+     $C->addGroupByColumn(UsuarisPeer::DNI);
      
      $pager = new sfPropelPager('Usuaris', 10);
 	 $pager->setCriteria($C);
@@ -166,24 +169,26 @@ class MatriculesPeer extends BaseMatriculesPeer
   
   static function getEstatsSelect()
   {
-    //A = Acceptat i pagat
-    //B = Acceptat i no pagat
-    //C = En espera
-    //D = Error
-    
-    $A['A'] = 'Acceptat i pagat';
-    $A['B'] = 'Acceptat i no pagat';
-    $A['C'] = 'En espera';
-    $A['D'] = 'Error';
-       
-    return $A;
-     
+  	
+  	
+  	return array(	self::ACCEPTAT_PAGAT => 'Acceptat i pagat', 
+  					self::ACCEPTAT_NO_PAGAT => 'Acceptat i no pagat',
+  					self::EN_ESPERA => 'En espera',
+  					self::ERROR => 'Error internet',
+  					self::BAIXA => 'Baixa',
+  					self::CANVI_GRUP => 'Canvi de grup',
+  					self::DEVOLUCIO => 'Devolució',
+  					self::PROCES_PAGAMENT => 'En procès de pagament'  					  	
+  	);  
+           
   }
   
   static function getMatriculesUsuari($idU){
-      $C = new Criteria();
-      $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);         
-      return MatriculesPeer::doSelect($C);
+    $C = new Criteria();
+    $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
+    $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
+
+    return MatriculesPeer::doSelect($C);
   }
 
   static function getMatriculesCurs($idC){
@@ -249,7 +254,7 @@ class MatriculesPeer extends BaseMatriculesPeer
         case self::ACCEPTAT_PAGAT : return 'Acceptat i pagat';
         case self::ACCEPTAT_NO_PAGAT : return 'Acceptat i no pagat'; 
         case self::EN_ESPERA : return 'En espera';
-        case self::ERROR : return 'Error';
+        case self::ERROR : return 'Error internet';
         case self::BAIXA : return 'Baixa';
         case self::CANVI_GRUP : return 'Canvi de grup';
         case self::PROCES_PAGAMENT: return 'En procès de pagament';

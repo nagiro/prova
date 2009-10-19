@@ -14,14 +14,14 @@ class BaseFitxerscomentarisForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idFitxersComentaris' => new sfWidgetFormInputHidden(),
-      'Cluber_idClubber'    => new sfWidgetFormPropelChoice(array('model' => 'Cluber', 'add_empty' => false)),
+      'Usuaris_idUsuari'    => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
       'Fitxers_FitxersID'   => new sfWidgetFormPropelChoice(array('model' => 'Fitxers', 'add_empty' => false)),
       'Comentari'           => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
       'idFitxersComentaris' => new sfValidatorPropelChoice(array('model' => 'Fitxerscomentaris', 'column' => 'idFitxersComentaris', 'required' => false)),
-      'Cluber_idClubber'    => new sfValidatorPropelChoice(array('model' => 'Cluber', 'column' => 'idClubber')),
+      'Usuaris_idUsuari'    => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'Fitxers_FitxersID'   => new sfValidatorPropelChoice(array('model' => 'Fitxers', 'column' => 'FitxersID')),
       'Comentari'           => new sfValidatorString(array('required' => false)),
     ));
