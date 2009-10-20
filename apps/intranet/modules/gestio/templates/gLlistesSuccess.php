@@ -130,7 +130,7 @@
                   	<TR>
                   		<TD class="LINIA"><?php echo link_to($M->getTitol(),'gestio/gLlistes?accio=M&IDM='.$M->getIdmissatgesllistes().'&IDL='.$M->getLlistesIdllistes())?></TD>
 						<TD class="LINIA">
-							<? 
+							<?php 
 								if(!is_null($M->getEnviat('d/m/Y'))):
 									echo $M->getEnviat('d/m/Y');
 								else:

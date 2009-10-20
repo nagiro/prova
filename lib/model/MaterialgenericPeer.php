@@ -24,7 +24,7 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
       
   }
   
-  static public function selectAjax($seleccionat)
+  static public function selectAjax($seleccionat = "")
   {
     $C = new Criteria();
     $C->addAscendingOrderByColumn(self::NOM);

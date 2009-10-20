@@ -652,12 +652,12 @@ class gestioActions extends sfActions
   	
     $this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->DATAI  = $this->ParReqSesForm($request,'DATAI',time());    
-    $this->DIA    = $this->ParReqSesForm($request,'DIA',time());
-    $this->IDA    = $this->ParReqSesForm($request,'IDA',0);        
-    $accio  = $this->ParReqSesForm($request,'accio','C');
+    $this->CERCA  	= $this->ParReqSesForm($request,'text',"",'cerca');
+    $this->PAGINA 	= $this->ParReqSesForm($request,'PAGINA',1);
+    $this->DATAI  	= $this->ParReqSesForm($request,'DATAI',time());    
+    $this->DIA    	= $this->ParReqSesForm($request,'DIA',time());
+    $this->IDA    	= $this->ParReqSesForm($request,'IDA',0);        
+    $accio  		= $this->ParReqSesForm($request,'accio','C');
     $this->ACTIVITAT_NOVA = false;    
     
     //Inicialitzem el formulari de cerca
@@ -723,10 +723,10 @@ class gestioActions extends sfActions
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));    			
     			$this->HORARIS = $OActivitat->getHorariss();
     			$this->MODE['HORARIS'] = true;
-    			
+    			    			
     			$OHorari = new Horaris();
-    			$OHorari->setActivitatsActivitatid($this->getUser()->getAttribute('IDA'));    			
-    			$this->FHorari = new HorarisForm($OHorari);    			
+    			$OHorari->setActivitatsActivitatid($this->getUser()->getAttribute('IDA'));    			    			
+    			if($request->hasParameter('nou')) $this->FHorari = new HorarisForm($OHorari);     			
     			$this->HORARI = $OHorari;    			   
 				$this->ESPAISOUT = array(); $this->MATERIALOUT = array();    			 		
     			$this->getUser()->setAttribute('IDH',0);
@@ -1516,8 +1516,8 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BDELETE')) 	$this->accio = 'D';
 	    elseif($request->hasParameter('BADD'))		$this->accio = 'N';
 	    elseif($request->hasParameter('BEDIT'))		$this->accio = 'E';
-    }                
-
+    }                    
+    
 	switch($this->accio){
 		case 'N':
 			$ONoticia = new Noticies();
@@ -1527,25 +1527,30 @@ class gestioActions extends sfActions
 			$this->MODE = 'FORMULARI';
 			$this->getUser()->setAttribute('idN',0); 
 			break;
-		case 'E': 
-			$this->getUser()->setAttribute('idN',$request->getParameter('idN'));
-			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($request->getParameter('idN')));			
+		case 'E': 			
+			$this->getUser()->setAttribute('idN',$request->getParameter('NOTICIA'));
+			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($this->getUser()->getAttribute('idN')));			
 			$this->MODE = 'FORMULARI';			
 			break;
 		case 'S':
-			$idN = $this->getUser()->getAttribute('idN');						
-			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($idN));						
+
+			$idN = $this->getUser()->getAttribute('idN');					
+			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($idN));							
 			$this->FORMULARI->bind($request->getParameter('noticies'),$request->getFiles('noticies'));
+			
 			if($this->FORMULARI->isValid()):
+
 				$this->FORMULARI->save();
-				$this->getUser()->setAttribute('idN',$this->FORMULARI->getObject()->getIdnoticia());				
+				$this->getUser()->setAttribute('idN',$this->FORMULARI->getObject()->getIdnoticia());
+				$this->redirect('gestio/gNoticies?accio=CA');
 			endif; 
 			
-			$this->MODE = 'FORMULARI';			
+			$this->MODE = 'FORMULARI';
+						
 			break;
 		case 'D':
-			$idN = $request->getParameter('idN');
-			NoticiesPeer::retrieveByPk($idN)->delete();			
+			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getAttribute('idN'));
+			if($ON instanceof Noticies) $ON->delete();		
 			break;
 						
 	}

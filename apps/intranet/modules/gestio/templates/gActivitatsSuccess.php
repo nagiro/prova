@@ -141,7 +141,7 @@
     <?php menu(2,$ACTIVITAT_NOVA); ?>
     
 	<DIV class="REQUADRE">
-		<DIV class="TITOL">Horaris actuals</DIV>
+		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH&nou=2') ?> )</DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
 			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
@@ -161,84 +161,87 @@
     	</TABLE>      
 	</DIV>
 
-<script type="text/javascript">
-	$(function() {
-               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo image_path('template/calendar_1.png')?>'});               			
-    });   
-</script>
-	 
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
-	 	<div class="REQUADRE">	 		
-	 		<DIV class="TITOL">Edició horaris <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH') ?></DIV>
-	    	<table class="FORMULARI" width="550x">
-	    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
-	    	<tr><td width="100px"></td><td width="450x"></td></tr>
-
-               	<?php echo $FHorari?>
-             
-             <tr>
-             	<td>Espais: </td><td>
-             	
-             	<?php 
-					$id = 1;  $VAL = "";
-					if(!isset($ESPAISOUT)): $ESPAISOUT = array(); endif;            	
-             		foreach($ESPAISOUT AS $E=>$idE):
-
-             		$VAL .= '<span id="rowE['.$id.']">
-             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($idE).'</select>
-             					<input type="button" onClick="esborraLiniaE('.$id.');" id="mesespais" value="-"></input>
-             					<br />
-             			  	 </span>
-             			  ';
-             		      $id++;      	
-             		      	
-             		endforeach;
-
-             		echo '<input type="button" id="mesespais" value="+"></input><br />';             		             		             		             		    				   
-   					echo '<input type="hidden" id="idE" value="'.$id.'"></input>';   					
-				    echo '<div id="divTxtE">'.$VAL.'</div>';
-             	?>             	             	            
-             		
-				 </td>
-			</tr>   
-			 <tr>
-			 <td>Material: </td><td>		
-
-             	<?php 
-					$id = 1;  $VAL = "";
-					if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
-             		foreach($MATERIALOUT AS $M=>$idM):
-
-             		$VAL .= '
-  	 	  	        		<span id="row['.$id.']">
-  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
-  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select>	
-  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
-  	 	  	        			<br />
-  	 	  	        		</span>  	 	  	        			
-             			  ';
-             		      $id++;      	             		      
-             		                   		      	
-             		endforeach;					
-             		echo '<input type="button" id="mesmaterial" value="+"></input><br />';
-             		echo '<input type="hidden" id="idV" value="'.$id.'"></input>';   					
-				    echo '<div id="divTxt">'.$VAL.'</div>';
-             						    
-             	?>             	             	            
-             		
-             	</td>
-             </tr>  				
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<br>	            		
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats',array('name'=>'BDELETEHORARI','confirm'=>'Segur que vols esborrar-lo?'))?>
-	            	</td>
-	            </tr>                	 
-      		</table>      		
-      	</div>
-     </form>         
+	<?php if(isset($FHorari)): ?>
+		<script type="text/javascript">
+			$(function() {
+		               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo image_path('template/calendar_1.png')?>'});               			
+		    });   
+		</script>
+		 
+	     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
+		 	<div class="REQUADRE">	 		
+		 		<DIV class="TITOL">Edició horaris</DIV>
+		    	<table class="FORMULARI" width="550x">
+		    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
+		    	<tr><td width="100px"></td><td width="450x"></td></tr>
+	
+	               	<?php echo $FHorari?>
+	             
+	             <tr>
+	             	<td>Espais: </td><td>
+	             	
+	             	<?php 
+						$id = 1;  $VAL = "";
+						if(!isset($ESPAISOUT)): $ESPAISOUT = array(); endif;            	
+	             		foreach($ESPAISOUT AS $E=>$idE):
+	
+	             		$VAL .= '<span id="rowE['.$id.']">
+	             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($idE).'</select>
+	             					<input type="button" onClick="esborraLiniaE('.$id.');" id="mesespais" value="-"></input>
+	             					<br />
+	             			  	 </span>
+	             			  ';
+	             		      $id++;      	
+	             		      	
+	             		endforeach;
+	
+	             		echo '<input type="button" id="mesespais" value="+"></input><br />';             		             		             		             		    				   
+	   					echo '<input type="hidden" id="idE" value="'.$id.'"></input>';   					
+					    echo '<div id="divTxtE">'.$VAL.'</div>';
+	             	?>             	             	            
+	             		
+					 </td>
+				</tr>   
+				 <tr>
+				 <td>Material: </td><td>		
+	
+	             	<?php 
+						$id = 1;  $VAL = "";
+						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
+	             		foreach($MATERIALOUT AS $M=>$idM):
+	
+	             		$VAL .= '
+	  	 	  	        		<span id="row['.$id.']">
+	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
+	  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select>	
+	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
+	  	 	  	        			<br />
+	  	 	  	        		</span>  	 	  	        			
+	             			  ';
+	             		      $id++;      	             		      
+	             		                   		      	
+	             		endforeach;					
+	             		echo '<input type="button" id="mesmaterial" value="+"></input><br />';
+	             		echo '<input type="hidden" id="idV" value="'.$id.'"></input>';   					
+					    echo '<div id="divTxt">'.$VAL.'</div>';
+	             						    
+	             	?>             	             	            
+	             		
+	             	</td>
+	             </tr>  				
+	                <tr>
+	                	<td></td>
+		            	<td colspan="2" class="dreta">
+		            		<br>	            		
+		            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
+		            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats',array('name'=>'BDELETEHORARI','confirm'=>'Segur que vols esborrar-lo?'))?>
+		            	</td>
+		            </tr>                	 
+	      		</table>      		
+	      	</div>
+	     </form>
+	     
+	<?php endif; ?>
     
   <?php ELSEIF( $MODE['TEXTOS'] ): ?>
 

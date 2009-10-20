@@ -16,11 +16,11 @@
 		    	<table class="FORMULARI">
 		    		<tr><td width="100px"></td><td></td></tr>	    			    		        
 		            <?php echo $FORMULARI ?>	            
-		            <tr>
+		            <tr>		            	
 		            	<td colspan="2" class="dreta">
 		            		<br>	            	
 		            			<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSUBMIT'))?>
-		            			<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gNoticies',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>	            		
+		            			<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gNoticies?accio=D',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>	            		
 		            	</td>
 		            </tr>
 		        </table>
@@ -38,17 +38,19 @@
                  									                           
                 foreach($NOTICIES->getResults() as $N):                                      
 					echo '<TR>
-							<TD width="10%" class="LINIA">'.radiobutton_tag('NOTICIA[]',$N->getIdnoticia(),false).'</TD>
+							<TD width="10%" class="LINIA">'.radiobutton_tag('NOTICIA',$N->getIdnoticia(),false).'</TD>
 							<TD class="LINIA">'.$N->getTitolnoticia().'</TD>							
 						  </TR>';                		                 															
 				endforeach;				
                 ?>         
-                <TR><TD><?php echo submit_tag('Nova',array('name'=>'BADD'))?>
+                <TR>
+                	<TD colspan="1"></TD>
+                	<TD colspan="2"><?php echo submit_tag('Nova',array('name'=>'BADD'))?>
                 		<?php echo submit_tag('Edita',array('name'=>'BEDIT'))?>                		
                 	</TD>
-                	<TD colspan="2"></TD>
+                	
                 </TR>
-                <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($NOTICIES);?></TD></TR>       
+                <TR><TD colspan="3"><?php echo gestorPagines($NOTICIES);?></TD></TR>       
 	        </table>
 	     </DIV>
      </form>                  
