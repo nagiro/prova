@@ -8,6 +8,12 @@
 
 <script type="text/javascript">
 
+	$(document).ready( function() { 
+		$('#cerca_text').change( function() { 
+			$('#FCERCA').submit(); 
+		});
+	});
+
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}
 	function validaData(q){		
 		var userPattern = new RegExp("^[0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2}$");		
@@ -41,7 +47,7 @@
     <TD colspan="3" class="CONTINGUT">
     
       
-    <form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST">
+    <form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca ?>

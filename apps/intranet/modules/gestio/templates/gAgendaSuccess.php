@@ -1,6 +1,5 @@
 <STYLE>
 .cent { width:100%; }
- 
 </STYLE>
 
 <?php use_helper('Javascript'); ?>
@@ -9,7 +8,7 @@
    
     <TD colspan="3" class="CONTINGUT">
      	 
-    <form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">
+    <form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">	    	         
 	            <?php echo $FCerca ?>

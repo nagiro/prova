@@ -394,6 +394,11 @@ class gestioActions extends sfActions
                $this->MAILS = LlistesPeer::EnviaMissatge($this->getRequestParameter('IDM'));
                $this->ENVIAT = true;                               
                break;
+               
+	  //Imprimeix etiquetes               
+      case 'P': 
+      		return $this->printEtiquetes($this->IDL);     	
+      		break;
     
     }        
   
@@ -424,6 +429,58 @@ class gestioActions extends sfActions
   
   }
   
+  
+  public function printEtiquetes($idL)
+  {
+  	  	  	
+	$config = sfTCPDFPluginConfigHandler::loadConfig();
+	 
+	//create new PDF document (document units are set by default to millimeters)
+	$pdf = new sfTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
+	 
+	// set document information
+	$pdf->SetCreator('Intranet CCG');
+	$pdf->SetAuthor('Intranet CCG');
+	$pdf->SetTitle('Llistat de mailing postal');
+	$pdf->SetSubject("Llistat correu");
+	$pdf->SetFont('helvetica', '', 8);
+	$pdf->SetMargins(0, 0, 0 , 0);
+	$pdf->setPrintHeader(false);
+	$pdf->setAutoPageBreak(false);
+
+   	//Consultem tots els usuaris de la llista que volem imprimir.
+   	$fila = 1; $columna = 1; $pagina = 1; $pdf->AddPage();
+  	$OL = LlistesPeer::retrieveByPK($idL);
+  	foreach($OL->getUsuarisllistess() as $UL):  		
+  		$OU = $UL->getUsuaris();
+  		$text  = "<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$OU->getNomComplet()."</b>";
+  		$text .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OU->getAdreca();
+  		$text .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OU->getCodiPostal().' - '.$OU->getPoblacioString();   		 	
+  	
+  		if($fila    == 9): $pdf->AddPage(); $fila = 1; endif;  		  		
+  		  		  		  		
+  		if($columna == 1 && $fila == 1):
+			$pdf->MultiCell( 70 , 37 , $text , 1 , 'L' , 0 , 0 , 0 , 0 , true , 0 , true , true , 0 );
+			$columna++;  			
+  		elseif($columna == 1 && $fila != 1):
+			$pdf->MultiCell( 70 , 37 , $text , 1 , 'L' , 0 , 0 , '', '', true , 0 , true , true , 0 );
+			$columna++;
+  		elseif($columna == 2):
+  			$pdf->MultiCell( 70 , 37 , $text , 1 , 'L' , 0 , 0 , '', '', true , 0 , true , true , 0 );
+  			$columna++;
+  		elseif($columna == 3):
+  			$pdf->MultiCell( 70 , 37 , $text , 1 , 'L' , 0 , 1 , '', '', true , 0 , true , true , 0 );
+  			$columna=1; $fila++;
+  		endif;
+  		 				
+  	endforeach;
+	  
+	  
+	$pdf->Output();
+	 
+	return sfView::NONE;
+	  		   	
+  }
   
   public function saveLlista()
   {
@@ -593,7 +650,7 @@ class gestioActions extends sfActions
     		$OT = ($IDT > 0)?TasquesPeer::retrieveByPK($IDT):new Tasques();
     		$this->FTasca = new TasquesForm($OT);
     		$this->FTasca->bind($request->getParameter('tasques'));
-    		if($this->FTasca->isValid()) $this->FTasca->save();
+    		if($this->FTasca->isValid()) { $this->FTasca->save(); $this->redirect('gestio/gTasques');  }
     		$this->EDICIO = true;    		    		
     		break;	
     	case 'D':    	    
@@ -1116,7 +1173,7 @@ class gestioActions extends sfActions
                 $OM = ($IDM > 0)?MissatgesPeer::retrieveByPk($IDM):new Missatges();
                 $this->FMissatge = new MissatgesForm($OM);                 
                 $this->FMissatge->bind($request->getParameter('missatges'));                
-                if ($this->FMissatge->isValid()) $this->FMissatge->save();                	                                                                                
+                if ($this->FMissatge->isValid()) { $this->FMissatge->save(); $this->redirect('gestio/gMissatges'); }                              	                                                                                
                 $this->EDICIO = true;      
                 break;
       case 'D':

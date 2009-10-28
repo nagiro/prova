@@ -47,7 +47,7 @@
   <?php ELSE: ?>
   
   	<DIV class="REQUADRE">
-  	<DIV class="TITOL">Llistat contactes</DIV>
+  	<DIV class="TITOL">Llistat de missatges</DIV>
   		<table class="DADES">
                 <?php 
                     if( empty( $MISSATGES ) ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(new Criteria()).' disponibles.</TD></TR>';

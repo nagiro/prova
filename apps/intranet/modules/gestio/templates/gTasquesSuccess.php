@@ -10,6 +10,17 @@
 
 <script type="text/javascript">
 
+	$(document).ready( function() { 
+		$('#cerca_text').change( function() { 
+			$('#FCERCA').submit(); 
+		});
+	});
+	
+</script>
+
+
+<script type="text/javascript">
+
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}
 	function validaData(q){		
 		var userPattern = new RegExp("^[0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2}$");		
@@ -35,7 +46,7 @@
    
     <TD colspan="3" class="CONTINGUT">
     
-	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST">
+	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca ?>
@@ -60,8 +71,13 @@
                 <?php foreach($TASQUES_ENCOMANADES->getResults() as $T): ?>	                
                 <?php    $U = $T->getUsuarisRelatedByQuifa()->getNom()." ".$T->getUsuarisRelatedByQuifa()->getCog1(); ?>
                 <?php    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>
-					<TR><TD><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+                <?php if($T->getIsfeta()): ?>
+  					<TR><TD class="FETA"><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+					    <TD class="FETA"><?php echo $U?></TD></TR> 											              
+                <?php else: ?>
+	                <TR><TD><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
 					    <TD><?php echo $U?></TD></TR> 											
+                <?php endif; ?>					
 				<?php endforeach; ?>
 				<TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_ENCOMANADES);?></TD></TR>     			
   		</table>

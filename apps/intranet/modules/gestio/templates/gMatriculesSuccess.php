@@ -11,7 +11,17 @@
 .espai { padding-left:5px; padding-right:5px; }
 
 </STYLE>
-   
+
+<script type="text/javascript">
+
+	$(document).ready( function() { 
+		$('#cerca_select').change( function() {
+			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); 			
+		});
+	});
+	
+</script>
+
 <script type="text/javascript">
 
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}
@@ -54,7 +64,7 @@
    
     <TD colspan="3" class="CONTINGUT">
         
-    <form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+    <form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca ?>

@@ -165,11 +165,14 @@
 
 function creaOpcions($IDL , $ACCIO = NULL)
 {      
-  $R  = link_to('U','gestio/gLlistes?accio=U&IDL='.$IDL);
+	
+  $R  = link_to(image_tag('template/user.png',array('alt'=>'Gestió d\'usuaris de la llista.')),'gestio/gLlistes?accio=U&IDL='.$IDL);
   $R .= " ";
-  $R .= link_to('M','gestio/gLlistes?accio=M&IDL='.$IDL);  
+  $R .= link_to(image_tag('template/page_2.png',array('alt'=>'Escriure un nou missatge.')),'gestio/gLlistes?accio=M&IDL='.$IDL);  
   $R .= " ";
-  $R .= link_to('L','gestio/gLlistes?accio=L&IDL='.$IDL);
+  $R .= link_to(image_tag('template/page_white_stack.png',array('alt'=>'Llistat de missatges enviats.')),'gestio/gLlistes?accio=L&IDL='.$IDL);
+  $R .= " ";
+  $R .= link_to(image_tag('template/printer.png',array('alt'=>'Genera PDF amb etiquetes.')),'gestio/gLlistes?accio=P&IDL='.$IDL);
   
   return $R;
 }

@@ -10,6 +10,22 @@
 class Usuaris extends BaseUsuaris
 {
 
+	function getPoblacioString()
+	{
+		$poblacio = $this->getPoblaciotext(); 
+		if(!empty($poblacio)):			 
+			return $this->getPoblaciotext();
+		else:
+			$OP = PoblacionsPeer::retrieveByPK($this->getPoblacio());
+			if($OP instanceof Poblacions):
+				$poblacio = $OP->getNom();
+				return $poblacio;
+			else:
+				return "Desconeguda";
+			endif; 		
+		endif;
+	}
+	
   function getNomComplet(){     
      return $this->getCog1().' '.$this->getCog2().', '.$this->getNom();
   }

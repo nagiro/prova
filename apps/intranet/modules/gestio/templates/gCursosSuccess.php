@@ -12,6 +12,17 @@
    
 <script type="text/javascript">
 
+	$(document).ready( function() { 
+		$('#cerca_select').change( function() {
+			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); 			
+		});
+	});
+	
+</script>
+
+   
+<script type="text/javascript">
+
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}
 	function validaData(q){		
 		var userPattern = new RegExp("^[0-9]{4}\-[0-9]{1,2}\-[0-9]{1,2}$");		
@@ -52,7 +63,7 @@
    
     <TD colspan="3" class="CONTINGUT">
     
-	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">
+	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca; ?>
