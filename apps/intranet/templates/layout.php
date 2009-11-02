@@ -136,4 +136,4 @@
            <?php echo link_to(image_tag('intranet/hospici.png', array('id'=>'MENU_HOSPICI')),'http://localhost/hospici_dev.php/directori/inicial',array()); ?>    	   
     	   <?php echo link_to(image_tag('intranet/contacte.png', array('id'=>'MENU_CONTACTANS')),'web/contacte',array()); ?>
     	   </TD>
-	</TR>    <?php echo $sf_content ?>            <TR><TD colspan="4" class="PEU">CASA DE CULTURA | Pl. hospital,6. 17001. Girona | T. 972 20 20 13 | <a class="white" href="mailto:informatica@casadecultura.org">E-mail</a> | Informaci� legal</TD></TR>    <TR><TD colspan="4" class="DEGRADAT_INFERIOR"></TD></TR>         </TABLE>  </center>  </body></html>
+	</TR>    <?php echo $sf_content ?>            <TR><TD colspan="4" class="PEU">CASA DE CULTURA | Pl. hospital,6. 17001. Girona | T. 972 20 20 13 | <a class="white" href="mailto:informatica@casadecultura.org">E-mails</a> | <a class="white" href="" >Informació legal</a></TD></TR>    <TR><TD colspan="4" class="DEGRADAT_INFERIOR"></TD></TR>         </TABLE>  </center>  </body></html>
