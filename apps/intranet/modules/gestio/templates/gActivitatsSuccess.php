@@ -384,24 +384,30 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
     $mes  = date('m',$DATAI);
     $year = date('Y',$DATAI);
               
-    $mesI = $mes; $any = $year;
-    $mesF = date('m',mktime(0,0,0,$mes+3,1,$year));
-    if($mesF > 12) $mesF = $mesF-12;      
+    $any = $year;
+    $mesI = $mes;
+    $mesF = $mes+3;      
          
     $RET = "<TR><TD></TD>";
     for($i = 6; $i>0; $i--):
       $RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD>";
     endfor;
     $RET .= "</TR>";
+
     
     for($mes = $mesI; $mes < $mesF; $mes++):
+    
       
-      $dies = cal_days_in_month(CAL_GREGORIAN, $mes, $any );                           //Mirem quants dies té el mes      
-      $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mes , 1 , $any) , 0 );       //Marquem quants blancs volem tenir      
+      $mesReal = ($mes > 12)?($mes-12):$mes;
+      $anyReal = ($mes == 13)?$any+1:$any;
+            
+      
+      $dies = cal_days_in_month(CAL_GREGORIAN, $mesReal, $anyReal );                   		//Mirem quants dies té el mes      
+      $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mesReal , 1 , $anyReal) , 0 );    //Marquem quants blancs volem tenir      
       if($diaSetmana == 0) $blancs = 6-1; else  $blancs = $diaSetmana-2;
       
-      if($mes % 2) $background = "beige"; else $background = "white";                   //Mirem el color del fons
-      $RET .= "<TR><TD>".mesos($mes)."</TD>";
+      if($mesReal % 2) $background = "beige"; else $background = "white";                   //Mirem el color del fons
+      $RET .= "<TR><TD>".mesos($mesReal)."</TD>";
       
       //Bucle de pintar dies
       
@@ -410,10 +416,10 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
         if($dia <= $blancs || $diaA > $dies):                                        //Si és blanc el marquem com a tal i si el dia ha passat el màxim de dies del mes no el marquem
           $RET .= "<TD></TD>";
         else:                                  
-          $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mes , $diaA , $any) , 0 );
+          $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mesReal , $diaA , $anyReal) , 0 );
           if( $diaSetmana == 6 || $diaSetmana == 0) $background="beige"; else $background = "white"; 
           
-          $CalDia = mktime(0,0,0,$mes,$diaA,$any);
+          $CalDia = mktime(0,0,0,$mesReal,$diaA,$anyReal);
           $SPAN = ""; $color = "";
           
           if(isset($CALENDARI[$CalDia])) { $SELECCIONAT = "SELECCIONAT";
@@ -427,8 +433,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
         endif;    
       endfor;
       $RET .= "</TR>";
-      
-      if($mes == 12) $any = $any+1;
+            
     endfor;
           
     return $RET;
