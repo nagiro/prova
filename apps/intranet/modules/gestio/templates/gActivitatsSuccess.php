@@ -288,14 +288,14 @@
      </form>
        
     
-  <?php ELSEIF( $MODE['LLISTAT'] ): ?>
+  <?php ELSEIF( $MODE['LLISTAT'] && isset($ACTIVITATS) ): ?>
 
 
      <DIV class="REQUADRE">
         <DIV class="TITOL">Llistat d'activitats </DIV>
       	<TABLE class="DADES">
  			<?php 	if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; 
- 					$i = 0; $j=0; $Tall = 10;  			   			
+ 					$i = 0; $j=0; $Tall = 10; 					  			   			
 					foreach($ACTIVITATS as $A):			
 	                  	if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
 	                    
@@ -457,11 +457,11 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
      $ANY = date('Y',$DATAI);            
      
      $RET = "";
-     $RET = link_to($ANY-1,'gestio/gActivitats?DATAI='.mktime(0,0,0,1,1,$ANY-1),array('class'=>'black'))." ";
+     $RET = link_to($ANY-1,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$ANY-1),array('class'=>'black'))." ";
      for($any = $ANY ; $any < $ANY+2 ; $any++ ):
-     	$RET .= link_to($any,'gestio/gActivitats?DATAI='.mktime(0,0,0,1,1,$any),array('class'=>'black'))." ";
+     	$RET .= link_to($any,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$any),array('class'=>'black'))." ";
      	for($mes = 1; $mes < 13; $mes++):
-     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats?DATAI=".mktime(0,0,0,$mes,1,$any),array('class'=>'black'))." ";
+     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats?accio=CC&DATAI=".mktime(0,0,0,$mes,1,$any),array('class'=>'black'))." ";
      	endfor;     
      endfor;
       

@@ -738,7 +738,8 @@ class gestioActions extends sfActions
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
     if($request->getParameter('accio') == 'C') $this->PAGINA = 1;
-    if($request->getParameter('accio') == 'CD') $this->PAGINA = 1; 
+    if($request->getParameter('accio') == 'CD') { $this->PAGINA = 1; }    
+    if($request->hasParameter('DATAI')) { $this->DIA = ""; } 
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);    
@@ -757,10 +758,20 @@ class gestioActions extends sfActions
                 $this->MODE['LLISTAT'] = true;                                              
                 break;
     		break;
+
+    	//Consulta que em mostra les activitats quan canvio de mensualitat o any 
+    	case 'CC':    		
+                $HORARIS = HorarisPeer::getActivitats(null , $this->CERCA, $this->DATAI, $this->DATAF, null);
+                $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
+                $this->CALENDARI = $HORARIS['CALENDARI'];
+                $this->MODE['CONSULTA'] = true;
+                $this->MODE['LLISTAT'] = true;
+    		break;
+    		
     		
     	//Consulta que em mostra les activitats d'un dia seleccionat del calendari
     	case 'CD':    		
-                $HORARIS = HorarisPeer::getActivitats($this->DIA , $this->CERCA, $this->DATAI, $this->DATAF, null);                                
+                $HORARIS = HorarisPeer::getActivitats($this->DIA , $this->CERCA, $this->DATAI, $this->DATAF, null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
