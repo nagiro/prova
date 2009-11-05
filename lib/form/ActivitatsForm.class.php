@@ -19,8 +19,8 @@ class ActivitatsForm extends sfFormPropel
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
       'Preu'                            => new sfWidgetFormInput(),
       'PreuReduit'                      => new sfWidgetFormInput(),
-      'Publicable'                      => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
-      'Estat'                           => new sfWidgetFormChoice(array('choices'=>array(ActivitatsPeer::getSelectEstats()))),
+      'Publicable'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
+      'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
     ));
 
     $this->setValidators(array(
@@ -40,7 +40,7 @@ class ActivitatsForm extends sfFormPropel
       'TipusActivitat_idTipusActivitat' => 'Quin format té? ',
       'Preu'                            => 'Preu: ',
       'PreuReduit'                      => 'Preu reduït: ',
-      'Publicable'                      => 'És publicable al web?',
+      'Publicable'                      => 'Visible al web?',
       'Estat'                           => 'Estat actual: ',
     ));
     

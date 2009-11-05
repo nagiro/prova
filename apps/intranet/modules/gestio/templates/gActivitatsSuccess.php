@@ -115,21 +115,22 @@
 	     </DIV>
      </form>                  
      
-  <?php ENDIF; IF( $MODE['NOU'] || $MODE['EDICIO'] && !$MODE['CICLES'] ): ?>
-      
-      <?php menu(1,$ACTIVITAT_NOVA); ?>
-      
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
-	 	<div class="REQUADRE">	 			 		
-	    	<table class="FORMULARI" width="600px">                  			    	
+  <?php ENDIF; IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
+                  
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">     	
+	 	<div class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div>            
+	 	<div class="titol">
+	 		<?php if($MODE['NOU']): echo 'Editant una activitat nova'; else: echo 'Editant l\'activitat: '.$FActivitat->getValue('Nom'); endif; ?>
+	 	</div>	 			 			 		
+	    	<table class="FORMULARI" width="600px">	    	                  			    
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?php echo $FActivitat ?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEACTIVITAT')) ?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?')) ?>
+	            		<?php echo submit_tag('Segueix editant...',array('name'=>'BSAVEACTIVITAT','class'=>'BOTO_ACTIVITAT'))?>
 	            	</td>
 	            </tr>                	 
       		</table>      		
@@ -137,10 +138,12 @@
      </form>         
     
   <?php ELSEIF( $MODE['HORARIS'] ): ?>
-  
-    <?php menu(2,$ACTIVITAT_NOVA); ?>
-    
+      
 	<DIV class="REQUADRE">
+	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div>	
+	<div class="titol">
+	 		<?php echo 'Editant horaris de l\'activitat: '.$NOMACTIVITAT; ?>
+	 	</div>
 		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH&nou=2') ?> )</DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
@@ -157,8 +160,17 @@
 						echo '</TR>';
 					endforeach;
 				
-			?>                        	
-    	</TABLE>      
+			?>			                   	
+    	</TABLE>
+    	<table class="DADES">
+    	  <tr>
+    	    <td class="dreta">	            			            		
+    			<?php echo link_to('<input type="button" value="<<-- Tornar anterior"  class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=CA'); ?>    			
+	            <?php echo link_to('<input type="button" value="Segueix editant -->>" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=CT'); ?>
+	        </td>
+	      </tr>     
+    	</table>     
+    	
 	</DIV>
 
 	<?php if(isset($FHorari)): ?>
@@ -234,7 +246,7 @@
 		            	<td colspan="2" class="dreta">
 		            		<br>	            		
 		            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
-		            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats',array('name'=>'BDELETEHORARI','confirm'=>'Segur que vols esborrar-lo?'))?>
+		            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats?accio=DH',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 		            	</td>
 		            </tr>                	 
 	      		</table>      		
@@ -245,10 +257,12 @@
     
   <?php ELSEIF( $MODE['TEXTOS'] ): ?>
 
-     <?php menu(3,$ACTIVITAT_NOVA); ?>
-
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">            
-	 	<div class="REQUADRE">	 			 		
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">     	   
+	 	<div class="REQUADRE">
+	 		<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div>	 			 		
+		 	<div class="titol">
+		 		<?php echo 'Editant la informació de l\'activitat: '.$NOMACTIVITAT; ?>
+		 	</div>             
 	    	<table class="FORMULARI" width="600px">                  			    	
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?php echo $FActivitat ?>                								
@@ -256,8 +270,7 @@
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'Guarda','name'=>'BSAVEDESCRIPCIO'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php echo submit_tag('Finalitzar',array('name'=>'BSAVEDESCRIPCIO','class'=>'BOTO_ACTIVITAT'))?>
 	            	</td>
 	            </tr>                	 
       		</table>      		
@@ -265,8 +278,6 @@
      </form>
       
   <?php ELSEIF( $MODE['CICLES'] ): ?>
-
-     <?php menu(4,$ACTIVITAT_NOVA); ?>
 
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
 	 	<div class="REQUADRE">	 			 		

@@ -735,7 +735,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BSAVEACTIVITAT')) $accio = 'SA';
 	    elseif($request->hasParameter('BSAVEHORARIS_x')) $accio = 'SH';
 	    elseif($request->hasParameter('BDELETEHORARIS')) $accio = 'DH';
-	    elseif($request->hasParameter('BSAVEDESCRIPCIO_x')) $accio = 'ST';
+	    elseif($request->hasParameter('BSAVEDESCRIPCIO')) $accio = 'ST';
 	    elseif($request->hasParameter('BSAVECICLE')) $accio = 'SC';
     }                
     
@@ -793,6 +793,7 @@ class gestioActions extends sfActions
     	case 'CH':
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));    			
     			$this->HORARIS = $OActivitat->getHorariss();
+    			$this->NOMACTIVITAT = $OActivitat->getNom();
     			$this->MODE['HORARIS'] = true;
     			    			
     			$OHorari = new Horaris();
@@ -818,25 +819,28 @@ class gestioActions extends sfActions
     		break;    	
     		
     	//Consulta els textos del web
-    	case 'T':                
+    	case 'CT':                
                 $OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
+                $this->NOMACTIVITAT = $OActivitat->getNom();
                 $this->FActivitat = new ActivitatsTextosForm($OActivitat);                
-                $this->MODE['TEXTOS'] = TRUE;       
+                $this->MODE['TEXTOS'] = true;       
             break;
             
 		//Guarda els textos del web            
     	case 'ST':
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
+    			$this->NOMACTIVITAT = $OActivitat->getNom();
     			$this->FActivitat = new ActivitatsTextosForm($OActivitat);    			
     			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
-    			if($this->FActivitat->isValid()) $this->FActivitat->save();
+    			if($this->FActivitat->isValid()): $this->FActivitat->save(); $this->redirect('gestio/gActivitats?accio=CT'); endif;
     			$this->MODE['TEXTOS'] = true;
     		break;
     		
     	//Save Horaris
     	case 'SH':  		
 			
-			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));    			
+			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
+			$this->NOMACTIVITAT = $OActivitat->getNom();
     		$this->HORARIS = $OActivitat->getHorariss();
     		
     		$idH = $this->getUser()->getAttribute('IDH');
@@ -870,25 +874,26 @@ class gestioActions extends sfActions
     			$this->FActivitat = new ActivitatsForm($OActivitat);    			
     			$this->MODE['NOU'] = true;
     			$this->ACTIVITAT_NOVA = true;
-    			$this->getUser()->setAttribute('IDA',0);
+    			$this->getUser()->setAttribute('IDA',null);
     		break;
 
     	//Guarda una activitat
     	case 'SA':
     		
-    			$idA = $this->getUser()->getAttribute('IDA');
-    			if($idA == 0) $OActivitat = new Activitats();
-    			else $OActivitat = ActivitatsPeer::retrieveByPK($idA); 
+    			$idA = $this->getUser()->getAttribute('IDA');    			
+    			$OActivitat = ActivitatsPeer::retrieveByPK($idA); 
     			
 				$this->FActivitat = new ActivitatsForm($OActivitat);
 				$this->FActivitat->bind($request->getParameter('activitats'));
 				
-				if($this->FActivitat->isValid()) $this->FActivitat->save();
-
-				$OActivitat = $this->FActivitat->getObject();
-				$this->getUser()->setAttribute('IDA',$OActivitat->getActivitatid());
-				
-    			$this->MODE['EDICIO'] = true;
+				if($this->FActivitat->isValid()):
+					$this->FActivitat->save();
+					$this->getUser()->setAttribute('IDA',$this->FActivitat->getObject()->getActivitatid());
+					$this->redirect('gestio/gActivitats?accio=CH');							
+				else:
+					$this->MODE['EDICIO'] = true;	
+				endif; 
+								
     		
     		break;
 
@@ -913,6 +918,13 @@ class gestioActions extends sfActions
 				$OCicles->save();
 				$this->LLISTA_CICLES = CiclesPeer::getCiclesActius();				
 				$this->MODE['CICLES'] = true;
+			break;
+			
+		//Esborra un horari
+		case 'DH':
+			HorarisespaisPeer::delHorari($this->getUser()->getAttribute('IDH'));
+			HorarisPeer::retrieveByPK($this->getUser()->getAttribute('IDH'))->delete();
+			$this->redirect('gestio/gActivitats?accio=CH');
 			break;
     }
   
@@ -1350,7 +1362,7 @@ class gestioActions extends sfActions
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $accio = ( $this->SELECT == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
 	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NC';
-	    elseif($request->hasParameter('BSAVE_x')) 	$accio = 'S';	    
+	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';	    
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -1359,7 +1371,15 @@ class gestioActions extends sfActions
     
     switch($accio){
     	case 'NC':    			
-    			$OCurs = new Cursos();    			
+    			$OCurs = new Cursos();
+    			$OCurs->setIsactiu(true);
+    			$OCurs->setPlaces(30);
+    			$OCurs->setCodi('COD000.00');
+    			$OCurs->setDataaparicio(date('Y-m-d',time()));
+    			$OCurs->setDatadesaparicio(date('Y-m-d',time()));
+    			$OCurs->setDatafimatricula(date('Y-m-d',time()));
+    			$OCurs->setDatainici(date('Y-m-d',time()));
+    			$this->getUser()->setAttribute('IDC',null);						//De moment no tenim cap curs    			    			    			    		
     			$this->FCurs = new CursosForm($OCurs);    			
     			$this->MODE['NOU'] = true;
     		break;
@@ -1372,7 +1392,10 @@ class gestioActions extends sfActions
     	case 'S':    			    		        		  
     		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
     		    $this->FCurs->bind($request->getParameter('cursos'));
-    		    if($this->FCurs->isValid()) $this->FCurs->save();    		        		    
+    		    if($this->FCurs->isValid()):
+    		    	$this->FCurs->save();
+    		    	$this->getUser()->setAttribute('IDC',$this->FCurs->getObject()->getIdcursos());     		    
+    		    endif;    		        		    
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'D': 
@@ -1712,8 +1735,8 @@ class gestioActions extends sfActions
 	    if($request->hasParameter('BCERCA'))    $accio = 'C';
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
 	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
-	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
-	endif;                
+	endif;              
+	
 	
     switch($accio){
     	case 'N':
@@ -1733,11 +1756,14 @@ class gestioActions extends sfActions
     	case 'S':    			    	    				        		  
     		    $this->FCessiomaterial = new CessiomaterialForm(CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
     		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
-    		    if($this->FCessiomaterial->isValid()) $this->FCessiomaterial->save();
+    		    if($this->FCessiomaterial->isValid()): 
+    		    	$this->FCessiomaterial->save();
+    		    	$this->getUser()->setAttribute('IDC',$this->FCessiomaterial->getObject()->getIdcessiomaterial());
+    		    endif;
     		    $this->MODE['EDICIO'] = true;    		        		        			
     		break;
     	case 'D': 
-    	        CessiomaterialPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
+    	        CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
     	        break;    	         	 
     }
 

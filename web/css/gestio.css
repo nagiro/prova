@@ -32,6 +32,7 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 .REQUADRE .MENU { margin-bottom:30px; border:1px solid gray; height:40px; }
 .REQUADRE .MENU .SUBMEN { padding-top:20px; vertical-align: middle; background-color: #CCCCCC; height:30px; }
 .REQUADRE .MENU .SUBMEN1 { vertical-align: middle; background-color:white; height:30px; }
+.REQUADRE .OPCIO_FINESTRA { text-align:right; margin-top:-10px; }
 
 .FORMULARI { }
 .FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; }
@@ -45,6 +46,8 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 .text { width:100%; }
 .error { color: red; font-style: italic; }
 .dreta { text-align:right; }
+
+.BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:2px;  }
 
 a.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
 a.tt2 span { display:none; }

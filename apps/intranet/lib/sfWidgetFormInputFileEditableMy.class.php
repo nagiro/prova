@@ -105,7 +105,7 @@ class sfWidgetFormInputFileEditableMy extends sfWidgetFormInputFile
     }
     else
     {
-      return $this->getOption('file_src');
+      return '<a href="'.$this->getOption('file_src').'">Descarrega...</a>';
     }
   }
 }

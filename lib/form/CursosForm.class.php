@@ -24,10 +24,10 @@ class CursosForm extends sfFormPropel
       'Horaris'         => new sfWidgetFormInput(),
       'Categoria'       => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCategories())),
       'OrdreSortida'    => new sfWidgetFormInput(),
-      'DataAparicio'    => new sfWidgetFormDate(),
-      'DataDesaparicio' => new sfWidgetFormDate(),
-      'DataFiMatricula' => new sfWidgetFormDate(),
-      'DataInici'       => new sfWidgetFormDate(),
+      'DataAparicio'    => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataDesaparicio' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataFiMatricula' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataInici'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
     ));
 
     $this->setValidators(array(

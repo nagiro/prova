@@ -254,7 +254,6 @@ class HorarisPeer extends BaseHorarisPeer
 						( ( h.horaPre <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
 						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
         			)
-        		 AND he.Espais_EspaiID = $idE
         		 AND he.Material_idMaterial = $idM        			
         	";
 	
@@ -272,7 +271,7 @@ class HorarisPeer extends BaseHorarisPeer
   
   static public function save( $HORARIS, $DBDD , $MATERIAL , $ESPAIS )
   {
-	echo 'Horaris: '.$HORARIS['HorarisID'];
+	
   	//Esborrem les dades dels antics horaris sempre i quant sigui nou  	
 	if($HORARIS['HorarisID'] > 0) //Si l'horari NO és nou, l'esborrem
 	{ 
