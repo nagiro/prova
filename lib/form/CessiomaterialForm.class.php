@@ -20,7 +20,7 @@ class CessiomaterialForm extends sfFormPropel
       'Estat'               => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
       'DataCessio'          => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'DataRetorn'          => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),      
-      'Retornat'            => new sfWidgetFormInputCheckbox(),
+      'Retornat'            => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')))
     ));
 
     $this->setValidators(array(
@@ -45,9 +45,7 @@ class CessiomaterialForm extends sfFormPropel
     $this->widgetSchema->setNameFormat('cessiomaterial[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
-    
-
-    parent::setup();
+   
   }
 
   public function getModelName()
