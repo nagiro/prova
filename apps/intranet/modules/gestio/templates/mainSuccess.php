@@ -21,7 +21,7 @@
                 
 					foreach($MISSATGES as $M):
 						echo '<TR>';                  		
-						echo '	<TD width="70%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.link_to($M->getTitol().'<span>'.$M->getText().'</span>','#', array('class'=>'tt2')).'</TD>';						
+						echo '	<TD width="70%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">'.$M->getTitol().'<span>'.$M->getText().'</span></a></TD>';						
 						$U = $M->getUsuaris();											
 						echo '  <TD width="20%">'.$U->getNom().' '.$U->getCog1().'</TD>';
 						echo '  <TD width="10%">'.$M->getPublicacio().'</TD>';
@@ -42,7 +42,7 @@
 						$U = $T->getUsuarisRelatedByQuimana()->getNom()." ".$T->getUsuarisRelatedByQuimana()->getCog1();
 						$SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>';
 						echo '<TR>
-								<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.link_to($T->getTitol().$SPAN,'#',array('class'=>'tt2')).'</TD>																								
+								<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">'.$T->getTitol().$SPAN.'</TD>																								
 								<TD width="20%">'.$U.'</TD>
 							  </TR>';						
                 	endforeach;

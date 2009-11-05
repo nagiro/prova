@@ -17,7 +17,7 @@
                 ?>
     
 	        </table>
-	     </DIV>
+	     </DIV>	     
      </form>                  
   
   <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>

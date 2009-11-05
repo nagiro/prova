@@ -28,7 +28,7 @@
     #MENU_HOSPICI { padding-left:4px;vertical-align:bottom;  }
     #MENU_CONTACTANS { vertical-align:bottom;  }
     
-    .MENU_CAPCALERA { background-color: #ae1912; height:65px; border: 0px; vertical-align:bottom; }
+    .MENU_CAPCALERA { background-color: #ae1912; width:251px; height:65px; border: 0px; vertical-align:bottom; }
     #logo { position:relative; left:20px; top:0px; }
 
 	.MENU_PESTANYA  { border:0px;  }
@@ -129,7 +129,7 @@
       </STYLE>    <title></title>      </head>  <body>  <center>  	    <TABLE class="TAULA">    <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>    <TR>
     	<TD class="CAPCALERA"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'web/index?accio=no'); ?></TD>
     	<TD class="CAPCALERA"></TD>
-    	<TD class="MENU_CAPCALERA" style="text-align:right;">
+    	<TD class="MENU_CAPCALERA" style=" width:251px; text-align:right;">    		<div style="float:left; height:22px; vertical-align:middle; width:120px; text-align:center; background-color:#664817; ">ESPAIS</div>    		<div style="float:left; height:22px; width:5px;  ">a</div>    		<div style="float:left; height:22px; width:120px; text-align:center; background-color:#664817; ">CURSOS</div>    		
     	   <?php echo link_to(image_tag('intranet/espais.png', array('id'=>'MENU_CURSOS')),'web/espais',array()); ?>    	  
     	   <?php echo link_to(image_tag('intranet/cursos.png', array('id'=>'MENU_CURSOS')),'web/cursos',array()); ?></TD>
     	<TD class="MENU_CAPCALERA" style="text-align:left;">    	

@@ -30,7 +30,7 @@ class CessiomaterialForm extends sfFormPropel
       'DataCessio'          => new sfValidatorDate(array('required' => false)),
       'DataRetorn'          => new sfValidatorDate(array('required' => false)),
       'Estat'               => new sfValidatorString(array('required' => false)),
-      'Retornat'            => new sfValidatorInteger(array('required' => false)),
+      'Retornat'            => new sfValidatorBoolean(array('required' => false)),
     ));
 
     $this->widgetSchema->setLabels(array(      

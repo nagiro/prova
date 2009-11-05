@@ -14,14 +14,14 @@ class BaseUsuarisllistesForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idUsuarisLlistes'  => new sfWidgetFormInputHidden(),
-      'Llistes_idLlistes' => new sfWidgetFormPropelChoice(array('model' => 'Llistes', 'add_empty' => false)),
-      'Usuaris_UsuarisID' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
+      'Llistes_idLlistes' => new sfWidgetFormPropelChoice(array('model' => 'Llistes', 'add_empty' => true)),
+      'Usuaris_UsuarisID' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
       'idUsuarisLlistes'  => new sfValidatorPropelChoice(array('model' => 'Usuarisllistes', 'column' => 'idUsuarisLlistes', 'required' => false)),
-      'Llistes_idLlistes' => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes')),
-      'Usuaris_UsuarisID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
+      'Llistes_idLlistes' => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
+      'Usuaris_UsuarisID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('usuarisllistes[%s]');

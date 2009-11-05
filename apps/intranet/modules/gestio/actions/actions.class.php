@@ -394,6 +394,9 @@ class gestioActions extends sfActions
                $this->MAILS = LlistesPeer::EnviaMissatge($this->getRequestParameter('IDM'));
                $this->ENVIAT = true;                               
                break;
+      case 'U_EMAIL':
+      		
+      		break;
                
 	  //Imprimeix etiquetes               
       case 'P': 
