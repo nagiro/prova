@@ -3,10 +3,27 @@
 <TD colspan="3" class="CONTINGUT">
           
 
+    <?php IF($HTML): ?>
+
+	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
+      <DIV class="REQUADRE">
+        <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gEstructura'); ?></div>
+        <DIV class="TITOL">HTML - <?php echo $NODE->getTitolmenu(); ?></DIV>
+      	<TABLE class="DADES">
+      		<?php echo $FHtml ?>
+      		<tr><td></td><td><?php echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?></td></tr>        
+      		
+        </TABLE>      
+      </DIV>
+   </form>
+   
+  <?php ENDIF; ?>
+
 <?php IF( $NOU || $EDICIO ): ?>
 
 	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="POST">            
 	 	<DIV class="REQUADRE">
+	 		<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gEstructura'); ?></div>
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FNode; ?>                								
                 <tr>
@@ -31,21 +48,6 @@
 	        </table>
 	     </DIV>
      </form>                
-
-    <?php IF($HTML): ?>
-
-	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
-      <DIV class="REQUADRE">
-        <DIV class="TITOL">HTML - <?php echo $NODE->getTitolmenu(); ?></DIV>
-      	<TABLE class="DADES">
-      		<?php echo $FHtml ?>
-      		<tr><td></td><td><?php echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?></td></tr>        
-      		
-        </TABLE>      
-      </DIV>
-   </form>
-   
-  <?php ENDIF; ?>
   
       <DIV STYLE="height:40px;"></DIV>
                 
@@ -55,10 +57,11 @@
 
 function creaOpcions($IDN)
 {      
-  $R  = link_to(image_tag('tango/32x32/actions/edit-find-replace.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=E');
-  if(!NodesPeer::getIsCategoria($IDN) && !NodesPeer::getIsExterna($IDN)) $R .= link_to(image_tag('tango/32x32/apps/internet-web-browser.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=H');  
-  $R .= link_to(image_tag('tango/32x32/places/user-trash.png', array('size'=>'16x16','alt'=>'Edita o visualitza les dades')),'gestio/gEstructura?idN='.$IDN.'&accio=D',array('confirm'=>'Segur que vols esborrar el node?'));
-
+		
+  $R  = '<a href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=E').'" class="tt2">'.image_tag('tango/32x32/actions/edit-find-replace.png', array('size'=>'16x16','alt'=>'Edita la pàgina')).'<span>Edita les característiques de la pàgina</span></a>';
+  if(!NodesPeer::getIsCategoria($IDN) && !NodesPeer::getIsExterna($IDN)) $R .= '<a href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=E').'" class="tt2">'.image_tag('tango/32x32/apps/internet-web-browser.png', array('size'=>'16x16','alt'=>'Edita continguts')).'<span>Edita el contingut de la pàgina</span></a>';     
+  $R .= '<a onClick="return confirm(\'Segur que vols esborrar la pàgina?\');" href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=D').'" class="tt2">'.image_tag('tango/32x32/places/user-trash.png', array('size'=>'16x16','alt'=>'Esborra la pàgina')).'<span>Esborra la pàgina</span></a>'; 
+  
   return $R;
 }
 

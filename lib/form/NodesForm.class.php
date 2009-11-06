@@ -16,11 +16,11 @@ class NodesForm extends sfFormPropel
     $this->setWidgets(array(
       'idNodes'     => new sfWidgetFormInputHidden(),
       'TitolMenu'   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
-      'Nivell'      => new sfWidgetFormChoice(array('choices'=>array(1=>'1',2=>'2',3=>'3'))),      
+      'Nivell'      => new sfWidgetFormChoice(array('choices'=>array(0=>'Fora de menú',1=>'Principal',2=>'Secundari',3=>'Terciari'))),      
       'Ordre'       => new sfWidgetFormChoice(array('choices'=>NodesPeer::selectOrdre($this->isNew()))),      
-      'isCategoria' => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
+      'isCategoria' => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'isPhp'       => new sfWidgetFormInputHidden(),
-      'isActiva'    => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
+      'isActiva'    => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'HTML'        => new sfWidgetFormInputHidden(),
       'Url'         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
     ));
@@ -29,9 +29,9 @@ class NodesForm extends sfFormPropel
       'idNodes'     => new sfValidatorPropelChoice(array('model' => 'Nodes', 'column' => 'idNodes', 'required' => false)),
       'TitolMenu'   => new sfValidatorString(array('required' => false)),
       'HTML'        => new sfValidatorString(array('required' => false)),
-      'isCategoria' => new sfValidatorPass(),
+      'isCategoria' => new sfValidatorBoolean(),
       'isPhp'       => new sfValidatorPass(),
-      'isActiva'    => new sfValidatorPass(),
+      'isActiva'    => new sfValidatorBoolean(),
       'Ordre'       => new sfValidatorInteger(array('required' => false)),
       'Nivell'      => new sfValidatorInteger(),
       'Url'			=> new sfValidatorString(array('required'=>false)),
@@ -51,9 +51,8 @@ class NodesForm extends sfFormPropel
       'TitolMenu'   => 'Títol',
       'Nivell'      => 'Nivell',      
       'Ordre'       => 'Ordre',      
-      'isCategoria' => 'És una categoria?',
-      'isPhp'       => 'Hi ha codi php?',
-      'isActiva'    => 'Està activa?',
+      'isCategoria' => 'És només títol?',      
+      'isActiva'    => 'Visible?',
       'URL'         => 'Adreça?',
     ));
     

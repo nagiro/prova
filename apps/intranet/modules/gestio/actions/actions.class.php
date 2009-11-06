@@ -303,7 +303,7 @@ class gestioActions extends sfActions
       $this->HTML = true;                
     endif;
 
-    $this->NODES = NodesPeer::retornaMenu();
+    $this->NODES = NodesPeer::retornaMenu(true);
     
   }  
       

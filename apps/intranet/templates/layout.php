@@ -27,8 +27,7 @@
     #MENU_CURSOS { vertical-align:bottom;  }
     #MENU_HOSPICI { padding-left:4px;vertical-align:bottom;  }
     #MENU_CONTACTANS { vertical-align:bottom;  }
-    
-    .MENU_CAPCALERA { background-color: #ae1912; width:251px; height:65px; border: 0px; vertical-align:bottom; }
+            .MENU_CAPCALERA { color:white; font-weight:bold; }    .MENU_CAPCALERA A { text-decoration:none; }    .MENU_CAPCALERA A:VISITED { color:white; text-decoration:none; }    .MENU_CAPCALERA A:HOVER { color:white; text-decoration:none; font-weight:bold; }    .MENU_CAPCALERA A:LINK { color:white; text-decoration:none;  }      
     #logo { position:relative; left:20px; top:0px; }
 
 	.MENU_PESTANYA  { border:0px;  }
@@ -126,14 +125,10 @@
 	li.CERCA { border:2px solid #CCCCCC; padding:10px; }
     
     .bold { font-weight:bold; }    
-      </STYLE>    <title></title>      </head>  <body>  <center>  	    <TABLE class="TAULA">    <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>    <TR>
+    	.PESTANYA_SUPERIOR_A { margin-right:3px; color:white; float:left; height:22px; padding-top:2px; width:80px; text-align:center; background-color:#BDAD46; }	.PESTANYA_SUPERIOR_B { margin-left:3px; color:white; float:right; height:22px; padding-top:2px; width:80px; text-align:center; background-color:#BDAD46; }	  </STYLE>    <title></title>      </head>  <body>  <center>  	    <TABLE class="TAULA">    <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>    <TR>
     	<TD class="CAPCALERA"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'web/index?accio=no'); ?></TD>
     	<TD class="CAPCALERA"></TD>
-    	<TD class="MENU_CAPCALERA" style=" width:251px; text-align:right;">    	    		<div style="float:left; height:22px; padding-top:2px; width:120px; text-align:center; background-color:#664817; ">    			ESPAIS    		</div>    		    		<div style="margin-right:5px; float:right; height:22px; width:120px; text-align:center; background-color:#664817; ">CURSOS</div>    		
-    	   <?php echo link_to(image_tag('intranet/espais.png', array('id'=>'MENU_CURSOS')),'web/espais',array()); ?>    	  
-    	   <?php echo link_to(image_tag('intranet/cursos.png', array('id'=>'MENU_CURSOS')),'web/cursos',array()); ?></TD>
-    	<TD class="MENU_CAPCALERA" style="text-align:left;">    		<div style="float:left; height:22px; vertical-align:middle; width:120px; text-align:center; background-color:#664817; ">    			HOSPICI    		</div>    		    		<div style="margin-right:5px; float:right; height:22px; width:120px; text-align:center; background-color:#664817; ">CONTACTE</div>    		    		    		    	
-           <?php echo link_to(image_tag('intranet/hospici.png', array('id'=>'MENU_HOSPICI')),'http://localhost/hospici_dev.php/directori/inicial',array()); ?>    	   
-    	   <?php echo link_to(image_tag('intranet/contacte.png', array('id'=>'MENU_CONTACTANS')),'web/contacte',array()); ?>
+    	<TD class="MENU_CAPCALERA">    	    		    		    					<div class="PESTANYA_SUPERIOR_B"><?php echo link_to('HOSPICI','http://localhost/hospici_dev.php/directori/inicial') ?></div>     		<div class="PESTANYA_SUPERIOR_B"><?php echo link_to('GIROSCOPI','http://www.casadecultura.org/giroscopi') ?></div>    		    	       	          </TD>    	   
+    	<TD class="MENU_CAPCALERA">    		    		<div class="PESTANYA_SUPERIOR_A"><?php echo link_to('ESPAIS','web/espais') ?></div>    		    		    		<div class="PESTANYA_SUPERIOR_A"><?php echo link_to('CURSOS','web/cursos') ?></div>    		<div class="PESTANYA_SUPERIOR_A"><?php echo link_to('CONTACTA','WEB/contacta') ?></div>    		    		    		    	
     	   </TD>
 	</TR>    <?php echo $sf_content ?>            <TR><TD colspan="4" class="PEU">CASA DE CULTURA | Pl. hospital,6. 17001. Girona | T. 972 20 20 13 | <a class="white" href="mailto:informatica@casadecultura.org">E-mails</a> | <a class="white" href="" >Informació legal</a></TD></TR>    <TR><TD colspan="4" class="DEGRADAT_INFERIOR"></TD></TR>         </TABLE>  </center>  </body></html>

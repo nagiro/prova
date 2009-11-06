@@ -21,15 +21,17 @@ class NodesPeer extends BaseNodesPeer
     return $RET;
   }
   
-  static function retornaMenu()
+  static function retornaMenu($Tambe_invisibles = false)
   {          
-     return self::getNodes();
+     return self::getNodes($Tambe_invisibles);
   }
   
-  static function getNodes()
+  static function getNodes($Tambe_invisibles = false)
   {
   	 $C = new Criteria();
-     $C->addAscendingOrderByColumn(self::ORDRE);     
+  	 if(!$Tambe_invisibles) $C->add(self::ISACTIVA,true);
+     $C->addAscendingOrderByColumn(self::ORDRE);
+          
      return self::doSelect($C);
   }
   
