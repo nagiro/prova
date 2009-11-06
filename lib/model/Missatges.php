@@ -8,5 +8,4 @@
  * @package lib.model
  */ 
 class Missatges extends BaseMissatges
-{
-}
+{}

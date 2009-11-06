@@ -11,19 +11,38 @@
                                     
                   foreach($LLISTES as $L):                  
                       echo '<TR><TD class="LINIA">'.link_to($L->getNom(),'gestio/gLlistes?accio=E&IDL='.$L->getIdllistes()).'</TD>
-                                <TD class="OPCIONS">'.creaOpcions($L->getIdllistes()).'</TD>
+                                <TD class="OPCIONS" width="80px">'.creaOpcions($L->getIdllistes()).'</TD>
+                            </TR>';                                   
+                  endforeach;                                  
+                ?>
+    
+	        </table>
+	     </DIV>
+	     
+	   	<DIV class="REQUADRE">
+	    <DIV class="TITOL"> <?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nova llista')),'gestio/gLlistes?accio=EM'); ?> Missatges disponibles</DIV>
+	    	<table class="DADES" width="100%">	    		          
+                <?php                 
+                  if( sizeof($MISSATGES) == 0 ) echo '<TR><TD class="LINIA" colspan="5">No hi ha cap missatge enviat.</TD></TR>';
+                                    
+                  foreach($MISSATGES->getResults() as $M):                  
+                      echo '<TR><TD class="LINIA">'.link_to($M->getTitol(),'gestio/gLlistes?accio=EM&IDM='.$M->getidMissatge()).'</TD>
+		 	                   	<TD class="LINIA">'.getMissatgesEnviatsLlistes($M).'</TD>
+                                <TD width="80px" class="OPCIONS">'.creaOpcionsM($M->getIdmissatge()).'</TD>
                             </TR>';                                   
                   endforeach;                                  
                 ?>
     
 	        </table>
 	     </DIV>	     
+	     	     
      </form>                  
   
   <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
 	 	<DIV class="REQUADRE">
+	 		<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gLlistes'); ?></div>
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FLlista ?>                								
                 <tr>
@@ -43,13 +62,13 @@
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">
  	    <DIV class="REQUADRE">
+ 	    	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gLlistes'); ?></div>
  	    	<DIV class="TITOL">Filtra usuaris</DIV>
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca ?>
 	            <tr>
 	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou contacte" />
+	            		<input type="submit" name="BCERCA" value="Prem per buscar" />	            		
 	            	</td>
 	            </tr>
 	        </table>
@@ -104,9 +123,9 @@
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br>	            		
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE_MISSATGE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gLlistes',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<br>
+	            		<?php echo link_to('<input type="button" value="Guardar" class="BOTO_ACTIVITAT" >','gestio/gLlistes?accio=SM'); ?>    			
+	            		<?php echo link_to('<input type="button" value="Segueix -->>" class="BOTO_ACTIVITAT" >','gestio/gLlistes?accio=LM'); ?>	            	            		
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -174,6 +193,13 @@ function creaOpcions($IDL , $ACCIO = NULL)
   $R .= " ";
   $R .= link_to(image_tag('template/printer.png',array('alt'=>'Genera PDF amb etiquetes.')),'gestio/gLlistes?accio=P&IDL='.$IDL);
   
+  return $R;
+}
+
+function creaOpcionsM($IDM)
+{      
+	
+  $R = link_to('<input type="button" value="Iniciar enviament">','gestio/gLlistes?accio=EM&IDM='.$IDM,array('class'=>'tt2'));    
   return $R;
 }
 
@@ -253,5 +279,16 @@ function gestorPaginesUsuarisNoLlista( $USUARIS )
    }
 }
 
+function getMissatgesEnviatsLlistes($M)
+{
+	$RET = "";
+	
+	foreach($M->getLlistes() as $L):
+		$RET .= $L->getNom().'<br />';
+	endforeach;
+	
+	return $RET;
+	
+}
 
 ?>

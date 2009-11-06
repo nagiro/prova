@@ -14,19 +14,13 @@ class BaseMissatgesllistesForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idMissatgesLlistes' => new sfWidgetFormInputHidden(),
-      'Llistes_idLlistes'  => new sfWidgetFormPropelChoice(array('model' => 'Llistes', 'add_empty' => false)),
-      'Titol'              => new sfWidgetFormTextarea(),
-      'Text'               => new sfWidgetFormTextarea(),
-      'Date'               => new sfWidgetFormDateTime(),
+      'Llistes_idLlistes'  => new sfWidgetFormInputHidden(),
       'Enviat'             => new sfWidgetFormDate(),
     ));
 
     $this->setValidators(array(
-      'idMissatgesLlistes' => new sfValidatorPropelChoice(array('model' => 'Missatgesllistes', 'column' => 'idMissatgesLlistes', 'required' => false)),
-      'Llistes_idLlistes'  => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes')),
-      'Titol'              => new sfValidatorString(),
-      'Text'               => new sfValidatorString(),
-      'Date'               => new sfValidatorDateTime(array('required' => false)),
+      'idMissatgesLlistes' => new sfValidatorPropelChoice(array('model' => 'Missatgesmailing', 'column' => 'idMissatge', 'required' => false)),
+      'Llistes_idLlistes'  => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
       'Enviat'             => new sfValidatorDate(array('required' => false)),
     ));
 

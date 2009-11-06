@@ -322,7 +322,7 @@ class gestioActions extends sfActions
 	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTAT'=>false,'ENVIAT'=>FALSE,'MISSATGES'=>false,'USUARIS'=>false);    
     
     $accio = $request->getParameter('accio');
-    if($request->hasParameter('BCERCA')) $accio = 'U';
+    if($request->hasParameter('BCERCA')){ $accio = 'U'; $this->PAGINA = 1; }
     if($request->hasParameter('BSAVE_LLISTA_x')) $accio = 'S';
     if($request->hasParameter('BSAVE_MISSATGE_x')) $accio = 'SM';
     if($request->hasParameter('BSEND')) $accio = 'SEND';
@@ -331,6 +331,72 @@ class gestioActions extends sfActions
     
     switch($accio)
     {
+    	//Edito un missatge o en creo un de nou.
+    	case 'EM':
+    			$OMissatge = MissatgesmailingPeer::retrieveByPK($request->getParameter('IDM'));
+    			
+    			if($OMissatge instanceof Missatgesmailing):
+    			
+    				$this->FMissatge = new MissatgesmailingForm($OMissatge);
+    				$this->getUser()->setAttribute('IDM',$OMissatge->getIdmissatge());
+    				
+    			else:
+    			
+    				$OMissatge = new Missatgesmailing();
+    				$OMissatge->setDataAlta(date('Y-m-d',time()));    				
+    				$this->FMissatge = new MissatgesmailingForm($OMissatge);
+    				$this->getUser()->setAttribute('IDM',null);
+    				    				
+    			endif;     		
+    			$this->MODE['MISSATGES'] = true;    			
+    		break;
+    		
+    	//Guardo un missatge editat. 
+    	case 'SM':
+    			
+    			if($this->saveMissatge($request)):
+    				$this->MODE['MISSATGES'] = true;
+    			else: 
+    				$this->MODE['MISSATGES'] = true;
+    			endif; 
+                                                                     	
+    		break;
+    		
+    	//Esborro un missatge guardat
+    	case 'DM':
+    			
+    			$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));
+    			
+    			if($OMissatge instanceof Missatgesmailing):
+    			
+    				$OMissatge->delete();
+    				$this->redirect('gestio/gLlistes?accio=C');
+    				
+    			else:
+    			 
+    				$this->redirect('gestio/gLlistes');
+    				
+    			endif;
+    		
+    		break;
+    
+    	//Mostro les llistes a les que puc enviar el missatge
+    	case 'LM':
+    		
+    			if($this->saveMissatge($request)):
+					//***************************************************************************************************************//    				
+	    			$this->MODE['MISSATGES_LLISTES'] = true;    				
+    			else: 
+    				$this->MODE['MISSATGES'] = true; 			
+    			endif;     			    			
+
+    		break;
+    		
+    	//Guardo les llistes a les que enviaré el missatge
+    	case 'SLM':
+    		//Guardo les llistes a les quee nviaré el missatge
+    		break;
+    		
       case 'N':      			
       			$this->FLlista = new LlistesForm();
       			$this->getUser()->setAttribute('idL',0);                 
@@ -350,12 +416,7 @@ class gestioActions extends sfActions
                $BAIXA_USUARIS = $request->getParameter('BAIXA_USUARI');               
                foreach($BAIXA_USUARIS as $U) UsuarisllistesPeer::Desvincula($U,$this->IDL);               
             break;
-      case 'M':
-      			$OMissatge = MissatgesllistesPeer::retrieveByPK($request->getParameter('IDM'));
-      			if($OMissatge instanceof Missatgesllistes) $this->FMissatge = new MissatgesllistesForm($OMissatge);
-      			else $this->FMissatge = new MissatgesllistesForm();      			      			       			                               
-                $this->MODE['MISSATGES'] = true;
-                break;
+      
       case 'MV':                               
                 $this->LLISTA_MISSATGES = LlistesPeer::getMissatges($this->IDL , LlistesPeer::TOTS,$this->PAGINA3);         
                 $this->MISSATGE = MissatgesllistesPeer::retrieveByPK($this->getRequestParameter('IDM'));                
@@ -369,21 +430,7 @@ class gestioActions extends sfActions
                 $this->FLlista->bind($request->getParameter('llistes'));
                 if($this->FLlista->isValid()) $this->FLlista->save();
                 $this->MODE['EDICIO'] = true;                
-                break; 
-      case 'SM':      	         	        
-                $OMissatgeLlista = MissatgesllistesPeer::retrieveByPK($request->getParameter('IDM'));
-                if($OMissatgeLlista instanceof Missatgesllistes) $this->FMissatge = new MissatgesllistesForm($OMissatgeLlista);
-                else $this->FMissatge = new MissatgesllistesForm();
-
-                $ML = $request->getParameter('missatgesllistes');
-                $ML['Date'] = time();
-                $ML['Enviat'] = null;
-                $ML['Llistes_idLlistes'] = $this->getUser()->getAttribute('idL');
-
-                $this->FMissatge->bind($ML);
-                if($this->FMissatge->isValid()) $this->FMissatge->save();
-                $this->MODE['MISSATGES'] = true;                
-                break;                 
+                break;       	         	       
       case 'L': 
                $IDL = $this->getRequestParameter('IDL');
                $this->LLISTA = LlistesPeer::retrieveByPK($IDL);
@@ -408,21 +455,20 @@ class gestioActions extends sfActions
 
     //Inicialitzem els valors comuns
 	$this->LLISTES = LlistesPeer::doSelect(new Criteria());
+	$this->MISSATGES = MissatgesmailingPeer::getMissatges($this->PAGINA);
     
     if($accio == 'U' || $accio == 'VINCULA' || $accio == 'DESVINCULA'):
         	    
-	    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array(''));
-	    $this->getUser()->setAttribute('cerca',array());
+	    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));	    	    	    
 	    $this->FCerca = new CercaTextChoiceForm();
 	    $this->FCerca->bind($this->CERCA);
-	    $this->FCerca->setChoice(array('llista'=>'Usuaris pertanyents','nollista'=>'Usuaris no pertanyents'));
-	    $this->CERCA = $this->FCerca->getValue('text');
-	            
-    	if($this->FCerca->getValue('select') == 'llista'):
-    		$this->USUARIS_LLISTA = UsuarisllistesPeer::getUsuarisLlista( $this->CERCA ,  $this->IDL , $this->PAGINA );
+	    $this->FCerca->setChoice(array('llista'=>'Usuaris pertanyents','nollista'=>'Usuaris no pertanyents'));	    	    
+	    		          
+    	if($this->CERCA['select'] == 'llista'):
+    		$this->USUARIS_LLISTA = UsuarisllistesPeer::getUsuarisLlista( $this->CERCA['text'] ,  $this->IDL , $this->PAGINA );
     		$this->LLISTA = true;
     	else:
-         	$this->USUARIS_DISPONIBLES = UsuarisllistesPeer::getUsuarisNoLlista( $this->CERCA , $this->IDL , $this->PAGINA );
+         	$this->USUARIS_DISPONIBLES = UsuarisllistesPeer::getUsuarisNoLlista( $this->CERCA['text'] , $this->IDL , $this->PAGINA );
          	$this->LLISTA = false;
     	endif;
     	
@@ -432,6 +478,29 @@ class gestioActions extends sfActions
   
   }
   
+  
+  public function saveMissatge(sfWebRequest $request)
+  {
+  	
+  	$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));
+                
+    if($OMissatge instanceof Missatgesmailing):
+    	$this->FMissatge = new MissatgesmailingForm($OMissatge);
+    else: 
+        $OMissatge = new Missatgesmailing();                	                	
+    	$this->FMissatge = new MissatgesmailingForm($OMissatge);
+	endif;
+                
+    $this->FMissatge->bind($request->getParameter('missatgesmailing'));
+    if($this->FMissatge->isValid()):
+ 	   $this->FMissatge->save();
+       $this->getUser()->setAttribute('IDM',$this->FMissatge->getObject()->getIdmissatge());
+       return true;
+    else: 
+    	return false; 
+    endif; 
+ 
+  }
   
   public function printEtiquetes($idL)
   {
@@ -1222,35 +1291,86 @@ class gestioActions extends sfActions
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
     
-  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "",  $formulari = null) 
+  public function existeixAtributArray($nom,$default)
   {
-
+  	
+  	$existeix = true;
+  	
+  	foreach($default as $K=>$V):
+  	
+  		if(!$this->getUser()->hasAttribute($nom.$K)):
+  		
+  			$existeix = false;
+  			
+  		endif;
+  		
+  	endforeach;
+  	
+  	return $existeix;
+  	  
+  }
+  
+  //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
+  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
+  {
+  	  	
   	$RET = ""; 	    	
   	
-  	//Recuperem el nom del camp tant si és dins un formulari com si és fora. 
-  	if(!is_null($formulari)) $PAR = $formulari.'['.$nomCamp.']';
-  	else $PAR = $nomCamp;
-    	
-  	//Si existeix el paràmetre carreguem el nom actual
-  	if($request->hasParameter($PAR)):
+  	if(is_array($default)):
   	
-  		$CAMP = $request->getParameter($PAR);
-  		$this->getUser()->setAttribute($nomCamp,$CAMP);
-  		$RET = $CAMP;
-  
-  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
-  	elseif($this->getUser()->hasAttribute($nomCamp)):
-  		
-  		$RET = $this->getUser()->getAttribute($nomCamp);
-  		
-  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
-  	else: 
-  	
-  		$this->getUser()->setAttribute($nomCamp, $default);
-  		$RET = $default;
-
-  	
-  	endif;
+	  	//Si existeix el paràmetre carreguem el nom actual
+	  	if($request->hasParameter($nomCamp)):
+	  	
+	  		$CAMP = $request->getParameter($nomCamp);
+	  		
+	  		//Mirem els elements del formulari i els guardem a la sessió  		  		
+	  		foreach( $CAMP as $NOM => $VALOR ):
+	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
+	  		endforeach;  				  		  		 
+	  		
+	  		$RET = $CAMP;  		
+	  
+	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	elseif($this->existeixAtributArray($nomCamp,$default)):
+	  		$RET = array();
+	  		foreach($default as $NOM => $VALOR):
+	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
+	  		endforeach;
+	  		
+	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	else: 
+	  	
+	  		foreach($default as $NOM => $VALOR):
+	  			$this->getUser()->setAttribute($NOM.$nomCamp, $default);
+	  		endforeach;
+	  		
+	  		$RET = $default;
+	  		
+	  	endif;
+	  	
+	else:
+		
+		//Si existeix el paràmetre carreguem el nom actual
+	  	if($request->hasParameter($nomCamp)):
+	  	
+	  		$CAMP = $request->getParameter($nomCamp);	  		
+	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
+	  		$RET = $CAMP;  		
+	  
+	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	elseif($this->getUser()->hasAttribute($nomCamp)):
+	  		
+	  		$RET = $this->getUser()->getAttribute($nomCamp);
+	  			  		
+	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	else:
+	  	 	  		  		
+	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
+	  		$RET = $default;
+	  		
+	  	endif;
+	
+	endif;
   	
   	return $RET;
   }

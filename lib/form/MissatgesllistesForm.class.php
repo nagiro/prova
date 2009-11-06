@@ -14,27 +14,20 @@ class MissatgesllistesForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idMissatgesLlistes' => new sfWidgetFormInputHidden(),
-      'Llistes_idLlistes'  => new sfWidgetFormInputHidden(),
-      'Titol'              => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
-      'Text'               => new sfWidgetFormTextareaTinyMCE(array(),array()),
-      'Date'               => new sfWidgetFormInputHidden(),
-      'Enviat'             => new sfWidgetFormInputHidden(),
+      'Llistes_idLlistes'  => new sfWidgetFormChoice(array('choices'=>LlistesPeer::getSelect())),
+      'Enviat'			   => new sfWidgetFormInputHidden(),
     ));
 
     $this->setValidators(array(
       'idMissatgesLlistes' => new sfValidatorPropelChoice(array('model' => 'Missatgesllistes', 'column' => 'idMissatgesLlistes', 'required' => false)),
       'Llistes_idLlistes'  => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes')),
-      'Titol'              => new sfValidatorString(),
-      'Text'               => new sfValidatorString(),
-      'Date'               => new sfValidatorDateTime(array('required' => false)),
-      'Enviat'             => new sfValidatorDate(array('required' => false)),
+      'Enviat'			   => new sfValidatorDate(),          
     ));
 
     $this->widgetSchema->setNameFormat('missatgesllistes[%s]');
     
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
-
-    parent::setup();
+    
   }
 
   public function getModelName()
