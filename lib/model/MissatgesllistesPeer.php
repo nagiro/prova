@@ -9,4 +9,20 @@
  */ 
 class MissatgesllistesPeer extends BaseMissatgesllistesPeer
 {
+	static public function getLlistes($IDM)
+	{
+		$RET = array();
+				
+		$C = new Criteria();
+		$C->add(self::IDMISSATGESLLISTES,$IDM);
+		
+		foreach(self::doSelect($C) as $ML):
+		
+			$RET[] = $ML->getLlistesIdllistes();
+			 		
+		endforeach;
+		
+		return $RET;
+		
+	}
 }

@@ -38,7 +38,7 @@
 	     	     
      </form>                  
   
-  <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
+  <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
 	 	<DIV class="REQUADRE">
@@ -58,7 +58,7 @@
      </form>  
 
   <?php ENDIF; ?>
-  <?php IF( $MODE['USUARIS'] ): ?>
+  <?php IF( $MODE == 'USUARIS' ): ?>
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">
  	    <DIV class="REQUADRE">
@@ -113,7 +113,7 @@
        </form>
 
   <?php ENDIF; ?>      
-  <?php IF( $MODE['MISSATGES'] ): ?>
+  <?php IF( $MODE == 'MISSATGES' ): ?>
 
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
@@ -124,8 +124,8 @@
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?php echo link_to('<input type="button" value="Guardar" class="BOTO_ACTIVITAT" >','gestio/gLlistes?accio=SM'); ?>    			
-	            		<?php echo link_to('<input type="button" value="Segueix -->>" class="BOTO_ACTIVITAT" >','gestio/gLlistes?accio=LM'); ?>	            	            		
+	            		<?php echo submit_tag("Guardar",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSAVE_MISSATGE')) ?>    			
+	            		<?php echo submit_tag('Segueix -->>',array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEGUEIX_LLISTES')) ?>	            	            		
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -135,12 +135,62 @@
 
     
   <?php ENDIF; ?>
-  <?php IF( $MODE['ENVIAT'] ): ?>
+  
+  <?php IF( $MODE == 'MISSATGES_LLISTES' ): ?>
+
+
+	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
+	 	<DIV class="REQUADRE">	 	
+	    	<table class="FORMULARI" width="600px">
+	    		<tr><td>Llistes: </td><td><?php echo select_tag('LLISTES_ENVIAMENT',options_for_select(LlistesPeer::select(),$LLISTES_ENVIAMENT),array('multiple'=>true)); ?></td></tr>	    	                								
+                <tr>
+                	<td width="100px"></td>               	
+	            	<td class="dreta" width="400px">
+	            		<br>
+	            		<?php echo submit_tag("Guardar",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSAVE_LLISTES')) ?>    			
+	            		<?php echo submit_tag('Segueix -->>',array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEGUEIX_ENVIAMENT')) ?>	            	            		
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+      	
+     </form>  
+
+    
+  <?php ENDIF; ?>
+  
+
+  <?php IF( $MODE == 'FER_PROVA' ): ?>
+
+
+	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
+	 	<DIV class="REQUADRE">	 	
+	    	<table class="FORMULARI" width="600px">
+	    		<tr><td>Email: </td><td><?php echo input_tag('email'); ?></td></tr>	    	                								
+                <tr>
+                	<td width="100px"></td>               	
+	            	<td class="dreta" width="400px">
+	            		<br>
+	            		<?php echo submit_tag("Enviar prova",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEND_PROVA')) ?>    			
+	            		<?php echo submit_tag('Finalitzar',array('class'=>"BOTO_ACTIVITAT",'name'=>'BFI')) ?>	            	            		
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+      	
+     </form>  
+
+    
+  <?php ENDIF; ?>
+
+  
+  
+  <?php IF( $MODE == 'ENVIAT' ): ?>
     
       <TABLE class="BOX"><TR><TD class="NOTICIA">MISSATGE ENVIAT A <?php echo $MAILS?> PERSONES.</TD></TR></TABLE>      
 
   <?php ENDIF; ?>
-  <?php IF( $MODE['LLISTAT'] ): ?>
+  <?php IF( $MODE == 'LLISTAT' ): ?>
 
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL">Llistat de missatges de la llista:  <?php echo $LLISTA->getNom(); ?></DIV>
@@ -153,7 +203,7 @@
 								if(!is_null($M->getEnviat('d/m/Y'))):
 									echo $M->getEnviat('d/m/Y');
 								else:
-									echo button_to('Envia','gestio/gLlistes?accio=SEND&IDM='.$M->getIdmissatgesllistes());
+									echo 'No enviat';
 								endif;
 							?>
 						</TD>
@@ -185,13 +235,11 @@
 function creaOpcions($IDL , $ACCIO = NULL)
 {      
 	
-  $R  = link_to(image_tag('template/user.png',array('alt'=>'Gestió d\'usuaris de la llista.')),'gestio/gLlistes?accio=U&IDL='.$IDL);
+  $R  = link_to('<span>Gestió dels usuaris de la llista</span>'.image_tag('template/user.png',array('alt'=>'Gestió d\'usuaris de la llista.')),'gestio/gLlistes?accio=U&IDL='.$IDL,array('class'=>'tt2'));
+  $R .= " ";  
+  $R .= link_to('<span>Llistat de missatges enviats</span>'.image_tag('template/page_white_stack.png',array('alt'=>'Llistat de missatges enviats.')),'gestio/gLlistes?accio=L&IDL='.$IDL,array('class'=>'tt2'));
   $R .= " ";
-  $R .= link_to(image_tag('template/page_2.png',array('alt'=>'Escriure un nou missatge.')),'gestio/gLlistes?accio=M&IDL='.$IDL);  
-  $R .= " ";
-  $R .= link_to(image_tag('template/page_white_stack.png',array('alt'=>'Llistat de missatges enviats.')),'gestio/gLlistes?accio=L&IDL='.$IDL);
-  $R .= " ";
-  $R .= link_to(image_tag('template/printer.png',array('alt'=>'Genera PDF amb etiquetes.')),'gestio/gLlistes?accio=P&IDL='.$IDL);
+  $R .= link_to('<span>Genera pdf per imprimir etiquetes</span>'.image_tag('template/printer.png',array('alt'=>'Genera PDF amb etiquetes.')),'gestio/gLlistes?accio=P&IDL='.$IDL,array('class'=>'tt2'));
   
   return $R;
 }
@@ -199,7 +247,7 @@ function creaOpcions($IDL , $ACCIO = NULL)
 function creaOpcionsM($IDM)
 {      
 	
-  $R = link_to('<input type="button" value="Iniciar enviament">','gestio/gLlistes?accio=EM&IDM='.$IDM,array('class'=>'tt2'));    
+  $R = link_to('<input type="button" value="Edita missatge">','gestio/gLlistes?accio=EM&IDM='.$IDM,array('class'=>'tt2'));    
   return $R;
 }
 
@@ -283,8 +331,8 @@ function getMissatgesEnviatsLlistes($M)
 {
 	$RET = "";
 	
-	foreach($M->getLlistes() as $L):
-		$RET .= $L->getNom().'<br />';
+	foreach($M->getMissatgesllistess() as $L):						
+		$RET .= $L->getLlistes()->getNom().'<br />';
 	endforeach;
 	
 	return $RET;
