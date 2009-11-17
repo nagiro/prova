@@ -30,6 +30,7 @@
       
 	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">      
 		<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMissatges?accio=C'); ?></div>
 			<table class="FORMULARI" width="70%">
 				<?php echo $FMissatge ?>
         		<tr>
@@ -54,9 +55,13 @@
                     else { 
                        $dif = "";
                       	foreach($MISSATGES as $M) {
-                      	    if($dif != $M->getPublicacio('d/m/Y')) echo '<TR><TD class="gray" colspan="2"><b>'.$M->getPublicacio('d-m-Y').'</b></TD></TR>';
+                      	    if($dif != $M->getPublicacio('d/m/Y')) echo '<TR><TD class="gray" colspan="3"><b>'.$M->getPublicacio('d-m-Y').'</b></TD></TR>';
                       		$SPAN  = '<span>'.$M->getText().'</span>';
-                      		echo "<TR><TD>".link_to($M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD><TD class=\"NOM\">".$M->getUsuaris()->getNom().' '.$M->getUsuaris()->getCog1()."</TD></TR>";
+                      		echo "<TR>
+                      				<TD>".link_to(image_tag('template/doc_text_image.png').$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
+                      				<TD>".link_to($M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
+                      				<TD class=\"LINIA\">".$M->getUsuaris()->getNom().' '.$M->getUsuaris()->getCog1()."</TD>
+                      			  </TR>";
                       		$dif = $M->getPublicacio('d/m/Y');  
                       	}                    	
                     }

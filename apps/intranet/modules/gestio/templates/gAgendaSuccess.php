@@ -71,7 +71,8 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
       
 	<form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">
 		            
-	 	<DIV class="REQUADRE">	 		
+	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gAgenda?accio=C'); ?></div>	 		
 	    	<table class="FORMULARI" width="500px">	    			    		
                 <?php echo $FAgenda?>                			    
 			    <tr><td></td><td colspan="3">			    		
@@ -95,7 +96,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
     
   <?php ELSE: ?>
       
-      <DIV class="REQUADRE">
+      <DIV class="REQUADRE">   	  
         <DIV class="TITOL">Llistat contactes</DIV>
       	<TABLE class="DADES">
  			<?php 
@@ -109,6 +110,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
                       	$SPAN .= '</SPAN>';
                       	$PAR = ParImpar($i++);	                      	
                       	echo "<TR>
+                      			<TD class=\"$PAR\">".link_to(image_tag('template/doc_text_image.png').$SPAN,'gestio/gAgenda'.getParam( 'E' , $A->getAgendatelefonicaid() , $CERCA ) , array('class'=>'tt2') )."</TD>
                       			<TD class=\"$PAR\">".link_to($A->getNom().$SPAN,'gestio/gAgenda'.getParam( 'E' , $A->getAgendatelefonicaid() , $CERCA ) , array('class'=>'tt2') )."</TD>
                       			<TD class=\"$PAR\">{$A->getEntitat()}</TD>
                       			<TD class=\"$PAR\">{$A->getTags()}<TD>

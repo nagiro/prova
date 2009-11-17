@@ -29,4 +29,27 @@ class NoticiesPeer extends BaseNoticiesPeer
 	 	return $pager;
 		
 	}
+	
+	static public function addNoticiesActivitat(Activitats $A)
+	{
+		
+		//Mirem si ja existeix la notícia relacionada amb l'activitat i la lliguem
+		$C = new Criteria();
+		$C->add(NoticiesPeer::IDACTIVITAT,$A->getActivitatid());
+		$N = NoticiesPeer::doSelectOne($C);
+		if(!($N instanceof Noticies)) $N = new Noticies();
+				
+		$N->setTitolnoticia($A->getTnoticia());
+		$N->setTextnoticia('El text relacionat correspon a al de l\'activitat');
+		$N->setIdactivitat($A->getActivitatid());
+		$N->setDatapublicacio($A->get7DiesAbansData());
+		$N->setDatadesaparicio($A->getPrimeraData());
+		$N->setActiva(true);
+		$N->setImatge($A->getImatge());
+		$N->setAdjunt($A->getPdf());
+				
+		$N->save();
+		
+	}
+	
 }

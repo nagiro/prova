@@ -181,7 +181,8 @@
 		</script>
 		 
 	     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
-		 	<div class="REQUADRE">	 		
+		 	<div class="REQUADRE">
+		 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div> 		
 		 		<DIV class="TITOL">Edició horaris</DIV>
 		    	<table class="FORMULARI" width="550x">
 		    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
@@ -270,6 +271,7 @@
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>	            		
+	            		<?php echo link_to('<input type="button" value="<<-- Torna horaris" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=CH'); ?>
 	            		<?php echo submit_tag('Finalitzar',array('name'=>'BSAVEDESCRIPCIO','class'=>'BOTO_ACTIVITAT'))?>
 	            	</td>
 	            </tr>                	 

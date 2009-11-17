@@ -64,7 +64,7 @@
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
      <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistes subscrites</DIV>
+        <DIV class="TITOL">Llistes subscrites de'n <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                 <?php
                                                      
@@ -81,7 +81,7 @@
       </DIV>
   
      <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistes disponibles</DIV>
+        <DIV class="TITOL">Llistes disponibles per a en <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                   <?php
                                                      
@@ -103,7 +103,7 @@
   <?php IF($MODE['CURSOS']): ?>
 
      <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistat de matrícules (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=N&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
+        <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=N&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
       	<TABLE class="DADES">
                 <?php                 
                   if($USUARI->countMatriculess() == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap curs a la Casa de Cultura.</TD></TR>';                                    
@@ -111,9 +111,9 @@
                       $CURSOS = $M->getCursos();                      
                       echo '<TR><TD class="LINIA">'.$CURSOS->getCodi().'</TD>
                                 <TD class="LINIA">'.$CURSOS->getTitolCurs().'</TD>
-                                <TD class="LINIA">'.$M->getEstat().'</TD>
+                                <TD class="LINIA">'.$M->getEstatString().'</TD>
                                 <TD class="LINIA">'.$M->getDataInscripcio().'</TD>
-                                <TD class="LINIA">'.$M->getDescompte().'</TD>
+                                <TD class="LINIA">'.$M->getTreduccioString().'</TD>
                                 <TD class="LINIA">'.$M->getComentari().'</TD>                                                                                           
                             </TR>';                                   
                   endforeach;                                                    
@@ -126,7 +126,7 @@
   <?php IF($MODE['REGISTRES']): ?>
 
      <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistat de reserves</DIV>
+        <DIV class="TITOL">Llistat de reserves de'n <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                 <?php
                                   
@@ -160,9 +160,9 @@
 	function creaOpcions($PAGINA, $IDU, $ACCIO)
 	{  
 	
-	  $R  = link_to('L','gestio/gUsuaris'.getPar($PAGINA,$IDU,'L')).' ';
-	  $R .= link_to('C','gestio/gUsuaris'.getPar($PAGINA,$IDU,'C')).' ';  
-	  $R .= link_to('R','gestio/gUsuaris'.getPar($PAGINA,$IDU,'R')).' ';
+	  $R  = link_to(image_tag('template/page_white_stack.png').'<span>Llistes a les que està subscrit</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'L'),array('class'=>'tt2')).' ';
+	  $R .= link_to(image_tag('template/bookmark_document.png').'<span>Historial de cursos</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'C'),array('class'=>'tt2')).' ';  
+	  $R .= link_to(image_tag('template/book.png').'<span>Historial de reserves</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'R'),array('class'=>'tt2')).' ';
 	   
 	  return $R;
 	}

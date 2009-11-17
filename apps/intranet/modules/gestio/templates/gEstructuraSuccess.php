@@ -59,7 +59,7 @@ function creaOpcions($IDN)
 {      
 		
   $R  = '<a href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=E').'" class="tt2">'.image_tag('tango/32x32/actions/edit-find-replace.png', array('size'=>'16x16','alt'=>'Edita la pàgina')).'<span>Edita les característiques de la pàgina</span></a>';
-  if(!NodesPeer::getIsCategoria($IDN) && !NodesPeer::getIsExterna($IDN)) $R .= '<a href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=E').'" class="tt2">'.image_tag('tango/32x32/apps/internet-web-browser.png', array('size'=>'16x16','alt'=>'Edita continguts')).'<span>Edita el contingut de la pàgina</span></a>';     
+  if(!NodesPeer::getIsCategoria($IDN) && !NodesPeer::getIsExterna($IDN)) $R .= '<a href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=H').'" class="tt2">'.image_tag('tango/32x32/apps/internet-web-browser.png', array('size'=>'16x16','alt'=>'Edita continguts')).'<span>Edita el contingut de la pàgina</span></a>';     
   $R .= '<a onClick="return confirm(\'Segur que vols esborrar la pàgina?\');" href="'.url_for('gestio/gEstructura?idN='.$IDN.'&accio=D').'" class="tt2">'.image_tag('tango/32x32/places/user-trash.png', array('size'=>'16x16','alt'=>'Esborra la pàgina')).'<span>Esborra la pàgina</span></a>'; 
   
   return $R;

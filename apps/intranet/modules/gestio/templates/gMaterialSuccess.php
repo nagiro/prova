@@ -66,6 +66,7 @@
       
 	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST">            
 	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMaterial?accio=L'); ?></div>
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?php echo $FMaterial?>                								

@@ -30,4 +30,41 @@ class Activitats extends BaseActivitats
       return $RET;
    }
    
+   public function get7DiesAbansData()
+   {
+   	
+   		$H = $this->getHorariss();
+   		if($H[0] instanceof Horaris):
+   		
+   			list($any,$mes,$dia) = explode("-",$H[0]->getDia());
+   			$time = mktime(0,0,0,$mes,$dia-7,$any);
+   			return date('Y-m-d',$time);   			
+   			
+   		else:
+   		
+   			return date('Y-m-d',time());
+   		
+   		endif;
+   	
+   }
+   
+   public function getPrimeraData()
+   {
+   	
+   		$H = $this->getHorariss();
+   		if($H[0] instanceof Horaris):
+   		
+   			list($any,$mes,$dia) = explode("-",$H[0]->getDia());
+   			$time = mktime(0,0,0,$mes,$dia,$any);
+   			return date('Y-m-d',$time);   			
+   			
+   		else:
+   		
+   			return date('Y-m-d',time());
+   		
+   		endif;
+   	
+   }
+   
+   
 }

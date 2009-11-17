@@ -26,7 +26,7 @@ class ActivitatsTextosForm extends sfFormPropel
       'Publicable'                      => new sfWidgetFormInputHidden(),
       'Estat'                           => new sfWidgetFormInputHidden(),
       'Descripcio'                      => new sfWidgetFormInputHidden(),
-	  'PublicaWEB'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',2=>'No'))),
+	  'PublicaWEB'                      => new sfWidgetFormChoice(array('choices'=>array(2=>'No',1=>'Sí'))),
       'Imatge'                          => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
       'PDF'                             => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),                  
       'tWEB'                            => new sfWidgetFormInput(array(),array('style'=>'width:300px')),

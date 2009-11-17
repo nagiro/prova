@@ -124,15 +124,15 @@ class gestioActions extends sfActions
 	
     $this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');    
+    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>""));    
     $this->IDU    = $this->ParReqSesForm($request,'IDU');            
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->ParReqSesForm($request,'accio','FC');
             
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
-	$this->FCerca->bind(array('text'=>$this->CERCA));
-	
+	$this->FCerca->bind($this->CERCA);
+		
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTES'=>false,'CURSOS'=>false,'REGISTRES'=>false);    
 		
@@ -191,7 +191,7 @@ class gestioActions extends sfActions
              break;              
     }
 
-    $this->PAGER_USUARIS = UsuarisPeer::cercaTotsCamps( $this->CERCA , $this->PAGINA );
+    $this->PAGER_USUARIS = UsuarisPeer::cercaTotsCamps( $this->CERCA['text'] , $this->PAGINA );
                     
   }  
 
@@ -845,8 +845,6 @@ class gestioActions extends sfActions
   
   public function executeGActivitats(sfWebRequest $request)
   {
-
-  	//$this->netejaParametresSessio();
   	
     $this->setLayout('gestio');
 
@@ -952,16 +950,20 @@ class gestioActions extends sfActions
     						$OMaterial = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());    			    			
 			    			$this->MATERIALOUT[] = array('material'=>$HE->getMaterialIdmaterial(),'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    						 
     					endif;
-    				endforeach;
+    				endforeach;    				
     			endif;    		    		    			
     		break;    	
     		
     	//Consulta els textos del web
-    	case 'CT':                
+    	case 'CT':                			    
                 $OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
-                $this->NOMACTIVITAT = $OActivitat->getNom();
-                $this->FActivitat = new ActivitatsTextosForm($OActivitat);                
-                $this->MODE['TEXTOS'] = true;       
+                if($OActivitat->countHorariss() > 0):
+	                $this->NOMACTIVITAT = $OActivitat->getNom();
+	                $this->FActivitat = new ActivitatsTextosForm($OActivitat);                
+	                $this->MODE['TEXTOS'] = true;       
+	            else:
+	            	$this->redirect('gestio/gActivitats?accio=CH');
+	            endif;
             break;
             
 		//Guarda els textos del web            
@@ -970,12 +972,17 @@ class gestioActions extends sfActions
     			$this->NOMACTIVITAT = $OActivitat->getNom();
     			$this->FActivitat = new ActivitatsTextosForm($OActivitat);    			
     			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
-    			if($this->FActivitat->isValid()): $this->FActivitat->save(); $this->redirect('gestio/gActivitats?accio=CT'); endif;
+    			if($this->FActivitat->isValid()): 
+    				$this->FActivitat->save();
+    				NoticiesPeer::addNoticiesActivitat($this->FActivitat->getObject()); 
+    				$this->redirect('gestio/gActivitats?accio=CT');    				    				
+    			endif;
+    			
     			$this->MODE['TEXTOS'] = true;
     		break;
     		
     	//Save Horaris
-    	case 'SH':  		
+    	case 'SH':	
 			
 			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
 			$this->NOMACTIVITAT = $OActivitat->getNom();
@@ -1002,7 +1009,9 @@ class gestioActions extends sfActions
    			if(empty($RET)) $this->MISSATGE = array(1=>"Horari guardat correctament");
    			else 			$this->MISSATGE = $RET;    		
 
-    		$this->MODE['HORARIS'] = true;   			
+    		$this->MODE['HORARIS'] = true;
+    		
+    		$this->redirect('gestio/gActivitats?accio=CH');   			
    			
     		break;
 
@@ -1490,12 +1499,13 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');    
         
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->TIPUS = $this->ParReqSesForm($request,'text',1,'cerca');
+    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>1));    
+    $this->TIPUS = $this->CERCA['text'];
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaChoiceForm();
     $this->FCerca->setChoice(MaterialgenericPeer::select());    
-	$this->FCerca->bind(array('text'=>$this->TIPUS));
+	$this->FCerca->bind(array('text'=>$this->TIPUS));	
 	
 	//Inicialitzem variables
     $this->CONSULTA = true; 
@@ -1551,21 +1561,21 @@ class gestioActions extends sfActions
 
     $this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');
-    $this->SELECT = $this->ParReqSesForm($request,'select',1,'cerca');
+    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'cerca','select'=>1));
+//    $this->SELECT = $this->ParReqSesForm($request,'cerca',array('select'=>1));
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->ParReqSesForm($request,'accio','CA');    
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaTextChoiceForm();       
     $this->FCerca->setChoice(array(1=>'Actius',2=>'Inactius')); 
-	$this->FCerca->bind(array('text'=>$this->CERCA,'select'=>$this->SELECT));
+	$this->FCerca->bind($this->CERCA);
 	
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>true,'NOU'=>false,'EDICIO'=>false,'LLISTAT_ALUMNES'=>false);
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { $accio = ( $this->SELECT == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
+	    if($request->hasParameter('BCERCA')) { $accio = ( $this->CERCA['select'] == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
 	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NC';
 	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';	    
     }                
@@ -1609,11 +1619,11 @@ class gestioActions extends sfActions
 				$this->MODE['CONSULTA'] = true;				     	            	          	        
     	    break;
 		case 'CI' :	
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA , $this->CERCA);
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA , $this->CERCA['text']);
 				$this->MODE['CONSULTA'] = true;				 
 			break;		
 		case 'CA' :
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA );
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA['text'] );
 				$this->MODE['CONSULTA'] = true;
 			break;					
 		case 'L': 
@@ -1864,11 +1874,11 @@ class gestioActions extends sfActions
 	$this->setLayout('gestio');
 	        
 	    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-	    $this->CERCA = $this->ParReqSesForm($request,'text',1,'cerca');
+	    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>1));
 	    
 	    //Inicialitzem el formulari de cerca
 	    $this->FCerca = new CercaForm();
-		$this->FCerca->bind($request->getParameter('cerca'));
+		$this->FCerca->bind($this->CERCA);
 		
 		//Inicialitzem variables
 		$this->MODE = array('CONSULTA'	=> true,
@@ -1910,7 +1920,7 @@ class gestioActions extends sfActions
 	}
 	
 	    
-	$this->INCIDENCIES = IncidenciesPeer::getIncidencies($this->CERCA, $this->PAGINA);
+	$this->INCIDENCIES = IncidenciesPeer::getIncidencies($this->CERCA['text'], $this->PAGINA);
   
   }
 

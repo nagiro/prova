@@ -27,7 +27,7 @@ class ActivitatsForm extends sfFormPropel
       'ActivitatID'                     => new sfValidatorPropelChoice(array('model' => 'Activitats', 'column' => 'ActivitatID', 'required' => false)),
       'Cicles_CicleID'                  => new sfValidatorPropelChoice(array('model' => 'Cicles', 'column' => 'CicleID', 'required' => false)),
       'TipusActivitat_idTipusActivitat' => new sfValidatorPropelChoice(array('model' => 'Tipusactivitat', 'column' => 'idTipusActivitat', 'required' => false)),
-      'Nom'                             => new sfValidatorString(array('required' => false)),
+      'Nom'                             => new sfValidatorString(array('required' => true)),
       'Preu'                            => new sfValidatorNumber(array('required' => false)),
       'PreuReduit'                      => new sfValidatorNumber(array('required' => false)),
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),

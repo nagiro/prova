@@ -25,7 +25,7 @@ class TasquesForm extends sfFormPropel
       'Aparicio'               => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'Desaparicio'            => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'DataResolucio'          => new sfWidgetFormInputHidden(),
-      'isFeta'                 => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
+      'isFeta'                 => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
       'AltaRegistre'           => new sfWidgetFormInputHidden(),
     ));
 
@@ -41,7 +41,7 @@ class TasquesForm extends sfFormPropel
       'Aparicio'               => new sfValidatorDate(array('required' => false)),
       'Desaparicio'            => new sfValidatorDate(array('required' => false)),
       'DataResolucio'          => new sfValidatorDateTime(array('required' => false)),
-      'isFeta'                 => new sfValidatorInteger(array('required' => false)),
+      'isFeta'                 => new sfValidatorBoolean(array('required' => false)),
       'AltaRegistre'           => new sfValidatorDate(array('required' => false)),
     ));
 
@@ -66,7 +66,6 @@ class TasquesForm extends sfFormPropel
     $this->setDefault('isFeta',false);
     $this->setDefault('AltaRegistre',date('Y-m-d',time()));
     
-    parent::setup();
   }
 
   public function getModelName()

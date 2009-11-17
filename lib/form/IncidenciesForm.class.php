@@ -20,7 +20,7 @@ class IncidenciesForm extends sfFormPropel
       'descripcio'    => new sfWidgetFormTextarea(array(),array('style'=>'width:400px')),
       'estat'         => new sfWidgetFormChoice(array('choices'=>IncidenciesPeer::getEstatSelect())),
       'dataalta'      => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
-      'dataresolucio' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
+      'dataresolucio' => new sfWidgetFormInputHidden(),
     ));
 
     $this->setValidators(array(
@@ -30,8 +30,8 @@ class IncidenciesForm extends sfFormPropel
       'titol'         => new sfValidatorString(array('required' => false)),
       'descripcio'    => new sfValidatorString(array('required' => false)),
       'estat'         => new sfValidatorInteger(),
-      'dataalta'      => new sfValidatorDate(),
-      'dataresolucio' => new sfValidatorDate(),
+      'dataalta'      => new sfValidatorDate(array('required'=>false)),
+      'dataresolucio' => new sfValidatorDate(array('required'=>false)),
     ));
 
     $this->widgetSchema->setLabels(array(      
@@ -48,12 +48,26 @@ class IncidenciesForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
-    parent::setup();
   }
 
   public function getModelName()
   {
     return 'Incidencies';
+  }
+  
+  public function save($conn = null)
+  {
+  	
+  	parent::save($conn);
+  	  	
+  	$OI = $this->getObject();
+  	$DR = $OI->getDataresolucio();
+  	if($OI->getEstat() == IncidenciesPeer::ESTAT_RESOLT && is_null($DR) ):
+  		$OI->setDataresolucio(date('Y-m-d',time()));
+  	endif;
+  	
+  	$OI->save();
+  	
   }
 
 }

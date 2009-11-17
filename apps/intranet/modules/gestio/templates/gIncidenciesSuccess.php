@@ -29,6 +29,7 @@
       
       	<form action="<?php echo url_for('gestio/gIncidencies') ?>" method="POST">            
 	 	<DIV class="REQUADRE">
+	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gIncidencies?accio=C'); ?></div>
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?php echo $FIncidencia ?>                								
@@ -50,7 +51,7 @@
         <DIV class="TITOL">Llistat d'incidencies </DIV>
       	<TABLE class="DADES">
  			<?php 
-				if( empty( $INCIDENCIES ) ):
+				if( $INCIDENCIES->getNbResults() == 0 ):
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap incidencia amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;

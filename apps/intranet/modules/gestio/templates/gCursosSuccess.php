@@ -81,6 +81,7 @@
             
    	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
 	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=C'); ?></div>
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?php echo $FCurs; ?>                								
@@ -98,7 +99,7 @@
       
     <?php ELSEIF( $MODE['LLISTAT_ALUMNES'] ): ?>
 
-     <DIV class="REQUADRE">
+     <DIV class="REQUADRE">     
         <DIV class="TITOL">Llistat d'alumnes </DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($MATRICULES) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>'; endif; ?>  
@@ -119,11 +120,11 @@
       
   <?php ELSE: ?>
 
-     <DIV class="REQUADRE">
+     <DIV class="REQUADRE">     
         <DIV class="TITOL">Llistat de cursos </DIV>
       	<TABLE class="DADES">
  			<?php 
-				if( empty( $CURSOS ) ){
+				if( $CURSOS->getNbResults() == 0 ){
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap curs amb aquestes dades.</TD></TR>';
 				} else { 
 					$i = 0;

@@ -72,11 +72,15 @@
                 <?php    $U = $T->getUsuarisRelatedByQuifa()->getNom()." ".$T->getUsuarisRelatedByQuifa()->getCog1(); ?>
                 <?php    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>
                 <?php if($T->getIsfeta()): ?>
-  					<TR><TD class="FETA"><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-					    <TD class="FETA"><?php echo $U?></TD></TR> 											              
+  					<TR>
+  						<TD class="ICOINI FETA"><?php echo link_to(image_tag('template/doc_text_image.png').$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+  						<TD class="FETA"><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+					    <TD  width="20%" class="FETA"><?php echo $U?></TD></TR> 											              
                 <?php else: ?>
-	                <TR><TD><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-					    <TD><?php echo $U?></TD></TR> 											
+	                <TR>
+		                <TD class="ICOINI"><?php echo link_to(image_tag('template/doc_text_image.png').$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+	                	<TD ><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
+					    <TD width="20%"><?php echo $U?></TD></TR> 											
                 <?php endif; ?>					
 				<?php endforeach; ?>
 				<TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_ENCOMANADES);?></TD></TR>     			
@@ -94,15 +98,15 @@
                 <?php    $SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>'; ?>                                						
                 <?php    if($T->getIsfeta()): ?>
                 	<TR>
-                		<TD class="FETA"><?php echo link_to('O','gestio/gTasques'.getParam( 'F' , $T->getTasquesid() , $CERCA ))?></TD>
+                		<TD class="FETA ICOINI"><?php echo link_to(image_tag('template/doc_text_image.png').$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
                 	    <TD class="FETA"><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-                	    <TD class="FETA"><?php echo $U?></TD>
+                	    <TD width="20%" class="FETA"><?php echo $U?></TD>
                 	</TR>
                 <?php    else: ?> 
                 	<TR>
-                		<TD><?php echo link_to('O','gestio/gTasques'.getParam( 'F' , $T->getTasquesid() , $CERCA ))?></TD>
+                		<TD class="ICOINI"><?php echo link_to(image_tag('template/doc_text_image.png').$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
                 		<TD><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-                		<TD><?php echo $U ?></TD></TR>
+                		<TD width="20%"><?php echo $U ?></TD></TR>
 				<?php    endif; ?>                	 											
 				<?php endforeach; ?>
                 <TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_PERFER);?></TD></TR>
@@ -114,6 +118,7 @@
       
  	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST">      
 		<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gTasques?accio=C'); ?></div>
 			<table class="FORMULARI" width="80%">
 				<tr><td width="15%"></td><td width="60%"></td></tr>
 				<?php echo $FTasca ?>
