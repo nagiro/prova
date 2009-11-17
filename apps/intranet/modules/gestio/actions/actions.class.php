@@ -327,6 +327,7 @@ class gestioActions extends sfActions
     if($request->hasParameter('BSAVE_LLISTES')) $accio = 'SLM';
     if($request->hasParameter('BSEGUEIX_ENVIAMENT')) $accio = 'SLEE';
     if($request->hasParameter('BSEND_PROVA')) $accio = 'SP';
+    if($request->hasParameter('BSEND_TOTHOM')) $accio = 'SMT';
     if($request->hasParameter('BFI')) $accio = 'SFI';        
     if($request->hasParameter('BSEND')) $accio = 'SEND';
     if($request->hasParameter('BVINCULA')) $accio = 'VINCULA';
@@ -387,7 +388,7 @@ class gestioActions extends sfActions
     	case 'LM':
     		
     			if($this->saveMissatge($request)):
-    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistes($this->getUser()->getAttribute('IDM'));    				     				
+    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistesArray($this->getUser()->getAttribute('IDM'));    				     				
     				    				
 	    			$this->MODE = 'MISSATGES_LLISTES';    				
     			else: 
@@ -416,10 +417,23 @@ class gestioActions extends sfActions
     	//Envio un missatge de prova a l'adreça que digui l'usuari
     	case 'SP':
     		
-    			$this->saveMissatgeLlistes($request);
-    			$this->MODE = "FER_PROVA";
+    		try   { MissatgesmailingPeer::sendProvaMessageId($this->getUser()->getAttribute('IDM'),$request->getParameter('email')); }
+    		catch (Exception $e) { $e->getMessage(); }	
     		
+    		$this->MODE = "FER_PROVA";
+   		
     		break;
+
+    	//Envio el missatge a tothom
+    	case 'SMT':
+    		
+    		try   { MissatgesmailingPeer::sendMessageId($this->getUser()->getAttribute('IDM')); }
+    		catch (Exception $e) { $e->getMessage(); }	
+    		
+    		$this->MODE = "FER_PROVA";
+   		
+    		break;
+    		
     		
     	//Hem acabat l'edició... no fem res, només tornem a les llistes
     	case 'SFI':
@@ -461,9 +475,9 @@ class gestioActions extends sfActions
                 $this->MODE = 'EDICIO';                
                 break;       	         	       
       case 'L': 
-               $IDL = $this->getRequestParameter('IDL');
-               $this->LLISTA = LlistesPeer::retrieveByPK($IDL);
-               $this->LMISSATGES = $this->LLISTA->getMissatgesllistess();               
+               $IDL = $this->getRequestParameter('IDL');               
+               $this->LLISTA = LlistesPeer::retrieveByPK($IDL); 
+               $this->LMISSATGES = LlistesPeer::getMissatges($IDL,null,$this->PAGINA);                             
                $this->MODE = 'LLISTAT';
                break;
       case 'SEND':               
@@ -527,7 +541,7 @@ class gestioActions extends sfActions
 	    		$OML = new Missatgesllistes();
 	    		$OML->setIdmissatgesllistes($this->getUser()->getAttribute('IDM'));
 	    		$OML->setLlistesIdllistes($L);
-	    		$OML->setEnviat(false);		
+	    		$OML->setEnviat(null);		
 	    		$OML->save();
 	    	}
 	    endforeach;
@@ -1211,48 +1225,63 @@ class gestioActions extends sfActions
   	$this->setLayout('gestio');
 
   	//Inicialitzem les variables
-  	$this->MODE = array( 'CONSULTA' => true , 'NOU' => false , 'EDICIO' => false );           	
-  	$this->accio = NULL; $this->AID = 0;
-    $this->AGENDA = new Agendatelefonica(); $this->AGENDES = array();
+  	$this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));  	
+  	$this->accio  	= $this->ParReqSesForm($request,'accio',"");
+  	$this->AID  	= $this->ParReqSesForm($request,'AID', null);
+  	$this->MODE     = "";  	           	
   	
   	//Tractem el formulari de cerca
-  	$this->FCerca = new CercaForm();
-  	$this->CERCA = $request->getParameter('cerca[text]');  	
-  	$this->FCerca->bind($request->getParameter($this->FCerca->getName()));
-    
-    //Carreguem l'acció que s'hagi fet 
-  	$accio = $request->getParameter('accio');
+  	$this->FCerca = new CercaForm();  	  
+  	$this->FCerca->bind($this->CERCA);
         
   	//Definim l'acció segons el botó premut  	
-    if( $this->getRequest()->hasParameter('BNOU') ) $accio = 'N';
-    if( $this->getRequest()->hasParameter('BSAVE_x') ) $accio = 'S';    
+    if( $this->getRequest()->hasParameter('BNOU') ) $this->accio = 'N';
+    if( $this->getRequest()->hasParameter('BSAVE_x') ) $this->accio = 'S';
+    if( $this->getRequest()->hasParameter('BCERCA')) $this->accio = 'L';  
 
-    switch( $accio )
+    $this->getUser()->setAttribute('accio',$this->accio);
+    
+    switch( $this->accio )
     {
       case 'N':
-                $this->MODE['NOU'] = true;
+                $this->MODE = 'NOU';
                 $this->getUser()->setFlash('AID',0);
                 $this->FAgenda = new AgendatelefonicaForm();                          
                 break;                
       case 'E':
-                $this->MODE['EDICIO'] = true;
+                $this->MODE = 'EDICIO';
                 $AID = $request->getParameter('AID');
                 $this->getUser()->setAttribute('AID',$AID);                                
                 $OAT = AgendatelefonicaPeer::retrieveByPK($AID);
-                $this->FAgenda = new AgendatelefonicaForm($OAT);                                
+                $this->FAgenda = new AgendatelefonicaForm($OAT);
+                if(($OAT instanceof Agendatelefonica )):
+                	$this->DADES = $OAT->getAgendatelefonicadadess();
+                else:
+                	$this->DADES = array();
+                endif;
+                                                
                 break;
       case 'S':      			
-      			$AID = $this->getUser()->getAttribute('AID');      			      		
-      			if($AID > 0):
-      				$this->FAgenda = new AgendatelefonicaForm(AgendatelefonicaPeer::retrieveByPK($AID));
+      			$AID = $this->getUser()->getAttribute('AID');
+      			$OAT = AgendatelefonicaPeer::retrieveByPK($AID);      			      		
+      			if( $OAT instanceof Agendatelefonica ):
+      				$this->FAgenda = new AgendatelefonicaForm($OAT);
       			else:
       				$this->FAgenda = new AgendatelefonicaForm(new Agendatelefonica());
       			endif;
 
       			$this->FAgenda->bind($request->getParameter('agendatelefonica'));
-				$this->FAgenda->save();
-				$this->MISSATGE = "El registre s'ha modificat correctament.";      			      															                
-                $this->MODE['EDICIO'] = true;      
+      			if($this->FAgenda->isValid()):
+					$this->FAgenda->save();					
+					$this->getUser()->setAttribute('AID',$this->FAgenda->getObject()->getAgendatelefonicaid());										
+					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getAttribute('AID')); //Actualitzem també les dades relacionades
+					$this->MISSATGE = "El registre s'ha modificat correctament.";
+					$this->redirect('gestio/gAgenda?accio=L');
+				else: 
+					$this->DADES = $OAT->getAgendatelefonicadadess();
+					$this->MODE = 'EDICIO';
+				endif; 
+				      			      															                                     
                 break;         
       case 'D': 
                 $this->AID = $this->getUser()->getAttribute('AID');
@@ -1266,7 +1295,7 @@ class gestioActions extends sfActions
     }    
     
     if(!empty($this->CERCA)):       
-       $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA );
+       $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] );
     else:
        $this->AGENDES = array();
     endif;
@@ -1366,6 +1395,7 @@ class gestioActions extends sfActions
   }
   
   //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
+  //Exemple: $this->ParReqSesForm($request,'cerca',"",array('text'=>""));
   public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
   {
   	  	

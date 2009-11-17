@@ -82,10 +82,11 @@ class LlistesPeer extends BaseLlistesPeer
      $C = new Criteria();
      
      $C->add( MissatgesllistesPeer::LLISTES_IDLLISTES , $IDL );
-     if($MODALITAT == self::ENVIATS)        $C->add( MissatgesllistesPeer::ENVIAT , true  );   
-     elseif($MODALITAT == self::NO_ENVIATS) $C->add( MissatgesllistesPeer::ENVIAT , false );
+     $C->addJoin(MissatgesllistesPeer::IDMISSATGESLLISTES,MissatgesmailingPeer::IDMISSATGE);     
+     if($MODALITAT == self::ENVIATS)        $C->add( MissatgesllistesPeer::ENVIAT , null , CRITERIA::ISNOTNULL );   
+     elseif($MODALITAT == self::NO_ENVIATS) $C->add( MissatgesllistesPeer::ENVIAT , null , Criteria::ISNULL );
                     
-     $pager = new sfPropelPager('Missatgesllistes', 10);
+     $pager = new sfPropelPager('Missatgesmailing', 10);
 	 $pager->setCriteria($C);
 	 $pager->setPage($PAGINA);
 	 $pager->init();  	

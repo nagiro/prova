@@ -28,7 +28,7 @@
           <TABLE class="MENU_TABLE">
             <TR><TD class="SUBMENU1"><?php echo imgSub1().' PERSONAL'; ?></TD></TR>
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Avui','gestio/main'); ?></TD></TR>
-              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Agenda','gestio/gAgenda'); ?></TD></TR>
+              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Agenda','gestio/gAgenda?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Taulell','gestio/gMissatges'); ?></TD></TR>
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Tasques','gestio/gTasques'); ?></TD></TR>
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial'); ?></TD></TR>

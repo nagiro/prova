@@ -9,4 +9,22 @@
  */ 
 class Llistes extends BaseLlistes
 {
+	
+	public function getMailsUsuaris()
+	{
+		
+		$RET = array();
+		$IDL = $this->getIdllistes();
+		$C = new Criteria();
+		$C->add(UsuarisllistesPeer::LLISTES_IDLLISTES,$IDL);
+		$C->addJoin(UsuarisllistesPeer::IDUSUARISLLISTES, UsuarisPeer::USUARIID);
+		
+		foreach(UsuarisPeer::doSelect($C) as $U):
+			$RET[$U->getEmail()] = $U->getEmail();
+		endforeach;
+		
+		return $RET;
+		
+	}
+	
 }

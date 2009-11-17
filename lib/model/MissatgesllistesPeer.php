@@ -9,7 +9,8 @@
  */ 
 class MissatgesllistesPeer extends BaseMissatgesllistesPeer
 {
-	static public function getLlistes($IDM)
+	
+	static public function getLlistesArray($IDM)
 	{
 		$RET = array();
 				
@@ -17,7 +18,7 @@ class MissatgesllistesPeer extends BaseMissatgesllistesPeer
 		$C->add(self::IDMISSATGESLLISTES,$IDM);
 		
 		foreach(self::doSelect($C) as $ML):
-		
+						
 			$RET[] = $ML->getLlistesIdllistes();
 			 		
 		endforeach;
@@ -25,4 +26,5 @@ class MissatgesllistesPeer extends BaseMissatgesllistesPeer
 		return $RET;
 		
 	}
+	
 }

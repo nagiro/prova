@@ -31,7 +31,7 @@
 	   case 'remember'   : $calendar = false; include_partial('remember',  array( 'ENVIAT' => $ENVIAT , 'ERROR' => $ERROR )); break;
 	   case 'login'      : $calendar = false; include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
 	   case 'agenda'     : $calendar = true;  include_partial('agenda'  ,  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT , 'QUANTES' => $QUANTES , 'DATA' => $DATA )); break;
-	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;
+	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'NOTICIES' => $NOTICIES )); break;
 	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV )); break;
 	   case 'registrat'  : $calendar = true;  include_partial('registrats'); break;
 	   case 'cursos'	 : $calendar = false; include_partial('cursos'); break;

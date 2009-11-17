@@ -7,24 +7,24 @@
 
     <TD colspan="2" class="CONTINGUT">
     <?php 
-		if(empty($ACTIVITATS_LLISTAT)): echo '<DIV>No hi ha cap notícia activa.<DIV>'; endif;     							
+		if($NOTICIES->getNbResults() == 0): echo '<DIV>No hi ha cap notícia activa.<DIV>'; endif;     							
               		
-		foreach($ACTIVITATS_LLISTAT as $A): 
-     		$n = $A->getTnoticia(); $imatge = $A->getImatge(); $pdf = $A->getPdf(); $descripcio = $A->getDnoticia();
-			if(!empty($n)):               	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      		
+		foreach($NOTICIES->getResults() as $N): 
+     		$titol = $N->getTitolnoticia(); $imatge = $N->getImatge(); $pdf = $N->getAdjunt(); $descripcio = $N->getTextnoticia();
+			if(!empty($titol)):               	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      		
     			echo '<TABLE class="BOX">';
 		    	echo '<TR>';  
 	 			if(!empty($imatge)):	    
-	 				echo '<TD class="FOTO">'.image_tag('noticies/'.$A->getImatge(), array('class'=>'IMG_FOTO')).'</TD>';
+	 				echo '<TD class="FOTO">'.image_tag('noticies/'.$N->getImatge(), array('class'=>'IMG_FOTO')).'</TD>';
 	 			endif;
 		        echo '<TD class="NOTICIA">';			    
-				echo '<DIV class="TITOL">'.$A->getTnoticia().'</DIV>';
-		    	echo '<DIV class="TEXT">'.substr( $descripcio , 0 , 100 ).'<SPAN id="DIV'.$A->getActivitatID().'" class="AMAGAT">'.substr( $descripcio , 100 ).'</SPAN></DIV>';
+				echo '<DIV class="TITOL">'.$titol.'</DIV>';
+		    	echo '<DIV class="TEXT">'.substr( $descripcio , 0 , 100 ).'<SPAN id="DIV'.$N->getIdnoticia().'" class="AMAGAT">'.substr( $descripcio , 100 ).'</SPAN></DIV>';
 	 			if(sizeof($descripcio) > 100):		    	
-		    		echo '<DIV class="PEU">'.link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$A->getActivitatID().')'));
+		    		echo '<DIV class="PEU">'.link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$N->getIdnoticia().')'));
 	 			endif;
 	 			if(!empty($pdf)): 
-	 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A->getPdf() , true) , array('target'=>'_NEW'));
+	 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW'));
 	 			endif;
 				echo '</DIV>';
 				echo '</TD>';

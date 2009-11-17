@@ -50,37 +50,12 @@ class AgendatelefonicaForm extends BaseFormPropel
 	));
 	  
    	$this->widgetSchema->setHelp('is_public', 'Whether the job can also be published on affiliate websites or not.');  		
-
-
-   	$i=0; $ENBLANC = false;
-	foreach ($this->getObject()->getAgendatelefonicadadess() as $dades)
-	{  		
-		$FDades = new AgendatelefonicadadesForm($dades);	
-		$FDades->widgetSchema->setFormFormatterName('Horizontal');		
-		$this->embedForm('Dades '.$i++, $FDades);
-		$dada = $dades->getDada();						
-		if(strlen($dada) == 0) $ENBLANC = true;		
-	}
-
-	//Si no en tenim cap en blanc, n'afegim un
-	if(!$ENBLANC):
 	
-		$ATD = new Agendatelefonicadades();
-		$ATD->setAgendatelefonicaAgendatelefonicaid($this->getObject()->getAgendatelefonicaid());
-		
-		$FDades = new AgendatelefonicadadesForm($ATD);
-		$FDades->widgetSchema->setFormFormatterName('Horizontal');		
-		$this->embedForm('Dades '.$i++, $FDades);
-			 
-	endif;
-	
-    parent::setup();
   }
-
   
   public function getModelName()
   {
     return 'Agendatelefonica';
-  }	
-	
+  }
+  	
 }

@@ -19,6 +19,7 @@
 	        </table>
 	     </DIV>
 	     
+	<?php if(empty($MODE)): ?>
 	   	<DIV class="REQUADRE">
 	    <DIV class="TITOL"> <?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nova llista')),'gestio/gLlistes?accio=EM'); ?> Missatges disponibles</DIV>
 	    	<table class="DADES" width="100%">	    		          
@@ -34,7 +35,8 @@
                 ?>
     
 	        </table>
-	     </DIV>	     
+	     </DIV>
+	<?php endif; ?>	     
 	     	     
      </form>                  
   
@@ -172,6 +174,7 @@
 	            	<td class="dreta" width="400px">
 	            		<br>
 	            		<?php echo submit_tag("Enviar prova",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEND_PROVA')) ?>    			
+	            		<?php echo submit_tag("Enviar a tothom",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEND_TOTHOM','onClick'=>"return confirm('Segur que vols enviar el missatge a tothom?')")); ?>
 	            		<?php echo submit_tag('Finalitzar',array('class'=>"BOTO_ACTIVITAT",'name'=>'BFI')) ?>	            	            		
 	            	</td>
 	            </tr>                	 
@@ -194,17 +197,28 @@
 
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL">Llistat de missatges de la llista:  <?php echo $LLISTA->getNom(); ?></DIV>
-	    	<table class="DADES">          
-                  <?php foreach($LMISSATGES as $M):  ?>                                                       
+	    	<table class="DADES">	    		       
+	    			
+		    	  <?php if($LMISSATGES->getNbResults() == 0): ?>
+		    		<tr><td class="LINIA">Actualment no hi ha cap missatge a la llista.</td></tr>	    	
+		    	  <?php endif; ?>
+	    	  
+                  <?php foreach($LMISSATGES->getResults() as $M):  ?>                                                       
                   	<TR>
-                  		<TD class="LINIA"><?php echo link_to($M->getTitol(),'gestio/gLlistes?accio=M&IDM='.$M->getIdmissatgesllistes().'&IDL='.$M->getLlistesIdllistes())?></TD>
+                  		<TD class="LINIA"><?php echo link_to($M->getTitol(),'gestio/gLlistes?accio=M&IDM='.$M->getIdmissatge().'&IDL='.$LLISTA->getIdllistes())?></TD>
 						<TD class="LINIA">
 							<?php 
-								if(!is_null($M->getEnviat('d/m/Y'))):
-									echo $M->getEnviat('d/m/Y');
+								
+								if(!is_null($M->getDataEnviament($LLISTA->getIdllistes()))):
+								
+									echo $M->getDataEnviament($LLISTA->getIdllistes());
+									
 								else:
+								
 									echo 'No enviat';
+									
 								endif;
+								
 							?>
 						</TD>
               		</TR>

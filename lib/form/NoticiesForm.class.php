@@ -15,6 +15,7 @@ class NoticiesForm extends BaseNoticiesForm
   {
   	
   	$path = sfConfig::get('sf_web_dir').'/images/noticies';
+  	$web  = sfConfig::get('sf_webroot').'images/noticies/';
   	
     $this->setWidgets(array(
       'idNoticia'      	=> new sfWidgetFormInputHidden(),
@@ -23,8 +24,8 @@ class NoticiesForm extends BaseNoticiesForm
       'DataPublicacio' 	=> new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'DataDesaparicio' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'Activa'         	=> new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
-      'Imatge'         	=> new sfWidgetFormInputFile(),
-      'Adjunt'         	=> new sfWidgetFormInputFile(),
+      'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$web.$this->getObject()->getImatge(), 'is_image'=>true , 'with_delete'=>false)),
+      'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$web.$this->getObject()->getAdjunt(),'with_delete'=>false)),
       'idActivitat'    	=> new sfWidgetFormInput(),
       
     ));

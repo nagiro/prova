@@ -35,22 +35,25 @@
 	    	<table class="DADES">
 	    	<?php           
                 if(sizeof($NOTICIES) == 0 ) { echo '<TR><TD class="LINIA">No hi ha cap notícia activa.</TD></TR>'; }
-                 									                           
+                else { echo '<tr><td class="TITOL"></td><td class="TITOL">Títular</td><td class="TITOL">Data publicació</td><td class="TITOL">Data desaparició</td><tr>'; }
+                 								                           
                 foreach($NOTICIES->getResults() as $N):                                      
 					echo '<TR>
 							<TD width="10%" class="LINIA">'.radiobutton_tag('NOTICIA',$N->getIdnoticia(),false).'</TD>
-							<TD class="LINIA">'.$N->getTitolnoticia().'</TD>							
+							<TD class="LINIA">'.$N->getTitolnoticia().'</TD>
+							<TD class="LINIA">'.$N->getDatapublicacio().'</TD>							
+							<TD class="LINIA">'.$N->getDatadesaparicio().'</TD>
 						  </TR>';                		                 															
 				endforeach;				
                 ?>         
                 <TR>
                 	<TD colspan="1"></TD>
-                	<TD colspan="2"><?php echo submit_tag('Nova',array('name'=>'BADD'))?>
+                	<TD colspan="3"><?php echo submit_tag('Nova',array('name'=>'BADD'))?>
                 		<?php echo submit_tag('Edita',array('name'=>'BEDIT'))?>                		
                 	</TD>
                 	
                 </TR>
-                <TR><TD colspan="3"><?php echo gestorPagines($NOTICIES);?></TD></TR>       
+                <TR><TD colspan="4"><?php echo gestorPagines($NOTICIES);?></TD></TR>       
 	        </table>
 	     </DIV>
      </form>                  

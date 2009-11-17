@@ -1,10 +1,54 @@
+<?php use_helper('Form'); ?>
+
 <STYLE>
 .cent { width:100%; }
 </STYLE>
 
-<?php use_helper('Javascript'); ?>
-<?php use_helper('Form'); ?>
+<script type="text/javascript">
 
+$(document).ready(function() {	
+	 $("#id").val(1);																		
+	 $("#mesdades").click( function() { creaNovaDada(); });
+	 <?php 	
+	 	if(isset($DADES)): 			 
+	 		foreach($DADES as $K => $V):	 			
+	 			$T = $V->getTipus(); $D = $V->getDada(); $N = $V->getNotes(); $S = AgendatelefonicadadesPeer::getSelectHTML($V->getTipus());
+	 			echo "creaNovaDadaVella(".$T.",'".$D."','".$N."','".$S."',".$V->getAgendatelefonicadadesid().");";
+	 		endforeach;
+	 	endif;
+	 		
+	 ?>
+	 
+});	
+
+
+function creaNovaDada()
+{
+	
+	var id = $("#id").val();		
+	id = (parseInt(id) + parseInt(1));
+	$("#id").val(id);		
+				
+	var select  = '<?php echo AgendatelefonicadadesPeer::getSelectHTML() ?>';
+	$("#taula").append('<tr id="row['+id+']"><td><input type="hidden" value="0" name="Dades['+id+'][id]"></input><select name="Dades['+id+'][Select]">'+select+'</select></td><td><input name="Dades['+id+'][Dada]" value="" type="text"></td><td><input name="Dades['+id+'][Notes]" type="text"></td><td><input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input></td></tr>');
+																				
+}
+
+function creaNovaDadaVella(t, d, n, s, idA)
+{
+	
+	var id = $("#id").val();		
+	id = (parseInt(id) + parseInt(1));
+	$("#id").val(id);		
+					
+	$("#taula").append('<tr id="row['+id+']"><td><input type="hidden" value="'+idA+'" name="Dades['+id+'][id]"></input><select name="Dades['+id+'][Select]">'+s+'</select></td><td><input name="Dades['+id+'][Dada]" value="'+d+'" type="text"></td><td><input name="Dades['+id+'][Notes]" value="'+n+'" type="text"></td><td><input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input></td></tr>');
+																				
+}
+
+
+function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
+
+</script>
    
     <TD colspan="3" class="CONTINGUT">
      	 
@@ -23,17 +67,25 @@
      </form>    
 
       
-  <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
+  <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
       
-	<form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">            
+	<form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">
+		            
 	 	<DIV class="REQUADRE">	 		
 	    	<table class="FORMULARI" width="500px">	    			    		
-                <?php echo $FAgenda?>                								
+                <?php echo $FAgenda?>                			    
+			    <tr><td></td><td colspan="3">			    		
+			    		<input type="hidden" value="<?php echo sizeof($DADES) ?>" id="id"></input>
+			    		<table id="taula">			    	
+			    		</table>			    	
+			    	</td>
+			    </tr>                	             
+			    <tr><td></td><td colspan="3"><input type="button" value="+" id="mesdades"></input></td></tr>   								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
 	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
+	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE','confirm'=>'Segur que vols guardar els canvis?'))?>
 	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gAgenda?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
 	            	</td>
 	            </tr>                	 

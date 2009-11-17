@@ -17,7 +17,7 @@
       	<TABLE class="DADES">
                 <?php                
                 	
-                	if(empty($MISSATGES)): echo '<tr><td>Avui no hi ha cap missatge.</td></tr>'; endif; 	
+                	if(empty($MISSATGES)): echo '<tr><td></td></tr>'; endif; 	
                 
 					foreach($MISSATGES as $M):
 						echo '<TR>';                  		
@@ -36,7 +36,7 @@
       	<TABLE class="DADES">
                 <?php       
                 
-                	if(empty($MISSATGES)): echo '<tr><td>Avui no tens cap feina extra.</td></tr>'; endif;
+                	if(empty($MISSATGES)): echo '<tr><td></td></tr>'; endif;
                 
 					foreach($TASQUES->getResults() as $T):
 						$U = $T->getUsuarisRelatedByQuimana()->getNom()." ".$T->getUsuarisRelatedByQuimana()->getCog1();
@@ -54,6 +54,9 @@
 		<DIV class="TITOL">Activitats per avui</DIV>
       	<TABLE class="DADES">
                 <?php                
+                
+                	if(empty($ACTIVITATS)): echo '<tr><td></td></tr>'; endif;
+                
 					foreach($ACTIVITATS as $A):						
 						echo '<TR>';                      	
 	                  	echo '<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.$A['NOM_ACTIVITAT'].'</TD>';

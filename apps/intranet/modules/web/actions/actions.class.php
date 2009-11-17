@@ -249,8 +249,8 @@ class webActions extends sfActions
 	   	   
 	   //Per defecte mostrem les notícies
 	   case 'no':	   		
-	   default: 
-	   	    $this->ACTIVITATS_LLISTAT = ActivitatsPeer::getNoticies();             
+	   default: 	   	
+	   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);             
 	 		$this->ACCIO = 'noticies';	         
 	 		$this->getUser()->setAttribute('HEFETCERCA',false);
 	 		$this->getUser()->setAttribute('NODES',array());	 	   	

@@ -19,21 +19,50 @@ class MissatgesmailingPeer extends BaseMissatgesmailingPeer
 	static public function sendProvaMessageId($idMissatge,$email)
 	{
 		
+		$OM = MissatgesmailingPeer::retrieveByPK($idMissatge);
+		MissatgesmailingPeer::sendMail($OM->getTitol(),$OM->getText(),$email,'informatica@casadecultura.org');
+						
 	}
 	
 	static public function sendMessageId($idMissatge)
 	{
 		
-		//Recuperem les llistes
-		foreach(MissatgesllistesPeer::getLlistesMissatge($idMissatge) as $L)
-		{
-			//Recuperem els usuaris de la llista a qui s'ha d'enviar el missatge
-			foreach($L->getUsuaris() as $U)
-			{
-				//Fem el tractament de l'usuari per agafar-li el correu i enviar-li. 
-			}
-		}
+		$OM = MissatgesmailingPeer::retrieveByPK($idMissatge);
 		
+		if($OM instanceof Missatgesmailing):
+		
+			//Recuperem les llistes			
+			foreach($OM->getLlistesEnviament() as $L)
+			{																						
+				foreach($L->getMailsUsuaris() as $mail)
+				{
+					MissatgesmailingPeer::sendMail($OM->getTitol(),$OM->getText(),$mail,'llista@casadecultura.org');
+				}
+			}
+			
+		endif;
+				
+	}
+	
+	
+	static public function sendMail($subject,$mailBody,$mailTo,$mailFrom)
+	{
+		
+		try
+		{
+			
+		  $mailer = new Swift(new Swift_Connection_NativeMail());
+		  $message = new Swift_Message($subject, $mailBody, 'text/html');
+		  		 
+		  $mailer->send($message, $mailTo, $mailFrom);
+		  $mailer->disconnect();		  
+		  
+		}
+		catch (Exception $e) {
+			 
+		  $mailer->disconnect();		  		  		  
+		  		  		 		  
+		}
 		
 	}
 	
