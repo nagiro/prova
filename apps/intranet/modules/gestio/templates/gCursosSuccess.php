@@ -1,4 +1,8 @@
 <?php use_helper('Form'); ?>
+<?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
+<?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
+
+
 
 <STYLE>
 .cent { width:100%; }
@@ -65,9 +69,9 @@
     
 	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
+	    	<table class="FORMULARI">	    		          
 	            <?php echo $FCerca; ?>
-	            <tr>
+	            <tr>	            	
 	            	<td colspan="2">
 	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
 	            		<input type="submit" name="BNOU" value="Nou curs" />

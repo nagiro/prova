@@ -19,7 +19,7 @@ class IncidenciesForm extends sfFormPropel
       'titol'         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
       'descripcio'    => new sfWidgetFormTextarea(array(),array('style'=>'width:400px')),
       'estat'         => new sfWidgetFormChoice(array('choices'=>IncidenciesPeer::getEstatSelect())),
-      'dataalta'      => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
+      'dataalta'      => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'dataresolucio' => new sfWidgetFormInputHidden(),
     ));
 

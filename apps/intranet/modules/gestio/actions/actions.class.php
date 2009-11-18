@@ -828,7 +828,20 @@ class gestioActions extends sfActions
   	$this->getUser()->setAttribute('accio','C');
   
   }
-  
+
+  public function executeSelectCodiCurs(sfWebRequest $request)
+  {
+  	
+  	$C = new Criteria();
+  	$RESPOSTA = CursosPeer::getCodisAjax($request->getParameter('q'), $request->getParameter('limit'));
+  	//var_dump($RESPOSTA);  	  	  	  	    
+    return $this->renderText(json_encode($RESPOSTA));
+    
+    //json_encode($RESPOSTA)
+    //var_dump(json_encode($RESPOSTA));
+    //return sfView::NONE;
+    
+  }
   
   public function executeSelectMaterial(sfWebRequest $request)
   {
@@ -1562,7 +1575,6 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
 
     $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'cerca','select'=>1));
-//    $this->SELECT = $this->ParReqSesForm($request,'cerca',array('select'=>1));
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->ParReqSesForm($request,'accio','CA');    
     
@@ -1595,17 +1607,17 @@ class gestioActions extends sfActions
     			$OCurs->setDatafimatricula(date('Y-m-d',time()));
     			$OCurs->setDatainici(date('Y-m-d',time()));
     			$this->getUser()->setAttribute('IDC',null);						//De moment no tenim cap curs    			    			    			    		
-    			$this->FCurs = new CursosForm($OCurs);    			
+    			$this->FCurs = new CursosForm($OCurs,array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));    			
     			$this->MODE['NOU'] = true;
     		break;
     	case 'E':    			
     			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
     			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
-				$this->FCurs = new CursosForm($OCurs);   			
+				$this->FCurs = new CursosForm($OCurs,array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));   			
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'S':    			    		        		  
-    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
+    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')),array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));
     		    $this->FCurs->bind($request->getParameter('cursos'));
     		    if($this->FCurs->isValid()):
     		    	$this->FCurs->save();
@@ -1698,21 +1710,20 @@ class gestioActions extends sfActions
   
     $this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'text',"",'cerca');
-    $this->SELECT = $this->ParReqSesForm($request,'select',2,'cerca');
+    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>"",'select'=>2));    
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->ParReqSesForm($request,'accio','CA');       
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaTextChoiceForm();       
     $this->FCerca->setChoice(array(1=>'Cursos',2=>'Alumnes')); 
-	$this->FCerca->bind(array('text'=>$this->CERCA,'select'=>$this->SELECT));
+	$this->FCerca->bind($this->CERCA);
 	
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false, 'LMATRICULES'=>false , 'VERIFICA' => false);
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { $accio = ( $this->SELECT == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
+	    if($request->hasParameter('BCERCA')) { $accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
 	    elseif($request->hasParameter('BNOU')) 	    $accio = 'N';
 	    elseif($request->hasParameter('BSUBMIT')) 	$accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
 	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
@@ -1777,12 +1788,12 @@ class gestioActions extends sfActions
     	        CursosPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
     	    break;
 		case 'CA':					
-				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA , $this->PAGINA );
+				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA['text'] , $this->PAGINA );
 				$this->SELECT = 2;
 				$this->MODE['CONSULTA'] = true;				 
 			break;		
 		case 'CC':
-				$this->CURSOS = MatriculesPeer::cercaCursos($this->CERCA , $this->PAGINA );
+				$this->CURSOS = MatriculesPeer::cercaCursos($this->CERCA['text'] , $this->PAGINA );
 				$this->SELECT = 1;
 				$this->MODE['CONSULTA'] = true;
 			break;

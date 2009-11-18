@@ -18,7 +18,7 @@ class MissatgesForm extends sfFormPropel
       'Titol'            => new sfWidgetFormInput(array(),array('class'=>'text')),
       'Text'             => new sfWidgetFormTextarea(array(),array('class'=>'text')),
       'Date'             => new sfWidgetFormInputHidden(),
-      'Publicacio'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),           
+      'Publicacio'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),           
     ));
 
     $this->setValidators(array(

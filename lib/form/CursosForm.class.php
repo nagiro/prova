@@ -14,20 +14,20 @@ class CursosForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
-      'TitolCurs'       => new sfWidgetFormInput(),
+      'TitolCurs'       => new sfWidgetFormInput(array(),array('style'=>'width:100%;')),
       'isActiu'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
-      'Places'          => new sfWidgetFormInput(),
-      'Codi'            => new sfWidgetFormInput(),
-      'Descripcio'      => new sfWidgetFormTextarea(),
-      'Preu'            => new sfWidgetFormInput(),
-      'Preur'           => new sfWidgetFormInput(),
-      'Horaris'         => new sfWidgetFormInput(),
+      'Places'          => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
+      'Codi'            => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:100 , width:500 }' , 'url'=>$this->getOption('url'))),
+      'Descripcio'      => new sfWidgetFormTextareaTinyMCE(array(),array('style'=>'width:100%;')),
+      'Preu'            => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
+      'Preur'           => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
+      'Horaris'         => new sfWidgetFormInput(array(),array('style'=>'width:50%;')),
       'Categoria'       => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCategories())),
-      'OrdreSortida'    => new sfWidgetFormInput(),
-      'DataAparicio'    => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
-      'DataDesaparicio' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
-      'DataFiMatricula' => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
-      'DataInici'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'OrdreSortida'    => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
+      'DataAparicio'    => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataDesaparicio' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataFiMatricula' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataInici'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
     ));
 
     $this->setValidators(array(
@@ -70,8 +70,7 @@ class CursosForm extends sfFormPropel
     $this->widgetSchema->setNameFormat('cursos[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
-
-    parent::setup();
+    
   }
 
   public function getModelName()

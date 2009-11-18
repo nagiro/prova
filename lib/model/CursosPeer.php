@@ -164,5 +164,22 @@ class CursosPeer extends BaseCursosPeer
       
      return $Preu;
   }
+  
+  static function getCodisAjax($query,$limit)
+  {
+  	$RET = array();
+  	$C = new Criteria();
+  	$C->addGroupByColumn(self::CODI);
+  	$C->addGroupByColumn(self::TITOLCURS);
+  	$C->addAscendingOrderByColumn(self::CODI);  	
+  	$C->add(self::CODI,$query.'%', CRITERIA::LIKE);
+  	
+  	foreach(self::doSelect($C) as $Curs):
+  		$RET[$Curs->getCodi()] = array('clau'=>$Curs->getcodi(),'text'=>$Curs->getCodi().' - '.$Curs->getTitolcurs());  		
+  	endforeach;
+  	
+  	return $RET;
+  	
+  }
     
 }

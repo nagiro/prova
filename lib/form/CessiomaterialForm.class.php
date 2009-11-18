@@ -18,8 +18,8 @@ class CessiomaterialForm extends sfFormPropel
       'Material_idMaterial' => new sfWidgetFormChoice(array('choices'=>MaterialgenericPeer::selectMaterial())),
       'Cedita'              => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
       'Estat'               => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
-      'DataCessio'          => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
-      'DataRetorn'          => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),      
+      'DataCessio'          => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataRetorn'          => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'Retornat'            => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')))
     ));
 

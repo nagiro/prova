@@ -74,9 +74,9 @@ class sfWidgetFormJQueryAutocompleter extends sfWidgetFormInput
     .autocomplete('%s', jQuery.extend({}, {
       dataType: 'json',
       parse:    function(data) {
-        var parsed = [];
-        for (key in data) {
-          parsed[parsed.length] = { data: [ data[key], key ], value: data[key], result: data[key] };
+        var parsed = [];        
+        for (key in data) {        	
+          parsed[parsed.length] = { data: [ data[key]['text'], data[key]['clau'] ], value: data[key]['text'], result: data[key]['clau'] };		  
         }
         return parsed;
       }
