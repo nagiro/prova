@@ -16,7 +16,7 @@ class MatriculesPeer extends BaseMatriculesPeer
    const ERROR = "10";
    const BAIXA = "9";
    const CANVI_GRUP = "13";
-   const PROCES_PAGAMENT = "P";            //Truncat abans del pagament
+   const EN_PROCES = "25";
    const DEVOLUCIO = '11';
       
    const REDUCCIO_CAP             = '16';
@@ -79,6 +79,19 @@ class MatriculesPeer extends BaseMatriculesPeer
          case self::PAGAMENT_TELEFON : return 'Matrícula per telèfon';
          case self::PAGAMENT_TRANSFERENCIA : return 'Ingrés bancari';
       }
+  }
+  
+  static function getCursosMatriculacio()
+  {
+  	
+  	$C = new Criteria();
+
+	$C->add(CursosPeer::ISACTIU,true);     
+	$C->addDescendingOrderByColumn(CursosPeer::CATEGORIA);
+	$C->addDescendingOrderByColumn(CursosPeer::CODI);
+
+	return CursosPeer::doSelect($C);
+  	
   }
   
   static function cercaCursos($CERCA , $PAGINA = 1)
@@ -178,7 +191,7 @@ class MatriculesPeer extends BaseMatriculesPeer
   					self::BAIXA => 'Baixa',
   					self::CANVI_GRUP => 'Canvi de grup',
   					self::DEVOLUCIO => 'Devolució',
-  					self::PROCES_PAGAMENT => 'En procès de pagament'  					  	
+  					self::EN_PROCES => 'En procès de pagament'  					  	
   	);  
            
   }
@@ -257,7 +270,7 @@ class MatriculesPeer extends BaseMatriculesPeer
         case self::ERROR : return 'Error internet';
         case self::BAIXA : return 'Baixa';
         case self::CANVI_GRUP : return 'Canvi de grup';
-        case self::PROCES_PAGAMENT: return 'En procès de pagament';
+        case self::EN_PROCES: return 'En procès de pagament';
         default : return 'NO ESPECIFICAT';  
      }   
   }

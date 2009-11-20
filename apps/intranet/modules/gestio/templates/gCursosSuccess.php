@@ -18,7 +18,7 @@
 
 	$(document).ready( function() { 
 		$('#cerca_select').change( function() {
-			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); 			
+			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit();			
 		});
 	});
 	
@@ -39,25 +39,20 @@
 	}
 	
 
-	function ValidaFormulari(){
-		if(vacio(D_CODI.value) == false) { alert('Codi no pot estar en blanc.'); return false; }		
-		if(vacio(D_TITOL.value) == false) { alert('TITOL no pot estar en blanc.'); return false; } 
-		if(vacio(D_PLACES.value) == false) { alert('PLACES no pot estar en blanc.'); return false; }
-		if(vacio(D_PREU.value) == false) { alert('PREU no pot estar en blanc.'); return false; }
-		if(vacio(D_PREUR.value) == false) { alert('PREU REDUIT no pot estar en blanc.'); return false; }
-		if(vacio(D_HORARIS.value) == false) { alert('HORARIS no pot estar en blanc.'); return false; }
-		if(D_CATEGORIA.selectedIndex<0){ alert('CATEGORIA no pot estar en blanc.'); return false; }
-		if(vacio(D_DATAAPARICIO.value) == false) { alert('DATA APARICIÓ no pot estar en blanc.'); return false; }
-		if(vacio(D_DATADESAPARICIO.value) == false) { alert('DATA DESAPARICIÓ no pot estar en blanc.'); return false; }
-		if(vacio(D_DATAFIMATRICULA.value) == false) { alert('DATA FI MATRÍCULA no pot estar en blanc.'); return false; }
-		if(vacio(D_DATAINICI.value) == false) { alert('DATA INICI no pot estar en blanc.'); return false; }
-		 
-		if(validaData(D_DATAAPARICIO.value) == false ) { alert('DATA APRICIÓ té un format incorrecte.'); } 
-		if(validaData(D_DATADESAPARICIO.value) == false ) { alert('DATA DESAPRICIÓ té un format incorrecte.'); }
-		if(validaData(D_DATAFIMATRICULA.value) == false ) { alert('DATA FI MATRÍCULA té un format incorrecte.'); }
-		if(validaData(D_DATAINICI.value) == false ) { alert('DATA INICI té un format incorrecte.'); }
+	function ValidaFormulari(){		
+		if(vacio(cursos_Codi.value) == false) { alert('Codi no pot estar en blanc.'); return false; }		
+		if(vacio(cursos_TitolCurs.value) == false) { alert('TITOL no pot estar en blanc.'); return false; } 
+		if(vacio(cursos_Places.value) == false) { alert('PLACES no pot estar en blanc.'); return false; }
+		if(vacio(cursos_Preu.value) == false) { alert('PREU no pot estar en blanc.'); return false; }
+		if(vacio(cursos_Preur.value) == false) { alert('PREU REDUIT no pot estar en blanc.'); return false; }
+		if(vacio(cursos_Horaris.value) == false) { alert('HORARIS no pot estar en blanc.'); return false; }
+		if(cursos_Categoria.selectedIndex<0){ alert('CATEGORIA no pot estar en blanc.'); return false; }
+		if(vacio(cursos_DataAparicio_day.value) == false) { alert('DATA APARICIÓ no pot estar en blanc.'); return false; }
+		if(vacio(cursos_DataDesaparicio_day.value) == false) { alert('DATA DESAPARICIÓ no pot estar en blanc.'); return false; }
+		if(vacio(cursos_DataFiMatricula_day.value) == false) { alert('DATA FI MATRÍCULA no pot estar en blanc.'); return false; }
+		if(vacio(cursos_DataInici_day.value) == false) { alert('DATA INICI no pot estar en blanc.'); return false; }		 		
 		
-		if(validaCodi(D_CODI.value) == false ) { alert('CODI té un format incorrecte.'); }
+		if(validaCodi(cursos_Codi.value) == false ) { alert('CODI té un format incorrecte.'); }
 		 
 	}
 
@@ -81,27 +76,46 @@
 	     </DIV>
      </form>  
 
-  <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
-            
-   	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
+  <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
+
+   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
 	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=C'); ?></div>
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=CA'); ?></div>
+	    	<table class="FORMULARI" width="550px">
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <?php echo $FCursCodi; ?>                								
+                <tr>
+                	<td></td>
+		            <td colspan="2" class="dreta">
+	            		<br>	            		
+	            		<?php echo submit_tag('Segueix editant...',array('name'=>'BSAVECODICURS','class'=>'BOTO_ACTIVITAT'))?>
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+     </form>         
+
+  <?php ELSEIF( $MODE == 'EDICIO_CONTINGUT' ): ?>
+            
+   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
+	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=CA'); ?></div>
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
                 <?php echo $FCurs; ?>                								
                 <tr>
                 	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE')); ?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos?accio=D',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?')); ?>
+		            <td colspan="2" class="dreta">
+	            		<br>	            		
+	            		<?php echo link_to('<input type="button" value="X Esborra" class="BOTO_ACTIVITAT" >','gestio/gCursos?accio=D'); ?>
+	            		<?php echo submit_tag('Finalitza',array('name'=>'BSAVECURS','class'=>'BOTO_ACTIVITAT'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
       	</DIV>
      </form>         
       
-    <?php ELSEIF( $MODE['LLISTAT_ALUMNES'] ): ?>
+    <?php ELSEIF( $MODE == 'LLISTAT_ALUMNES' ): ?>
 
      <DIV class="REQUADRE">     
         <DIV class="TITOL">Llistat d'alumnes </DIV>
@@ -138,12 +152,12 @@
 						$CAT_ANT = $C->getCategoria(); $SPAN = ""; $PLACES = CursosPeer::getPlaces($C->getIdcursos());											
                       	$PAR = ParImpar($i++);	                      	
 						echo '<TR>
-								<TD class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos".getParam( 'E' , $C->getIdcursos() , $CERCA ) , array('class' => 'tt2') ).'</TD>
+								<TD class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos?accio=EC&IDC=".$C->getIdcursos() , array('class' => 'tt2') ).'</TD>
 								<TD class="'.$PAR.'">'.$C->getTitolcurs().'</TD>
 								<TD class="'.$PAR.'">'.$C->getPreu().'€ </TD>
 								<TD class="'.$PAR.'">'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>							
 								<TD class="'.$PAR.'">'.$C->getDatainici('d-m-Y').'</TD>
-								<TD class="'.$PAR.'">'.link_to('L','gestio/gCursos'.getParam('L' , $C->getIdcursos() )).'</TD>
+								<TD class="'.$PAR.'">'.link_to(image_tag('template/user.png').'<span>Llistat d\'alumnes matriculats.</span>','gestio/gCursos?accio=L&IDC='.$C->getIdcursos() , array('class'=>'tt2') ).'</TD>
 						</TR>';
 					endforeach;
 				}                    

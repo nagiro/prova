@@ -1,4 +1,6 @@
 <?php use_helper('Form')?>
+<?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
+<?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
  
 
 <STYLE>
@@ -78,7 +80,7 @@
 	     </DIV>
      </form>   
 
-	<?php IF($MODE['CONSULTA']): ?>      
+	<?php IF( $MODE == 'CONSULTA' ): ?>      
         
     	<?php IF($SELECT == 2): ?>
 
@@ -134,25 +136,64 @@
 
 	     <?php endif; ?>
 
-  <?php ELSEIF( $MODE['NOU'] || $MODE['EDICIO'] ):  ?>
+  <?php ELSEIF( $MODE == 'MAT_USUARI' ):  ?>
 
-	 <form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+ 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+	    <DIV class="REQUADRE">	    
+	    	<table class="FORMULARI" width="100%">
+	 			<?php echo $FMatricula; ?>
+	 		
+	 			<td colspan="2" class="dreta"><br>	            		
+	            	<?php echo submit_tag('Segueix matriculant...',array('name'=>'BSELCURS','class'=>'BOTO_ACTIVITAT')) ?>
+	            </td>
+	 		      
+	        </table>
+	     </DIV>
+     </form>	
+
+  <?php ELSEIF( $MODE == 'NOU' ):  ?>
+  
+ 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+	    <DIV class="REQUADRE">	    
+	    	<table class="DADES">
+	 			<?php 
+					if( sizeof($CURSOS) == 0 ):
+						echo '<TR><TD class="LINIA" colspan="3">No hi ha cap curs actiu.</TD></TR>';
+					else: 
+						echo '<TR><TD class="TITOL"></TD><TD class="TITOL">CODI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD><TD class="TITOL">PREU</TD><TD class="TITOL">PLACES</TD></TR>';
+						$i = 0;
+						foreach($CURSOS as $C):
+	                      	$PAR = ParImpar($i++);
+	                      	echo '<TR>							
+	                      			<TD class="LINIA">'.radiobutton_tag('IDC', $C->getIdcursos(), true).'</TD>
+									<TD class="LINIA">'.$C->getCodi().'</TD>
+									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
+									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
+									<TD class="LINIA">'.$C->getPreu().'/'.$C->getPreur().'</TD>
+									<TD class="LINIA">'.$C->countMatriculats().'/'.$C->getPlaces().'</TD>
+								  </TR>';                		                 															                		                 															
+	                    endforeach;
+	                    echo '<td colspan="6" class="dreta"><br>';	            		
+	            		echo submit_tag('Segueix matriculant...',array('name'=>'BSAVECURS','class'=>'BOTO_ACTIVITAT'));
+	            		echo '</td>';
+	                    
+	                 endif;                     
+	             ?>      
+	        </table>
+	     </DIV>
+     </form>  
+ 
+  <?php ELSEIF( $MODE == 'EDICIO' ): ?>
+
+ 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
 	    <DIV class="REQUADRE">	    
 	    	<table class="FORMULARI">
-	    		<tr><td width="100px"></td><td></td></tr>	    			    		        
-	            <?php echo $FMatricula ?>	            
-	            <tr>
-	            	<td colspan="2" class="dreta">
-	            		<br>	            	
-	            			<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSUBMIT'))?>
-	            			<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCursos',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>	            		
-	            	</td>
-	            </tr>
+	 			<?php echo $FMatricula; ?>      
 	        </table>
 	     </DIV>
      </form>
-        
-  <?php ELSEIF( $MODE['LMATRICULES']): ?>
+ 
+  <?php ELSEIF( $MODE == 'LMATRICULES' ): ?>
   
   	     <DIV class="REQUADRE">
 	        <DIV class="TITOL">Llistat de matriculats </DIV>
@@ -181,7 +222,7 @@
 	      </DIV>
   
   
-  <?php ELSEIF( $MODE['VERIFICA'] ):
+  <?php ELSEIF( $MODE == 'VERIFICA' ):
 
      //Si hem fet una matrícula amb targeta, haurem de pagar per TPV i hem de canviar el form. 
 

@@ -14,10 +14,10 @@ class CursosForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
+      'Codi'            => new sfWidgetFormInputHidden(),
       'TitolCurs'       => new sfWidgetFormInput(array(),array('style'=>'width:100%;')),
       'isActiu'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
-      'Places'          => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
-      'Codi'            => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:100 , width:500 }' , 'url'=>$this->getOption('url'))),
+      'Places'          => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),      
       'Descripcio'      => new sfWidgetFormTextareaTinyMCE(array(),array('style'=>'width:100%;')),
       'Preu'            => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
       'Preur'           => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),
@@ -53,7 +53,6 @@ class CursosForm extends sfFormPropel
       'TitolCurs'       => 'Títol del curs: ',
       'isActiu'         => 'Està actiu? ',
       'Places'          => 'Núm de places: ',
-      'Codi'            => 'Codi: ',
       'Descripcio'      => 'Descripció: ',
       'Preu'            => 'Preu: ',
       'Preur'           => 'Preu reduït: ',

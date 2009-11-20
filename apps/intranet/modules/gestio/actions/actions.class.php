@@ -834,13 +834,9 @@ class gestioActions extends sfActions
   	
   	$C = new Criteria();
   	$RESPOSTA = CursosPeer::getCodisAjax($request->getParameter('q'), $request->getParameter('limit'));
-  	//var_dump($RESPOSTA);  	  	  	  	    
+ 	  	    
     return $this->renderText(json_encode($RESPOSTA));
-    
-    //json_encode($RESPOSTA)
-    //var_dump(json_encode($RESPOSTA));
-    //return sfView::NONE;
-    
+      
   }
   
   public function executeSelectMaterial(sfWebRequest $request)
@@ -855,6 +851,18 @@ class gestioActions extends sfActions
     return sfView::NONE;
     
   }
+  
+  
+  public function executeSelectUser(sfWebRequest $request)
+  {
+
+  	$C = new Criteria();
+  	$RESPOSTA = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'), $request->getParameter('limit'));
+ 	  	    
+    return $this->renderText(json_encode($RESPOSTA));
+  	  	
+  }
+  
   
   public function executeGActivitats(sfWebRequest $request)
   {
@@ -1584,63 +1592,79 @@ class gestioActions extends sfActions
 	$this->FCerca->bind($this->CERCA);
 	
 	//Inicialitzem variables
-	$this->MODE = array('CONSULTA'=>true,'NOU'=>false,'EDICIO'=>false,'LLISTAT_ALUMNES'=>false);
+	$this->MODE = '';
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { $accio = ( $this->CERCA['select'] == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NC';
-	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';	    
+	    if($request->hasParameter('BCERCA')) { 			$accio = ( $this->CERCA['select'] == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    	$accio = 'NC';
+	    elseif($request->hasParameter('BSAVECODICURS')) $accio = 'SC';
+	    elseif($request->hasParameter('BSAVECURS'))     $accio = 'SCC';	    
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);
     $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova  
-    
+            
     switch($accio){
-    	case 'NC':    			
-    			$OCurs = new Cursos();
-    			$OCurs->setIsactiu(true);
-    			$OCurs->setPlaces(30);
-    			$OCurs->setCodi('COD000.00');
-    			$OCurs->setDataaparicio(date('Y-m-d',time()));
-    			$OCurs->setDatadesaparicio(date('Y-m-d',time()));
-    			$OCurs->setDatafimatricula(date('Y-m-d',time()));
-    			$OCurs->setDatainici(date('Y-m-d',time()));
-    			$this->getUser()->setAttribute('IDC',null);						//De moment no tenim cap curs    			    			    			    		
-    			$this->FCurs = new CursosForm($OCurs,array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));    			
-    			$this->MODE['NOU'] = true;
+    	
+    	//Entrem un curs nou. Agafarem el codi per fer-ne un duplicat o bé un codi nou.
+    	case 'NC':    			    				    			    			
+    			$this->getUser()->setAttribute('IDC',null);
+    			$OCurs = new Cursos();    			     			
+				$this->FCursCodi = new CursosCodiForm($OCurs,array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));
+				$this->MODE = 'NOU';
     		break;
-    	case 'E':    			
-    			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
-    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
-				$this->FCurs = new CursosForm($OCurs,array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));   			
-    			$this->MODE['EDICIO'] = true;
+
+		//Si el codi existeix, carrego les dades, altrament només guardo.    		
+    	case 'SC':
+				$parametres = $request->getParameter('cursos_codi'); 			//Agafo el codi
+    			$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una còpia de l'objecte de l'últim curs amb aquest codi
+    			$OCurs->save();
+    			$this->getUser()->setAttribute('IDC',$OCurs->getIdcursos());    			    		
+    		    $this->FCurs = new CursosForm($OCurs);							//Passem al formulari el curs copiat.    		        		        		    
+				$this->MODE = 'EDICIO_CONTINGUT';       		    	   		    	     		        		        		        		        			
+    		break;    		
+    		
+    	//Editem un curs que ja existeix. 
+    	case 'EC':
+    			$OCurs = CursosPeer::retrieveByPK($request->getParameter('IDC'));
+    			if($OCurs instanceof Cursos):
+    				$this->FCurs = new CursosForm($OCurs);
+    				$this->getUser()->setAttribute('IDC',$OCurs->getIdcursos());
+    				$this->MODE = 'EDICIO_CONTINGUT';    				    				       	
+    			endif; 
+    			$this->MODE = 'EDICIO_CONTINGUT';    			
     		break;
-    	case 'S':    			    		        		  
-    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')),array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));
+    	    		
+    	//Guarda el contingut del curs
+    	case 'SCC':    			    		        		  
+    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
     		    $this->FCurs->bind($request->getParameter('cursos'));
     		    if($this->FCurs->isValid()):
     		    	$this->FCurs->save();
     		    	$this->getUser()->setAttribute('IDC',$this->FCurs->getObject()->getIdcursos());     		    
     		    endif;    		        		    
-    			$this->MODE['EDICIO'] = true;
+    			$this->MODE = 'EDICIO_CONTINGUT';
     		break;
+    		
     	case 'D': 
-    	        CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA );
-				$this->MODE['CONSULTA'] = true;				     	            	          	        
+    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+    			if($OCurs instanceof Cursos):
+    				$OCurs->delete();    	        	
+				endif;
+				$this->redirect('gestio/gCursos?accio=CA');
     	    break;
 		case 'CI' :	
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA , $this->CERCA['text']);
-				$this->MODE['CONSULTA'] = true;				 
+				$this->MODE = 'CONSULTA';				 
 			break;		
 		case 'CA' :
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA['text'] );
-				$this->MODE['CONSULTA'] = true;
+				$this->MODE = 'CONSULTA';
 			break;					
 		case 'L': 
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));
-				$this->MODE['LLISTAT_ALUMNES'] = true; 
+				$this->MODE = 'LLISTAT_ALUMNES'; 
 			break;
     }
         
@@ -1724,8 +1748,9 @@ class gestioActions extends sfActions
 
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    $accio = 'N';
-	    elseif($request->hasParameter('BSUBMIT')) 	$accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
+	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NU';
+	    elseif($request->hasParameter('BSELCURS')) 	$accio = 'SNU';
+	    elseif($request->hasParameter('BSUBMIT')) 	$accio = 'S';
 	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
     }                
     
@@ -1734,24 +1759,76 @@ class gestioActions extends sfActions
     $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova  
     
     switch($accio){
-    	case 'N': 
-    			$this->getUser()->setAttribute('IDM',0);   			
-    			$OMatricula = new Matricules();
-    			$OMatricula->setDatainscripcio(time());
-    			$OMatricula->setDescompte(0);    			    			
-    			$this->FMatricula = new MatriculesForm($OMatricula);    			
-    			$this->MODE['NOU'] = true;
+
+    	case 'NU':
+    		
+				//Si no és nou, sempre tindrem el número de matrícula. Si és nou, serà null.     		
+    			if($request->hasParameter('IDM')) $this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
+    			else $this->getUser()->setAttribute('IDM',null);
+    		
+				$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
+
+    			$this->FMatricula = new MatriculesUsuariForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
+    			$this->MODE = 'MAT_USUARI';
+  	
     		break;
-    	case 'E':    			
-    			$IDM = $request->getParameter('IDM');
-    			$this->getUser()->setAttribute('IDM',$IDM);
-    			$OMatricula = MatriculesPeer::retrieveByPK($IDM);
-				$this->FMatricula = new MatriculesForm($OMatricula);   			
-    			$this->MODE['EDICIO'] = true;
+    		
+    	//Comprovem les dades que hem entrat de l'usuari
+    	case 'SNU':
+    		
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
+    			
+    			$this->FMatricula = new MatriculesUsuariForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));    			
+    			$this->FMatricula->bind($request->getParameter('matricules_usuari'));    			
+    			if($this->FMatricula->isValid()):
+    				$this->FMatricula->save();
+    				$this->redirect('gestio/gMatricules?accio=NC');
+    			endif;
+    			$this->MODE = 'MAT_USUARI'; 
+//****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+// Faltarà acabar la matrícula. De moment també cal acabar el callback de l'usuari. 
+//****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************    			
     		break;
+    	
+    	//Fem una nova matrícula i escollim el curs al que ens volem matricular
+    	case 'NC':
+    		
+				$this->CURSOS = MatriculesPeer::getCursosMatriculacio();    		
+    			$this->getUser()->setAttribute('IDM',0);   			    			    			
+    			$this->MODE = 'NOU';
+    			
+    		break;
+    		    		
+    	//Edició d'una matrícula
+    	case 'E':    	
+    			    			
+    			//Carrego el CURS del request o bé de la sessió.
+				if($request->hasParameter('IDM')):
+					$IDM = $request->getParameter('IDM');
+					$OMatricula = MatriculesPeer::retrieveByPK($IDM);
+					$this->getUser()->setAttribute('IDM',$IDM);					
+					$this->FMatricula = new MatriculesForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
+				elseif($request->hasParameter('IDC')):
+					$IDM = 0;
+					$IDC = $request->getParameter('IDC');
+					$this->getUser()->setAttribute('IDM',0);
+					$OMatricula = new Matricules();
+					$OMatricula->setCursosIdcursos($IDC);
+					$this->FMatricula = new MatriculesForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
+				endif;     			
+    							   			
+    			$this->MODE = 'EDICIO';
+    			
+    		break;
+    		
+    	//Guardar una matricula
     	case 'S':
-    			$OMatricula = ($this->getUser()->getAttribute('IDM') == 0)?new Matricules():MatriculesPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));    		    
-    			$this->FMatricula = new MatriculesForm($OMatricula);
+    		
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			
+    			$this->FMatricula = new MatriculesForm($OMatricula);    			
     		    $this->FMatricula->bind($request->getParameter('matricules'));
     		        		    
     		    if($this->FMatricula->isValid()) { 
@@ -1767,11 +1844,12 @@ class gestioActions extends sfActions
     		    	
     		    	$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA);
     		    	
-    		    	$this->MODE['VERIFICA'] = true;
+    		    	$this->MODE = 'VERIFICA';
     		    	
-    		    } else $this->MODE['EDICIO'] = true;
+    		    } else $this->MODE = 'EDICIO';
     		    
     		break;
+    		
     	case 'OK':
     		 if($this->getRequestParameter('Ds_Response') == '0000'):
                  $matricules = $this->getRequestParameter('Ds_MerchantData');
@@ -1790,20 +1868,20 @@ class gestioActions extends sfActions
 		case 'CA':					
 				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA['text'] , $this->PAGINA );
 				$this->SELECT = 2;
-				$this->MODE['CONSULTA'] = true;				 
+				$this->MODE = 'CONSULTA';				 
 			break;		
 		case 'CC':
 				$this->CURSOS = MatriculesPeer::cercaCursos($this->CERCA['text'] , $this->PAGINA );
 				$this->SELECT = 1;
-				$this->MODE['CONSULTA'] = true;
+				$this->MODE = 'CONSULTA';
 			break;
 		case 'LMA':
 				$this->MATRICULES = MatriculesPeer::getMatriculesUsuari($request->getParameter('IDA'));				
-				$this->MODE['LMATRICULES'] = true; 
+				$this->MODE = 'LMATRICULES'; 
 			break;
 		case 'LMC':
 				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC'));
-				$this->MODE['LMATRICULES'] = true;
+				$this->MODE = 'LMATRICULES';
 			break;		
     }
   	

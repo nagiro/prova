@@ -47,14 +47,14 @@ class CursosPeer extends BaseCursosPeer
   	
 	$RET = array();
 	$C = new Criteria();
-		  	  	  
-  	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addDescendingOrderByColumn( self::DATADESAPARICIO );  	  	
+		 	  	  	  
+  	$C->addDescendingOrderByColumn( self::DATAAPARICIO );
+  	$C->addAscendingOrderByColumn( self::CATEGORIA ); 	  	
   	$C->addDescendingOrderByColumn( self::TITOLCURS );
   		
   	foreach(self::doSelect($C) as $CURS):
-  		$DATA = $CURS->getDatafimatricula();
-  		list($year,$month,$day) = explode("-",$DATA); 
+  		$DATA = $CURS->getDatafimatricula();  		  		
+		list($year,$month,$day) = explode("-",$DATA); 
   		$RET[$CURS->getIdcursos()] = $CURS->getCodi().'('.$year.'-'.$month.') - '.$CURS->getTitolcurs();
   	endforeach;
   	
@@ -171,7 +171,7 @@ class CursosPeer extends BaseCursosPeer
   	$C = new Criteria();
   	$C->addGroupByColumn(self::CODI);
   	$C->addGroupByColumn(self::TITOLCURS);
-  	$C->addAscendingOrderByColumn(self::CODI);  	
+  	$C->addAscendingOrderByColumn(self::IDCURSOS);  	
   	$C->add(self::CODI,$query.'%', CRITERIA::LIKE);
   	
   	foreach(self::doSelect($C) as $Curs):
@@ -182,4 +182,33 @@ class CursosPeer extends BaseCursosPeer
   	
   }
     
+  static public function getCopyCursByCodi($codi)
+  {
+  	$OCurs = self::getByCodi($codi);
+  	
+  	$O2 = new Cursos();
+  	$O2->setCodi($codi);
+  	
+  	if($OCurs instanceof Cursos):
+  		$O2->setTitolcurs($OCurs->getTitolcurs());
+  		$O2->setPlaces($OCurs->getPlaces());  		
+  		$O2->setDescripcio($OCurs->getDescripcio());
+  		$O2->setPreu($OCurs->getPreu());
+  		$O2->setPreur($OCurs->getPreur());
+  		$O2->setHoraris($OCurs->getHoraris());
+  		$O2->setCategoria($OCurs->getCategoria());
+  		$O2->setOrdresortida($OCurs->getOrdresortida());  		  	
+  	endif;
+  	
+  	return $O2;
+  }
+  
+  static public function getByCodi($codi)
+  {
+  	$C = new Criteria();
+  	$C->add(self::CODI, $codi);
+  	$C->addDescendingOrderByColumn(self::IDCURSOS);
+  	return self::doSelectOne($C); 	
+  }
+  
 }
