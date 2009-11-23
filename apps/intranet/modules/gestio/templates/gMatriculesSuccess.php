@@ -143,8 +143,24 @@
 	    	<table class="FORMULARI" width="100%">
 	 			<?php echo $FMatricula; ?>
 	 		
-	 			<td colspan="2" class="dreta"><br>	            		
+	 			<td colspan="2" class="dreta"><br>
+	 				<?php echo submit_tag('Crea nou usuari',array('name'=>'BADDUSER','class'=>'BOTO_ACTIVITAT')) ?>	            		
 	            	<?php echo submit_tag('Segueix matriculant...',array('name'=>'BSELCURS','class'=>'BOTO_ACTIVITAT')) ?>
+	            </td>
+	 		      
+	        </table>
+	     </DIV>
+     </form>	
+
+  <?php ELSEIF( $MODE == 'MAT_NOU_USUARI' ):  ?>
+
+ 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+	    <DIV class="REQUADRE">	    
+	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules'); ?></div>
+	    	<table class="FORMULARI" width="100%">
+	 			<?php echo $FUsuari; ?>	 		
+	 			<td colspan="2" class="dreta"><br>
+	 				<?php echo submit_tag('Guarda',array('name'=>'BSAVENEWUSER','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
 	            </td>
 	 		      
 	        </table>
@@ -182,6 +198,27 @@
 	        </table>
 	     </DIV>
      </form>  
+
+  <?php ELSEIF( $MODE == 'VALIDACIO_CURS' ):  ?>
+  
+ 	<form action="<?php echo url_for('gestio/gMatricules'); ?>" method="POST">
+	    <DIV class="REQUADRE">	 
+	    	<?php $CURS   = $MATRICULA->getCursos();?>
+	    	<?php $USUARI = $MATRICULA->getUsuaris();?>	    	   
+	    	<table class="MATRICULES">
+	    		<tr><th class="TITOL" colspan="3">RESGUARD DE MATRÍCULA</th></tr>
+	    		<tr><th>DNI: </th><td colspan="2"><?php echo $USUARI->getDni(); ?></td></tr>
+	    		<tr><th>Nom: </th><td colspan="2"><?php echo $USUARI->getNomComplet(); ?></td></tr>	    		
+	    		<tr><th>Pagament: </th><td colspan="2"><?php echo $MATRICULA->getTpagamentString(); ?></td></tr>
+	    		<tr><th>Import: </th><td colspan="2"><?php echo $MATRICULA->getPagat(); ?></td></tr>
+	    		<tr><th>Data: </th><td colspan="2"><?php echo $MATRICULA->getDatainscripcio(); ?></td></tr>
+	    		<tr><th>Reducció: </th><td colspan="2"><?php echo $MATRICULA->getTreduccioString(); ?></td></tr>
+	    		<tr><th class="TITOL">CODI</th><th class="TITOL">NOM DEL CURS</th><th class="TITOL">PREU</th></tr>	    		
+	    		<tr><td><?php echo $CURS->getCodi(); ?></td><td><?php echo $CURS->getTitolcurs(); ?></td><td><?php echo $CURS->getPreu(); ?></td></tr>	    		
+	        </table>
+	     </DIV>
+     </form>  
+
  
   <?php ELSEIF( $MODE == 'EDICIO' ): ?>
 

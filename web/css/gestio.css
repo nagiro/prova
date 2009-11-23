@@ -87,3 +87,7 @@ A.white:hover { color:white; font-weight:bold; text-decoration:none; }
 A.white:visited { color:white; font-weight:bold; text-decoration:none; }
 
 A IMG { border:0px; }
+
+.MATRICULES th { font-weight:bold; text-align:left; }
+.MATRICULES th, td { padding:2px; }
+.MATRICULES .TITOL { background:#CCCCCC; }

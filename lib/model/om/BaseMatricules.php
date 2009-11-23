@@ -1001,7 +1001,7 @@ abstract class BaseMatricules extends BaseObject  implements Persistent {
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
 		$keys = MatriculesPeer::getFieldNames($keyType);
-
+		
 		if (array_key_exists($keys[0], $arr)) $this->setIdmatricules($arr[$keys[0]]);
 		if (array_key_exists($keys[1], $arr)) $this->setUsuarisUsuariid($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setCursosIdcursos($arr[$keys[2]]);

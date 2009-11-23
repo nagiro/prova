@@ -34,12 +34,12 @@ class UsuarisForm extends sfFormPropel
     $this->setValidators(array(
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
-      'DNI'               => new sfValidatorString(array('max_length' => 12, 'required' => false)),
-      'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => false)),
-      'Nom'               => new sfValidatorString(array('max_length' => 30, 'required' => false)),
-      'Cog1'              => new sfValidatorString(array('max_length' => 30, 'required' => false)),
-      'Cog2'              => new sfValidatorString(array('max_length' => 30, 'required' => false)),
-      'Email'             => new sfValidatorString(array('max_length' => 30, 'required' => false)),
+      'DNI'               => new sfValidatorString(array('max_length' => 12, 'required' => true)),
+      'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => true)),
+      'Nom'               => new sfValidatorString(array('max_length' => 30, 'required' => true)),
+      'Cog1'              => new sfValidatorString(array('max_length' => 30, 'required' => true)),
+      'Cog2'              => new sfValidatorString(array('max_length' => 30, 'required' => true)),
+      'Email'             => new sfValidatorEmail(array('max_length' => 30, 'required' => true)),
       'Adreca'            => new sfValidatorString(array('required' => false)),
       'CodiPostal'        => new sfValidatorInteger(array('required' => false)),
       'Poblacio'          => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'column' => 'idPoblacio', 'required' => false)),
@@ -77,7 +77,6 @@ class UsuarisForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
-    parent::setup();
   }
 
   public function getModelName()

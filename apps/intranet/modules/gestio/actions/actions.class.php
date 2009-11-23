@@ -1747,11 +1747,14 @@ class gestioActions extends sfActions
 	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false, 'LMATRICULES'=>false , 'VERIFICA' => false);
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { $accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NU';
-	    elseif($request->hasParameter('BSELCURS')) 	$accio = 'SNU';
-	    elseif($request->hasParameter('BSUBMIT')) 	$accio = 'S';
-	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
+	    if($request->hasParameter('BCERCA')) { 			$accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    	$accio = 'NU';
+	    elseif($request->hasParameter('BADDUSER')) 		$accio = 'ADD_USER';
+	    elseif($request->hasParameter('BSAVENEWUSER')) 	$accio = 'SAVE_NEW_USER';	    
+	    elseif($request->hasParameter('BSELCURS')) 		$accio = 'SNU';
+	    elseif($request->hasParameter('BSAVECURS')) 	$accio = 'SAVE_CURS';	    
+	    elseif($request->hasParameter('BSUBMIT')) 		$accio = 'S';
+	    elseif($request->hasParameter('BDELETE')) 		$accio = 'D';
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -1760,6 +1763,33 @@ class gestioActions extends sfActions
     
     switch($accio){
 
+    	//Crea un usuari nou per poder seguir fent la matrícula
+    	case 'ADD_USER':    		
+
+    			$OU = new Usuaris();
+    			$OU->setNivellsIdnivells(2);
+    			$OU->setHabilitat(true);
+    		
+    			$this->FUsuari = new UsuarisMatriculesForm($OU);    							    	    		
+    			$this->MODE = 'MAT_NOU_USUARI';
+    			  	
+    		break;
+    		
+    	//Guarda el nou usuari
+    	case 'SAVE_NEW_USER':
+    			    			    			
+    			$this->FUsuari = new UsuarisMatriculesForm(new Usuaris());    			
+    			$this->FUsuari->bind($request->getParameter('usuaris'));
+    			if($this->FUsuari->isValid()):
+    				$this->FUsuari->save();    			
+    				$this->redirect('gestio/gMatricules?accio=NU');
+    			endif; 
+    			    							    	    		
+    			$this->MODE = 'MAT_NOU_USUARI';
+    			  	
+    		break;
+    	
+    	
     	case 'NU':
     		
 				//Si no és nou, sempre tindrem el número de matrícula. Si és nou, serà null.     		
@@ -1784,44 +1814,43 @@ class gestioActions extends sfActions
     			$this->FMatricula->bind($request->getParameter('matricules_usuari'));    			
     			if($this->FMatricula->isValid()):
     				$this->FMatricula->save();
+    				$this->getUser()->setAttribute('IDM',$this->FMatricula->getObject()->getIdmatricules());
     				$this->redirect('gestio/gMatricules?accio=NC');
     			endif;
-    			$this->MODE = 'MAT_USUARI'; 
-//****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
-// Faltarà acabar la matrícula. De moment també cal acabar el callback de l'usuari. 
-//****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************    			
+    			$this->MODE = 'MAT_USUARI';
+    			     			
     		break;
     	
     	//Fem una nova matrícula i escollim el curs al que ens volem matricular
     	case 'NC':
     		
-				$this->CURSOS = MatriculesPeer::getCursosMatriculacio();    		
-    			$this->getUser()->setAttribute('IDM',0);   			    			    			
+				$this->CURSOS = MatriculesPeer::getCursosMatriculacio();    		    			    			    			
     			$this->MODE = 'NOU';
     			
     		break;
-    		    		
-    	//Edició d'una matrícula
-    	case 'E':    	
-    			    			
-    			//Carrego el CURS del request o bé de la sessió.
-				if($request->hasParameter('IDM')):
-					$IDM = $request->getParameter('IDM');
-					$OMatricula = MatriculesPeer::retrieveByPK($IDM);
-					$this->getUser()->setAttribute('IDM',$IDM);					
-					$this->FMatricula = new MatriculesForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
-				elseif($request->hasParameter('IDC')):
-					$IDM = 0;
-					$IDC = $request->getParameter('IDC');
-					$this->getUser()->setAttribute('IDM',0);
-					$OMatricula = new Matricules();
-					$OMatricula->setCursosIdcursos($IDC);
-					$this->FMatricula = new MatriculesForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
-				endif;     			
-    							   			
-    			$this->MODE = 'EDICIO';
-    			
+
+    	//Guardem la matrícula al curs que hem escollit
+    	case 'SAVE_CURS':    		
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));    			
+    			$OMatricula->setCursosIdcursos($request->getParameter('IDC'));
+    			$OMatricula->setDatainscripcio(date('Y-m-d H:m',time()));
+    			$Preu = CursosPeer::CalculaPreu($OMatricula->getCursosIdcursos(),$OMatricula->getTreduccio());
+    			$OMatricula->setPagat($Preu);
+    			$OMatricula->save();
+    			$this->redirect('gestio/gMatricules?accio=FP');
     		break;
+
+    	//Mostra la prematrícula i espera a que premi el botó de pagament
+    	case 'FP':
+    		
+    			$this->MATRICULA = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			
+    			$this->MODE = 'VALIDACIO_CURS';
+    		break;
+    		
+    	//***********************************************************************************************
+    	//******* Falta acabar
+    	//***********************************************************************************************
     		
     	//Guardar una matricula
     	case 'S':

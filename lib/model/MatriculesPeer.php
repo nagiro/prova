@@ -164,7 +164,34 @@ class MatriculesPeer extends BaseMatriculesPeer
      return MatriculesPeer::doSelectJoinAll($C);
           
   }
-   
+
+  //M'informa si actualment estic dins el període de matriculació dels antics alumnes. 
+  static function isPeriodeAnticsAlumnes()
+  {
+
+  	$DiAa = TipusPeer::getDataIniciMatriculaAnticsAlumnes();
+  	$DiT  = TipusPeer::getDataIniciMatriculaTothom();
+  	$avui = date('Y-m-d',time());
+  	
+  	return ($DiAa < $avui && $avui < $DiT );
+  	
+  }
+  
+  //Ens diu si l'alumne ha fet algun curs durant l'últim any i mig. 
+  static function isAnticAlumne($idU)
+  {
+  	
+  	$DATA_ANY_I_MIG_ENRRERA = mktime(0,0,0,date('m',time())-18,date('d',time()),date('Y',time()));
+  	
+  	$C = new Criteria();
+  	$C->add(self::USUARIS_USUARIID, $idU);
+  	$C->addJoin(self::CURSOS_IDCURSOS,CursosPeer::IDCURSOS);
+  	$C->add(CursosPeer::DATAINICI, $DATA_ANY_I_MIG_ENRRERA, CRITERIA::GREATER_THAN);
+    	
+  	return (self::doCount($C) == 0)?false:true;    	
+  	
+  }
+  
   static function cercaUsuariMatricules($idU, $PAGINA = 1)
   {
     

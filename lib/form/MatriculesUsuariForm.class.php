@@ -15,20 +15,20 @@ class MatriculesUsuariForm extends sfFormPropel
   {  	
   	
   	$this->setWidgets(array(
-      'idMatricules'     => new sfWidgetFormInputHidden(),  	    	  
+      'idMatricules'     => new sfWidgetFormInputHidden(),
+  	  'Usuaris_UsuariID' => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:20 , width:500 }' , 'url'=>$this->getOption('url'))),  	    	    	  
   	  'Cursos_idCursos'  => new sfWidgetFormInputHidden(),  	  
       'Estat'            => new sfWidgetFormInputHidden(),
       'Comentari'        => new sfWidgetFormInputHidden(),
       'DataInscripcio'   => new sfWidgetFormInputHidden(),
-      'Pagat'        	 => new sfWidgetFormInputHidden(),
-  	  'Usuaris_usuariID' => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:20 , width:500 }' , 'url'=>$this->getOption('url'))),
+      'Pagat'        	 => new sfWidgetFormInputHidden(),  	  
       'tReduccio'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectDescomptes())),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
     ));
 
     $this->setValidators(array(      
       'idMatricules'     => new sfValidatorPropelChoice(array('model' => 'Matricules', 'column' => 'idMatricules', 'required' => false)),
-      'Usuaris_usuariID' => new sfValidatorCallback(array('callback'=>array('MatriculesUsuariForm','ComprovaUsuari'), 'arguments' => array() , 'required'=>true)),
+      'Usuaris_UsuariID' => new sfValidatorCallback(array('callback'=>array('MatriculesUsuariForm','ComprovaUsuari'), 'arguments' => array() , 'required'=>true)),
       'Cursos_idCursos'  => new sfValidatorPropelChoice(array('required' => false,'model' => 'Cursos', 'column' => 'idCursos')),
       'Estat'            => new sfValidatorInteger(array('required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
@@ -39,7 +39,7 @@ class MatriculesUsuariForm extends sfFormPropel
     ));
 
     $this->widgetSchema->setLabels(array(                  
-      'Usuaris_usuariID' => 'Usuari: ',
+      'Usuaris_UsuariID' => 'Usuari: ',
       'Cursos_idCursos'  => 'Curs: ',
       'Estat'            => 'Estat: ',
       'Comentari'        => 'Comentari: ',
@@ -62,11 +62,15 @@ class MatriculesUsuariForm extends sfFormPropel
     return 'Matricules';
   }
   
-  static public function ComprovaUsuari($A,$valor)
+  static public function ComprovaUsuari($A,$idU,$arguments)
   {
   	
-	throw new sfValidatorError($A, "Error: L'usuari no ha cursat cap curs amb anterioritat");
-  	return $valor;  	
+  	//Si estem al període d'antics alumnes i no ho és, emetem error
+  	if(!MatriculesPeer::isAnticAlumne($idU) && MatriculesPeer::isPeriodeAnticsAlumnes()){
+  		throw new sfValidatorError($A, "Error: L'usuari no ha cursat cap curs amb anterioritat");
+  	}
+  	  	  	  	
+  	return $idU;  	
   }
-
+  
 }
