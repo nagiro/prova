@@ -18,7 +18,7 @@
 <TR>
 <!-- MENU -->
 	
-    <?php include_partial('menu', array( 'TIPUS_MENU' => $TIPUS_MENU , 'MENU' => $MENU , 'OBERT' => $OBERT , 'SELECCIONAT' => $SELECCIONAT) ); ?>
+    <?php include_partial('menu', array( 'TIPUS_MENU' => $TIPUS_MENU , 'MENU' => $MENU , 'OBERT' => $OBERT , 'SELECCIONAT' => $SELECCIONAT , 'USUARI' => $USUARI) ); ?>
 
 <!-- FI MENU -->
 <!-- CONTINGUT -->

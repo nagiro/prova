@@ -30,6 +30,7 @@ function showElement(theClass) {
 				    	<TR><TD class="SUBMENU2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Gestiona cursos' , 'web/gestio?accio=gc')?></TD></TR>
 		  	   	    	<TR><TD class="SUBMENU2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Gestiona reserves' , 'web/gestio?accio=gr')?></TD></TR>
 		  	   	    	<TR><TD class="SUBMENU2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Gestiona llistes' , 'web/gestio?accio=gl')?></TD></TR>
+		  	   	    	<?php echo AltresApps($USUARI); ?>
 		  	   	  	</TABLE>
 		  	   	</TD></TR>
 		  	    <TR><TD id="REGISTRAT"><?php echo link_to("TANCA SESSIÓ" , 'web/logout')?></TD></TR>		  	   	
@@ -95,10 +96,16 @@ function showElement(theClass) {
   			else return '<TR><TD class="SUBMENU3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';
   			break; 
   	}
-  	
-  	
-  	
+  	  	
   }
   
+  function AltresApps($USUARI)
+  {  	
+  	$PERMISOS = UsuarisAppsPeer::getPermisosOO($USUARI);
+	echo "<TR><TD class=\"SUBMENU2\">".image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE'))." Altres aplicacions</TD></TR>";  	 
+  	foreach($PERMISOS as $APP):  		
+  		echo "<TR><TD class=\"SUBMENU3\">".link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$APP->getNom() , $APP->getUrl() )."</TD></TR>";
+  	endforeach;  	
+  }  
 
 ?>

@@ -35,6 +35,7 @@ class webActions extends sfActions
 	//Carreguem el menú
 	$this->MENU = NodesPeer::retornaMenu();
 	$this->OBERT = $this->getUser()->getAttribute('NODES',array());
+	$this->USUARI = $this->getUser()->getAttribute('idU');
 
 	//Comprovem si està autentificat o no per mostrar el menú.
     if($this->getUser()->isAuthenticated()){
@@ -201,10 +202,11 @@ class webActions extends sfActions
      		 if($USUARI instanceof Usuaris):
      		 	$this->getUser()->setAttribute('idU',$USUARI->getUsuariid());     		
      		 	$this->getUser()->setAuthenticated(true);
-     		 	if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
-     		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }	    		   			    		
+    			if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
+     		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }
+     		 	     		 		    		   			    		
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
-     		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=gd');
+     		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=gd');     		 	
      		 else: 
      		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
      		 endif;
@@ -215,7 +217,7 @@ class webActions extends sfActions
      endif;
                
   }
-    
+  
   
   public function executeIndex(sfWebRequest $request)
   {      

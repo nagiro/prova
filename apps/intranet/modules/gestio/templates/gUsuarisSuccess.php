@@ -16,7 +16,7 @@
 	     </DIV>
      </form>  
 
-	<?php IF($MODE['CONSULTA']): ?>
+	<?php IF( isset($MODE['CONSULTA']) && $MODE['CONSULTA'] ): ?>
 
      <DIV class="REQUADRE">
         <DIV class="TITOL">Llistat d'usuaris (<?php echo $PAGER_USUARIS->getNbResults()?>)</DIV>
@@ -40,10 +40,11 @@
 
   <?php ENDIF; ?>
   
-  <?php IF($MODE['NOU'] || $MODE['EDICIO'] ): ?>
+  <?php IF( isset($MODE['NOU']) && $MODE['NOU'] || isset($MODE['EDICIO']) && $MODE['EDICIO'] ): ?>
       
-	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post" enctype="multipart/form-data">            
+	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post" enctype="multipart/form-data">  	               
 	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FUsuari?>                								
                 <tr>
@@ -60,10 +61,11 @@
   
   <?php ENDIF;?>
   
-  <?php IF($MODE['LLISTES']): ?>
+  <?php IF( isset($MODE['LLISTES']) && $MODE['LLISTES'] ): ?>
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
      <DIV class="REQUADRE">
+        <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
         <DIV class="TITOL">Llistes subscrites de'n <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                 <?php
@@ -81,6 +83,7 @@
       </DIV>
   
      <DIV class="REQUADRE">
+        <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
         <DIV class="TITOL">Llistes disponibles per a en <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                   <?php
@@ -100,9 +103,10 @@
     
   <?php ENDIF;?>
   
-  <?php IF($MODE['CURSOS']): ?>
+  <?php IF( isset($MODE['CURSOS']) && $MODE['CURSOS'] ): ?>
 
      <DIV class="REQUADRE">
+	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
         <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=N&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
       	<TABLE class="DADES">
                 <?php                 
@@ -123,9 +127,10 @@
   
   <?php ENDIF; ?>
   
-  <?php IF($MODE['REGISTRES']): ?>
+  <?php IF( isset($MODE['REGISTRES']) && $MODE['REGISTRES'] ): ?>
 
      <DIV class="REQUADRE">
+     	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
         <DIV class="TITOL">Llistat de reserves de'n <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                 <?php
@@ -140,6 +145,33 @@
       </DIV>
 
   <?php ENDIF; ?>
+  
+  <?php IF( isset($MODE['GESTIO_APLICACIONS']) && $MODE['GESTIO_APLICACIONS'] ): ?>
+
+	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
+     <DIV class="REQUADRE">
+	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
+        <DIV class="TITOL">Gestió de permisos d'aplicacions de l'usuari <?php echo $USUARI->getNomComplet() ?></DIV>        
+      	<TABLE class="DADES">
+                <?php
+
+                	foreach(AppsPeer::select() as $IDAPP => $APP):     
+                		$SELECT = (isset($LLISTAT_PERMISOS[$IDAPP]))?$LLISTAT_PERMISOS[$IDAPP]:NivellsPeer::CAP;                		
+                		           		
+                		echo '<tr><td>'.AppsPeer::getNom($IDAPP).'</td>
+                				  <td>'.select_tag('PERMIS['.$IDAPP.']',options_for_select(NivellsPeer::getSelect(),$SELECT,array('include_blank'=>true))).'</td>
+                			  </tr>';
+                	endforeach;
+                	
+                	echo '<TR><TD colspan="2">'.submit_tag('ACTUALITZA',array('name'=>'BACTUALITZA_PERMISOS','class'=>'BOTO_ACTIVITAT')).'</TD></TR>';
+                                         
+                ?>
+      	</TABLE>      
+      </DIV>
+     </form>
+
+  <?php ENDIF; ?>
+  
     
       <DIV STYLE="height:40px;"></DIV>
                 
@@ -163,6 +195,7 @@
 	  $R  = link_to(image_tag('template/page_white_stack.png').'<span>Llistes a les que està subscrit</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'L'),array('class'=>'tt2')).' ';
 	  $R .= link_to(image_tag('template/bookmark_document.png').'<span>Historial de cursos</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'C'),array('class'=>'tt2')).' ';  
 	  $R .= link_to(image_tag('template/book.png').'<span>Historial de reserves</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'R'),array('class'=>'tt2')).' ';
+	  $R .= link_to(image_tag('template/application2.png').'<span>Gestió de les aplicacions i permisos.</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'GA'),array('class'=>'tt2')).' ';
 	   
 	  return $R;
 	}

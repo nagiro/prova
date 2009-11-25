@@ -132,43 +132,57 @@ class gestioActions extends sfActions
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
 	$this->FCerca->bind($this->CERCA);
+    
+	$this->MODE = array('CONSULTA'=>true, 'NOU', 'EDICIO', 'LLISTES', 'CURSOS', 'REGISTRES', 'GESTIO_APLICACIONS');
 		
-	//Inicialitzem variables
-	$this->MODE = array('CONSULTA'=>true,'EDICIO'=>false,'NOU'=>false,'LLISTES'=>false,'CURSOS'=>false,'REGISTRES'=>false);    
-		
-    if($request->hasParameter('BNOU')) 			{ $accio = "N"; }
-    if($request->hasParameter('BCERCA')) 		{ $accio = "FC"; $this->PAGINA = 1; }
-    if($request->hasParameter('BDESVINCULA')) 	{ $accio = "DL"; }
-    if($request->hasParameter('BVINCULA')) 		{ $accio = "VL"; }
-    if($request->hasParameter('BSAVE_x'))     	{ $accio = "S"; }
+    if($request->hasParameter('BNOU')) 					{ $accio = "N"; }
+    if($request->hasParameter('BCERCA')) 				{ $accio = "FC"; $this->PAGINA = 1; }
+    if($request->hasParameter('BDESVINCULA')) 			{ $accio = "DL"; }
+    if($request->hasParameter('BVINCULA')) 				{ $accio = "VL"; }
+    if($request->hasParameter('BSAVE_x'))     			{ $accio = "S"; }
+    if($request->hasParameter('BACTUALITZA_PERMISOS')) 	{ $accio = "SGA"; }
+    
+    
     
     $this->getUser()->setAttribute('accio',$accio);
     $this->getUser()->setAttribute('pagina',$this->PAGINA);        
     
     switch($accio){
+    
+    	//Nou usuari 
        case 'N':
              $this->MODE['NOU'] = true;
              $this->getUser()->setAttribute('FidU',0);                          
              $this->FUsuari = new UsuarisForm();             
              break;
+             
+       //Edita un usuari
        case 'E':
              $this->MODE['EDICIO'] = true;    
              $USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->FUsuari = new UsuarisForm($USUARI);                          
              break;
+       
+       //Mostra les llistes a les que està subscrit un usuari
        case 'L': 
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->LLISTAT_LLISTES = LlistesPeer::getLlistesDisponibles($this->IDU);
              $this->MODE['LLISTES'] = true;
              break;
+             
+       //Mostra els cursos d'un usuari
        case 'C':
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->MODE['CURSOS'] = true;
-             break; 
+             break;
+
+       //Mostra els registres que ha fet
        case 'R':
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->MODE['REGISTRES'] = true;
              break;
+       
+       //Guarda un usuari 
        case 'S':       	
        		 $OUsuari = UsuarisPeer::retrieveByPk($this->IDU);
        		 if($OUsuari instanceof Usuaris) $this->FUsuari = new UsuarisForm($OUsuari); 
@@ -178,17 +192,37 @@ class gestioActions extends sfActions
 		     if($this->FUsuari->isValid()) $this->FUsuari->save();		     
 		     $this->MODE['EDICIO'] = true;      
 		     
-             break;       
-       case 'DL':   //Desvincula una llista de correu
+             break;
+              
+       //Desvincula un usuari de la llista de correu      
+       case 'DL':   
              $D = $request->getParameter('D');
              foreach($D['IDL'] as $IDL) LlistesPeer::desvincula($this->IDU,$IDL);
              $this->redirect("gestio/gUsuaris?accio=L");                            
              break;
-       case 'VL':   //Vincula a una llista de correu
+             
+       //Vincula un usuari a la llista de correu
+       case 'VL':
              $D = $request->getParameter('D');
              foreach($D['IDL'] as $IDL) LlistesPeer::vincula($this->IDU,$IDL);
              $this->redirect("gestio/gUsuaris?accio=L");                            
-             break;              
+             break;
+                           
+		//Gestió de permisos d'aplicacions pels usuaris
+        case 'GA':        	
+        	$this->USUARI = UsuarisPeer::retrieveByPk($this->IDU);
+        	$this->LLISTAT_PERMISOS = UsuarisAppsPeer::getPermisos($this->IDU);        				
+        	$this->MODE['GESTIO_APLICACIONS'] = true;
+        	break;
+        	
+        //Guarda la gestió d'aplicacions
+        case 'SGA':
+        	        	
+        	UsuarisAppsPeer::save($request->getParameter('PERMIS'),$this->IDU);        	        	
+        	$this->USUARI = UsuarisPeer::retrieveByPk($this->IDU);
+        	$this->LLISTAT_PERMISOS = UsuarisAppsPeer::getPermisos($this->IDU);        				
+        	$this->MODE['GESTIO_APLICACIONS'] = true;
+        	break;
     }
 
     $this->PAGER_USUARIS = UsuarisPeer::cercaTotsCamps( $this->CERCA['text'] , $this->PAGINA );
@@ -2040,8 +2074,7 @@ class gestioActions extends sfActions
 	    
 	$this->INCIDENCIES = IncidenciesPeer::getIncidencies($this->CERCA['text'], $this->PAGINA);
   
-  }
-
+  }  
     
   public function executeGCessio(sfWebRequest $request)  
   {
@@ -2103,6 +2136,7 @@ class gestioActions extends sfActions
     
     $this->CESSIONS = CessiomaterialPeer::getCessions($this->PAGINA);
   
-  }  
+  }   
+  
   
 }

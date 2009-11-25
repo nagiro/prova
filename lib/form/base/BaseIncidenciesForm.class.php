@@ -31,7 +31,7 @@ class BaseIncidenciesForm extends BaseFormPropel
       'descripcio'    => new sfValidatorString(array('required' => false)),
       'estat'         => new sfValidatorInteger(),
       'dataalta'      => new sfValidatorDate(),
-      'dataresolucio' => new sfValidatorDate(),
+      'dataresolucio' => new sfValidatorDate(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('incidencies[%s]');

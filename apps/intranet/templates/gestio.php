@@ -45,7 +45,7 @@
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Promocions','gestio/gPromocions'); ?></TD></TR>                                                                          
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Notícies','gestio/gNoticies'); ?></TD></TR>
             <TR><TD class="SUBMENU1"><?php echo imgSub1().' USUARIS'; ?></TD></TR>
-              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Gestió d\'usuaris','gestio/gUsuaris?accio=FC'); ?></TD></TR>
+              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Gestió d\'usuaris','gestio/gUsuaris?accio=FC'); ?></TD></TR>              
               <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Llistes','gestio/gLlistes'); ?></TD></TR>                                        
 			<TR><TD class="SUBMENU1"><?php echo imgSub1().' LOGIN'; ?></TD></TR>
 			  <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Logout','web/logout'); ?></TD></TR>

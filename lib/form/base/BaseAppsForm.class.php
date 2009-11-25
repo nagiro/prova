@@ -15,12 +15,14 @@ class BaseAppsForm extends BaseFormPropel
     $this->setWidgets(array(
       'app_id'            => new sfWidgetFormInputHidden(),
       'Nom'               => new sfWidgetFormTextarea(),
+      'Url'               => new sfWidgetFormTextarea(),
       'usuaris_apps_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Usuaris')),
     ));
 
     $this->setValidators(array(
       'app_id'            => new sfValidatorPropelChoice(array('model' => 'Apps', 'column' => 'app_id', 'required' => false)),
       'Nom'               => new sfValidatorString(),
+      'Url'               => new sfValidatorString(),
       'usuaris_apps_list' => new sfValidatorPropelChoiceMany(array('model' => 'Usuaris', 'required' => false)),
     ));
 
