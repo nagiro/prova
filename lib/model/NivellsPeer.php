@@ -30,4 +30,11 @@ class NivellsPeer extends BaseNivellsPeer
         
   }
 
+  //Retorna els permisos per a una aplicació que utilitza lectura, escriptura
+  static function getSelectPermisos()
+  {  
+  	return array(self::EDICIO=>'Escriptura',self::CONSULTA=>'Lectura');  	
+  }
+  
+  
 }

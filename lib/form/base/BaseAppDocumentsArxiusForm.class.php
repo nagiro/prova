@@ -14,7 +14,7 @@ class BaseAppDocumentsArxiusForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idDocument'                  => new sfWidgetFormInputHidden(),
-      'Url'                         => new sfWidgetFormTextarea(),
+      'idDirectori'                 => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsDirectoris', 'add_empty' => true)),
       'Nom'                         => new sfWidgetFormTextarea(),
       'DataCreacio'                 => new sfWidgetFormDate(),
       'app_documents_permisos_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Usuaris')),
@@ -22,7 +22,7 @@ class BaseAppDocumentsArxiusForm extends BaseFormPropel
 
     $this->setValidators(array(
       'idDocument'                  => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'column' => 'idDocument', 'required' => false)),
-      'Url'                         => new sfValidatorString(),
+      'idDirectori'                 => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
       'Nom'                         => new sfValidatorString(),
       'DataCreacio'                 => new sfValidatorDate(),
       'app_documents_permisos_list' => new sfValidatorPropelChoiceMany(array('model' => 'Usuaris', 'required' => false)),

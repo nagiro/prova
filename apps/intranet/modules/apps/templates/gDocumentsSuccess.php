@@ -3,7 +3,7 @@
 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments'); ?></div>	
 	<div class="titol">Directoris</div>		
       	<TABLE class="DADES"> 			  
-			<?php echo mostraDirectoris($DIRECTORIS,0); ?>		                   	
+			<?php echo mostraDirectoris($DIRECTORIS,$ACTUAL->getIddirectori()); ?>		                   	
     	</TABLE>    	         	
 	</DIV>
 	
@@ -11,12 +11,22 @@
 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments'); ?></div>	
 	<div class="titol">Arxius</div>		
       	<TABLE class="DADES"> 			  
-			<?php echo mostraArxius($ARXIUS); ?>		                   	
+			<?php echo mostraArxius($ACTUAL); ?>		                   	
     	</TABLE>    	         	
 	</DIV>
-	
-	
-	
+
+<?php if($ADMIN): ?>
+
+	<DIV class="REQUADRE">
+	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments'); ?></div>	
+	<div class="titol">Assigna permisos</div>		
+      	<TABLE class="DADES"> 			  
+			<?php echo $FDIRECTORIS;  ?>		                   	
+    	</TABLE>    	         	
+	</DIV>
+
+<?php endif; ?>
+		
    </TD>
 
 
@@ -26,9 +36,9 @@
 	function mostraDirectoris($DIRECTORIS,$ACTUAL)
 	{	
 		$RET = "";
-		if(isset($DIRECTORIS[$ACTUAL]) && $ACTUAL > 1):	
-			foreach($DIRECTORIS[$ACTUAL] as $FILL):
-				$RET .= '<tr><td>'.link_to($FILL['NOM'],'apps/gDocuments?accio=CD&IDD='.$FILL['ID']).'</td></tr>';				
+		if(isset($DIRECTORIS[$ACTUAL])):	
+			foreach($DIRECTORIS[$ACTUAL] as $ID => $NOM):				
+				$RET .= '<tr><td>'.link_to($NOM,'apps/gDocuments?accio=CD&IDD='.$ID).'</td></tr>';				
 			endforeach;		
 		else: 
 			$RET .= '<tr><td>'.link_to('BASE','apps/gDocuments?accio=CD&IDD=0').'</td></tr>';
@@ -38,16 +48,17 @@
 	}
 	
 	
-	function mostraArxius($ARXIUS)
+	function mostraArxius($DIRECTORI_ACTUAL_ID)
 	{	
 		$RET = "";
-		if(isset($DIRECTORIS[$ACTUAL]) && $ACTUAL > 1):	
-			foreach($DIRECTORIS[$ACTUAL] as $FILL):
-				$RET .= '<tr><td>'.link_to($FILL['NOM'],'apps/gDocuments?accio=CD&IDD='.$FILL['ID']).'</td></tr>';				
-			endforeach;		
-		else: 
-			$RET .= '<tr><td>'.link_to('BASE','apps/gDocuments?accio=CD&IDD=0').'</td></tr>';
-		endif;
+		
+		$ARXIUS = $DIRECTORI_ACTUAL_ID->getAppDocumentsArxiuss();
+		
+		if(sizeof($ARXIUS) == 0) $RET .= '<tr><td>No hi ha cap arxiu disponible</td></tr>';
+		
+		foreach($ARXIUS as $ARXIU):					
+			$RET .= '<tr><td>'.link_to($ARXIU->getNom(),'apps/gDocuments?accio=VA&IDA='.$ARXIU->idDocument()).'</td></tr>';								
+		endforeach; 				
 		
 		return $RET;
 	}
