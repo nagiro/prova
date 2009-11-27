@@ -8,9 +8,43 @@
  * @author     Your name here
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
-class AppDocumentsArxiusForm extends BaseAppDocumentsArxiusForm
+class AppDocumentsArxiusForm extends sfFormPropel
 {
-  public function configure()
+		
+  public function setup()
   {
+  	
+  	$file_src = sfConfig::get('sf_webroot').'appsupload/documents/'.$this->getObject()->getUrl();
+  	
+    $this->setWidgets(array(
+      'idDocument'                  => new sfWidgetFormInputHidden(),
+      'idDirectori'                 => new sfWidgetFormInputHidden(),
+      'url'                         => new sfWidgetFormInputFileEditableMy(array('file_src'=>$file_src)),
+      'Nom'                         => new sfWidgetFormInput(),    
+      'DataCreacio'                 => new sfWidgetFormInputHidden(),      
+    ));
+
+    $this->setValidators(array(
+      'idDocument'                  => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'column' => 'idDocument', 'required' => false)),
+      'idDirectori'                 => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
+      'Nom'                         => new sfValidatorString(),
+      'url'                         => new sfValidatorFile(array('path'=>sfConfig::get('sf_websysroot').'appsupload/documents/','required'=>false)),
+      'DataCreacio'                 => new sfValidatorDate(),   
+    ));
+
+    $this->widgetSchema->setNameFormat('app_documents_arxius[%s]');
+
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+
+    $this->widgetSchema->setLabel('Nom','Nom :');
+    $this->widgetSchema->setLabel('url','Arxiu: ');
+    $this->setDefault('DataCreacio',date('Y-m-d',time()));
+        
   }
+
+  public function getModelName()
+  {
+    return 'AppDocumentsArxius';
+  }
+	
 }

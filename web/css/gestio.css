@@ -42,6 +42,7 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 .DADES TD A { text-decoration:none; color:black; font-weight:bold; }
 .DADES TD.PAR { background-color:#DDDDDD; }
 .DADES TD.IPAR { background-color:White; }
+.DADES TH { text-align:left; font-weight:bold; }
 .DADES .TITOLCAT { background-color:rgb(243,177,154); font-weight: bolder; font-style: italic; }
 .DADES .ICOINI { width:30px; }
 .text { width:100%; }

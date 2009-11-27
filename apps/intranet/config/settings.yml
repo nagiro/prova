@@ -96,4 +96,5 @@ all:
 #    # i18n
     default_culture:        es        # Default user culture
     webroot:				/intranet/web/
+    websysroot:             /home/albert/Escriptori/htdocs/intranet/web/
     

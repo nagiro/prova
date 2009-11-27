@@ -55,7 +55,7 @@ class sfWidgetFormInputFileEditableMy extends sfWidgetFormInputFile
     $this->addRequiredOption('file_src');
     $this->addOption('is_image', false);
     $this->addOption('edit_mode', true);
-    $this->addOption('with_delete', true);
+    $this->addOption('with_delete', false);
     $this->addOption('delete_label', 'remove the current file');
     $this->addOption('template', '%file%<br />%input%<br />%delete% %delete_label%');    
   }

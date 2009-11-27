@@ -2,6 +2,9 @@
 
 class UsuarisAppsPeer extends BaseUsuarisAppsPeer
 {
+	
+	
+	
 	//Retorna una llista amb les aplicacions on hi té permís. 
 	static public function getPermisos($IDU)
 	{
@@ -46,4 +49,22 @@ class UsuarisAppsPeer extends BaseUsuarisAppsPeer
 			
 		endforeach;
 	}
+	
+	//Retorna la select amb les usuaris que poden entrar a l'aplicació
+	static public function getSelectUsuarisPermis($APPID)
+	{
+		
+		$RET = array();
+		
+		$C = new Criteria();		
+		$C->addJoin(UsuarisPeer::USUARIID,self::USUARI_ID);
+						
+		foreach(UsuarisPeer::doSelect($C) as $U):
+			$RET[$U->getUsuariid()] = $U->getDni().' - '.$U->getNomComplet();  			  		
+  		endforeach;
+		
+  		return $RET;
+		
+	}
+	
 }

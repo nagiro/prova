@@ -24,21 +24,52 @@ class appsActions extends sfActions
   public function executeGDocuments(sfWebRequest $request)
   {
   	
-    $IDU = $this->getUser()->getAttribute( 'IDU' );
-  	$IDD = $this->ParReqSesForm( $request , 'IDD' , 1 );  	
-  	$this->ACTUAL = AppDocumentsDirectorisPeer::retrieveByPK($IDD);
+    $IDU        = $this->getUser()->getAttribute('idU');
+  	$IDD        = $this->ParReqSesForm( $request , 'IDD' , 1 );
+  	$IDA		= $this->ParReqSesForm( $request , 'IDA' , null );  	  	  	
+  	$accio      = $this->ParReqSesForm( $request , 'accio' , 'CD' );
+  	$this->MODE = "CONSULTA";
+  	
+  	if($request->hasParameter('B_SAVE_UPLOAD')) $accio = 'SAVE_UPLOAD';
+  	
+  	$this->getUser()->setAttribute('accio',$accio);
+  	
+  	switch($accio){
+  		case 'UPLOAD':
+  				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
+  				if(!($OA instanceof AppDocumentsArxius)):
+  					$OA = new AppDocumentsArxius();
+  					$OA->setDatacreacio(date('Y-m-d',time()));
+  					$OA->setIddirectori($IDD);
+  				endif;  				  				  				
+  				$this->FUPLOAD = new AppDocumentsArxiusForm($OA);  				
+  				$this->MODE = 'UPLOAD';
+  			break;
+  			
+  		case 'SAVE_UPLOAD':
+  				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
+  				if(!($OA instanceof AppDocumentsArxius)):
+  					$OA = new AppDocumentsArxius();  					
+  				endif;   				  				  				
+  				$this->FUPLOAD = new AppDocumentsArxiusForm($OA);
+  				$this->FUPLOAD->bind($request->getParameter('app_documents_arxius'),$request->getFiles('app_documents_arxius'));
+  				
+  				if($this->FUPLOAD->isValid()): 
+  					$this->FUPLOAD->save();
+  					$this->redirect('apps/gDocuments?accio=CD');
+  				endif; 
+				  			
+  				$this->MODE = 'UPLOAD';
+  			break;
+  	}
+  	
+  	$this->ACTUAL = AppDocumentsDirectorisPeer::retrieveByPK($IDD);			  	
   	if(!($this->ACTUAL instanceof AppDocumentsDirectoris)):
   		$this->ACTUAL = AppDocumentsDirectorisPeer::retrieveByPK(1);
-  		$this->getUser()->setAttribute('IDD',1);
-  	endif;   	  		
-
-  	if($this->getUser()->hasCredential('admin')):
-  		$this->ADMIN = true;
-  		print_r(AppDocumentsDirectorisPeer::getSelectDirectoris());
-  	endif;  
-  	
-  	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($this->IDU);  	  
-  	$this->setLayout('gestio');
+  		$this->getUser()->setAttribute('IDD',1);			  		
+  	endif;
+  	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU);  	  
+  	$this->setLayout('gestio_apps');
   	
   }
   

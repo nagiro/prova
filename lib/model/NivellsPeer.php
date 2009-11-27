@@ -10,6 +10,7 @@
 class NivellsPeer extends BaseNivellsPeer
 {
 
+  const CREACIO = 7;
   const CAP = 6;
   const ANTICSMATRICULATS = 5;
   const CONSULTA = 4; 
@@ -33,7 +34,7 @@ class NivellsPeer extends BaseNivellsPeer
   //Retorna els permisos per a una aplicació que utilitza lectura, escriptura
   static function getSelectPermisos()
   {  
-  	return array(self::EDICIO=>'Escriptura',self::CONSULTA=>'Lectura');  	
+  	return array(self::CAP=>'Cap',self::EDICIO=>'Escriptura',self::CONSULTA=>'Lectura');  	
   }
   
   

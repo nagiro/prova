@@ -2136,7 +2136,132 @@ class gestioActions extends sfActions
     
     $this->CESSIONS = CessiomaterialPeer::getCessions($this->PAGINA);
   
-  }   
+  }
+
+  
+  public function executeGDocuments(sfWebRequest $request)
+  {
+  
+    $this->setLayout('gestio');
+
+    $this->IDD	= $this->ParReqSesForm($request,'IDD',0);    
+    $accio  	= $this->ParReqSesForm($request,'accio','GP');
+    $this->MODE = 'CERCA';       
+    	
+    if($request->isMethod('POST')){
+	    if($request->hasParameter('B_VEURE_PERMISOS')) 			$accio = 'VP';   
+	    elseif($request->hasParameter('B_NOU')) 	    		$accio = 'ND';
+	    elseif($request->hasParameter('B_SAVE_NOU'))    		$accio = 'SND';	    
+	    elseif($request->hasParameter('B_UPDATE_PERMISOS')) 	$accio = 'SAVE_UPDATE_PERMISOS';	    
+	    elseif($request->hasParameter('B_NEW_USER')) 			$accio = 'NUP';
+	    elseif($request->hasParameter('B_NOU_USUARI_PERMISOS'))	$accio = 'SAVE_NOU_USUARI_PERMISOS';
+	    elseif($request->hasParameter('B_EDITA_DIRECTORI'))		$accio = 'EDITA_DIRECTORI';
+	    elseif($request->hasParameter('B_SAVE_EDITA_DIRECTORI'))$accio = 'SAVE_EDITA_DIRECTORI';
+	    elseif($request->hasParameter('B_DELETE_DIRECTORI')) 	$accio = 'DELETE_DIRECTORI';
+    }                
+    
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    $this->getUser()->setAttribute('accio',$accio);      
+    
+    switch($accio){
+
+    	//Visualitza permisos que tenen els usuaris en el directori
+    	case 'VP':    		
+			
+    		$this->LLISTAT_PERMISOS = AppDocumentsPermisosDirPeer::getLlistatPermisos($this->IDD);    		
+    		$this->MODE = "CONSULTA";
+  	
+    		break;
+    		
+    	//Crea un directori nou
+    	case 'ND':
+    			$this->MODE = "NOU";	    			    						  	
+    		break;
+    		
+    	//Guarda un directori nou
+    	case 'SND':
+    			$NOMDIR = $request->getParameter('NOMDIR');
+    			if(!empty($NOMDIR)):
+    				AppDocumentsDirectorisPeer::save($NOMDIR, $this->IDD);
+    			endif; 
+    			$this->MODE = "CONSULTA";	    			    						  	
+    		break;
+    
+    	//Editem un directori
+    	case 'EDITA_DIRECTORI':    			    			
+    			$OD = AppDocumentsDirectorisPeer::retrieveByPK($this->IDD);
+    			$this->FDIRECTORI = new AppDocumentsDirectorisForm($OD);    			    		
+    			$this->MODE = "EDITA_DIRECTORI";						  	
+    		break;
+
+    	//Editem un directori
+    	case 'SAVE_EDITA_DIRECTORI':    			    			
+    			$OD = AppDocumentsDirectorisPeer::retrieveByPK($this->IDD);
+    			if(!($OD instanceof AppDocumentsDirectoris)) $OD = new AppDocumentsDirectoris();
+    			 
+    			$this->FDIRECTORI = new AppDocumentsDirectorisForm($OD);
+    			$this->FDIRECTORI->bind($request->getParameter('app_documents_directoris'));
+    			if($this->FDIRECTORI->isValid()):
+    				$this->FDIRECTORI->save();
+    				$this->redirect('gestio/gDocuments?accio=VP');
+    			endif;     			    		
+    			$this->MODE = "EDITA_DIRECTORI";						  	
+    		break;
+    		
+    	//Esborra un directori
+    	case 'DELETE_DIRECTORI':    			    			
+    			$OD = AppDocumentsDirectorisPeer::retrieveByPK($this->IDD);
+    			if($OD instanceof AppDocumentsDirectoris):
+    				$OD->delete();
+    				$this->redirect('gestio/gDocuments?accio=VP');
+    			endif; 
+
+    			$this->FDIRECTORI = new AppDocumentsDirectorisForm($OD);    			
+    			$this->MODE = "EDITA_DIRECTORI";						    									  	
+    		break;    		
+    		
+    		
+	   	//Actualitza un directori
+    	case 'UD':
+    			$this->MODE = "NOU";						  	
+    		break;
+
+    	//Guarda els nous permisos
+    	case 'SAVE_UPDATE_PERMISOS':				
+				foreach($request->getParameter('nivell') as $idU=>$idN):					
+					AppDocumentsPermisosDirPeer::save($idU,$idN,$this->IDD);
+				endforeach;
+				$this->redirect('gestio/gDocuments?accio=VP');
+    		break;
+    		
+    	case 'SAVE_NOU_USUARI_PERMISOS':
+    		
+    		$OP  = $request->getParameter('app_documents_permisos_dir');
+    		$OPD = AppDocumentsPermisosDirPeer::retrieveByPK($OP['idUsuari'],$OP['idDirectori']);
+    		
+    		if(!($OPD instanceof AppDocumentsPermisosDir)) $OPD = new AppDocumentsPermisosDir();
+    		
+    		$this->FPERMISOS = new AppDocumentsPermisosDirForm($OPD,array('app'=>3,'IDD'=>$this->IDD));
+    		$this->FPERMISOS->bind($OP);
+    		if($this->FPERMISOS->isValid()):
+    			$this->FPERMISOS->save();
+    			$this->redirect('gestio/gDocuments?accio=VP');
+    		endif;     		
+    		$this->MODE = 'NOU_USUARI';    		
+    		break;
+    		
+    	//Afegim un usuari a un directori
+    	case 'NUP':    			    			
+    			$this->FPERMISOS = new AppDocumentsPermisosDirForm(new AppDocumentsPermisosDir(),array('app'=>3,'IDD'=>$this->IDD));    			
+    			$this->MODE = "NOU_USUARI";						  	
+    		break;
+    		
+    	
+    }
+  	
+    $this->LLISTAT_PERMISOS = AppDocumentsPermisosDirPeer::getLlistatPermisos($this->IDD);
+    
+  }
   
   
 }
