@@ -4,8 +4,6 @@
     if(empty($ACTIVITATS_LLISTAT)): echo '<DIV>Aquest dia no hi ha cap activitat pública.<DIV>'; endif;		
 		
 	foreach($ACTIVITATS_LLISTAT as $A):
-  
-		printr($A);
 	
 		echo '<TABLE class="BOX">';
 		echo '<TR>';

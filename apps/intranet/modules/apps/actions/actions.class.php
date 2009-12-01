@@ -35,17 +35,20 @@ class appsActions extends sfActions
   	$this->getUser()->setAttribute('accio',$accio);
   	
   	switch($accio){
+  	
+  		//Mostrem el diàleg d'upload
   		case 'UPLOAD':
   				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
   				if(!($OA instanceof AppDocumentsArxius)):
   					$OA = new AppDocumentsArxius();
   					$OA->setDatacreacio(date('Y-m-d',time()));
-  					$OA->setIddirectori($IDD);
+  					$OA->setIddirectori($IDD);  				  					
   				endif;  				  				  				
   				$this->FUPLOAD = new AppDocumentsArxiusForm($OA);  				
   				$this->MODE = 'UPLOAD';
   			break;
-  			
+  		
+  		//Guardem un arxiu que hem carregat. 
   		case 'SAVE_UPLOAD':
   				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
   				if(!($OA instanceof AppDocumentsArxius)):
@@ -55,11 +58,16 @@ class appsActions extends sfActions
   				$this->FUPLOAD->bind($request->getParameter('app_documents_arxius'),$request->getFiles('app_documents_arxius'));
   				
   				if($this->FUPLOAD->isValid()): 
-  					$this->FUPLOAD->save();
+  					$this->FUPLOAD->save();  					  				  				
   					$this->redirect('apps/gDocuments?accio=CD');
   				endif; 
 				  			
   				$this->MODE = 'UPLOAD';
+  			break;
+  			
+  		//Fem un canvi de directori o tornem a una pantalla anterior i inicialitzem
+  		case 'CD':  				
+  				$this->getUser()->setAttribute('IDA',null);
   			break;
   	}
   	

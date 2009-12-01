@@ -7,15 +7,15 @@
 
 <?php if($MODE == 'CONSULTA'): ?>  
 	<DIV class="REQUADRE">
-	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments'); ?></div>	
-	<div class="titol">Directoris</div>		
+	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments?accio=CD'); ?></div>	
+	<div class="titol">Directoris <span style="font-weight:normal"> ( <?php echo $ACTUAL->getRutaActual() ?> )</span></div>		
       	<TABLE class="DADES"> 			  
 			<?php echo mostraDirectoris($DIRECTORIS,$ACTUAL->getIddirectori(),$ACTUAL->getPare()); ?>		                   	
     	</TABLE>    	         	
 	</DIV>
 	
 	<DIV class="REQUADRE">
-	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments'); ?></div>	
+	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments?accio=CD'); ?></div>	
 	<div class="titol">Arxius ( <?php echo link_to('Carrega un nou arxiu',url_for('apps/gDocuments?accio=UPLOAD'))?> )</div>		
       	<TABLE class="DADES"> 			  
 			<?php echo mostraArxius($ACTUAL); ?>		                   	
@@ -27,7 +27,7 @@
 
  	<form action="<?php echo url_for('apps/gDocuments') ?>" method="POST" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
-	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gDocuments?accio=CD'); ?></div>	    
+	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'apps/gDocuments?accio=CD'); ?></div>	    
 	    	<table class="FORMULARI" width="100%">
 	 			<?php echo $FUPLOAD; ?>
 	 		
@@ -79,7 +79,7 @@
 			$RET .= '<tr>
 						<td>'.$ARXIU->getNom().'</td>
 						<td>'.link_to(image_tag('template/blog.png').'<span>Edita el document</span>',url_for('apps/gDocuments?accio=UPLOAD&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).' 
-						'.link_to(image_tag('template/drive_disk.png').'<span>Descarrega\'t el document</span>',url_for('apps/gDocuments?accio=DESCARREGA&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).'</td>
+						'.link_to(image_tag('template/drive_disk.png').'<span>Descarrega\'t el document</span>',sfConfig::get('sf_webroot').sfConfig::get('sf_webappdocuments').$ARXIU->getUrl(),array('class'=>'tt2')).'</td>
 					</tr>';								
 		endforeach; 				
 		

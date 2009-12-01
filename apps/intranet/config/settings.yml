@@ -94,7 +94,8 @@ all:
     logging_enabled:        on
 #
 #    # i18n
-    default_culture:        es        # Default user culture
+    default_culture:        ca        # Default user culture
     webroot:				/intranet/web/
     websysroot:             /home/albert/Escriptori/htdocs/intranet/web/
+    webappdocuments:        appsupload/documents/
     

@@ -13,7 +13,7 @@
   <link rel="shortcut icon" href="/favicon.ico" />
   
   <title></title>
-    <base href="http://localhost/intranet_dev.php" />  
+    <!--   	<base href="http://localhost/intranet_dev.php" /> -->  
     <!--   	<base href="http://servidor.casadecultura.cat/intranet/intranet_dev.php" /> -->
   </head>
   <body>

@@ -14,12 +14,12 @@ class AppDocumentsArxiusForm extends sfFormPropel
   public function setup()
   {
   	
-  	$file_src = sfConfig::get('sf_webroot').'appsupload/documents/'.$this->getObject()->getUrl();
+  	$file_src = sfConfig::get('sf_webroot').sfConfig::get('sf_webappdocuments').$this->getObject()->getUrl();
   	
     $this->setWidgets(array(
       'idDocument'                  => new sfWidgetFormInputHidden(),
       'idDirectori'                 => new sfWidgetFormInputHidden(),
-      'url'                         => new sfWidgetFormInputFileEditableMy(array('file_src'=>$file_src)),
+      'url'                         => new sfWidgetFormInputFileEditableMy(array('file_src'=>$file_src,'edit_mode'=>true,'with_delete'=>false)),
       'Nom'                         => new sfWidgetFormInput(),    
       'DataCreacio'                 => new sfWidgetFormInputHidden(),      
     ));
@@ -28,7 +28,7 @@ class AppDocumentsArxiusForm extends sfFormPropel
       'idDocument'                  => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'column' => 'idDocument', 'required' => false)),
       'idDirectori'                 => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
       'Nom'                         => new sfValidatorString(),
-      'url'                         => new sfValidatorFile(array('path'=>sfConfig::get('sf_websysroot').'appsupload/documents/','required'=>false)),
+      'url'                         => new sfValidatorFile(array('path'=>sfConfig::get('sf_websysroot').sfConfig::get('sf_webappdocuments'),'required'=>false)),
       'DataCreacio'                 => new sfValidatorDate(),   
     ));
 
@@ -45,6 +45,37 @@ class AppDocumentsArxiusForm extends sfFormPropel
   public function getModelName()
   {
     return 'AppDocumentsArxius';
+  }
+  
+  public function save($conn = null)
+  {
+  	
+  	$V = $this->getValues();  	  	
+  	$OFITXER = $this->getObject();
+  	
+	$OFITXER->setNom($V['Nom']);
+	$OFITXER->setIddocument($V['idDocument']);
+	$OFITXER->setIddirectori($V['idDirectori']);
+	$OFITXER->setDatacreacio($V['DataCreacio']);
+	$OFITXER->save();		
+  	
+  	$url = sfConfig::get('sf_websysroot').sfConfig::get('sf_webappdocuments');	  	
+  	$nomA = $OFITXER->getIddirectori().'-'.$OFITXER->getIddocument();
+  	$file = $this->getValue('url');  	
+  	if($file instanceof sfValidatedFile):  		
+	  	$nomB = $file->getExtension($file->getOriginalExtension());
+	  	$nom = $nomA.$nomB;
+	    
+	  	for($i = 1; file_exists($url.$nom); $i++){
+	  		$nom = $nomA.'('.$i.')'.$nomB;		  		
+	  	}
+	  		  	
+  		$file->save($url.$nom);
+	  	$OFITXER->setUrl($nom);
+	endif;
+  	
+	$OFITXER->save();
+	  	
   }
 	
 }
