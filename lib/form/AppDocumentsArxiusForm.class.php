@@ -28,7 +28,7 @@ class AppDocumentsArxiusForm extends sfFormPropel
       'idDocument'                  => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'column' => 'idDocument', 'required' => false)),
       'idDirectori'                 => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
       'Nom'                         => new sfValidatorString(),
-      'url'                         => new sfValidatorFile(array('path'=>sfConfig::get('sf_websysroot').sfConfig::get('sf_webappdocuments'),'required'=>false)),
+      'url'                         => new sfValidatorFile(array('path'=>sfConfig::get('sf_websysroot').sfConfig::get('sf_webappdocuments'),'required'=>false,'mime_type_guessers'=>array())),
       'DataCreacio'                 => new sfValidatorDate(),   
     ));
 

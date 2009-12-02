@@ -59,8 +59,8 @@ class sfValidatorReCaptcha extends sfValidatorBase
     $this->addOption('server_path', '/verify');
     $this->addOption('server_timeout', 10);
 
-    $this->addMessage('captcha', 'The captcha is not valid (%error%).');
-    $this->addMessage('server_problem', 'Unable to check the captcha from the server (%error%).');
+    $this->addMessage('captcha', 'El text escrit no encaixa amb la imatge (%error%).');
+    $this->addMessage('server_problem', 'Problemes de connectivitat (%error%).');
   }
 
   /**

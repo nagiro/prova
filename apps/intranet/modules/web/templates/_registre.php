@@ -15,7 +15,6 @@
 		if(vacio(fRegistre.usuaris_CodiPostal.value)== false){ alert("Has d'omplir el codi postal"); return false; }
 		if(fRegistre.usuaris_Poblacio.selectedIndex<1){ alert("Has d'escollir alguna població"); return false; }				
 		if(vacio(fRegistre.usuaris_Telefon.value)== false){ alert("Has d'omplir el telèfon"); return false; }
-		if(fRegistre.VLOGIN.value != 'c!#G1'){ alert("El text de verificació no correspòn a la imatge"); return false; }
 		
 		return true;
 			
@@ -51,36 +50,43 @@
 </script>
 
 <TD colspan="3" class="CONTINGUT">
+
+<?php if($ESTAT == 'ALTA_OK'):?>
+
+
+   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>   
+	   <div>
+	   		Usuari donat d'alta correctament.<br />
+	   		Cliqui <?php echo link_to('aquí',url_for('web/login'))?><a> si vol accedir al portal de la Casa de Cultura de Girona.   
+	   </div>	   	      
+   </FIELDSET>
+
+
+<?php else: ?>
    
    <form action="<?php echo url_for('web/registrat')?>" method="post" name="fRegistre" onSubmit="return ValidaReserva(this);">
       
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>   
    <TABLE class="FORMULARI">
    	<?php
-   	 
-	   if($ESTAT == 'OK'):
-	      ?><TR><TD class="OK" colspan="2">Usuari donat d'alta correctament<BR /><BR /></TD></TR><?
-       elseif($ESTAT == 'ERROR'):
-	      ?><TR><TD class="ERROR" colspan="2">L'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui <?php echo link_to('aquí','web/reenviaContrasenya?DNI='.$FUSUARI->getValue('DNI'),array('class'=>'taronja'))?>.<BR /><BR /></TD></TR><?php       
-       endif;	
-       
-       echo $FUSUARI;
-    
+   	   
+	   if($ESTAT == 'DUPLICAT') echo '<TR><TD class="ERROR" colspan="2">L\'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui '.link_to('aquí','web/reenviaContrasenya?DNI='.$FUSUARI->getValue('DNI'),array('class'=>'taronja')).'<BR /><BR /></TD></TR>';              	               
+	   echo $FUSUARI;
+	       	
     ?>
    
-	<TR><TD><b>Verificació</b></TD><TD><?php echo image_tag('intranet/verificaLogin.png'); echo "<br />Escriu el text de la imatge: ".input_tag('VLOGIN','',array('style'=>'width:30%')); ?></TD></TR>
-   </TABLE>      
+<!-- <TR><TD><b>Verificació</b></TD><TD><?php echo image_tag('intranet/verificaLogin.png'); echo "<br />Escriu el text de la imatge: ".input_tag('VLOGIN','',array('style'=>'width:30%')); ?></TD></TR> -->
+   <TR><TD></TD><TD><br /><br /><?php echo submit_tag('Registra\'m',array('class'=>'BOTO_ACTIVITAT','style'=>'width:100px;')); ?></TD></TR> 
+   </TABLE>
+      
    </FIELDSET>       
 
-   <FIELDSET class="REQUADRE" style="width:50%"><LEGEND class="LLEGENDA">Accions</LEGEND>
-   <TABLE class="FORMULARI">
-	   <TR><TD><?php echo submit_tag('Registra\'m',array('style'=>'width:100px;')); ?> </TD><TD></TD><TD></TD></TR>                        
-   </TABLE>      
-   </FIELDSET>       
 
    
    </FORM>	
-   
+ 
+ <?php endif; ?>
+ 
    <DIV STYLE="height:40px;"></DIV>
    
 </TD>

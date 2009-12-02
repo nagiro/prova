@@ -7,18 +7,13 @@
 
 <?php if($MODE == 'CONSULTA'): ?>  
 	<DIV class="REQUADRE">		
-	<div class="titol">Directoris <span style="font-weight:normal"> ( <?php echo $ACTUAL->getRutaActual() ?> )</span></div>		
+	<div class="titol">Contingut a la carpeta : <span style="font-weight:normal"> <?php echo $ACTUAL->getRutaActual() ?> </span></div>		
       	<TABLE class="DADES" width="100%"> 			  
-			<?php echo mostraDirectoris($DIRECTORIS,$ACTUAL->getIddirectori(),$ACTUAL->getPare()); ?>		                   	
-    	</TABLE>    	         	
-	</DIV>
-	
-	<DIV class="REQUADRE">	
-	<div class="titol">Arxius ( <?php echo link_to('Carrega un nou arxiu',url_for('apps/gDocuments?accio=UPLOAD'))?> )</div>		
-      	<TABLE class="DADES" width="100%"> 			  
+			<?php echo mostraDirectoris($DIRECTORIS,$ACTUAL->getIddirectori(),$ACTUAL->getPare()); ?>
 			<?php echo mostraArxius($ACTUAL); ?>		                   	
     	</TABLE>    	         	
 	</DIV>
+	
 <?php ENDIF; ?>
 
 <?php IF($MODE == 'UPLOAD'): ?>
@@ -51,12 +46,18 @@
 	{	
 		$RET = "";
 		if(!is_null($PARE)):
-			$RET .= '<tr><td>'.link_to('<- Directori anterior ','apps/gDocuments?accio=CD&IDD='.$PARE).'</td></tr>';
+			$RET .= '<tr>
+						<td>'.link_to(image_tag('template/arrow_left.png').'<span>Retorna a la carpeta anterior</span>','apps/gDocuments?accio=CD&IDD='.$PARE,array('class'=>'tt2')).'</td>
+						<td></td>						
+					 </tr>';
 		endif; 
 		
 		if(isset($DIRECTORIS[$ACTUAL])):	
 			foreach($DIRECTORIS[$ACTUAL] as $ID => $NOM):				
-				$RET .= '<tr><td>'.link_to($NOM,'apps/gDocuments?accio=CD&IDD='.$ID).'</td></tr>';				
+				$RET .= '<tr>
+							<td>'.link_to(image_tag('template/folder.png').'<span>Obre la carpeta</span>','apps/gDocuments?accio=CD&IDD='.$ID,array('class'=>'tt2')).'</td>
+							<td>'.$NOM.'</td>
+						 </tr>';				
 			endforeach;		
 		//else: 
 		//	$RET .= '<tr><td>'.link_to('BASE','apps/gDocuments?accio=CD&IDD=0').'</td></tr>';
@@ -72,8 +73,6 @@
 		
 		$ARXIUS = $DIRECTORI_ACTUAL_ID->getAppDocumentsArxiuss();
 		
-		if(sizeof($ARXIUS) == 0) $RET .= '<tr><td>No hi ha cap arxiu disponible</td></tr>';
-		
 		foreach($ARXIUS as $ARXIU):					
 			$RET .= '<tr>						
 						<td width="40px">'.link_to(image_tag('template/blog.png').'<span>Edita el document</span>',url_for('apps/gDocuments?accio=UPLOAD&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).' 
@@ -81,6 +80,11 @@
 						<td>'.$ARXIU->getNom().'</td>
 					</tr>';								
 		endforeach; 				
+		
+		$RET .= '<tr>
+					<td>'.link_to(image_tag('template/new.png').'<span>Carrega un arxiu nou a aquesta carpeta</span>',url_for('apps/gDocuments?accio=UPLOAD&IDD='.$DIRECTORI_ACTUAL_ID->getIddirectori()),array('class'=>'tt2')).'</td>						
+					<td><- Carrega un arxiu nou a aquesta carpeta'.'</td>					
+				</tr>';
 		
 		return $RET;
 	}

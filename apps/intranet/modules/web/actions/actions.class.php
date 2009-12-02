@@ -119,19 +119,32 @@ class webActions extends sfActions
   
   public function executeRegistrat(sfWebRequest $request)
   {
+  	$this->LoadWEB($request);
+  	
   	//Inicialitzem l'usuari per defecte.  	  	
   	$this->FUSUARI = new ClientUsuarisForm(new Usuaris());
-  	$this->FUSUARI->bind($request->getParameter('usuaris'));
+  	
+  	$captcha = array(
+       'recaptcha_challenge_field' => $request->getParameter('recaptcha_challenge_field'),
+       'recaptcha_response_field'  => $request->getParameter('recaptcha_response_field'),
+     );
+     
+     $this->FUSUARI->bind(array_merge($request->getParameter('usuaris'), array('captcha' => $captcha)));
   	
   	//Comprovem que el DNI no existeixi. Si ja existeix informem l'usuari
      $C = new Criteria();
      $C->add(UsuarisPeer::DNI , $this->FUSUARI->getValue('DNI'));
   	
-  	$DUPLICAT = (UsuarisPeer::doCount($C) > 0);
-  	if($this->FUSUARI->isValid() && !$DUPLICAT) $this->FUSUARI->save();
-
-  	 if($DUPLICAT) $this->ESTAT = 'ERROR'; else $this->ESTAT = 'OK';  	     
-     $this->LoadWEB($request); $this->setTemplate('index'); $this->ACCIO = 'registre';           
+  	$DUPLICAT = (UsuarisPeer::doCount($C) > 0);  	
+  	if($this->FUSUARI->isValid() && !$DUPLICAT){
+  		$this->FUSUARI->save();  		
+  		$this->ESTAT = 'ALTA_OK';  		
+  	} else { $this->ESTAT = "ERROR_VALID"; }  	
+  	  	
+ 
+  	 if($DUPLICAT) $this->ESTAT = 'DUPLICAT';       
+     $this->setTemplate('index'); 
+     $this->ACCIO = 'registre';           
      
   }
   
@@ -142,32 +155,39 @@ class webActions extends sfActions
   	 $this->LoadWEB($request);
      $this->setTemplate('index');
 	 $this->ACCIO = 'remember';
-	 $this->dni = $request->getParameter('dni');
+	 $this->FREMEMBER = new RememberForm();	 	  	 
 	 
-	 if($request->getMethod('post') && $request->hasParameter('BREMEMBER')):	 
-	 	$dni = $request->getParameter('dni');
-	    if(empty($dni)):	    
-	    	$this->ERROR = "No ha entrat cap DNI.";
-	    	$this->ENVIAT = false;
-	    else: 
-	    	$OUsuari = UsuarisPeer::cercaDNI($dni);
-	    	if($OUsuari instanceof Usuaris): 
-	 				    			    	
-	 			$BODY = "Benvolgut/da, \n\n La seva contrasenya és : {$OUsuari->getPasswd()}.\n\n Cordialment, Casa de Cultura de Girona. ";          
-				try {
-						$mailer = new Swift(new Swift_Connection_NativeMail());
-						$message = new Swift_Message(' CCG :: Recordatori de contrasenya ', $BODY, 'text/html');
+	 if($request->getMethod('post') && $request->hasParameter('BREMEMBER')):
 	 
-						$mailer->send($message, $OUsuari->getEmail(), 'informatica@casadecultura.org');
-	  					$mailer->disconnect();
-					} catch (Exception $e) {  $mailer->disconnect(); }
-					$this->ENVIAT = true;
-					 
-			else: 
-				$this->ERROR = "L'usuari amb aquest DNI no existeix.";
-				$this->ENVIAT = false; 			
-			endif;
-		endif;	 		 	
+		$captcha = array(
+ 	      'recaptcha_challenge_field' => $request->getParameter('recaptcha_challenge_field'),
+    	   'recaptcha_response_field'  => $request->getParameter('recaptcha_response_field'),
+     	);     
+	 
+	 	$this->FREMEMBER->bind(array_merge($request->getParameter('remember'), array('captcha' => $captcha)));	 
+	 	$dni = $request->getParameter('remember[DNI]');	 
+	 	
+    	$OUsuari = UsuarisPeer::cercaDNI($dni);
+    	if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()): 
+ 				    			    	
+ 			$BODY = "Benvolgut/da, \n\n La seva contrasenya és : {$OUsuari->getPasswd()}.\n\n Cordialment, Casa de Cultura de Girona. ";          
+			try {
+					$mailer = new Swift(new Swift_Connection_NativeMail());
+					$message = new Swift_Message(' CCG :: Recordatori de contrasenya ', $BODY, 'text/html');
+ 
+					$mailer->send($message, $OUsuari->getEmail(), 'informatica@casadecultura.org');
+  					$mailer->disconnect();
+				} catch (Exception $e) {  $mailer->disconnect(); }
+				
+				$this->ENVIAT = true;
+		elseif($this->FREMEMBER->isValid()):
+			$this->ERROR = "El DNI no existeix.";
+			$this->ENVIAT = false; 			
+		else: 
+			$this->ERROR = "";
+			$this->ENVIAT = false; 								 		 			
+		endif;
+					 		 
 	 else:
 	 	$this->ERROR = "";
 	 	$this->ENVIAT = false; 
@@ -492,7 +512,7 @@ class webActions extends sfActions
   	//Entrem els BANNERS VARIABLES
 	$M_VAR = sizeof($TEMP['VAR'])-1;   //Agafem la mida de l'array de variables		
 	
-	while(sizeof($BANNERS) < 3):
+	while(sizeof($BANNERS) < 3 && (sizeof($TEMP)) > 3):
     	srand (time());
 		$NumAleatori = rand( 1 , $M_VAR );	
 		$BANNERS[$TEMP['VAR'][$NumAleatori]['IMG']] = $TEMP['VAR'][$NumAleatori];		
