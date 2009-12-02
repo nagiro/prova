@@ -28,6 +28,7 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 
 .REQUADRE { border:5px solid #CCCCCC; margin:20px; padding:20px; width:650px; }
 .REQUADRE .TITOL { font-size:10px; font-weight:bold; margin-bottom:10px;  }
+.REQUADRE .TITOL { background-color:#DDDDDD; border:1px solid #CCCCCC; padding:4px; }
 
 .REQUADRE .MENU { margin-bottom:30px; border:1px solid gray; height:40px; }
 .REQUADRE .MENU .SUBMEN { padding-top:20px; vertical-align: middle; background-color: #CCCCCC; height:30px; }
@@ -37,6 +38,9 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 .FORMULARI { }
 .FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; }
 .FORMULARI TD { padding:2px; vertical-align: middle; }
+.FORMULARI input { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
+.FORMULARI input:focus { background: #FFD7DC; }
+.FORMULARI .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:2px;  }
 .DADES { width:100%; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { text-decoration:none; color:black; font-weight:bold; }

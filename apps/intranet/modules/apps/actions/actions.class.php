@@ -76,7 +76,8 @@ class appsActions extends sfActions
   		$this->ACTUAL = AppDocumentsDirectorisPeer::retrieveByPK(1);
   		$this->getUser()->setAttribute('IDD',1);			  		
   	endif;
-  	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU);  	  
+  	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU);
+  	  	  
   	$this->setLayout('gestio_apps');
   	
   }

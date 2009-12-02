@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -20,7 +19,7 @@
   <center>
     <TABLE class="TAULA">
     <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>
-    <TR><TD class="CAPCALERA"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'logo')); ?></TD><TD class="CAPCALERA"></TD><TD class="MENU_CAPCALERA" style="text-align:right;"><?php echo image_tag('intranet/cursos.png', array()); ?></TD><TD class="MENU_CAPCALERA" style="text-align:left;"><?php echo image_tag('intranet/hospici.png', array('style'=>'margin-right:4px')); ?><?php echo image_tag('intranet/contacte.png', array()); ?></TD></TR>
+    <TR><TD class="CAPCALERA"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'logo')); ?></TD><TD class="CAPCALERA"></TD><TD class="MENU_CAPCALERA" style="text-align:right;"></TD><TD class="MENU_CAPCALERA" style="text-align:left;"></TD></TR>
 <!--  <TR><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD></TR> -->
     <TR>    
       <TD class="MENU">
