@@ -427,8 +427,10 @@ class webActions extends sfActions
 	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';		    	   		
 	   		break;
 	   		
-	   case 'im':   //Iniciem la matrícula	                                    
-            $D = $request->getParameter('D');            
+	   case 'im':   //Iniciem la matrícula
+	   		          	   				   		   		                         
+            $D = $request->getParameter('D');
+                         
             $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
             $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
             $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();
@@ -437,8 +439,8 @@ class webActions extends sfActions
             $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
             $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
             $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
-            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaTotalPreus($D['CURSOS'],$D['DESCOMPTE']);
-            $this->DADES_MATRICULA['CURSOS'] = implode('@',$D['CURSOS']);
+            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE']);
+            $this->DADES_MATRICULA['CURS'] = $D['CURS'];
               
             $matricules = $this->guardaMatricula($this->DADES_MATRICULA); 
               
@@ -453,24 +455,20 @@ class webActions extends sfActions
   
   private function guardaMatricula( $DADES_MATRICULA , $EDIT = false , $IDMATRICULA = 0 )
   {
-     $matricules = ARRAY();
+     
      $M = new Matricules();
      if($EDIT) { $M = MatriculesPeer::retrieveByPK($IDMATRICULA); $M->setNew(false); }     
      
      $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);          
-     $M->setEstat(MatriculesPeer::PROCES_PAGAMENT);        
+     $M->setEstat(MatriculesPeer::EN_PROCES);        
      $M->setComentari("Pagament internet");
      $M->setDatainscripcio($DADES_MATRICULA['DATA']);     
      $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
      $M->setTpagament(MatriculesPeer::PAGAMENT_TARGETA);
+     $M->setCursosIdcursos($DADES_MATRICULA['CURS']);
+     $M->save();
      
-     foreach(explode('@',$DADES_MATRICULA['CURSOS']) as $C):
-        $M->setCursosIdcursos($C);
-        $M->save();
-        $matricules[] = $M->getIdmatricules(); 
-     endforeach;
-     
-     return $matricules;
+     return $M->getIdmatricules();
      
   }
       

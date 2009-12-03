@@ -25,7 +25,7 @@ FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
    <?php foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
    <?php    if($CAT_ANT <> $C->getCategoria()): ?>
    <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
-			<TR><TD colspan="5" class="TITOL_CATEGORIA"><?php echo $C->getCategoria()?></TD></TR>
+			<TR><TD colspan="5" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
    <?php    endif; ?>
                        	
    		<TR>

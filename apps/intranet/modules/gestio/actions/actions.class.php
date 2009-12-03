@@ -1712,7 +1712,7 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
         
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA = $this->ParReqSesForm($request,'text',1,'cerca');
+    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>''));
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();        
@@ -1752,7 +1752,7 @@ class gestioActions extends sfActions
     	        break;    	         	 
     }
         
-    $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA,$this->PAGINA);
+    $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA['text'],$this->PAGINA);
     
   		
   }

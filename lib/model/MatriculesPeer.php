@@ -226,6 +226,7 @@ class MatriculesPeer extends BaseMatriculesPeer
   static function getMatriculesUsuari($idU){
     $C = new Criteria();
     $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
+    $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
 
     return MatriculesPeer::doSelect($C);

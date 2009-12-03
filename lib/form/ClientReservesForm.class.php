@@ -90,6 +90,8 @@ class ClientReservesForm extends sfFormPropel
       'Pressupost'         => "Necessiteu pressupost? ",
 	  'ColaboracioCCG'     => "Col·laboració CCG? ",      
       'Comentaris'         => "Comentaris: ",
+      'EspaisSolicitats'   => "Espais: ",
+      'MaterialSolicitat'  => "Material: ",
     ));
     
     $this->widgetSchema->setNameFormat('reservaespais[%s]');

@@ -42,27 +42,30 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    static function getReservesSelect($CERCA = "" , $Pagina = 1)
    {
       $C = new Criteria();
-      $C1 = $C->getNewCriterion(self::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C2 = $C->getNewCriterion(self::REPRESENTACIO , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C3 = $C->getNewCriterion(self::RESPONSABLE , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C4 = $C->getNewCriterion(self::PERSONALAUTORITZAT , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C5 = $C->getNewCriterion(self::ORGANITZADORS , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C6 = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);
-      
-      $C7 = $C->getNewCriterion(UsuarisPeer::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C8 = $C->getNewCriterion(UsuarisPeer::DNI , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C9 = $C->getNewCriterion(UsuarisPeer::COG1 , '%'.$CERCA.'%', CRITERIA::LIKE);
-      $C10 = $C->getNewCriterion(UsuarisPeer::COG2 , '%'.$CERCA.'%', CRITERIA::LIKE);
-            
-      $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5); $C1->addOr($C6); 
-      $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9); $C1->addOr($C10);
-      
-      $C->add($C1);
+      if(!empty($CERCA)):
+	      $C1 = $C->getNewCriterion(self::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C2 = $C->getNewCriterion(self::REPRESENTACIO , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C3 = $C->getNewCriterion(self::RESPONSABLE , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C4 = $C->getNewCriterion(self::PERSONALAUTORITZAT , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C5 = $C->getNewCriterion(self::ORGANITZADORS , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C6 = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      
+	      $C7 = $C->getNewCriterion(UsuarisPeer::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C8 = $C->getNewCriterion(UsuarisPeer::DNI , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C9 = $C->getNewCriterion(UsuarisPeer::COG1 , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C10 = $C->getNewCriterion(UsuarisPeer::COG2 , '%'.$CERCA.'%', CRITERIA::LIKE);
+	            
+	      $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5); $C1->addOr($C6); 
+	      $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9); $C1->addOr($C10);
+	      
+	      $C->add($C1);
+	      
+	  endif;
       
       $C->addDescendingOrderByColumn(self::DATAALTA);
       
                  
-      $P = new sfPropelPager('Reservaespais', 10);
+      $P = new sfPropelPager('Reservaespais', 20);
       $P->setPeerMethod('doSelectJoinUsuaris');
       $P->setCriteria($C);
       $P->setPage($Pagina);

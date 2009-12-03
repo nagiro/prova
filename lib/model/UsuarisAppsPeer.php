@@ -25,6 +25,7 @@ class UsuarisAppsPeer extends BaseUsuarisAppsPeer
 	{				
 		$C = new Criteria();
 		$C->add(self::USUARI_ID, $IDU);
+		$C->add(self::NIVELL_ID, NivellsPeer::CAP, CRITERIA::NOT_EQUAL);
 		$C->addJoin(self::APP_ID, AppsPeer::APP_ID);
 		
 		return AppsPeer::doSelect($C);						 				

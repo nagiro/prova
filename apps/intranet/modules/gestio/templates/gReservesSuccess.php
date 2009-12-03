@@ -38,6 +38,7 @@
       
       	<form action="<?php echo url_for('gestio/gReserves') ?>" method="POST">            
 	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gReserves?accio=C'); ?></div>
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
 	    		<tr><TD>Qui sol·licita?</TD>
@@ -68,17 +69,18 @@
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap reserva amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;
-					foreach($RESERVES->getResults() as $R):																	
-                      	$PAR = ParImpar($i++); 	                      	
-                      	echo '<TR><TD class="'.$PAR.'">'.link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</TD>
-                      	    	  <TD class="'.$PAR.'">'.$R->getUsuaris()->getNomComplet().'</TD>
-                      	          <TD class="'.$PAR.'">'.$R->getDataactivitat().'</TD>
-                      	          <TD class="'.$PAR.'">'.$R->getEstatText().'<TD>
+					foreach($RESERVES->getResults() as $R):																	                      	 	                      	
+                      	echo '<TR><TD>'.link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</TD>
+                      	    	  <TD>'.$R->getUsuaris()->getNomComplet().'</TD>
+                      	          <TD>'.$R->getDataactivitat().'</TD>
+                      	          <TD>'.$R->getEstatText().'<TD>
                       	      </TR>';
                     endforeach;
                  endif;                    
-             ?>      
-              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($RESERVES);?></TD></TR>    	
+             ?>
+              
+              <?php echo gestorPagines($RESERVES);?>
+                                	
       	</TABLE>      
       </DIV>
 
@@ -105,10 +107,11 @@ function gestorPagines($MODEL)
 {
   if($MODEL->haveToPaginate())
   {       
-  	
+  	 echo '<TR><TD colspan="3" class="TITOL">';
      echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gReserves'.getParam( null , null , $MODEL->getPreviousPage() ));
      echo " ";
      echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gReserves'.getParam( null , null , $MODEL->getNextPage()));
+     echo '</TD></TR>';
   }
 }
 

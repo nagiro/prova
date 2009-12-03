@@ -32,9 +32,8 @@ class Cursos extends BaseCursos
   }
   
   public function getCategoriaText()
-  {
-  	$idCat = $this->getCategoria();
-  	return TipusPeer::retrieveByPk($idCat)->getTipusDesc();
+  {  	
+  	return TipusPeer::retrieveByPk($this->getCategoria())->getTipusDesc();
   }
   
 }

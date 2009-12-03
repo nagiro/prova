@@ -1,4 +1,22 @@
 <?php use_helper('Form'); ?>
+<?php use_helper('Javascript')?>
+
+<script>
+
+	$(document).ready(function() {
+		var ok;
+		ok = false; 
+		$("#FORM_CURSOS").submit(function(){
+			$(".class_cursos").each(function(){				
+				if(this.checked) ok=true;
+			});
+			if(!ok) alert('Per poder-vos matricular, heu de seleccionar algun curs'); 
+			return ok; 
+		});	   
+	});
+
+</script>
+
 <style>
 	fieldset { border:3px solid #F3F3F3; margin-right:40px; padding:10px; }
 	.MISSAT { color:black; font-weight:bold; font-size:10px; vertical-align:middle; text-align:center; background-color:White; padding-bottom:10px; }
@@ -7,7 +25,7 @@
 	TEXTAREA { border:1px solid #CCCCCC; width:90%; }
 	.DADES .LINIA .blue { color:blue; }
 	.DADES .LINIA .blue:hover { color:blue; }
-	.DADES .LINIA .blue:visited { color:blue; }
+	.DADES .LINIA .blue:visited { color:blue; }	
 	
 </style>
 
@@ -97,14 +115,14 @@ function gestiona_llistes( $LLISTES , $MISSATGE ){
 
 function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
    ?>
-   <form method="post" action="<?php echo url_for('web/gestio?accio=im') ?>">
+   <form method="post" action="<?php echo url_for('web/gestio?accio=im') ?>" id="FORM_CURSOS">
    
 	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats</LEGEND>
 	              
 		   <TABLE class="DADES">
 		   
 		   <?php if(sizeof($MATRICULES)==0): ?>
-				<TR><TD>No has fet cap curs a la Casa de Cultura. Si no és així, si us plau notifica'ns-ho. </TD></TR>                                   
+				<TR><TD>No tenim constància informàtica que hagis realitzat un curs a la Casa de Cultura. Si no és així, si us plau notifica'ns-ho. </TD></TR>                                   
 		   <?php endif; ?>
 		   
 		   <?php foreach($MATRICULES as $M): ?>
@@ -131,11 +149,11 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					   <?php foreach($LCURSOS as $C): ?>                      
 					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
 					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
-								<TR><TD colspan="4" class="TITOL"><?php echo $C->getCategoria()?></TD></TR>
+								<TR><TD colspan="6" class="TITOL"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
 					                       	
 					   		<TR>
-					      		<TD><?php echo checkbox_tag('D[CURSOS][]',$C->getIdcursos(),false)?></TD>
+					      		<TD><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>
 					      		<TD><?php echo $C->getCodi()?></TD>
 					      		<TD><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
 					      		<TD><?php echo $C->getPreu()?></TD>      							
@@ -143,19 +161,18 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
 					      	</TR>                		                 										
 					   <?php $CAT_ANT = $C->getCategoria(); ?>			   
-					   <?php endforeach; ?>        
-					   <TR><TD colspan="2" class="LINIA"><b>DESCOMPTE</b></TD><TD colspan="4"><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>                      
+					   <?php endforeach; ?>        					                         
 					   </TABLE>
+					   <br /><br />
+					   <TABLE class="FORMULARI" width="100%">					   		
+					   		<TR><TD width="100px"><b>DESCOMPTE</b></TD><td><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>
+					   		<TR><TD width="100px"></TD><td><?php if(!empty($LCURSOS)) echo submit_tag('Matricula\'m',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')); ?></TD></TR>
+					   </TABLE>
+					   
 			<?php endif; ?>
 		            
 	   </FIELDSET>
-	   
-	   <?php if(!empty($LCURSOS)): ?>
-		<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>   
-			<TABLE class="FORMULARI"><TR><TD><?php echo submit_tag('Matricula\'m',array('name'=>'BMATRICULA' , 'style'=>'width:100px'))?></TD></TR></TABLE>         
-	   	</FIELDSET>
-	   <?php endif; ?>
-	   	
+	   	   	
    	</form>
    
 <?php  
@@ -170,7 +187,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
      	 
          echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
 //         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
-                           
+         
          foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
          
      else:
@@ -179,7 +196,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
      	                  
      endif;
 
-     //Carreguem totes les dades de matrícula
+     //Carreguem totes les dades de matrícula     
      foreach($DADES_MATRICULA as $K => $V) { $str = "DADES_MATRICULA[".$K."]"; echo input_hidden_tag($str,$V); }
 
 	?>	
@@ -193,16 +210,14 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
                   	<TR><TD><span class="TITOL">IMPORT </span></TD>  <TD ><?php echo $DADES_MATRICULA['PREU'].'€'; ?></TD></TR>
                   	<TR><TD><span class="TITOL">DATA </span></TD>    <TD ><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
                   	<TR><TD><span class="TITOL">DESCOMPTE </span></TD>  <TD ><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
-                  	<TR><TD><span class="TITOL">CURSOS </span></TD>  <TD >
-                  								<TABLE width="100%">
-                  								<?php foreach(explode('@',$DADES_MATRICULA['CURSOS']) as $C): ?>
-                  								<?php $CURS = CursosPeer::retrieveByPK($C);      ?>                  								
+                  	<TR><TD><span class="TITOL">CURS </span></TD>  <TD >
+                  								<TABLE width="100%">                  								
+                  								<?php $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);      ?>                  								
 	                  								<TR>
 	                  									<TD><?php echo $CURS->getCodi(); ?></TD>
 	                  									<TD><?php echo $CURS->getTitolcurs(); ?></TD>
-	                  									<TD><?php echo CursosPeer::CalculaPreu($C , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
-	                  								</TR>                  								                  								
-                  	                           <?php endforeach; ?>
+	                  									<TD><?php echo CursosPeer::CalculaPreu($CURS->getIdcursos() , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
+	                  								</TR>                  								                  								                  	                           
                   	                           </TABLE>
                   	                           </TD></TR>
                   		<TR><TD colspan="7"><?php echo submit_tag('Matricular',array('NAME'=>'BSAVE','style'=>'width:100px')); ?><BR /></TD></TR>                  	                                             	
@@ -275,27 +290,21 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 		<TABLE class="FORMULARI">
 		<td style="width:20%;"></td><td style="width:80%;"></td>
 		<?php echo missatge($MISSATGE); ?>
-		<?php echo $FRESERVA; ?>        		                                    
+		<?php echo $FRESERVA; ?>
+		<tr><th></th>
+			<td>
+			<br /><br />
+			<?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::ACCEPTADA): ?> 
+					<?php 	echo submit_tag('Sol·licita la reserva',array('class'=>'BOTO_ACTIVITAT')); ?>
+					<?php endif; ?>
+					<INPUT TYPE="BUTTON" VALUE="Feu una nova reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=gr') ?>'"> 					 
+					<INPUT TYPE="BUTTON" VALUE="Anuleu la reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=ar') ?>'">
+			</td></tr>        		                                    
 		</TABLE>      
 	</FIELDSET>
 
 	<?php endif; ?>
 
-	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>
-		<TABLE class="FORMULARI">
-			<TR>
-				<TD></TD>
-				<TD>
-					<?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::ACCEPTADA): ?> 
-					<?php 	echo submit_tag('Sol·licita la reserva',array()); ?>
-					<?php endif; ?>
-					<INPUT TYPE="BUTTON" VALUE="Feu una nova reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=gr') ?>'"> 					 
-					<INPUT TYPE="BUTTON" VALUE="Anuleu la reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=ar') ?>'">
-				</TD>
-			</TR>
-		</TABLE>
-	</FIELDSET>
-  
 <?php      
 }
 ?>
