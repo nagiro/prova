@@ -39,7 +39,6 @@
    </TD>
 
 
-
 <?php	
 	
 	function mostraDirectoris($DIRECTORIS,$ACTUAL,$PARE)
@@ -75,10 +74,11 @@
 		
 		foreach($ARXIUS as $ARXIU):					
 			$RET .= '<tr>						
-						<td width="40px">'.link_to(image_tag('template/blog.png').'<span>Edita el document</span>',url_for('apps/gDocuments?accio=UPLOAD&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).' 
-						'.link_to(image_tag('template/drive_disk.png').'<span>Descarrega\'t el document</span>',sfConfig::get('sf_webroot').sfConfig::get('sf_webappdocuments').$ARXIU->getUrl(),array('class'=>'tt2')).'</td>
-						<td>'.$ARXIU->getNom().'</td>
-					</tr>';								
+						<td width="60px">';
+			$RET .= link_to(image_tag('template/blog.png').'<span>Edita el document</span>',url_for('apps/gDocuments?accio=UPLOAD&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).' '; 
+			$RET .= link_to(image_tag('template/drive_disk.png').'<span>Descarrega\'t el document</span>',sfConfig::get('sf_webroot').sfConfig::get('sf_webappdocuments').$ARXIU->getUrl(),array('class'=>'tt2')).' ';
+			$RET .= link_to(image_tag('tango/16x16/places/user-trash.png').'<span>Esborra el document</span>',url_for('apps/gDocuments?accio=DELETE&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2','confirm'=>'Estàs segur que vols esborrar el document?')).' '; 
+			$RET .= '</td><td>'.$ARXIU->getNom().'</td></tr>';								
 		endforeach; 				
 		
 		$RET .= '<tr>

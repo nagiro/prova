@@ -65,6 +65,15 @@ class appsActions extends sfActions
   				$this->MODE = 'UPLOAD';
   			break;
   			
+  		//Esborrem un arxiu guardat prèviament 
+  		case 'DELETE':
+  				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
+  				if($OA instanceof AppDocumentsArxius):
+  					$OA->delete();  									
+  				endif;   			
+  				$this->redirect('apps/gDocuments?accio=CD'); 	  				  				  								  		  				
+  			break;
+  			
   		//Fem un canvi de directori o tornem a una pantalla anterior i inicialitzem
   		case 'CD':  				
   				$this->getUser()->setAttribute('IDA',null);

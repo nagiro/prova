@@ -96,3 +96,20 @@ A IMG { border:0px; }
 .MATRICULES th { font-weight:bold; text-align:left; }
 .MATRICULES th, td { padding:2px; }
 .MATRICULES .TITOL { background:#CCCCCC; }
+
+/*****************************/
+/* Disseny del contingut WEB */
+/*****************************/
+
+#TEXT_WEB li {
+	list-style: circle;
+	list-style-position: outside;
+	margin-left: 30px;
+}
+
+#TEXT_WEB p {
+	color:black;
+	text-align: justify;
+	margin-bottom: 10px;
+	margin-top: 10px; 
+}
