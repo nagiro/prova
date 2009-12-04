@@ -3,10 +3,14 @@
      <div id="TEXT_WEB">
     <?php 
 		
-    	$WEB = sfConfig::get('sf_web_dir').$PAGINA->getHtml();
-    	$P = $PAGINA->getHtml();    	
-    	if(!empty($P) && file_exists($WEB)) include($WEB); 
-    	else echo "Encara no hi ha continguts..."; 
+	    if(!$PAGINA->getIscategoria()):
+	    	$WEB = sfConfig::get('sf_web_dir').$PAGINA->getHtml();
+	    	$P = $PAGINA->getHtml();    	
+	    	if(!empty($P) && file_exists($WEB)) include($WEB); 
+	    	else echo "Encara no hi ha continguts...";
+	    else: 
+	    	echo "";
+	    endif;  
     	
     ?>
       </div>

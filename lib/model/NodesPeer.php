@@ -65,4 +65,10 @@ class NodesPeer extends BaseNodesPeer
   	return (strlen($URL)>4);  
   }
   
+  static public function selectPagina($idP)
+  {
+  	$NODE = self::retrieveByPK($idP);
+  	return $NODE; 
+  }
+  
 }

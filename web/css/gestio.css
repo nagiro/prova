@@ -101,6 +101,11 @@ A IMG { border:0px; }
 /* Disseny del contingut WEB */
 /*****************************/
 
+#TEXT_WEB {
+	margin-top:20px;
+	font-size:12px;
+}
+
 #TEXT_WEB li {
 	list-style: circle;
 	list-style-position: outside;
@@ -112,4 +117,16 @@ A IMG { border:0px; }
 	text-align: justify;
 	margin-bottom: 10px;
 	margin-top: 10px; 
+}
+
+#TEXT_WEB h1 {
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom:10px;
+}
+
+#TEXT_WEB h2 {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom:10px;
 }

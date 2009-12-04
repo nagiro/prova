@@ -251,8 +251,10 @@ class webActions extends sfActions
     switch($accio){
 
       //Consulta una pàgina determinada
-      case 'cp':      		
-            $this->PAGINA = NodesPeer::retrieveByPK($this->getRequestParameter('node'));
+      case 'cp':
+      	
+      		$this->PAGINA = NodesPeer::selectPagina($this->getRequestParameter('node'));      		
+                        
             $this->ACCIO  = 'web';
             $this->gestionaNodes($request->getParameter('node'));            
             $this->SELECCIONAT = $this->getRequestParameter('node');
