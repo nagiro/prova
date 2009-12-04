@@ -10,7 +10,7 @@
 	<div class="titol">Contingut a la carpeta : <span style="font-weight:normal"> <?php echo $ACTUAL->getRutaActual() ?> </span></div>		
       	<TABLE class="DADES" width="100%"> 			  
 			<?php echo mostraDirectoris($DIRECTORIS,$ACTUAL->getIddirectori(),$ACTUAL->getPare()); ?>
-			<?php echo mostraArxius($ACTUAL); ?>		                   	
+			<?php echo mostraArxius($ACTUAL,$PERMISOS_AL_DIR); ?>		                   	
     	</TABLE>    	         	
 	</DIV>
 	
@@ -66,27 +66,31 @@
 	}
 	
 	
-	function mostraArxius($DIRECTORI_ACTUAL_ID)
+	function mostraArxius($DIRECTORI_ACTUAL_ID, $PERMISOS_AL_DIR)
 	{	
+		
 		$RET = "";
 		
 		$ARXIUS = $DIRECTORI_ACTUAL_ID->getAppDocumentsArxiuss();
 		
 		foreach($ARXIUS as $ARXIU):					
-			$RET .= '<tr>						
-						<td width="60px">';
-			$RET .= link_to(image_tag('template/blog.png').'<span>Edita el document</span>',url_for('apps/gDocuments?accio=UPLOAD&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).' '; 
+			$RET .= '<tr><td width="60px">';
+			
+			if($PERMISOS_AL_DIR == NivellsPeer::EDICIO) $RET .= link_to(image_tag('template/blog.png').'<span>Edita el document</span>',url_for('apps/gDocuments?accio=UPLOAD&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2')).' '; 
 			$RET .= link_to(image_tag('template/drive_disk.png').'<span>Descarrega\'t el document</span>',sfConfig::get('sf_webroot').sfConfig::get('sf_webappdocuments').$ARXIU->getUrl(),array('class'=>'tt2')).' ';
-			$RET .= link_to(image_tag('tango/16x16/places/user-trash.png').'<span>Esborra el document</span>',url_for('apps/gDocuments?accio=DELETE&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2','confirm'=>'Estàs segur que vols esborrar el document?')).' '; 
-			$RET .= '</td><td>'.$ARXIU->getNom().'</td></tr>';								
+			if($PERMISOS_AL_DIR == NivellsPeer::EDICIO) $RET .= link_to(image_tag('tango/16x16/places/user-trash.png').'<span>Esborra el document</span>',url_for('apps/gDocuments?accio=DELETE&IDA='.$ARXIU->getIddocument()),array('class'=>'tt2','confirm'=>'Estàs segur que vols esborrar el document?')).' '; 
+			$RET .= '</td><td>'.$ARXIU->getNom().'</td></tr>';
+											
 		endforeach; 				
-		
-		$RET .= '<tr>
-					<td>'.link_to(image_tag('template/new.png').'<span>Carrega un arxiu nou a aquesta carpeta</span>',url_for('apps/gDocuments?accio=UPLOAD&IDD='.$DIRECTORI_ACTUAL_ID->getIddirectori()),array('class'=>'tt2')).'</td>						
-					<td><- Carrega un arxiu nou a aquesta carpeta'.'</td>					
-				</tr>';
+		if($PERMISOS_AL_DIR == NivellsPeer::EDICIO):
+			$RET .= '<tr>
+						<td>'.link_to(image_tag('template/new.png').'<span>Carrega un arxiu nou a aquesta carpeta</span>',url_for('apps/gDocuments?accio=UPLOAD&IDD='.$DIRECTORI_ACTUAL_ID->getIddirectori()),array('class'=>'tt2')).'</td>						
+						<td><- Carrega un arxiu nou a aquesta carpeta'.'</td>					
+					</tr>';
+		endif;
 		
 		return $RET;
+		
 	}
 
 ?>

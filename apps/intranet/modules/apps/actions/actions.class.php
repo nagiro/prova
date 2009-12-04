@@ -86,6 +86,7 @@ class appsActions extends sfActions
   		$this->getUser()->setAttribute('IDD',1);			  		
   	endif;
   	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU);
+  	$this->PERMISOS_AL_DIR = AppDocumentsPermisosDirPeer::getPermis($IDU,$IDD);
   	  	  
   	$this->setLayout('gestio_apps');
   	

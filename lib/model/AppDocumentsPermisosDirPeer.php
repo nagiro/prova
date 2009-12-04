@@ -24,6 +24,22 @@ class AppDocumentsPermisosDirPeer extends BaseAppDocumentsPermisosDirPeer
 		return $RET;
 	}
 	
+	static public function getPermis($IDU,$IDD)
+	{
+		
+		$C = new Criteria();
+		$C->add(self::IDUSUARI,$IDU);
+		$C->add(self::IDDIRECTORI,$IDD);
+		
+		$PERMIS = self::doSelectOne($C);
+		if($PERMIS instanceof AppDocumentsPermisosDir):
+			return $PERMIS->getIdnivell();
+		else: 
+			return NivellsPeer::CAP; 
+		endif;  
+						
+	}
+	
 	static public function save($idU,$idN,$idD)
 	{
 		$OD = AppDocumentsPermisosDirPeer::retrieveByPK($idU,$idD);
