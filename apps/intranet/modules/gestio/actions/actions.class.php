@@ -262,7 +262,7 @@ class gestioActions extends sfActions
       $this->FPromocio->bind($request->getParameter('promocions'),$request->getFiles('promocions'));
       
       if($this->FPromocio->isValid()) { try { $this->FPromocio->save(); } catch (Exception $e) { echo $e->getMessage(); } }
-      else echo "merda";
+      else echo "No és vàlida";
          
       $this->EDICIO = true;      
     endif;
@@ -604,6 +604,67 @@ class gestioActions extends sfActions
     endif; 
  
   }
+
+  public function executePrintEntrades()
+  {
+  	
+  	$config = sfTCPDFPluginConfigHandler::loadConfig();
+	 
+	//create new PDF document (document units are set by default to millimeters)
+	$pdf = new sfTCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true);
+	 
+	// set document information
+	$pdf->SetCreator('Intranet CCG');
+	$pdf->SetAuthor('Intranet CCG');
+	$pdf->SetTitle('Entrades CCG');
+	$pdf->SetSubject("Entrades CCG");
+	$pdf->SetFont('helvetica', '', 9);
+	$pdf->SetMargins(0, 0, 0 , 0);
+	$pdf->setPrintHeader(false);
+	$pdf->setAutoPageBreak(false);
+
+   	//Consultem tots els usuaris de la llista que volem imprimir.
+   	$fila = 1; $columna = 1; $pagina = 1; $pdf->AddPage();
+   	$h = 49;
+   	$w = 105;
+   	
+	for($i = 1; $i< 115; $i++):
+  	  		  	
+//  		$text  = "<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$OU->getNomComplet()."</b>";
+//  		$text .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OU->getAdreca();
+//  		$text .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OU->getCodiPostal().' - '.$OU->getPoblacioString();
+		$text = "
+				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
+				<br />								
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liderkrais<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sandra Ferró i Aída Monasterio<br />				
+				<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dv. 4/12/2009 a les 20h<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori Josep Viader<br />				
+				<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />				
+		";   		 	
+  	
+  		if($fila    == 7): $pdf->AddPage(); $fila = 1; endif;  		  		
+  		  		  		  		
+  		if($columna == 1 && $fila == 1):  			
+			$pdf->MultiCell( $w , $h , $text , 0 , 'L' , 0 , 0 , 0 , 0 , true , 0 , true , true , 0 );
+			$columna++;  			
+  		elseif($columna == 1 && $fila != 1):
+			$pdf->MultiCell( $w , $h , $text , 0 , 'L' , 0 , 0 , '', '', true , 0 , true , true , 0 );
+			$columna++;
+  		elseif($columna == 2):
+  			$pdf->MultiCell( $w , $h , $text , 0 , 'L' , 0 , 1 , '', '', true , 0 , true , true , 0 );
+  			$columna = 1; $fila++;
+  		endif;
+  		 				
+  	endfor;
+	  	  
+	$pdf->Output();
+	 
+	return sfView::NONE;
+  	
+  }
   
   public function printEtiquetes($idL)
   {
@@ -902,18 +963,18 @@ class gestioActions extends sfActions
   {
   	
     $this->setLayout('gestio');
-
-    $this->CERCA  	= $this->ParReqSesForm($request,'text',"",'cerca');
+    
+    $this->CERCA  	= $this->ParReqSesForm($request,'cerca','',array('text'=>""));
     $this->PAGINA 	= $this->ParReqSesForm($request,'PAGINA',1);
     $this->DATAI  	= $this->ParReqSesForm($request,'DATAI',time());    
     $this->DIA    	= $this->ParReqSesForm($request,'DIA',time());
     $this->IDA    	= $this->ParReqSesForm($request,'IDA',0);        
     $accio  		= $this->ParReqSesForm($request,'accio','C');
     $this->ACTIVITAT_NOVA = false;    
-    
+        
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
-	$this->FCerca->bind(array('text'=>$this->CERCA));
+	$this->FCerca->bind(array('text'=>$this->CERCA['text']));
 	
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false,'LLISTAT'=>false,'CICLES'=>FALSE,'TEXTOS'=>FALSE,'HORARIS'=>FALSE);
@@ -945,7 +1006,7 @@ class gestioActions extends sfActions
     	
     	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
-                $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA,$this->DATAI,$this->DATAF,null);
+                $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA['text'],$this->DATAI,$this->DATAF,null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                                                                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
@@ -955,7 +1016,7 @@ class gestioActions extends sfActions
 
     	//Consulta que em mostra les activitats quan canvio de mensualitat o any 
     	case 'CC':    		
-                $HORARIS = HorarisPeer::getActivitats(null , $this->CERCA, $this->DATAI, $this->DATAF, null);
+                $HORARIS = HorarisPeer::getActivitats(null , $this->CERCA['text'], $this->DATAI, $this->DATAF, null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
@@ -965,7 +1026,7 @@ class gestioActions extends sfActions
     		
     	//Consulta que em mostra les activitats d'un dia seleccionat del calendari
     	case 'CD':    		
-                $HORARIS = HorarisPeer::getActivitats($this->DIA , $this->CERCA, $this->DATAI, $this->DATAF, null);
+                $HORARIS = HorarisPeer::getActivitats($this->DIA , $this->CERCA['text'], $this->DATAI, $this->DATAF, null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
@@ -1030,7 +1091,7 @@ class gestioActions extends sfActions
     			if($this->FActivitat->isValid()): 
     				$this->FActivitat->save();
     				NoticiesPeer::addNoticiesActivitat($this->FActivitat->getObject()); 
-    				$this->redirect('gestio/gActivitats?accio=CT');    				    				
+    				$this->redirect('gestio/gActivitats?accio=C');    				    				
     			endif;
     			
     			$this->MODE['TEXTOS'] = true;
@@ -1614,9 +1675,9 @@ class gestioActions extends sfActions
   public function executeGCursos(sfWebRequest $request)  
   {
 
-    $this->setLayout('gestio');
+	$this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'cerca','select'=>1));
+    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->ParReqSesForm($request,'accio','CA');    
     
@@ -1676,7 +1737,9 @@ class gestioActions extends sfActions
     		    $this->FCurs->bind($request->getParameter('cursos'));
     		    if($this->FCurs->isValid()):
     		    	$this->FCurs->save();
-    		    	$this->getUser()->setAttribute('IDC',$this->FCurs->getObject()->getIdcursos());     		    
+    		    	$this->getUser()->setAttribute('IDC',$this->FCurs->getObject()->getIdcursos());
+    		    else:
+    		    	echo "Problema";     		    
     		    endif;    		        		    
     			$this->MODE = 'EDICIO_CONTINGUT';
     		break;
@@ -1692,16 +1755,15 @@ class gestioActions extends sfActions
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA , $this->CERCA['text']);
 				$this->MODE = 'CONSULTA';				 
 			break;		
-		case 'CA' :
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA['text'] );
+		case 'CA' :				
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA['text'] );				
 				$this->MODE = 'CONSULTA';
 			break;					
 		case 'L': 
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));
 				$this->MODE = 'LLISTAT_ALUMNES'; 
 			break;
-    }
-        
+    }           
   }
 	 
 	
@@ -1775,20 +1837,22 @@ class gestioActions extends sfActions
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaTextChoiceForm();       
     $this->FCerca->setChoice(array(1=>'Cursos',2=>'Alumnes')); 
-	$this->FCerca->bind($this->CERCA);
+	$this->FCerca->bind($this->CERCA);	
 	
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false, 'LMATRICULES'=>false , 'VERIFICA' => false);
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { 			$accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    	$accio = 'NU';
-	    elseif($request->hasParameter('BADDUSER')) 		$accio = 'ADD_USER';
-	    elseif($request->hasParameter('BSAVENEWUSER')) 	$accio = 'SAVE_NEW_USER';	    
-	    elseif($request->hasParameter('BSELCURS')) 		$accio = 'SNU';
-	    elseif($request->hasParameter('BSAVECURS')) 	$accio = 'SAVE_CURS';	    
-	    elseif($request->hasParameter('BSUBMIT')) 		$accio = 'S';
-	    elseif($request->hasParameter('BDELETE')) 		$accio = 'D';
+	    if($request->hasParameter('BCERCA')) { 			 $accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    	 $accio = 'NU';
+	    elseif($request->hasParameter('BADDUSER')) 		 $accio = 'ADD_USER';
+	    elseif($request->hasParameter('BSAVENEWUSER')) 	 $accio = 'SAVE_NEW_USER';	    
+	    elseif($request->hasParameter('BSELCURS')) 		 $accio = 'SNU';
+	    elseif($request->hasParameter('BSAVECURS')) 	 $accio = 'SAVE_CURS';
+	    elseif($request->hasParameter('BPAGAMENT')) 	 $accio = 'PAGAMENT';	    
+	    elseif($request->hasParameter('BSUBMIT')) 		 $accio = 'S';
+	    elseif($request->hasParameter('BDELETE')) 		 $accio = 'D';
+	    elseif($request->hasParameter('BSAVEMATRICULA')) $accio = 'SAVE_MATRICULA';
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -1869,65 +1933,72 @@ class gestioActions extends sfActions
     			$OMatricula->setCursosIdcursos($request->getParameter('IDC'));
     			$OMatricula->setDatainscripcio(date('Y-m-d H:m',time()));
     			$Preu = CursosPeer::CalculaPreu($OMatricula->getCursosIdcursos(),$OMatricula->getTreduccio());
-    			$OMatricula->setPagat($Preu);
+    			$OMatricula->setEstat(MatriculesPeer::EN_PROCES);
+    			$OMatricula->setPagat($Preu);    			
     			$OMatricula->save();
     			$this->redirect('gestio/gMatricules?accio=FP');
     		break;
 
-    	//Mostra la prematrícula i espera a que premi el botó de pagament
-    	case 'FP':
-    		
+    	//Mostra la prematrícula i carreguem les dades del pagament
+    	case 'FP':    		
     			$this->MATRICULA = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			    			    			    		     
+    		    $PREU = CursosPeer::CalculaTotalPreus(array($this->MATRICULA->getCursosIdcursos()),$this->MATRICULA->getTreduccio());
+    		    $NOM  = UsuarisPeer::retrieveByPK($this->MATRICULA->getUsuarisUsuariid())->getNomComplet();
+    		    $MATRICULA = $this->MATRICULA->getIdmatricules();
+    		    $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos()); //Passem si el curs es ple
+    		    $this->getUser()->setAttribute('isPle',$this->CURS_PLE); //Guardem si el curs és ple
     			
+    			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA);    			    			
     			$this->MODE = 'VALIDACIO_CURS';
     		break;
-    		
-    	//***********************************************************************************************
-    	//******* Falta acabar
-    	//***********************************************************************************************
-    		
-    	//Guardar una matricula
-    	case 'S':
-    		
-    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
-    			
-    			$this->FMatricula = new MatriculesForm($OMatricula);    			
-    		    $this->FMatricula->bind($request->getParameter('matricules'));
-    		        		    
-    		    if($this->FMatricula->isValid()) { 
-    		    	
-    		    	$this->GuardaMatricula($this->FMatricula);
-    		    	
-    		    	$CURS = $this->FMatricula->getValue('Cursos_idCursos');
-    		    	$DESCOMPTE = $this->FMatricula->getValue('Descompte');
-    		    	$U = UsuarisPeer::cercaDNI($this->FMatricula->getValue('Usuaris_usuariID')); 
-    		    	$PREU = CursosPeer::CalculaTotalPreus(array($CURS),$DESCOMPTE);
-    		    	$NOM  = $U->getNomComplet();
-    		    	$MATRICULA = $this->FMatricula->getValue('idMatricules');    		    	
-    		    	
-    		    	$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA);
-    		    	
-    		    	$this->MODE = 'VERIFICA';
-    		    	
-    		    } else $this->MODE = 'EDICIO';
-    		    
+    		    		
+    	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
+    	case 'PAGAMENT':
+    			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));    			
+    			MatriculesPeer::setMatriculaPagada($this->getUser()->getAttribute('IDM'),$this->getUser()->getAttribute('isPle'));
+    			$MATRICULA->save();
+    			$this->MISSATGE = "La matrícula s'ha realitzat correctament.";
+    			$this->MODE = 'PAGAMENT';
     		break;
-    		
+    	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
     	case 'OK':
     		 if($this->getRequestParameter('Ds_Response') == '0000'):
-                 $matricules = $this->getRequestParameter('Ds_MerchantData');
-                 foreach(explode("@",$matricules) as $M):
-                    MatriculesPeer::setMatriculaPagada($M);                 
-                 endforeach;
-              else:
-                 foreach(explode('@',$matricules) as $M):        
-                    MatriculesPeer::retrieveByPK($M)->delete();
-                 endforeach;              
+                 $matricula = $this->getRequestParameter('Ds_MerchantData');
+                 MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getAttribute('isPle'));                 
+                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                 
+              else:			            
+                 $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
               endif;
-              break;    		    		
+              $this->MODE = 'PAGAMENT';
+              break;
+        //Esborra una matrícula    		    		
     	case 'D': 
     	        CursosPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
     	    break;
+    	    
+   	    //Edita una matrícula
+    	case 'E':
+    			$this->MATRICULA = MatriculesPeer::retrieveByPk($request->getParameter('IDM'));
+    			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
+    			$this->FMATRICULA = new MatriculesForm($this->MATRICULA);
+    			$this->MODE = 'EDICIO';
+    		break;
+    		
+    	//Guardem una matrícula modificada
+    	case 'SAVE_MATRICULA':    			
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+//    			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
+    			
+    			$this->FMATRICULA = new MatriculesForm($OMatricula);    			
+    			$this->FMATRICULA->bind($request->getParameter('matricules'));    			
+    			if($this->FMATRICULA->isValid()):
+    				$this->FMATRICULA->save();    				
+    				$this->redirect('gestio/gMatricules?accio=CA');
+    			endif;
+    			$this->MODE = 'EDICIO';    		
+    		break;    	
+    			
 		case 'CA':					
 				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA['text'] , $this->PAGINA );
 				$this->SELECT = 2;

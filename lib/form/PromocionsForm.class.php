@@ -34,17 +34,23 @@ class PromocionsForm extends sfFormPropel
 
     
     $OPromocio = $this->getObject();
-  	if($OPromocio instanceOf Promocions)
-  		 $this->setWidget('Extensio', new sfWidgetFormInputFileEditable(array('file_src'=>'/intranet/web/images/banners/'.$OPromocio->getExtensio(),'edit_mode'=>true,'is_image'=>true,'with_delete'=>false)));
-	else $this->setWidget('Extensio', new sfWidgetFormInputFile());		  		
-	$this->validatorSchema['Extensio'] = new sfValidatorFile(array('required' => false));
+  	if($OPromocio instanceOf Promocions):  	
+  		$url = sfConfig::get('sf_webroot').'images/banners/';
+  		$nom = $OPromocio->getExtensio();
+  		$this->setWidget('Extensio', new sfWidgetFormInputFileEditable(array('file_src'=>$url.$nom,'edit_mode'=>true,'is_image'=>true,'with_delete'=>false)));
+	else:
+		$this->setWidget('Extensio', new sfWidgetFormInputFile());
+	endif; 
+
+	//Carreguem les dades de configuració
+	$url = sfConfig::get('sf_websysroot').'/images/banners';	
+	$this->validatorSchema['Extensio'] = new sfValidatorFile(array('path'=>$url,'required' => false));
     
     
     $this->widgetSchema->setNameFormat('promocions[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
-
-    parent::setup();
+    
   }
 
   public function getModelName()
@@ -54,25 +60,12 @@ class PromocionsForm extends sfFormPropel
   
   public function save($conn = null)
   {
-  	
-  	 $file = $this->getValue('Extensio');
-  	 
-  	 print_r($this['Extensio']);
-  	 
-  	 if($file instanceof sfValidatedFile)
-  	 {  	 	  	 	 
-	   	 $filename = 'banner_'.sha1($file->getOriginalName());
-  		 $extension = $file->getExtension($file->getOriginalExtension());
-     	 $file->save(sfConfig::get('sf_web_dir').'/images/banners/'.$filename.$extension);
-     	 $this['Extensio'] = $filename;     	 
-  	 }
-  	 
-  	 $OPromocions = $this->getObject();  	
-  	 PromocionsPeer::gestionaOrdre($this->getValue('Ordre'),$OPromocions->getOrdre());
-  	   		  	
-  	 parent::save();
-  	 
-  	
+ 	
+  	$OPromocions = $this->getObject();  	
+  	PromocionsPeer::gestionaOrdre($this->getValue('Ordre'),$OPromocions->getOrdre());
+  	  	   		  	
+  	parent::save();
+  	   	
   }  
   
 }

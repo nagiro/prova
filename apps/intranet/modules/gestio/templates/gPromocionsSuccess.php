@@ -8,7 +8,7 @@
 	    	<table class="DADES">          
                 <?php                                                   
                   foreach($PROMOCIONS as $P):                  	                                         
-                      echo '<TR><td width="100px">'.link_to(image_tag('/images/banners/'.$P->getExtensio()),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';                      
+                      echo '<TR><td>'.link_to(image_tag('/images/banners/'.$P->getExtensio()),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';                      
                   endforeach;                                  
                   
                 ?>  

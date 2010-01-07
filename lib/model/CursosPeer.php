@@ -116,8 +116,13 @@ class CursosPeer extends BaseCursosPeer
       
   static function getMatricules($idC)
   {
-  	$Curs = self::retrieveByPK($idC);  	
-  	return $Curs->getMatriculess();
+  	$Curs = self::retrieveByPK($idC);
+  	$C = new Criteria();
+  	$c1 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::ACCEPTAT_PAGAT);
+  	$c2 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::EN_ESPERA);
+  	$c1->addOr($c2);
+  	$C->add($c1);  	  	
+  	return $Curs->getMatriculess($C);
   }
 
   static function getPlaces($idC)
@@ -132,9 +137,9 @@ class CursosPeer extends BaseCursosPeer
           
   }
   
-  public function isPle()
+  static function isPle($IDC)
   {          
-     $PLACES = CursosPeer::getPlaces($this->idcursos);
+     $PLACES = CursosPeer::getPlaces($IDC);
      return ($PLACES['OCUPADES'] >= $PLACES['TOTAL']);              
   }
         
@@ -176,6 +181,23 @@ class CursosPeer extends BaseCursosPeer
   	
   	foreach(self::doSelect($C) as $Curs):
   		$RET[$Curs->getCodi()] = array('clau'=>$Curs->getcodi(),'text'=>$Curs->getCodi().' - '.$Curs->getTitolcurs());  		
+  	endforeach;
+  	
+  	return $RET;
+  	
+  }
+  
+  static function getCodisTitol()
+  {
+  	$RET = array();
+  	$C = new Criteria();
+  	$C->addGroupByColumn(self::CODI);
+  	$C->addGroupByColumn(self::TITOLCURS);
+  	$C->addAscendingOrderByColumn(self::IDCURSOS);  	  	
+  	
+  	foreach(self::doSelect($C) as $Curs):
+  		$RET['CLAU'][$Curs->getCodi()] = '"'.$Curs->getcodi().'"';  		
+  		$RET['TEXT'][$Curs->getCodi()] = '"'.addslashes($Curs->getTitolcurs()).'"';
   	endforeach;
   	
   	return $RET;

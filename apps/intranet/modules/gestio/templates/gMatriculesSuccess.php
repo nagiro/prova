@@ -20,6 +20,8 @@
 		$('#cerca_select').change( function() {
 			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); 			
 		});
+		
+		$("#form_sel_user").submit(validaFormulariUsuari);
 	});
 	
 </script>
@@ -36,7 +38,11 @@
 		var userPattern = new RegExp("^[A-Za-z]{3}[0-9]{3}\.[0-9]{2}$");		
 		if (userPattern.exec(q) == null) return false; else return true;
 	}
-	
+
+
+	function validaFormulariUsuari(){			
+		if(vacio(autocomplete_matricules_usuari_Usuaris_UsuariID.value) == false) { alert('Has d\'entrar un usuari.'); return false; }		
+	}
 
 	function ValidaFormulari(){
 		if(vacio(D_CODI.value) == false) { alert('Codi no pot estar en blanc.'); return false; }		
@@ -138,7 +144,7 @@
 
   <?php ELSEIF( $MODE == 'MAT_USUARI' ):  ?>
 
- 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
+ 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST" id="form_sel_user">
 	    <DIV class="REQUADRE">	    
 	    	<table class="FORMULARI" width="100%">
 	 			<?php echo $FMatricula; ?>
@@ -180,17 +186,18 @@
 						$i = 0;
 						foreach($CURSOS as $C):
 	                      	$PAR = ParImpar($i++);
-	                      	echo '<TR>							
+	                      	$BACKGROUND = " style=\"background:red\"";
+	                      	echo '<TR >							
 	                      			<TD class="LINIA">'.radiobutton_tag('IDC', $C->getIdcursos(), true).'</TD>
 									<TD class="LINIA">'.$C->getCodi().'</TD>
 									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
 									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
 									<TD class="LINIA">'.$C->getPreu().'/'.$C->getPreur().'</TD>
-									<TD class="LINIA">'.$C->countMatriculats().'/'.$C->getPlaces().'</TD>
+									<TD class="LINIA" '.$BACKGROUND.'>'.$C->countMatriculats().'/'.$C->getPlaces().'</TD>
 								  </TR>';                		                 															                		                 															
 	                    endforeach;
-	                    echo '<td colspan="6" class="dreta"><br>';	            		
-	            		echo submit_tag('Segueix matriculant...',array('name'=>'BSAVECURS','class'=>'BOTO_ACTIVITAT'));
+	                    echo '<td colspan="6" class="dreta"><br>';	                    	            		
+	            		echo submit_tag('Segueix matriculant -->',array('name'=>'BSAVECURS','class'=>'BOTO_ACTIVITAT'));
 	            		echo '</td>';
 	                    
 	                 endif;                     
@@ -199,33 +206,61 @@
 	     </DIV>
      </form>  
 
-  <?php ELSEIF( $MODE == 'VALIDACIO_CURS' ):  ?>
+  <?php ELSEIF( $MODE == 'VALIDACIO_CURS' ):  ?>  
+  <?php 
+	
+		if($MATRICULA->getPagat() > 0 && ( $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TARGETA || $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TELEFON ) ):
+           echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+//         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
+                  
+           foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
+         
+		else:
+		
+			echo "<form action=\"".url_for('gestio/gMatricules')."\" method=\"POST\">";
+
+		endif; 
+	?>  
   
- 	<form action="<?php echo url_for('gestio/gMatricules'); ?>" method="POST">
+ 	
 	    <DIV class="REQUADRE">	 
 	    	<?php $CURS   = $MATRICULA->getCursos();?>
-	    	<?php $USUARI = $MATRICULA->getUsuaris();?>	    	   
-	    	<table class="MATRICULES">
+	    	<?php $USUARI = $MATRICULA->getUsuaris();?>	    	   	    	
+	    	<?php $CURS_PLE_TEXT = ($CURS_PLE)?" (EN ESPERA)":"";    ?>	    	
+	    	<table class="MATRICULES" width="100%">
 	    		<tr><th class="TITOL" colspan="3">RESGUARD DE MATRÍCULA</th></tr>
 	    		<tr><th>DNI: </th><td colspan="2"><?php echo $USUARI->getDni(); ?></td></tr>
 	    		<tr><th>Nom: </th><td colspan="2"><?php echo $USUARI->getNomComplet(); ?></td></tr>	    		
 	    		<tr><th>Pagament: </th><td colspan="2"><?php echo $MATRICULA->getTpagamentString(); ?></td></tr>
-	    		<tr><th>Import: </th><td colspan="2"><?php echo $MATRICULA->getPagat(); ?></td></tr>
+	    		<tr><th>Import: </th><td colspan="2"><?php echo $MATRICULA->getPagat(); ?>€</td></tr>
 	    		<tr><th>Data: </th><td colspan="2"><?php echo $MATRICULA->getDatainscripcio(); ?></td></tr>
 	    		<tr><th>Reducció: </th><td colspan="2"><?php echo $MATRICULA->getTreduccioString(); ?></td></tr>
 	    		<tr><th class="TITOL">CODI</th><th class="TITOL">NOM DEL CURS</th><th class="TITOL">PREU</th></tr>	    		
-	    		<tr><td><?php echo $CURS->getCodi(); ?></td><td><?php echo $CURS->getTitolcurs(); ?></td><td><?php echo $CURS->getPreu(); ?></td></tr>	    		
+	    		<tr><td><?php echo $CURS->getCodi(); ?></td><td><?php echo $CURS->getTitolcurs().$CURS_PLE_TEXT; ?></td><td><?php echo $MATRICULA->getPagat(); ?>€</td></tr>
+	    		<td colspan="3" class="dreta"><br>	                    	            		
+	            	<?php echo submit_tag('Segueix matriculant -->',array('name'=>'BPAGAMENT','class'=>'BOTO_ACTIVITAT')); ?>
+	            </td>	    		
 	        </table>
 	     </DIV>
      </form>  
 
- 
+ <?php ELSEIF( $MODE == 'PAGAMENT' ):  ?>  
+ 	
+ 	<DIV class="REQUADRE">	    
+    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
+		<h2><?php echo $MISSATGE; ?></h2>	
+    </DIV>
+ 	 	  
   <?php ELSEIF( $MODE == 'EDICIO' ): ?>
 
  	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
-	    <DIV class="REQUADRE">	    
-	    	<table class="FORMULARI">
-	 			<?php echo $FMatricula; ?>      
+	    <DIV class="REQUADRE">
+	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules'); ?></div>	    
+	    	<table class="FORMULARI" width="100%">
+	 			<?php echo $FMATRICULA; ?>      
+	 			<td colspan="2" class="dreta"><br>
+	 				<?php echo submit_tag('Modifica',array('name'=>'BSAVEMATRICULA','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
+	            </td>
 	        </table>
 	     </DIV>
      </form>
@@ -245,10 +280,10 @@
 				            $C = $M->getCursos();
 				            $U = $M->getUsuaris();
 				            $TEXT_REDUCCIO ="";
-				            if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; }
+				            $PREU = $M->getPagat();
 				            echo '<TR>
 									<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>
-									<TD class="LINIA" width="40%">'.$U->getNomComplet().'<BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>
+									<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>
 									<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
 								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>							
 								  </TR>';                		                 															                		                 															
@@ -257,42 +292,7 @@
 	            ?>
 	      	</TABLE>      
 	      </DIV>
-  
-  
-  <?php ELSEIF( $MODE == 'VERIFICA' ):
-
-     //Si hem fet una matrícula amb targeta, haurem de pagar per TPV i hem de canviar el form. 
-
-     if($FMatricula->getValue('tPagament') == MatriculesPeer::PAGAMENT_TARGETA || $FMatricula->getValue('tPagament') == MatriculesPeer::PAGAMENT_TELEFON ):
-     	 
-         echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-//         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
-                  
-         foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
-         
-     else:
-     
-     	 echo '<form action="'.url_for('gestio/gMatricules').'" method="POST">';         
-         
-     endif;
-	   
-	?>	
-	 <form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
-	    <DIV class="REQUADRE">
-	    	<DIV class="TITOL">Verificació de matrícula</DIV>	    
-	    	<table class="FORMULARI">
-	    		<tr><td width="100px"></td><td></td></tr>	    			    		        
-	            <?php echo $FMatricula ?>	            
-	            <tr>
-	            	<td colspan="2" class="dreta">
-	            		<br>	            	
-	            			<?php echo submit_tag('Pagar',array('name'=>'BPAGAR'))?>	            				            		
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
-     </form>
-      
+        
   <?php ENDIF; ?>
   
       <DIV STYLE="height:40px;"></DIV>

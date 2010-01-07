@@ -33,7 +33,7 @@ class CursosForm extends sfFormPropel
     $this->setValidators(array(
       'idCursos'        => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
       'TitolCurs'       => new sfValidatorString(array('required' => false)),
-      'isActiu'         => new sfValidatorString(array('required' => false)),
+      'isActiu'         => new sfValidatorBoolean(array('required' => false)),
       'Places'          => new sfValidatorInteger(array('required' => false)),
       'Codi'            => new sfValidatorString(array('required' => false)),
       'Descripcio'      => new sfValidatorString(array('required' => false)),

@@ -15,14 +15,14 @@ class MatriculesForm extends sfFormPropel
   	
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
-  	  'Usuaris_usuariID' => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:20 , width:500 }' , 'url'=>$this->getOption('url'))),  	  
+  	  'Usuaris_UsuariID' => new sfWidgetFormInputHidden(),  	  
   	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursosActius())),
       'Estat'            => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::getEstatsSelect())),
-      'Comentari'        => new sfWidgetFormTextarea(),
       'DataInscripcio'   => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
       'Pagat'        	 => new sfWidgetFormInput(),
       'tReduccio'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectDescomptes())),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
+  	  'Comentari'        => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(      
@@ -36,11 +36,8 @@ class MatriculesForm extends sfFormPropel
       'tReduccio'        => new sfValidatorInteger(),
       'tPagament'        => new sfValidatorInteger(),    
     ));
-
-    $this->setDefaults(array('Usuaris_usuariID'=>'99999999A'));
-
-    $this->widgetSchema->setLabels(array(                  
-      'Usuaris_usuariID' => 'Usuari: ',
+    
+    $this->widgetSchema->setLabels(array(                        
       'Cursos_idCursos'  => 'Curs: ',
       'Estat'            => 'Estat: ',
       'Comentari'        => 'Comentari: ',
@@ -59,11 +56,6 @@ class MatriculesForm extends sfFormPropel
   public function getModelName()
   {
     return 'Matricules';
-  }
-
-  static function comprovaDNI($E)
-  {
-  	print_r($E);
   }
 
 }

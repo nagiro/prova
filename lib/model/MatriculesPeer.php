@@ -235,7 +235,8 @@ class MatriculesPeer extends BaseMatriculesPeer
   static function getMatriculesCurs($idC){
       $C = new Criteria();
       $C->add(MatriculesPeer::CURSOS_IDCURSOS , $idC);
-      $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
+      $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);      
+  	    	  	
       return MatriculesPeer::doSelect($C);
   }
   
@@ -259,8 +260,12 @@ class MatriculesPeer extends BaseMatriculesPeer
      $TPV['Ds_Merchant_TransactionType'] = '0';
      if($WEB):
         $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/web/matriculat';
+        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/web/matriculat';
+        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/web/matriculat';
      else:
         $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/gestio/matriculat';                         
+        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/gestio/matriculat';
+        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/gestio/matriculat';
      endif;
         
      $TPV['Ds_Merchant_ProductDescription'] = 'Matrícula Casa de Cultura';
@@ -279,11 +284,17 @@ class MatriculesPeer extends BaseMatriculesPeer
      return $TPV;
   }
   
-  static public function setMatriculaPagada($M)
+  static public function setMatriculaPagada($M,$isPle)
   {
-     
-     $MATRICULA = MatriculesPeer::retrieveByPK($M);     
-     $MATRICULA->setEstat(self::ACCEPTAT_PAGAT);
+    $MATRICULA = MatriculesPeer::retrieveByPK($M); 
+  	
+  	 //Mirem si el curs és ple. Si es ple, guardem com en espera.
+     if(!$isPle){
+     	$MATRICULA->setEstat(self::ACCEPTAT_PAGAT);	
+     } else {
+		$MATRICULA->setEstat(self::EN_ESPERA);     
+     }
+               
      $MATRICULA->save();
      
   }

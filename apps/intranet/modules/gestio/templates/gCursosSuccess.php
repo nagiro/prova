@@ -20,6 +20,16 @@
 		$('#cerca_select').change( function() {
 			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit();			
 		});
+		$('#autocomplete_cursos_codi_Codi').change( function() {
+			<?php $CURSOSA = CursosPeer::getCodisTitol();?>
+			var noms = new Array(<?php echo implode(',',$CURSOSA['TEXT']); ?>);
+			var codis = new Array(<?php echo implode(',',$CURSOSA['CLAU']); ?>);
+			for(x in codis){ 				
+				if($('#autocomplete_cursos_codi_Codi').val() == codis[x]){					
+					$('#cursos_codi_TitolCurs').attr('value',noms[x]); 
+				}  
+			}							
+		});
 	});
 	
 </script>
@@ -38,7 +48,6 @@
 		if (userPattern.exec(q) == null) return false; else return true;
 	}
 	
-
 	function ValidaFormulari(){		
 		if(vacio(cursos_Codi.value) == false) { alert('Codi no pot estar en blanc.'); return false; }		
 		if(vacio(cursos_TitolCurs.value) == false) { alert('TITOL no pot estar en blanc.'); return false; } 
@@ -142,6 +151,7 @@
         <DIV class="TITOL">Llistat de cursos </DIV>
       	<TABLE class="DADES">
  			<?php 
+ 				
 				if( $CURSOS->getNbResults() == 0 ){
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap curs amb aquestes dades.</TD></TR>';
 				} else { 
@@ -160,7 +170,8 @@
 								<TD class="'.$PAR.'">'.link_to(image_tag('template/user.png').'<span>Llistat d\'alumnes matriculats.</span>','gestio/gCursos?accio=L&IDC='.$C->getIdcursos() , array('class'=>'tt2') ).'</TD>
 						</TR>';
 					endforeach;
-				}                    
+				}     
+				               
              ?>      
               <TR><TD colspan="6" class="TITOL"><?php echo gestorPagines($CURSOS);?></TD></TR>    	
       	</TABLE>      
