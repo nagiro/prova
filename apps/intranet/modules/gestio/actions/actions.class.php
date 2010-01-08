@@ -625,24 +625,25 @@ class gestioActions extends sfActions
 
    	//Consultem tots els usuaris de la llista que volem imprimir.
    	$fila = 1; $columna = 1; $pagina = 1; $pdf->AddPage();
-   	$h = 49;
+   	$h = 50;
    	$w = 105;
    	
-	for($i = 1; $i< 115; $i++):
-  	  		  	
-//  		$text  = "<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$OU->getNomComplet()."</b>";
-//  		$text .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OU->getAdreca();
-//  		$text .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OU->getCodiPostal().' - '.$OU->getPoblacioString();
-		$text = "
+	for($i = 1; $i< 121; $i++):
+
+		if($fila > 3) $text = "<br />"; else $text = "";
+		if($fila > 6) $text .= "<br />"; 
+				$text = $text."
 				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liderkrais<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sandra Ferró i Aída Monasterio<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HAMMERKLAVIER 2010<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratimir Martinovic<br />				
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dv. 4/12/2009 a les 20h<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 12 de febrer, 20.00 h<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori Josep Viader<br />				
 				<br />				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
+				<br />														
+				<br />
 		";   		 	
   	
   		if($fila    == 7): $pdf->AddPage(); $fila = 1; endif;  		  		
@@ -865,7 +866,8 @@ class gestioActions extends sfActions
     
     	$accio = $request->getParameter('accio');
 	    if($request->getParameter('BNOU'))		$accio = "N";    
-	    if($request->getParameter('BSAVE_x')) 	$accio = 'S';               
+	    if($request->getParameter('BSAVE')) 	$accio = 'S';               
+	    if($request->getParameter('BDELETE')) 	$accio = 'D';
 
 	endif;
 	    
@@ -1361,7 +1363,8 @@ class gestioActions extends sfActions
         
   	//Definim l'acció segons el botó premut  	
     if( $this->getRequest()->hasParameter('BNOU') ) $this->accio = 'N';
-    if( $this->getRequest()->hasParameter('BSAVE_x') ) $this->accio = 'S';
+    if( $this->getRequest()->hasParameter('BSAVE') ) $this->accio = 'S';
+    if( $this->getRequest()->hasParameter('BDELETE') ) $this->accio = 'D';
     if( $this->getRequest()->hasParameter('BCERCA')) $this->accio = 'L';  
 
     $this->getUser()->setAttribute('accio',$this->accio);
@@ -1446,7 +1449,8 @@ class gestioActions extends sfActions
     	$accio = $request->getParameter('accio');
     	if( $request->hasParameter('BCERCA') ) 		$accio = 'C';
 	    if( $request->hasParameter('BNOU') )  		$accio = 'N';
-	    if( $request->hasParameter('BSAVE_x') ) 		$accio = 'S';
+	    if( $request->hasParameter('BSAVE') ) 		$accio = 'S';
+	    if( $request->hasParameter('BDELETE') )		$accio = 'D';
 	    
     endif;
 
@@ -1633,7 +1637,8 @@ class gestioActions extends sfActions
 	    $accio = $request->getParameter('accio');
 	    if($request->hasParameter('BCERCA'))    $accio = 'C';
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
-	    if($request->hasParameter('BSAVE_x')) 	$accio = 'S';	    
+	    if($request->hasParameter('BSAVE')) 	$accio = 'S';	    
+	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
 	endif;                
 	
     switch($accio){
@@ -2097,7 +2102,7 @@ class gestioActions extends sfActions
 	$this->setLayout('gestio');
 	        
 	    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-	    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>1));
+	    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>''));
 	    
 	    //Inicialitzem el formulari de cerca
 	    $this->FCerca = new CercaForm();
@@ -2172,6 +2177,7 @@ class gestioActions extends sfActions
 	    if($request->hasParameter('BCERCA'))    $accio = 'C';
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
 	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
+	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
 	endif;              
 	
 	

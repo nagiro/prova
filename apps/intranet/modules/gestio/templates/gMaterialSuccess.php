@@ -72,10 +72,8 @@
                 <?php echo $FMaterial?>                								
                 <tr>
                 	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMaterial?accio=D',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+		           	<td colspan="2" class="dreta">
+	            		<?php include_partial('botonera',array('element'=>'el material'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

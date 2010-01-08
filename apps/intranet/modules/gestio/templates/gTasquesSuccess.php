@@ -123,10 +123,14 @@
 				<tr><td width="15%"></td><td width="60%"></td></tr>
 				<?php echo $FTasca ?>
         		<tr>
-	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gTasques?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+		           	<td colspan="2" class="dreta">
+	            		<br><button name="BSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+	            				<?php echo image_tag('template/disk.png').' Guardar i sortir' ?>
+	            			</button>
+	            			            			            		
+	            			<button name="BDELETE" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar la tasca? No ho podràs recuperar! ')">
+	            				<?php echo image_tag('tango/16x16/status/user-trash-full.png').' Esborrar fitxa' ?>
+	            			</button>
 	            	</td>
 	            </tr>				
 			</table>				

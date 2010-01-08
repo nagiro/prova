@@ -1,14 +1,19 @@
+<?php use_helper('Javascript','Asset')?>
+<?php use_javascript('thickbox-compressed.js')?>
+
 <style>
+
 .fotoEspai { height:50px; }
 .Text TD { padding:5px; vertical-align: top; }
 .llistat { list-style: disc; }
 .llistat li { margin-bottom:5px; }
+
 </style>
+
     <TD colspan="3" class="CONTINGUT">
 
 	<P class="Titol_N1"> Espais de la Casa de Cultura de Girona. Característiques, cessió i condicions d’ús</P> 	
 	<P class="Text"> La Fundació Casa de Cultura de Girona, a més de la seva oferta d’activitats, ofereix un servei de cessió d’espais a persones i entitats que ho requereixin. Per demanar la utilització dels espais del Centre podeu consultar la disponibilitat de sales i equips així com les condicions de cessió a la Secretaria o en aquesta mateixa pàgina web. Cal formalitzar la sol•licitud omplint un formulari que es pot presentar a la Casa de Cultura (Plaça Hospital, 6. Girona) o tramitar en línia. Podeu accedir al formulari clicant als enllaços que trobareu a la descripció de cadascun dels espais o sol•licitar-lo a la mateixa Casa de Cultura. </P>
-    
     
     <P class="Titol_N2">Auditori Josep Viader</P>
     <P class="Text">
@@ -17,7 +22,9 @@
 	    <TR><TD>Aforament:</TD><TD> 110 persones</TD></TR>
 	    <TR><TD>Escenari: </TD><TD> òval de 36 metres quadrats</TD></TR>
 	    <TR><TD>Equipament: </TD><TD>Piano Steinway and sons de gran cua<br />Megafonia<br>Taula de so digital de 16 canals<br>Aire condicionat </TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/Auditori.jpg' , array('class'=>'fotoEspai')), image_path('intranet/espais/Auditori.jpg' , true))?></TD></TR>    				
+	    <TR><TD>Fotografies: </TD><TD>
+	    	<?php echo generaImatge('Auditori.jpg','Auditori. Vista general'); ?>
+	    	</TD></TR>	    	    				
 	    <TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
 	    </table>    
   	</P>
@@ -29,7 +36,9 @@
     	<TR><TD>Aforament:</TD><TD> 148 persones</TD></TR>
     	<TR><TD>Escenari: </TD><TD> rectangular de 15 metres quadrats</TD></TR>
     	<TR><TD>Equipament: </TD><TD> Piano Grotian-Steinweg de gran cua<br />Megafonia<br />Taula de so de 6 canals<br />Pantalla de cinema i projector<br />Aire condicionat<br />Opcional: 	Portàtil, Projector, DVD, Internet</TD></TR>
-    	<TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaMagna.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaMagna.jpg' , true))?></TD></TR>
+    	<TR><TD>Fotografies: </TD><TD>
+    		<?php echo generaImatge('AulaMagna.jpg','Aula Magna. Vista general'); ?>
+    		</TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>	  
@@ -40,7 +49,10 @@
     	<TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> 100 persones</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD> Megafonia<br />Taula de so de 8 canals<br />Opcional: 	Portàtil, Projector, DVD, Internet</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaB.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaB.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/AulaB2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaB2.jpg' , true))?></TD></TR>
+	    <TR><TD>Fotografies: </TD><TD>	    
+		    <?php echo generaImatge('AulaB.jpg','Aula B. Vista general'); ?>
+		    <?php echo generaImatge('AulaB2.jpg','Aula B. Vista general'); ?>
+	    	</TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>	
@@ -51,7 +63,10 @@
     	<TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> 40 persones</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD>Opcional: 	Portàtil, Projector, DVD, Internet</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaC.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaC.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/AulaC2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaC2.jpg' , true))?></TD></TR>
+	    <TR><TD>Fotografies: </TD><TD>	    	
+	    	<?php echo generaImatge('AulaC.jpg','Aula C. Vista general'); ?>
+	    	<?php echo generaImatge('AulaC2.jpg','Aula C. Vista general'); ?>
+	    	</TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
    	</P>	
@@ -62,13 +77,14 @@
     	<TR><TD>Situació:</TD><TD> Segon pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> entre 20 i 50 persones</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD>Portàtil, Projector, DVD, Internet (Aula 2)</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD>    <?php echo link_to(image_tag('intranet/espais/Aula1.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula1.jpg' , true))?> 
-	                                      <?php echo link_to(image_tag('intranet/espais/Aula2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula2.jpg' , true))?>
-	                                      <?php echo link_to(image_tag('intranet/espais/Aula3.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula3.jpg' , true))?>
-	                                      <?php echo link_to(image_tag('intranet/espais/Aula4.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula4.jpg' , true))?>
-	                                      <?php echo link_to(image_tag('intranet/espais/Aula5.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula5.jpg' , true))?>
-	                                      <?php echo link_to(image_tag('intranet/espais/Aula6.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula6.jpg' , true))?>
-	                                      <?php echo link_to(image_tag('intranet/espais/Aula7.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Aula7.jpg' , true))?>
+	    <TR><TD>Fotografies: </TD><TD>
+	    	<?php echo generaImatge('Aula1.jpg','Aula 1. Vista general'); ?>
+	    	<?php echo generaImatge('Aula2.jpg','Aula 2. Vista general'); ?>
+	    	<?php echo generaImatge('Aula3.jpg','Aula 3. Vista general'); ?>
+	    	<?php echo generaImatge('Aula4.jpg','Aula 4. Vista general'); ?>
+	    	<?php echo generaImatge('Aula5.jpg','Aula 5. Vista general'); ?>
+	    	<?php echo generaImatge('Aula6.jpg','Aula 6. Vista general'); ?>
+	    	<?php echo generaImatge('Aula7.jpg','Aula 7. Vista general'); ?>	    	    	    	    	
 	    </TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
@@ -80,7 +96,10 @@
     	<TR><TD>Situació:</TD><TD> Segon pis</TD></TR>
     	<TR><TD>Aforament:</TD><TD> 8 alumnes</TD></TR>    				
     	<TR><TD>Equipament: </TD><TD>8 ordinadors per a l'alumnat i un ordinador per al professor.</TD></TR>
-		<TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/AulaInformatica.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaInformatica.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/AulaInformatica2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/AulaInformatica2.jpg' , true))?></TD></TR>
+		<TR><TD>Fotografies: </TD><TD>			
+			<?php echo generaImatge('AulaInformatica.jpg','Aula d\'informàtica. Vista general'); ?>
+			<?php echo generaImatge('AulaInformatica2.jpg','Aula d\'informàtica. Vista general'); ?>
+			</TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     				</table>    
   	 </P>		 			
@@ -90,7 +109,9 @@
     	<table class="Text">
     	<TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
     	<TR><TD>Característiques:</TD><TD> 90 metres quadrats de superficie i 24 metres lineals d’exposició<br />Focus halògens direccionables</TD></TR>
-		<TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/SalaFita.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaFita.jpg' , true))?> </TD></TR>
+		<TR><TD>Fotografies: </TD><TD>			
+			<?php echo generaImatge('SalaFita.jpg','Sala Fita. Vista general'); ?>			
+			</TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>			
@@ -100,8 +121,11 @@
 	    <table class="Text">
 	    <TR><TD>Situació:</TD><TD> Primer pis</TD></TR>
 	    <TR><TD>Característiques:</TD><TD>380 metres quadrats de superfície Pidits en dues sales connectades en forma de L: Sala 1, amb 50 metres lineals d’exposició, i sala 2, amb 60 metres lineals d’exposició.<br />Megafonia<br />Focus fixos<br />Endolls per a il•luminació suplementària<br />Mesclador de so de 6 canals</TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/SalaExposicions.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/SalaExposicions2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions2.jpg' , true))?></TD></TR>
-		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
+	    <TR><TD>Fotografies: </TD><TD>
+	    	<?php echo link_to(image_tag('intranet/espais/SalaExposicions.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions.jpg' , true))?> <?php echo link_to(image_tag('intranet/espais/SalaExposicions2.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/SalaExposicions2.jpg' , true))?>
+	    	<?php echo generaImatge('SalaExposicions.jpg','Sala d\'Exposicions. Vista general'); ?>
+	    	</TD></TR>
+		<TR><TD></TD><TD><?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
 	    </table>    
   	 </P>				
 
@@ -109,7 +133,9 @@
     <P class="Text">
     	<table class="Text">    				
     	<TR><TD>Característiques:</TD><TD>Superfície de 310 metres quadrats. </TD></TR>
-	    <TR><TD>Fotografies: </TD><TD><?php echo link_to(image_tag('intranet/espais/Pati.jpg',array('class'=>'fotoEspai')), image_path('intranet/espais/Pati.jpg' , true))?></TD></TR>
+	    <TR><TD>Fotografies: </TD><TD>	    	
+	    	<?php echo generaImatge('Pati.jpg','Pati. Vista general'); ?>
+	    	</TD></TR>
 		<TR><TD></TD><TD> <?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </TD></TR>
     	</table>    
   	 </P>					
@@ -139,4 +165,15 @@
       <DIV STYLE="height:80px;"></DIV>
                 
     </TD>
+    
+    
+   <?php 
+   
+   
+   function generaImatge($nom,$titol){
+	   return link_to(image_tag("intranet/espais/$nom" , array('class'=>'fotoEspai')), image_path("intranet/espais/$nom" , true),array('class'=>'thickbox', 'title'=>$titol));	   	
+   }
+   
+      
+   ?>
    

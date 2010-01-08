@@ -85,9 +85,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE','confirm'=>'Segur que vols guardar els canvis?'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gAgenda?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+						<?php include_partial('botonera',array('element'=>'TOTA l\'agenda'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

@@ -34,10 +34,8 @@
 			<table class="FORMULARI" width="70%">
 				<?php echo $FMissatge ?>
         		<tr>
-	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gMissatges?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+		           	<td colspan="2" class="dreta">
+						<?php include_partial('botonera',array('element'=>'el missatge'))?>
 	            	</td>
 	            </tr>				
 			</table>				

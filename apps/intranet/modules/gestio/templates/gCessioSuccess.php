@@ -35,9 +35,7 @@
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gCessio?accio=D',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+						<?php include_partial('botonera',array('element'=>'la cessió'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
