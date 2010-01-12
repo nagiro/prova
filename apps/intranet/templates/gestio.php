@@ -32,7 +32,7 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Tasques','gestio/gTasques'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio'); ?></TD></TR>                            
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves','gestio/gReserves'); ?></TD></TR>                                                                      
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves d\'espais','gestio/gReserves'); ?></TD></TR>                                                                      
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' ACTIVITATS'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=CA'); ?></TD></TR>

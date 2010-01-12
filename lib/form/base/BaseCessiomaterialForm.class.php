@@ -20,6 +20,8 @@ class BaseCessiomaterialForm extends BaseFormPropel
       'DataRetorn'          => new sfWidgetFormDate(),
       'Estat'               => new sfWidgetFormTextarea(),
       'Retornat'            => new sfWidgetFormInput(),
+      'EstatRetornat'       => new sfWidgetFormTextarea(),
+      'DataRetornat'        => new sfWidgetFormDate(),
     ));
 
     $this->setValidators(array(
@@ -30,6 +32,8 @@ class BaseCessiomaterialForm extends BaseFormPropel
       'DataRetorn'          => new sfValidatorDate(array('required' => false)),
       'Estat'               => new sfValidatorString(array('required' => false)),
       'Retornat'            => new sfValidatorInteger(array('required' => false)),
+      'EstatRetornat'       => new sfValidatorString(),
+      'DataRetornat'        => new sfValidatorDate(),
     ));
 
     $this->widgetSchema->setNameFormat('cessiomaterial[%s]');

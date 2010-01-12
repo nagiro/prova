@@ -43,16 +43,14 @@
   <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
-	 	<DIV class="REQUADRE">
-	 		<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gLlistes'); ?></div>
+	 	<DIV class="REQUADRE">	 
+	 		<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gLlistes'))?>
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FLlista ?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE_LLISTA'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gLlistes',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+						<?php include_partial('botonera',array('element'=>'la llista')); ?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -64,13 +62,13 @@
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">
  	    <DIV class="REQUADRE">
- 	    	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gLlistes'); ?></div>
+ 	    	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gLlistes'))?>
  	    	<DIV class="TITOL">Filtra usuaris</DIV>
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca ?>
 	            <tr>
 	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />	            		
+	            		<button name="BCERCA">Prem per buscar</button>	            			            	
 	            	</td>
 	            </tr>
 	        </table>
@@ -90,7 +88,7 @@
                   <?php endforeach; ?>
                 	<TR>
                 		<TD><?php echo gestorPaginesUsuarisLlista( $USUARIS_LLISTA )?></TD>
-                		<TD></TD><TD><?php echo submit_tag('DESVINCULA',array('name'=>'BDESVINCULA'))?></TD></TR>                   	  
+                		<TD></TD><TD><button name="BDESVINCULA">DESVINCULA</button></TD></TR>                   	  
 	        </table>
 	     </DIV>
                      
@@ -126,8 +124,8 @@
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?php echo submit_tag("Guardar",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSAVE_MISSATGE')) ?>    			
-	            		<?php echo submit_tag('Segueix -->>',array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEGUEIX_LLISTES')) ?>	            	            		
+	            		<button class="BOTO_ACTIVITAT" name="BSAVE_MISSATGE">Guardar</button>	            		    			
+	            		<button class="BOTO_ACTIVITAT" name="BSEGUEIX_LLISTES">Segueix -->></button>	            			            	            		
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -149,8 +147,8 @@
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?php echo submit_tag("Guardar",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSAVE_LLISTES')) ?>    			
-	            		<?php echo submit_tag('Segueix -->>',array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEGUEIX_ENVIAMENT')) ?>	            	            		
+	            		<button class="BOTO_ACTIVITAT" name="BSAVE_LLISTES">Guardar</button>
+	            		<button class="BOTO_ACTIVITAT" name="BSEGUEIX_ENVIAMENT">Segueix -->></button>	            		    				            		         	            		
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -173,9 +171,9 @@
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
 	            		<br>
-	            		<?php echo submit_tag("Enviar prova",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEND_PROVA')) ?>    			
-	            		<?php echo submit_tag("Enviar a tothom",array('class'=>"BOTO_ACTIVITAT",'name'=>'BSEND_TOTHOM','onClick'=>"return confirm('Segur que vols enviar el missatge a tothom?')")); ?>
-	            		<?php echo submit_tag('Finalitzar',array('class'=>"BOTO_ACTIVITAT",'name'=>'BFI')) ?>	            	            		
+	            		<button class="BOTO_ACTIVITAT" name="BSEND_PROVA">Enviar prova</button>
+	            		<button onClick="return confirm('Segur que vols enviar el missatge a tothom?')" class="BOTO_ACTIVITAT" name="BSEND_TOTHOM">Enviar a tothom</button>
+	            		<button class="BOTO_ACTIVITAT" name="BFI">Finalitzar</button>	            		    				            			            			            	            		
 	            	</td>
 	            </tr>                	 
       		</TABLE>

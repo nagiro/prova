@@ -8,8 +8,8 @@
 	            <?php echo $FCerca ?>
 	            <tr>
 	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou usuari" />
+	            		<button name="BCERCA">Prem per buscar</button>	            		
+	            		<button name="BNOU">Nou usuari</button>	            		
 	            	</td>
 	            </tr>
 	        </table>
@@ -18,7 +18,7 @@
 
 	<?php IF( isset($MODE['CONSULTA']) && $MODE['CONSULTA'] ): ?>
 
-     <DIV class="REQUADRE">
+     <DIV class="REQUADRE">     	
         <DIV class="TITOL">Llistat d'usuaris (<?php echo $PAGER_USUARIS->getNbResults()?>)</DIV>
       	<TABLE class="DADES">
       			<?php 
@@ -44,16 +44,14 @@
       
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post" enctype="multipart/form-data">  	               
 	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	 	
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FUsuari?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gUsuaris',array('confirm'=>'Segur que vols esborrar-lo?'))?>
-	            	</td>
+						<?php include_partial('botonera',array('element'=>'l\'usuari')); ?>	            	
+					</td>
 	            </tr>                	 
       		</TABLE>
       	</DIV>
@@ -65,7 +63,7 @@
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
      <DIV class="REQUADRE">
-        <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
+     	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>        
         <DIV class="TITOL">Llistes subscrites de'n <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                 <?php
@@ -76,7 +74,7 @@
                        			<TD width="10px" class="LINIA">'.checkbox_tag('D[IDL][]',$L->getLlistesIdllistes(),false).'<TD class="LINIA">'.$L->getLlistes()->getNom().'</TD>                                                           
                             </TR>';                                   
                   endforeach;                                  
-                  echo '<TR><TD colspan="2">'.submit_tag('DESVINCULA',array('name'=>'BDESVINCULA')).'</TD></TR>';
+                  echo '<TR><TD colspan="2"><button name="BDESVINCULA">DESVINCULA</button></TD></TR>';
                                     
                 ?>
       	</TABLE>      
@@ -94,7 +92,7 @@
 	                       			<TD width="10px" class="LINIA">'.checkbox_tag('D[IDL][]',$IDL,false).'<TD class="LINIA">'.$L.'</TD>                                                           
 	                            </TR>';                                   
 	                  endforeach;                                  
-	                  echo '<TR><TD colspan="2">'.submit_tag('VINCULA',array('name'=>'BVINCULA')).'</TD></TR>';
+	                  echo '<TR><TD colspan="2"><button name="BVINCULA">VINCULA</button></TD></TR>';
                                     
                 ?>
       	</TABLE>      
@@ -106,7 +104,7 @@
   <?php IF( isset($MODE['CURSOS']) && $MODE['CURSOS'] ): ?>
 
      <DIV class="REQUADRE">
-	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
+     	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	    
         <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=N&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
       	<TABLE class="DADES">
                 <?php                 
@@ -130,7 +128,7 @@
   <?php IF( isset($MODE['REGISTRES']) && $MODE['REGISTRES'] ): ?>
 
      <DIV class="REQUADRE">
-     	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
+     	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>
         <DIV class="TITOL">Llistat de reserves de'n <?php echo $USUARI->getNomComplet() ?></DIV>
       	<TABLE class="DADES">
                 <?php
@@ -150,7 +148,7 @@
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
      <DIV class="REQUADRE">
-	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
+	    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>
         <DIV class="TITOL">Gestió de permisos d'aplicacions de l'usuari <?php echo $USUARI->getNomComplet() ?></DIV>        
       	<TABLE class="DADES">
                 <?php
@@ -163,7 +161,7 @@
                 			  </tr>';
                 	endforeach;
                 	
-                	echo '<TR><TD colspan="2">'.submit_tag('ACTUALITZA',array('name'=>'BACTUALITZA_PERMISOS','class'=>'BOTO_ACTIVITAT')).'</TD></TR>';
+                	echo '<TR><TD colspan="2"><button name="BACTUALITZA_PERMISOS" class="BOTO_ACTIVITAT">ACTUALITZA</TD></TR>';
                                          
                 ?>
       	</TABLE>      

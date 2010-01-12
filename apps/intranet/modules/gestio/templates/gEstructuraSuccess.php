@@ -11,8 +11,10 @@
         <DIV class="TITOL">HTML - <?php echo $NODE->getTitolmenu(); ?></DIV>
       	<TABLE class="DADES">
       		<?php echo $FHtml ?>
-      		<tr><td></td><td><?php echo submit_tag('Actualitza',array('name'=>'SaveHTML')); ?></td></tr>        
-      		
+      		<tr>
+      		<td colspan="2" class="dreta">
+				<?php include_partial('botonera',array('element'=>'TOTA l\'agenda','tipus'=>'Guardar','nom'=>'SaveHTML')); ?>      		      		
+      		</td></tr>              		
         </TABLE>      
       </DIV>
    </form>
@@ -29,9 +31,7 @@
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gEstructura',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+						<?php include_partial('botonera',array('element'=>'el node'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

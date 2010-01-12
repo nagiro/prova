@@ -56,12 +56,14 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
     
      return array(
        	1=>'Telèfon',
-  		2=>'Adreça',  
-  		3=>'Compte corrent',
-  		4=>'Fax',
-  		5=>'Email',
-  		6=>'Ciutat',
-  		7=>'Codi Postal');
+       	4=>'Fax',
+       	5=>'Email',
+  		2=>'Adreça',
+  		7=>'Codi Postal',    		  		  		
+  		6=>'Població',
+  		3=>'Compte corrent'
+  		
+  		);
   
   }
   
@@ -69,12 +71,12 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
   {
   	switch($idTipus){
   		case 1: return 'Telèfon'; break;
-  		case 2: return 'Adreça'; break;  
-  		case 3: return 'Compte corrent'; break;
   		case 4: return 'Fax'; break;
   		case 5: return 'Email'; break;
-  		case 6: return 'Ciutat'; break;
-  		case 7: return 'Codi Postal'; break;		
+  		case 2: return 'Adreça'; break;
+  		case 7: return 'Codi Postal'; break;    		  		  		
+  		case 6: return 'Població'; break;
+  		case 3: return 'Compte corrent'; break;  				
   	}
   }
   

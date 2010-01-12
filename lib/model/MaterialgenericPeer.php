@@ -43,7 +43,33 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
     return $RET;    
       
   }
+
   
+  static public function selectMaterialCedit($isRetornat=false)
+  {
+  	
+  	$C = new Criteria();
+  	  	
+    $MG = self::doSelect($C);
+    $RET = array();
+    foreach($MG as $M):
+		$N = $M->getNom();
+		$RET[$N] = array();
+		
+		$C2 = new Criteria();
+		$C2->addJoin(MaterialPeer::IDMATERIAL,CessiomaterialPeer::MATERIAL_IDMATERIAL);
+		$C2->add(CessiomaterialPeer::RETORNAT,$isRetornat);
+		      
+      	foreach($M->getMaterials($C2) as $MD):
+      								
+      		$RET[$N][$MD->getIdmaterial()] = $MD->getIdentificador();
+      		            
+      	endforeach;
+    endforeach;
+    
+    return $RET;    
+      
+  }
   
   static public function selectMaterial()
   {
@@ -60,6 +86,8 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
     return $RET;    
       
   }
+  
+  
   
   /**
    * Entrem l'identificador de la línia que estem tractant

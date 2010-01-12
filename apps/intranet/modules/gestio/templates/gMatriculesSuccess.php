@@ -259,7 +259,7 @@
 	    	<table class="FORMULARI" width="100%">
 	 			<?php echo $FMATRICULA; ?>      
 	 			<td colspan="2" class="dreta"><br>
-	 				<?php echo submit_tag('Modifica',array('name'=>'BSAVEMATRICULA','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
+					<?php include_partial('botonera',array('element'=>'la matrícula'))?>	            			            	
 	            </td>
 	        </table>
 	     </DIV>

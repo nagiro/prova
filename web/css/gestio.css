@@ -24,6 +24,10 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 
 * { font-size:10px; }
 
+BUTTON { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
+BUTTON:focus { background: #FFD7DC; }
+
+
 .MISSATGE { background-color:#CCCCCC; }
 
 .REQUADRE { border:5px solid #CCCCCC; margin:20px; padding:20px; width:650px; }
@@ -44,13 +48,14 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 .FORMULARI .BOTO_PERILL { background-color: red; border: 1px solid black; padding:2px;  }
 .DADES { width:100%; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
-.DADES TD A { text-decoration:none; color:black; font-weight:bold; }
+.DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
 .DADES TD.PAR { background-color:#DDDDDD; }
 .DADES TD.IPAR { background-color:White; }
 .DADES TH { text-align:left; font-weight:bold; }
 .DADES .TITOLCAT { background-color:rgb(243,177,154); font-weight: bolder; font-style: italic; }
 .DADES .ICOINI { width:30px; }
-.text { width:100%; }
+.text { font-size:12px; width:100%; }
+textarea { font-size:12px; width:100%;}
 .error { color: red; font-style: italic; }
 .dreta { text-align:right; }
 
@@ -74,7 +79,23 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 
 .MENU { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align:top; } 
 .CONTINGUT { background-color:white; vertical-align: top; padding-top:20px; border-right:4px solid white; width:761px; }    
-.CALENDARI { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align: top; }        
+.CALENDARI { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align: top; }
+.CALENDARI A { text-decoration:none; color:black; }
+.CALENDARI TD { font-size:10px; text-align: left; padding:1px; }
+.CALENDARI .DIES { font-size: 10px; padding:4px;  }
+.LINIA_ERROR { background-color: rgb(255,196,196); }
+.HORA { width:80px;}
+.CENT { width:50%; }
+#CENT { width:100%; } 
+#DEU { width:10%; }
+#FDATA { width:80px; }
+#MESOS { font-weight:normal; border: 3px solid #F3F3F3; background-color:#FAFAFA; margin-left:5px; }
+
+.SELECCIONAT { font-weight:bold; }
+
+
+
+
 .PEU { height:25px; background-color:#1f1a17; border-left:4px solid #1f1a17; border-right:4px solid #1f1a17; border-top:4px solid #1f1a17; color: white; text-align:center; font-size: 10px; }    
 .DEGRADAT_INFERIOR { background-image: url(DifuminatInferior.png); background-repeat: repeat-x; }
 #ESPAI { margin-top:20px; }

@@ -3,24 +3,7 @@
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick.js')?>
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick-ca.js')?>
 
-<STYLE>
-.CALENDARI { font-size: 7px; }
-.CALENDARI A { text-decoration:none; color:black; }
-.CALENDARI A:hover { text-decoration:none; color:black; font-weight: bolder; }
-.CALENDARI A:visited {text-decoration:none; color:black; }
-.CALENDARI TD { font-size:10px; text-align: left; padding:1px; }
-.LINIA_ERROR { background-color: rgb(255,196,196); }
-.HORA { width:80px;}
-.CENT { width:50%; }
-#CENT { width:100%; } 
-#DEU { width:10%; }
-#FDATA { width:80px; }
-#MESOS { font-weight:normal; border: 3px solid #F3F3F3; background-color:#FAFAFA; margin-left:5px; }
-.DIES { font-size: 10px;  }
-.SELECCIONAT { font-weight:bold; }
-
-</STYLE>
-   
+  
     <TD colspan="3" class="CONTINGUT">
 
 	<script type="text/javascript">
@@ -108,7 +91,7 @@
 	    	<table class="CALENDARI">          
                 <?php                 
                   
-                  echo llistaCalendariH($DATAI,$CALENDARI);                                              
+                  echo llistaCalendariV($DATAI,$CALENDARI);                                              
 
                 ?>
 	        </table>
@@ -453,6 +436,104 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
       
   }
 
+  
+  function llistaCalendariV($DATAI, $CALENDARI)
+  {
+    
+    //Inicialitzem variables i marquem els dies en blanc
+    $Q = 4; 
+    $mes  = date('m',$DATAI);
+    $year = date('Y',$DATAI);
+    $RET = "";
+              
+    $any = $year;
+    $mesI = $mes;
+    $mesF = $mes+$Q;      
+
+  
+    //Omplim els mesos
+    $RET .= '<tr>'; $dies = array(); $IndexMes = 0;
+    for($mes = $mesI; $mes < $mesF; $mes++):  
+    
+    	$mesReal = ($mes > 12)?($mes-12):$mes;
+      	$anyReal = ($mes == 13)?$any+1:$any;
+    
+    	$week = 1; $IndexMes++; 
+    	$diesMes = cal_days_in_month(CAL_GREGORIAN, $mesReal, $anyReal );
+    	
+    	for($dia = 1; $dia <= $diesMes; $dia++ ):
+    	    	
+    		$diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mesReal , $dia , $anyReal) , 0 );
+    		$diaSetmana = ($diaSetmana==0)?7:$diaSetmana;
+    		    		 
+    		$dies[$week][$diaSetmana][$IndexMes]['day'] = $dia;
+    		$dies[$week][$diaSetmana][$IndexMes]['month'] = $mesReal;
+    		$dies[$week][$diaSetmana][$IndexMes]['year'] = $anyReal;
+    		
+    		if($diaSetmana == 7) $week++;
+    		
+    	endfor;
+    	
+    	$RET .= "<TD colspan=\"7\">".mesos($mesReal)."</TD>";
+    	    
+    endfor;
+   
+	$RET .= '</tr>';	
+
+	$RET .= "<TR>";    
+    for($i = 0; $i < $Q; $i++):
+    	$RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD>";
+    endfor;    
+    $RET .= "</TR>";
+        
+    
+    for($row = 1; $row <= 6; $row++):
+    	$RET .= "<tr>";
+	    for($col = 1; $col<=(7*$Q); $col++):    		
+		
+			$IndexMes = ceil($col / 7);
+			$colR = $col - (7 * ($IndexMes-1));
+
+			//Color de fons per diferenciar els mesos
+			if($IndexMes % 2) $background = "beige"; else $background = "white";
+			
+			//Color de fons per diferenciar els caps de setmana
+			if( $colR == 6 || $colR == 7) $background="gray";			 
+						
+			if(isset($dies[$row][$colR][$IndexMes])):
+
+				$dades = $dies[$row][$colR][$IndexMes];
+			
+				$SPAN = ""; $color = "";
+		        $CalDia = mktime(0,0,0,$dades['month'],$dades['day'],$dades['year']);
+		        
+		        if(isset($CALENDARI[$CalDia])):
+		        	$SELECCIONAT = "SELECCIONAT";
+		        	$SPAN  = '<span>';				 
+		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= $CAL['HORA'].' - '.$CAL['TITOL'].'<br />';
+		            $SPAN .= '</span>';
+		        else: 
+		        	$SELECCIONAT = "";
+		        endif; 
+		                                        
+				$RET .= '<TD class="DIES" style="background-color:'.$background.';">'.link_to($dades['day'].$SPAN,"gestio/gActivitats?accio=CD&DIA=".$CalDia , array('class'=>"tt2 $SELECCIONAT")).'</TD>';
+      																						
+			else: 
+				
+				$RET .= '<TD class="DIES" style="background-color:'.$background.';"></TD>';
+			
+			endif; 								      	      		
+		endfor;        
+		$RET .= "</tr>";
+    endfor;
+    
+    $RET .= "</TR>";
+	        
+    return $RET;
+      
+  }
+  
+  
 
   function ParImpar($i){ if($i % 2 == 0) return "PAR"; else return "IPAR"; }
   

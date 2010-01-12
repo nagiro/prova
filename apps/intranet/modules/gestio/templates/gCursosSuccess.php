@@ -115,9 +115,7 @@
                 <tr>
                 	<td></td>
 		            <td colspan="2" class="dreta">
-	            		<br>	            		
-	            		<?php echo link_to('<input type="button" value="X Esborra" class="BOTO_ACTIVITAT" >','gestio/gCursos?accio=D'); ?>
-	            		<?php echo submit_tag('Finalitza',array('name'=>'BSAVECURS','class'=>'BOTO_ACTIVITAT'))?>
+						<?php include_partial('botonera',array('element'=>'el curs'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

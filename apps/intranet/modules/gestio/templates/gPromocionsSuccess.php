@@ -20,14 +20,13 @@
       
 	<form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">            
 	 	<DIV class="REQUADRE">
+	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gPromocions?accio=C'); ?></div>
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FPromocio?>                								
                 <tr>
                 	<td width="50px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gPromocions',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+						<?php include_partial('botonera',array('element'=>'la promoció')); ?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

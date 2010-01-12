@@ -13,15 +13,14 @@
 		
 		<form action="<?php echo url_for('gestio/gNoticies') ?>" method="POST" enctype="multipart/form-data">
 		    <DIV class="REQUADRE">	    
+		    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gNoticies?accio=C'))?>
 		    	<table class="FORMULARI">
 		    		<tr><td width="100px"></td><td></td></tr>	    			    		        
 		            <?php echo $FORMULARI ?>	            
 		            <tr>		            	
 		            	<td colspan="2" class="dreta">
-		            		<br>	            	
-		            			<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSUBMIT'))?>
-		            			<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gNoticies?accio=D',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>	            		
-		            	</td>
+							<?php include_partial('botonera',array('element'=>'la notícia')); ?>		            	
+						</td>
 		            </tr>
 		        </table>
 		     </DIV>
@@ -48,8 +47,9 @@
                 ?>         
                 <TR>
                 	<TD colspan="1"></TD>
-                	<TD colspan="3"><?php echo submit_tag('Nova',array('name'=>'BADD'))?>
-                		<?php echo submit_tag('Edita',array('name'=>'BEDIT'))?>                		
+                	<TD colspan="3">
+                		<button name="BADD">Nova notícia</button>
+                		<button name="BEDIT">Edita notícia</button>                		                		
                 	</TD>
                 	
                 </TR>

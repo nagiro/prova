@@ -17,7 +17,7 @@ class MaterialForm extends sfFormPropel
   	
     $this->setWidgets(array(
       'idMaterial'                        => new sfWidgetFormInputHidden(),
-      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormInputHidden(),
+      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormChoice(array('choices'=>MaterialgenericPeer::select())),
       'Identificador'                     => new sfWidgetFormInput(),
       'Nom'                               => new sfWidgetFormInput(),
 	  'Ubicacio'                          => new sfWidgetFormInput(),
@@ -64,7 +64,8 @@ class MaterialForm extends sfFormPropel
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
     ));
 
-    $this->widgetSchema->setLabels(array(            
+    $this->widgetSchema->setLabels(array(
+      'MaterialGeneric_idMaterialGeneric' => 'Grup: ',            
       'Identificador'                     => 'Identificador: ',
       'Nom'                               => 'Nom: ',
 	  'Ubicacio'                          => 'Ubicació: ',

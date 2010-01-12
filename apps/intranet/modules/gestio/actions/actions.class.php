@@ -139,7 +139,8 @@ class gestioActions extends sfActions
     if($request->hasParameter('BCERCA')) 				{ $accio = "FC"; $this->PAGINA = 1; }
     if($request->hasParameter('BDESVINCULA')) 			{ $accio = "DL"; }
     if($request->hasParameter('BVINCULA')) 				{ $accio = "VL"; }
-    if($request->hasParameter('BSAVE_x'))     			{ $accio = "S"; }
+    if($request->hasParameter('BSAVE'))     			{ $accio = "S"; }
+  	if($request->hasParameter('BDELETE'))     			{ $accio = "D"; }    
     if($request->hasParameter('BACTUALITZA_PERMISOS')) 	{ $accio = "SGA"; }
     
     
@@ -249,12 +250,12 @@ class gestioActions extends sfActions
       $this->getUser()->setAttribute('idP',$OPromocio->getPromocioId());
       $this->FPromocio = new PromocionsForm($OPromocio);
       $this->EDICIO = true;
-    elseif($request->getParameter('accio')=='D'): //Esborra
+    elseif($request->getParameter('BDELETE')): //Esborra
       $this->PROMOCIO = PromocionsPeer::retrieveByPK($request->getParameter('IDP'));
       $this->PROMOCIO->delete();      
     endif;
     
-    if($request->hasParameter('BSAVE_x')):
+    if($request->hasParameter('BSAVE')):
       $IDP = $this->getUser()->getAttribute('idP');
       if($IDP == 0) $OPromocio = new Promocions();
       else $OPromocio = PromocionsPeer::retrieveByPK($IDP);
@@ -355,7 +356,8 @@ class gestioActions extends sfActions
     
     $accio = $request->getParameter('accio');
     if($request->hasParameter('BCERCA')){ $accio = 'U'; $this->PAGINA = 1; }
-    if($request->hasParameter('BSAVE_LLISTA_x')) $accio = 'S';
+    if($request->hasParameter('BSAVE')) $accio = 'S';
+    if($request->hasParameter('BDELETE')) $accio = 'D';    
     if($request->hasParameter('BSAVE_MISSATGE')) $accio = 'SM';
     if($request->hasParameter('BSEGUEIX_LLISTES')) $accio = 'LM';    
     if($request->hasParameter('BSAVE_LLISTES')) $accio = 'SLM';
@@ -935,6 +937,16 @@ class gestioActions extends sfActions
     return $this->renderText(json_encode($RESPOSTA));
       
   }
+
+  public function executeSelectCeditA(sfWebRequest $request)
+  {
+  	
+  	$C = new Criteria();
+  	$RESPOSTA = CessiomaterialPeer::getCeditAAjax($request->getParameter('q'), $request->getParameter('limit')); 	  	    
+    return $this->renderText(json_encode($RESPOSTA));
+      
+  }
+  
   
   public function executeSelectMaterial(sfWebRequest $request)
   {
@@ -1662,7 +1674,10 @@ class gestioActions extends sfActions
     			if($this->getUser()->getAttribute('IDM') > 0): $OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM')); endif;      			    		        		  
     		    $this->FMaterial = new MaterialForm($OMaterial);
     		    $this->FMaterial->bind($request->getParameter('material'));
-    		    if($this->FMaterial->isValid()) $this->FMaterial->save();    		        		    
+    		    if($this->FMaterial->isValid()):
+    		    	$this->FMaterial->save();
+    		    	$this->redirect('gestio/gMaterial?accio=C');
+    		    endif;     		        		    
     			$this->EDICIO = true;
     		break;
     	case 'D':     			
@@ -1698,7 +1713,8 @@ class gestioActions extends sfActions
 	    if($request->hasParameter('BCERCA')) { 			$accio = ( $this->CERCA['select'] == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
 	    elseif($request->hasParameter('BNOU')) 	    	$accio = 'NC';
 	    elseif($request->hasParameter('BSAVECODICURS')) $accio = 'SC';
-	    elseif($request->hasParameter('BSAVECURS'))     $accio = 'SCC';	    
+	    elseif($request->hasParameter('BSAVE'))     	$accio = 'SCC';	    
+	    elseif($request->hasParameter('BDELETE'))     	$accio = 'D';
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -1748,7 +1764,7 @@ class gestioActions extends sfActions
     		    endif;    		        		    
     			$this->MODE = 'EDICIO_CONTINGUT';
     		break;
-    		
+    	//Esborra un curs	
     	case 'D': 
     			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
     			if($OCurs instanceof Cursos):
@@ -1857,7 +1873,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BPAGAMENT')) 	 $accio = 'PAGAMENT';	    
 	    elseif($request->hasParameter('BSUBMIT')) 		 $accio = 'S';
 	    elseif($request->hasParameter('BDELETE')) 		 $accio = 'D';
-	    elseif($request->hasParameter('BSAVEMATRICULA')) $accio = 'SAVE_MATRICULA';
+	    elseif($request->hasParameter('BSAVE')) 		 $accio = 'SAVE_MATRICULA';
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -1978,8 +1994,9 @@ class gestioActions extends sfActions
               $this->MODE = 'PAGAMENT';
               break;
         //Esborra una matrícula    		    		
-    	case 'D': 
-    	        CursosPeer::retrieveByPK($request->getRequest('IDC'))->delete();    	        
+    	case 'D':
+    			$idM = $this->getUser()->getAttribute('IDM');
+    			MatriculesPeer::retrieveByPK($idM)->delete();     	            	       
     	    break;
     	    
    	    //Edita una matrícula
@@ -2049,7 +2066,7 @@ class gestioActions extends sfActions
 	
 	
     if($request->isMethod('POST')){	      	    
-	    if($request->hasParameter('BSUBMIT')) 		$this->accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
+	    if($request->hasParameter('BSAVE')) 		$this->accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
 	    elseif($request->hasParameter('BDELETE')) 	$this->accio = 'D';
 	    elseif($request->hasParameter('BADD'))		$this->accio = 'N';
 	    elseif($request->hasParameter('BEDIT'))		$this->accio = 'E';
@@ -2139,7 +2156,10 @@ class gestioActions extends sfActions
 		case 'S':    			    		        		  
 			    $this->FIncidencia = new IncidenciesForm(IncidenciesPeer::retrieveByPK($this->getUser()->getAttribute('IDI')));
 			    $this->FIncidencia->bind($request->getParameter('incidencies'));
-			    if($this->FIncidencia->isValid()) $this->FIncidencia->save();
+			    if($this->FIncidencia->isValid()):
+			    	$this->FIncidencia->save();
+			    	$this->redirect('gestio/gIncidencies?accio=C');
+			    endif; 
 			    $this->MODE['EDICIO'] = true;    		        		        			
 			break;
 		case 'D': 
@@ -2158,60 +2178,108 @@ class gestioActions extends sfActions
   	$this->setLayout('gestio');
         
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA = $this->ParReqSesForm($request,'text',1,'cerca');
-    
+       		                  
     //Inicialitzem el formulari de cerca
-    $this->FCerca = new CercaForm();
-	$this->FCerca->bind($request->getParameter('cerca'));
-	
-	//Inicialitzem variables
-	$this->MODE = array('CONSULTA'	=> true,
-						'NOU'		=> false, 
-						'EDICIO' 	=> false, 
-						'CESSIO' 	=> false
-					);
-
+    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));
+    $this->FCerca = new CercaTextChoiceForm();       
+    $this->FCerca->setChoice(array(1=>'Cedit',0=>'Retornat')); 
+	$this->FCerca->bind($this->CERCA);	
+	$this->MODE = "";
+	$this->ERROR_OCUPAT = "";
+		
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
 	    $accio = $request->getParameter('accio');
-	    if($request->hasParameter('BCERCA'))    $accio = 'C';
-	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
-	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
-	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
+	    if($request->hasParameter('BCERCA'))    		$accio = 'C';
+	    if($request->hasParameter('BNOU_CESSIO')) 	    $accio = 'NC';
+	    if($request->hasParameter('BNOU_RETORN')) 	    $accio = 'NR';
+	    	    
+	    if($request->hasParameter('BSAVE_CESSIO'))		$accio = 'SC';
+	    if($request->hasParameter('BDELETE_CESSIO')) 	$accio = 'DC';
+	    if($request->hasParameter('BSAVE_RETORN'))		$accio = 'SR';
+	    if($request->hasParameter('BDELETE_RETORN')) 	$accio = 'DR';
 	endif;              
 	
 	
     switch($accio){
-    	case 'N':
+    	
+    	//Nova Cessió 
+    	case 'NC':
     			$OCessio = new Cessiomaterial();
+    			$OCessio->setRetornat(false);
+	    		$OCessio->setEstatRetornat("");
+	    		$OCessio->setDataretornat(null);
     			$OCessio->setDatacessio(date('m/d/Y',time()));
     			$OCessio->setDataretorn(date('m/d/Y',time()));    			    			    	    			
-    			$this->FCessiomaterial = new CessiomaterialForm($OCessio);
+    			$this->FCessiomaterial = new CessiomaterialForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));
     			$this->getUser()->setAttribute('IDC',0);    			
-    			$this->MODE['NOU'] = true;
+    			$this->MODE = 'NOU_CESSIO';
     		break;
-    	case 'E':    			
+    		
+    	//Edita Cessio
+    	case 'EC':    			
     			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
     			$OCessio = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
-				$this->FCessiomaterial = new CessiomaterialForm($OCessio);				   			
-    			$this->MODE['EDICIO'] = true;
+				$this->FCessiomaterial = new CessiomaterialForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));				   			
+    			$this->MODE = 'EDICIO_CESSIO';
     		break;
-    	case 'S':    			    	    				        		  
-    		    $this->FCessiomaterial = new CessiomaterialForm(CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
+
+    	//Edita Retorn
+    	case 'ER':    			
+    			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
+    			$OCessio = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+    			$OCessio->setRetornat(true);
+    			$OCessio->setEstatRetornat("");
+    			$OCessio->setDataretornat(date('m/d/Y',time()));    			    			
+				$this->FCessiomaterial = new CessiomaterialRetornForm($OCessio);				   			
+    			$this->MODE = 'EDICIO_RETORN';
+    		break;
+
+    	//Guarda cessió
+    	case 'SC':
+    			$OCESSIO = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));    			    			    				    		    			    			    			
+    		    $this->FCessiomaterial = new CessiomaterialForm($OCESSIO,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));
+    		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
+    		    if($this->FCessiomaterial->isValid()):
+    		    	$RET = CessiomaterialPeer::isDisponible($this->FCessiomaterial);
+    		    	    		    	
+    		    	if(sizeof($RET['HORARIS']) == 0 && sizeof($RET['CESSIONS']) == 0):    		    	
+	    		    	$this->FCessiomaterial->save();
+	    		    	$this->getUser()->setAttribute('IDC',$this->FCessiomaterial->getObject()->getIdcessiomaterial());
+	    		    	$this->redirect('gestio/gCessio?accio=C');
+	    		    else: 
+	    		    	$this->ERROR_OCUPAT	= $RET; 
+	    		    endif; 
+    		    endif;
+    		    $this->MODE = 'EDICIO_CESSIO';    		        		        			
+    		break;
+    		
+    	//Esborra cessió
+    	case 'DC': 
+    	        CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
+    	        break;
+    	        
+    	//Guarda retorn
+    	case 'SR':
+
+    			$OCESSIO = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));    		
+    		    $this->FCessiomaterial = new CessiomaterialRetornForm(CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
     		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
     		    if($this->FCessiomaterial->isValid()): 
     		    	$this->FCessiomaterial->save();
     		    	$this->getUser()->setAttribute('IDC',$this->FCessiomaterial->getObject()->getIdcessiomaterial());
+    		    	$this->redirect('gestio/gCessio?accio=C');
     		    endif;
-    		    $this->MODE['EDICIO'] = true;    		        		        			
+    		    $this->MODE = 'EDICIO_RETORN';    		        		        			
     		break;
-    	case 'D': 
+    		
+    	//Esborra retorn
+    	case 'DR': 
     	        CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
-    	        break;    	         	 
+    	        break;    	         	     	         	 
     }
-
     
-    $this->CESSIONS = CessiomaterialPeer::getCessions($this->PAGINA);
+    $this->CESSIONS = CessiomaterialPeer::getCessions($this->PAGINA,$this->CERCA['select'],$this->CERCA['text']);
   
   }
 

@@ -58,8 +58,8 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 	            <?php echo $FCerca ?>
 	            <tr>
 	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou contacte" />
+	            		<button name="BCERCA">Prem per buscar</button>
+	            		<button name="BNOU">Nou contacte</button>	            		
 	            	</td>
 	            </tr>
 	        </table>
