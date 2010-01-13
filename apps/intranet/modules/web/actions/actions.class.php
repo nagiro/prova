@@ -112,8 +112,10 @@ class webActions extends sfActions
 
      $this->LoadWEB($request);
      $this->setTemplate('index');     
-     $this->ACCIO = 'registre';
-     $this->FUSUARI = new ClientUsuarisForm();
+     $this->ACCIO = 'registre';     
+     $rand = array(1=>rand(0,10),2=>rand(0,10));
+	 $this->getUser()->setAttribute('rand',$rand);		    
+	 $this->FUSUARI = new ClientUsuarisForm(new Usuaris(),array('rand'=>$rand));
      $this->ESTAT = '---'; 
   }
   
@@ -121,19 +123,13 @@ class webActions extends sfActions
   {
   	$this->LoadWEB($request);
   	
-  	//Inicialitzem l'usuari per defecte.  	  	
-  	$this->FUSUARI = new ClientUsuarisForm(new Usuaris());
-  	
-  	$captcha = array(
-       'recaptcha_challenge_field' => $request->getParameter('recaptcha_challenge_field'),
-       'recaptcha_response_field'  => $request->getParameter('recaptcha_response_field'),
-     );
-     
-     $this->FUSUARI->bind(array_merge($request->getParameter('usuaris'), array('captcha' => $captcha)));
+  	//Inicialitzem l'usuari per defecte.
+  	$this->FUSUARI = new ClientUsuarisForm(new Usuaris(),array('rand'=>$this->getUser()->getAttribute('rand')));  	     
+    $this->FUSUARI->bind($request->getParameter('usuaris'));
   	
   	//Comprovem que el DNI no existeixi. Si ja existeix informem l'usuari
-     $C = new Criteria();
-     $C->add(UsuarisPeer::DNI , $this->FUSUARI->getValue('DNI'));
+    $C = new Criteria();
+    $C->add(UsuarisPeer::DNI , $this->FUSUARI->getValue('DNI'));
   	
   	$DUPLICAT = (UsuarisPeer::doCount($C) > 0);  	
   	if($this->FUSUARI->isValid() && !$DUPLICAT){
@@ -155,16 +151,11 @@ class webActions extends sfActions
   	 $this->LoadWEB($request);
      $this->setTemplate('index');
 	 $this->ACCIO = 'remember';
-	 $this->FREMEMBER = new RememberForm();	 	  	 
-	 
+	 	 	 	  	 
 	 if($request->getMethod('post') && $request->hasParameter('BREMEMBER')):
 	 
-		$captcha = array(
- 	      'recaptcha_challenge_field' => $request->getParameter('recaptcha_challenge_field'),
-    	   'recaptcha_response_field'  => $request->getParameter('recaptcha_response_field'),
-     	);     
-	 
-	 	$this->FREMEMBER->bind(array_merge($request->getParameter('remember'), array('captcha' => $captcha)));	 
+	 	$this->FREMEMBER = new RememberForm(null,array('rand'=>$this->getUser()->getAttribute('rand')));
+	 	$this->FREMEMBER->bind($request->getParameter('remember'));	 
 	 	$dni = $request->getParameter('remember[DNI]');	 
 	 	
     	$OUsuari = UsuarisPeer::cercaDNI($dni);
@@ -181,7 +172,7 @@ class webActions extends sfActions
 				
 				$this->ENVIAT = true;
 		elseif($this->FREMEMBER->isValid()):
-			$this->ERROR = "El DNI no existeix.";
+			$this->ERROR = "El DNI no existeix o suma incorrecte.";
 			$this->ENVIAT = false; 			
 		else: 
 			$this->ERROR = "";
@@ -189,6 +180,11 @@ class webActions extends sfActions
 		endif;
 					 		 
 	 else:
+	 
+	 	//Inicialitzem el formulari
+		$rand = array(1=>rand(0,10),2=>rand(0,10));
+		$this->getUser()->setAttribute('rand',$rand);		    	 	
+		$this->FREMEMBER = new RememberForm(null,array('rand'=>$rand));
 	 	$this->ERROR = "";
 	 	$this->ENVIAT = false; 
 	 endif;
@@ -352,7 +348,12 @@ class webActions extends sfActions
 		    $this->MODUL = 'gestiona_dades';
 		    $this->ACCIO = 'gestio';
 		    $OU = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
-		    $this->FUSUARI = new ClientUsuarisForm($OU);       	       	     
+		    
+		    //Entrem la info per la gestió del captcha
+		    $rand = array(1=>rand(0,10),2=>rand(0,10));
+		    $this->getUser()->setAttribute('rand',$rand);		    
+		    $this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$rand));
+		           	       	     
 	        break;
 	   case 'gc':
 	        $this->MODUL = 'gestiona_cursos';
@@ -378,10 +379,10 @@ class webActions extends sfActions
 	   case 'sd':
 	   		$this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';		    		    
 	   		$OU = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
-	   		$this->FUSUARI = new ClientUsuarisForm($OU);
+	   		$this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$this->getUser()->getAttribute('rand')));
 	   		$this->FUSUARI->bind($request->getParameter('usuaris'));
 	   		if($this->FUSUARI->isValid()) { $this->FUSUARI->save(); $this->MISSATGE[] = "Dades modificades correctament"; }
-	   		else $this->MISSATGE[] = 'Hi ha algun error a les dades';     
+	   		else { $this->MISSATGE[] = 'Hi ha algun error a les dades'; }     
 	        break;       	                    	             	        
 	   case 'sl':
 	        UsuarisllistesPeer::saveUsuarisLlistes($request->getParameter('LLISTA'), $this->getUser()->getAttribute('idU'));
@@ -528,46 +529,6 @@ class webActions extends sfActions
       $this->ACCIO = 'espais';
    }
    
-   public function executeReenviaContrasenya(sfWebRequest $request)
-   {
-      $this->LoadWEB($request);
-      $this->setTemplate('index');
-      $this->ACCIO = 'missatge';      
-      
-	   // class initialization
-	  $mail = new sfMail();
-	  $mail->initialize();
-	  $mail->setMailer('sendmail');
-	  $mail->setCharset('utf-8');
-	  $C = new Criteria();
-	  $C->add(UsuarisPeer::DNI, $this->getRequestParameter('DNI'));
-	  $U = UsuarisPeer::doSelect($C);
-	  $DNI      = $this->getRequestParameter('DNI');
-	  if(sizeof($DNI) == 0) { $this->MISSATGE = 1; return;} 
-	  $password = $U[0]->getPasswd();
-	  $email    = $U[0]->getEmail();
-	  	 
-	  // definition of the required parameters
-	  $mail->setSender('informatica@casadecultura.org', 'Casa de Cultura de Girona');
-	  $mail->setFrom('informatica@casadecultura.org', 'Casa de Cultura de Girona');
-	 
-	  $mail->addAddress($email);
-	 
-	  $mail->setSubject('La seva contrasenya');
-	  $mail->setBody("
-	  Benvolgut/da,
-	 
-	  La contrassenya d'accés per al DNI $DNI és $password. 
-	 
-	  Cordialment,
-	  Casa de Cultura de Girona.");
-	 
-	  // send the email
-	  $mail->send();
-
-	  $this->MISSATGE = 2;
-      
-   }
   
    public function executeFuncionament(sfWebRequest $request)
    {

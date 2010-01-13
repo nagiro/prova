@@ -68,14 +68,13 @@
       
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Registre de nou usuari</LEGEND>   
    <TABLE class="FORMULARI">
+   <tr><td width="100px"></td><td><td></tr>
    	<?php
    	   
-	   if($ESTAT == 'DUPLICAT') echo '<TR><TD class="ERROR" colspan="2">L\'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui '.link_to('aquí','web/reenviaContrasenya?DNI='.$FUSUARI->getValue('DNI'),array('class'=>'taronja')).'<BR /><BR /></TD></TR>';              	               
+	   if($ESTAT == 'DUPLICAT') echo '<TR><TD class="ERROR" colspan="2">L\'usuari ja existeix.<br /> Si vol que li enviem la contrasenya al seu correu cliqui '.link_to('aquí','web/remember',array('class'=>'taronja')).'<BR /><BR /></TD></TR>';              	               
 	   echo $FUSUARI;
 	       	
     ?>
-   
-<!-- <TR><TD><b>Verificació</b></TD><TD><?php echo image_tag('intranet/verificaLogin.png'); echo "<br />Escriu el text de la imatge: ".input_tag('VLOGIN','',array('style'=>'width:30%')); ?></TD></TR> -->
    <TR><TD></TD><TD><br /><br /><?php echo submit_tag('Registra\'m',array('class'=>'BOTO_ACTIVITAT','style'=>'width:100px;')); ?></TD></TR> 
    </TABLE>
       

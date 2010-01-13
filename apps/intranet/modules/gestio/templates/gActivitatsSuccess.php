@@ -15,6 +15,7 @@
 		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1								
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
 		 $("#mesespais").click( function () { creaFormEspais(); });
+		 $("#horaris_HoraPre_hour").change( function () { actualitzaHores(); });
 
 	 });
 
@@ -65,6 +66,17 @@
 	
 	function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 	function esborraLiniaE(id) { $("#rowE\\["+id+"\\]").remove(); }
+
+	function actualitzaHores(){
+		var a;
+		a =  parseInt($("#horaris_HoraPre_hour").val());
+		af = a+1;		
+		
+		$("#horaris_HoraInici_hour").val(a);
+		$("#horaris_HoraFi_hour").val(af);
+		$("#horaris_HoraPost_hour").val(af);
+		
+	}
 	
 	</script>
 	                   	                   
@@ -88,7 +100,7 @@
      <form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI); ?></SPAN></DIV>
-	    	<table class="CALENDARI">          
+	    	<table id="CALENDARI_ACTIVITATS">          
                 <?php                 
                   
                   echo llistaCalendariV($DATAI,$CALENDARI);                                              
@@ -127,7 +139,7 @@
 	<div class="titol">
 	 		<?php echo 'Editant horaris de l\'activitat: '.$NOMACTIVITAT; ?>
 	 	</div>
-		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH&nou=2') ?> )</DIV>
+		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH&nou=2',array('class'=>'blau')) ?> )</DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
 			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
@@ -474,7 +486,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
     		
     	endfor;
     	
-    	$RET .= "<TD colspan=\"7\">".mesos($mesReal)."</TD>";
+    	$RET .= "<TD class=\"titol_mes\" colspan=\"7\">".mesos($mesReal)."</TD><td width=\"20px\"></td>";
     	    
     endfor;
    
@@ -482,7 +494,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 
 	$RET .= "<TR>";    
     for($i = 0; $i < $Q; $i++):
-    	$RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD>";
+    	$RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD><TD></TD>";
     endfor;    
     $RET .= "</TR>";
         
@@ -495,10 +507,10 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 			$colR = $col - (7 * ($IndexMes-1));
 
 			//Color de fons per diferenciar els mesos
-			if($IndexMes % 2) $background = "beige"; else $background = "white";
+			if($IndexMes % 2) $background = "beige"; else $background = "beige";
 			
 			//Color de fons per diferenciar els caps de setmana
-			if( $colR == 6 || $colR == 7) $background="gray";			 
+			if( $colR == 6 || $colR == 7) $background="#CCCCCC";			 
 						
 			if(isset($dies[$row][$colR][$IndexMes])):
 
@@ -522,7 +534,10 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 				
 				$RET .= '<TD class="DIES" style="background-color:'.$background.';"></TD>';
 			
-			endif; 								      	      		
+			endif; 			
+
+			if($colR == 7): $RET .= '<td></td>'; endif; 
+			
 		endfor;        
 		$RET .= "</tr>";
     endfor;
@@ -551,11 +566,11 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
      $ANY = date('Y',$DATAI);            
      
      $RET = "";
-     $RET = link_to($ANY-1,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$ANY-1),array('class'=>'black'))." ";
+     $RET = link_to($ANY-1,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$ANY-1),array('class'=>'negreta'))." ";
      for($any = $ANY ; $any < $ANY+2 ; $any++ ):
-     	$RET .= link_to($any,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$any),array('class'=>'black'))." ";
+     	$RET .= link_to($any,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$any),array('class'=>'negreta'))." ";
      	for($mes = 1; $mes < 13; $mes++):
-     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats?accio=CC&DATAI=".mktime(0,0,0,$mes,1,$any),array('class'=>'black'))." ";
+     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats?accio=CC&DATAI=".mktime(0,0,0,$mes,1,$any),array('class'=>'mesos_unit'))." ";
      	endfor;     
      endfor;
       

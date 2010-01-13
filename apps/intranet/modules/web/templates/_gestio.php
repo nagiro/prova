@@ -59,18 +59,12 @@ function gestiona_dades($FUSUARI,$MISSATGE){
 	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades personals</LEGEND>
 	   
 		   <TABLE class="FORMULARI">
+		   <tr><td width="100px"></td><td><td></tr>
 		   <?php echo missatge($MISSATGE); ?>		      
-		   <?php echo $FUSUARI; ?>                        
+		   <?php echo $FUSUARI; ?>  
+		   <TR><TD></TD><TD><br /><br /><?php echo submit_tag('Modifica',array('class'=>'BOTO_ACTIVITAT','style'=>'width:100px;')); ?></TD></TR>                      
 		   </TABLE>   
 	   
-	   </FIELDSET>
-	   
-	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Accions</LEGEND>
-	   
-		   <TABLE class="FORMULARI">
-			   <TR><TD></TD><TD><?php echo submit_tag('Modifica',array('style'=>'width:100px;')); ?> </TD>                        
-		   </TABLE>
-		         
 	   </FIELDSET>
 	   
 	</form>	 
@@ -269,7 +263,7 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
      	<TR><TD class="TITOL">Nom activitat</TD><TD class="TITOL">Data sol·licitud</TD><TD class="TITOL">Estat</TD></TR>
      	
 	    <?php if(empty($RESERVES)): ?>
-	    <TR><TD class="LINIA">No s'han trobat reserves anteriors</TD></TR>
+	    <TR><TD colspan="3">No s'han trobat reserves anteriors</TD></TR>
 	    <?php endif; ?> 
      
      	<?php foreach($RESERVES as $R):     			
@@ -294,22 +288,18 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 		<tr><th></th>
 			<td>
 			<br /><br />
-			<?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::ACCEPTADA): ?> 
-					<?php 	echo submit_tag('Sol·licita la reserva',array('class'=>'BOTO_ACTIVITAT')); ?>
-					<?php endif; ?>
-					<INPUT TYPE="BUTTON" VALUE="Feu una nova reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=gr') ?>'"> 					 
-					<INPUT TYPE="BUTTON" VALUE="Anuleu la reserva" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=ar') ?>'">
+			<?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::ACCEPTADA): ?>
+  				 	<button class="BOTO_ACTIVITAT">Sol·liciteu la reserva</button>
+  			<?php endif; ?>
+					<button class="BOTO_ACTIVITAT" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=gr'); ?>'">Feu una nova reserva</button>
+					<button class="BOTO_ACTIVITAT" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=ar'); ?>'">Anul·leu la reserva</button>  					 					
 			</td></tr>        		                                    
 		</TABLE>      
 	</FIELDSET>
 
 	<?php endif; ?>
 
-<?php      
-}
-?>
-
-    
+<?php } ?>
 <?php 
 
 	function generaData($DIA)
@@ -353,7 +343,7 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 		if(!empty($MISSATGE))
 		{
 			echo '<TR>';
-		   	echo '<TD class="MISSAT" colspan="2">';
+		   	echo '<TD></TD><TD class="MISSAT_OK">';
 		   	foreach($MISSATGE as $M): echo $M."<BR>";  endforeach;    				
 		   	echo '</TD></TR>';			
 		}		

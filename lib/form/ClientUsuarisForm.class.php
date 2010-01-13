@@ -12,6 +12,7 @@ class ClientUsuarisForm extends sfFormPropel
 {
   public function setup()
   {
+  	  	
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
       'Nivells_idNivells' => new sfWidgetFormInputHidden(),
@@ -29,9 +30,13 @@ class ClientUsuarisForm extends sfFormPropel
       'Mobil'             => new sfWidgetFormInput(array(),array('style'=>'width:200px')),
       'Entitat'           => new sfWidgetFormInput(array(),array('style'=>'width:200px')),
       'Habilitat'         => new sfWidgetFormInputHidden(),
-      'captcha'			  => new sfWidgetFormReCaptcha(array('public_key'=>'6LdiwAkAAAAAAHzLkRVPyQFqNrZPKKLS0GZRCYNL')),    
+      'captcha2'		  => new sfWidgetFormInputCaptcha(array(),array('value'=>$this->getOption('rand'))),      
     ));
-        
+
+    $rand = $this->getOption('rand');
+    $sol = $rand[1]+$rand[2];
+    $inv = "El resultat %value% no és correcte.";
+         
     $this->setValidators(array(
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required'=>false)),
@@ -49,7 +54,7 @@ class ClientUsuarisForm extends sfFormPropel
       'Mobil'             => new sfValidatorString(array('required' => false)),
       'Entitat'           => new sfValidatorString(array('required' => false)),
       'Habilitat'         => new sfValidatorBoolean(array('required' => false)),
-	  'captcha'			  => new sfValidatorReCaptcha(array('private_key' => '6LdiwAkAAAAAAHdz8dyTPJTxA42K98I-iHLYE7Ug')),    
+	  'captcha2'		  => new sfValidatorNumber(array('min'=>$sol,'max'=>$sol),array('invalid'=>$inv,'max'=>$inv,'min'=>$inv)),          
     ));
 
     
@@ -66,7 +71,8 @@ class ClientUsuarisForm extends sfFormPropel
       'Poblaciotext'      => 'Població: ',
       'Telefon'           => 'Telèfon: ',
       'Mobil'             => 'Mòbil: ',
-      'Entitat'           => 'Entitat: ',      
+      'Entitat'           => 'Entitat: ',
+      'captcha2'		  => 'Verificació: ',      
     ));
     
     $this->widgetSchema->setNameFormat('usuaris[%s]');

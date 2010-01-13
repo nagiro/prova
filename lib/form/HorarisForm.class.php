@@ -12,14 +12,34 @@ class HorarisForm extends sfFormPropel
 {
   public function setup()
   {
+  	
+  	$minutes = array(0=>'00',15=>'15',30=>'30',45=>'45');
+  	$hours = array(	8  =>'8 AM',
+  					9  =>'9 AM',
+  					10 =>'10 AM',
+  					11 =>'11 AM',
+  					12 =>'12 AM',
+  					13 =>'1 PM',
+  					14 =>'2 PM',
+  					15 =>'3 PM',
+  					16 =>'4 PM',
+  					17 =>'5 PM',
+  					18 =>'6 PM',
+  					19 =>'7 PM',
+  					20 =>'8 PM',
+  					21 =>'9 PM',
+  					22 =>'10 PM',
+  					23 =>'11 PM',  					
+  				  );
+  	
     $this->setWidgets(array(
       'HorarisID'              => new sfWidgetFormInputHidden(),
       'Activitats_ActivitatID' => new sfWidgetFormInputHidden(),
       'Dia'                    => new sfWidgetFormInputDatePropi(array(),array('id'=>'multi999Datepicker','style'=>'width:400px')),
-      'HoraPre'                => new sfWidgetFormTime(array('can_be_empty'=>false)),
-      'HoraInici'              => new sfWidgetFormTime(array('can_be_empty'=>false)),
-      'HoraFi'                 => new sfWidgetFormTime(array('can_be_empty'=>false)),
-      'HoraPost'               => new sfWidgetFormTime(array('can_be_empty'=>false)),
+      'HoraPre'                => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes,'hours'=>$hours)),
+      'HoraInici'              => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes,'hours'=>$hours)),
+      'HoraFi'                 => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes,'hours'=>$hours)),
+      'HoraPost'               => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes,'hours'=>$hours)),
       'Avis'                   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
       'Espectadors'            => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
       'Places'                 => new sfWidgetFormInput(array(),array('style'=>'width:50px')),

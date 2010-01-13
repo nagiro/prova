@@ -27,8 +27,10 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 BUTTON { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
 BUTTON:focus { background: #FFD7DC; }
 
-
 .MISSATGE { background-color:#CCCCCC; }
+#validacio { font-style: italic; width:200px; }
+#valor_validacio { font-weight:bold; padding:10px; text-align:center; width:150px; }
+#resultat_validacio { width:20px; }
 
 .REQUADRE { border:5px solid #CCCCCC; margin:20px; padding:20px; width:650px; }
 .REQUADRE .TITOL { font-size:10px; font-weight:bold; margin-bottom:10px;  }
@@ -42,10 +44,15 @@ BUTTON:focus { background: #FFD7DC; }
 .FORMULARI { }
 .FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; }
 .FORMULARI TD { padding:2px; vertical-align: middle; }
-.FORMULARI input { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
-.FORMULARI input:focus { background: #FFD7DC; }
-.FORMULARI .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:2px;  }
-.FORMULARI .BOTO_PERILL { background-color: red; border: 1px solid black; padding:2px;  }
+.FORMULARI input,select { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
+.FORMULARI select option { padding-right:10px; }
+.FORMULARI input:focus,select:focus { background: #FFD7DC; }
+.FORMULARI .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:5px;  }
+.FORMULARI .BOTO_ACTIVITAT:hover { background-color: #82BC8E; border: 1px solid black; padding:5px;  }
+.FORMULARI .BOTO_PERILL { background-color: red; border: 1px solid black; padding:5px;  }
+.FORMULARI .error_list { color: red; font-size:16px; font-weight:bold;  }
+.FORMULARI .missat_ok { background-color:#FFF5C1; height:30px; text-align:center; }
+.FORMULARI .missat_ko {  }
 .DADES { width:100%; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
@@ -72,7 +79,6 @@ a.tt2 span { display:none; }
 
 body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .TAULA { width:1024px; border-collapse: collapse;} 
-.DEGRADAT_SUPERIOR {  }
  
 .CAPCALERA { background-color: #ae1912; height:65px; width:25%; border-left:4px solid #ae1912; border-top:4px solid #ae1912; border-right:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
 #logo { position:relative; left:20px; top:0px; }
@@ -80,18 +86,16 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .MENU { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align:top; } 
 .CONTINGUT { background-color:white; vertical-align: top; padding-top:20px; border-right:4px solid white; width:761px; }    
 .CALENDARI { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align: top; }
-.CALENDARI A { text-decoration:none; color:black; }
-.CALENDARI TD { font-size:10px; text-align: left; padding:1px; }
-.CALENDARI .DIES { font-size: 10px; padding:4px;  }
-.LINIA_ERROR { background-color: rgb(255,196,196); }
-.HORA { width:80px;}
-.CENT { width:50%; }
-#CENT { width:100%; } 
-#DEU { width:10%; }
-#FDATA { width:80px; }
-#MESOS { font-weight:normal; border: 3px solid #F3F3F3; background-color:#FAFAFA; margin-left:5px; }
-
-.SELECCIONAT { font-weight:bold; }
+#CALENDARI_ACTIVITATS { width:100%; }
+#CALENDARI_ACTIVITATS A,A:hover { text-decoration:none; color:black; font-size:10px; }
+#CALENDARI_ACTIVITATS TD { font-size:10px; text-align: left; padding:1px; }
+#CALENDARI_ACTIVITATS .DIES { font-size: 10px; padding:4px;  }
+#CALENDARI_ACTIVITATS .SELECCIONAT { font-weight:bold; }
+#CALENDARI_ACTIVITATS .titol_mes { font-weight:bold;  }
+#MESOS { font-weight:normal; border: 3px solid #F3F3F3; background-color:#FAFAFA; margin-left:5px; font-size:10px; }
+#MESOS A { font-size:10px; text-decoration:none; color:black; }
+#MESOS .mesos_unit { font-weight:italic; }
+#MESOS .negreta { font-weight:bold;  }
 
 
 
@@ -160,6 +164,8 @@ A.verd:visited { color:#a3c101; text-decoration:none; }
 A.taronja  { text-decoration:none; color:orange; }
 A.taronja:hover { text-decoration: underline; font-weight:bold; color:orange; }
 A.taronja:visited { color:orange; text-decoration:none; }
+A.blau  { text-decoration:none; color:blue; }
+A.blau:hover { text-decoration: underline; }
                
 .div_taula .t_calendari { border-collapse:collapse; border:0px #CCCCCC solid; }
 .div_taula .titol { border-collapse: collapse; background-color: #CCCCCC; text-align:center; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color: #606060; font-size:10px; padding:2px; }    

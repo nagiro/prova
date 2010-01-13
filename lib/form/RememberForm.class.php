@@ -14,17 +14,21 @@ class RememberForm extends sfForm
   {
     $this->setWidgets(array(
       'DNI'          	=> new sfWidgetFormInput(array(),array('style'=>'width:300px;')),            
-      'captcha'			=> new sfWidgetFormReCaptcha(array('public_key'=>'6LdiwAkAAAAAAHzLkRVPyQFqNrZPKKLS0GZRCYNL')),         
+      'captcha2'		=> new sfWidgetFormInputCaptcha(array(),array('value'=>$this->getOption('rand'))),         
     ));
+        
+    $rand = $this->getOption('rand');
+    $sol = $rand[1]+$rand[2];
+    $inv = "El resultat %value% no és correcte.";
         
     $this->setValidators(array(
       'DNI'          	=> new sfValidatorPass(array('required'=>true)),      
-	  'captcha'			=> new sfValidatorReCaptcha(array('private_key' => '6LdiwAkAAAAAAHdz8dyTPJTxA42K98I-iHLYE7Ug')),    
+	  'captcha2'		=> new sfValidatorNumber(array('min'=>$sol,'max'=>$sol),array('invalid'=>$inv,'max'=>$inv,'min'=>$inv)),    
     ));
-
     
     $this->widgetSchema->setLabels(array(                
-      'DNI'               => 'Entreu el DNI: ',            
+      'DNI'               => 'Entreu el DNI: ',
+      'captcha2'		  => 'Validació: ',            
     ));
     
     $this->widgetSchema->setNameFormat('remember[%s]');

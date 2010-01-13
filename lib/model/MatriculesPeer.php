@@ -46,7 +46,7 @@ class MatriculesPeer extends BaseMatriculesPeer
               self::REDUCCIO_MENOR_25_ANYS => 'Estudiant menor de 25 anys',
               self::REDUCCIO_JUBILAT => 'Jubilat',
               self::REDUCCIO_ATURAT => 'Aturat',
-              self::REDUCCIO_GRATUIT => 'Gratuit'
+              self::REDUCCIO_GRATUIT => 'Gratuït'
             );
   }
   
