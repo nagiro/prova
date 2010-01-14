@@ -25,11 +25,11 @@
       <TD class="MENU">
         <CENTER>
           <TABLE class="MENU_TABLE">
-            <TR><TD class="SUBMENU1"><?php echo imgSub1().' DOCUMENTS'; ?></TD></TR>              
-              <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Torna directori base','apps/gDocuments?accio=CD&IDD=1'); ?></TD></TR>
-			<TR><TD class="SUBMENU1"><?php echo imgSub1().' APLICACIONS'; ?></TD></TR>
-			  <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Surt','web/logout'); ?></TD></TR>
-			  <TR><TD class="SUBMENU2"><?php echo link_to(imgSub2().' Torna a la web','web/index'); ?></TD></TR>			
+            <TR><TD class="SUBMENU_1"><?php echo imgSub1().' DOCUMENTS'; ?></TD></TR>              
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Torna directori base','apps/gDocuments?accio=CD&IDD=1'); ?></TD></TR>
+			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' APLICACIONS'; ?></TD></TR>
+			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Surt','web/logout'); ?></TD></TR>
+			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Torna a la web','web/index'); ?></TD></TR>			
           </TABLE>
         </CENTER>
         </TD>      
