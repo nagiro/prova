@@ -35,10 +35,10 @@ class HorarisPeer extends BaseHorarisPeer
         if($ANT <> $H->getActivitatsActivitatid()) {           
            $A = $H->getActivitats();
            
-           $titol = $A->getTweb();
+           $titol = $A->getTCurt();
            if(!empty($titol)){           
 	           $RET['ACTIVITATS'][$H->getActivitatsActivitatid()]['TITOL'] = $titol; 
-	           $RET['ACTIVITATS'][$H->getActivitatsActivitatid()]['TEXT'] = $A->getDweb();
+	           $RET['ACTIVITATS'][$H->getActivitatsActivitatid()]['TEXT'] = $A->getDCurt();
 	           $RET['ACTIVITATS'][$H->getActivitatsActivitatid()]['DIES'][] = $H->getDia('d/m/Y');
            } 
         } else {
@@ -113,7 +113,7 @@ class HorarisPeer extends BaseHorarisPeer
          if($GESTIO): 
             $titol = $H->getActivitats()->getNom();
          else:	         
-	        $titol = $H->getActivitats()->getTweb();	        	         
+	        $titol = $H->getActivitats()->getTCurt();	        	         
          endif;             
          if(!empty($titol)):              
             $dia = mktime(0,0,0,$H->getDia('m'),$H->getDia('d'),$H->getDia('Y'));
@@ -142,8 +142,8 @@ class HorarisPeer extends BaseHorarisPeer
     
       if( strlen($PARAULA) > 2 ) {
         $text1Criterion = $C->getNewCriterion(ActivitatsPeer::NOM, '%'.$TEXT.'%', CRITERIA::LIKE);
-        $text2Criterion = $C->getNewCriterion(ActivitatsPeer::TGENERAL , '%'.$TEXT.'%' , CRITERIA::LIKE );
-        $text3Criterion = $C->getNewCriterion(ActivitatsPeer::DGENERAL , '%'.$TEXT.'%' , CRITERIA::LIKE );
+        $text2Criterion = $C->getNewCriterion(ActivitatsPeer::TCOMPLET , '%'.$TEXT.'%' , CRITERIA::LIKE );
+        $text3Criterion = $C->getNewCriterion(ActivitatsPeer::DCOMPLET , '%'.$TEXT.'%' , CRITERIA::LIKE );
         $text1Criterion->addOr($text2Criterion);
         $text1Criterion->addOr($text3Criterion);
         $C->add($text1Criterion);
