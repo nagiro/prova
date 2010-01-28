@@ -21,12 +21,13 @@ class BaseDescripcionsForm extends BaseFormPropel
       'Imatge'                 => new sfWidgetFormTextarea(),
       'PDF'                    => new sfWidgetFormTextarea(),
       'PublicaWEB'             => new sfWidgetFormInput(),
-      'tWEB'                   => new sfWidgetFormTextarea(),
-      'dWEB'                   => new sfWidgetFormTextarea(),
-      'tNoticia'               => new sfWidgetFormTextarea(),
-      'dNoticia'               => new sfWidgetFormTextarea(),
-      'tGENERAL'               => new sfWidgetFormTextarea(),
-      'dGENERAL'               => new sfWidgetFormTextarea(),
+      'tCurt'                  => new sfWidgetFormTextarea(),
+      'dCurt'                  => new sfWidgetFormTextarea(),
+      'tMig'                   => new sfWidgetFormTextarea(),
+      'dMig'                   => new sfWidgetFormTextarea(),
+      'tComplet'               => new sfWidgetFormTextarea(),
+      'dComplet'               => new sfWidgetFormTextarea(),
+      'tipusEnviament'         => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -38,12 +39,13 @@ class BaseDescripcionsForm extends BaseFormPropel
       'Imatge'                 => new sfValidatorString(array('required' => false)),
       'PDF'                    => new sfValidatorString(array('required' => false)),
       'PublicaWEB'             => new sfValidatorInteger(),
-      'tWEB'                   => new sfValidatorString(),
-      'dWEB'                   => new sfValidatorString(),
-      'tNoticia'               => new sfValidatorString(),
-      'dNoticia'               => new sfValidatorString(),
-      'tGENERAL'               => new sfValidatorString(),
-      'dGENERAL'               => new sfValidatorString(),
+      'tCurt'                  => new sfValidatorString(),
+      'dCurt'                  => new sfValidatorString(),
+      'tMig'                   => new sfValidatorString(),
+      'dMig'                   => new sfValidatorString(),
+      'tComplet'               => new sfValidatorString(),
+      'dComplet'               => new sfValidatorString(),
+      'tipusEnviament'         => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('descripcions[%s]');

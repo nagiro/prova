@@ -8,4 +8,7 @@
  * @package lib.model
  */ 
 class DescripcionsPeer extends BaseDescripcionsPeer
-{}
+{
+
+
+}

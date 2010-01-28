@@ -44,8 +44,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
      while($rs = $stmt->fetch(PDO::FETCH_OBJ)): 
      
          $RET[$rs->ActivitatID]['DADES']['ID'] = $rs->ActivitatID; 
-         $RET[$rs->ActivitatID]['DADES']['TITOL'] = $rs->tWEB;
-         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->dWEB;
+         $RET[$rs->ActivitatID]['DADES']['TITOL'] = $rs->tMig;
+         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->dMig;
          $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->Imatge;
          $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->PDF;
          
@@ -62,5 +62,27 @@ class ActivitatsPeer extends BaseActivitatsPeer
    {
    		return array(1=>'Acceptada',2=>'PreReserva');
    }
+   
+	static public function getTipusEnviaments()
+	{
+		return array(1=>'El primer dia',2=>'Una setmana abans',3=>'Cada dia d\'activitat');
+	}
+	
+	static public function getTipusEnviamentsSelect()
+	{
+		return self::getTipusEnviaments();
+	}
+	
+	static public function getTipusEnviamentsSelectValidator()
+	{
+		$RET = array();
+		foreach(self::getTipusEnviaments() as $K=>$V):
+		
+			$RET[$K] = $K;
+		
+		endforeach;
+		
+		return $RET;
+	}
    
 }

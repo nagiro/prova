@@ -93,7 +93,7 @@ all:
 #    max_forwards:           5
 #
 #    # Logging
-    logging_enabled:        on
+    logging_enabled:        off
 #
 #    # i18n
     default_culture:        ca        # Default user culture

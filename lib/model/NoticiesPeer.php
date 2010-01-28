@@ -4,10 +4,11 @@ class NoticiesPeer extends BaseNoticiesPeer
 {
 	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false)
 	{
+		
+		//Agafem totes les notícies de notícies i les activitats que hem posat que es publiquen com a notícies		
 		$C = new Criteria();
 		$C->addDescendingOrderByColumn(self::DATAPUBLICACIO);
-		
-		
+				
 		//Només les notícies amb el text oportú.
 		if(!empty($TEXT)): 
 			$C1 = $C->getNewCriterion(self::TITOLNOTICIA, "%$TEXT%", CRITERIA::LIKE);
@@ -20,7 +21,7 @@ class NoticiesPeer extends BaseNoticiesPeer
 			$C->add( self::DATADESAPARICIO , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
 			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
 			$C->add( self::ACTIVA, true);
-		endif;		
+		endif;				
 				
 		$pager = new sfPropelPager('Noticies', 20);
 	 	$pager->setCriteria($C);

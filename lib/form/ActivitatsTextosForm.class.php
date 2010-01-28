@@ -27,14 +27,15 @@ class ActivitatsTextosForm extends sfFormPropel
       'Estat'                           => new sfWidgetFormInputHidden(),
       'Descripcio'                      => new sfWidgetFormInputHidden(),
 	  'PublicaWEB'                      => new sfWidgetFormChoice(array('choices'=>array(2=>'No',1=>'Sí'))),
+      'tipusEnviament'					=> new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getTipusEnviamentsSelect())),
       'Imatge'                          => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
       'PDF'                             => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),                  
-      'tWEB'                            => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
-      'dWEB'                            => new sfWidgetFormTextareaTinyMCE(),
-      'tNoticia'                        => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
-      'dNoticia'                        => new sfWidgetFormTextareaTinyMCE(),
-      'tGENERAL'                        => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
-      'dGENERAL'                        => new sfWidgetFormTextareaTinyMCE(),
+      'tCurt'                           => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'dCurt'                           => new sfWidgetFormTextareaTinyMCE(),
+      'tMig'    	                    => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'dMig'	                        => new sfWidgetFormTextareaTinyMCE(),
+      'tComplet'                        => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'dComplet'                        => new sfWidgetFormTextareaTinyMCE(),      
     ));
 
     $this->setValidators(array(
@@ -50,38 +51,41 @@ class ActivitatsTextosForm extends sfFormPropel
       'Imatge'                          => new sfValidatorFile(array('path'=>$URL_IMATGE , 'required' => false)),
       'PDF'                             => new sfValidatorFile(array('path'=>$URL_PDF , 'required' => false)),
       'PublicaWEB'                      => new sfValidatorInteger(array('required' => false)),
-      'tWEB'                            => new sfValidatorString(array('required' => false)),
-      'dWEB'                            => new sfValidatorString(array('required' => false)),
-      'tNoticia'                        => new sfValidatorString(array('required' => false)),
-      'dNoticia'                        => new sfValidatorString(array('required' => false)),
-      'tGENERAL'                        => new sfValidatorString(array('required' => false)),
-      'dGENERAL'                        => new sfValidatorString(array('required' => false)),
+      'tCurt'                           => new sfValidatorString(array('required' => false)),
+      'dCurt'                           => new sfValidatorString(array('required' => false)),
+      'tMig'		                    => new sfValidatorString(array('required' => false)),
+      'dMig'	                        => new sfValidatorString(array('required' => false)),
+      'tComplet'                        => new sfValidatorString(array('required' => false)),
+      'dComplet'                        => new sfValidatorString(array('required' => false)),
+      'tipusEnviament'					=> new sfValidatorChoice(array('choices'=>ActivitatsPeer::getTipusEnviamentsSelectValidator())),
     ));
 
     $this->widgetSchema->setLabels(array(
       'Descripcio'                      => 'Descripció: ',
       'Imatge'                          => 'Imatge: ',
       'PDF'                             => 'PDF: ',
-      'PublicaWEB'                      => 'Publicar com notícia? ',
-      'tWEB'                            => 'Títol calendari: ',
-      'dWEB'                            => 'Text calendari: ',
-      'tNoticia'                        => 'Títol notícia: ',
-      'dNoticia'                        => 'Text notícia: ',
-      'tGENERAL'                        => 'Títol general: ',
-      'dGENERAL'                        => 'Text general: ',
+      'PublicaWEB'                      => 'Publicar externament? ',
+      'tCurt'                           => 'Títol curt: ',
+      'dCurt'                           => 'Text curt:<div class="textExplicacio">Twitter, Llistat activitats, Programa mensual</div>',
+      'tMig'    	                    => 'Títol mig:',
+      'dMig'	                        => 'Text mig: <div class="textExplicacio">Consulta activitat, Notícies, Facebook, Mitjans</div> ',
+      'tComplet'                        => 'Títol complet: ',
+      'dComplet'                        => 'Text complet: <div class="textExplicacio">Cursos, ús intern</div>',
+      'tipusEnviament'					=> 'Període publicació: <div class="textExplicacio">Quan es publica el text als mitjans?</div>', 
     ));
     
     
     $this->widgetSchema->setNameFormat('activitats[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
-
-    parent::setup();
+    
+    
   }
 
   public function getModelName()
   {
     return 'Activitats';
   }
+  
 	  
 }

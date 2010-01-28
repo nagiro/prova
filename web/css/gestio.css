@@ -7,7 +7,7 @@ strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 center, u, b, i {  margin: 0; padding: 0; border: 0; outline: 0; font-weight: normal; font-style: normal; font-size: 100%; font-family: inherit; vertical-align: baseline; }
-body { line-height: 1 }
+body { line-height: 0 }
 :focus { outline: 0 }
 ol, ul {list-style: none }
 table { border-collapse: collapse; border-spacing: 0 }
@@ -67,6 +67,7 @@ textarea { font-size:12px; width:100%;}
 .dreta { text-align:right; }
 
 .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:2px;  }
+.textExplicacio { font-size:8px; color:gray; font-style:italic; }
 
 a.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
 a.tt2 span { display:none; }
@@ -78,14 +79,14 @@ a.tt2 span { display:none; }
 
 
 body { background-color: #680000; font-family: Verdana; font-size: 10px; }
-.TAULA { width:1024px; border-collapse: collapse;} 
+.TAULA { width:1024px; border-collapse: collapse; border:0px;} 
  
-.CAPCALERA { background-color: #ae1912; height:65px; width:25%; border-left:4px solid #ae1912; border-top:4px solid #ae1912; border-right:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
+.CAPCALERA { background-color: #ae1912; height:65px; width:256px; border-top:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
 #logo { position:relative; left:20px; top:0px; }
 
-.MENU { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align:top; } 
-.CONTINGUT { background-color:white; vertical-align: top; padding-top:20px; border-right:4px solid white; width:761px; }    
-.CALENDARI { border-left:4px solid white; border-right:4px solid white; background-color:white; vertical-align: top; }
+.MENU { width:256px; background-color:white; vertical-align:top; } 
+.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:20px; border-right:0px solid white; width:761px; }    
+.CALENDARI { width:256px; border-left:0px solid white; border-right:0px solid white; background-color:white; vertical-align: top; }
 #CALENDARI_ACTIVITATS { width:100%; }
 #CALENDARI_ACTIVITATS A,A:hover { text-decoration:none; color:black; font-size:10px; }
 #CALENDARI_ACTIVITATS TD { font-size:10px; text-align: left; padding:1px; }
@@ -100,12 +101,12 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 
 
 
-.PEU { height:25px; background-color:#1f1a17; border-left:4px solid #1f1a17; border-right:4px solid #1f1a17; border-top:4px solid #1f1a17; color: white; text-align:center; font-size: 10px; }    
+.PEU { height:25px; background-color:#1f1a17; color: white; text-align:center; font-size: 10px; vertical-align:middle; }    
 .DEGRADAT_INFERIOR { background-image: url(DifuminatInferior.png); background-repeat: repeat-x; }
 #ESPAI { margin-top:20px; }
             
-.FOTOS { height:80px; width:25%; margin:0px; padding:0px; background-color:white; border:0px; }
-.FOTOS .IMG_FOTO { width:256px; height:80px; border:0px; }
+.FOTOS { text-align:center; vertical-align:middle; height:86px; width:25%; margin:0px; padding:0px; background-color:white; border:0px; }
+.FOTOS .IMG_FOTO { width:252px; height:80px; border:0px; }
             
 .MENU_TABLE { border-collapse: collapse; margin-top:20px; }
 .MENU_TABLE A , A:visited, A:hover { color:black; font-size:9px; text-decoration: none; }

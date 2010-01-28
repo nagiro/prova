@@ -978,7 +978,7 @@ class gestioActions extends sfActions
   	
     $this->setLayout('gestio');
     
-    $this->CERCA  	= $this->ParReqSesForm($request,'cerca','',array('text'=>""));
+    $this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));
     $this->PAGINA 	= $this->ParReqSesForm($request,'PAGINA',1);
     $this->DATAI  	= $this->ParReqSesForm($request,'DATAI',time());    
     $this->DIA    	= $this->ParReqSesForm($request,'DIA',time());
@@ -1098,13 +1098,13 @@ class gestioActions extends sfActions
             
 		//Guarda els textos del web            
     	case 'ST':
+    			
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
     			$this->NOMACTIVITAT = $OActivitat->getNom();
     			$this->FActivitat = new ActivitatsTextosForm($OActivitat);    			
     			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
-    			if($this->FActivitat->isValid()): 
-    				$this->FActivitat->save();
-    				NoticiesPeer::addNoticiesActivitat($this->FActivitat->getObject()); 
+    			if($this->FActivitat->isValid()):     				
+    				$this->FActivitat->save(); 
     				$this->redirect('gestio/gActivitats?accio=C');    				    				
     			endif;
     			
@@ -1536,7 +1536,7 @@ class gestioActions extends sfActions
   }
   
   //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
-  //Exemple: $this->ParReqSesForm($request,'cerca',"",array('text'=>""));
+  //Exemple: $this->ParReqSesForm($request,'cerca',array('text'=>""));
   public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
   {
   	  	
