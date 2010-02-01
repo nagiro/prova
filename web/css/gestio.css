@@ -85,8 +85,8 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 #logo { position:relative; left:20px; top:0px; }
 
 .MENU { width:256px; background-color:white; vertical-align:top; } 
-.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:20px; border-right:0px solid white; width:761px; }    
-.CALENDARI { width:256px; border-left:0px solid white; border-right:0px solid white; background-color:white; vertical-align: top; }
+.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; }    
+.CALENDARI { width:256px; background-color:white; vertical-align: top; }
 #CALENDARI_ACTIVITATS { width:100%; }
 #CALENDARI_ACTIVITATS A,A:hover { text-decoration:none; color:black; font-size:10px; }
 #CALENDARI_ACTIVITATS TD { font-size:10px; text-align: left; padding:1px; }
@@ -134,7 +134,7 @@ A IMG { border:0px; }
 .MATRICULES th, td { padding:2px; }
 .MATRICULES .TITOL { background:#CCCCCC; }
 
-.BOX { border-collapse:collapse; border:3px solid #CCCCCC; margin-bottom:10px; width:100%; }
+.BOX { border-collapse:collapse; border:3px solid #CCCCCC; margin-bottom:10px; width:100%;  }
 .BOX .FOTO { width:130px; vertical-align:top; }
 .BOX .FOTO .IMG_FOTO { width:120px; border:10px solid white; }
 .BOX .NOTICIA { padding:10px; vertical-align:top; }    
@@ -151,7 +151,7 @@ A IMG { border:0px; }
 .CAL { width:175px; margin-top:20px; }
 .CAL .CERCA { width:152px; margin-bottom:10px; }
 .CAL .CALENDARI { margin-bottom:10px; }
-.CAL .BANNER { margin-bottom:10px; width:175px; }
+.CAL .BANNER { margin-bottom:10px; width:171px; border:0px; margin:0px; padding:0px; }
 	
 A.white { text-decoration:none; color:white; }
 A.white:hover { font-weight:bold; text-decoration: underline; color:white; }
@@ -168,11 +168,10 @@ A.taronja:visited { color:orange; text-decoration:none; }
 A.blau  { text-decoration:none; color:blue; }
 A.blau:hover { text-decoration: underline; }
                
-.div_taula .t_calendari { border-collapse:collapse; border:0px #CCCCCC solid; }
+.div_taula .t_calendari { border-collapse:collapse; border:0px; }
 .div_taula .titol { border-collapse: collapse; background-color: #CCCCCC; text-align:center; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold; color: #606060; font-size:10px; padding:2px; }    
 .div_taula .dies { text-align: center; font-weight: bold; font-family: verdana; font-size: 10px; padding: 2px; }    
-.div_taula .numeros { font-family: verdana; font-size: 10px; text-align: right; padding: 2px; }    
-.div_taula { width:175px; border:3px solid #CCCCCC; }    
+.div_taula .numeros { font-family: verdana; font-size: 10px; text-align: right; padding: 2px; }        
 .div_taula .selsetmana { background-color: #F9E8E4; color: #6E1F0C; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px; padding:2px; text-align:right; }
 .div_taula .selsetmana a { text-decoration: none; color: #6E1F0C; }
 .div_taula a { text-decoration:none; color: #606060; }

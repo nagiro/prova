@@ -4,14 +4,14 @@
 
 	<form action="<?php echo url_for('web/index') ?>" method="POST" name="form_calendari">
     	
-      <TABLE class="CAL">
+      <TABLE class="CAL">      
         <TR><TD><input type="text" name="CERCA"></input>
         		<?php echo submit_image_tag('intranet/lupa.png',array('value'=>'BCERCA','name'=>'BCERCA')) ?>         		
         		<br /><br />
         	</TD>
         </TR>                         
-        <TR><TD><?php getCalendari( $DATACALENDARI , $ACTIVITATS_CALENDARI , $CERCA ); ?></TD></TR>                
-		<?php 
+        <TR><TD><?php getCalendari( $DATACALENDARI , $ACTIVITATS_CALENDARI , $CERCA ); ?></TD></TR>                 
+ 		<?php 
 		
 			foreach($BANNERS as $B):
 										
@@ -22,11 +22,11 @@
 										'banners/'.$B['IMG'] , 
 										array('class'=>'BANNER')), 
 										url_for( $URL , true ), 
-									array('class'=>'BANNER' , 'target' => '_NEW' )).
+									array('target' => '_NEW' )).
 					'</TD></TR>';
 			endforeach;
 	
-		?>        
+		?>
       </TABLE>      
     </CENTER>      
     </TD>
@@ -43,7 +43,7 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
   $MesSeguent  = mktime( 0 , 0 , 0 , date( 'm' , $DATA ) + 1 , 1 , date( 'Y' , $DATA ) );
   
   echo '<DIV class="div_taula">';
-  echo '<table width="175" border="0" class="t_calendari">';  
+  echo '<table class="t_calendari">';  
   echo '<tr>
           <td width="25" class="titol">'.link_to('&lt;',"web/index?DATACALENDARI=$MesAnterior").'</td>
           <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('','',time())).'</td>         

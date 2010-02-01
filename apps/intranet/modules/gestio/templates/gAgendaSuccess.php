@@ -84,7 +84,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 			    <tr><td></td><td colspan="3"><input type="button" value="+" id="mesdades"></input></td></tr>   								
                 <tr>
                 	<td></td>
-	            	<td colspan="2" class="dreta">
+	            	<td colspan="2" class="dreta">	            	
 						<?php include_partial('botonera',array('element'=>'TOTA l\'agenda'))?>
 	            	</td>
 	            </tr>                	 

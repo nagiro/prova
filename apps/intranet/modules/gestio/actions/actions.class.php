@@ -995,14 +995,14 @@ class gestioActions extends sfActions
 
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $accio = 'C'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    $accio = 'NA';
-	    elseif($request->hasParameter('BSAVE')) 	$accio = 'S';
-	    elseif($request->hasParameter('BDELETE')) 	$accio = 'D';
-	    elseif($request->hasParameter('BSAVEACTIVITAT')) $accio = 'SA';
-	    elseif($request->hasParameter('BSAVEHORARIS_x')) $accio = 'SH';
-	    elseif($request->hasParameter('BDELETEHORARIS')) $accio = 'DH';
-	    elseif($request->hasParameter('BSAVEDESCRIPCIO')) $accio = 'ST';
-	    elseif($request->hasParameter('BSAVECICLE')) $accio = 'SC';
+	    elseif($request->hasParameter('BNOU')) 	    		$accio = 'NA';
+	    elseif($request->hasParameter('BSAVE')) 			$accio = 'S';
+	    elseif($request->hasParameter('BDELETE')) 			$accio = 'D';
+	    elseif($request->hasParameter('BSAVEACTIVITAT')) 	$accio = 'SA';
+	    elseif($request->hasParameter('BSAVEHORARIS')) 		$accio = 'SH';
+	    elseif($request->hasParameter('BDELETEHORARIS')) 	$accio = 'DH';
+	    elseif($request->hasParameter('BSAVEDESCRIPCIO')) 	$accio = 'ST';
+	    elseif($request->hasParameter('BSAVECICLE')) 		$accio = 'SC';
     }                
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
@@ -1136,14 +1136,16 @@ class gestioActions extends sfActions
     		
     		$this->FHorari->bind($request->getParameter('horaris'));
     		$RET = $this->GuardaHorari($request->getParameter('horaris'),$request->getParameter('material'),$this->ESPAISOUT);    		   			
-   			if(empty($RET)) $this->MISSATGE = array(1=>"Horari guardat correctament");
-   			else 			$this->MISSATGE = $RET;    		
+   			if(empty($RET)):
+   				$this->MISSATGE = array(1=>"Horari guardat correctament");
+	    		$this->redirect('gestio/gActivitats?accio=CH');
+   			else:
+   				$this->MISSATGE = $RET;
+   			endif;    		
 
     		$this->MODE['HORARIS'] = true;
-    		
-    		$this->redirect('gestio/gActivitats?accio=CH');   			
-   			
-    		break;
+    		   			   			
+   		break;
 
 		//Gestiona una nova activitat    		
     	case 'NA':    			
@@ -1221,7 +1223,7 @@ class gestioActions extends sfActions
   
   public function GuardaHorari($horaris, $material, $espais)
   {
-
+  	
   	$ERRORS = array();  	
   	$DBDD[] = array();  	  	
   	
@@ -1236,7 +1238,8 @@ class gestioActions extends sfActions
   			$DBDD['DIES'][] = "$any-$mes-$dia";  		  		
   		endforeach;  	     		
 	endif;  	
-  	  	        
+  	  	       
+	
   	$DBDD['HoraPre']  = $horaris['HoraPre']['hour'].':'.$horaris['HoraPre']['minute'];
   	$DBDD['HoraIn']   = $horaris['HoraInici']['hour'].':'.$horaris['HoraInici']['minute'];
   	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
@@ -1270,7 +1273,7 @@ class gestioActions extends sfActions
         	    	
     endforeach;
        
-    //Si no hem trobat cap error, guardem els registres d'ocupació. 
+    //Si no hem trobat cap error, guardem els registres d'ocupació.    
     if(empty($ERRORS)):
 
  		HorarisPeer::save( $horaris , $DBDD , $material , $espais );

@@ -146,10 +146,10 @@
 						echo '<TR>
 								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=CH&IDH='.$H->getHorarisid()).'</TD>
 								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
-								<TD class="" width="">'.$H->getHorapre('H:m').'</TD>
-								<TD class="" width="">'.$H->getHorainici('H:m').'</TD>
-								<TD class="" width="">'.$H->getHorafi('H:m').'</TD>
-								<TD class="" width="">'.$H->getHorapost('H:m').'</TD>
+								<TD class="" width="">'.$H->getHorapre('H:i').'</TD>
+								<TD class="" width="">'.$H->getHorainici('H:i').'</TD>
+								<TD class="" width="">'.$H->getHorafi('H:i').'</TD>
+								<TD class="" width="">'.$H->getHorapost('H:i').'</TD>
 								<TD class="" width="">'; foreach($HE as $HESPAI): if(is_object($HESPAI->getEspais())): echo $HESPAI->getEspais()->getNom().'<br />'; endif; endforeach; echo '</TD>'; 
 						echo 	'<TD class="" width="">'; foreach($M as $MATERIAL): if(is_object($MATERIAL->getMaterial())): echo $MATERIAL->getMaterial()->getNom().'<br />'; endif; endforeach; echo '</TD>'; 
 						echo '</TR>';
@@ -238,11 +238,10 @@
 	             	</td>
 	             </tr>  				
 	                <tr>
-	                	<td></td>
+	                	<td></td>	                	
 		            	<td colspan="2" class="dreta">
-		            		<br>	            		
-		            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'BSAVEHORARIS','id'=>'BASAVEHORARIS','name'=>'BSAVEHORARIS'))?>
-		            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gActivitats?accio=DH',array('confirm'=>'Segur que vols esborrar-lo?'))?>
+			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Guardar','nom'=>'BSAVEHORARIS')); ?>			 				            		
+			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Esborrar','nom'=>'BDELETEHORARIS')); ?>
 		            	</td>
 		            </tr>                	 
 	      		</table>      		

@@ -1,6 +1,7 @@
 <?php if(!isset($tipus)): ?>
 
 <?php //Exemple: include_partial('botonera',array('element'=>'TOTA l\'agenda')); ?>
+<?php //Exemple: include_partial('botonera',array('element'=>'TOTA l\'agenda','tipus'=>'Guardar','nom'=>'SaveHTML')); ?>
 
 <br>
 <button name="<?php echo "BSAVE".(isset($nom)?"_$nom":"") ?>" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
