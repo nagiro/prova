@@ -58,10 +58,10 @@ function showElement(theClass) {
   		  		  		  	
   	endforeach;
 
-  	$Obert = array(1=>false,2=>false); $NivellAnt = 0;
+  	$Obert = array(1=>false,2=>false,3=>false); $NivellAnt = 0;
   	
   	echo '<TABLE class="MENU_TABLE">';
-  	
+  	  	
   	foreach($RET as $N => $D):
   		  		
   		if($D['NIVELL'] == 1):  			   			
@@ -72,8 +72,10 @@ function showElement(theClass) {
 			if($Obert['1']) echo generaURL($D,$Obert['2']); 	  		
 			if(array_key_exists($D['NODE'],$OBERT)) $Obert['2'] = true;
   			else $Obert['2'] = false;
-  		else:
-  			if($Obert['2']) echo generaURL($D);  
+  		elseif($D['NIVELL'] == 3):
+			if($Obert['2'] && $Obert['1']) echo generaURL($D,$Obert['3']); 	  		
+			if(array_key_exists($D['NODE'],$OBERT)) $Obert['3'] = true;
+  			else $Obert['3'] = false;
   		endif;
   	endforeach;		  		  
     		

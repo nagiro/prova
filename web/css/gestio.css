@@ -71,6 +71,7 @@ textarea { font-size:12px; width:100%;}
 
 a.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
 a.tt2 span { display:none; }
+.AMAGAT { display:none; }
 
 
 /**********************/
@@ -88,7 +89,7 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; }    
 .CALENDARI { width:256px; background-color:white; vertical-align: top; }
 #CALENDARI_ACTIVITATS { width:100%; }
-#CALENDARI_ACTIVITATS A,A:hover { text-decoration:none; color:black; font-size:10px; }
+#CALENDARI_ACTIVITATS A { text-decoration:none; color:black; font-size:10px; }
 #CALENDARI_ACTIVITATS TD { font-size:10px; text-align: left; padding:1px; }
 #CALENDARI_ACTIVITATS .DIES { font-size: 10px; padding:4px;  }
 #CALENDARI_ACTIVITATS .SELECCIONAT { font-weight:bold; }
@@ -109,16 +110,16 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .FOTOS .IMG_FOTO { width:252px; height:80px; border:0px; }
             
 .MENU_TABLE { border-collapse: collapse; margin-top:20px; }
-.MENU_TABLE A , A:visited, A:hover { color:black; font-size:9px; text-decoration: none; }
+.MENU_TABLE A { color:black; font-size:9px; text-decoration: none; }
 
 TD.SUBMENU_1   { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }		
-TD.SUBMENU_1 A, A:visited { font-weight:bold;  }
+TD.SUBMENU_1 A { font-weight:bold;  }
 
 TD.SUBMENU_2   { font-size:9px; border:1px solid black; width:165px; height:20px; vertical-align:middle; padding-left:20px; background-color: white; border:1px solid white; }
-TD.SUBMENU_2 A, A:hover, A:visited { font-weight:normal;  }
+TD.SUBMENU_2 A { font-weight:normal;  }
 
 TD.SUBMENU_3   { font-size:9px; border:1px solid black; width:165px; height:20px; vertical-align:middle; padding-left:40px; background-color: white; border:1px solid white; }
-TD.SUBMENU_3 A, A:hover, A:visited { font-weight:normal;  }
+TD.SUBMENU_3 A { font-weight:normal;  }
 
 #REGISTRAT  { font-size:9px; background-color: #680000; border:2px solid white; height:20px; width:175px; text-align:center; display: table-cell; vertical-align: middle; }
 #REGISTRAT a { color:white; font-size:9px; text-decoration: none; }
@@ -147,6 +148,8 @@ A IMG { border:0px; }
 .BOX .SUBMEN { border-collapse:collapse; border: 4px #F3F3F3 solid; border-left-width:0px; border-top-width: 0px; padding:5px;  }
 .BOX TD.SUBMEN { padding:5px; padding-left:10px; padding-right:10px; background-color: #F3F3F3; text-align: left; font-size:11px; font-weight: bold; }
 .BOX TD.SUBMEN1 { padding:5px; padding-left:10px; padding-right:10px; background-color: white; text-align: left; font-size:11px; font-weight: bold; }
+.BOX A { text-decoration:none; color:black; }
+.BOX .MES_NOTICIES { color:green; font-weight:bold; font-size:10px; }
 
 .CAL { width:175px; margin-top:20px; }
 .CAL .CERCA { width:152px; margin-bottom:10px; }
@@ -194,6 +197,8 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
 #TEXT_WEB {
 	margin-top:20px;
 	font-size:12px;
+	padding-right:40px;
+	text-align:justify;
 }
 
 #TEXT_WEB li {
@@ -205,25 +210,28 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
 #TEXT_WEB p {
 	color:black;
 	text-align: justify;
-	margin-bottom: 10px;
-	margin-top: 10px; 
+	margin-bottom: 20px;
+	margin-top: 20px;	
 }
 
 #TEXT_WEB h1 {
-	font-size: 20px;
+	font-size: 16px;
 	font-weight: bold;
-	margin-bottom:10px;
+	margin-bottom:20px;
+	margin-top:20px;
 }
 
 #TEXT_WEB h2 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: bold;
-	margin-bottom:10px;
+	margin-bottom:20px;
+	margin-top:20px;
 }
 
 #TEXT_WEB h3 {
-	font-size: 16px;
+	font-size: 12px;
 	font-weight: bold;
-	margin-bottom:10px;
+	margin-bottom:20px;
+	margin-top:20px;
 }
-    	
+    

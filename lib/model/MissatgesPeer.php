@@ -16,6 +16,7 @@ class MissatgesPeer extends BaseMissatgesPeer
      $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
      $C->add(self::DATE , $time , Criteria::GREATER_EQUAL );
      $C->add(self::USUARIS_USUARIID , $idU);
+     $C->addDescendingOrderByColumn(self::PUBLICACIO);
      return self::doCount($C);
   }
    
@@ -35,7 +36,8 @@ class MissatgesPeer extends BaseMissatgesPeer
      
      $C->addGroupByColumn( MissatgesPeer::MISSATGEID );
      $C->setLimit(20);
-     $C->addDescendingOrderByColumn(self::DATE);
+     $C->addDescendingOrderByColumn(self::PUBLICACIO);
+     $C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::LESS_THAN );
      $ATD = MissatgesPeer::doSelect($C);
      
      return $ATD; 
@@ -47,7 +49,7 @@ class MissatgesPeer extends BaseMissatgesPeer
       $C = new Criteria();
       $avui = date('Y-m-d',time()); 
       $C->add( self::PUBLICACIO , $avui );
-      $C->addDescendingOrderByColumn(self::MISSATGEID);
+      $C->addDescendingOrderByColumn(self::PUBLICACIO);
       return MissatgesPeer::doSelect($C);
   }
     

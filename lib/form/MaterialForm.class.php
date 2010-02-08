@@ -37,6 +37,8 @@ class MaterialForm extends sfFormPropel
       'DataReparacio'                     => new sfWidgetFormInputHidden(),
       'AltaRegistre'                      => new sfWidgetFormInputHidden(),
       'NotesManteniment'                  => new sfWidgetFormTextarea(array(),array('cols'=>'60','rows'=>'5')),
+      'isTransferible'                    => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
+      'isAdministratiu'                   => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
     ));
 
     
@@ -62,6 +64,8 @@ class MaterialForm extends sfFormPropel
       'DataReparacio'                     => new sfValidatorDate(array('required' => false)),
       'Disponible'                        => new sfValidatorInteger(array('required' => false)),
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
+      'isTransferible'                    => new sfValidatorChoice(array('choices'=>array(1,0))),
+      'isAdministratiu'                   => new sfValidatorChoice(array('choices'=>array(0,1))),    
     ));
 
     $this->widgetSchema->setLabels(array(
@@ -80,6 +84,8 @@ class MaterialForm extends sfFormPropel
       'Preu'                              => 'Preu: ',
       'DataBaixa'                         => 'Baixa: ',      
       'NotesManteniment'                  => 'Notes: ',
+      'isTransferible'					  => 'Es pot moure?',
+      'isAdministratiu'					  => 'És per oficina?',
     ));
     
     $this->widgetSchema->setDefaults(array(            

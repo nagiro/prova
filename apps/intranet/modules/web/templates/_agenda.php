@@ -1,9 +1,11 @@
 <script type="text/javascript">
 	function visible(idA)
 	{
-			(DIV+idA).style.visibility = false;
+		if($('#DIV'+idA+':hidden').length) $('#DIV'+idA).fadeIn(2000);
+		else  $('#DIV'+idA).fadeOut(2000);				
 	}
 </script>
+
 
 <style>
 	a.tt3:hover span { display:block; }  
@@ -11,22 +13,28 @@
 </style>
 
     <TD colspan="2" class="CONTINGUT">
+    	<TABLE class="BOX">
+    	<TR>
+			<TD class="NOTICIA">
+				<DIV class="TITOL">Durant el mes <?php echo generaMes($DATA) ?> hi ha <?php echo $QUANTES ?> activitats coincidents de les quals <?php echo sizeof($ACTIVITATS_LLISTAT) ?> són consultables. </DIV>
+				<DIV class="TEXT">
+					<?php foreach($ACTIVITATS_LLISTAT as $ID => $ACTIVITAT): ?>
+					<?php $text = $ACTIVITAT['TEXT'].'<br /><br />'.implode(' - ',$ACTIVITAT['DIES']); ?>
+					<div class="TEXT">
+						<a href="<?php echo url_for('web/index') ?>" ><?php echo $ACTIVITAT['TITOL'] ?></a>
+						<a href="#" onClick="visible('<?php echo $ID ?>')"><?php echo image_tag('intranet/llegirmes.png',array('style'=>'vertical-align:bottom;')) ?> </a>
+						<div style="border:1px solid black; padding:5px;" class="AMAGAT" id="DIV<?php echo $ID ?>">
+							<?php echo $text ?>
+						</div>					
+					</div>					
+					<?php endforeach; ?>
+					</DIV>								
+			</TD>
+		</TR>
+		</TABLE>    
 	<?php
-    	echo '<TABLE class="BOX">';
-		echo '  <TR>';  		    	 	 			
-		echo '    <TD class="NOTICIA">';
-		echo '      <DIV class="TITOL">Durant el mes '.generaMes($DATA).' hi ha '.$QUANTES.' activitats coincidents de les quals '.sizeof($ACTIVITATS_LLISTAT).' són consultables. </DIV>';
-		echo '        <DIV class="TEXT">';
-						foreach($ACTIVITATS_LLISTAT as $ACTIVITAT):
-		echo ' 				<div class="TEXT">';								
-							  $text = '<SPAN><BR />'.$ACTIVITAT['TEXT'].'<br /><br />'.implode(' - ',$ACTIVITAT['DIES']).'</SPAN>';
-							  echo link_to($ACTIVITAT['TITOL'].$text,'web/index',array('onClick'=>'return false;','class'=>'tt2','anchor'=>true));
-							  echo '</div><div style="margin-left:20px;">'.substr($ACTIVITAT['TEXT'],0,100).'...</div>';
-						endforeach;
-		echo '		</SPAN></DIV>';								
-		echo '    </TD>';
-		echo '  </TR>';
-		echo '</TABLE>';
+    	  		    	 	 			
+		
 		   	      	
 	?>
 			         

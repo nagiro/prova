@@ -1,15 +1,45 @@
 <script type="text/javascript">
+
+	$(document).ready(function() {	
+		$('[id*=MOSTRA]').each(function(index){ $(this).fadeOut(0); });
+		$('#MOSTRA1').fadeIn(0);		
+	});
+
+	function Mostra(id)
+	{
+				
+		var act = parseInt(id);
+		var seg = parseInt(id)+1;
+		
+		$('#MOSTRA'+act).fadeOut(0);
+		$('#MOSTRA'+seg).fadeIn(2000);
+		
+	}
+
 	function visible(idA)
 	{
-			(DIV+idA).style.visibility = false;
+		$('[id*=DIV]').each(function(index){ $(this).fadeOut(2500); })
+		$('[id*=CUR]').each(function(index){ $(this).fadeIn(2500); })
+		$('[id*=MES]').each(function(index){ $(this).fadeIn(2500); })
+		
+		$('#DIV'+idA).fadeIn(2500);
+		$('#CUR'+idA).fadeOut(0);
+		$('#MES'+idA).fadeOut(2500);			
+			
 	}
+	
 </script>
 
     <TD colspan="2" class="CONTINGUT">
     <?php 
 		if($NOTICIES->getNbResults() == 0): echo '<DIV>No hi ha cap notícia activa.<DIV>'; endif;     							
-              		
-		foreach($NOTICIES->getResults() as $N): 
+        
+		$i = 1;
+		
+		echo '<div id="MOSTRA1">';
+		
+		foreach($NOTICIES->getResults() as $N):
+				
      		$titol = $N->getTitolnoticia(); $imatge = $N->getImatge(); $pdf = $N->getAdjunt(); $descripcio = $N->getTextnoticia();
 			if(!empty($titol)):               	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      		
     			echo '<TABLE class="BOX">';
@@ -19,19 +49,42 @@
 	 			endif;
 		        echo '<TD class="NOTICIA">';			    
 				echo '<DIV class="TITOL">'.$titol.'</DIV>';
-		    	echo '<DIV class="TEXT">'.substr( $descripcio , 0 , 100 ).'<SPAN id="DIV'.$N->getIdnoticia().'" class="AMAGAT">'.substr( $descripcio , 100 ).'</SPAN></DIV>';
-	 			if(sizeof($descripcio) > 100):		    	
-		    		echo '<DIV class="PEU">'.link_to(image_tag('intranet/llegirmes.png', array('style'=>'float:left')),'#',array('onClick'=>'visible('.$N->getIdnoticia().')'));
+				$dim = 250;
+				echo '<DIV class="TEXT" name="CUR" id="CUR'.$N->getIdnoticia().'" >'.substr( $descripcio , 0 , $dim).'...</div>';
+		    	echo '<DIV class="TEXT AMAGAT" name="DIV" id="DIV'.$N->getIdnoticia().'" >'.$descripcio.'</DIV>';			    	
+	 			if(strlen($descripcio) > $dim):		    	
+		    		echo '<DIV class="PEU"><a href="#" onClick="visible('.$N->getIdnoticia().')">'.image_tag('intranet/llegirmes.png', array('style'=>'float:left','id'=>'MES'.$N->getIdnoticia(),'name'=>'MES')).'</a>';
 	 			endif;
 	 			if(!empty($pdf)): 
 	 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW'));
 	 			endif;
 				echo '</DIV>';
 				echo '</TD>';
-		    	echo '</TR>';
+		    	echo '</TR>';		    			    			    			    			    	
 		    	echo '</TABLE>';
-	 		endif;     	                
+	 		endif;
+
+	 		if($i % 3 == 0):
+	 		
+			 		echo '<TABLE class="BOX">';
+		    		echo '<TR>';   		
+			        echo '<TD class="NOTICIA" style="text-align:center">';			    
+					echo '<a class="MES_NOTICIES" href="#" onClick="Mostra('.round($i/3,0).')">Veure més notícies</a>';
+					echo '</TD>';
+			    	echo '</TR>';		    			    			    			    			    	
+			    	echo '</TABLE>';
+	 		
+	 			echo '</div>';
+	 			echo '<div id="MOSTRA'.round(($i/3)+1,0).'">';
+	 		
+	 		endif;
+	 		
+	 		$i++;
+	 		
 		endforeach;
+		
+		echo '</div>';
+		    	
 	?>
 	
       <DIV STYLE="height:40px;"></DIV>

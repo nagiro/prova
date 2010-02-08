@@ -9,6 +9,7 @@
 $(document).ready(function() {	
 	 $("#id").val(1);																		
 	 $("#mesdades").click( function() { creaNovaDada(); });
+	 $("#cerca_text").keyup(function() { OmpleCerca(this.value); });
 	 <?php 	
 	 	if(isset($DADES)): 			 
 	 		foreach($DADES as $K => $V):	 			
@@ -17,9 +18,17 @@ $(document).ready(function() {
 	 		endforeach;
 	 	endif;
 	 		
-	 ?>
+	 ?>			 
 	 
 });	
+
+function OmpleCerca(text){	
+	$.post(
+		"<?php echo url_for('gestio/SearchAjaxAgenda'); ?>",
+		{ text: text },
+		function(data) { $('#LLISTAT_DADES').html(data); });
+
+}
 
 
 function creaNovaDada()
@@ -58,7 +67,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 	            <?php echo $FCerca ?>
 	            <tr>
 	            	<td colspan="2">
-	            		<button name="BCERCA">Prem per buscar</button>
+	            		<!-- <button name="BCERCA">Prem per buscar</button>  -->
 	            		<button name="BNOU">Nou contacte</button>	            		
 	            	</td>
 	            </tr>
@@ -96,27 +105,8 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
       
       <DIV class="REQUADRE">   	  
         <DIV class="TITOL">Llistat contactes</DIV>
-      	<TABLE class="DADES">
- 			<?php 
-				if( empty( $AGENDES ) ):
-					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap resultat d\'entre '.AgendatelefonicaPeer::getLinies().' disponibles.</TD></TR>';
-				else: 
-					$i = 0;
-					foreach($AGENDES as $A):
-                      	$SPAN = '<SPAN>';                      	
-                      	foreach($A->getAgendatelefonicadadess() as $ATD): $SPAN  .= AgendatelefonicadadesPeer::getTipus($ATD->getTipus()).': '.$ATD->getDada().' - '.$ATD->getNotes().'<BR />'; endforeach;
-                      	$SPAN .= '</SPAN>';
-                      	$PAR = ParImpar($i++);	                      	
-                      	echo "<TR>
-                      			<TD class=\"$PAR\">".link_to(image_tag('template/doc_text_image.png').$SPAN,'gestio/gAgenda'.getParam( 'E' , $A->getAgendatelefonicaid() , $CERCA ) , array('class'=>'tt2') )."</TD>
-                      			<TD class=\"$PAR\">".link_to($A->getNom().$SPAN,'gestio/gAgenda'.getParam( 'E' , $A->getAgendatelefonicaid() , $CERCA ) , array('class'=>'tt2') )."</TD>
-                      			<TD class=\"$PAR\">{$A->getEntitat()}</TD>
-                      			<TD class=\"$PAR\">{$A->getTags()}<TD>
-                      		  </TR>";
-                    endforeach;
-                 endif;                     
-             ?>      
-      	
+      	<TABLE id="LLISTAT_DADES" class="DADES">
+			<!-- Aquí hi apareix el llistat que surt de la funció AJAX gestio/SearchAjaxAgenda i Partial( _listAgenda ) -->      	
       	</TABLE>      
       </DIV>
                

@@ -250,11 +250,19 @@ class webActions extends sfActions
       //Consulta una pàgina determinada
       case 'cp':
       	
-      		$this->PAGINA = NodesPeer::selectPagina($this->getRequestParameter('node'));      		
-                        
-            $this->ACCIO  = 'web';
-            $this->gestionaNodes($request->getParameter('node'));            
-            $this->SELECCIONAT = $this->getRequestParameter('node');
+			$idN = $this->ParReqSesForm($request,'node',"");      		      	
+      		$this->PAGINA = NodesPeer::selectPagina($idN);      		
+      		
+      		$this->SELECCIONAT = $idN;            
+            $this->gestionaNodes($idN);            
+            
+      		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):       		
+            	$this->ACCIO  = 'web';            	
+            else: 
+		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);             
+		 		$this->ACCIO = 'noticies';	         	            
+            endif; 
+                                                
             break;
 
        //Mostra les activitats quan cliquem un dia del calendari
@@ -284,6 +292,7 @@ class webActions extends sfActions
   
   public function gestionaNodes($NO)
   {  	
+  	
 	$NODES = $this->getUser()->getAttribute('NODES',array());
 	
 	if(in_array($NO,$NODES)):
@@ -480,8 +489,8 @@ class webActions extends sfActions
   private function getFotos()
   {
   	$FOTOS = array();
-  	while(sizeof($FOTOS) < 4):
-    	srand (time());
+  	srand (time());
+  	while(sizeof($FOTOS) < 4):    	
 		$NumAleatori = rand(1,14);
 		$FOTOS[$NumAleatori] = $NumAleatori;		
 	endwhile;  	
@@ -537,5 +546,74 @@ class webActions extends sfActions
       $this->setTemplate('index');
       $this->ACCIO = 'funcionament';      
    }
+   
+   
+  //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
+  //Exemple: $this->ParReqSesForm($request,'cerca',array('text'=>""));
+  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
+  {
+  	  	
+  	$RET = ""; 	    	
+  	
+  	if(is_array($default)):
+  	
+	  	//Si existeix el paràmetre carreguem el nom actual
+	  	if($request->hasParameter($nomCamp)):
+	  	
+	  		$CAMP = $request->getParameter($nomCamp);
+	  		
+	  		//Mirem els elements del formulari i els guardem a la sessió  		  		
+	  		foreach( $CAMP as $NOM => $VALOR ):
+	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
+	  		endforeach;  				  		  		 
+	  		
+	  		$RET = $CAMP;  		
+	  
+	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	elseif($this->existeixAtributArray($nomCamp,$default)):
+	  		$RET = array();
+	  		foreach($default as $NOM => $VALOR):
+	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
+	  		endforeach;
+	  		
+	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	else: 
+	  	
+	  		foreach($default as $NOM => $VALOR):
+	  			$this->getUser()->setAttribute($NOM.$nomCamp, $default);
+	  		endforeach;
+	  		
+	  		$RET = $default;
+	  		
+	  	endif;
+	  	
+	else:
+		
+		//Si existeix el paràmetre carreguem el nom actual
+	  	if($request->hasParameter($nomCamp)):
+	  	
+	  		$CAMP = $request->getParameter($nomCamp);	  		
+	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
+	  		$RET = $CAMP;  		
+	  
+	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	elseif($this->getUser()->hasAttribute($nomCamp)):
+	  		
+	  		$RET = $this->getUser()->getAttribute($nomCamp);
+	  			  		
+	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	else:
+	  	 	  		  		
+	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
+	  		$RET = $default;
+	  		
+	  	endif;
+	
+	endif;
+  	
+  	return $RET;
+  }
+   
+   
    
 }

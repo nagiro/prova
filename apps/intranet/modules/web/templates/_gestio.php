@@ -62,7 +62,7 @@ function gestiona_dades($FUSUARI,$MISSATGE){
 		   <tr><td width="100px"></td><td><td></tr>
 		   <?php echo missatge($MISSATGE); ?>		      
 		   <?php echo $FUSUARI; ?>  
-		   <TR><TD></TD><TD><br /><br /><?php echo submit_tag('Modifica',array('class'=>'BOTO_ACTIVITAT','style'=>'width:100px;')); ?></TD></TR>                      
+		   <TR><TD></TD><TD><br /><br /><?php echo submit_tag('Guardeu els canvis',array('class'=>'BOTO_ACTIVITAT','style'=>'width:150px;')); ?></TD></TR>                      
 		   </TABLE>   
 	   
 	   </FIELDSET>
@@ -96,7 +96,7 @@ function gestiona_llistes( $LLISTES , $MISSATGE ){
 	      
 		<table class="FORMULARI">
 		   
-			<TR><TD colspan="2"><?php echo submit_tag('Modifica', array('style'=>'width:100px;')); ?></TD></TR>
+			<TR><TD colspan="2"><?php echo submit_tag('Modifiqueu', array('class'=>'BOTO_ACTIVITAT','style'=>'width:100px;')); ?></TD></TR>
 			
 		</table>
 		         
@@ -116,7 +116,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 		   <TABLE class="DADES">
 		   
 		   <?php if(sizeof($MATRICULES)==0): ?>
-				<TR><TD>No tenim constància informàtica que hagis realitzat un curs a la Casa de Cultura. Si no és així, si us plau notifica'ns-ho. </TD></TR>                                   
+				<TR><TD>No tenim constància informàtica que hagueu realitzat un curs a la Casa de Cultura. Si no és així, si us plau notifiqueu-nos-ho. </TD></TR>                                   
 		   <?php endif; ?>
 		   
 		   <?php foreach($MATRICULES as $M): ?>
@@ -160,7 +160,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					   <br /><br />
 					   <TABLE class="FORMULARI" width="100%">					   		
 					   		<TR><TD width="100px"><b>DESCOMPTE</b></TD><td><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>
-					   		<TR><TD width="100px"></TD><td><?php if(!empty($LCURSOS)) echo submit_tag('Matricula\'m',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')); ?></TD></TR>
+					   		<TR><TD width="100px"></TD><td><?php if(!empty($LCURSOS)) echo submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')); ?></TD></TR>
 					   </TABLE>
 					   
 			<?php endif; ?>
@@ -214,7 +214,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 	                  								</TR>                  								                  								                  	                           
                   	                           </TABLE>
                   	                           </TD></TR>
-                  		<TR><TD colspan="7"><?php echo submit_tag('Matricular',array('NAME'=>'BSAVE','style'=>'width:100px')); ?><BR /></TD></TR>                  	                                             	
+                  		<TR><TD colspan="7"><?php echo submit_tag('Matriculeu-me',array('NAME'=>'BSAVE','style'=>'width:100px')); ?><BR /></TD></TR>                  	                                             	
                 </TABLE>			                                  
             </TD>
         </TR>

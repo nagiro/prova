@@ -4,37 +4,33 @@
     if(empty($ACTIVITATS_LLISTAT)): echo '<DIV>Aquest dia no hi ha cap activitat pública.<DIV>'; endif;		
 		
 	foreach($ACTIVITATS_LLISTAT as $A):
-	
-		echo '<TABLE class="BOX">';
-		echo '<TR>';
-		  
-	 	if(!empty($A['DADES']['IMATGE'])):	    
-			echo '<TD class="FOTO">'.image_tag('noticies/'.$A['DADES']['IMATGE'], array('class'=>'IMG_FOTO')).'</TD>';
-	 	endif;
-
-	 	echo '<TD class="NOTICIA">';
-		echo '	<DIV class="DATA">';
+     	$titol = $A['DADES']['TITOL']; $imatge = $A['DADES']['IMATGE']; $pdf = $A['DADES']['PDF']; $descripcio = $A['DADES']['TEXT'];
+		if(!empty($titol)):               	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      		
+    		echo '<TABLE class="BOX">';
+	    	echo '<TR>';  
+ 			if(!empty($imatge)):	    
+ 				echo '<TD class="FOTO">'.image_tag('noticies/'.$imatge, array('class'=>'IMG_FOTO')).'</TD>';
+ 			endif;
+	        echo '<TD class="NOTICIA">';
+			echo '	<DIV class="DATA">';
 					foreach($A['HORARIS'] as $H): echo implode(',',$H['ESPAIS']).' a les '.$H['HORAI']; endforeach; 		        	      		        			                   
-		echo '  </DIV>';
-		echo '  <DIV class="TITOL">'.$A['DADES']['TITOL'].'</DIV>';
-		echo ' 	<DIV class="TEXT">'.substr( $A['DADES']['TEXT'] , 0 , 100 ).'<SPAN id="DIV'.$A['DADES']['ID'].'" class="AMAGAT">'.substr( $A['DADES']['TEXT'] , 100 ).'</SPAN></DIV>';
-	 	if(sizeof($A['DADES']['TEXT']) > 100):		    	
-			echo '  <DIV class="PEU">'.link_to(
-												image_tag('intranet/llegirmes.png', array('style'=>'float:left')),
-												'web/index',
-												array(
-														'onClick'=>'visible('.$A['DADES']['ID'].'); return false; ',
-														'anchor'=>false
-													 )
-											   );
-	 	endif;
-	 	if(!empty($A['DADES']['PDF'])): 
-			echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$A['DADES']['PDF'] , true) , array('target'=>'_NEW'));
-		endif;
-		echo '</DIV>';
-		echo '</TD>';
-		echo '</TR>';
-		echo '</TABLE>';	      	                
+			echo '  </DIV>';			        
+			echo '<DIV class="TITOL">'.$titol.'</DIV>';
+			$dim = 250;
+			echo '<DIV class="TEXT" id="CUR'.$A['DADES']['ID'].'" >'.substr( $descripcio , 0 , $dim).'...</div>';
+	    	echo '<DIV class="TEXT AMAGAT" id="DIV'.$A['DADES']['ID'].'" >'.$descripcio.'</DIV>';			    	
+ 			if(strlen($descripcio) > $dim):		    	
+	    		echo '<DIV class="PEU"><a href="#" onClick="visible('.$A['DADES']['ID'].')">'.image_tag('intranet/llegirmes.png', array('style'=>'float:left')).'</a>';
+ 			endif;
+ 			if(!empty($pdf)): 
+ 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW'));
+ 			endif;
+			echo '</DIV>';
+			echo '</TD>';
+	    	echo '</TR>';
+	    	echo '</TABLE>';
+ 		endif;     	                
+	      	                
 	endforeach;
     ?>
       <DIV STYLE="height:40px;"></DIV>

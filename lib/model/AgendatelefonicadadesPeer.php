@@ -28,7 +28,7 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
      
      $C->addGroupByColumn( AgendatelefonicaPeer::AGENDATELEFONICAID );
      $C->addAscendingOrderByColumn( AgendatelefonicaPeer::NOM );
-     $C->setLimit(30);
+     $C->setLimit(20);
      $ATD = AgendatelefonicaPeer::doSelect($C);
      
      return $ATD; 

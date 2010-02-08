@@ -315,7 +315,7 @@ class gestioActions extends sfActions
       $this->NODE = new Nodes();                 
     endif;
     
-    if($request->hasParameter('BSAVE_x')):
+    if($request->hasParameter('BSAVE')):
       $IDN = $this->getUser()->getAttribute('idN');
       $ONode = NodesPeer::retrieveByPK($IDN);
       if($IDN > 0) $this->FNode = new NodesForm($ONode);
@@ -323,7 +323,7 @@ class gestioActions extends sfActions
             
       $this->FNode->bind($request->getParameter('nodes'));
       if($this->FNode->isValid()) $this->FNode->save();             
-      $this->EDICIO = true;                
+      $this->EDICIO = false;                
     elseif($request->hasParameter('SaveHTML')):
       $idN = $this->getUser()->getAttribute('idN');
       $this->FHtml = new EditorHtmlForm();
@@ -867,9 +867,9 @@ class gestioActions extends sfActions
     if($request->isMethod('POST') || $request->isMethod('GET')):
     
     	$accio = $request->getParameter('accio');
-	    if($request->getParameter('BNOU'))		$accio = "N";    
-	    if($request->getParameter('BSAVE')) 	$accio = 'S';               
-	    if($request->getParameter('BDELETE')) 	$accio = 'D';
+	    if($request->hasParameter('BNOU'))		$accio = "N";    
+	    if($request->hasParameter('BSAVE')) 	$accio = 'S';               
+	    if($request->hasParameter('BDELETE')) 	$accio = 'D';	    
 
 	endif;
 	    
@@ -885,7 +885,7 @@ class gestioActions extends sfActions
     		$this->FTasca = new TasquesForm(TasquesPeer::retrieveByPK($this->getUser()->getAttribute('IDT')));
     		$this->EDICIO = true;
     		break;    		    
-    	case 'S':
+    	case 'S':    		
     		$IDT = $this->getUser()->getAttribute('IDT');
     		$OT = ($IDT > 0)?TasquesPeer::retrieveByPK($IDT):new Tasques();
     		$this->FTasca = new TasquesForm($OT);
@@ -1361,6 +1361,21 @@ class gestioActions extends sfActions
      $this->AGENDA = AgendatelefonicadadesPeer::doSearch( $CERCA );
  
   }
+  
+  
+  public function executeSearchAjaxAgenda(sfWebRequest $request)
+  {
+
+  	sfConfig::set('sf_web_debug', false);
+  	sfLoader::loadHelpers('Partial');
+  	
+  	$C = new Criteria();
+  	$AGENDES = AgendatelefonicadadesPeer::doSearch( $request->getParameter('text') );  	
+  
+  	return $this->renderText(get_partial('listAgenda', array('AGENDES' => $AGENDES)));  	           	  	        
+      
+  }  
+  
   
   public function executeGAgenda($request)  
   {  		  	

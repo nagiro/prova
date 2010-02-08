@@ -34,12 +34,12 @@ class TasquesForm extends sfFormPropel
       'Activitats_ActivitatID' => new sfValidatorPropelChoice(array('model' => 'Activitats', 'column' => 'ActivitatID', 'required' => false)),
       'QuiMana'                => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'QuiFa'                  => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
-      'Titol'                  => new sfValidatorString(array('required' => false)),
-      'Accio'                  => new sfValidatorString(array('required' => false)),
+      'Titol'                  => new sfValidatorString(array('required' => true)),
+      'Accio'                  => new sfValidatorString(array('required' => true)),
       'Reaccio'                => new sfValidatorString(array('required' => false)),
       'Estat'                  => new sfValidatorString(array('max_length' => 1, 'required' => false)),
-      'Aparicio'               => new sfValidatorDate(array('required' => false)),
-      'Desaparicio'            => new sfValidatorDate(array('required' => false)),
+      'Aparicio'               => new sfValidatorDate(array('required' => true)),
+      'Desaparicio'            => new sfValidatorDate(array('required' => true)),
       'DataResolucio'          => new sfValidatorDateTime(array('required' => false)),
       'isFeta'                 => new sfValidatorBoolean(array('required' => false)),
       'AltaRegistre'           => new sfValidatorDate(array('required' => false)),
@@ -52,7 +52,7 @@ class TasquesForm extends sfFormPropel
       'Accio'                  => 'Què s\'ha de fer?',
       'Aparicio'               => 'Data aparició:',
       'Desaparicio'            => 'Data desaparició:',      
-      'isFeta'                 => 'Feta?',      
+      'isFeta'                 => 'Feta?',            
     ));
     
     

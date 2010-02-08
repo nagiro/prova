@@ -34,6 +34,8 @@ class BaseMaterialForm extends BaseFormPropel
       'DataReparacio'                     => new sfWidgetFormDate(),
       'Disponible'                        => new sfWidgetFormInput(),
       'AltaRegistre'                      => new sfWidgetFormDate(),
+      'isTransferible'                    => new sfWidgetFormInput(),
+      'isAdministratiu'                   => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -58,6 +60,8 @@ class BaseMaterialForm extends BaseFormPropel
       'DataReparacio'                     => new sfValidatorDate(array('required' => false)),
       'Disponible'                        => new sfValidatorInteger(array('required' => false)),
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
+      'isTransferible'                    => new sfValidatorInteger(),
+      'isAdministratiu'                   => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('material[%s]');

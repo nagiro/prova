@@ -37,7 +37,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
                   AND H.HorarisID = HE.Horaris_HorarisID 
                   AND HE.Espais_EspaiID = E.EspaiID                  
                   AND H.Dia = '$dia'
-                  AND A.tWEB <> '' ";
+                  AND A.tMig <> '' ";
       
      $con = Propel::getConnection(); $stmt = $con->prepare($SQL); $stmt->execute();     
 	 
@@ -46,8 +46,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
          $RET[$rs->ActivitatID]['DADES']['ID'] = $rs->ActivitatID; 
          $RET[$rs->ActivitatID]['DADES']['TITOL'] = $rs->tMig;
          $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->dMig;
-         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->Imatge;
-         $RET[$rs->ActivitatID]['DADES']['TEXT'] = $rs->PDF;
+         $RET[$rs->ActivitatID]['DADES']['IMATGE'] = $rs->Imatge;
+         $RET[$rs->ActivitatID]['DADES']['PDF'] = $rs->PDF;
          
          $RET[$rs->ActivitatID]['HORARIS'][$rs->HorarisID]['ESPAIS'][] = $rs->Nom;
          $RET[$rs->ActivitatID]['HORARIS'][$rs->HorarisID]['HORAI'] = $rs->HoraInici;
