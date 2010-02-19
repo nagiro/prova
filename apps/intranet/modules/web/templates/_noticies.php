@@ -115,17 +115,20 @@
 	 		endif;	 			 				
 	 	
 		endforeach;
+		
+			if($NOTICIES->haveToPaginate()):
 				echo '<TABLE class="BOX">';
 		   		echo '<TR>';   		
 		        echo '<TD class="NOTICIA" style="text-align:center">';
 				if($NOTICIES->getPage() < $NOTICIES->getLastPage()):		 					    
 					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina='.$NOTICIES->getNextPage()).'">Veure més notícies</a>';
 				else: 
-					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina=1').'"> Tornar al principi</a>';							
+					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina=1').'"> Tornar al principi</a>';										 				
 		    	endif;
 		    	echo '</TD>';
 		    	echo '</TR>';		    			    			    			    			    	
 		    	echo '</TABLE>';
+		    endif;
 
 		echo '</div>';
     }
