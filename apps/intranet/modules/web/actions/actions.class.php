@@ -258,7 +258,7 @@ class webActions extends sfActions
             
       		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):       		
             	$this->ACCIO  = 'web';            	
-            else: 
+            else:            	        	            	
 		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);             
 		 		$this->ACCIO = 'noticies';	         	            
             endif; 
@@ -279,7 +279,11 @@ class webActions extends sfActions
 	   //Per defecte mostrem les notícies
 	   case 'no':	   		
 	   default: 	   	
-	   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);             
+	   		if($request->hasParameter('idN')):	   			
+	   			$this->NOTICIA = NoticiesPeer::retrieveByPK($request->getParameter('idN'));
+	   		else: 
+	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);
+	   		endif; 	   	                 
 	 		$this->ACCIO = 'noticies';	         
 	 		$this->getUser()->setAttribute('HEFETCERCA',false);
 	 		$this->getUser()->setAttribute('NODES',array());	 	   	

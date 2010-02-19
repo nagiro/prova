@@ -48,6 +48,7 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Llistes','gestio/gLlistes'); ?></TD></TR>                                        
 			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' APLICACIONS'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Documents','gestio/gDocuments?accio=GP'); ?></TD></TR>                                          
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Blogs','gestio/gBlogs?accio=VB'); ?></TD></TR>
 			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' LOGIN'; ?></TD></TR>
 			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Logout','web/logout'); ?></TD></TR>
 			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Web','web/index',array('target'=>'_NEW')); ?></TD></TR>			

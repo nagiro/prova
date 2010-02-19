@@ -110,7 +110,7 @@ body { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .FOTOS .IMG_FOTO { width:252px; height:80px; border:0px; }
             
 .MENU_TABLE { border-collapse: collapse; margin-top:20px; }
-.MENU_TABLE A { color:black; font-size:9px; text-decoration: none; }
+.MENU_TABLE A { color:black; font-size:10px; text-decoration: none; }
 
 TD.SUBMENU_1   { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }		
 TD.SUBMENU_1 A { font-weight:bold;  }
@@ -189,16 +189,15 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
     
 .PESTANYA_SUPERIOR { margin-left:3px; float:right; }
 
-	
+
 /*****************************/
 /* Disseny del contingut WEB */
 /*****************************/
 
-#TEXT_WEB {
-	margin-top:20px;
-	font-size:12px;
-	padding-right:40px;
+#TEXT_WEB {	
+	font-size:11px;	
 	text-align:justify;
+	font-family: sans-serif; 
 }
 
 #TEXT_WEB li {
@@ -211,27 +210,27 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
 	color:black;
 	text-align: justify;
 	margin-bottom: 20px;
-	margin-top: 20px;	
+	margin-top: 10px;	
 }
 
 #TEXT_WEB h1 {
-	font-size: 16px;
+	font-size: 20px;
 	font-weight: bold;
-	margin-bottom:20px;
-	margin-top:20px;
+	margin-bottom: 10px;		
+	color: #864444;
 }
 
 #TEXT_WEB h2 {
 	font-size: 14px;
 	font-weight: bold;
-	margin-bottom:20px;
-	margin-top:20px;
+	margin-bottom: 10px;
+	color: #864444;
 }
 
 #TEXT_WEB h3 {
 	font-size: 12px;
 	font-weight: bold;
-	margin-bottom:20px;
-	margin-top:20px;
+	margin-bottom: 10px;
+	color: #864444;
 }
     

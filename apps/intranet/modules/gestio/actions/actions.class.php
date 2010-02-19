@@ -2425,6 +2425,241 @@ class gestioActions extends sfActions
     $this->LLISTAT_PERMISOS = AppDocumentsPermisosDirPeer::getLlistatPermisos($this->IDD);
     
   }
+
   
+  public function executeGBlogs(sfWebRequest $request)
+  {
+  
+    $this->setLayout('gestio');
+
+    
+    //Add,Edit,Delete Multimedia
+    //Add,Edit,Delete Page
+    //Add,Edit,Delete Entry
+    
+    //Principal view -> Blogs
+    //You Select a blog -> Choice Menus - Pages
+    //Edit Page - Menu 
+            
+    $this->APP_BLOG			= $this->ParReqSesForm($request,'APP_BLOG',-1);
+    $this->APP_PAGE			= $this->ParReqSesForm($request,'APP_PAGE',-1);    
+    $this->APP_ENTRY		= $this->ParReqSesForm($request,'APP_ENTRY',-1);
+    $this->APP_MENU			= $this->ParReqSesForm($request,'APP_MENU',-1);
+    $this->APP_MULTIMEDIA	= $this->ParReqSesForm($request,'APP_MULTIMEDIA',-1);
+            
+    $accio  	= $this->ParReqSesForm($request,'accio','GP');
+    $this->MODE = 'CERCA';       
+    	
+    if($request->isMethod('POST')){
+	    if($request->hasParameter('B_NEW_MENU')) 			$accio = 'NEW_MENU';   
+	    elseif($request->hasParameter('B_EDIT_MENU')) 	    $accio = 'EDIT_MENU';
+	    elseif($request->hasParameter('B_DELETE_MENU'))    	$accio = 'DELETE_MENU';	
+	    elseif($request->hasParameter('B_SAVE_MENU'))    	$accio = 'SAVE_MENU';    
+	    elseif($request->hasParameter('B_NEW_PAGE')) 		$accio = 'NEW_PAGE';	    
+	    elseif($request->hasParameter('B_EDIT_PAGE')) 		$accio = 'EDIT_PAGE';
+	    elseif($request->hasParameter('B_DELETE_PAGE'))		$accio = 'DELETE_PAGE';
+	    elseif($request->hasParameter('B_SAVE_PAGE'))    	$accio = 'SAVE_PAGE';
+	    elseif($request->hasParameter('B_NEW_ENTRY'))		$accio = 'NEW_ENTRY';
+	    elseif($request->hasParameter('B_EDIT_ENTRY'))		$accio = 'EDIT_ENTRY';
+	    elseif($request->hasParameter('B_DELETE_ENTRY')) 	$accio = 'DELETE_ENTRY';
+	    elseif($request->hasParameter('B_SAVE_ENTRY'))    	$accio = 'SAVE_ENTRY';
+	    elseif($request->hasParameter('B_NEW_BLOG'))		$accio = 'NEW_BLOG';
+	    elseif($request->hasParameter('B_EDIT_BLOG'))		$accio = 'EDIT_BLOG';
+	    elseif($request->hasParameter('B_DELETE_BLOG')) 	$accio = 'DELETE_BLOG';
+	    elseif($request->hasParameter('B_SAVE_BLOG'))    	$accio = 'SAVE_BLOG';
+	    elseif($request->hasParameter('B_VIEW_CONTENT'))   	$accio = 'VIEW_CONTENT';
+	    elseif($request->hasParameter('B_VIEW_STADISTICS'))	$accio = 'VIEW_STADISTICS';
+	    
+	    
+	    
+	    
+    }                
+    
+    $this->getUser()->setAttribute('accio',$accio);      
+    
+    switch($accio){
+    	case 'NEW_MENU':
+    			$this->FORM_MENU = AppBlogsMenuPeer::initialize( -1 , $this->APP_BLOG );
+    			$this->getUser()->setAttribute('APP_MENU',-1);
+    		break;
+    	case 'EDIT_MENU':
+    			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );    			
+    		break;      
+    	case 'DELETE_MENU':
+    		
+    		break;
+    	case 'SAVE_MENU':    			
+    			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );
+    			$this->FORM_MENU->bind($request->getParameter('app_blogs_menu'));
+    			if($this->FORM_MENU->isValid()):
+    				try { 
+    					$this->FORM_MENU->save();
+    					$this->APP_MENU = $this->FORM_MENU->getObject()->getId();
+	    				$this->getUser()->setAttribute('APP_MENU',$this->APP_MENU);
+	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
+    				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
+    			endif; 
+    		break;
+    	case 'NEW_PAGE':
+    			$this->FORM_PAGE = AppBlogsPagesPeer::initialize( -1 , $this->APP_BLOG );
+    			$this->getUser()->setAttribute('APP_PAGE',-1);
+    		break;
+    	case 'EDIT_PAGE':
+    			$this->FORM_PAGE = AppBlogsPagesPeer::initialize( $this->APP_PAGE , $this->APP_BLOG );
+    		break;
+    	case 'DELETE_PAGE':
+    			try { 
+    					$this->FORM_PAGE = AppBlogsPagesPeer::initialize( $this->APP_PAGE , $this->APP_BLOG );
+    					$this->FORM_PAGE->getObject()->delete();
+    					$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');    					     				
+    				} catch (Exception $e) { echo $e->getMessage(); }
+    		break;
+    	case 'SAVE_PAGE':
+    			$this->FORM_PAGE = AppBlogsPagesPeer::initialize( $this->APP_PAGE , $this->APP_BLOG );    			
+    			$this->FORM_PAGE->bind($request->getParameter('app_blogs_pages'));
+    			if($this->FORM_PAGE->isValid()):
+    				try { 
+    					$this->FORM_PAGE->save();
+    					$this->APP_PAGE = $this->FORM_PAGE->getObject()->getId();
+	    				$this->getUser()->setAttribute('APP_PAGE',$this->APP_PAGE);
+	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
+    				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
+    			endif;     			
+    		break;
+    	case 'NEW_ENTRY':
+    			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA', $this->APP_PAGE );
+    			$this->getUser()->setAttribute('APP_ENTRY',-1);
+    			$this->GALLERY = array();
+    		break;
+    	case 'EDIT_ENTRY':
+    			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA', $this->APP_PAGE );
+    			$this->GALLERY = AppBlogsEntriesPeer::getFiles( $this->APP_ENTRY , 'CA'); 
+    		break;
+    	case 'DELETE_ENTRY':
+    		
+    		break;
+    	case 'SAVE_ENTRY':
+    			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA', $this->APP_PAGE );    			    			    			
+    			$this->FORM_ENTRY->bind($request->getParameter('app_blogs_entries'));
+    			if($this->FORM_ENTRY->isValid()):
+    				try { 
+    					$this->FORM_ENTRY->save();    					
+    					$this->APP_ENTRY = $this->FORM_ENTRY->getObject()->getId();
+	    				$this->getUser()->setAttribute('APP_ENTRY',$this->APP_ENTRY);
+	    				$this->GUARDA_IMATGES($request->getFiles('arxiu'),$request->getParameter('desc'),$this->APP_ENTRY);
+//	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
+    				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
+    			endif;
+    			$this->GALLERY = AppBlogsEntriesPeer::getFiles( $this->APP_ENTRY , 'CA');     			    		    			
+    		break;
+    	case 'NEW_BLOG':
+    			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
+    		break;
+    	case 'EDIT_BLOG':
+    			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
+    		break;      
+    	case 'DELETE_BLOG':
+    		
+    		break;
+    		
+    	case 'DELETE_IMAGE':
+    			
+    			AppBlogsMultimediaPeer::deleteMultimeda($this->APP_MULTIMEDIA); 
+    		
+    		break;
+    	case 'SAVE_BLOG':
+    			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
+    			$this->FORM_BLOG->bind($request->getParameter('app_blogs_blogs'));
+    			if($this->FORM_BLOG->isValid()):
+    				try { 
+    					$this->FORM_BLOG->save();
+    					$this->APP_BLOG = $this->FORM_BLOG->getObject()->getId();
+    					$this->getUser()->setAttribute('APP_BLOG',$this->APP_BLOG);
+    					$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
+    				} catch (Exception $e) { echo $e->getMessage(); }
+    				    				
+    			endif; 
+    		break;
+    	case 'VIEW_CONTENT':
+    			$this->TREE	= AppBlogsMenuPeer::getOptionsMenus( $this->APP_BLOG ,$this->APP_MENU , false );
+    			$this->MENUS_ARRAY = AppBlogsMenuPeer::getOptionsMenus( $this->APP_BLOG ,$this->APP_MENU );    			
+    			$this->PAGES_ARRAY = AppBlogsPagesPeer::getOptionsPages( $this->APP_BLOG , null , $this->APP_PAGE );
+    			$this->ENTRIES_ARRAY = AppBlogsEntriesPeer::getOptionsEntries( $this->APP_PAGE );
+    		break;
+    		
+    	case 'AJAX_PAGE':
+    			$APP_PAGE = $request->getParameter('APP_PAGE');
+    			$HTML = AppBlogsEntriesPeer::getOptionsEntries($APP_PAGE);
+    			return $this->renderText($HTML);	
+    		break;
+    		
+    	case 'AJAX_MENU':
+    			$APP_MENU = $request->getParameter('APP_MENU');    			
+    			$HTML = AppBlogsPagesPeer::getOptionsPages($this->APP_BLOG,$APP_MENU);
+    			return $this->renderText($HTML);	
+    		break;    		
+    		    		
+    	case 'VB':
+				$this->APP_BLOG  = -1;
+    			$this->APP_PAGE  = -1;    
+    			$this->APP_ENTRY = -1;
+    			$this->APP_MENU	 = -1;
+    			$this->APP_MULTIMEDIA = -1;
+    			$this->getUser()->setAttribute('APP_BLOG',-1);
+    			$this->getUser()->setAttribute('APP_PAGE',-1);
+    			$this->getUser()->setAttribute('APP_ENTRY',-1);
+    			$this->getUser()->setAttribute('APP_MENU',-1);
+    			$this->getUser()->setAttribute('APP_MULTIMEDIA',-1);    			
+    		break;
+
+    	case 'VIEW_STADISTICS':
+
+    			//Veure estructura d'arbre
+				$this->PAGES_WITHOUT_CONTENT 	= AppBlogsPagesPeer::getPagesWithoutContent($this->APP_BLOG);
+				$this->MENUS_WITHOUT_PAGES   	= AppBlogsMenuPeer::getMenusWithoutPages($this->APP_BLOG);
+				$this->TREE 					= AppBlogsMenuPeer::getOptionsMenus($this->APP_BLOG,null,false);    			
+    		break;
+    		
+    		
+    		
+    }  	
+    
+    $this->BLOGS_ARRAY = AppBlogsBlogsPeer::getOptionsBlogs($this->APP_BLOG);
+       
+  }
+  
+  private function GUARDA_IMATGES($images, $descripcions , $entry_id)
+  {
+  	
+  	foreach($images as $K=>$I):
+  		  		
+  		$OO = new AppBlogsMultimedia();
+  		$OO->setName($I['name']);  		
+  		$OO->setDate(date('Y-m-d',time()));
+  		$OO->setDesc($descripcions[$K]);
+  		$OO->setUrl('');
+  		$OO->save();
+  		  		
+  		$extensio = $this->file_extension($I['name']);
+  		$nom = $entry_id.'-'.$OO->getId().$extensio; 
+  		
+  		move_uploaded_file($I['tmp_name'], sfConfig::get('sf_websysroot').'images/blogs/'.$nom);
+  		
+  		$OO->setUrl($nom);
+  		$OO->save();
+  		
+  		$OOME = new AppBlogMultimediaEntries();
+  		$OOME->setEntriesId($entry_id);
+  		$OOME->setMultimediaId($OO->getId());
+  		$OOME->save();
+  		       
+  	endforeach;
+  	
+  }
+  
+  function file_extension($filename)
+  {
+	return substr($filename, strripos($filename, '.'));
+  }
   
 }

@@ -2,7 +2,8 @@
 
 	$(document).ready(function() {	
 		$('[id*=MOSTRA]').each(function(index){ $(this).fadeOut(0); });
-		$('#MOSTRA1').fadeIn(0);		
+		$('#MOSTRA1').fadeIn(0);
+		
 	});
 
 	function Mostra(id)
@@ -18,6 +19,7 @@
 
 	function visible(idA)
 	{
+				
 		$('[id*=DIV]').each(function(index){ $(this).fadeOut(2500); })
 		$('[id*=CUR]').each(function(index){ $(this).fadeIn(2500); })
 		$('[id*=MES]').each(function(index){ $(this).fadeIn(2500); })
@@ -32,7 +34,55 @@
 
     <TD colspan="2" class="CONTINGUT">
     <?php 
-		if($NOTICIES->getNbResults() == 0): echo '<DIV>No hi ha cap notícia activa.<DIV>'; endif;     							
+    
+    	if(isset($NOTICIA)):
+    		mostraNoticia($NOTICIA);
+    	else: 
+    		mostraNoticies($NOTICIES);    	
+    	endif; 
+		    	
+	?>
+	
+      <DIV STYLE="height:40px;"></DIV>
+                
+    </TD>
+    
+    <?php 
+
+    
+	function mostraNoticia($NOTICIA)
+    {
+    	     							       											
+     	$titol = $NOTICIA->getTitolnoticia(); $imatge = $NOTICIA->getImatge(); $pdf = $NOTICIA->getAdjunt(); $descripcio = $NOTICIA->getTextnoticia();
+		if(!empty($titol)):
+    		echo '<TABLE class="BOX">';
+	    	echo '<TR>';  
+ 			if(!empty($imatge)):	    
+ 				echo '<TD class="FOTO">'.image_tag('noticies/'.$NOTICIA->getImatge(), array('class'=>'IMG_FOTO')).'</TD>';
+ 			endif;
+	        echo '<TD class="NOTICIA">';			    
+			echo '<DIV class="TITOL">'.$titol.'</DIV>';
+	    	echo '<DIV>'.$descripcio.'</DIV>';			    	 					    	
+	    	echo '<DIV class="PEU">';
+	    	echo 	'<br />';
+	    	echo 	link_to('Tornar', url_for('web/index?accio=no'), array('class'=>'verd','style'=>'float:left; font-weight:bold;'));
+ 			if(!empty($pdf)): 				 
+ 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW')); 				
+ 			endif;
+ 			echo '</DIV>';			
+			echo '</TD>';
+	    	echo '</TR>';		    			    			    			    			    	
+	    	echo '</TABLE>';
+ 		endif;
+
+    }
+    
+    
+    
+    
+    function mostraNoticies($NOTICIES)
+    {
+    	if($NOTICIES->getNbResults() == 0): echo '<DIV>No hi ha cap notícia activa.<DIV>'; endif;     							
         
 		$i = 1;
 		
@@ -53,7 +103,7 @@
 				echo '<DIV class="TEXT" name="CUR" id="CUR'.$N->getIdnoticia().'" >'.substr( $descripcio , 0 , $dim).'...</div>';
 		    	echo '<DIV class="TEXT AMAGAT" name="DIV" id="DIV'.$N->getIdnoticia().'" >'.$descripcio.'</DIV>';			    	
 	 			if(strlen($descripcio) > $dim):		    	
-		    		echo '<DIV class="PEU"><a href="#" onClick="visible('.$N->getIdnoticia().')">'.image_tag('intranet/llegirmes.png', array('style'=>'float:left','id'=>'MES'.$N->getIdnoticia(),'name'=>'MES')).'</a>';
+		    		echo '<DIV class="PEU"><a href="'.url_for('web/index?accio=no&idN='.$N->getIdnoticia()).'")">'.image_tag('intranet/llegirmes.png', array('style'=>'float:left','id'=>'MES'.$N->getIdnoticia(),'name'=>'MES')).'</a>';
 	 			endif;
 	 			if(!empty($pdf)): 
 	 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW'));
@@ -84,15 +134,9 @@
 		endforeach;
 		
 		echo '</div>';
-		    	
-	?>
-	
-      <DIV STYLE="height:40px;"></DIV>
-                
-    </TD>
+    }
     
-    <?php 
-
+    
     function agrupaespais($ESPAIS)
     {
        
