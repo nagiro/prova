@@ -23,7 +23,7 @@ class NoticiesPeer extends BaseNoticiesPeer
 			$C->add( self::ACTIVA, true);
 		endif;				
 				
-		$pager = new sfPropelPager('Noticies', 20);
+		$pager = new sfPropelPager('Noticies', 3);
 	 	$pager->setCriteria($C);
 	 	$pager->setPage($PAGINA);
 	 	$pager->init();

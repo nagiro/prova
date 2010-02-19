@@ -112,27 +112,21 @@
 				echo '</TD>';
 		    	echo '</TR>';		    			    			    			    			    	
 		    	echo '</TABLE>';
-	 		endif;
-
-	 		if($i % 3 == 0):
-	 		
-			 		echo '<TABLE class="BOX">';
-		    		echo '<TR>';   		
-			        echo '<TD class="NOTICIA" style="text-align:center">';			    
-					echo '<a class="MES_NOTICIES" href="#" onClick="Mostra('.round($i/3,0).')">Veure més notícies</a>';
-					echo '</TD>';
-			    	echo '</TR>';		    			    			    			    			    	
-			    	echo '</TABLE>';
-	 		
-	 			echo '</div>';
-	 			echo '<div id="MOSTRA'.round(($i/3)+1,0).'">';
-	 		
-	 		endif;
-	 		
-	 		$i++;
-	 		
+	 		endif;	 			 				
+	 	
 		endforeach;
-		
+				echo '<TABLE class="BOX">';
+		   		echo '<TR>';   		
+		        echo '<TD class="NOTICIA" style="text-align:center">';
+				if($NOTICIES->getPage() < $NOTICIES->getLastPage()):		 					    
+					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina='.$NOTICIES->getNextPage()).'">Veure més notícies</a>';
+				else: 
+					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina=1').'"> Tornar al principi</a>';							
+		    	endif;
+		    	echo '</TD>';
+		    	echo '</TR>';		    			    			    			    			    	
+		    	echo '</TABLE>';
+
 		echo '</div>';
     }
     

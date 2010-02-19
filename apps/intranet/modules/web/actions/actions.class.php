@@ -282,7 +282,8 @@ class webActions extends sfActions
 	   		if($request->hasParameter('idN')):	   			
 	   			$this->NOTICIA = NoticiesPeer::retrieveByPK($request->getParameter('idN'));
 	   		else: 
-	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);
+	   			$pagina = ($request->hasParameter('pagina'))?$request->getParameter('pagina'):1; 
+	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$pagina,true);
 	   		endif; 	   	                 
 	 		$this->ACCIO = 'noticies';	         
 	 		$this->getUser()->setAttribute('HEFETCERCA',false);
