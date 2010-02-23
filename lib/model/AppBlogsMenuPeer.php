@@ -48,6 +48,8 @@ class AppBlogsMenuPeer extends BaseAppBlogsMenuPeer
 			$REG[$OO->getFatherId()][$OO->getId()]['ID'] 	= $OO->getId();						
 		endforeach;
 		
+		if(empty($REG)) $REG = array(0=>array());
+		
 		if($options):
 			$RET = '<option value="-1">Escull un menú...</option>';
 			return $RET.self::getOptionsMenusRec($REG,$REG[0],"",$menu_id,$options);		

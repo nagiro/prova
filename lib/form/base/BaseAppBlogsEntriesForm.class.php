@@ -17,8 +17,12 @@ class BaseAppBlogsEntriesForm extends BaseFormPropel
       'page_id'                          => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsPages', 'add_empty' => false)),
       'lang'                             => new sfWidgetFormInput(),
       'title'                            => new sfWidgetFormInput(),
+      'subtitle1'                        => new sfWidgetFormInput(),
+      'subtitle2'                        => new sfWidgetFormInput(),
       'body'                             => new sfWidgetFormTextarea(),
-      'date'                             => new sfWidgetFormDate(),
+      'date'                             => new sfWidgetFormDateTime(),
+      'tags'                             => new sfWidgetFormInput(),
+      'url'                              => new sfWidgetFormTextarea(),
       'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'AppBlogsMultimedia')),
     ));
 
@@ -27,8 +31,12 @@ class BaseAppBlogsEntriesForm extends BaseFormPropel
       'page_id'                          => new sfValidatorPropelChoice(array('model' => 'AppBlogsPages', 'column' => 'id')),
       'lang'                             => new sfValidatorString(array('max_length' => 4)),
       'title'                            => new sfValidatorString(array('max_length' => 255)),
+      'subtitle1'                        => new sfValidatorString(array('max_length' => 100)),
+      'subtitle2'                        => new sfValidatorString(array('max_length' => 100)),
       'body'                             => new sfValidatorString(),
-      'date'                             => new sfValidatorDate(),
+      'date'                             => new sfValidatorDateTime(),
+      'tags'                             => new sfValidatorString(array('max_length' => 150)),
+      'url'                              => new sfValidatorString(),
       'app_blog_multimedia_entries_list' => new sfValidatorPropelChoiceMany(array('model' => 'AppBlogsMultimedia', 'required' => false)),
     ));
 

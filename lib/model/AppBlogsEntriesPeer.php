@@ -9,14 +9,15 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 		$OO = self::retrieveByPK($entry_id);
 		
 		if($OO instanceof AppBlogsEntries):
-			return new AppBlogsEntriesForm($OO);
+			$OO->setDate(date('Y-m-d H:i:s',time()));			
+			return new AppBlogsEntriesForm($OO);			
 		else:
 			$OO = new AppBlogsEntries();
 			$OO->setTitle('Títol per defecte');
 			$OO->setBody("Cos per defecte");
 			$OO->setLang($lang);
 			$OO->setPageId($page_id);
-			$OO->setDate(date('Y-m-d',time()));			
+			$OO->setDate(date('Y-m-d H:i:s',time()));			
 			return new AppBlogsEntriesForm($OO);			
 		endif; 
 		
@@ -54,6 +55,19 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 		$C->add(self::ID, $entry_id);
 		
 		return AppBlogsMultimediaPeer::doSelect($C);
+	}
+	
+	static public function getEntries($page_id = null,$PAGINA = 1)
+	{
+		$C = new Criteria();		
+		if(!is_null($page_id)) $C->add(self::PAGE_ID,$page_id);
+		
+		$pager = new sfPropelPager('AppBlogsEntries', 3);
+	 	$pager->setCriteria($C);
+	 	$pager->setPage($PAGINA);
+	 	$pager->init();
+	 	return $pager;
+		
 	}
 	
 }

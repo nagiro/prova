@@ -2124,6 +2124,12 @@ class gestioActions extends sfActions
 			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getAttribute('idN'));
 			if($ON instanceof Noticies) $ON->delete();		
 			break;
+		case 'UPDATE':			
+				NoticiesPeer::migraNoticiesActivitats();
+				NoticiesPeer::netejaNoticies();
+				$this->getUser()->setAttribute('accio','ca');
+//				return sfView::NONE;
+			break;
 						
 	}
              
@@ -2486,7 +2492,9 @@ class gestioActions extends sfActions
     			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );    			
     		break;      
     	case 'DELETE_MENU':
-    		
+    			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );
+    			$this->FORM_MENU->getObject()->delete();
+    			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
     		break;
     	case 'SAVE_MENU':    			
     			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );
@@ -2536,18 +2544,20 @@ class gestioActions extends sfActions
     			$this->GALLERY = AppBlogsEntriesPeer::getFiles( $this->APP_ENTRY , 'CA'); 
     		break;
     	case 'DELETE_ENTRY':
-    		
+    			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA' , $this->APP_PAGE );
+    			$this->FORM_ENTRY->getObject()->delete();
+    			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
     		break;
     	case 'SAVE_ENTRY':
     			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA', $this->APP_PAGE );    			    			    			
-    			$this->FORM_ENTRY->bind($request->getParameter('app_blogs_entries'));
+    			$this->FORM_ENTRY->bind($request->getParameter('app_blogs_entries'));    			
     			if($this->FORM_ENTRY->isValid()):
     				try { 
-    					$this->FORM_ENTRY->save();    					
+    					$this->FORM_ENTRY->save();    								    							
     					$this->APP_ENTRY = $this->FORM_ENTRY->getObject()->getId();
 	    				$this->getUser()->setAttribute('APP_ENTRY',$this->APP_ENTRY);
 	    				$this->GUARDA_IMATGES($request->getFiles('arxiu'),$request->getParameter('desc'),$this->APP_ENTRY);
-//	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
+	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
     				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
     			endif;
     			$this->GALLERY = AppBlogsEntriesPeer::getFiles( $this->APP_ENTRY , 'CA');     			    		    			
@@ -2559,13 +2569,12 @@ class gestioActions extends sfActions
     			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
     		break;      
     	case 'DELETE_BLOG':
-    		
-    		break;
-    		
-    	case 'DELETE_IMAGE':
-    			
-    			AppBlogsMultimediaPeer::deleteMultimeda($this->APP_MULTIMEDIA); 
-    		
+    			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
+    			$this->FORM_BLOG->getObject()->delete();
+    			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
+    		break;    		
+    	case 'DELETE_IMAGE':    			
+    			AppBlogsMultimediaPeer::deleteMultimeda($this->APP_MULTIMEDIA);     		
     		break;
     	case 'SAVE_BLOG':
     			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
@@ -2618,9 +2627,7 @@ class gestioActions extends sfActions
 				$this->PAGES_WITHOUT_CONTENT 	= AppBlogsPagesPeer::getPagesWithoutContent($this->APP_BLOG);
 				$this->MENUS_WITHOUT_PAGES   	= AppBlogsMenuPeer::getMenusWithoutPages($this->APP_BLOG);
 				$this->TREE 					= AppBlogsMenuPeer::getOptionsMenus($this->APP_BLOG,null,false);    			
-    		break;
-    		
-    		
+    		break;    		
     		
     }  	
     
@@ -2632,26 +2639,30 @@ class gestioActions extends sfActions
   {
   	
   	foreach($images as $K=>$I):
-  		  		
-  		$OO = new AppBlogsMultimedia();
-  		$OO->setName($I['name']);  		
-  		$OO->setDate(date('Y-m-d',time()));
-  		$OO->setDesc($descripcions[$K]);
-  		$OO->setUrl('');
-  		$OO->save();
-  		  		
-  		$extensio = $this->file_extension($I['name']);
-  		$nom = $entry_id.'-'.$OO->getId().$extensio; 
-  		
-  		move_uploaded_file($I['tmp_name'], sfConfig::get('sf_websysroot').'images/blogs/'.$nom);
-  		
-  		$OO->setUrl($nom);
-  		$OO->save();
-  		
-  		$OOME = new AppBlogMultimediaEntries();
-  		$OOME->setEntriesId($entry_id);
-  		$OOME->setMultimediaId($OO->getId());
-  		$OOME->save();
+	
+  		if($I['error'] == 0):
+  	
+	  		$OO = new AppBlogsMultimedia();
+	  		$OO->setName($I['name']);  		
+	  		$OO->setDate(date('Y-m-d',time()));
+	  		$OO->setDesc($descripcions[$K]);
+	  		$OO->setUrl('');
+	  		$OO->save();
+	  		  		
+	  		$extensio = $this->file_extension($I['name']);
+	  		$nom = $entry_id.'-'.$OO->getId().$extensio; 
+	  		
+	  		move_uploaded_file($I['tmp_name'], sfConfig::get('sf_websysroot').'images/blogs/'.$nom);
+	  		
+	  		$OO->setUrl($nom);
+	  		$OO->save();
+	  		
+	  		$OOME = new AppBlogMultimediaEntries();
+	  		$OOME->setEntriesId($entry_id);
+	  		$OOME->setMultimediaId($OO->getId());
+	  		$OOME->save();
+	  		
+	  	endif;
   		       
   	endforeach;
   	

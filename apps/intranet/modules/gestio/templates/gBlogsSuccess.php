@@ -2,9 +2,11 @@
  	
  	<script type="text/javascript">
 	
-	 $(document).ready(function() {		
-		$('#APP_PAGE').change(updateEntry);
+	 $(document).ready(function() {				
 		$('#APP_MENU').change(updatePage);
+		$('#APP_PAGE').change(updateEntry);
+		updatePage();
+		updateEntry();
 		$("#tabs").tabs();
 		afegirArxiu();				
 	 });
@@ -64,16 +66,12 @@
 	
 	</script>
  
-
- 
     <TD colspan="3" class="CONTINGUT">
 	                   	                   
      <form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST">     	
-	 	<div class="REQUADRE">
-		 	<div class="OPCIO_FINESTRA">
-		 		<a href="<?php echo url_for('gestio/gBlogs?accio=NEW_BLOG') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a></div>            
+	 	<div class="REQUADRE">		 	            
 		 	<div class="titol">
-		 		Edició de blogs 
+		 		Tractament de blogs 
 		 	</div>
 		 	<div class="Desplegable">
 		 		<select name="APP_BLOG">
@@ -93,7 +91,7 @@
 	<form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST">
 	 	<div class="REQUADRE">
 	 	<div class="OPCIO_FINESTRA">
-	 		<a href="<?php echo url_for('gestio/gBlogs?accio=NEW_BLOG') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a></div>            
+	 		<a href="<?php echo url_for('gestio/gBlogs?accio=VB') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a></div>            
 	 	<div class="titol">
 	 		Edició de blogs 
 	 	</div>
@@ -137,16 +135,17 @@
 			 		</tr>	
 				 	<tr>
 				 		<td><select id="APP_PAGE" style="width:300px;" name="APP_PAGE"><?php echo $PAGES_ARRAY ?></select></td>
-				 		<td>				 					 			
+				 		<td>				 							 					 			
 			 				<button class="BOTO_ACTIVITAT" name="B_EDIT_PAGE">Edita</button>	 				 			 			 		      				 	
-			 				<button class="BOTO_ACTIVITAT" name="B_NEW_PAGE">Afegeix</button>		 						
+			 				<button class="BOTO_ACTIVITAT" name="B_NEW_PAGE">Afegeix</button>
+			 						 						
 				 		</td>
 				 	</tr>
 				 	<tr>
 					 	<td><select id="APP_ENTRY" style="width:300px;" name="APP_ENTRY"><?php echo $ENTRIES_ARRAY ?></select></td>
 					 	<td>					 		
-			 				<button class="BOTO_ACTIVITAT" name="B_EDIT_ENTRY">Edita</button>	 				 			 			 		      				 	
-			 				<button class="BOTO_ACTIVITAT" name="B_NEW_ENTRY">Afegeix</button>		 									 			
+			 				<button class="BOTO_ACTIVITAT" name="B_EDIT_ENTRY">Edita</button>
+			 				<button class="BOTO_ACTIVITAT" name="B_NEW_ENTRY">Afegeix</button>	 				 			 			 		      				 				 						 									 			
 					 	</td>
 					</tr>
 			 	</table>

@@ -15,7 +15,7 @@
     <!--    <base href="http://localhost/intranet_dev.php" /> -->  
     <!--   	<base href="http://servidor.casadecultura.cat/intranet/intranet_dev.php" /> -->
   </head>
-  <body>
+  <body class="CCG">
   <center>
     <TABLE class="TAULA">
     <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>

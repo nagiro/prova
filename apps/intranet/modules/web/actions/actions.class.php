@@ -618,7 +618,5 @@ class webActions extends sfActions
   	
   	return $RET;
   }
-   
-   
-   
+     
 }

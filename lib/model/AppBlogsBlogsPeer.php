@@ -25,7 +25,7 @@ class AppBlogsBlogsPeer extends BaseAppBlogsBlogsPeer
 		$RET = '<option value="-1">Escull un blog...</option>';
 		foreach(self::doSelect(new Criteria()) as $OO):
 			$SEL = ($OO->getId() == $APP_BLOG_ID)?'SELECTED':'';
-			$RET .= '<option '.$SEL.' value="'.$OO->getId().'">'.$OO->getName().'</option>';			
+			$RET .= '<option '.$SEL.' value="'.$OO->getId().'">'.$OO->getId().'. '.$OO->getName().'</option>';			
 		endforeach;
 		
 		return $RET;		

@@ -101,4 +101,5 @@ all:
     webroot:				/intranet/web/
     websysroot:             /home/albert/Escriptori/htdocs/intranet/web/
     webappdocuments:        appsupload/documents/
+    webrooturl:             http://localhost/intranet/web/
     
