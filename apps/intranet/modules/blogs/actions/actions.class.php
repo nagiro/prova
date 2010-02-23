@@ -18,9 +18,9 @@ class blogsActions extends sfActions
   public function executeNoticiesculturals(sfWebRequest $request)
   {
   	
-  	$this->PAGE_ID_QUE_ESTA_PASSANT = 4;
-  	$this->PAGE_ID_QUE_PASSARA = 5;
-  	$this->PAGE_ID_QUE_HA_PASSAT = 6;  	
+  	$this->PAGE_ID_QUE_ESTA_PASSANT = 1;
+  	$this->PAGE_ID_QUE_PASSARA = 2;
+  	$this->PAGE_ID_QUE_HA_PASSAT = 3;  	
   	
   	$this->setLayout('blank');
   	$this->PAGE_ID = $this->ParReqSesForm($request,'PAGE_ID',$this->PAGE_ID_QUE_ESTA_PASSANT);
