@@ -2452,6 +2452,7 @@ class gestioActions extends sfActions
     $this->APP_ENTRY		= $this->ParReqSesForm($request,'APP_ENTRY',-1);
     $this->APP_MENU			= $this->ParReqSesForm($request,'APP_MENU',-1);
     $this->APP_MULTIMEDIA	= $this->ParReqSesForm($request,'APP_MULTIMEDIA',-1);
+    $this->APP_FORM			= $this->ParReqSesForm($request,'APP_FORM',1);
             
     $accio  	= $this->ParReqSesForm($request,'accio','GP');
     $this->MODE = 'CERCA';       
@@ -2475,9 +2476,8 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('B_SAVE_BLOG'))    	$accio = 'SAVE_BLOG';
 	    elseif($request->hasParameter('B_VIEW_CONTENT'))   	$accio = 'VIEW_CONTENT';
 	    elseif($request->hasParameter('B_VIEW_STADISTICS'))	$accio = 'VIEW_STADISTICS';
-	    
-	    
-	    
+	    elseif($request->hasParameter('B_VIEW_FORM'))		$accio = 'VIEW_FORM';
+	    	    
 	    
     }                
     
@@ -2594,6 +2594,7 @@ class gestioActions extends sfActions
     			$this->MENUS_ARRAY = AppBlogsMenuPeer::getOptionsMenus( $this->APP_BLOG ,$this->APP_MENU );    			
     			$this->PAGES_ARRAY = AppBlogsPagesPeer::getOptionsPages( $this->APP_BLOG , null , $this->APP_PAGE );
     			$this->ENTRIES_ARRAY = AppBlogsEntriesPeer::getOptionsEntries( $this->APP_PAGE );
+    			$this->FORMS_ARRAY = AppBlogsFormsPeer::getOptionsForms( $this->APP_BLOG , $this->APP_FORM );
     		break;
     		
     	case 'AJAX_PAGE':
@@ -2614,6 +2615,7 @@ class gestioActions extends sfActions
     			$this->APP_ENTRY = -1;
     			$this->APP_MENU	 = -1;
     			$this->APP_MULTIMEDIA = -1;
+    			$this->APP_FORM = -1;
     			$this->getUser()->setAttribute('APP_BLOG',-1);
     			$this->getUser()->setAttribute('APP_PAGE',-1);
     			$this->getUser()->setAttribute('APP_ENTRY',-1);
@@ -2627,7 +2629,17 @@ class gestioActions extends sfActions
 				$this->PAGES_WITHOUT_CONTENT 	= AppBlogsPagesPeer::getPagesWithoutContent($this->APP_BLOG);
 				$this->MENUS_WITHOUT_PAGES   	= AppBlogsMenuPeer::getMenusWithoutPages($this->APP_BLOG);
 				$this->TREE 					= AppBlogsMenuPeer::getOptionsMenus($this->APP_BLOG,null,false);    			
-    		break;    		
+    		break;
+
+    	case 'VIEW_FORM':
+
+    			//Carrega les dades del formulari
+    			$C = new Criteria();
+    			$C->add(AppBlogsFormsEntriesPeer::FORM_ID,$this->APP_FORM);    			
+				$this->VIEW_FORM_ENTRIES = AppBlogsFormsEntriesPeer::doSelect($C);
+				    			
+    		break;
+    		
     		
     }  	
     

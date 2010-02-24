@@ -148,6 +148,18 @@
 			 				<button class="BOTO_ACTIVITAT" name="B_NEW_ENTRY">Afegeix</button>	 				 			 			 		      				 				 						 									 			
 					 	</td>
 					</tr>
+					<tr>
+					 	<td><br /></td>
+					 	<td><br /></td>
+					</tr>
+					<tr>
+					 	<td><select id="APP_FORM" style="width:300px;" name="APP_FORM"><?php echo $FORMS_ARRAY ?></select></td>
+					 	<td>					 		
+			 				<button class="BOTO_ACTIVITAT" name="B_VIEW_FORM">Visualitza</button>			 					 				 			 			 		      				 				 						 									 		
+					 	</td>
+					</tr>
+					
+					
 			 	</table>
 		 	</div>
 		 		 
@@ -248,6 +260,41 @@
 
               
 <?php ENDIF; ?>
+
+<?php if(isset($VIEW_FORM_ENTRIES)): ?>    
+
+	 	<div class="REQUADRE">
+		 	<div class="OPCIO_FINESTRA">
+		 		<a href="<?php echo url_for('gestio/gBlogs?accio=VIEW_CONTENT') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a>
+		 	</div>            
+		 	<div class="titol">
+		 		Entrades del formulari  
+		 	</div>
+	    	<table>
+	    	<?php 
+	    	
+	    		foreach($VIEW_FORM_ENTRIES as $F):
+	    			echo '<tr>';
+	    			echo '<td>'.$F->getId().'</td>';
+	    			echo '<td>';		
+	    			foreach($F->getArrayElements() as $K=>$V):
+	    				if($K == 'file'): 
+	    					echo '<a href="'.sfConfig::get('sf_webroot').'uploads/formularis/'.$V.'">'.$V.'</a> - ';
+	    				else: 
+	    					echo '<i>'.$K.'</i>: <b>'.$V.'</b> - ';
+	    				endif; 
+	    			endforeach;
+	    			echo '</td>';
+	    			echo '</tr>';
+	    		endforeach;	    	
+	    	
+	    	?>	    	
+	    	</table>      		
+      	</div>        
+              
+<?php ENDIF; ?>
+
+
 <?php if(isset($PAGES_WITHOUT_CONTENT)): ?>    
 
 	<div id="tabs">

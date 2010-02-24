@@ -35,6 +35,37 @@ class blogsActions extends sfActions
   	
   }
   
+  public function executeBiennal(sfWebRequest $request)
+  {
+  	
+  	$this->setLayout('blank');
+  	$this->DADES = array('nom'=>'','cognoms'=>'','domicili'=>'','numero'=>'','codi_postal'=>'','localitat'=>'','telefon'=>'','qreu'=>'');
+  	$this->ENVIAT = false;
+  	$this->FORM_ID = 1; 
+  	 
+  	if($request->hasParameter('dades')):
+    	
+  		$this->DADES = $request->getParameter('dades');  		  		  		
+  		if($this->DADES['resultat'] == ($this->getUser()->getAttribute('VAL1')+$this->getUser()->getAttribute('VAL2'))):
+  			$correcte = AppBlogsFormsPeer::save($this->FORM_ID,$request->getParameter('dades'),$request->getFiles());
+	  		if($correcte): 
+	  			$this->MISSATGE = array('TEXT' => "Formulari enviat correctament",'OK'=>true);
+	  			$this->ENVIAT = true;
+	  		else: 
+	  			$this->MISSATGE = array('TEXT'=>"Hi ha hagut algun problema guardant...",'OK'=>false);
+	  		endif;
+  		else: 
+	  		$this->MISSATGE = array('TEXT'=>"La suma no és correcta",'OK'=>false);
+	  	endif;   		
+  	endif;
+  	
+  	$this->getUser()->setAttribute('VAL1',rand(0,9));
+  	$this->getUser()->setAttribute('VAL2',rand(0,9));
+  	$this->VAL1 = $this->getUser()->getAttribute('VAL1');
+  	$this->VAL2 = $this->getUser()->getAttribute('VAL2');
+  	
+  }
+  
   public function executeRSS(sfWebRequest $request)
   {
   	
@@ -93,6 +124,9 @@ class blogsActions extends sfActions
 		
 	endif; 
   }
+  
+  
+  
   
   
   //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
