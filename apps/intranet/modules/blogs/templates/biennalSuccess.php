@@ -1,8 +1,32 @@
+<script type="text/javascript" src="<?php echo sfConfig::get('sf_webroot').'js/jqzoom_ev1.0.1/jqzoom_ev1.0.1/js/jquery.jqzoom1.0.1'; ?>">
+</script>
+<link rel="stylesheet" href="<?php echo sfConfig::get('sf_webroot').'js/jqzoom_ev1.0.1/jqzoom_ev1.0.1/css/jqzoom.css'; ?>" type="text/css" />
+
+<script>
+
+$(document).ready(function(){
+	var options = {
+		    zoomWidth: 300,
+		    zoomHeight: 600,
+	        xOffset: 10,
+	        yOffset: 50,
+	        position: "left",
+		    title: false,
+		    zoomType: "standard"
+		    
+	};
+		
+	$('.MYCLASS').jqzoom(options);
+	
+});
+
+</script>
+
 <style>
 
 	* { font-family: verdana; font-size: small; }
 	
-	table { border-collapse:collapse; border:solid 3px orange; width:800px; }
+	table { border-collapse:collapse; border:solid 3px gray; width:800px; }	
 	.col1 { width:150px; }
 	.col2 { width:225px; }
 	.col3 { width:25px;  }
@@ -13,16 +37,55 @@
 	option { background-color:white; }
 	.input { width:100px; }
 	.suma { width:20px; }
+	.peque { font-size:8px; color:gray; }
 	td { padding:5px;  }
 	#contenidor { width: 800px; margin:0 auto 0 auto; }
 	#centrat { text-align:center; margin-top:100px; }		
 	#titol { font-size: x-large; font-family: Verdana; font-weight: bold; }
 	#submit { width:200px;}
-	#tdsubmit { border-top:1px orange solid; text-align:center; padding:5px;  }
+	#tdsubmit { border-top:1px gray solid; text-align:center; padding:5px;  }
 	#formulari { width:800px; }
 	#missatge { background-color: <?php echo ($MISSATGE['OK'])?'#79E778':'#E78787'; ?>; padding-left:20px; }
+	#imatge { width:500px; }
+	a { text-decoration: none; color:black; }
 		
 </style>
+
+<?php if($ESTAT == 'INICI'): ?>
+
+<center>	
+	<img id="imatge" src="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/2.jpg'?>" alt="Logo de Biennal 2010"></img>
+	<a href="<?php echo url_for('blogs/biennal?ESTAT=BASES') ?>">
+	<h1>BIENNAL 2010<br />Prem per entrar</h1>
+	</a>
+</center>
+
+
+<?php endif; ?>
+
+<?php if($ESTAT == 'BASES'): ?>
+
+<center>
+
+<a href="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/1.jpg'?>" class="MYCLASS"  title="MYTITLE">
+	
+	<img id="imatge" src="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/1p.jpg'?>" alt="Bases de la Biennal 2010"></img>
+	
+</a>			
+
+<h1>BIENNAL 2010</h1>
+<br />
+<a href="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/bases.pdf'?>"><h1>Descarrega't les bases</h1></a>
+<a href="<?php echo url_for('blogs/biennal?ESTAT=FORMULARI') ?>"><h1>Prem per inscriure't-hi</h1></a>
+<center>
+
+
+
+<?php endif; ?>
+
+
+<?php if($ESTAT == 'FORMULARI'): ?>
+
 
 <div id="centrat">
   <div id="contenidor">
@@ -94,8 +157,9 @@
 	        <tr>
 	        	<td id="tdsubmit" colspan="5">
 	        		<?php $DINS_PERIODE = (date('Y-m-d',time()) < '2010-04-01'); ?>
+	        		<span class="peque">Respón correctament per validar que ets una persona</span>
 	        		<br />
-	        		<?php echo "$VAL1 sumat a $VAL2 és igual a "?><input class="suma" type="text" name="dades[resultat]" value=""><br />
+	        		<?php echo "$VAL1 sumat a $VAL2 és igual a "?><input class="suma" type="text" name="dades[resultat]" value=""><br />	        		
 	        		<br />        		        		
 	        		<input id="submit" type="submit" name="submit" value="Envieu el formulari" <?php echo ($DINS_PERIODE)?'ENABLED':'DISABLED'; ?>>
 	        		<br />
@@ -114,3 +178,5 @@
 		</form>
   </div>
   </div>
+  
+<?php endif; ?>

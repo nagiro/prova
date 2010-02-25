@@ -41,7 +41,11 @@ class blogsActions extends sfActions
   	$this->setLayout('blank');
   	$this->DADES = array('nom'=>'','cognoms'=>'','domicili'=>'','numero'=>'','codi_postal'=>'','localitat'=>'','telefon'=>'','qreu'=>'');
   	$this->ENVIAT = false;
-  	$this->FORM_ID = 1; 
+  	$this->FORM_ID = 1;
+  	
+  	if(!$request->hasParameter('ESTAT')) $this->ESTAT = 'INICI';  	
+  	else $this->ESTAT = $request->getParameter('ESTAT');
+  	  	  	   
   	 
   	if($request->hasParameter('dades')):
     	
