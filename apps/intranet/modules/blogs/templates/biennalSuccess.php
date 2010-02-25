@@ -8,9 +8,9 @@ $(document).ready(function(){
 	var options = {
 		    zoomWidth: 300,
 		    zoomHeight: 600,
-	        xOffset: 10,
+	        xOffset: 0,
 	        yOffset: 50,
-	        position: "left",
+	        position: "right",
 		    title: false,
 		    zoomType: "standard"
 		    
@@ -26,7 +26,7 @@ $(document).ready(function(){
 
 	* { font-family: verdana; font-size: small; }
 	
-	table { border-collapse:collapse; border:solid 3px gray; width:800px; }	
+	table.formulari { border-collapse:collapse; border:solid 3px gray; width:800px; }	
 	.col1 { width:150px; }
 	.col2 { width:225px; }
 	.col3 { width:25px;  }
@@ -66,17 +66,22 @@ $(document).ready(function(){
 <?php if($ESTAT == 'BASES'): ?>
 
 <center>
-
-<a href="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/1.jpg'?>" class="MYCLASS"  title="MYTITLE">
-	
-	<img id="imatge" src="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/1p.jpg'?>" alt="Bases de la Biennal 2010"></img>
-	
-</a>			
-
-<h1>BIENNAL 2010</h1>
-<br />
-<a href="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/bases.pdf'?>"><h1>Descarrega't les bases</h1></a>
-<a href="<?php echo url_for('blogs/biennal?ESTAT=FORMULARI') ?>"><h1>Prem per inscriure't-hi</h1></a>
+<table class="hola" id="hola" border="0">
+<tr class="hola" id="hola">
+<td class="hola" id="hola"></td>
+<td class="hola" id="hola" style="width:500px;">
+	<a href="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/1.jpg'?>" class="MYCLASS"  title="MYTITLE">
+		<img id="imatge" src="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/1p.jpg'?>" alt="Bases de la Biennal 2010"></img>	
+	</a>			
+</td>
+<td class="hola" id="hola" style="text-align:left">
+	<h1>BIENNAL 2010</h1>
+	<br />
+	<a href="<?php echo sfConfig::get('sf_webroot').'images/blogs/Dissenys/biennal/bases.pdf'?>"><h1>Descarrega't les bases</h1></a>
+	<a href="<?php echo url_for('blogs/biennal?ESTAT=FORMULARI') ?>"><h1>Prem per inscriure't-hi</h1></a>
+</td>
+</tr>
+</table>
 <center>
 
 
@@ -92,7 +97,7 @@ $(document).ready(function(){
     <span id="titol">Formulari d'inscripció a la Biennal 2010</span>
 
     <form id="formulari" action="<?php url_for('blogs/biennal'); ?>" method="post" name="formulari" enctype="multipart/form-data"> 
-      <table>
+      <table class="formulari">
       	<?php if(isset($MISSATGE)): ?>
         <tr>
         	<td colspan="5" ID="MISSATGE"><?php echo $MISSATGE['TEXT']; ?></td>        	
@@ -157,7 +162,7 @@ $(document).ready(function(){
 	        <tr>
 	        	<td id="tdsubmit" colspan="5">
 	        		<?php $DINS_PERIODE = (date('Y-m-d',time()) < '2010-04-01'); ?>
-	        		<span class="peque">Respón correctament per validar que ets una persona</span>
+	        		<span class="peque">Respon correctament per validar que ets una persona</span>
 	        		<br />
 	        		<?php echo "$VAL1 sumat a $VAL2 és igual a "?><input class="suma" type="text" name="dades[resultat]" value=""><br />	        		
 	        		<br />        		        		
