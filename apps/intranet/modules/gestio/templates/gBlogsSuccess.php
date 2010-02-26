@@ -278,7 +278,7 @@
 	    			echo '<td>'.$F->getId().'</td>';
 	    			echo '<td>';		
 	    			foreach($F->getArrayElements() as $K=>$V):
-	    				if($K == 'file'): 
+	    				if(!stripos($K,'file')): 
 	    					echo '<a href="'.sfConfig::get('sf_webroot').'uploads/formularis/'.$V.'">'.$V.'</a> - ';
 	    				else: 
 	    					echo '<i>'.$K.'</i>: <b>'.$V.'</b> - ';
