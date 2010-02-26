@@ -20,7 +20,8 @@ class blogsActions extends sfActions
   	
   	$this->PAGE_ID_QUE_ESTA_PASSANT = 1;
   	$this->PAGE_ID_QUE_PASSARA = 2;
-  	$this->PAGE_ID_QUE_HA_PASSAT = 3;  	
+  	$this->PAGE_ID_QUE_HA_PASSAT = 3;
+  	$this->FORM_ID = 2;   	
   	
   	$this->setLayout('blank');
   	$this->PAGE_ID = $this->ParReqSesForm($request,'PAGE_ID',$this->PAGE_ID_QUE_ESTA_PASSANT);
@@ -33,6 +34,14 @@ class blogsActions extends sfActions
   		$this->NOTICIES = AppBlogsEntriesPeer::getEntries($this->PAGE_ID,$this->PAGINA); 
   	endif; 
   	
+  	
+  	if($request->hasParameter('dades')):
+
+  		AppBlogsFormsPeer::save($this->FORM_ID,$request->getParameter('dades'),$request->getFiles());
+  	
+  	endif; 
+
+  	
   }
   
   public function executeBiennal(sfWebRequest $request)
@@ -41,7 +50,7 @@ class blogsActions extends sfActions
   	$this->setLayout('blank');
   	$this->DADES = array('nom'=>'','cognoms'=>'','domicili'=>'','numero'=>'','codi_postal'=>'','localitat'=>'','telefon'=>'','qreu'=>'');
   	$this->ENVIAT = false;
-  	$this->FORM_ID = 1;
+  	$this->FORM_ID = 1;  //Aquest formulari és el número 1 quan es va entrar :D
   	
   	if(!$request->hasParameter('ESTAT')) $this->ESTAT = 'INICI';  	
   	else $this->ESTAT = $request->getParameter('ESTAT');
