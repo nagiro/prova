@@ -11,7 +11,7 @@ class AppBlogsFormsEntries extends BaseAppBlogsFormsEntries
 			$ARR2 = explode('###',$V);
 			if(!empty($ARR2[0])):
 				if($ARR2[0] == 'file'):
-					$SOL[$ARR2[0].$i++] = $ARR2[1];
+					$SOL[$ARR2[0]][] = $ARR2[1];
 				else: 
 					$SOL[$ARR2[0]] = $ARR2[1];
 				endif; 				

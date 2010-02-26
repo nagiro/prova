@@ -276,10 +276,13 @@
 	    		foreach($VIEW_FORM_ENTRIES as $F):
 	    			echo '<tr>';
 	    			echo '<td>'.$F->getId().'</td>';
-	    			echo '<td>';		
-	    			foreach($F->getArrayElements() as $K=>$V):
-	    				if(!stripos($K,'file')): 
-	    					echo '<a href="'.sfConfig::get('sf_webroot').'uploads/formularis/'.$V.'">'.$V.'</a> - ';
+	    			echo '<td>';	    				
+	    			foreach($F->getArrayElements() as $K=>$V):	    			
+	    				if($K == 'file'):
+	    					foreach($V as $V2):	    						
+	    						$R = '<a href="'.sfConfig::get('sf_webroot').'uploads/formularis/'.$V2.'">'.$V2.'</a>';
+	    						echo '<i>'.$K.'</i>: <b>'.$R.'</b> - ';
+	    					endforeach;
 	    				else: 
 	    					echo '<i>'.$K.'</i>: <b>'.$V.'</b> - ';
 	    				endif; 
