@@ -1,4 +1,5 @@
 <?php use_helper('Javascript')?> 	
+<?php use_helper('Form')?>
  	
  	<script type="text/javascript">
 	
@@ -24,9 +25,10 @@
 		$("#arxiu"+id).remove();
 		return false; 		
 	}
-	 
-	 function updatePage()
-	 {
+
+	
+	function updatePage()
+	{
 		 var MENU_ID = $('#APP_MENU option:selected').val();
 		 
 		 $.post(
@@ -35,10 +37,10 @@
 				   function(data){
 					   $('#APP_PAGE').html(data);				     
 				   });		 	 
-	 }
+	}
 
-	 function updateEntry()
-	 {
+	function updateEntry()
+	{
 		 var PAGE_ID = $('#APP_PAGE option:selected').val();
 		 
 		 $.post(
@@ -48,20 +50,30 @@
 					 $('#APP_ENTRY').html(data);				     
 				   });
 					 
-	 }
+	}
 
-	 function esborraImatge(id)
-	 {
-		
+	function esborraImatge(id)
+	{		
 		 $.post(
 				 '<?php echo url_for('gestio/gBlogs') ?>', 
 				 { accio: "DELETE_IMAGE", APP_MULTIMEDIA: id },
 				   function(data){
 					   $("#img"+id).fadeOut(2000);				     
 				   });
-		   		 	 
-	 }
+	   		 	 
+	}
 
+	function SubmitEstat( sel , id )
+	{
+		
+		 $.post(
+				 '<?php echo url_for('gestio/gBlogs') ?>', 
+				 { accio: "AJAX_ESTAT_FORM", APP_FORM: id, ESTAT: sel.options[sel.selectedIndex].value },
+				   function(data){
+					   alert(data);				     
+				   });		 	 
+	}
+	
 	 
 	
 	</script>
@@ -275,8 +287,12 @@
 	    	
 	    		foreach($VIEW_FORM_ENTRIES as $F):
 	    			echo '<tr>';
-	    			echo '<td>'.$F->getId().'</td>';
-	    			echo '<td>';	    				
+	    			echo '<td>
+	    					<select name="estat" onChange="SubmitEstat(this,'.$F->getId().')">'.
+	    			 			options_for_select(AppBlogsFormsEntriesPeer::selectEstats(),$F->getEstat()).
+	    					'</select>
+	    				  </td>';
+	    			echo '<td>'.$F->getId().' - ';	    				
 	    			foreach($F->getArrayElements() as $K=>$V):	    			
 	    				if($K == 'file'):
 	    					foreach($V as $V2):	    						

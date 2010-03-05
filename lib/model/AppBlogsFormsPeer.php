@@ -35,7 +35,8 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  		foreach($dades as $K=>$V):
 	  			$RET[$K] = $V;
 	  		endforeach;
-	  			
+	  		
+	  		if(isset($arxius['arxius'])):
 	  		foreach($arxius['arxius'] as $K=>$V):  		
 	  			if($V['error'] == 0):
 	  				$file_ext = substr($V['name'], strripos($V['name'], '.'));
@@ -46,6 +47,7 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  			endif; 
 	  		
 	  		endforeach;
+	  		endif;
 	  		
 	  		$SOL = "@@@";
 	  		foreach($RET as $K=>$V):
@@ -57,13 +59,29 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  			else:	
 	  				$SOL .= $K."###".$V.'@@@';
 	  			endif;
-	  			  			
-	  		endforeach;	  		
-
+	  				
+	  		endforeach;	  						  			  						
 	  		$OO2->setDades($SOL);
 	  		$OO2->save();
 	  		
 		} catch(Exception $e){ echo $e->getMessage(); return false; }		
 		return true;		
 	}
+	
+	static public function getForms( $blog_id , $num )
+	{
+		$C = new Criteria();
+		$C->add(self::BLOG_ID,$blog_id);
+		$OO = self::doSelect($C);
+		if($OO instanceof AppBlogsForms):
+			if(isset($OO[$num])) return $num;
+			else return new AppBlogsForms();
+		else: 
+			return new AppBlogsForms();  
+		endif;
+		 
+		return self::doSelect($C);
+	}
+	
+	
 }

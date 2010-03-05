@@ -22,25 +22,194 @@ class blogsActions extends sfActions
   	$this->PAGE_ID_QUE_PASSARA = 2;
   	$this->PAGE_ID_QUE_HA_PASSAT = 3;
   	$this->FORM_ID = 2;   	
+  	$this->BLOG_ID = 4;
   	
   	$this->setLayout('blank');
   	$this->PAGE_ID = $this->ParReqSesForm($request,'PAGE_ID',$this->PAGE_ID_QUE_ESTA_PASSANT);
   	$this->NOTICIA_ID = $this->ParReqSesForm($request,'NOTICIA_ID',-1);
   	$this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+  	$this->MODE = $this->ParReqSesForm($request,'MODE','CONTINGUT');
+  	$this->ERRORS = "";
   	
-  	if($request->hasParameter('NOTICIA_ID')):
-  		$this->NOTICIA = AppBlogsEntriesPeer::retrieveByPK($request->getParameter('NOTICIA_ID')); 
-	else:  	
-  		$this->NOTICIES = AppBlogsEntriesPeer::getEntries($this->PAGE_ID,$this->PAGINA); 
+  	if($this->MODE == 'CONTINGUT' && $request->hasParameter('NOTICIA_ID')):
+  	
+  		$this->NOTICIA = AppBlogsEntriesPeer::retrieveByPK($request->getParameter('NOTICIA_ID'));
+  		$this->MODE = 'CONTINGUT'; 
+  		
+	elseif($this->MODE == 'CONTINGUT'):
+	  	
+  		$this->NOTICIES = AppBlogsEntriesPeer::getEntries($this->PAGE_ID,$this->PAGINA);
+  		$this->MODE = 'CONTINGUT';
+  		 
+  	elseif( $this->MODE == 'FORM1' ):  						
+  				  		
+  		$this->FORM1 = array(	'nom_entitat' => '',
+  								'nom_cognoms' => '',
+  								'lloc_ocupa'  => '',
+  								'nom_cognoms_contacte' => '',
+  								'adreca' => '',
+  								'codi_postal' => '',
+  								'municipi' => '',
+  								'comarca' => '',
+  								'telefons' => '',
+  								'email' => '',
+  						);  		
+  						  		  	
+  	elseif( $this->MODE == 'FORM2' ):
+  	  	
+  		$this->DADES = $request->getParameter('dades');
+  		
+		$this->getUser()->setAttribute('dades',$this->DADES);	  		  		
+  	
+		$this->FORM2 = array(	'titol' => '',
+  								'subtitol1' => '',
+  								'ciutat_acte'  => '',
+								'dia_acte'  => '',
+  								'web' => '',
+  								'imatge' => '',
+  								'tipus' => '',
+  								'resum' => '',  								
+  						);
+  	
+  	elseif( $this->MODE == 'ENVIA_FINALITZA' ):
+  	
+		if(!$this->getUser()->hasAttribute('dades')) $this->redirect('blogs/noticiesculturals?MODE=FORM1');
+		
+		$this->getUser()->setAttribute('dades2',$request->getParameter('dades'));		
+  		$this->DADES = $this->getUser()->getAttribute('dades');
+  		$this->DADES2 = $this->getUser()->getAttribute('dades2');
+		
+		foreach($this->DADES2 as $K => $E):		
+			$this->DADES[$K] = $E;
+		endforeach;
+						
+	  	AppBlogsFormsPeer::save($this->FORM_ID,$this->DADES,$request->getFiles() );
+	  	
+	  	$this->MODE = 'FORM_OK';
+	  	
+	elseif( $this->MODE == 'ACTUALITZA' ):
+	
+		$next_two_month = date('Y-m-d',mktime(0,0,0,date('m',time())+2,date('d',time()),date('Y',time())));
+		$next_month = date('Y-m-d',mktime(0,0,0,date('m',time())+1,date('d',time()),date('Y',time())));	  		
+		$today = date('Y-m-d',time());
+		$previous_month = date('Y-m-d',mktime(0,0,0,date('m',time())-1,date('d',time()),date('Y',time())));
+		$previous_two_month = date('Y-m-d',mktime(0,0,0,date('m',time())-2,date('d',time()),date('Y',time())));
+		
+	  	//Captem els que s'han de migrar del formulari
+	  	$C = new Criteria();
+	  	$C->add(AppBlogsFormsEntriesPeer::FORM_ID, $this->FORM_ID);
+	  	$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT_WAIT);
+	  	
+	  	foreach(AppBlogsFormsEntriesPeer::doSelect($C) as $OO):
+	  		$RET = array();
+	  		foreach( explode("@@@",$OO->getDades()) as $E ):
+	  			$EX = explode("###",$E);
+	  			if(isset($EX[0]) && isset($EX[1])):
+					list($EXCAMP,$TEXT) = explode("###",$E);
+					$RET[$EX[0]] = $EX[1];
+				endif; 	
+	  		endforeach;
+	  		
+	  		$ON = new AppBlogsEntries();
+	  		$ON->setLang('CA');
+	  		$ON->setTitle($RET['titol']);
+	  		$ON->setSubtitle1($RET['subtitol1']);
+	  		$ON->setSubtitle2($RET['ciutat_acte'].', '.$this->dataText($RET['dia_acte']));
+	  		$ON->setBody($RET['text']);
+	  		$ON->setTags($RET['tipus']);
+	  		echo stripos($RET['web'],'http://');
+	  		if(!stripos($RET['web'],'http://')) $ON->setUrl('http://'.$RET['web']);
+	  		else $ON->setUrl($RET['web']);	  		
+	  		$ON->setDate($RET['dia_acte']);
+	  			  		
+	  		$dia = $RET['dia_acte'];
+	  		
+			if($dia >= $today && $dia < $next_month):
+	  			$ON->setPageId($this->PAGE_ID_QUE_ESTA_PASSANT);	  			
+			elseif($dia < $today):
+				$ON->setPageId($this->PAGE_ID_QUE_HA_PASSAT);
+			elseif($dia > $next_month):
+				$ON->setPageId($this->PAGE_ID_QUE_PASSARA);
+			endif; 			
+	  		
+			$ON->save(); //Guardem la notícia
+			
+			//Guardem les imatges
+			if(isset($RET['file'])):
+			
+				$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
+				$img->resize(200,null);				
+				$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
+						
+				$OM = new AppBlogsMultimedia();
+				$OM->setName($RET['file']);
+				$OM->setUrl($RET['file']);
+				$OM->setDate(date('Y-m-d',time()));
+				$OM->setDesc("");
+				$OM->save();
+												
+				$OME = new AppBlogMultimediaEntries();
+				$OME->setEntriesId($ON->getId());
+				$OME->setMultimediaId($OM->getId());
+				$OME->save();
+				
+			endif; 
+						
+			$OO->setEstat(AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT);
+			$OO->save();
+			
+  		endforeach;  		
+  		
+	  	//Captem les notícies que han de canviar de pàgina... (Actual->Passades)
+	  	$C = new Criteria();
+	  	$C->add(AppBlogsEntriesPeer::PAGE_ID,  $this->PAGE_ID_QUE_ESTA_PASSANT);	  	
+	  	$C->add(AppBlogsEntriesPeer::DATE, $today, CRITERIA::LESS_THAN); 	  		  	
+	  	
+	  	foreach(AppBlogsEntriesPeer::doSelect($C) as $OO):
+	  		$OO->setPageid($this->PAGE_ID_QUE_HA_PASSAT);
+	  		$OO->save();
+  		endforeach;
+  		
+	  	//Captem les notícies que han de canviar de pàgina... (Futures->actual)
+	  	$C = new Criteria();
+	  	$C->add(AppBlogsEntriesPeer::PAGE_ID,  $this->PAGE_ID_QUE_PASSARA);	  	
+	  	$C->add(AppBlogsEntriesPeer::DATE, $today, CRITERIA::GREATER_THAN); 	  	
+	  	$C->add(AppBlogsEntriesPeer::DATE, $next_month, CRITERIA::LESS_THAN); 
+	  	
+	  	foreach(AppBlogsEntriesPeer::doSelect($C) as $OO):
+	  		$OO->setPageid($this->PAGE_ID_QUE_ESTA_PASSANT);
+	  		$OO->save();
+  		endforeach;
+  		
+//  		$this->redirect('blogs/noticiesculturals?MODE=CONTINGUT&PAGE_ID='.$this->PAGE_ID_QUE_ESTA_PASSANT);
+  		
   	endif; 
   	
-  	
-  	if($request->hasParameter('dades')):
+  }
+  
 
-  		AppBlogsFormsPeer::save($this->FORM_ID,$request->getParameter('dades'),$request->getFiles());
+  public function dataText($data)
+  {
+  	echo $data;
+  	list($any,$mes,$dia) = explode("-",$data);
+  	$RET = $dia;
   	
-  	endif; 
-
+  	switch($mes){
+  		case '1' : $RET .= ' de gener de '; break;
+  		case '2' : $RET .= ' de febrer de '; break;
+  		case '3' : $RET .= ' de març de '; break;
+  		case '4' : $RET .= ' d\'abril de '; break;
+  		case '5' : $RET .= ' de maig de '; break;
+  		case '6' : $RET .= ' de juny de '; break;
+  		case '7' : $RET .= ' de juliol de '; break;
+  		case '8' : $RET .= ' de agost de '; break;
+  		case '9' : $RET .= ' de setembre de '; break;
+  		case '10': $RET .= ' d\'octubre de '; break;
+  		case '11': $RET .= ' de novembre de '; break;
+  		case '12': $RET .= ' de desembre de '; break;
+  	}
+  	
+  	return $RET.$any;
   	
   }
   

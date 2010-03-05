@@ -62,7 +62,7 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 		$C = new Criteria();		
 		if(!is_null($page_id)) $C->add(self::PAGE_ID,$page_id);
 		
-		$pager = new sfPropelPager('AppBlogsEntries', 3);
+		$pager = new sfPropelPager('AppBlogsEntries', 6);
 	 	$pager->setCriteria($C);
 	 	$pager->setPage($PAGINA);
 	 	$pager->init();

@@ -17,6 +17,7 @@ class BaseAppBlogsFormsEntriesForm extends BaseFormPropel
       'dades'   => new sfWidgetFormTextarea(),
       'date'    => new sfWidgetFormDateTime(),
       'form_id' => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsForms', 'add_empty' => false)),
+      'estat'   => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -24,6 +25,7 @@ class BaseAppBlogsFormsEntriesForm extends BaseFormPropel
       'dades'   => new sfValidatorString(),
       'date'    => new sfValidatorDateTime(),
       'form_id' => new sfValidatorPropelChoice(array('model' => 'AppBlogsForms', 'column' => 'id')),
+      'estat'   => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_forms_entries[%s]');

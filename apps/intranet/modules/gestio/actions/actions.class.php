@@ -2608,6 +2608,15 @@ class gestioActions extends sfActions
     			$HTML = AppBlogsPagesPeer::getOptionsPages($this->APP_BLOG,$APP_MENU);
     			return $this->renderText($HTML);	
     		break;    		
+    		
+    	case 'AJAX_ESTAT_FORM':
+    			$APP_FORM = $request->getParameter('APP_FORM');
+    			$ESTAT    = $request->getParameter('ESTAT');
+    			$OO = AppBlogsFormsEntriesPeer::retrieveByPK($APP_FORM);
+    			$OO->setEstat($ESTAT);
+    			$OO->save();
+    			return $this->renderText('Canvi fet correctament');
+    		break;
     		    		
     	case 'VB':
 				$this->APP_BLOG  = -1;
@@ -2635,7 +2644,9 @@ class gestioActions extends sfActions
 
     			//Carrega les dades del formulari
     			$C = new Criteria();
-    			$C->add(AppBlogsFormsEntriesPeer::FORM_ID,$this->APP_FORM);    			
+    			$C->add(AppBlogsFormsEntriesPeer::FORM_ID,$this->APP_FORM);
+    			$C->addAscendingOrderByColumn(AppBlogsFormsEntriesPeer::ESTAT);
+    			//$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_CAP);    			
 				$this->VIEW_FORM_ENTRIES = AppBlogsFormsEntriesPeer::doSelect($C);
 				    			
     		break;
