@@ -392,7 +392,7 @@
 			
 			$RET[1]  = '<td class="col_footer"><div class="footer"><a href="'.url_for('blogs/noticiesculturals?NOTICIA_ID='.$OO->getId()).'">+ llegir tota la notícia</a></div>';
 			$url = $OO->getUrl();			
-			if(strlen($url) < 9) $RET[1] .= '<div class="footer"><a target="_NEW" href="'.$url.'">entrar al web</a></div>';
+			if(strlen($url) > 9) $RET[1] .= '<div class="footer"><a target="_NEW" href="'.$url.'">entrar al web</a></div>';
 			$RET[1] .= '<div class="footer tags">'.$OO->getTags().'</div>';
 			$RET[1] .= '</td>';
 		else: 

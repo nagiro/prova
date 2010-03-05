@@ -9,14 +9,14 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 		$OO = self::retrieveByPK($entry_id);
 		
 		if($OO instanceof AppBlogsEntries):
-			$OO->setDate(date('Y-m-d H:i:s',time()));			
+			//$OO->setDate(date('Y-m-d H:i:s',time()));			
 			return new AppBlogsEntriesForm($OO);			
 		else:
 			$OO = new AppBlogsEntries();
 			$OO->setTitle('Títol per defecte');
 			$OO->setBody("Cos per defecte");
 			$OO->setLang($lang);
-			$OO->setPageId($page_id);
+			$OO->setPageId($page_id);			
 			$OO->setDate(date('Y-m-d H:i:s',time()));			
 			return new AppBlogsEntriesForm($OO);			
 		endif; 
@@ -51,7 +51,7 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 	{
 		$C = new Criteria();
 		$C->addJoin(self::ID,AppBlogMultimediaEntriesPeer::ENTRIES_ID);
-		$C->addJoin(AppBlogMultimediaEntriesPeer::MULTIMEDIA_ID,AppBlogsMultimediaPeer::ID);
+		$C->addJoin(AppBlogMultimediaEntriesPeer::MULTIMEDIA_ID,AppBlogsMultimediaPeer::ID);		
 		$C->add(self::ID, $entry_id);
 		
 		return AppBlogsMultimediaPeer::doSelect($C);
@@ -61,6 +61,7 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 	{
 		$C = new Criteria();		
 		if(!is_null($page_id)) $C->add(self::PAGE_ID,$page_id);
+		$C->addAscendingOrderByColumn(self::DATE);
 		
 		$pager = new sfPropelPager('AppBlogsEntries', 6);
 	 	$pager->setCriteria($C);
