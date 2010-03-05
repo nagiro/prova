@@ -21,7 +21,7 @@ class AppBlogsEntriesForm extends BaseAppBlogsEntriesForm
       'subtitle1'                        => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
       'subtitle2'                        => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
       'body'                             => new sfWidgetFormTextarea(),
-      'date'                             => new sfWidgetFormInputHidden(),
+      'date'                             => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'tags'							 => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
       'url'								 => new sfWidgetFormInput(array(),array('style'=>'width:500px')),   
     ));
