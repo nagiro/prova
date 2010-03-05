@@ -623,41 +623,41 @@ class gestioActions extends sfActions
 	$pdf->SetFont('helvetica', '', 9);
 	$pdf->SetMargins(0, 0, 0 , 0);
 	$pdf->setPrintHeader(false);
+	$pdf->setPrintFooter(false);
 	$pdf->setAutoPageBreak(false);
-
+	
+	
    	//Consultem tots els usuaris de la llista que volem imprimir.
    	$fila = 1; $columna = 1; $pagina = 1; $pdf->AddPage();
    	$h = 50;
    	$w = 105;
    	
 	for($i = 1; $i< 121; $i++):
-
+	
 		if($fila > 3) $text = "<br />"; else $text = "";
-		if($fila > 6) $text .= "<br />"; 
+		if($fila > 6) $text .= ""; 
 				$text = $text."
-				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HAMMERKLAVIER 2010<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratimir Martinovic<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRIMAVERA LÍRICA<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marjan Nikolovski i Milica Sperovik<br />				
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 12 de febrer, 20.00 h<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 16 d'abril, 20.00 h<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori Josep Viader<br />				
 				<br />				
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
-				<br />														
-				<br />
-		";   		 	
-  	
+																					
+		";   		 		
   		if($fila    == 7): $pdf->AddPage(); $fila = 1; endif;  		  		
   		  		  		  		
   		if($columna == 1 && $fila == 1):  			
-			$pdf->MultiCell( $w , $h , $text , 0 , 'L' , 0 , 0 , 0 , 0 , true , 0 , true , true , 0 );
+			$pdf->writeHTMLCell( $w , $h , 0 , 0 , $text , 0 , 0 );
 			$columna++;  			
   		elseif($columna == 1 && $fila != 1):
-			$pdf->MultiCell( $w , $h , $text , 0 , 'L' , 0 , 0 , '', '', true , 0 , true , true , 0 );
+			$pdf->writeHTMLCell( $w , $h , null , null , $text , 0 , 0 );
 			$columna++;
   		elseif($columna == 2):
-  			$pdf->MultiCell( $w , $h , $text , 0 , 'L' , 0 , 1 , '', '', true , 0 , true , true , 0 );
+  			$pdf->writeHTMLCell( $w , $h , null , null , $text , 0 , 1 );
   			$columna = 1; $fila++;
   		endif;
   		 				

@@ -29,10 +29,6 @@
 		
 		$("#form1").submit(valida1);
 
-		$("#form2").submit(valida2);
-
-
-
 		
 		$(function() {
 			$("#datepicker").datepicker({ 
