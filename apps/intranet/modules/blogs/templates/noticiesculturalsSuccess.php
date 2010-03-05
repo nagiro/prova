@@ -291,9 +291,12 @@
 		
 		$ret  = '';
 		$ret .= '<select class="input" name="dades[tipus]">';
-		$ret .= '<option class="input" value="1">Opció 1</option>';
-		$ret .= '<option class="input" value="2">Opció 2</option>';
-		$ret .= '<option class="input" value="3">Opció 3</option>';
+		$ret .= '<option class="input" value="Espectacle">Espectacle</option>';
+		$ret .= '<option class="input" value="Exposició">Exposició</option>';
+		$ret .= '<option class="input" value="Infantil">Infantil</option>';
+		$ret .= '<option class="input" value="Novetat editorial">Novetat editorial</option>';
+		$ret .= '<option class="input" value="Oferta per a programadors">Oferta per a programadors</option>';
+		$ret .= '<option class="input" value="Formació per a tècnics">Formació per a tècnics</option>';
 		$ret .= '</select>';
 		
 		return $ret;
