@@ -1472,7 +1472,7 @@ class gestioActions extends sfActions
     //Actualitzem el requadre de cerca
     $this->FCerca = new CercaForm();
     $this->FCerca->bind($request->getParameter('cerca'));
-    $this->CERCA = $request->getParameter('cerca[text]');
+    $this->CERCA = $request->getParameter('cerca[text]');    
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
     	

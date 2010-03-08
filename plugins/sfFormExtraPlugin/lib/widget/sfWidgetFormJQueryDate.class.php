@@ -80,10 +80,11 @@ class sfWidgetFormJQueryDate extends sfWidgetFormDate
   }
 
   function wfd_%s_update_linked(date)
-  {
-    jQuery("#%s").val(date.substring(0, 4));
-    jQuery("#%s").val(date.substring(5, 7));
-    jQuery("#%s").val(date.substring(8));
+  {  	
+    
+    jQuery("#%s").val(parseInt(date.substring(0, 4),10));   
+    jQuery("#%s").val(parseInt(date.substring(5, 7),10));
+    jQuery("#%s").val(parseInt(date.substring(8),10));
   }
 
   function wfd_%s_check_linked_days()

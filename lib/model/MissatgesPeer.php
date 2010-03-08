@@ -37,7 +37,7 @@ class MissatgesPeer extends BaseMissatgesPeer
      $C->addGroupByColumn( MissatgesPeer::MISSATGEID );
      $C->setLimit(20);
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
-     $C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::LESS_THAN );
+     $C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
      $ATD = MissatgesPeer::doSelect($C);
      
      return $ATD; 

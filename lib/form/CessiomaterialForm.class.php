@@ -28,7 +28,7 @@ class CessiomaterialForm extends sfFormPropel
     $this->setValidators(array(
       'idCessioMaterial'    => new sfValidatorPropelChoice(array('model' => 'Cessiomaterial', 'column' => 'idCessioMaterial', 'required' => false)),
       'Material_idMaterial' => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial')),
-      'Cedita'              => new sfValidatorString(array('required'=>false)),
+      'Cedita'              => new sfValidatorString(array('required'=>true)),
       'DataCessio'          => new sfValidatorDate(array('required' => false)),
       'DataRetorn'          => new sfValidatorDate(array('required' => false)),
       'Estat'               => new sfValidatorString(array('required' => false)),

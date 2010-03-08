@@ -100,7 +100,7 @@ $(document).ready(function() {
                       			<TD class=\"TITOL\">CEDIT A</TD>
                       			<TD class=\"TITOL\">DATA CESSIÓ</TD>
                       			<TD class=\"TITOL\">DATA PREVISTA RETORN</TD>								                      			
-                      			<TD class=\"TITOL\">DATA RETORNAT</TD>
+                      			<TD class=\"TITOL\">DATA DE RETORN</TD>
                       			<TD class=\"TITOL\"></TD>
                       		  </TR>";
 					foreach($CESSIONS->getResults() as $C):												

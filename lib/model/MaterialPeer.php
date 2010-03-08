@@ -46,9 +46,10 @@ class MaterialPeer extends BaseMaterialPeer
   
   
   static public function getMaterial($MATERIALGENERIC , $PAGINA = 1)
-  {
+  {  	
+  	
     $C = new Criteria();
-    $C->add(self::MATERIALGENERIC_IDMATERIALGENERIC , $MATERIALGENERIC);
+    if($MATERIALGENERIC > 0) $C->add(self::MATERIALGENERIC_IDMATERIALGENERIC , $MATERIALGENERIC);
     
     $pager = new sfPropelPager('Material', 10);
 	$pager->setCriteria($C);

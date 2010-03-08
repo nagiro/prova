@@ -16,6 +16,7 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
     $C->addAscendingOrderByColumn(self::NOM);
     $MG = self::doSelect($C);
     $RET = array();
+    $RET[0] = 'Tots els materials';
     foreach($MG as $M):
       $RET[$M->getIdmaterialgeneric()] = $M->getNom();    
     endforeach;
