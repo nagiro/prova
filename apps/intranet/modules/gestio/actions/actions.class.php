@@ -1752,7 +1752,9 @@ class gestioActions extends sfActions
 		//Si el codi existeix, carrego les dades, altrament només guardo.    		
     	case 'SC':
 				$parametres = $request->getParameter('cursos_codi'); 			//Agafo el codi
-    			$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una còpia de l'objecte de l'últim curs amb aquest codi
+				$codi = $parametres['Codi'];
+				if(!empty($parametres['CodiT'])) $codi = $parametres['CodiT'];				
+				$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una còpia de l'objecte de l'últim curs amb aquest codi
     			$OCurs->save();
     			$this->getUser()->setAttribute('IDC',$OCurs->getIdcursos());    			    		
     		    $this->FCurs = new CursosForm($OCurs);							//Passem al formulari el curs copiat.    		        		        		    

@@ -48,23 +48,30 @@
 	
 	function ValidaCodi(){		
 		if( $('#cursos_codi_Codi').val() == 0 && $('#cursos_codi_CodiT').val().length == 0 ){ alert('Si entres un codi nou, has d\'escriure\'l.'); return false; }
-		else return true;				
+		else 
+		{ 
+			var patt1=new RegExp('^[A-Z]{3}[0-9]{3}\.[0-9]{2,3}$');					
+			if(!patt1.test($('#cursos_codi_Codi').val())) { alert('El codi te un format incorrecte'); return false; }
+			else return true; 
+		}				
 	}
 	
-	function ValidaFormulari(){		
-		if(vacio(cursos_Codi.value) == false) { alert('Codi no pot estar en blanc.'); return false; }		
-		if(vacio(cursos_TitolCurs.value) == false) { alert('TITOL no pot estar en blanc.'); return false; } 
-		if(vacio(cursos_Places.value) == false) { alert('PLACES no pot estar en blanc.'); return false; }
-		if(vacio(cursos_Preu.value) == false) { alert('PREU no pot estar en blanc.'); return false; }
-		if(vacio(cursos_Preur.value) == false) { alert('PREU REDUIT no pot estar en blanc.'); return false; }
-		if(vacio(cursos_Horaris.value) == false) { alert('HORARIS no pot estar en blanc.'); return false; }
-		if(cursos_Categoria.selectedIndex<0){ alert('CATEGORIA no pot estar en blanc.'); return false; }
-		if(vacio(cursos_DataAparicio_day.value) == false) { alert('DATA APARICIÓ no pot estar en blanc.'); return false; }
-		if(vacio(cursos_DataDesaparicio_day.value) == false) { alert('DATA DESAPARICIÓ no pot estar en blanc.'); return false; }
-		if(vacio(cursos_DataFiMatricula_day.value) == false) { alert('DATA FI MATRÍCULA no pot estar en blanc.'); return false; }
-		if(vacio(cursos_DataInici_day.value) == false) { alert('DATA INICI no pot estar en blanc.'); return false; }		 		
-		
-		if(validaCodi(cursos_Codi.value) == false ) { alert('CODI té un format incorrecte.'); }
+	function ValidaFormulari(){
+				
+		if($('#cursos_Codi').val().length == 0) { alert('Codi no pot estar en blanc.'); return false; }		
+		if($('#cursos_TitolCurs').val().length == 0) { alert('TITOL no pot estar en blanc.'); return false; } 
+		if($('#cursos_Places').val().length == 0) { alert('PLACES no pot estar en blanc.'); return false; }
+		if($('#cursos_Preu').val().length == 0) { alert('PREU no pot estar en blanc.'); return false; }
+		if($('#cursos_Preur').val().length == 0) { alert('PREU REDUIT no pot estar en blanc.'); return false; }
+		if($('#cursos_Horaris').val().length == 0) { alert('HORARIS no pot estar en blanc.'); return false; }
+		if($('#cursos_Categoria').val().length < 0){ alert('CATEGORIA no pot estar en blanc.'); return false; }
+		if($('#cursos_DataAparicio_day').val().length == 0) { alert('DATA APARICIÓ no pot estar en blanc.'); return false; }
+		if($('#cursos_DataDesaparicio_day').val().length == 0) { alert('DATA DESAPARICIÓ no pot estar en blanc.'); return false; }
+		if($('#cursos_DataFiMatricula_day').val().length == 0) { alert('DATA FI MATRÍCULA no pot estar en blanc.'); return false; }
+		if($('#cursos_DataInici_day').val().length == 0) { alert('DATA INICI no pot estar en blanc.'); return false; }
+
+		var patt1=new RegExp('^[A-Z]{3}[0-9]{3}\.[0-9]{2,3}$');					
+		if(!patt1.test($('#cursos_Codi').val())) { alert('El codi te un format incorrecte'); return false; }
 		 
 	}
 

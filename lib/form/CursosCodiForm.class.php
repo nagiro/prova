@@ -23,7 +23,7 @@ class CursosCodiForm extends sfFormPropel
     $this->setValidators(array(
       'idCursos'        => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
       'Codi'            => new sfValidatorString(array('required' => false)),
-      'CodiT'            => new sfValidatorString(array('required' => false)),          
+      'CodiT'           => new sfValidatorString(array('required' => false)),          
     ));
 
     

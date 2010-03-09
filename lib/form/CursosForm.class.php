@@ -14,7 +14,7 @@ class CursosForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
-      'Codi'            => new sfWidgetFormInputHidden(),
+      'Codi'            => new sfWidgetFormInput(array(),array('style'=>'width:100px;')),
       'TitolCurs'       => new sfWidgetFormInput(array(),array('style'=>'width:100%;')),
       'isActiu'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Places'          => new sfWidgetFormInput(array(),array('style'=>'width:10%;')),      
