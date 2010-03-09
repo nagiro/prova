@@ -1267,8 +1267,7 @@ class gestioActions extends sfActions
 	    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
 	    			$Mater = MaterialPeer::retrieveByPK($M['material'])->getNom();
 	    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
-    			endif;
-	    	
+    			endif;	    	
 	    	endforeach;     	
     	endforeach;
         	    	

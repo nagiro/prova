@@ -12,6 +12,7 @@
 		$('#cerca_text').change( function() { 
 			$('#FCERCA').submit(); 
 		});
+		$('#FORMSUBMIT').submit(ValidaFormulari);
 	});
 
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}
@@ -27,19 +28,15 @@
 	
 
 	function ValidaFormulari(){
-		if(vacio(D_IDENTIFICADOR.value) == false) { alert('L\'identificador no pot estar buit.'); return false; }
-		if(vacio(D_NUMSERIE.value) == false) { alert('El número de sèrie no pot estar buit.'); return false; }		
-		if(vacio(D_NOM.value) == false) { alert('El nom no pot estar buit.'); return false; } 		 
-		if(vacio(D_UBICACIO.value) == false) { alert('La localització no pot estar buit.'); return false; }
-		
-		if(vacio(D_DATACOMPRA.value) && !validaData(D_DATACOMPRA.value)) { alert('La data compra té un format incorrecte.'); return false; } 
-		if(vacio(D_DATAGARANTIA.value) && !validaData(D_DATAGARANTIA.value)) { alert('La data de garantia té un format incorrecte.'); return false; }
-		if(vacio(D_DATAREVISIO.value) && !validaData(D_DATAREVISIO.value)) { alert('La data de propera revisió té un format incorrecte.'); return false; }
-		if(vacio(D_DATACESSIO.value) && !validaData(D_DATACESSIO.value)) { alert('La data de cessió té un format incorrecte.'); return false; }
-		if(vacio(D_DATARETORN.value) && !validaData(D_DATARETORN.value)) { alert('La data de retorn té un format incorrecte.'); return false; }
-		if(vacio(D_DATABAIXA.value) && !validaData(D_DATABAIXA.value)) { alert('La data de baixa té un format incorrecte.'); return false; }
-		if(vacio(D_DATAREPARACIO.value) && !validaData(D_DATAREPARACIO.value)) { alert('La data de reparació té un format incorrecte.'); return false; }
-				 
+		if($('#material_Identificador').val().length == 0) { alert('L\'identificador no pot estar buit.'); return false; }
+		if($('#material_Nom').val().length == 0) { alert('El nom no pot estar buit.'); return false; }
+		if($('#material_Ubicacio').val().length == 0) { alert('L\'ubicació no pot estar buida.'); return false; }
+		if($('#material_NumSerie').val().length == 0) { alert('El número de sèrie no pot estar buit.'); return false; }		
+		if($('#material_DataCompra_day').val().length == 0 ) { alert('La data compra no pot estar buida.'); return false; } 
+		if($('#material_DataGarantia_day').val().length == 0 ) { alert('La data de garantia no pot estar buida.'); return false; }
+		if($('#material_DataRevisio_day').val().length == 0 ) { alert('La data de propera revisió no pot estar buida.'); return false; }		
+		if($('#material_DataBaixa_day').val().length == 0) { alert('La data de baixa no pot estar buida.'); return false; }				
+		return true;				 
 	}
 
 </script>
@@ -64,7 +61,7 @@
       
 <?php IF( $NOU || $EDICIO ): ?>
       
-	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST">            
+	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FORMSUBMIT">            
 	 	<DIV class="REQUADRE">
 	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMaterial?accio=L'); ?></div>
 	    	<table class="FORMULARI" width="550px">
