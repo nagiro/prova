@@ -187,6 +187,23 @@ class CursosPeer extends BaseCursosPeer
   	
   }
   
+  static function getCodisOptions()
+  {
+  	$RET = array();
+  	$C = new Criteria();
+  	$C->addGroupByColumn(self::CODI);
+  	$C->addGroupByColumn(self::TITOLCURS);
+  	$C->addAscendingOrderByColumn(self::CODI);
+  	$C->addAscendingOrderByColumn(self::IDCURSOS);  	  	
+  	$RET[0] = "Codi de curs nou";
+  	foreach(self::doSelect($C) as $Curs):
+  		$RET[$Curs->getCodi()] = $Curs->getCodi().' - '.$Curs->getTitolcurs();  		
+  	endforeach;
+  	
+  	return $RET;
+  	
+  }
+  
   static function getCodisTitol()
   {
   	$RET = array();

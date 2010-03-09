@@ -14,20 +14,22 @@ class CursosCodiForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
-      'Codi'            => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:100 , width:500 }' , 'url'=>$this->getOption('url'))),
-      'TitolCurs'		=> new sfWidgetFormInput(array(),array('disabled'=>'disabled','style'=>'width:400px')),
+      'Codi'			=> new sfWidgetFormChoice(array('choices'=>CursosPeer::getCodisOptions()),array('style'=>'width:300px')),
+      'CodiT'			=> new sfWidgetFormInput(array(),array()),      
     ));
+    
+    //      'Codi'            => new sfWidgetFormJQueryAutocompleter(array('config'=>'{ max:100 , width:500 }' , 'url'=>$this->getOption('url'))),
 
     $this->setValidators(array(
       'idCursos'        => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
       'Codi'            => new sfValidatorString(array('required' => false)),
-      'TitolCurs'		=> new sfValidatorPass(),    
+      'CodiT'            => new sfValidatorString(array('required' => false)),          
     ));
 
     
     $this->widgetSchema->setLabels(array(      
-      'Codi'            => 'Codi del curs: ',
-      'TitolCurs'		=> 'Titol actual: ',
+      'Codi'            => 'Codi existent: ',
+      'CodiT'			=> 'Nou codi:',    
     ));
     
     

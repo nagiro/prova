@@ -3,7 +3,6 @@
 <?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
 
 
-
 <STYLE>
 .cent { width:100%; }
 .vuitanta { width:80%; }
@@ -20,16 +19,10 @@
 		$('#cerca_select').change( function() {
 			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit();			
 		});
-		$('#autocomplete_cursos_codi_Codi').change( function() {
-			<?php $CURSOSA = CursosPeer::getCodisTitol();?>
-			var noms = new Array(<?php echo implode(',',$CURSOSA['TEXT']); ?>);
-			var codis = new Array(<?php echo implode(',',$CURSOSA['CLAU']); ?>);
-			for(x in codis){ 				
-				if($('#autocomplete_cursos_codi_Codi').val() == codis[x]){					
-					$('#cursos_codi_TitolCurs').attr('value',noms[x]); 
-				}  
-			}							
-		});
+
+		$('#cursos_codi_Codi').change(CanviaCodiCurs);
+		$('#FSAVECODICURS').submit(ValidaCodi);
+		
 	});
 	
 </script>
@@ -46,6 +39,16 @@
 	function validaCodi(q){
 		var userPattern = new RegExp("^[A-Za-z]{3}[0-9]{3}\.[0-9]{2}$");		
 		if (userPattern.exec(q) == null) return false; else return true;
+	}
+
+	function CanviaCodiCurs(){		
+		if($('#cursos_codi_Codi').val() == 0){ $('#cursos_codi_CodiT').fadeIn(1000); }
+		else { $('#cursos_codi_CodiT').fadeOut(1000); $('#cursos_codi_CodiT').val(""); }
+	}
+	
+	function ValidaCodi(){		
+		if( $('#cursos_codi_Codi').val() == 0 && $('#cursos_codi_CodiT').val().length == 0 ){ alert('Si entres un codi nou, has d\'escriure\'l.'); return false; }
+		else return true;				
 	}
 	
 	function ValidaFormulari(){		
@@ -87,17 +90,17 @@
 
   <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
 
-   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
+   	<form id="FSAVECODICURS" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
 	 	<DIV class="REQUADRE">
 	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=CA'); ?></div>
 	    	<table class="FORMULARI" width="550px">
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+	    	<tr><td width="100px"></td><td ></td></tr>
                 <?php echo $FCursCodi; ?>                								
                 <tr>
                 	<td></td>
 		            <td colspan="2" class="dreta">
 	            		<br>	            		
-	            		<?php echo submit_tag('Segueix editant...',array('name'=>'BSAVECODICURS','class'=>'BOTO_ACTIVITAT'))?>
+	            		<?php echo submit_tag('Segueix editant...',array('name'=>'BSAVECODICURS','id'=>'BSAVECODICURS','class'=>'BOTO_ACTIVITAT'))?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>

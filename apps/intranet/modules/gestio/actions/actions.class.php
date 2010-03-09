@@ -1124,18 +1124,20 @@ class gestioActions extends sfActions
     		else   		   $this->FHorari = new HorarisForm($OHorari);
 
     		$this->MATERIALOUT = array();
-    		$material = $request->getParameter('material');
+    		$material = $request->getParameter('material');    		
     		if(!is_array($material)) $material = array();    		
     		foreach($material as $M=>$idM):
-    			$OMaterial = MaterialPeer::retrieveByPK($idM);    			    			
-    			$this->MATERIALOUT[] = array('material'=>$idM,'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    			    		
+    			if($idM > 0):
+	    			$OMaterial = MaterialPeer::retrieveByPK($idM);    			    			
+	    			$this->MATERIALOUT[] = array('material'=>$idM,'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    			    		
+	    		endif; 
     		endforeach;    		    		    		
 			$espais = $request->getParameter('espais');
     		if(!is_array($espais)) $espais = array();  
     		$this->ESPAISOUT   = $espais;     		    		    		
     		
     		$this->FHorari->bind($request->getParameter('horaris'));
-    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$request->getParameter('material'),$this->ESPAISOUT);    		   			
+    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$this->MATERIALOUT,$this->ESPAISOUT);    		   			
    			if(empty($RET)):
    				$this->MISSATGE = array(1=>"Horari guardat correctament");
 	    		$this->redirect('gestio/gActivitats?accio=CH');
@@ -1253,18 +1255,17 @@ class gestioActions extends sfActions
         
     //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
     foreach($DBDD['DIES'] as $D):
-        	
+        	    
     	foreach($espais as $E=>$idE):
 	    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] ) > 0 ):
 	    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
 	    		$ERRORS[] = "El dia $D coincideix a l'espai $Espai amb una altra activitat";
 	    	endif;
-			
-	    	if(!is_array($material)) $material = array();
-	    	foreach($material as $M=>$idM):
-	    		if( HorarisPeer::validaMaterial( $D , $idE , $idM , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
+				    	
+	    	foreach($material as $M):
+	    		if( HorarisPeer::validaMaterial( $D , $idE , $M['material'] , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
 	    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
-	    			$Mater = MaterialPeer::retrieveByPK($idM)->getNom();
+	    			$Mater = MaterialPeer::retrieveByPK($M['material'])->getNom();
 	    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
     			endif;
 	    	
