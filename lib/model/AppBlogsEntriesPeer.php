@@ -57,11 +57,13 @@ class AppBlogsEntriesPeer extends BaseAppBlogsEntriesPeer
 		return AppBlogsMultimediaPeer::doSelect($C);
 	}
 	
-	static public function getEntries($page_id = null,$PAGINA = 1)
+	static public function getEntries($page_id = null,$PAGINA = 1, $AscOrder = true)
 	{
 		$C = new Criteria();		
 		if(!is_null($page_id)) $C->add(self::PAGE_ID,$page_id);
-		$C->addAscendingOrderByColumn(self::DATE);
+		
+		if($AscOrder) $C->addAscendingOrderByColumn(self::DATE);
+		else $C->addDescendingOrderByColumn(self::DATE);
 		
 		$pager = new sfPropelPager('AppBlogsEntries', 6);
 	 	$pager->setCriteria($C);

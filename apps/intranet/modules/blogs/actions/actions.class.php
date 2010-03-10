@@ -37,8 +37,8 @@ class blogsActions extends sfActions
   		$this->MODE = 'CONTINGUT'; 
   		
 	elseif($this->MODE == 'CONTINGUT'):
-	  	
-  		$this->NOTICIES = AppBlogsEntriesPeer::getEntries($this->PAGE_ID,$this->PAGINA);
+	  	$order = ($this->PAGE_ID == $this->PAGE_ID_QUE_HA_PASSAT)?false:true;
+  		$this->NOTICIES = AppBlogsEntriesPeer::getEntries($this->PAGE_ID,$this->PAGINA, $order);
   		$this->MODE = 'CONTINGUT';
   		 
   	elseif( $this->MODE == 'FORM1' ):  						
