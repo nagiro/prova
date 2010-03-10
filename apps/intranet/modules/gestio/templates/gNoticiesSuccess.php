@@ -8,6 +8,7 @@
 
     <TD colspan="3" class="CONTINGUT">
     
+	<?php include_partial('breadcumb',array('text'=>'NOTÍCIES')); ?>
 
 <?php if($MODE == 'FORMULARI'): ?>
 		

@@ -12,6 +12,7 @@
    
     <TD colspan="3" class="CONTINGUT">
 
+	<?php include_partial('breadcumb',array('text'=>'ESPAIS')); ?>
 
     <form action="<?php echo url_for('gestio/gEspais') ?>" method="POST">
 	    <DIV class="REQUADRE">

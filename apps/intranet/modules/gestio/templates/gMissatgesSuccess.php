@@ -10,6 +10,8 @@
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
+      
+    <?php include_partial('breadcumb',array('text'=>'TAULELL')); ?>        
     
 	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">
 	    <DIV class="REQUADRE">

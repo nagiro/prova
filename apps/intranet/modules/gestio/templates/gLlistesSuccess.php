@@ -2,6 +2,8 @@
 
     <TD colspan="3" class="CONTINGUT">
     
+    <?php include_partial('breadcumb',array('text'=>'LLISTES')); ?>
+    
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post" enctype="multipart/form-data">
   	    <DIV class="REQUADRE">
 	    <DIV class="TITOL"> <?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nova llista')),'gestio/gLlistes'.getPar(NULL,'N')); ?> Llistes disponibles</DIV>

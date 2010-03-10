@@ -60,7 +60,9 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 </script>
    
     <TD colspan="3" class="CONTINGUT">
-     	 
+    
+    <?php include_partial('breadcumb',array('text'=>'AGENDA')); ?>
+    
     <form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">	    	         

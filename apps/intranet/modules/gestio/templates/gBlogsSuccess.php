@@ -79,6 +79,8 @@
 	</script>
  
     <TD colspan="3" class="CONTINGUT">
+
+	<?php include_partial('breadcumb',array('text'=>'BLOGS')); ?>
 	                   	                   
      <form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST">     	
 	 	<div class="REQUADRE">		 	            

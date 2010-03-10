@@ -33,6 +33,8 @@ $(document).ready(function() {
 </script>
    
     <TD colspan="3" class="CONTINGUT">
+
+	<?php include_partial('breadcumb',array('text'=>'CESSIÓ')); ?>
                                  
     <form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">

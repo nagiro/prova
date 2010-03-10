@@ -25,7 +25,9 @@ $(document).ready( function() {
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
-        
+    
+    <?php include_partial('breadcumb',array('text'=>'DOCUMENTS')); ?>
+      
     <form action="<?php echo url_for('gestio/gDocuments') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL">Escull un directori: </DIV>

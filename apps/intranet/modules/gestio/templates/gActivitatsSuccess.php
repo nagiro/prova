@@ -6,6 +6,8 @@
   
     <TD colspan="3" class="CONTINGUT">
 
+	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>
+
 	<script type="text/javascript">
 
 	function jq(myid)

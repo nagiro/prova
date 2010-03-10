@@ -3,7 +3,6 @@
 <?php use_javascript('fonts/bauhaus/Bauhaus_93_400.font')?>
 
 
-
 <script type="text/javascript">
 
 	Cufon.replace('.col_content .title', { fontFamily: 'Bauhaus 93' });
@@ -150,6 +149,10 @@
 	<?php endif; ?>
 	</td>
 </tr>
+<tr>
+	<td colspan="2" align="center">
+		La informació recollida en aquest blog ha estat facilitada directament per les pròpies entitats.
+	</td>
 </tr>
 </table>	
 </center>
@@ -196,7 +199,7 @@
 			</tr>
 			<tr>
 				<td colspan="7">
-					<div class="TITOL">Respon correctament per validar que ets una persona <span class="TITOL" id="val1"></span> sumat a <span class="TITOL" id="val2"></span> és igual a </div>
+					<div class="TITOL">Respon correctament per validar: <span class="TITOL" id="val1"></span> sumat a <span class="TITOL" id="val2"></span> és igual a </div>
 				</td>
 				<td colspan="1">
 					<input type="text" name="dades[resultat]" id="resultat" class="input" >
@@ -210,7 +213,10 @@
 			<td colspan="7"></td><td colspan="3"><div class="TITOL"><button class="more boto" >segueix omplint el formulari <?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button></div></td>
 			</tr>			
 			<tr>
-			<td colspan="10"><span style="font-size:10px;" class="text">Les seves dades seran incorporades a un fitxer titularitat de la Fundació Casa de Cultura amb la finalitat de gestionar els seus serveis i activitats. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d’adoptar les mesures legalment previstes i les tècnicament necessàries per evitar-ne un accés a qualsevol classe de tractament no autoritzat. No seran cedides a terceres persones sense el seu consentiment. En qualsevol cas vostè pot exercir els seus drets d’accés, rectificació i cancel•lació tot adreçant-se a: Sr/a. Director/a de la casa de Cultura, Plaça de l’Hospital 6, 17002 Girona, telèfon 972 202 013 i correu electrònic: secretaria@casadecultura.cat</span></td>
+			<td colspan="10">
+				<span style="font-size:10px;" class="text">Les seves dades seran incorporades a un fitxer titularitat de la Fundació Casa de Cultura amb la finalitat de gestionar els seus serveis i activitats. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d’adoptar les mesures legalment previstes i les tècnicament necessàries per evitar-ne un accés a qualsevol classe de tractament no autoritzat. No seran cedides a terceres persones sense el seu consentiment. En qualsevol cas vostè pot exercir els seus drets d’accés, rectificació i cancel•lació tot adreçant-se a: Sr/a. Director/a de la casa de Cultura, Plaça de l’Hospital 6, 17002 Girona, telèfon 972 202 013 i correu electrònic: secretaria@casadecultura.cat
+				<br /><br />La Casa de Cultura es guarda el dret a no publicar notícies que no hagin estat ben tractades i no es responsabilitza de la correcció de textos. La notícia es publicarà exactament com l'envieu.				
+				</span></td>
 			</tr>			
 		</table>
 		<input type="hidden" id="val1h" value=""></input>
@@ -225,7 +231,7 @@
 		?>
 		<form id="form2" action="<?php echo url_for('blogs/noticiesculturals?MODE=ENVIA_FINALITZA') ?>" method="POST" enctype="multipart/form-data">
 		<table class="FORMULARI" width="100%">
-			<tr><td class="TITOL">TÍTOL</td>
+			<tr><td class="TITOL">TÍTOL<div>Màx 30 caràcters.<br />Text en minúscula.</div></td>
 				<td colspan="3"><input class="input" type="text" name="dades[titol]" maxlength="30"></td>
 			</tr>
 			<tr><td class="TITOL">Subtítol 1</td>
@@ -293,6 +299,8 @@
 		$ret .= '<option class="input" value="Novetat editorial">Novetat editorial</option>';
 		$ret .= '<option class="input" value="Oferta per a programadors">Oferta per a programadors</option>';
 		$ret .= '<option class="input" value="Formació per a tècnics">Formació per a tècnics</option>';
+		$ret .= '<option class="input" value="Conferència o debat">Conferència o debat</option>';
+		$ret .= '<option class="input" value="Altres">Altres</option>';
 		$ret .= '</select>';
 		
 		return $ret;

@@ -2,6 +2,8 @@
 
 <TD colspan="3" class="CONTINGUT">
           
+     <?php include_partial('breadcumb',array('text'=>'PROMOCIONS')); ?>
+          
      <form action="<?php echo url_for('gestio/gPromocions') ?>" method="post" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL"><?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gPromocions?accio=N') ?> Llistat de promocions</DIV>

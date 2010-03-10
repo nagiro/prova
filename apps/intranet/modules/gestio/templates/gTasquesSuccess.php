@@ -46,6 +46,8 @@
    
     <TD colspan="3" class="CONTINGUT">
     
+    <?php include_partial('breadcumb',array('text'=>'TASQUES')); ?>
+    
 	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          

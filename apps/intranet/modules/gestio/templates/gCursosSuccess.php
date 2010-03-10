@@ -81,6 +81,8 @@
    
     <TD colspan="3" class="CONTINGUT">
     
+    <?php include_partial('breadcumb',array('text'=>'CURSOS')); ?>
+    
 	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">	    		          

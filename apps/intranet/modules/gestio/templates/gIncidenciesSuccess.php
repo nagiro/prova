@@ -10,6 +10,8 @@
    
     <TD colspan="3" class="CONTINGUT">
     
+    <?php include_partial('breadcumb',array('text'=>'INCIDÈNCIES')); ?>
+    
 	<form action="<?php echo url_for('gestio/gIncidencies') ?>" method="POST">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          

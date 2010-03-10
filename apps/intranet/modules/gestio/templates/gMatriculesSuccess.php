@@ -72,6 +72,8 @@
    
     <TD colspan="3" class="CONTINGUT">
         
+    <?php include_partial('breadcumb',array('text'=>'MATRICULES')); ?>
+        
     <form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
 	    	<table class="FORMULARI">          

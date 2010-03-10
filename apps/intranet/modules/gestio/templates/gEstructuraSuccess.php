@@ -2,6 +2,7 @@
 
 <TD colspan="3" class="CONTINGUT">
           
+    <?php include_partial('breadcumb',array('text'=>'ESTRUCTURA')); ?>
 
     <?php IF($HTML): ?>
 

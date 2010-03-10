@@ -42,6 +42,7 @@
    
     <TD colspan="3" class="CONTINGUT">
     
+    <?php include_partial('breadcumb',array('text'=>'MATERIAL')); ?>
       
     <form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
