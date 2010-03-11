@@ -102,6 +102,28 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   }
   
+  static function selectUsuaris()
+  {
+    $C = new Criteria();    
+    $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
+//    $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
+    $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
+    $C->add(UsuarisPeer::HABILITAT , true);
+    
+    $TREB = self::doSelect($C);
+    $RET = array();
+
+    foreach($TREB as $T):
+      
+      $RET[$T->getUsuariid()] = $T->getNomComplet();    
+    
+    endforeach;
+  
+    return $RET;
+  
+  }
+ 
+  
   static function getUserLogin($login,$password)
   {
   	
@@ -120,6 +142,11 @@ class UsuarisPeer extends BaseUsuarisPeer
   	
   	return (self::doCount($C) == 1);
   	
+  }
+  
+  static public function getNom($idU)
+  {
+  	return UsuarisPeer::retrieveByPK($idU)->getNomComplet();
   }
   
 	

@@ -141,7 +141,7 @@
 <tr>
 	<td colspan="2" class="right-col">
 	<?php if($MODE == 'CONTINGUT'): ?>				
-		<a href="<?php echo url_for('blogs/noticiesculturals?MODE=FORM1') ?>" <?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_12.png')?> </a></td>
+		<a href="<?php echo url_for('blogs/noticiesculturals?MODE=FORM1') ?>"> <?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_12.png')?> </a></td>
 	<?php elseif($MODE == 'FORM1'): ?>						
 		<?php echo image_tag('blogs/Dissenys/noticies_culturals/form_foot_1.png')?></td>		
 	<?php elseif($MODE == 'FORM2'): ?>

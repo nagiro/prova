@@ -9,20 +9,7 @@
  */ 
 class CessiomaterialPeer extends BaseCessiomaterialPeer
 {
-   static public function getCessions($PAGINA,$cedit,$text)
-   {
-    $C = new Criteria();
-    $C->add(CessiomaterialPeer::RETORNAT,!$cedit);
-    $C->addDescendingOrderByColumn(CessiomaterialPeer::RETORNAT);
-    $C->addDescendingOrderByColumn(CessiomaterialPeer::DATARETORN);
-          
-    $pager = new sfPropelPager('Cessiomaterial', 10);
-	$pager->setCriteria($C);
-	$pager->setPage($PAGINA);
-	$pager->init();  	
-  	return $pager;
-   } 
-   
+    
    /**
     * 
     * @param Cessiomaterial $OCESSIO
@@ -79,6 +66,20 @@ class CessiomaterialPeer extends BaseCessiomaterialPeer
    		   		   	   		
    }
    
+   static public function getSelectMaterialOut($idC)
+   {
+	   	$C = new Criteria();
+	   	$C->add(self::CESSIO_ID, $idC);
+	   	$C->addJoin(self::MATERIAL_IDMATERIAL,MaterialPeer::IDMATERIAL);
+	   	$RET = array();
+	   	
+	   	foreach(MaterialPeer::doSelect($C) as $K=>$V):
+			$RET[] = array('material'=>$V->getIdmaterial(), 'generic'=>$V->getMaterialgenericIdmaterialgeneric());
+	   	endforeach;
+	   	
+	   	return $RET;
+   }
+   
    
   static function getCeditAAjax($query,$limit)
   {
@@ -96,5 +97,16 @@ class CessiomaterialPeer extends BaseCessiomaterialPeer
   	return $RET;
   	
   }   
+  
+  static public function delete($idC)
+  {
+  	
+  	$C = new Criteria();
+  	$C->add(self::CESSIO_ID,$idC);
+  	foreach(self::doSelect($C) as $OO):
+  		$OO->delete();
+  	endforeach;
+  	
+  }
    
 }

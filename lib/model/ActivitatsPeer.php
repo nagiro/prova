@@ -84,5 +84,5 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		
 		return $RET;
 	}
-   
+   	
 }

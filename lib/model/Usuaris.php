@@ -26,6 +26,8 @@ class Usuaris extends BaseUsuaris
 		endif;
 	}
 	
+  public function __toString(){  return $this->getNomComplet(); }
+	
   function getNomComplet(){     
      return $this->getCog1().' '.$this->getCog2().', '.$this->getNom();
   }

@@ -55,11 +55,10 @@
                     else { 
                        $dif = "";
                       	foreach($MISSATGES as $M) {
-                      	    if($dif != $M->getPublicacio('d/m/Y')) echo '<TR><TD class="gray" colspan="3"><b>'.$M->getPublicacio('d-m-Y').'</b></TD></TR>';
+                      	    if($dif != $M->getPublicacio('d/m/Y')) echo '<TR><TD class="gray" colspan="3"><b>'.diaSetmana($M->getPublicacio('d-m-Y')).' </b> ( '.$M->getPublicacio('d-m-Y').' )</TD></TR>';
                       		$SPAN  = '<span>'.$M->getText().'</span>';
-                      		echo "<TR>
-                      				<TD>".link_to(image_tag('template/doc_text_image.png').$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
-                      				<TD>".link_to($M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
+                      		echo "<TR>                      				
+                      				<TD>".link_to(image_tag('intranet/Submenu2.png').' '.$M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
                       				<TD class=\"LINIA\">".$M->getUsuaris()->getNom().' '.$M->getUsuaris()->getCog1()."</TD>
                       			  </TR>";
                       		$dif = $M->getPublicacio('d/m/Y');  
@@ -87,6 +86,24 @@
       if(isset($CERCA)) $opt['CERCA'] = "CERCA=$CERCA";
       
       RETURN "?".implode( "&" , $opt);
+  }
+  
+  function diaSetmana($date)
+  {
+  	
+  	list($d,$m,$Y) = explode("-",$date);
+  	$dia = date('N',mktime(0,0,0,$m,$d,$Y));
+  	
+  	switch($dia){
+  		case 1: return 'Dilluns';   break;
+  		case 2:	return 'Dimarts';   break;
+  		case 3:	return 'Dimecres';  break;
+  		case 4:	return 'Dijous';    break;
+  		case 5:	return 'Divendres'; break;
+  		case 6:	return 'Dissabte';  break;
+  		case 7:	return 'Diumenge';  break;
+  	}
+  	
   }
 
 ?>

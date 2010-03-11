@@ -15,25 +15,13 @@ class BaseCessiomaterialForm extends BaseFormPropel
     $this->setWidgets(array(
       'idCessioMaterial'    => new sfWidgetFormInputHidden(),
       'Material_idMaterial' => new sfWidgetFormPropelChoice(array('model' => 'Material', 'add_empty' => false)),
-      'Cedita'              => new sfWidgetFormTextarea(),
-      'DataCessio'          => new sfWidgetFormDate(),
-      'DataRetorn'          => new sfWidgetFormDate(),
-      'Estat'               => new sfWidgetFormTextarea(),
-      'Retornat'            => new sfWidgetFormInput(),
-      'EstatRetornat'       => new sfWidgetFormTextarea(),
-      'DataRetornat'        => new sfWidgetFormDate(),
+      'cessio_id'           => new sfWidgetFormPropelChoice(array('model' => 'Cessio', 'add_empty' => false)),
     ));
 
     $this->setValidators(array(
       'idCessioMaterial'    => new sfValidatorPropelChoice(array('model' => 'Cessiomaterial', 'column' => 'idCessioMaterial', 'required' => false)),
       'Material_idMaterial' => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial')),
-      'Cedita'              => new sfValidatorString(),
-      'DataCessio'          => new sfValidatorDate(array('required' => false)),
-      'DataRetorn'          => new sfValidatorDate(array('required' => false)),
-      'Estat'               => new sfValidatorString(array('required' => false)),
-      'Retornat'            => new sfValidatorInteger(array('required' => false)),
-      'EstatRetornat'       => new sfValidatorString(),
-      'DataRetornat'        => new sfValidatorDate(),
+      'cessio_id'           => new sfValidatorPropelChoice(array('model' => 'Cessio', 'column' => 'cessio_id')),
     ));
 
     $this->widgetSchema->setNameFormat('cessiomaterial[%s]');

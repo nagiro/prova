@@ -12,6 +12,8 @@
 <script>
 
 $(document).ready(function() {
+
+	 	$("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari	 	
 	 
 		$('#cerca_select').change( function() { 
 			$('#FCERCA').submit(); 
@@ -29,6 +31,47 @@ $(document).ready(function() {
 	   });
 	 });
 
+	function validaDisponibilitatMaterial(a)
+	{
+		$.post(	"<?php echo url_for('gestio/gCessio'); ?>",
+				{ accio: "VM", idM: a.options[a.selectedIndex].value },
+				function (data){ if(data.length > 0) alert(data); });				   		
+	}
+
+	function creaFormMaterial()
+	{
+		
+		var id = $("#idV").val();		
+		id = (parseInt(id) + parseInt(1));
+		$("#idV").val(id);		
+				
+		var options = '<?php echo MaterialgenericPeer::selectAjax(); ?>';
+		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select onChange="validaDisponibilitatMaterial(this)" name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
+		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
+	}
+
+	function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
+
+	 //Funció que controla la crida AJAX 
+	function ajax(d, iCtrl)
+	{
+												
+		$.getJSON(
+				 "<?php echo url_for('gestio/selectMaterial') ?>",						//Url que visita 
+				 { id: d.value }, 												//Valor seleccionat a la primera llista
+				 function(data,textStatus) { updateJSON( data, textStatus, iCtrl );  } //Carreguem les dades JSON
+				);
+	}
+
+
+	function updateJSON(data, textStatus, iCtrl ){		
+		var options = "";						
+		for (var i = 0; i < data.length; i++) {
+	        options += '<option value="' + data[i].key + '">' + data[i].value + '</option>';				
+		}						
+								
+		$("select#material\\["+iCtrl+"\\]").html(options);								//Actualitzem el control iCtrl
+	}
 
 </script>
    
@@ -58,16 +101,70 @@ $(document).ready(function() {
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td class="error" colspan="2"><?php echo ComprovaError($ERROR_OCUPAT); ?></td></tr>	    		    
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FCessiomaterial?>                								
+                <?php echo $FCessio?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
-						<?php include_partial('botonera',array('element'=>'la cessió','nom'=>'CESSIO')); ?>
+	            		<button class="BOTO_ACTIVITAT" name="BESCULL_MATERIAL">Seguir cessió --></button>						
 	            	</td>
 	            </tr>                	 
       		</TABLE>
       	</DIV>
      </form>    
+
+  <?php elseif( $MODE == 'ESCULL_MATERIAL' ): ?>
+      
+	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="fmaterial">            
+	 	<DIV class="REQUADRE">
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C'))?>
+	    	<table class="FORMULARI" width="550px">	    		    		   
+	    	<tr><td width="100px"></td><td width="500px"></td></tr>
+                <tr><td id="material"></td></tr>                								
+                <tr>
+                	<td width="100%">
+                	<div class="TITOL">Escull el material de la cessió: </div>
+                	<?php 
+						$id = 1;  $VAL = "";
+						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
+	             		foreach($MATERIALOUT AS $M=>$idM):
+	
+	             		$VAL .= '
+	  	 	  	        		<span id="row['.$id.']">
+	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
+	  	 	  	        			<select onChange="validaDisponibilitatMaterial(this)" name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select>	
+	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
+	  	 	  	        			<br />
+	  	 	  	        		</span>  	 	  	        			
+	             			  ';
+	             		      $id++;      	             		      
+	             		                   		      	
+	             		endforeach;					
+	             		echo '<input type="button" id="mesmaterial" value="+"></input><br />';
+	             		echo '<input type="hidden" id="idV" value="'.$id.'"></input>';   					
+					    echo '<div id="divTxt">'.$VAL.'</div>';
+	             						    
+	             	?>             	             	            
+                	                	                	
+                	</td>
+                	</tr>
+	            	<td colspan="2" class="dreta">
+	            		<button class="BOTO_ACTIVITAT" name="B_SAVE_CESSIO">Finalitzar cessió</button>						
+	            	</td>
+	            </tr>                	 
+      		</TABLE>
+      	</DIV>
+     </form>    
+
+  <?php elseif( $MODE == 'FINALITZAT' ): ?>
+      
+            
+ 	<DIV class="REQUADRE">
+ 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C'))?>
+	    	<table class="FORMULARI" width="550px">	    		    		   
+	    	<tr><td width="100px"></td><td width="500px"><b>Material cedit correctament.</b></td></tr>                            								                                            	 
+	    	
+      		</TABLE>
+      </DIV>        
 
   <?php elseif( $MODE == 'NOU_RETORN' || $MODE == 'EDICIO_RETORN' ): ?>    
 
@@ -76,11 +173,11 @@ $(document).ready(function() {
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C'))?>
 	    	<table class="FORMULARI" width="550px">
 	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FCessiomaterial?>                								
+                <?php echo $FCessio ?>                								
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
-	            		<?php include_partial('botonera',array('element'=>'la cessió','nom'=>'RETORN')); ?>						
+	            		<?php include_partial('botonera',array('element'=>'la cessió','tipus'=>'Guardar','nom'=>'BSAVE_RETORN')); ?>	            				
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -97,8 +194,7 @@ $(document).ready(function() {
 					echo '<TR><TD class="LINIA" colspan="6">No s\'ha trobat material disponible.</TD></TR>';
 				else: 
 					$i = 0;
-					echo "<TR>
-                      			<TD class=\"TITOL\">MATERIAL</TD>                      			
+					echo "<TR>                      			                      			
                       			<TD class=\"TITOL\">CEDIT A</TD>
                       			<TD class=\"TITOL\">DATA CESSIÓ</TD>
                       			<TD class=\"TITOL\">DATA PREVISTA RETORN</TD>								                      			
@@ -109,13 +205,12 @@ $(document).ready(function() {
                       	$PAR = ParImpar($i++);
                       	$DRet = $C->getDataretornat();
                       	$DRetT = (is_null($DRet))?"No s'ha retornat.":$DRet;                      	                      	
-                      	echo "<TR>
-                      			<TD class=\"$PAR\">".$C->getMaterial()->getNom()."</TD>                      			
-                      			<TD class=\"$PAR\">".$C->getCedita()."</TD>
-                      			<TD class=\"dreta $PAR\">".$C->getDatacessio()."</TD>
-                      			<TD class=\"dreta $PAR\">".$C->getDataretorn()."</TD>								                      			
+                      	echo "<TR>                      			                      			
+                      			<TD class=\"$PAR\">".UsuarisPeer::getNom($C->getUsuariid())."</TD>
+                      			<TD class=\"dreta $PAR\">".$C->getDataCessio('d/m/Y')."</TD>
+                      			<TD class=\"dreta $PAR\">".$C->getDataRetorn('d/m/Y')."</TD>								                      			
                       			<TD class=\"dreta $PAR\">".$DRetT."</TD>
-                      			<TD class=\"$PAR\">".creaOpcions($C->getIdcessiomaterial())."</TD>
+                      			<TD class=\"$PAR\">".creaOpcions($C->getCessioId())."</TD>
                       		  </TR>";
                     endforeach;
                  endif;                     
@@ -139,6 +234,7 @@ function creaOpcions($idC)
 
   $R  = link_to(image_tag('template/book_open.png').'<span>Edita la cessió</span>','gestio/gCessio?accio=EC&IDC='.$idC,array('class'=>'tt2')).' ';
   $R .= link_to(image_tag('template/book_next.png').'<span>Edita el retorn</span>','gestio/gCessio?accio=ER&IDC='.$idC,array('class'=>'tt2')).' ';     
+  $R .= link_to(image_tag('template/printer.png').'<span>Imprimeix el document</span>','gestio/gCessio?accio=PRINT&IDC='.$idC,array('class'=>'tt2')).' ';
   return $R;
 }
   

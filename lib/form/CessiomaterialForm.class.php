@@ -16,7 +16,7 @@ class CessiomaterialForm extends sfFormPropel
     $this->setWidgets(array(
       'idCessioMaterial'    => new sfWidgetFormInputHidden(),
       'Material_idMaterial' => new sfWidgetFormChoice(array('choices'=>MaterialgenericPeer::selectMaterial())),
-      'Cedita'              => new sfWidgetFormJQueryAutocompleter(array('url'=>$this->getOption('url')),array('width'=>'400px')),
+      'Cedita'              => new sfWidgetFormJQueryAutocompleter(array('url'=>$this->getOption('url')),array('width'=>'400px')),      
       'Estat'               => new sfWidgetFormTextarea(array(),array('style'=>'width:300px')),
       'DataCessio'          => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),    
       'DataRetorn'          => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),

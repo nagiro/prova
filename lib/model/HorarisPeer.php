@@ -325,4 +325,15 @@ class HorarisPeer extends BaseHorarisPeer
   	
   }
   
+  	static function isMaterialEnUs($idM,$di,$df)
+	{		
+		$C = new Criteria();
+		$C->add(HorarisespaisPeer::MATERIAL_IDMATERIAL, $idM);
+		$C->addJoin(HorarisespaisPeer::HORARIS_HORARISID, HorarisPeer::HORARISID);
+		$C->add(HorarisPeer::DIA, implode('/',$di) , CRITERIA::GREATER_EQUAL);
+		$C->add(HorarisPeer::DIA, implode('/',$df) , CRITERIA::LESS_EQUAL);
+		return (HorarisespaisPeer::doCount($C) > 0);
+	}
+  
+  
 }

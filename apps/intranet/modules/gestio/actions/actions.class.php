@@ -2212,18 +2212,19 @@ class gestioActions extends sfActions
 	$this->FCerca->bind($this->CERCA);	
 	$this->MODE = "";
 	$this->ERROR_OCUPAT = "";
+	$this->IDC = $this->ParReqSesForm($request,'IDC',0);
 		
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
 	    $accio = $request->getParameter('accio');
 	    if($request->hasParameter('BCERCA'))    		$accio = 'C';
 	    if($request->hasParameter('BNOU_CESSIO')) 	    $accio = 'NC';
-	    if($request->hasParameter('BNOU_RETORN')) 	    $accio = 'NR';
-	    	    
-	    if($request->hasParameter('BSAVE_CESSIO'))		$accio = 'SC';
+	    if($request->hasParameter('BESCULL_MATERIAL'))  $accio = 'EM';
+	    if($request->hasParameter('B_SAVE_CESSIO'))  	$accio = 'SC';	    	    	    	    	    	    	    
 	    if($request->hasParameter('BDELETE_CESSIO')) 	$accio = 'DC';
+	    
 	    if($request->hasParameter('BSAVE_RETORN'))		$accio = 'SR';
-	    if($request->hasParameter('BDELETE_RETORN')) 	$accio = 'DR';
+	    
 	endif;              
 	
 	
@@ -2231,81 +2232,115 @@ class gestioActions extends sfActions
     	
     	//Nova Cessió 
     	case 'NC':
-    			$OCessio = new Cessiomaterial();
+    			$OCessio = new Cessio();
     			$OCessio->setRetornat(false);
 	    		$OCessio->setEstatRetornat("");
 	    		$OCessio->setDataretornat(null);
     			$OCessio->setDatacessio(date('m/d/Y',time()));
     			$OCessio->setDataretorn(date('m/d/Y',time()));    			    			    	    			
-    			$this->FCessiomaterial = new CessiomaterialForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));
+    			$this->FCessio = new CessioForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));
     			$this->getUser()->setAttribute('IDC',0);    			
     			$this->MODE = 'NOU_CESSIO';
     		break;
     		
+    	//Escull el material
+    	case 'EM':
+    			//Guardem les primeres dades
+    			$RCESSIO = $request->getParameter('cessio');
+    			if(!empty($RCESSIO['cessio_id'])):
+    				$this->MATERIALOUT = CessiomaterialPeer::getSelectMaterialOut($RCESSIO['cessio_id']); 
+    			endif; 
+    			$this->getUser()->setAttribute('cessio',$request->getParameter('cessio'));    			
+    			$this->MODE = 'ESCULL_MATERIAL';
+    			    			
+    		break;
+    		
     	//Edita Cessio
-    	case 'EC':    			
-    			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
-    			$OCessio = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
-				$this->FCessiomaterial = new CessiomaterialForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));				   			
+    	case 'EC':    			    			
+    			$OCessio = CessioPeer::retrieveByPK($this->IDC);
+				$this->FCessio = new CessioForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));				   			
     			$this->MODE = 'EDICIO_CESSIO';
     		break;
 
     	//Edita Retorn
-    	case 'ER':    			
-    			$this->getUser()->setAttribute('IDC',$request->getParameter('IDC'));
-    			$OCessio = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+    	case 'ER':
+    		    			    		    
+    			$OCessio = CessioPeer::retrieveByPK($this->IDC);
+    			
     			$OCessio->setRetornat(true);
     			$OCessio->setEstatRetornat("");
-    			$OCessio->setDataretornat(date('m/d/Y',time()));    			    			
-				$this->FCessiomaterial = new CessiomaterialRetornForm($OCessio);				   			
-    			$this->MODE = 'EDICIO_RETORN';
+    			$OCessio->setDataretornat(date('Y-m-d',time()));
+    			
+				$this->FCessio = new CessiomaterialRetornForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));				   			
+				$this->MODE = 'EDICIO_RETORN';
     		break;
 
+    	//Valida el material amb AJAX per saber si està en ús
+    	case 'VM':
+    			$RCESSIO = $this->getUser()->getAttribute('cessio');
+    			if(HorarisPeer::isMaterialEnUs($request->getParameter('idM'),$RCESSIO['data_cessio'],$RCESSIO['data_retorn'])):
+    				return $this->renderText("El material escollit està en ús");
+    			else: 
+    				//return $this->renderText("El material escollit està disponible");
+    				return sfView::NONE;
+    			endif; 
+    		break;
+    		
     	//Guarda cessió
     	case 'SC':
-    			$OCESSIO = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));    			    			    				    		    			    			    			
-    		    $this->FCessiomaterial = new CessiomaterialForm($OCESSIO,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));
-    		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
-    		    if($this->FCessiomaterial->isValid()):
-    		    	$RET = CessiomaterialPeer::isDisponible($this->FCessiomaterial);
-    		    	    		    	
-    		    	if(sizeof($RET['HORARIS']) == 0 && sizeof($RET['CESSIONS']) == 0):    		    	
-	    		    	$this->FCessiomaterial->save();
-	    		    	$this->getUser()->setAttribute('IDC',$this->FCessiomaterial->getObject()->getIdcessiomaterial());
-	    		    	$this->redirect('gestio/gCessio?accio=C');
-	    		    else: 
-	    		    	$this->ERROR_OCUPAT	= $RET; 
-	    		    endif; 
-    		    endif;
-    		    $this->MODE = 'EDICIO_CESSIO';    		        		        			
+    			$ERROR = false; 
+				$RCESSIO = $this->getUser()->getAttribute('cessio');
+				$RMATERIAL = $request->getParameter('material');
+				
+    			$OCESSIO = CessioPeer::retrieveByPK($RCESSIO['cessio_id']);    			    			    				    		    			    			    			
+    		    $FCESSIO = new CessioForm($OCESSIO);
+    		    $FCESSIO->bind($RCESSIO);
+    		    $FCESSIO->save();
+    		    $IDC = $FCESSIO->getObject()->getCessioid();
+    		    
+				CessiomaterialPeer::delete($IDC);
+    		    
+    		    foreach($RMATERIAL as $D => $idM):    		    	
+    		    
+    		    	$OMC = new Cessiomaterial();
+    		    	$OMC->setMaterialIdmaterial($idM);
+    		    	$OMC->setCessioId($IDC);
+    		    	$OMC->save();
+    		     		    
+    		    endforeach;
+     		    
+    		    $this->MODE = 'FINALITZAT';    		        		        			
     		break;
     		
     	//Esborra cessió
     	case 'DC': 
-    	        CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
+    	        CessioPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
     	        break;
     	        
     	//Guarda retorn
     	case 'SR':
-
-    			$OCESSIO = CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));    		
-    		    $this->FCessiomaterial = new CessiomaterialRetornForm(CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
-    		    $this->FCessiomaterial->bind($request->getParameter('cessiomaterial'));
-    		    if($this->FCessiomaterial->isValid()): 
-    		    	$this->FCessiomaterial->save();
-    		    	$this->getUser()->setAttribute('IDC',$this->FCessiomaterial->getObject()->getIdcessiomaterial());
-    		    	$this->redirect('gestio/gCessio?accio=C');
+    		
+				$RCESSIO = $request->getParameter('cessio');				
+    			$OCESSIO = CessioPeer::retrieveByPK($RCESSIO['cessio_id']);    		
+    		    $this->FCessio = new CessiomaterialRetornForm($OCESSIO);
+    		    $this->FCessio->bind($RCESSIO);
+    		    if($this->FCessio->isValid()): 
+    		    	$this->FCessio->save();
+//    		    	$this->redirect('gestio/gCessio?accio=C');
     		    endif;
-    		    $this->MODE = 'EDICIO_RETORN';    		        		        			
+    		    $this->MODE = 'EDICIO_RETORN';
+    		        		        		        			
     		break;
     		
-    	//Esborra retorn
-    	case 'DR': 
-    	        CessiomaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
-    	        break;    	         	     	         	 
+    	case 'PRINT':
+    			$pdf = CessioPeer::printDocument();
+    			$pdf->output();
+    			return sfView::NONE;
+    		break;
+    		    	    	         	     	         	 
     }
     
-    $this->CESSIONS = CessiomaterialPeer::getCessions($this->PAGINA,$this->CERCA['select'],$this->CERCA['text']);
+    $this->CESSIONS = CessioPeer::getCessions($this->PAGINA,$this->CERCA['select'],$this->CERCA['text']);
   
   }
 

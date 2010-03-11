@@ -1,2 +1,7 @@
 # default values
-#all:
+all:
+  sf_tiny_doc_plugin:
+    zip_method:    shell             # the method to zip/unzip : shell | ziparchive
+    zip_bin:       zip               # the binary to zip   for 'shell' method
+    unzip_bin:     unzip             # the binary to unzip for 'shell' method
+    process_dir:   %SF_WEB_DIR%/tmp  # the process directory
