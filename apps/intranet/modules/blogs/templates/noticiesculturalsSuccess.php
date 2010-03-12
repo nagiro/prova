@@ -102,12 +102,12 @@
 	.image_gran { width:200px; margin-right:20px; margin-bottom:15px; }
 	.right { text-align:right; padding-right:100px; }
 	.FORMULARI {  }
-	.FORMULARI .input { border:1px solid #E95D0F; width:100%; height:30px; font-size:14px; padding-top:5px; }
-	.FORMULARI .input2 { border:1px solid #E95D0F; width:100%; font-size:14px;  padding:5px; }
+	.FORMULARI .input { border:1px solid #E95D0F; height:30px; font-size:14px; padding-top:5px; }
+	.FORMULARI .input2 { border:1px solid #E95D0F; font-size:14px;  padding:5px; }
 	.FORMULARI .TEXT { font-size:14px; color:#162983;  }
 	.FORMULARI .TITOL { font-size:16px; color:#162983; }
 	.FORMULARI .textarea { font-size:16px; color:#162983; }
-	.FORMULARI TD { padding-top:22px; width:80px; }
+	.FORMULARI TD { padding-top:22px; width:85px; }
 	
 	div.falso { position: absolute; top: -2px; left: 0px; z-index: 0; }
 	input.file { position: relative; filter:alpha(opacity: 0); opacity: 0; z-index: 1; }
@@ -166,14 +166,14 @@
 				
 		?>
 		<form id="form1" method="POST" action="<?php echo url_for('blogs/noticiesculturals?MODE=FORM2'); ?>" enctype="multipart/form-data">
-		<table class="FORMULARI" width="100%">			
+		<table class="FORMULARI" style="width:850px;" >			
 			<tr><td colspan="10"><span class="TITOL">DADES DE L'ENTITAT I PERSONA QUE ENVIA LA INFORMACIÓ</span></td></tr>
 			<tr><td colspan="10"><span class="TEXT">Abans de seguir endavant amb el formulari, cal que ens faciliteu les vostres dades de contacte</span></td></tr>
 			<tr><td colspan="10"><span class="TITOL">Nom de l'entitat, empresa, institució organisme responsable</span></td></tr>
-			<tr><td colspan="10"><input class="input" type="text" name="dades[nom_entitat]" value="<?php echo $FORM['nom_entitat']; ?>" ></td></tr>
+			<tr><td colspan="10"><input style="width:840px;" class="input" type="text" name="dades[nom_entitat]" value="<?php echo $FORM['nom_entitat']; ?>" ></td></tr>
 			<tr><td colspan="10"><span class="TITOL">Dades de la persona responsable</span></td></tr>
 			<tr><td colspan="2"><span class="TEXT">Nom i cognoms </span></td>
-				<td colspan="8"><input class="input" type="text" name="dades[nom_cognoms]" value="<?php echo $FORM['nom_cognoms']; ?>" ></td>
+				<td colspan="8"><input style="width:755px;" class="input" type="text" name="dades[nom_cognoms]" value="<?php echo $FORM['nom_cognoms']; ?>" ></td>
 			</tr>
 			<tr><td colspan="5"><span class="TEXT">Lloc que ocupa a l'entitat, empresa, institució o orgnisme </td>
 				<td colspan="5"><input class="input" type="text" name="dades[lloc_ocupa]" value="<?php echo $FORM['lloc_ocupa']; ?>" ></span></td>
