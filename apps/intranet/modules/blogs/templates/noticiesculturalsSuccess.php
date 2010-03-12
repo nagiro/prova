@@ -27,6 +27,7 @@
 		$("#submitForm1").click(function (){ $("form1").submit(); });
 		
 		$("#form1").submit(valida1);
+		$("#form2").submit(valida2);
 
 		
 		$(function() {
@@ -61,6 +62,14 @@
 		if($("#nom_cognoms_contacte").val().length == 0){ alert('Has d\'entrar un nom de contacte'); return false; }
 		if(parseInt($("#val1h").val()) + parseInt($("#val2h").val()) != parseInt($("#resultat").val())) { random(); alert('La suma no és correcta'); return false; }
 		
+		return true;		
+	}
+	
+	function valida2()
+	{							
+		if($("#titol_acte").val().length == 0){ alert('Has d\'entrar un títol.'); return false; }
+		if($("#ciutat_acte").val().length == 0){ alert('Has d\'entrar una ciutat.'); return false; }		
+		if($("#datepicker").val().length == 0){ alert('Has d\'entrar una data a l\'esdeveniment.'); return false; }			
 		return true;		
 	}
 
@@ -102,17 +111,30 @@
 	.image_gran { width:200px; margin-right:20px; margin-bottom:15px; }
 	.right { text-align:right; padding-right:100px; }
 	.FORMULARI {  }
-	.FORMULARI .input { border:1px solid #E95D0F; height:30px; font-size:14px; padding-top:5px; }
-	.FORMULARI .input2 { border:1px solid #E95D0F; font-size:14px;  padding:0px; }
+
 	.FORMULARI .TEXT { font-size:14px; color:#162983;  }
 	.FORMULARI .TITOL { font-size:16px; color:#162983; }
 	.FORMULARI .textarea { font-size:16px; color:#162983; }
-	.FORMULARI TD { padding-top:22px; width:85px; }
-	.FORMULARI .input_td { text-align:right; }
+	.FORMULARI input { font-size:14px; vertical-align:middle; }
+	.FORMULARI select { font-size:14px; vertical-align:middle; }
+	
+	
 	
 	div.falso { position: absolute; top: -2px; left: 0px; z-index: 0; }
 	input.file { position: relative; filter:alpha(opacity: 0); opacity: 0; z-index: 1; }
-			
+	
+	form label { 
+	display: inline;  /* block float the labels to left column, set a width */
+	float: left;	 
+	padding: 0;
+	padding-left:5px;	
+	margin: 5px 0 0; /* set top margin same as form input - textarea etc. elements */
+	text-align: left; 
+	} 
+	
+	form input { display: inline; float:left; }
+	
+						
 </style>
 
 <center>
@@ -167,71 +189,65 @@
 				
 		?>
 		<form id="form1" method="POST" action="<?php echo url_for('blogs/noticiesculturals?MODE=FORM2'); ?>" enctype="multipart/form-data">
-		<table class="FORMULARI" style="width:850px; border-collapse:collapse;" >			
-			<tr>
-				<td colspan="10"><span class="TITOL">DADES DE L'ENTITAT I PERSONA QUE ENVIA LA INFORMACIÓ</span></td>
-			</tr>
-			<tr>
-				<td colspan="10"><span class="TEXT">Abans de seguir endavant amb el formulari, cal que ens faciliteu les vostres dades de contacte</span></td>
-			</tr>
-			<tr>
-				<td colspan="10"><span class="TITOL">Nom de l'entitat, empresa, institució organisme responsable</span></td>
-			</tr>
-			<tr>
-				<td colspan="10" class="input_td"><input style="width:840px;" class="input" type="text" name="dades[nom_entitat]" value="<?php echo $FORM['nom_entitat']; ?>" /></td>
-			</tr>
-			<tr>
-				<td colspan="10"><span class="TITOL">Dades de la persona responsable</span></td>
-			</tr>
-			<tr><td colspan="2"><span class="TEXT">Nom i cognoms </span></td>
-				<td colspan="8" class="input_td"><input style="width:670px;" class="input" type="text" name="dades[nom_cognoms]" value="<?php echo $FORM['nom_cognoms']; ?>" /></td>
-			</tr>
-			<tr><td colspan="5"><span class="TEXT">Lloc que ocupa a l'entitat, empresa, institució o orgnisme </span></td>
-				<td colspan="5" class="input_td"><input style="width:415px;" class="input" type="text" name="dades[lloc_ocupa]" value="<?php echo $FORM['lloc_ocupa']; ?>" /></td>
-			</tr> 												
-			<tr>
-				<td colspan="10"><span class="TITOL">Dades de la persona de contacte (dades de contacte per a possibles comunicacions)</span></td>
-			</tr>
-			<tr>
-				<td colspan="2"><span class="TEXT">Nom i cognoms </span></td>
-			 	<td colspan="8" class="input_td"><input style="width:670px;" class="input" type="text" id="nom_cognoms_contacte" name="dades[nom_cognoms_contacte]" value="<?php echo $FORM['nom_cognoms_contacte']; ?>" /></td>
-			</tr>
-			<tr>
-				<td colspan="2"><span class="TEXT">Adreça </span></td>
-				<td colspan="6" style="text-align:left;"><input style="width:450px;" class="input" type="text" name="dades[adreca]" value="<?php echo $FORM['adreca']; ?>" ></td>
-				<td colspan="1"><span class="TEXT"> Codi Postal</span></td>
-				<td colspan="1" class="input_td"> <input style="width:75px;" class="input" type="text" name="dades[codi_postal]" value="<?php echo $FORM['codi_postal']; ?>" ></td>
-			</tr>
-			<tr>
-				<td colspan="2"><span class="TEXT">Municipi</span></td>
-				<td colspan="5" style="text-align:left;"><input style="width:300px;" class="input" type="text" name="dades[municipi]" value="<?php echo $FORM['municipi']; ?>" ></td>
-				<td colspan="1"><span class="TEXT">Comarca</span></td>
-				<td colspan="2" class="input_td"><input style="width:200px;" class="input" type="text" name="dades[comarca]" value="<?php echo $FORM['comarca']; ?>" ></td>
-			</tr>
-			<tr>
-				<td colspan="2"><span class="TEXT">Telèfons</span></td>
-				<td colspan="3" style="text-align:left;"><input style="width:250px;" class="input" type="text" name="dades[telefons]" value="<?php echo $FORM['telefons']; ?>" ></td>
-				<td colspan="1"><span class="TEXT"> A/e</span></td>
-				<td colspan="4" class="input_td"><input style="width:300px;" class="input" type="text" id="email" name="dades[email]" value="<?php echo $FORM['email']; ?>" ></td>
-			</tr>
-			<tr>
-				<td colspan="8"><div class="TITOL">Respon correctament per validar: <span class="TITOL" id="val1"></span> sumat a <span class="TITOL" id="val2"></span> és igual a </div></td>
-				<td colspan="2"><input style="width:75px" type="text" name="dades[resultat]" id="resultat" class="input" /></td>							
-			</tr>
-			<tr>
-				<td colspan="7">.</td>
-				<td colspan="3" style="text-align:right;"><div class="TITOL"><button class="more boto" >segueix omplint el formulari <?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button></div></td>
-			</tr>			
-			<tr>
-				<td colspan="10">
-					<span style="font-size:10px;" class="text">Les seves dades seran incorporades a un fitxer titularitat de la Fundació Casa de Cultura amb la finalitat de gestionar els seus serveis i activitats. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d’adoptar les mesures legalment previstes i les tècnicament necessàries per evitar-ne un accés a qualsevol classe de tractament no autoritzat. No seran cedides a terceres persones sense el seu consentiment. En qualsevol cas vostè pot exercir els seus drets d’accés, rectificació i cancel•lació tot adreçant-se a: Sr/a. Director/a de la casa de Cultura, Plaça de l’Hospital 6, 17002 Girona, telèfon 972 202 013 i correu electrònic: secretaria@casadecultura.cat
-					<br /><br />La Casa de Cultura es guarda el dret a no publicar notícies que no hagin estat ben tractades i no es responsabilitza de la correcció de textos. La notícia es publicarà exactament com l'envieu.				
-					</span>
 	
-				</td>
-			</tr>			
-		</table>
+		<div class="FORMULARI">
 		
+			<div class="TITOL"> DADES DE L'ENTITAT I PERSONA QUE ENVIA LA INFORMACIÓ </div>			
+			<div class="TEXT" > Abans de seguir endavant amb el formulari, cal que ens faciliteu les vostres dades de contacte </div>			
+			<div style="margin-top:20px;" class="TITOL">Nom de l'entitat, empresa, institució organisme responsable<br />
+				<input style="width:840px" type="text" name="dades[nom_entitat]" value="<?php echo $FORM['nom_entitat']; ?>" />
+			</div>			
+			<div style="clear:both; padding-top:22px;"><span class="TITOL">Dades de la persona responsable</span></div>
+			<br />
+			<div style="clear:both;">
+				<label style="width:150px"><span class="TEXT">Nom i cognoms </span></label>
+					<input style="width:690px" type="text" id="nom_cognoms" name="dades[nom_cognoms]" value="<?php echo $FORM['nom_cognoms']; ?>" />
+			</div>
+						
+			<div style="clear:both;">
+				<label style="width:400px"><span class="TEXT">Lloc que ocupa a l'entitat, empresa, institució o orgnisme </span></label>
+						<input style="width:440px;" type="text" name="dades[lloc_ocupa]" value="<?php echo $FORM['lloc_ocupa']; ?>" />
+			</div>
+			
+			<div style="clear:both; padding-top:22px;" class="TITOL">Dades de la persona de contacte (dades de contacte per a possibles comunicacions)</div>			
+			<div style="clear:both; margin-top:10px;">
+				<label style="width:150px;"><span class="TEXT">Nom i cognoms </span></label>
+					<input style="width:690px;" type="text" id="nom_cognoms_contacte" name="dades[nom_cognoms_contacte]" value="<?php echo $FORM['nom_cognoms_contacte']; ?>" />
+			</div>	
+
+			<div style="clear:both;">			
+				<label style="width:150px;"><span class="TEXT">Adreça </span></label>
+					<input style="width:300px;" type="text" name="dades[adreca]" value="<?php echo $FORM['adreca']; ?>" />
+				<label style="width:150px;"><span class="TEXT"> Codi Postal</span></label>
+					<input style="width:235px;" type="text" name="dades[codi_postal]" value="<?php echo $FORM['codi_postal']; ?>" />
+			</div>
+			<div style="clear:both;">
+				<label style="width:150px;"><span class="TEXT">Municipi</span></label>
+						<input style="width:300px;" type="text" name="dades[municipi]" value="<?php echo $FORM['municipi']; ?>" />
+				<label style="width:150px;"><span class="TEXT">Comarca</span></label>
+						<input style="width:235px;" type="text" name="dades[comarca]" value="<?php echo $FORM['comarca']; ?>" />
+			</div>
+			<div style="clear:both;">
+				<label style="width:150px;"><span class="TEXT">Telèfons</span></label>
+						<input style="width:300px;" type="text" name="dades[telefons]" value="<?php echo $FORM['telefons']; ?>" />
+				<label style="width:150px;"><span class="TEXT"> Adreça electrònica</span></label>
+						<input style="width:235px;" type="text" id="email" name="dades[email]" value="<?php echo $FORM['email']; ?>" />
+			</div>
+					
+			<div style="padding-top:30px; clear:both;">				
+				<label style="width:450px;" class="TITOL">Respon correctament per validar: <span class="TITOL" id="val1"></span>&nbsp;sumat a <span class="TITOL" id="val2"></span>&nbsp;és igual a </label>
+					<input style="width:50px" type="text" name="dades[resultat]" id="resultat" class="input" />							
+			</div>
+			<div style="margin-top:20px; clear:both; text-align:right;">				
+				<div class="TITOL"><button class="more boto" >segueix omplint el formulari <?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button></div>
+			</div>
+			<div style="clear:both; margin-top:30px;">
+				<span style="font-size:10px;" class="text">Les seves dades seran incorporades a un fitxer titularitat de la Fundació Casa de Cultura amb la finalitat de gestionar els seus serveis i activitats. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d’adoptar les mesures legalment previstes i les tècnicament necessàries per evitar-ne un accés a qualsevol classe de tractament no autoritzat. No seran cedides a terceres persones sense el seu consentiment. En qualsevol cas vostè pot exercir els seus drets d’accés, rectificació i cancel•lació tot adreçant-se a: Sr/a. Director/a de la casa de Cultura, Plaça de l’Hospital 6, 17002 Girona, telèfon 972 202 013 i correu electrònic: secretaria@casadecultura.cat
+					<br /><br />La Casa de Cultura es guarda el dret a no publicar notícies que no hagin estat ben tractades i no es responsabilitza de la correcció de textos. La notícia es publicarà exactament com l'envieu.				
+				</span>
+			</div>										
+		</div>
+								
 		<input type="hidden" id="val1h" value=""></input>
 		<input type="hidden" id="val2h" value=""></input>
 		</form>
@@ -241,48 +257,51 @@
 
 	function printForm2($FORMULARI)
 	{
-		?>
+		?>		
 		<form id="form2" action="<?php echo url_for('blogs/noticiesculturals?MODE=ENVIA_FINALITZA') ?>" method="POST" enctype="multipart/form-data">
-		<table class="FORMULARI" width="100%">
-			<tr><td class="TITOL">TÍTOL<div>Màx 30 caràcters.<br />Text en minúscula.</div></td>
-				<td colspan="3"><input class="input" type="text" name="dades[titol]" maxlength="30"></td>
-			</tr>
-			<tr><td class="TITOL">Subtítol 1</td>
-				<td colspan="3"><input class="input"  type="text" name="dades[subtitol1]"></td>
-			</tr>
-			<tr><td class="TITOL">Ciutat </td>									
-				<td>								
-					<input type="text" class="input" size="10" name="dades[ciutat_acte]">														
-				</td>
-				<td class="TITOL">Data de l'acte</td>
-				<td><input type="text" class="input" id="datepicker" name="dades[dia_acte]"></td>				
-			</tr>
-			<tr><td class="TITOL">Pàgina web</td>
-				<td colspan="3"><input class="input" type="text" name="dades[web]"></td>
-			</tr>
-			<tr><td class="TITOL">Imatge</td>									
-				<td>								
-					<input type="file" class="input" size="10" name="arxius[arxiu]">														
-				</td>
-				<td class="TITOL">Tipus de notícia</td>
-				<td><?php echo TipusSelect() ?></td>
-			</tr>
-			<tr><td class="TITOL">Text</td><td colspan="3"><textarea class="input2" width="100%" rows="20" name="dades[text]"></textarea></td>				
-			</tr>
-			<tr>
-				<td colspan="2"></td>
-				<td colspan="2" align="right">
-					<div class="TITOL">
-						<button name="ENVIA_FINALITZA" class="more boto" >finalitza i envia el formulari<?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button>
-					</div>
-				</td>
-			</tr>			
-			<tr>
-			<td colspan="4">
+		
+		
+		<div class="FORMULARI">
+			<div style="clear:both; padding-top:5px; ">
+				<label style="width:150px" class="TITOL">TÍTOL</label>
+					<input style="width:700px" id="titol_acte" type="text" name="dades[titol]" maxlength="30">
+			</div>
+			<div style="clear:both; padding-top:5px; ">
+				<label style="width:150px" class="TITOL">Subtítol</label>
+					<input style="width:700px" type="text" name="dades[subtitol1]">
+			</div>		
+
+			<div style="clear:both; padding-top:5px;">
+				<label style="width:150px" class="TITOL">Ciutat</label>
+					<input style="width:300px" id="ciutat_acte" size="10" type="text" name="dades[ciutat_acte]">
+				<label style="width:150px" class="TITOL">Data de l'acte</label>
+					<input style="width:245px" type="text" id="datepicker" name="dades[dia_acte]">									
+			</div>		
+			
+			<div style="clear:both; padding-top:5px;">
+				<label style="width:150px" class="TITOL">Pagina web</label>
+					<input style="width:700px" type="text" name="dades[web]">												
+			</div>		
+	
+			<div style="clear:both; padding-top:5px;">
+				<label style="width:150px" class="TITOL">Imatge</label>
+					<input style="width:300px" type="file" name="arxius[arxiu]">
+				<label style="width:150px" class="TITOL">Tipus de notícia</label>
+					<?php echo TipusSelect() ?>									
+			</div>
+			
+			<div style="clear:both; padding-top:5px;">
+				<label style="width:150px" class="TITOL">Text</label>
+					<textarea style="width:700px" rows="20" name="dades[text]"></textarea>												
+			</div>														
+		
+			<div style="clear:both; text-align:right; padding-top:20px;" class="TITOL">
+				<button name="ENVIA_FINALITZA" class="more boto" >finalitza i envia el formulari<?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button>
+			</div>
+			
+			<div style="clear:both; text-align:justify; padding-top:20px;">			
 				<span style="font-size:10px;" class="text">Les seves dades seran incorporades a un fitxer titularitat de la Fundació Casa de Cultura amb la finalitat de gestionar els seus serveis i activitats. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d’adoptar les mesures legalment previstes i les tècnicament necessàries per evitar-ne un accés a qualsevol classe de tractament no autoritzat. No seran cedides a terceres persones sense el seu consentiment. En qualsevol cas vostè pot exercir els seus drets d’accés, rectificació i cancel•lació tot adreçant-se a: Sr/a. Director/a de la casa de Cultura, Plaça de l’Hospital 6, 17002 Girona, telèfon 972 202 013 i correu electrònic: secretaria@casadecultura.cat</span>
-			</td>
-			</tr>									
-		</table>
+			</div>
 		</form>
 		
 		<?php 
