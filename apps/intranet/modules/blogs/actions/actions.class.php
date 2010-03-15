@@ -136,23 +136,31 @@ class blogsActions extends sfActions
 			
 			//Guardem les imatges
 			if(isset($RET['file'])):
+
+				//Mirem l'extensió de l'arxiu
+    			$path_info = pathinfo(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
+    			
+    			//Si l'arxiu és una imatge, el tractem i el posem com a imatge
+    			if(strtolower($path_info['extension']) == 'jpg' || strtolower($path_info['extension']) == 'png'): 			
 			
-				$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
-				$img->resize(200,null);				
-				$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
+					$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
+					$img->resize(200,null);				
+					$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
 						
-				$OM = new AppBlogsMultimedia();
-				$OM->setName($RET['file']);
-				$OM->setUrl($RET['file']);
-				$OM->setDate(date('Y-m-d',time()));
-				$OM->setDesc("");
-				$OM->save();
+					$OM = new AppBlogsMultimedia();
+					$OM->setName($RET['file']);
+					$OM->setUrl($RET['file']);
+					$OM->setDate(date('Y-m-d',time()));
+					$OM->setDesc("");
+					$OM->save();
 												
-				$OME = new AppBlogMultimediaEntries();
-				$OME->setEntriesId($ON->getId());
-				$OME->setMultimediaId($OM->getId());
-				$OME->save();
-				
+					$OME = new AppBlogMultimediaEntries();
+					$OME->setEntriesId($ON->getId());
+					$OME->setMultimediaId($OM->getId());
+					$OME->save();
+					
+				endif;
+								
 			endif; 
 						
 			$OO->setEstat(AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT);
