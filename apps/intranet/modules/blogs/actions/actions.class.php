@@ -27,7 +27,7 @@ class blogsActions extends sfActions
   	$this->setLayout('blank');
   	$this->PAGE_ID = $this->ParReqSesForm($request,'PAGE_ID',$this->PAGE_ID_QUE_ESTA_PASSANT);
   	$this->NOTICIA_ID = $this->ParReqSesForm($request,'NOTICIA_ID',-1);
-  	$this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+  	$this->PAGINA = ($request->hasParameter('PAGINA'))?$request->getParameter('PAGINA'):1;
   	$this->MODE = $this->ParReqSesForm($request,'MODE','CONTINGUT');
   	$this->ERRORS = "";
   	
