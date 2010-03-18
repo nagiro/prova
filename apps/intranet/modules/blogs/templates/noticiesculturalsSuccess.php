@@ -23,12 +23,17 @@
 				function() { this.src = this.src.replace("_A","_B"); },
 				function() { this.src = this.src.replace("_B","_A"); }
 			);
+				
+		$("#BOTO_FORM_1").click(function(){
+			if(valida1()) { $("#form1").submit(); return true; }
+			else { return false; }
+		});
 		
-		$("#submitForm1").click(function (){ $("form1").submit(); });
+		$("#BOTO_FORM_2").click(function(){
+			if(valida2()) { $("#form2").submit(); return true; }
+			else { return false; }
+		});
 		
-		$("#form1").submit(valida1);
-		$("#form2").submit(valida2);
-
 		
 		$(function() {
 			$("#datepicker").datepicker({ 
@@ -57,20 +62,19 @@
 	
 	 
 	function valida1()
-	{			
+	{					
 		if(!validaEmail($("#email").val())){ alert('El correu electrònic no és correcte.'); return false; }		
 		if($("#nom_cognoms_contacte").val().length == 0){ alert('Has d\'entrar un nom de contacte'); return false; }
 		if(parseInt($("#val1h").val()) + parseInt($("#val2h").val()) != parseInt($("#resultat").val())) { random(); alert('La suma no és correcta'); return false; }
-		
 		return true;		
 	}
 	
 	function valida2()
-	{							
+	{					
 		if($("#titol_acte").val().length == 0){ alert('Has d\'entrar un títol.'); return false; }
 		if($("#ciutat_acte").val().length == 0){ alert('Has d\'entrar una ciutat.'); return false; }		
-		if($("#datepicker").val().length == 0){ alert('Has d\'entrar una data a l\'esdeveniment.'); return false; }			
-		return true;		
+		if($("#datepicker").val().length == 0){ alert('Has d\'entrar una data a l\'esdeveniment.'); return false; }
+		return true;					
 	}
 
 	function validaEmail(str)
@@ -239,7 +243,7 @@
 					<input style="width:50px" type="text" name="dades[resultat]" id="resultat" class="input" />							
 			</div>
 			<div style="margin-top:20px; clear:both; text-align:right;">				
-				<div class="TITOL"><button class="more boto" >segueix omplint el formulari <?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button></div>
+				<div class="TITOL"><button id="BOTO_FORM_1" class="more boto" >segueix omplint el formulari <?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button></div>
 			</div>
 			<div style="clear:both; margin-top:30px;">
 				<span style="font-size:10px;" class="text">Les seves dades seran incorporades a un fitxer titularitat de la Fundació Casa de Cultura amb la finalitat de gestionar els seus serveis i activitats. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d’adoptar les mesures legalment previstes i les tècnicament necessàries per evitar-ne un accés a qualsevol classe de tractament no autoritzat. No seran cedides a terceres persones sense el seu consentiment. En qualsevol cas vostè pot exercir els seus drets d’accés, rectificació i cancel•lació tot adreçant-se a: Sr/a. Director/a de la casa de Cultura, Plaça de l’Hospital 6, 17002 Girona, telèfon 972 202 013 i correu electrònic: secretaria@casadecultura.cat
@@ -296,7 +300,7 @@
 			</div>														
 		
 			<div style="clear:both; text-align:right; padding-top:20px;" class="TITOL">
-				<button name="ENVIA_FINALITZA" class="more boto" >finalitza i envia el formulari<?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button>
+				<button name="ENVIA_FINALITZA" id="BOTO_FORM_2" class="more boto" >finalitza i envia el formulari<?php echo image_tag('blogs/Dissenys/noticies_culturals/cercle.png')?></button>
 			</div>
 			
 			<div style="clear:both; text-align:justify; padding-top:20px;">			
