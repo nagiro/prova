@@ -143,6 +143,7 @@ class blogsActions extends sfActions
     			//Si l'arxiu és una imatge, el tractem i el posem com a imatge
     			if(strtolower($path_info['extension']) == 'jpg' || strtolower($path_info['extension']) == 'png'): 			
 			
+    				try{
 					$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
 					$img->resize(200,null);				
 					$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
@@ -158,7 +159,8 @@ class blogsActions extends sfActions
 					$OME->setEntriesId($ON->getId());
 					$OME->setMultimediaId($OM->getId());
 					$OME->save();
-					
+    				} catch(Exception $e){ $e->getMessage(); }
+    				
 				endif;
 								
 			endif; 
