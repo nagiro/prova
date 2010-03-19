@@ -10,6 +10,11 @@
 class MaterialgenericPeer extends BaseMaterialgenericPeer
 {
 
+  static public function selectFormulariUsuaris()
+  {
+  	return array(1=>'Portàtil',2=>'Projector',3=>'DVD',4=>'Microfonia');
+  }
+	
   static public function select()
   {
     $C = new Criteria();

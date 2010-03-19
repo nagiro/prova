@@ -146,7 +146,11 @@ $(document).ready(function() {
 	             	?>             	             	            
                 	                	                	
                 	</td>
-                	</tr>
+               	</tr>
+               	<tr>
+               		<td class="TITOL">Material no inventariat<br /><textarea name="material_no_inventariat" ><?php echo $MAT_NO_INV; ?></textarea></td>               		
+               	</tr>
+               	<tr>
 	            	<td colspan="2" class="dreta">
 	            		<button class="BOTO_ACTIVITAT" name="B_SAVE_CESSIO">Finalitzar cessió</button>						
 	            	</td>
@@ -203,7 +207,7 @@ $(document).ready(function() {
                       		  </TR>";
 					foreach($CESSIONS->getResults() as $C):												
                       	$PAR = ParImpar($i++);
-                      	$DRet = $C->getDataretornat();
+                      	$DRet = $C->getDataretornat('d/m/Y');
                       	$DRetT = (is_null($DRet))?"No s'ha retornat.":$DRet;                      	                      	
                       	echo "<TR>                      			                      			
                       			<TD class=\"$PAR\">".UsuarisPeer::getNom($C->getUsuariid())."</TD>

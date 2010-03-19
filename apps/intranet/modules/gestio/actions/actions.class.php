@@ -16,10 +16,10 @@ class gestioActions extends sfActions
    */
   public function executeIndex()
   {    
-    //Mirem si l'usuari és de la CCG o no      
-      //Si és de la CCG hem de mostrar la gestió completa
+    //Mirem si l'usuari Ã©s de la CCG o no      
+      //Si Ã©s de la CCG hem de mostrar la gestiÃ³ completa
     //altrament
-      //Si és un usuari normal només ha de poder veure lo seu      
+      //Si Ã©s un usuari normal nomÃ©s ha de poder veure lo seu      
   }
   
   /**
@@ -31,9 +31,9 @@ class gestioActions extends sfActions
     
     $idU = $this->getUser()->getAttribute('idU');    
     
-    //Carreguem quantes incidències noves hi ha
+    //Carreguem quantes incidÃ¨ncies noves hi ha
     $this->NINCIDENCIES = IncidenciesPeer::QuantesAvui(); 
-    //Carreguem quantes matrícules noves hi ha
+    //Carreguem quantes matrÃ­cules noves hi ha
     $this->NMATRICULES  = MatriculesPeer::QuantesAvui();
     //Carreguem quant material nou hi ha
     $this->NMATERIAL    = MaterialPeer::QuantAvui();
@@ -98,7 +98,7 @@ class gestioActions extends sfActions
   }
   
   /**
-   * RETORNA CORRECTE SI EL DNI TÉ UN FORMAT CORRECTE.
+   * RETORNA CORRECTE SI EL DNI TÃ‰ UN FORMAT CORRECTE.
    **/    
   public function ValidaDNI($DNI,$new = true)
   {
@@ -108,7 +108,7 @@ class gestioActions extends sfActions
   		if($new):
   			$C = new Criteria();
   			$C->add(UsuarisPeer::DNI, $DNI, CRITERIA::EQUAL);
-  			$correcte = (UsuarisPeer::doCount($C)==0); //Només serà correcte si no existeix  		
+  			$correcte = (UsuarisPeer::doCount($C)==0); //NomÃ©s serÃ  correcte si no existeix  		
   		endif;
 
   		return $correcte;
@@ -164,7 +164,7 @@ class gestioActions extends sfActions
              $this->FUsuari = new UsuarisForm($USUARI);                          
              break;
        
-       //Mostra les llistes a les que està subscrit un usuari
+       //Mostra les llistes a les que estÃ  subscrit un usuari
        case 'L': 
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->LLISTAT_LLISTES = LlistesPeer::getLlistesDisponibles($this->IDU);
@@ -209,14 +209,14 @@ class gestioActions extends sfActions
              $this->redirect("gestio/gUsuaris?accio=L");                            
              break;
                            
-		//Gestió de permisos d'aplicacions pels usuaris
+		//GestiÃ³ de permisos d'aplicacions pels usuaris
         case 'GA':        	
         	$this->USUARI = UsuarisPeer::retrieveByPk($this->IDU);
         	$this->LLISTAT_PERMISOS = UsuarisAppsPeer::getPermisos($this->IDU);        				
         	$this->MODE['GESTIO_APLICACIONS'] = true;
         	break;
         	
-        //Guarda la gestió d'aplicacions
+        //Guarda la gestiÃ³ d'aplicacions
         case 'SGA':
         	        	
         	UsuarisAppsPeer::save($request->getParameter('PERMIS'),$this->IDU);        	        	
@@ -263,7 +263,7 @@ class gestioActions extends sfActions
       $this->FPromocio->bind($request->getParameter('promocions'),$request->getFiles('promocions'));
       
       if($this->FPromocio->isValid()) { try { $this->FPromocio->save(); } catch (Exception $e) { echo $e->getMessage(); } }
-      else echo "No és vàlida";
+      else echo "No Ã©s vÃ lida";
          
       $this->EDICIO = true;      
     endif;
@@ -301,7 +301,7 @@ class gestioActions extends sfActions
 			$contents = fread($handle, filesize($nom));
 			fclose($handle);
 		else:
-			$contents = "No s'ha trobat la pàgina.";
+			$contents = "No s'ha trobat la pÃ gina.";
 		endif;      
       
 		$this->FHtml = new EditorHtmlForm();
@@ -433,7 +433,7 @@ class gestioActions extends sfActions
 
     		break;
     		
-    	//Guardo les llistes a les que enviaré el missatge
+    	//Guardo les llistes a les que enviarÃ© el missatge
     	case 'SLM':
     		    			
     			$this->saveMissatgeLlistes($request);
@@ -450,7 +450,7 @@ class gestioActions extends sfActions
     		
     		break;
 
-    	//Envio un missatge de prova a l'adreça que digui l'usuari
+    	//Envio un missatge de prova a l'adreÃ§a que digui l'usuari
     	case 'SP':
     		
     		try   { MissatgesmailingPeer::sendProvaMessageId($this->getUser()->getAttribute('IDM'),$request->getParameter('email')); }
@@ -471,7 +471,7 @@ class gestioActions extends sfActions
     		break;
     		
     		
-    	//Hem acabat l'edició... no fem res, només tornem a les llistes
+    	//Hem acabat l'ediciÃ³... no fem res, nomÃ©s tornem a les llistes
     	case 'SFI':
     			$this->redirect('gestio/gLlistes');
     		break;    		
@@ -639,13 +639,13 @@ class gestioActions extends sfActions
 				$text = $text."
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRIMAVERA LÍRICA<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRIMAVERA LÃ�RICA<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marjan Nikolovski i Milica Sperovik<br />				
 				<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 16 d'abril, 20.00 h<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori Josep Viader<br />				
 				<br />				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5â‚¬ / ReduÃ¯t: 3â‚¬<br />
 																					
 		";   		 		
   		if($fila    == 7): $pdf->AddPage(); $fila = 1; endif;  		  		
@@ -758,7 +758,7 @@ class gestioActions extends sfActions
             $UL->save();
           endif;
         else:
-          $ERRORS[] = 'El DNI '.$D.' és incorrecte.';
+          $ERRORS[] = 'El DNI '.$D.' Ã©s incorrecte.';
         endif; 
       endforeach;
     endif;
@@ -1005,20 +1005,20 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BSAVECICLE')) 		$accio = 'SC';
     }                
     
-    //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
+    //Quan cliquem per primer cop a qualsevol de les cerques, la pÃ gina es posa a 1
     if($request->getParameter('accio') == 'C') $this->PAGINA = 1;
     if($request->getParameter('accio') == 'CD') { $this->PAGINA = 1; }    
     if($request->hasParameter('DATAI')) { $this->DIA = ""; } 
     
-    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);    
-    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova
+    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova
     $this->getUser()->setAttribute('DATAI',$this->DATAI);  
-    $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre és 3 mesos superior a la inicial    
+    $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre Ã©s 3 mesos superior a la inicial    
    
     switch($accio){
     	
-    	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
+    	//Consulta inicial del calendari sense prÃ¨mer cap dia, nomÃ©s amb un factor de cerca
     	case 'C':
                 $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA['text'],$this->DATAI,$this->DATAF,null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                                                                
@@ -1075,7 +1075,7 @@ class gestioActions extends sfActions
     				$this->HORARI  = $H;    				
     				foreach($H->getHorarisespaiss() as $HE):    					
     					$this->ESPAISOUT[] = $HE->getEspaisEspaiid();
-    					//miro que sigui més gran que 0 perquè sinó pot ser que no tingui material associat
+    					//miro que sigui mÃ©s gran que 0 perquÃ¨ sinÃ³ pot ser que no tingui material associat
     					if($HE->getMaterialIdmaterial() > 0):
     						$OMaterial = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());    			    			
 			    			$this->MATERIALOUT[] = array('material'=>$HE->getMaterialIdmaterial(),'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    						 
@@ -1236,7 +1236,7 @@ class gestioActions extends sfActions
 		$DIES = explode(',',$horaris['Dia']);
 		foreach($DIES as $D):  		
   			list($dia,$mes,$any) = explode('/',$D);  		
-  	  		if(!($any > 2000 && $mes < 13 && $dia < 31 )) $ERRORS[] = "La data que has entrat és incorrecta";
+  	  		if(!($any > 2000 && $mes < 13 && $dia < 31 )) $ERRORS[] = "La data que has entrat Ã©s incorrecta";
   			$DBDD['DIES'][] = "$any-$mes-$dia";  		  		
   		endforeach;  	     		
 	endif;  	
@@ -1247,9 +1247,9 @@ class gestioActions extends sfActions
   	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
   	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
   			              
-    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )   $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
-    if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran o igual que la d'acabament.";
-    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] ) $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                
+    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )   $ERRORS[] = "L'hora de preparaciÃ³ no pot ser mÃ©s gran que la d'inici.";
+    if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser mÃ©s gran o igual que la d'acabament.";
+    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] ) $ERRORS[] = "L'hora d'acabament no pot ser mÃ©s gran que la de desmuntatge.";                
     
     if(empty($espais)) $ERRORS[] = "Has d'entrar algun espai";
         
@@ -1266,14 +1266,14 @@ class gestioActions extends sfActions
 	    		if( HorarisPeer::validaMaterial( $D , $idE , $M['material'] , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
 	    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
 	    			$Mater = MaterialPeer::retrieveByPK($M['material'])->getNom();
-	    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
+	    			$ERRORS[] = "El material $Mater de l'aula $Espai estÃ  reservat el dia $D";
     			endif;	    	
 	    	endforeach;     	
     	endforeach;
         	    	
     endforeach;
        
-    //Si no hem trobat cap error, guardem els registres d'ocupació.    
+    //Si no hem trobat cap error, guardem els registres d'ocupaciÃ³.    
     if(empty($ERRORS)):
 
  		HorarisPeer::save( $horaris , $DBDD , $material , $espais );
@@ -1338,15 +1338,15 @@ class gestioActions extends sfActions
     $this->CERCA_MES = $this->getRequestParameter('CERCA_MES');
     $this->CERCA_ESPAI = $this->getRequestParameter('CERCA_ESPAI');
 
-	//Consulta l'ocupació d'un espai segons dies i mesos
+	//Consulta l'ocupaciÃ³ d'un espai segons dies i mesos
 	if(!empty($this->CERCA_ESPAI)):    
 	    for($i=0;$i<32;$i++) $this->DIES[$i] = $i;
-	    $this->MESOS = array('1'=>'Gener','2'=>'Febrer','3'=>'Març','4'=>'Abril','5'=>'Maig','6'=>'Juny','7'=>'Juliol','8'=>'Agost','9'=>'Setembre','10'=>'Octubre','11'=>'Novembre','12'=>'Desembre');
+	    $this->MESOS = array('1'=>'Gener','2'=>'Febrer','3'=>'MarÃ§','4'=>'Abril','5'=>'Maig','6'=>'Juny','7'=>'Juliol','8'=>'Agost','9'=>'Setembre','10'=>'Octubre','11'=>'Novembre','12'=>'Desembre');
 	    $this->DADES_MESOS_DIES = HorarisPeer::getMesosDiesEspai($this->CERCA_ANY,$this->CERCA_ESPAI);	    
     else:
-       //Consulta l'ocupació d'espais per mesos        
+       //Consulta l'ocupaciÃ³ d'espais per mesos        
 	    $this->ESPAIS = EspaisPeer::select();
-	    $this->MESOS = array('1'=>'Gener','2'=>'Febrer','3'=>'Març','4'=>'Abril','5'=>'Maig','6'=>'Juny','7'=>'Juliol','8'=>'Agost','9'=>'Setembre','10'=>'Octubre','11'=>'Novembre','12'=>'Desembre');
+	    $this->MESOS = array('1'=>'Gener','2'=>'Febrer','3'=>'MarÃ§','4'=>'Abril','5'=>'Maig','6'=>'Juny','7'=>'Juliol','8'=>'Agost','9'=>'Setembre','10'=>'Octubre','11'=>'Novembre','12'=>'Desembre');
 	    $this->DADES_MESOS_ESPAIS = HorarisPeer::getMesosEspais($this->CERCA_ANY);    
 	endif;
       
@@ -1391,7 +1391,7 @@ class gestioActions extends sfActions
   	$this->FCerca = new CercaForm();  	  
   	$this->FCerca->bind($this->CERCA);
         
-  	//Definim l'acció segons el botó premut  	
+  	//Definim l'acciÃ³ segons el botÃ³ premut  	
     if( $this->getRequest()->hasParameter('BNOU') ) $this->accio = 'N';
     if( $this->getRequest()->hasParameter('BSAVE') ) $this->accio = 'S';
     if( $this->getRequest()->hasParameter('BDELETE') ) $this->accio = 'D';
@@ -1432,7 +1432,7 @@ class gestioActions extends sfActions
       			if($this->FAgenda->isValid()):
 					$this->FAgenda->save();					
 					$this->getUser()->setAttribute('AID',$this->FAgenda->getObject()->getAgendatelefonicaid());										
-					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getAttribute('AID')); //Actualitzem també les dades relacionades
+					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getAttribute('AID')); //Actualitzem tambÃ© les dades relacionades
 					$this->MISSATGE = "El registre s'ha modificat correctament.";
 					$this->redirect('gestio/gAgenda?accio=L');
 				else: 
@@ -1562,26 +1562,26 @@ class gestioActions extends sfActions
   	
   	if(is_array($default)):
   	
-	  	//Si existeix el paràmetre carreguem el nom actual
+	  	//Si existeix el parÃ metre carreguem el nom actual
 	  	if($request->hasParameter($nomCamp)):
 	  	
 	  		$CAMP = $request->getParameter($nomCamp);
 	  		
-	  		//Mirem els elements del formulari i els guardem a la sessió  		  		
+	  		//Mirem els elements del formulari i els guardem a la sessiÃ³  		  		
 	  		foreach( $CAMP as $NOM => $VALOR ):
 	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
 	  		endforeach;  				  		  		 
 	  		
 	  		$RET = $CAMP;  		
 	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
 	  	elseif($this->existeixAtributArray($nomCamp,$default)):
 	  		$RET = array();
 	  		foreach($default as $NOM => $VALOR):
 	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
 	  		endforeach;
 	  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
 	  	else: 
 	  	
 	  		foreach($default as $NOM => $VALOR):
@@ -1594,19 +1594,19 @@ class gestioActions extends sfActions
 	  	
 	else:
 		
-		//Si existeix el paràmetre carreguem el nom actual
+		//Si existeix el parÃ metre carreguem el nom actual
 	  	if($request->hasParameter($nomCamp)):
 	  	
 	  		$CAMP = $request->getParameter($nomCamp);	  		
 	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
 	  		$RET = $CAMP;  		
 	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
 	  	elseif($this->getUser()->hasAttribute($nomCamp)):
 	  		
 	  		$RET = $this->getUser()->getAttribute($nomCamp);
 	  			  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
 	  	else:
 	  	 	  		  		
 	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
@@ -1637,7 +1637,7 @@ class gestioActions extends sfActions
   
   
   /**
-   * Gestió de l'inventari i del material
+   * GestiÃ³ de l'inventari i del material
    * In:  PAGINA , TIPUS, BCERCA, BNOU, BSAVE, BDELETE, IDM , D
    * Out: MATERIAL , MATERIALS , IDM 
    * 
@@ -1735,13 +1735,13 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BDELETE'))     	$accio = 'D';
     }                
     
-    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);
-    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova  
+    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
             
     switch($accio){
     	
-    	//Entrem un curs nou. Agafarem el codi per fer-ne un duplicat o bé un codi nou.
+    	//Entrem un curs nou. Agafarem el codi per fer-ne un duplicat o bÃ© un codi nou.
     	case 'NC':    			    				    			    			
     			$this->getUser()->setAttribute('IDC',null);
     			$OCurs = new Cursos();    			     			
@@ -1749,12 +1749,12 @@ class gestioActions extends sfActions
 				$this->MODE = 'NOU';
     		break;
 
-		//Si el codi existeix, carrego les dades, altrament només guardo.    		
+		//Si el codi existeix, carrego les dades, altrament nomÃ©s guardo.    		
     	case 'SC':
 				$parametres = $request->getParameter('cursos_codi'); 			//Agafo el codi
 				$codi = $parametres['Codi'];
 				if(!empty($parametres['CodiT'])) $codi = $parametres['CodiT'];				
-				$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una còpia de l'objecte de l'últim curs amb aquest codi
+				$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una cÃ²pia de l'objecte de l'Ãºltim curs amb aquest codi
     			$OCurs->save();
     			$this->getUser()->setAttribute('IDC',$OCurs->getIdcursos());    			    		
     		    $this->FCurs = new CursosForm($OCurs);							//Passem al formulari el curs copiat.    		        		        		    
@@ -1815,7 +1815,8 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
         
     $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>''));
+    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>''));
+    $this->IDR    = $this->ParReqSesForm($request,'IDR',0);
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();        
@@ -1828,7 +1829,7 @@ class gestioActions extends sfActions
 	    $accio = $request->getParameter('accio');
 	    if($request->hasParameter('BCERCA'))    $accio = 'C';
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
-	    if($request->hasParameter('BSAVE_x')) 	$accio = 'S';
+	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
 	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
 	endif;                
 	
@@ -1838,30 +1839,31 @@ class gestioActions extends sfActions
     			$this->FReserva = new ReservaespaisForm($OReserva);    			
     			$this->MODE['NOU'] = true;
     		break;
-    	case 'E':    			
-    			$this->getUser()->setAttribute('IDR',$request->getParameter('IDR'));
-    			$OReserva = ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('IDR'));
+    	case 'E':    			    			
+    			$OReserva = ReservaespaisPeer::retrieveByPK($this->IDR);
 				$this->FReserva = new ReservaespaisForm($OReserva);   			
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'S':    			    		        		  
-    		    $this->FReserva = new ReservaespaisForm(ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('IDR')));
+    		    $this->FReserva = new ReservaespaisForm(ReservaespaisPeer::retrieveByPK($this->IDR));
     		    $this->FReserva->bind($request->getParameter('reservaespais'));    		    
-    		    if($this->FReserva->isValid()) $this->FReserva->save();    		        		    
+    		    if($this->FReserva->isValid()):
+    		    	$this->FReserva->save();
+    		    	$this->redirect('gestio/gReserves?accio=NN');
+    		    endif;     		        		    
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'D': 
-    	        ReservaespaisPeer::retrieveByPK($request->getRequest('IDR'))->delete();    	        
+    	        ReservaespaisPeer::retrieveByPK($this->IDR)->delete();    	        
     	        break;    	         	 
     }
         
-    $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA['text'],$this->PAGINA);
-    
+    $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA['text'],$this->PAGINA);    
   		
   }
 
   /**
-   * Matrícules
+   * MatrÃ­cules
    *
    */
    
@@ -1896,13 +1898,13 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BSAVE')) 		 $accio = 'SAVE_MATRICULA';
     }                
     
-    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);
-    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pàgina per si hem fet una consulta nova  
+    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
     
     switch($accio){
 
-    	//Crea un usuari nou per poder seguir fent la matrícula
+    	//Crea un usuari nou per poder seguir fent la matrÃ­cula
     	case 'ADD_USER':    		
 
     			$OU = new Usuaris();
@@ -1931,7 +1933,7 @@ class gestioActions extends sfActions
     	
     	case 'NU':
     		
-				//Si no és nou, sempre tindrem el número de matrícula. Si és nou, serà null.     		
+				//Si no Ã©s nou, sempre tindrem el nÃºmero de matrÃ­cula. Si Ã©s nou, serÃ  null.     		
     			if($request->hasParameter('IDM')) $this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
     			else $this->getUser()->setAttribute('IDM',null);
     		
@@ -1960,7 +1962,7 @@ class gestioActions extends sfActions
     			     			
     		break;
     	
-    	//Fem una nova matrícula i escollim el curs al que ens volem matricular
+    	//Fem una nova matrÃ­cula i escollim el curs al que ens volem matricular
     	case 'NC':
     		
 				$this->CURSOS = MatriculesPeer::getCursosMatriculacio();    		    			    			    			
@@ -1968,7 +1970,7 @@ class gestioActions extends sfActions
     			
     		break;
 
-    	//Guardem la matrícula al curs que hem escollit
+    	//Guardem la matrÃ­cula al curs que hem escollit
     	case 'SAVE_CURS':    		
     			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));    			
     			$OMatricula->setCursosIdcursos($request->getParameter('IDC'));
@@ -1980,7 +1982,7 @@ class gestioActions extends sfActions
     			$this->redirect('gestio/gMatricules?accio=FP');
     		break;
 
-    	//Mostra la prematrícula i carreguem les dades del pagament
+    	//Mostra la prematrÃ­cula i carreguem les dades del pagament
     	case 'FP':    		
     			$this->MATRICULA = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
     			    			    			    		     
@@ -1988,38 +1990,38 @@ class gestioActions extends sfActions
     		    $NOM  = UsuarisPeer::retrieveByPK($this->MATRICULA->getUsuarisUsuariid())->getNomComplet();
     		    $MATRICULA = $this->MATRICULA->getIdmatricules();
     		    $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos()); //Passem si el curs es ple
-    		    $this->getUser()->setAttribute('isPle',$this->CURS_PLE); //Guardem si el curs és ple
+    		    $this->getUser()->setAttribute('isPle',$this->CURS_PLE); //Guardem si el curs Ã©s ple
     			
     			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA);    			    			
     			$this->MODE = 'VALIDACIO_CURS';
     		break;
     		    		
-    	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
+    	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalitzaciÃ³.  
     	case 'PAGAMENT':
     			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));    			
     			MatriculesPeer::setMatriculaPagada($this->getUser()->getAttribute('IDM'),$this->getUser()->getAttribute('isPle'));
     			$MATRICULA->save();
-    			$this->MISSATGE = "La matrícula s'ha realitzat correctament.";
+    			$this->MISSATGE = "La matrÃ­cula s'ha realitzat correctament.";
     			$this->MODE = 'PAGAMENT';
     		break;
-    	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
+    	//Si hem fet un pagament amb targeta, anem a la segÃ¼ent pantalla. 
     	case 'OK':
     		 if($this->getRequestParameter('Ds_Response') == '0000'):
                  $matricula = $this->getRequestParameter('Ds_MerchantData');
                  MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getAttribute('isPle'));                 
-                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                 
+                 $this->MISSATGE = "La matrÃ­cula s'ha realitzat correctament.";                 
               else:			            
-                 $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
+                 $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrÃ­cula. Si us plau torna-ho a intentar.";              
               endif;
               $this->MODE = 'PAGAMENT';
               break;
-        //Esborra una matrícula    		    		
+        //Esborra una matrÃ­cula    		    		
     	case 'D':
     			$idM = $this->getUser()->getAttribute('IDM');
     			MatriculesPeer::retrieveByPK($idM)->delete();     	            	       
     	    break;
     	    
-   	    //Edita una matrícula
+   	    //Edita una matrÃ­cula
     	case 'E':
     			$this->MATRICULA = MatriculesPeer::retrieveByPk($request->getParameter('IDM'));
     			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
@@ -2027,7 +2029,7 @@ class gestioActions extends sfActions
     			$this->MODE = 'EDICIO';
     		break;
     		
-    	//Guardem una matrícula modificada
+    	//Guardem una matrÃ­cula modificada
     	case 'SAVE_MATRICULA':    			
     			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
 //    			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
@@ -2069,7 +2071,7 @@ class gestioActions extends sfActions
   	$Matricula->updateObject();
   	$OM = $Matricula->getObject();
   	
-  	//Agafem el DNI, busquem el valor que té l'usuari i guardem la seva matrícula 
+  	//Agafem el DNI, busquem el valor que tÃ© l'usuari i guardem la seva matrÃ­cula 
   	$OM->setUsuarisUsuariid(UsuarisPeer::cercaDNI($Matricula->getValue('Usuaris_usuariID'))->getUsuariid())->save();
   	
   }
@@ -2086,7 +2088,7 @@ class gestioActions extends sfActions
 	
 	
     if($request->isMethod('POST')){	      	    
-	    if($request->hasParameter('BSAVE')) 		$this->accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificació
+	    if($request->hasParameter('BSAVE')) 		$this->accio = 'S';		//Hem entrat una matrÃ­cula i passem a la fase de verificaciÃ³
 	    elseif($request->hasParameter('BDELETE')) 	$this->accio = 'D';
 	    elseif($request->hasParameter('BADD'))		$this->accio = 'N';
 	    elseif($request->hasParameter('BEDIT'))		$this->accio = 'E';
@@ -2230,15 +2232,17 @@ class gestioActions extends sfActions
 	
     switch($accio){
     	
-    	//Nova Cessió 
+    	//Nova Cessió
     	case 'NC':
     			$OCessio = new Cessio();
     			$OCessio->setRetornat(false);
 	    		$OCessio->setEstatRetornat("");
 	    		$OCessio->setDataretornat(null);
     			$OCessio->setDatacessio(date('m/d/Y',time()));
-    			$OCessio->setDataretorn(date('m/d/Y',time()));    			    			    	    			
-    			$this->FCessio = new CessioForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));
+    			$OCessio->setDataretorn(date('m/d/Y',time()));
+    			$OCessio->setMotiu("la realització d’unes jornades sobre ....");
+    			$OCessio->setCondicions("La cessió d'aquest material és gratuït en concepte de col•laboració, que es compromet a restituir-lo en les condicions d'ús que li va ser lliurat un cop hagi finalitzat el període de la instal•lació indicada.");    			    			    	    			
+    			$this->FCessio = new CessioForm($OCessio);
     			$this->getUser()->setAttribute('IDC',0);    			
     			$this->MODE = 'NOU_CESSIO';
     		break;
@@ -2250,7 +2254,12 @@ class gestioActions extends sfActions
     			if(!empty($RCESSIO['cessio_id'])):
     				$this->MATERIALOUT = CessiomaterialPeer::getSelectMaterialOut($RCESSIO['cessio_id']); 
     			endif; 
-    			$this->getUser()->setAttribute('cessio',$request->getParameter('cessio'));    			
+    			$this->getUser()->setAttribute('cessio',$request->getParameter('cessio'));
+    			
+    			$OCESSIO = CessioPeer::retrieveByPK($RCESSIO['cessio_id']);    			     		
+    			if($OCESSIO instanceof Cessio) $this->MAT_NO_INV = $OCESSIO->getMaterialNoInventariat();
+    			else $this->MAT_NO_INV = "";
+    			    			
     			$this->MODE = 'ESCULL_MATERIAL';
     			    			
     		break;
@@ -2268,20 +2277,22 @@ class gestioActions extends sfActions
     			$OCessio = CessioPeer::retrieveByPK($this->IDC);
     			
     			$OCessio->setRetornat(true);
-    			$OCessio->setEstatRetornat("");
-    			$OCessio->setDataretornat(date('Y-m-d',time()));
+    			if(!($OCessio instanceof Cessio)):
+    				$OCessio->setEstatRetornat("");
+    				$OCessio->setDataretornat(date('Y-m-d',time()));
+    			endif; 
     			
 				$this->FCessio = new CessiomaterialRetornForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));				   			
 				$this->MODE = 'EDICIO_RETORN';
     		break;
 
-    	//Valida el material amb AJAX per saber si està en ús
+    	//Valida el material amb AJAX per saber si estÃ  en Ãºs
     	case 'VM':
     			$RCESSIO = $this->getUser()->getAttribute('cessio');
     			if(HorarisPeer::isMaterialEnUs($request->getParameter('idM'),$RCESSIO['data_cessio'],$RCESSIO['data_retorn'])):
-    				return $this->renderText("El material escollit està en ús");
+    				return $this->renderText("El material escollit estÃ  en Ãºs");
     			else: 
-    				//return $this->renderText("El material escollit està disponible");
+    				//return $this->renderText("El material escollit estÃ  disponible");
     				return sfView::NONE;
     			endif; 
     		break;
@@ -2309,10 +2320,15 @@ class gestioActions extends sfActions
     		     		    
     		    endforeach;
      		    
+    		    if($request->hasParameter('material_no_inventariat')):
+    		    	$FCESSIO->getObject()->setMaterialNoInventariat($request->getParameter('material_no_inventariat'));
+    		    	$FCESSIO->getObject()->save();
+    		    endif; 
+    		    
     		    $this->MODE = 'FINALITZAT';    		        		        			
     		break;
     		
-    	//Esborra cessió
+    	//Esborra cessiÃ³
     	case 'DC': 
     	        CessioPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
     	        break;
@@ -2326,14 +2342,15 @@ class gestioActions extends sfActions
     		    $this->FCessio->bind($RCESSIO);
     		    if($this->FCessio->isValid()): 
     		    	$this->FCessio->save();
-//    		    	$this->redirect('gestio/gCessio?accio=C');
+    		    	$this->redirect('gestio/gCessio?accio=C');
     		    endif;
     		    $this->MODE = 'EDICIO_RETORN';
     		        		        		        			
     		break;
     		
     	case 'PRINT':
-    			$pdf = CessioPeer::printDocument();
+    			$OCESSIO = CessioPeer::retrieveByPK($request->getParameter('IDC'));    			
+    			$pdf = CessioPeer::printDocument($OCESSIO);
     			$pdf->output();
     			return sfView::NONE;
     		break;
@@ -2366,7 +2383,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('B_DELETE_DIRECTORI')) 	$accio = 'DELETE_DIRECTORI';
     }                
     
-    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);      
     
     switch($accio){

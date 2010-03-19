@@ -24,7 +24,7 @@
 <!-- FI MENU -->
 <!-- CONTINGUT -->
 
-	<?php 
+	<?php  
 	$calendar = false;
 	switch($ACCIO){
 	   case 'web'        : $calendar = true;  include_partial('pagina'  ,  array( 'PAGINA' => $PAGINA )); break;
@@ -58,7 +58,7 @@
     										'ACTIVITATS_CALENDARI' => $ACTIVITATS_CALENDARI ,
     										'CERCA' => $CERCA ) ); 
        endif;
-       
+   
        ?>
     	
 <!-- FI CALENDARI -->

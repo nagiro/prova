@@ -34,6 +34,8 @@ class BaseReservaespaisForm extends BaseFormPropel
       'EspaisSolicitats'   => new sfWidgetFormTextarea(),
       'MaterialSolicitat'  => new sfWidgetFormTextarea(),
       'DataAlta'           => new sfWidgetFormDateTime(),
+      'Compromis'          => new sfWidgetFormTextarea(),
+      'Codi'               => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -58,6 +60,8 @@ class BaseReservaespaisForm extends BaseFormPropel
       'EspaisSolicitats'   => new sfValidatorString(),
       'MaterialSolicitat'  => new sfValidatorString(),
       'DataAlta'           => new sfValidatorDateTime(array('required' => false)),
+      'Compromis'          => new sfValidatorString(),
+      'Codi'               => new sfValidatorString(array('max_length' => 10)),
     ));
 
     $this->widgetSchema->setNameFormat('reservaespais[%s]');

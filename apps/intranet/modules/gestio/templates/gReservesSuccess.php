@@ -52,9 +52,7 @@
                 <tr>
                 	<td></td>
 	            	<td colspan="2" class="dreta">
-	            		<br>
-	            		<?php echo submit_image_tag('icons/Colored/PNG/action_check.png',array('value'=>'SAVE','name'=>'BSAVE'))?>
-	            		<?php echo link_to(image_tag('icons/Colored/PNG/action_delete.png'),'gestio/gReserves',array('name'=>'BDELETE','confirm'=>'Segur que vols esborrar-lo?'))?>
+	            		<?php include_partial('botonera',array('element'=>'el formulari','tipus'=>'Guardar')); ?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -71,10 +69,11 @@
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap reserva amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;
-					foreach($RESERVES->getResults() as $R):																	                      	 	                      	
+					foreach($RESERVES->getResults() as $R):	
+																
                       	echo '<TR><TD>'.link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</TD>
-                      	    	  <TD>'.$R->getUsuaris()->getNomComplet().'</TD>
-                      	          <TD>'.$R->getDataactivitat().'</TD>
+                      	    	  <TD><a href="#" class="tt2"><span>'.$R->getUsuaris()->getDades().'</span>'.$R->getUsuaris()->getNomComplet().'</a></TD>
+                      	          <TD>'.$R->getDataalta('d/m/Y H:i').'</TD>
                       	          <TD>'.$R->getEstatText().'<TD>
                       	      </TR>';
                     endforeach;
@@ -95,21 +94,12 @@
     
 <?php 
 
-function getParam( $accio , $AID , $CERCA )
-{
-    $opt = array();
-    if(isset($accio)) $opt[] = "accio=$accio";
-    if(isset($AID)) $opt['AID'] = "AID=$AID";
-    if(isset($CERCA)) $opt['CERCA'] = "CERCA=$CERCA";
-    
-    RETURN "?".implode( "&" , $opt);
-}
 
 function gestorPagines($MODEL)
 {
   if($MODEL->haveToPaginate())
   {       
-  	 echo '<TR><TD colspan="3" class="TITOL">';
+  	 echo '<TR><TD colspan="3" class="TITOL">';  	 
      echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gReserves'.getParam( null , null , $MODEL->getPreviousPage() ));
      echo " ";
      echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gReserves'.getParam( null , null , $MODEL->getNextPage()));

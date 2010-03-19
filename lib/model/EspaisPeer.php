@@ -13,8 +13,10 @@ class EspaisPeer extends BaseEspaisPeer
 
   static public function select()
   {
+  	$C = new Criteria();
+  	$C->addAscendingOrderByColumn(self::ORDRE);
   	
-    $Espais = self::doSelect(new Criteria());
+    $Espais = self::doSelect($C);
     $RET = array();
     foreach($Espais as $E):
       $RET[$E->getEspaiid()] = $E->getNom();    
@@ -27,7 +29,11 @@ class EspaisPeer extends BaseEspaisPeer
   static public function selectJavascript($sel = -1)
   {
 
-  	$Espais = self::doSelect(new Criteria());
+  	$C = new Criteria();
+  	$C->addAscendingOrderByColumn(self::ORDRE);
+  	
+    $Espais = self::doSelect($C);
+  	
     $RET = "";
     foreach($Espais as $E):
     	$idE = $E->getEspaiid();

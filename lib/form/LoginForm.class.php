@@ -5,8 +5,8 @@ class LoginForm extends sfForm
   public function configure()
   {
     $this->setWidgets(array(
-      	'nick'   	 => new sfWidgetFormInput(),
-    	'password' 	 => new sfWidgetFormInputPassword(),    	      
+      	'nick'   	 => new sfWidgetFormInput(array(),array('style'=>'width:100px;')),
+    	'password' 	 => new sfWidgetFormInputPassword(array(),array('style'=>'width:100px;')),    	      
     ));        
 
     

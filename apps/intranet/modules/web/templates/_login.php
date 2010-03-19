@@ -1,28 +1,41 @@
 <STYLE>
-.BOX TD { PADDING:5PX; }
-.CERCA { font-size:10px; }
-#registra {  }
+.T1 { display:block; width:100px; float:left;  }
+.T2 { display:block; width:200px; float:left; }
+.T3	{ width:120px; }
+.content { padding:20px; }
+.REQUADRE { margin:0px; }
 </STYLE>
 
     <TD colspan="3" class="CONTINGUT">
     
+    
 		<form action="<?php echo url_for('web/login') ?>" method="POST" name="form_login">    
-		    <DIV class="REQUADRE" style="width:400px">
-		    	<table class="FORMULARI">
-		    	<?php if($ERROR != ""): ?><tr><td class="error" colspan="2"><?php echo $ERROR?></td></td><?php endif; ?>          
-		           <?php echo $FLogin ?>
-		           <tr>
-		            	<td colspan="2">
-		            		<input type="submit" value="Cliqueu per accedir" name="form_login" />
-		            		<input type="submit" value="Creeu un compte nou" name="form_login_new" />
-		            		<input type="submit" value="Recordar contrasenya" name="form_login_remember" />
-						</td>
-		           </tr>
-		       </table>
+		    <DIV class="REQUADRE" style="width:440px">
+		    	<div class="FORMULARI">
+			    	<div>	
+			    			<span class="T1"><b>DNI: </b></span>
+			    			<span><?php echo $FLogin['nick']->render(); ?></span>
+			    	</div>
+			    	<div style="clear:both;">	
+			    			<span class="T1"><b>Contrasenya: </b></span>
+			    			<span><?php echo $FLogin['password']->render(); ?></span>
+			    	</div>
+			    	
+			    	<div style="clear:both; padding-top:20px;">
+	            		<button type="submit" class="T3" name="form_login" class="web">Cliqueu per accedir</button>		            		
+	            		<button type="submit" class="T3" name="form_login_new" class="web">Creeu un compte nou</button>
+	            		<button type="submit" class="T3" name="form_login_remember" class="web">Recordar contrasenya</button>		            					    	
+			    	</div>
+			    </div>
+		    	
 		    </DIV>
+		    			    	
 	    </form>   
             
       <DIV STYLE="height:40px;"></DIV>
-                
+    
+       
     </TD>
     
+		    	
+		    	<?php if($ERROR != ""): ?><tr><td class="error" colspan="2"><?php echo $ERROR?></td></td><?php endif; ?>          

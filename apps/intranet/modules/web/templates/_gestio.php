@@ -13,15 +13,58 @@
 			if(!ok) alert('Per poder-vos matricular, heu de seleccionar algun curs'); 
 			return ok; 
 		});	   
+		
+		$("#BOTO_SUBMIT_RESERVA").click(fesReserva);
+		$("#BOTO_NOVA_RESERVA").click(function(){ window.location.href='<?php echo url_for('web/gestio?accio=gr'); ?>'; return false; });
+		$("#BOTO_DEL_RESERVA").click(function(){ window.location.href='<?php echo url_for('web/gestio?accio=ar'); ?>'; return false; });		
+		
 	});
+	
+	function ValidaReserves(){
+		var espais = true;
+		$(".ul_espais:checked").each(function (a){ espais = false; } );						
+		if($("#reservaespais_Nom").val().length == 0) { alert("El nom d'activitat no pot estar buit."); return false; }
+		if($("#reservaespais_DataActivitat").val().length == 0) { alert("La data d'activitat no pot estar buit."); return false; }
+		if($("#reservaespais_HorariActivitat").val().length == 0) { alert("L'hora d'activitat no pot estar buida."); return false; }
+		if(espais) { alert("Has d'escollir com a mínim un espai on realitzar l'acte"); return false; }
+		if($("#reservaespais_Condicions").val() == 0) { alert("Has d'acceptar les condicions per fer una prereserva"); return false; }
+		return true;  				
+	}
+	
+	
+	function fesReserva()
+	{
+		if(ValidaReserves()){
+		
+			$.post(
+					"<?php echo url_for('web/gestio?accio=sr'); ?>", 
+					$("#fReserves").serialize(),
+					function (data){ 
+							if(data == 'OK') 
+							{ 
+								alert("Prereserva feta amb èxit.");		
+								window.location.href='<?php echo url_for('web/gestio?accio=gr'); ?>';						
+							} else {
+								alert("Hi ha hagut algun problema fent la prereserva. Si us plau, revisi-la o truqui a secretaria.");								 
+							}
+						}
+					);
+			return false;		
+		} else return false; 
+		
+	}
+		
 
 </script>
 
 <style>
+
+	.DH { display:block; float:left; padding-top:5px; }
+
 	fieldset { border:3px solid #F3F3F3; margin-right:40px; padding:10px; }
 	.MISSAT { color:black; font-weight:bold; font-size:10px; vertical-align:middle; text-align:center; background-color:White; padding-bottom:10px; }
 	.CURS { font-size: 12px; padding:5px; vertical-align:bottom;  }
-	.LEGEND { font-size:12px; font-weight:bold; padding:10px 10px 10px 10px;  }
+	.LLEGENDA { font-size:12px; font-weight:bold; padding:10px 10px 10px 10px;  }
 	TEXTAREA { border:1px solid #CCCCCC; width:90%; }
 	.DADES .LINIA .blue { color:blue; }
 	.DADES .LINIA .blue:hover { color:blue; }
@@ -224,50 +267,30 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 <?php  
 }
 
-?> 
-
-<script type="text/javascript">
-
-	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}  
-
-	function ValidaReserves(){		
-		if(vacio(fReserves.reservaespais_Nom.value)== false){ alert('El nom d\'activitat no pot estar buit.'); return false; }
-		if(vacio(fReserves.reservaespais_DataActivitat.value)== false){ alert('La data d\'activitat no pot estar buit.'); return false; }
-		if(vacio(fReserves.reservaespais_HorariActivitat.value)== false){ alert('L\'hora d\'activitat no pot estar buida.'); return false; }
-		if(fReserves.reservaespais_EspaisSolicitats.selectedIndex<0){ alert('Has d\'escollir com a mínim un espai on realitzar l\'acte'); return false; }		
-	}
-
-</script>
-
-	
-
-
-<?php 
-
-
 //RESERVA o bé hi ha un registre que editem o un de nou
 //RESERVES hi ha un llistat d'objectes reserva
 //MISSATGE Missatge que informa d'algun problema o bé que tot ha anat bé
 
 function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array() ){   
       
-   if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
-   if($ENABLED) echo '<form name="fReserves" id="fReserves" action="'.url_for('web/gestio?accio=sr').'" method="post" onSubmit="return ValidaReserves(this);" >';      
-      
-   $ESPAIS = explode('@',$FRESERVA->getValue('EspaisSolicitats'));
-   $MATERIAL= explode('@',$FRESERVA->getValue('MaterialSolicitat'));
-      ?> 
-      		  
-	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Reserves anteriors</LEGEND>
+	if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
+	if($ENABLED) echo '<form name="fReserves" id="fReserves">';      
+	      
+	$ESPAIS = explode('@',$FRESERVA->getValue('EspaisSolicitats'));
+	$MATERIAL= explode('@',$FRESERVA->getValue('MaterialSolicitat'));
+	?>
+	
+	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Prereserves anteriors</LEGEND>
 		<TABLE class="DADES">
-     	<TR><TD class="TITOL">Nom activitat</TD><TD class="TITOL">Data sol·licitud</TD><TD class="TITOL">Estat</TD></TR>
+     	<TR><TD class="TITOL">Codi reserva</TD><TD class="TITOL">Nom activitat</TD><TD class="TITOL">Data sol·licitud</TD><TD class="TITOL">Estat</TD></TR>
      	
 	    <?php if(empty($RESERVES)): ?>
-	    <TR><TD colspan="3">No s'han trobat reserves anteriors</TD></TR>
+	    <TR><TD colspan="3">No s'han trobat prereserves anteriors</TD></TR>
 	    <?php endif; ?> 
      
      	<?php foreach($RESERVES as $R):     			
-     			echo '<TR>';     			
+     			echo '<TR>';
+     			echo '	<TD>'.link_to($R->getCodi(),'web/gestio?accio=gr&idR='.$R->getReservaespaiid()).'</TD>';     			
      			echo '	<TD>'.link_to($R->getNom(),'web/gestio?accio=gr&idR='.$R->getReservaespaiid()).'</TD>';
      			echo '	<TD>'.$R->getDataalta('d/m/Y').'</TD>';
      			echo '	<TD>'.$R->getEstatText().'</TD>';
@@ -275,30 +298,132 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 		endforeach; ?>
      
      	</TABLE>     
-	</FIELDSET>
-
-
-	<?php if($ESTAT = 'NOU'): ?>          
+	</FIELDSET>		
+	
+	<?php if($ESTAT = 'NOU'): ?>              	
   
-	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades reserva</LEGEND>
-		<TABLE class="FORMULARI">
-		<td style="width:20%;"></td><td style="width:80%;"></td>
-		<?php echo missatge($MISSATGE); ?>
-		<?php echo $FRESERVA; ?>
-		<tr><th></th>
-			<td>
-			<br /><br />
-			<?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::ACCEPTADA): ?>
-  				 	<button class="BOTO_ACTIVITAT">Sol·liciteu la reserva</button>
-  			<?php endif; ?>
-					<button class="BOTO_ACTIVITAT" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=gr'); ?>'">Feu una nova reserva</button>
-					<button class="BOTO_ACTIVITAT" ONCLICK="window.location.href='<?php echo url_for('web/gestio?accio=ar'); ?>'">Anul·leu la reserva</button>  					 					
-			</td></tr>        		                                    
-		</TABLE>      
+	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Nova prereserva</LEGEND>
+		<?php echo $FRESERVA['Estat']->render(); ?>
+		<?php echo $FRESERVA['Usuaris_usuariID']->render(); ?>
+		<?php echo $FRESERVA['DataAlta']->render(); ?>
+		<?php echo $FRESERVA['ReservaEspaiID']->render(); ?>
+		<?php echo $FRESERVA['Codi']->render(); ?>	    	    
+	    
+  	    <?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::EN_ESPERA):  ?>
+	    
+  	    <div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Compromís adquirit</b></span>
+	    	<span class="DH" style="width:450px; height:50px;"><?php echo $FRESERVA->getObject()->getCompromis(); ?></span>
+	    </div>
+	    
+	    <?php endif; ?>
+	    
+	    
+	    <div style="clear:both" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Nom de l'activitat</b></span>
+	    	<span class="DH"><?php echo $FRESERVA['Nom']->render(); ?></span>
+	    </div>
+	    	    
+	    <div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Proposta de data</b></span>
+	    	<span class="DH"><?php echo $FRESERVA['DataActivitat']->render(); ?></span>
+	    </div>
+	    
+	    <div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Proposta d'hores</b></span>
+	    	<span class="DH"><?php echo $FRESERVA['HorariActivitat']->render(); ?></span>
+	    </div>
+	    
+	    <div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Espais</b> (<a class="blue" href="<?php echo url_for('web/espais') ?>" target="_NEW">veure'ls</a>)</span>
+	    	<span class="DH checkbox_list" style="width:450px"><?php echo $FRESERVA['EspaisSolicitats']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Material</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['MaterialSolicitat']->render(); ?></span>
+	    </div>
+		
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Tipus d'acte</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['TipusActe']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Representant a</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Representacio']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Responsable</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Responsable']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Organitzadors</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Organitzadors']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Personal autoritzat</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['PersonalAutoritzat']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Previsio d'assistents</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['PrevisioAssistents']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Enregistrable?</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['isEnregistrable']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>És un cicle?</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['EsCicle']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Exempt de pagament?</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Exempcio']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Vol un pressupost?</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Pressupost']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Personal de suport?</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['ColaboracioCCG']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Comentaris</b></span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Comentaris']->render(); ?></span>
+	    </div>
+
+		<div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Accepta les condicions?</b><br />(<a class="blue" href="<?php echo url_for('web/espais') ?>" target="_NEW">llegir-les</a>)</span>
+	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Condicions']->render(); ?></span>
+	    </div>
+				
+		<div style="clear:both; padding-top:20px;" class="FORMULARI">
+			<span class="DH" style="width:150px"></span>
+			<span class="DH" style="width:450px">				
+			<?php if($FRESERVA->isNew()): ?>
+  				 	<button id="BOTO_SUBMIT_RESERVA" class="BOTO_ACTIVITAT" style="width:140px" >Sol·liciteu la reserva</button>  				 	  			
+  			<?php else: ?>
+					<button id="BOTO_NOVA_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Feu una nova reserva</button>
+					<button id="BOTO_DEL_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Anul·leu la reserva</button>  					 					
+			<?php endif; ?>		        		                                   
+			</span>
+			</div>      
 	</FIELDSET>
 
-	<?php endif; ?>
-
+	<?php endif; ?> 
+      		  	
 <?php } ?>
 <?php 
 

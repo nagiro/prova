@@ -35,7 +35,7 @@
     <TD colspan="2" class="CONTINGUT">
     <?php 
     
-    	if(isset($NOTICIA)):
+    	if(!is_null($NOTICIA)):
     		mostraNoticia($NOTICIA);
     	else: 
     		mostraNoticies($NOTICIES);    	

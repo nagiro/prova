@@ -17,22 +17,34 @@ class CessioPeer extends BaseCessioPeer
   	return $pager;
    }
    
-   static public function printDocument()
+   static public function printDocument($OCESSIO)
    {
+  
+   	  $OU = $OCESSIO->getUsuaris();
+   	  $OCM = $OCESSIO->getCessiomaterials();   	  
+
+   	  $MAT = "";
+	  foreach($OCM as $OCMAT):
+	  	$OMAT = $OCMAT->getMaterial();	  	
+	  	$MAT .= ' un/a '.$OMAT->getNom().' amb identificador '.$OMAT->getIdentificador().',';	  		  		  
+	  endforeach;
+   	  
 	  // create the document
 	  $doc = new sfTinyDoc();
 	  $doc->createFrom(array('extension' => 'docx'));
 	  $doc->loadXml('word/document.xml');
-	  $doc->mergeXmlField('field1', 'variable');
-	  $doc->mergeXmlField('field2', array('id' => 55, 'name' => 'bob'));
-	  $doc->mergeXmlField('field3', $doc);
-	  $doc->mergeXmlBlock('block1',
-	    array(
-	      array('firstname' => 'John'   , 'lastname' => 'Doe'),
-	      array('firstname' => 'Douglas', 'lastname' => 'Adams'),
-	      array('firstname' => 'Roger'  , 'lastname' => 'Waters'),
-	    )
-	  );
+
+	  $doc->mergeXmlField('NOM',$OU->getNomComplet());
+	  $doc->mergeXmlField('DNI',$OU->getDni());
+	  $doc->mergeXmlField('REPRESENTANT',$OCESSIO->getRepresentant());	  
+	  $doc->mergeXmlField('MATERIAL',$MAT);	  
+	  if($OCESSIO->getMaterialNoInventariat() != '') 
+	  	$doc->mergeXmlField('MATERIAL_NO_INVENTARIAT',' i '.$OCESSIO->getMaterialNoInventariat());	  	  
+	  $doc->mergeXmlField('MOTIU',$OCESSIO->getMotiu());	  	  
+	  $doc->mergeXmlField('CONDICIONS1',$OCESSIO->getCondicions());
+	  $doc->mergeXmlField('DATA_SORTIDA',$OCESSIO->getDataCessio());
+	  $doc->mergeXmlField('DATA_RETORN',$OCESSIO->getDataRetorn());
+	  	  	  
 	  $doc->saveXml();
 	  $doc->close();
 	 
@@ -41,7 +53,7 @@ class CessioPeer extends BaseCessioPeer
 	  $doc->remove();
 	 
 	  throw new sfStopException;
-	   		   	
+   	
    }
    
 }

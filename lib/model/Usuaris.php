@@ -48,5 +48,18 @@ class Usuaris extends BaseUsuaris
     
     return $E;
   }
+  
+  public function getDades()
+  {
+  	
+  	$RET  = $this->getDni();
+  	$RET .= '<br />'.$this->getNomComplet();
+  	$RET .= '<br />'.$this->getTelefon();
+  	$RET .= '<br />'.$this->getEmail();
+  	$RET .= '<br />'.$this->getAdreca();
+  	$RET .= '<br />'.$this->getCodipostal().' - '.$this->getPoblaciotext();
+  	return $RET;
+  	  	
+  }
 
 }

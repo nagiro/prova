@@ -70,8 +70,8 @@ textarea { font-size:12px; width:100%;}
 .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:2px;  }
 .textExplicacio { font-size:8px; color:gray; font-style:italic; }
 
-a.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
-a.tt2 span { display:none; }
+.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
+.tt2 span { display:none; }
 .AMAGAT { display:none; }
 
 
@@ -81,7 +81,8 @@ a.tt2 span { display:none; }
 
 
 body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
-.TAULA { width:1024px; border-collapse: collapse; border:0px;} 
+.TAULA { width:1024px; border-collapse: collapse; border:0px; table-layout: fixed; }
+.TAULA .TD { width:256px; }
  
 .CAPCALERA { background-color: #ae1912; height:65px; width:256px; border-top:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
 #logo { position:relative; left:20px; top:0px; }
@@ -100,15 +101,12 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 #MESOS .mesos_unit { font-weight:italic; }
 #MESOS .negreta { font-weight:bold;  }
 
-
-
-
 .PEU { height:25px; background-color:#1f1a17; color: white; text-align:center; font-size: 10px; vertical-align:middle; }    
 .DEGRADAT_INFERIOR { background-image: url(DifuminatInferior.png); background-repeat: repeat-x; }
-#ESPAI { margin-top:20px; }
+#ESPAI { margin-top:20px; width:256px; }
             
-.FOTOS { text-align:center; vertical-align:middle; height:86px; width:25%; margin:0px; padding:0px; background-color:white; border:0px; }
-.FOTOS .IMG_FOTO { width:252px; height:80px; border:0px; }
+.FOTOS { text-align:center; vertical-align:middle; height:86px; width:256px; margin:0px; padding:0px; background-color:white; border:0px; }
+.FOTOS .IMG_FOTO { width:252px; height:80px; border:0px; vertical-align: bottom; display:block; }
             
 .MENU_TABLE { border-collapse: collapse; margin-top:20px; }
 .MENU_TABLE A { color:black; font-size:10px; text-decoration: none; }
@@ -188,7 +186,8 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
     
 .bold { font-weight:bold; }    
     
-.PESTANYA_SUPERIOR { margin-left:3px; float:right; }
+.PESTANYA_SUPERIOR { float:left; display:block; background-color:transparent; position:relative; left:0px; top:17px; }
+BUTTON.web {  }
 
 
 /*****************************/
@@ -234,4 +233,25 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
 	margin-bottom: 10px;
 	color: #864444;
 }
-    
+
+td.checkbox_list { border:1px solid #CCCCCC; background-color: #FFEFD7; }
+
+.checkbox_list li  {	
+	display: inline;
+	float:left;	
+	margin: 0px;
+	padding: 0px;
+	list-style: none;	
+}
+
+.ul_espais input { background-color:white; border:0px; }
+.ul_material input { background-color:white; border:0px; }
+
+li.ul_espais { 	
+	width:220px; 
+}
+
+li.ul_material{ 	
+	width:100px; 
+}
+ 

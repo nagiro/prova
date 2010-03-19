@@ -16,8 +16,8 @@ class BaseSubcategoriesForm extends BaseFormPropel
       'idSubcategories'                  => new sfWidgetFormInputHidden(),
       'Categories_idCategories'          => new sfWidgetFormPropelChoice(array('model' => 'Categories', 'add_empty' => false)),
       'Subcategoria'                     => new sfWidgetFormTextarea(),
-      'subcategories_has_fitxers_list'   => new sfWidgetFormPropelChoiceMany(array('model' => 'Fitxers')),
       'subcategories_has_entitats_list'  => new sfWidgetFormPropelChoiceMany(array('model' => 'Entitats')),
+      'subcategories_has_fitxers_list'   => new sfWidgetFormPropelChoiceMany(array('model' => 'Fitxers')),
       'subcategories_has_projectes_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Projectes')),
     ));
 
@@ -25,8 +25,8 @@ class BaseSubcategoriesForm extends BaseFormPropel
       'idSubcategories'                  => new sfValidatorPropelChoice(array('model' => 'Subcategories', 'column' => 'idSubcategories', 'required' => false)),
       'Categories_idCategories'          => new sfValidatorPropelChoice(array('model' => 'Categories', 'column' => 'idCategories')),
       'Subcategoria'                     => new sfValidatorString(array('required' => false)),
-      'subcategories_has_fitxers_list'   => new sfValidatorPropelChoiceMany(array('model' => 'Fitxers', 'required' => false)),
       'subcategories_has_entitats_list'  => new sfValidatorPropelChoiceMany(array('model' => 'Entitats', 'required' => false)),
+      'subcategories_has_fitxers_list'   => new sfValidatorPropelChoiceMany(array('model' => 'Fitxers', 'required' => false)),
       'subcategories_has_projectes_list' => new sfValidatorPropelChoiceMany(array('model' => 'Projectes', 'required' => false)),
     ));
 
@@ -47,17 +47,6 @@ class BaseSubcategoriesForm extends BaseFormPropel
   {
     parent::updateDefaultsFromObject();
 
-    if (isset($this->widgetSchema['subcategories_has_fitxers_list']))
-    {
-      $values = array();
-      foreach ($this->object->getSubcategoriesHasFitxerss() as $obj)
-      {
-        $values[] = $obj->getFitxersFitxersid();
-      }
-
-      $this->setDefault('subcategories_has_fitxers_list', $values);
-    }
-
     if (isset($this->widgetSchema['subcategories_has_entitats_list']))
     {
       $values = array();
@@ -67,6 +56,17 @@ class BaseSubcategoriesForm extends BaseFormPropel
       }
 
       $this->setDefault('subcategories_has_entitats_list', $values);
+    }
+
+    if (isset($this->widgetSchema['subcategories_has_fitxers_list']))
+    {
+      $values = array();
+      foreach ($this->object->getSubcategoriesHasFitxerss() as $obj)
+      {
+        $values[] = $obj->getFitxersFitxersid();
+      }
+
+      $this->setDefault('subcategories_has_fitxers_list', $values);
     }
 
     if (isset($this->widgetSchema['subcategories_has_projectes_list']))
@@ -86,44 +86,9 @@ class BaseSubcategoriesForm extends BaseFormPropel
   {
     parent::doSave($con);
 
-    $this->saveSubcategoriesHasFitxersList($con);
     $this->saveSubcategoriesHasEntitatsList($con);
+    $this->saveSubcategoriesHasFitxersList($con);
     $this->saveSubcategoriesHasProjectesList($con);
-  }
-
-  public function saveSubcategoriesHasFitxersList($con = null)
-  {
-    if (!$this->isValid())
-    {
-      throw $this->getErrorSchema();
-    }
-
-    if (!isset($this->widgetSchema['subcategories_has_fitxers_list']))
-    {
-      // somebody has unset this widget
-      return;
-    }
-
-    if (is_null($con))
-    {
-      $con = $this->getConnection();
-    }
-
-    $c = new Criteria();
-    $c->add(SubcategoriesHasFitxersPeer::SUBCATEGORIES_IDSUBCATEGORIES, $this->object->getPrimaryKey());
-    SubcategoriesHasFitxersPeer::doDelete($c, $con);
-
-    $values = $this->getValue('subcategories_has_fitxers_list');
-    if (is_array($values))
-    {
-      foreach ($values as $value)
-      {
-        $obj = new SubcategoriesHasFitxers();
-        $obj->setSubcategoriesIdsubcategories($this->object->getPrimaryKey());
-        $obj->setFitxersFitxersid($value);
-        $obj->save();
-      }
-    }
   }
 
   public function saveSubcategoriesHasEntitatsList($con = null)
@@ -156,6 +121,41 @@ class BaseSubcategoriesForm extends BaseFormPropel
         $obj = new SubcategoriesHasEntitats();
         $obj->setSubcategoriesIdsubcategories($this->object->getPrimaryKey());
         $obj->setEntitatsEntitatid($value);
+        $obj->save();
+      }
+    }
+  }
+
+  public function saveSubcategoriesHasFitxersList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['subcategories_has_fitxers_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (is_null($con))
+    {
+      $con = $this->getConnection();
+    }
+
+    $c = new Criteria();
+    $c->add(SubcategoriesHasFitxersPeer::SUBCATEGORIES_IDSUBCATEGORIES, $this->object->getPrimaryKey());
+    SubcategoriesHasFitxersPeer::doDelete($c, $con);
+
+    $values = $this->getValue('subcategories_has_fitxers_list');
+    if (is_array($values))
+    {
+      foreach ($values as $value)
+      {
+        $obj = new SubcategoriesHasFitxers();
+        $obj->setSubcategoriesIdsubcategories($this->object->getPrimaryKey());
+        $obj->setFitxersFitxersid($value);
         $obj->save();
       }
     }

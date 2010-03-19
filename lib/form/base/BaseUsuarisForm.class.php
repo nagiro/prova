@@ -29,9 +29,9 @@ class BaseUsuarisForm extends BaseFormPropel
       'Mobil'                           => new sfWidgetFormTextarea(),
       'Entitat'                         => new sfWidgetFormTextarea(),
       'Habilitat'                       => new sfWidgetFormInput(),
-      'usuaris_apps_list'               => new sfWidgetFormPropelChoiceMany(array('model' => 'Apps')),
       'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'AppDocumentsDirectoris')),
       'app_documents_permisos_list'     => new sfWidgetFormPropelChoiceMany(array('model' => 'AppDocumentsArxius')),
+      'usuaris_apps_list'               => new sfWidgetFormPropelChoiceMany(array('model' => 'Apps')),
     ));
 
     $this->setValidators(array(
@@ -51,9 +51,9 @@ class BaseUsuarisForm extends BaseFormPropel
       'Mobil'                           => new sfValidatorString(array('required' => false)),
       'Entitat'                         => new sfValidatorString(array('required' => false)),
       'Habilitat'                       => new sfValidatorInteger(array('required' => false)),
-      'usuaris_apps_list'               => new sfValidatorPropelChoiceMany(array('model' => 'Apps', 'required' => false)),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoiceMany(array('model' => 'AppDocumentsDirectoris', 'required' => false)),
       'app_documents_permisos_list'     => new sfValidatorPropelChoiceMany(array('model' => 'AppDocumentsArxius', 'required' => false)),
+      'usuaris_apps_list'               => new sfValidatorPropelChoiceMany(array('model' => 'Apps', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('usuaris[%s]');
@@ -72,17 +72,6 @@ class BaseUsuarisForm extends BaseFormPropel
   public function updateDefaultsFromObject()
   {
     parent::updateDefaultsFromObject();
-
-    if (isset($this->widgetSchema['usuaris_apps_list']))
-    {
-      $values = array();
-      foreach ($this->object->getUsuarisAppss() as $obj)
-      {
-        $values[] = $obj->getAppId();
-      }
-
-      $this->setDefault('usuaris_apps_list', $values);
-    }
 
     if (isset($this->widgetSchema['app_documents_permisos_dir_list']))
     {
@@ -106,50 +95,26 @@ class BaseUsuarisForm extends BaseFormPropel
       $this->setDefault('app_documents_permisos_list', $values);
     }
 
+    if (isset($this->widgetSchema['usuaris_apps_list']))
+    {
+      $values = array();
+      foreach ($this->object->getUsuarisAppss() as $obj)
+      {
+        $values[] = $obj->getAppId();
+      }
+
+      $this->setDefault('usuaris_apps_list', $values);
+    }
+
   }
 
   protected function doSave($con = null)
   {
     parent::doSave($con);
 
-    $this->saveUsuarisAppsList($con);
     $this->saveAppDocumentsPermisosDirList($con);
     $this->saveAppDocumentsPermisosList($con);
-  }
-
-  public function saveUsuarisAppsList($con = null)
-  {
-    if (!$this->isValid())
-    {
-      throw $this->getErrorSchema();
-    }
-
-    if (!isset($this->widgetSchema['usuaris_apps_list']))
-    {
-      // somebody has unset this widget
-      return;
-    }
-
-    if (is_null($con))
-    {
-      $con = $this->getConnection();
-    }
-
-    $c = new Criteria();
-    $c->add(UsuarisAppsPeer::USUARI_ID, $this->object->getPrimaryKey());
-    UsuarisAppsPeer::doDelete($c, $con);
-
-    $values = $this->getValue('usuaris_apps_list');
-    if (is_array($values))
-    {
-      foreach ($values as $value)
-      {
-        $obj = new UsuarisApps();
-        $obj->setUsuariId($this->object->getPrimaryKey());
-        $obj->setAppId($value);
-        $obj->save();
-      }
-    }
+    $this->saveUsuarisAppsList($con);
   }
 
   public function saveAppDocumentsPermisosDirList($con = null)
@@ -217,6 +182,41 @@ class BaseUsuarisForm extends BaseFormPropel
         $obj = new AppDocumentsPermisos();
         $obj->setIdusuari($this->object->getPrimaryKey());
         $obj->setIdarxiu($value);
+        $obj->save();
+      }
+    }
+  }
+
+  public function saveUsuarisAppsList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['usuaris_apps_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (is_null($con))
+    {
+      $con = $this->getConnection();
+    }
+
+    $c = new Criteria();
+    $c->add(UsuarisAppsPeer::USUARI_ID, $this->object->getPrimaryKey());
+    UsuarisAppsPeer::doDelete($c, $con);
+
+    $values = $this->getValue('usuaris_apps_list');
+    if (is_array($values))
+    {
+      foreach ($values as $value)
+      {
+        $obj = new UsuarisApps();
+        $obj->setUsuariId($this->object->getPrimaryKey());
+        $obj->setAppId($value);
         $obj->save();
       }
     }

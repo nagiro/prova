@@ -33,8 +33,7 @@
 			if(valida2()) { $("#form2").submit(); return true; }
 			else { return false; }
 		});
-		
-		
+				
 		$(function() {
 			$("#datepicker").datepicker({ 
 								dateFormat: 'yy-mm-dd' , 

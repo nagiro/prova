@@ -15,11 +15,13 @@ class BaseEspaisForm extends BaseFormPropel
     $this->setWidgets(array(
       'EspaiID' => new sfWidgetFormInputHidden(),
       'Nom'     => new sfWidgetFormInput(),
+      'Ordre'   => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
       'EspaiID' => new sfValidatorPropelChoice(array('model' => 'Espais', 'column' => 'EspaiID', 'required' => false)),
       'Nom'     => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'Ordre'   => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('espais[%s]');

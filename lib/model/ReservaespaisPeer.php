@@ -49,7 +49,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 	      $C4 = $C->getNewCriterion(self::PERSONALAUTORITZAT , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C5 = $C->getNewCriterion(self::ORGANITZADORS , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C6 = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      
+	      	      	      
 	      $C7 = $C->getNewCriterion(UsuarisPeer::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C8 = $C->getNewCriterion(UsuarisPeer::DNI , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C9 = $C->getNewCriterion(UsuarisPeer::COG1 , '%'.$CERCA.'%', CRITERIA::LIKE);
@@ -144,4 +144,22 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
             
    }
       
+   static function getNextCodi()
+   {
+   		$C = new Criteria();
+   		$C->addDescendingOrderByColumn(self::RESERVAESPAIID);   		
+   		$OO = self::doSelectOne($C)->getCodi();   		   		
+   		$O2 = "";
+   		   		
+   		if(empty($OO)):
+   			$O2 = '0000'.date('m',time()).date('Y',time());
+   		elseif(date('m',time()) == substr($OO,4,2) && date('Y',time()) == substr($OO,6,4) ):
+   			$O2 = sprintf("%'04u%'02u%'04u", strval(intval(substr($OO,0,3))+1) , substr($OO,4,2) , substr($OO,6,4) );
+   		else: 
+   			$O2 = '0000'.date('m',time()).date('Y',time());   			
+   		endif; 
+
+   		return $O2;
+   }
+   
 }

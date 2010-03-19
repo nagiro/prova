@@ -19,12 +19,12 @@ class webActions extends sfActions
    
   public function LoadWEB(sfWebRequest $request)
   {
-
+	
     $this->setLayout('layout'); $this->ERRORS = array(); $this->FOTOS = array();
     $this->ACCIO = 'noticies'; $this->TIPUS_MENU = 'WEB';  $this->CERCA = "";      
     $this->ACTIVITATS_CALENDARI = array(); $this->LLISTES = array(); $this->RESERVES = ARRAY(); 
     $this->MATRICULES = array(); $this->CURSOS = array(); $this->FUSUARI = new ClientUsuarisForm(); $this->MISSATGE = array();
-    $this->FRESERVA = new ClientReservesForm(); $this->DADES_MATRICULA = array();
+    $this->DADES_MATRICULA = array();  
     $this->OBERT = array(); $this->SELECCIONAT = 0;
 
     //Escollim les 4 fotos de la capçalera
@@ -239,7 +239,8 @@ class webActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {      
     
-    $this->LoadWEB($request);    
+    $this->LoadWEB($request);
+    $this->NOTICIA = null;    
 
     $accio = $request->getParameter('accio');    
         
@@ -259,7 +260,7 @@ class webActions extends sfActions
       		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):       		
             	$this->ACCIO  = 'web';            	
             else:            	        	            	
-		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);             
+		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);		   	                 
 		 		$this->ACCIO = 'noticies';	         	            
             endif; 
                                                 
@@ -355,9 +356,10 @@ class webActions extends sfActions
   {
      $this->LoadWEB($request);
      $this->setTemplate('index');
+     $this->GUARDADA = false;
      
      $accio = $this->getRequestParameter('accio');
-          
+     
      switch($accio){
        case 'gd':
 		    $this->MODUL = 'gestiona_dades';
@@ -381,11 +383,14 @@ class webActions extends sfActions
 			$this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getAttribute('idU'));            
 			break;
 	   case 'gr':
+	   		$OO = new Reservaespais();
+	   		$OO->setCodi(ReservaespaisPeer::getNextCodi());
+	   		$this->FRESERVA = new ClientReservesForm($OO);
 	        $this->MODUL = 'gestiona_reserves';
 	        $this->ACCIO = 'gestio';	        
 	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
 	        $this->getUser()->setAttribute('idR',0);
-	        if($request->getParameter('idR')){
+	        if($request->hasParameter('idR')){
 	        	$OR = ReservaespaisPeer::retrieveByPK($this->getRequestParameter('idR'));
 	        	$this->FRESERVA = new ClientReservesForm($OR);
 	        	$this->getUser()->setAttribute('idR',$OR->getReservaespaiid());	        		        
@@ -421,15 +426,13 @@ class webActions extends sfActions
 			if($this->FRESERVA->isValid()):
 				$this->FRESERVA->setUser($this->getUser()->getAttribute('idU'));
 				$this->FRESERVA->save();
-				$this->MISSATGE[] = "Dades modificades correctament";
+				$this->renderText('OK');
+				return sfView::NONE;				
 			else:
-				$this->MISSATGE[] = "Hi ha alguna dada incorrecta al formulari";	
+				$this->renderText('KO');
+				return sfView::NONE;
 			endif;			
-			
-			//Posem les dades de càrrega del mòdul
-	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
-	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';		    
-		    		       
+							
 	        break;
 
 	   //Anul·la la reserva
