@@ -12,6 +12,7 @@
 		<form action="<?php echo url_for('web/login') ?>" method="POST" name="form_login">    
 		    <DIV class="REQUADRE" style="width:440px">
 		    	<div class="FORMULARI">
+		    	<?php if($ERROR != ""): ?><div class="error" style="padding-bottom:10px;"><?php echo $ERROR?></div><?php endif; ?>          		    	
 			    	<div>	
 			    			<span class="T1"><b>DNI: </b></span>
 			    			<span><?php echo $FLogin['nick']->render(); ?></span>
@@ -36,6 +37,3 @@
     
        
     </TD>
-    
-		    	
-		    	<?php if($ERROR != ""): ?><tr><td class="error" colspan="2"><?php echo $ERROR?></td></td><?php endif; ?>          

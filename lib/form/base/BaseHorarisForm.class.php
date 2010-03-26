@@ -23,6 +23,10 @@ class BaseHorarisForm extends BaseFormPropel
       'Avis'                   => new sfWidgetFormTextarea(),
       'Espectadors'            => new sfWidgetFormInput(),
       'Places'                 => new sfWidgetFormInput(),
+      'Titol'                  => new sfWidgetFormInput(),
+      'Preu'                   => new sfWidgetFormInput(),
+      'PreuR'                  => new sfWidgetFormInput(),
+      'Estat'                  => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -36,6 +40,10 @@ class BaseHorarisForm extends BaseFormPropel
       'Avis'                   => new sfValidatorString(),
       'Espectadors'            => new sfValidatorInteger(),
       'Places'                 => new sfValidatorInteger(),
+      'Titol'                  => new sfValidatorString(array('max_length' => 255)),
+      'Preu'                   => new sfValidatorNumber(),
+      'PreuR'                  => new sfValidatorNumber(),
+      'Estat'                  => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('horaris[%s]');

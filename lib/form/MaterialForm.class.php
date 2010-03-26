@@ -99,7 +99,8 @@ class MaterialForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
-    parent::setup();
+    $this->widgetSchema->setFormFormatterName('Span');
+
   }
 
   public function getModelName()

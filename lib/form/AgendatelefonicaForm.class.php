@@ -37,6 +37,8 @@ class AgendatelefonicaForm extends BaseFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
     
+    $this->widgetSchema->setFormFormatterName('Span');
+    
     
     //unset($this['dataalta']);
   

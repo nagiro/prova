@@ -850,15 +850,15 @@ class gestioActions extends sfActions
      
     $this->setLayout('gestio');
 
-    $this->FCerca = new CercaChoiceForm();
-    $this->FCerca->setChoice(array(1=>'Tasques d\'avui',2=>'Tasques de la setmana',3=>'Tasques del mes'));
-	$this->FCerca->bind($request->getParameter('cerca'));
-	$this->CERCA = $this->FCerca->getValue('cerca[text]');
-    
     $this->NOU = false; 
     $this->EDICIO = false; 
     $this->CERCA = "";
     $accio = "";    
+    
+    $this->FCerca = new CercaChoiceForm();
+    $this->FCerca->setChoice(array(1=>'Tasques d\'avui',2=>'Tasques de la setmana',3=>'Tasques del mes'));
+	$this->FCerca->bind($request->getParameter('cerca'));	
+	$this->CERCA = $this->FCerca->getValue('text');        
 
     if($request->hasParameter('PAGINA'))  $this->PAGINA = $request->getParameter('PAGINA');
     else $this->PAGINA = 1;
@@ -906,8 +906,7 @@ class gestioActions extends sfActions
     		$this->getUser()->setAttribute('IDT',0);		
     		break;
     }
-
-  
+	      
     $this->TASQUES_ENCOMANADES = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getAttribute('idU'), $this->PAGINA , false);
 	$this->TASQUES_PERFER      = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getAttribute('idU'), $this->PAGINA , true);
         
@@ -982,7 +981,7 @@ class gestioActions extends sfActions
     $this->PAGINA 	= $this->ParReqSesForm($request,'PAGINA',1);
     $this->DATAI  	= $this->ParReqSesForm($request,'DATAI',time());    
     $this->DIA    	= $this->ParReqSesForm($request,'DIA',time());
-    $this->IDA    	= $this->ParReqSesForm($request,'IDA',0);        
+    $this->IDA    	= $this->ParReqSesForm($request,'IDA',0);            
     $accio  		= $this->ParReqSesForm($request,'accio','C');
     $this->ACTIVITAT_NOVA = false;    
         
@@ -991,18 +990,21 @@ class gestioActions extends sfActions
 	$this->FCerca->bind(array('text'=>$this->CERCA['text']));
 	
 	//Inicialitzem variables
-	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false,'LLISTAT'=>false,'CICLES'=>FALSE,'TEXTOS'=>FALSE,'HORARIS'=>FALSE);
+	$this->MODE = array();
 
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $accio = 'C'; $this->PAGINA = 1; }   
 	    elseif($request->hasParameter('BNOU')) 	    		$accio = 'NA';
-	    elseif($request->hasParameter('BSAVE')) 			$accio = 'S';
-	    elseif($request->hasParameter('BDELETE')) 			$accio = 'D';
-	    elseif($request->hasParameter('BSAVEACTIVITAT')) 	$accio = 'SA';
-	    elseif($request->hasParameter('BSAVEHORARIS')) 		$accio = 'SH';
-	    elseif($request->hasParameter('BDELETEHORARIS')) 	$accio = 'DH';
-	    elseif($request->hasParameter('BSAVEDESCRIPCIO')) 	$accio = 'ST';
-	    elseif($request->hasParameter('BSAVECICLE')) 		$accio = 'SC';
+	    elseif($request->hasParameter('BCICLE')) 			$accio = 'CICLE';
+	    elseif($request->hasParameter('BCICLESAVE'))		$accio = 'CICLE_SAVE';
+	    elseif($request->hasParameter('BACTIVITAT')) 		$accio = 'ACTIVITAT';
+	    elseif($request->hasParameter('BACTIVITATSAVE')) 	$accio = 'ACTIVITAT_SAVE';
+	    elseif($request->hasParameter('BHORARI')) 			$accio = 'HORARI';
+	    elseif($request->hasParameter('BHORARISAVE')) 		$accio = 'HORARI_SAVE';
+	    elseif($request->hasParameter('BHORARIDELETE')) 	$accio = 'HORARI_DELETE';
+	    elseif($request->hasParameter('BDESCRIPCIO')) 		$accio = 'DESCRIPCIO';
+	    elseif($request->hasParameter('BDESCRIPCIOSAVE')) 	$accio = 'DESCRIPCIO_SAVE';
+	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $accio = 'DESCRIPCIO_DELETE';	    	    
     }                
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pÃ gina es posa a 1
@@ -1010,7 +1012,7 @@ class gestioActions extends sfActions
     if($request->getParameter('accio') == 'CD') { $this->PAGINA = 1; }    
     if($request->hasParameter('DATAI')) { $this->DIA = ""; } 
     
-    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setAttribute('accio',$accio);    
     $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova
     $this->getUser()->setAttribute('DATAI',$this->DATAI);  
@@ -1018,7 +1020,7 @@ class gestioActions extends sfActions
    
     switch($accio){
     	
-    	//Consulta inicial del calendari sense prÃ¨mer cap dia, nomÃ©s amb un factor de cerca
+    	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
                 $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA['text'],$this->DATAI,$this->DATAF,null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                                                                
@@ -1034,8 +1036,8 @@ class gestioActions extends sfActions
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
-                $this->MODE['LLISTAT'] = true;
-    		break;
+                $this->MODE['LLISTAT'] = true;                                              
+            break;
     		
     		
     	//Consulta que em mostra les activitats d'un dia seleccionat del calendari
@@ -1044,23 +1046,129 @@ class gestioActions extends sfActions
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
-                $this->MODE['LLISTAT'] = true;
+                $this->MODE['LLISTAT'] = true;                                                              
+    		break;    	
+    		    		
+		//Entrem al primer pas d'una activitat.    		
+    	case 'NA':
+    			$this->FCicle = new ActivitatsPas1Form();
+    			$this->MODE['NOU'] = true;    			
+    			$this->getUser()->setAttribute('IDA',null);    		
     		break;
     		
-    	//Consulta una activitat
-    	case 'CA':    			
-    			$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);    			
-    			$this->FActivitat = new ActivitatsForm($OActivitat);
-    			$this->getUser()->setAttribute('IDA',$this->IDA);
-    			$this->MODE['EDICIO'] = true;
-    		break;
+    	//Pas DOS entrem la descripció del conjunt o passem als horaris
+    	case 'CICLE':
+    		
+    			//És una activitat nova!!
+    			if(!$request->hasParameter('IDA')):
+    				$RA = $request->getParameter('activitats');
+    				    				
+    				//Si és una sola activitat, passem directament als horaris.    			
+	    			if($RA['cicle'] == 1):
+	    				$this->getUser()->setAttribute('isCicle',0);
+	    				$this->getUser()->setAttribute('IDC',0);
+	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+	    				    			
+	    			
+	    			//Si és un cicle, apareix una descripció nova del cicle
+	    			else:    			
+	    				$OC = new Cicles();
+	    				$OC->setNom($RA['nom']);
+	    				$this->FCicle = new CiclesForm($OC);		    					    					    										
+						$this->MODE['CICLE'] = true;
+						$this->getUser()->setAttribute('isCicle',1);	
+						$this->getUser()->setAttribute('IDC',0);											    					    			
+	    			endif; 
 
-    	//Consulta els horaris
-    	case 'CH':
-    			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));    			
+	    		//Carreguem la descripció del cicle associat a l'activitat i si no en té passem directament al llistat
+    			else:    				
+    				$FActivitats = ActivitatsPeer::initilize($this->IDA);    				
+    				$cicle = $FActivitats['Cicles_CicleID']->getValue();
+    				if(!is_null($cicle)):
+	    				$this->FCicle = CiclesPeer::initialize($cicle);
+	    				$this->MODE['CICLE'] = true;	
+	    				$this->getUser()->setAttribute('isCicle',1);
+	    				$this->getUser()->setAttribute('IDC',$this->FCicle->getObject()->getCicleid());
+	    			else: 	    				
+	    				$this->getUser()->setAttribute('isCicle',0);
+	    				$this->getUser()->setAttribute('IDC',0);
+	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+	    			endif; 
+    			endif; 
+    		 
+    		break;
+    	    		
+    	//Guardem el projecte o activitat
+    	case 'CICLE_SAVE':
+				$RC = $request->getParameter('cicles');
+				$this->FCicle = CiclesPeer::initialize($RC['CicleID']);
+				$this->FCicle->bind($RC,$request->getFiles('cicles'));
+				if($this->FCicle->isValid()):
+					$this->FCicle->save();
+					$this->getUser()->setAttribute('IDC',$this->FCicle->getObject()->getCicleid());
+					$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+				else:
+					$this->MODE['ACTIVITAT'] = true; 					
+				endif;     			
+    		break;
+    		
+    	//Entrem les activitats... que necessitem
+    	case 'ACTIVITAT':
+    		    		    		
+    		//Una activitat d'un cicle
+    		if($this->getUser()->getAttribute('isCicle')):
+    			$this->MODE['ACTIVITAT_CICLE'] = true;
+    			$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getAttribute('IDC'));
+    			if($request->hasParameter('new')):
+    				$this->FActivitat = ActivitatsPeer::initilize(null,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
+    				$this->getUser()->setAttribute('IDA',0);
+    			endif;
+    			
+    		//Una sola activitat
+    		else:    		
+    			$this->MODE['ACTIVITAT_ALONE'] = true;
+    			$OA = ActivitatsPeer::retrieveByPK($this->IDA);
+    			
+    			if($OA instanceof Activitats):
+    				$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
+    			else:
+    				$this->ACTIVITATS = array();
+    			endif; 
+    			
+    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
+    		endif;
+    		     			
+    		break;
+    		
+    	//Guardem l'activitat
+    	case 'ACTIVITAT_SAVE':
+    		
+	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
+	    		$this->FActivitat->bind($request->getParameter('activitats'));
+	    		if($this->FActivitat->isValid()):
+	    			$this->FActivitat->save();
+	    			$this->getUser()->setAttribute('IDA',$this->FActivitat->getObject()->getActivitatid());
+	    			$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+	    		else: 
+	    			if($this->getUser()->getAttribute('isCicle')):
+	    				$this->MODE['ACTIVITAT_CICLE'] = true;
+    					$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getAttribute('IDC'));
+					else:
+						$this->MODE['ACTIVITAT_ALONE'] = true;
+	    				$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
+	    			endif;
+	    		endif; 
+    			
+    		break;
+    		
+    	//Entrem els horaris de les activitats
+    	case 'HORARI':
+    		
+				$this->CarregaActivitats(); 
+    			    			    			
+ 				$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);    			
     			$this->HORARIS = $OActivitat->getHorariss();
-    			$this->NOMACTIVITAT = $OActivitat->getNom();
-    			$this->MODE['HORARIS'] = true;
+    			$this->NOMACTIVITAT = $OActivitat->getNom();    			
     			    			
     			$OHorari = new Horaris();
     			$OHorari->setActivitatsActivitatid($this->getUser()->getAttribute('IDA'));    			    			
@@ -1075,152 +1183,108 @@ class gestioActions extends sfActions
     				$this->HORARI  = $H;    				
     				foreach($H->getHorarisespaiss() as $HE):    					
     					$this->ESPAISOUT[] = $HE->getEspaisEspaiid();
-    					//miro que sigui mÃ©s gran que 0 perquÃ¨ sinÃ³ pot ser que no tingui material associat
+    					//miro que sigui més gran que 0 perquè sinó pot ser que no tingui material associat
     					if($HE->getMaterialIdmaterial() > 0):
     						$OMaterial = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());    			    			
 			    			$this->MATERIALOUT[] = array('material'=>$HE->getMaterialIdmaterial(),'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    						 
     					endif;
     				endforeach;    				
-    			endif;    		    		    			
-    		break;    	
-    		
-    	//Consulta els textos del web
-    	case 'CT':                			    
-                $OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
-                if($OActivitat->countHorariss() > 0):
-	                $this->NOMACTIVITAT = $OActivitat->getNom();
-	                $this->FActivitat = new ActivitatsTextosForm($OActivitat);                
-	                $this->MODE['TEXTOS'] = true;       
-	            else:
-	            	$this->redirect('gestio/gActivitats?accio=CH');
-	            endif;
-            break;
-            
-		//Guarda els textos del web            
-    	case 'ST':
-    			
-    			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
-    			$this->NOMACTIVITAT = $OActivitat->getNom();
-    			$this->FActivitat = new ActivitatsTextosForm($OActivitat);    			
-    			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
-    			if($this->FActivitat->isValid()):     				
-    				$this->FActivitat->save(); 
-    				$this->redirect('gestio/gActivitats?accio=C');    				    				
-    			endif;
-    			
-    			$this->MODE['TEXTOS'] = true;
+    			endif;    		    
+    					    			
+ 				 $this->MODE['HORARI'] = true;
     		break;
+		
+    	case 'HORARI_SAVE':
     		
-    	//Save Horaris
-    	case 'SH':	
-			
-			$OActivitat = ActivitatsPeer::retrieveByPK($this->getUser()->getAttribute('IDA'));
-			$this->NOMACTIVITAT = $OActivitat->getNom();
-    		$this->HORARIS = $OActivitat->getHorariss();
-    		
-    		$idH = $this->getUser()->getAttribute('IDH');
-    		$OHorari = HorarisPeer::retrieveByPK($idH);
-    		if($idH == 0 ) $this->FHorari = new HorarisForm();
-    		else   		   $this->FHorari = new HorarisForm($OHorari);
-
-    		$this->MATERIALOUT = array();
-    		$material = $request->getParameter('material');    		
-    		if(!is_array($material)) $material = array();    		
-    		foreach($material as $M=>$idM):
-    			if($idM > 0):
-	    			$OMaterial = MaterialPeer::retrieveByPK($idM);    			    			
-	    			$this->MATERIALOUT[] = array('material'=>$idM,'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    			    		
+	    		$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
+	    		$this->NOMACTIVITAT = $OActivitat->getNom();
+	    		$this->HORARIS = $OActivitat->getHorariss();
+	    		
+	    		$idH = $this->getUser()->getAttribute('IDH');
+	    		$OHorari = HorarisPeer::retrieveByPK($idH);
+	    		if($idH == 0) 	$this->FHorari = new HorarisForm();
+	    		else			$this->FHorari = new HorarisForm($OHorari);
+	    		
+	    		$this->MATERIALOUT = array();
+	    		$material = $request->getParameter('material');
+	    		if(!is_array($material)) $material = array();
+	    		foreach($material as $M=>$idM):
+	    			if($idM > 0):
+	    				$OMaterial = MaterialPeer::retrieveByPK($idM);
+	    				$this->MATERIALOUT[] = array('material'=>$idM,'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());
+	    			endif;
+	    		endforeach;
+	    		
+	    		$espais = $request->getParameter('espais');
+	    		if(!is_array($espais)) $espais = array();
+	    		$this->ESPAISOUT = $espais;
+	    		
+	    		$this->FHorari->bind($request->getParameter('horaris'));
+	    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$this->MATERIALOUT,$this->ESPAISOUT);
+	    		if(empty($RET)):
+	    			$this->MISSATGE = array(1=>'Horari guardat correctament');
+	    			$this->redirect('gestio/gActivitats?accio=HORARI');
+	    		else:
+	    			$this->MISSATGE = $RET;
 	    		endif; 
-    		endforeach;    		    		    		
-			$espais = $request->getParameter('espais');
-    		if(!is_array($espais)) $espais = array();  
-    		$this->ESPAISOUT   = $espais;     		    		    		
-    		
-    		$this->FHorari->bind($request->getParameter('horaris'));
-    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$this->MATERIALOUT,$this->ESPAISOUT);    		   			
-   			if(empty($RET)):
-   				$this->MISSATGE = array(1=>"Horari guardat correctament");
-	    		$this->redirect('gestio/gActivitats?accio=CH');
-   			else:
-   				$this->MISSATGE = $RET;
-   			endif;    		
-
-    		$this->MODE['HORARIS'] = true;
-    		   			   			
-   		break;
-
-		//Gestiona una nova activitat    		
-    	case 'NA':    			
-    			$OActivitat = new Activitats();    			
-    			$this->FActivitat = new ActivitatsForm($OActivitat);    			
-    			$this->MODE['NOU'] = true;
-    			$this->ACTIVITAT_NOVA = true;
-    			$this->getUser()->setAttribute('IDA',null);
+	    		
+	    		$this->CarregaActivitats();
+	    		
+	    		$this->MODE['HORARI'] = true;
+	    			    			    		    	    			
     		break;
-
-    	//Guarda una activitat
-    	case 'SA':
     		
-    			$idA = $this->getUser()->getAttribute('IDA');    			
-    			$OActivitat = ActivitatsPeer::retrieveByPK($idA); 
+    	case 'HORARI_DELETE':
+    			HorarisespaisPeer::delHorari($this->IDH);
+    			HorarisPeer::retrieveByPK($this->IDH)->delete();
+    			$this->redirect('gestio/gActivitats?accio=HORARI');
+    		break;
+    		
+    	case 'DESCRIPCIO':
+    		
+    			$this->CarregaActivitats();
     			
-				$this->FActivitat = new ActivitatsForm($OActivitat);
-				$this->FActivitat->bind($request->getParameter('activitats'));
-				
-				if($this->FActivitat->isValid()):
-					$this->FActivitat->save();
-					$this->getUser()->setAttribute('IDA',$this->FActivitat->getObject()->getActivitatid());
-					$this->redirect('gestio/gActivitats?accio=CH');							
-				else:
-					$this->MODE['EDICIO'] = true;	
-				endif; 
-								
+    			$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
+    			$this->NOMACTIVITAT = $OActivitat->getNom();
+    			$this->FActivitat = new ActivitatsTextosForm($OActivitat);
+    			$this->MODE['DESCRIPCIO'] = true;
+    				    			     			    			
+    		break;
+    	
+    	case 'DESCRIPCIO_SAVE':
+    			
+    			$this->CarregaActivitats();
+    			$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
+    			$this->FActivitat = new ActivitatsTextosForm($OActivitat);
+    			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
+    			if($this->FActivitat->isValid()): 
+    				$this->FActivitat->save();
+    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+    			endif; 
+    			
+    			$THIS->MODE['DESCRIPCIO'] = true;
     		
     		break;
-
-    	//Visualitzem els cicles	    		
-		case 'AC' :								
-				$this->LLISTA_CICLES = CiclesPeer::getCiclesActius();				
-				$this->MODE['CICLES'] = true;
-			break;					        
-		case 'DC':
-				$OCicles = CiclesPeer::retrieveByPK($request->getParameter('idC'));
-				$OCicles->setBaixa(true);
-				$OCicles->save();				
-				$this->LLISTA_CICLES = CiclesPeer::getCiclesActius();				
-				$this->MODE['CICLES'] = true;
-			break;
-		case 'SC':
-				$OCicles = new Cicles();
-				$OCicles->setNew(true);
-				$OCicles->setNom($request->getParameter('NOM'));
-				$OCicles->setDescripcio($request->getParameter('DESCRIPCIO'));
-				$OCicles->setBaixa(0);
-				$OCicles->save();
-				$this->LLISTA_CICLES = CiclesPeer::getCiclesActius();				
-				$this->MODE['CICLES'] = true;
-			break;
-			
-		//Esborra un horari
-		case 'DH':
-			HorarisespaisPeer::delHorari($this->getUser()->getAttribute('IDH'));
-			HorarisPeer::retrieveByPK($this->getUser()->getAttribute('IDH'))->delete();
-			$this->redirect('gestio/gActivitats?accio=CH');
-			break;
+    	
+    	case 'DESCRIPCIO_DELETE':
+    			
+    		break;
+    					
     }
-  
+     
   }  
-  
-  public function saveCicle()
+
+  private function CarregaActivitats()
   {
-     $C = new Cicles();
-     $C->setNew(true);
-     $NOM = $this->getRequestParameter('NOM');
-     if(!empty($NOM)):
-	     $C->setNom($NOM);
-	     $C->setDescripcio($this->getRequestParameter('DESCRIPCIO'));
-	     $C->save();
-	 endif;     
+  	
+  	if($this->getUser()->getAttribute('isCicle')):
+    	$this->MODE['ACTIVITAT_CICLE'] = true;
+    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getAttribute('IDC'));
+    else:
+    	$this->MODE['ACTIVITAT_ALONE'] = true;
+    	$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
+    endif;
+  	
   }
   
   public function GuardaHorari($horaris, $material, $espais)
@@ -1247,9 +1311,9 @@ class gestioActions extends sfActions
   	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
   	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
   			              
-    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )   $ERRORS[] = "L'hora de preparaciÃ³ no pot ser mÃ©s gran que la d'inici.";
-    if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser mÃ©s gran o igual que la d'acabament.";
-    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] ) $ERRORS[] = "L'hora d'acabament no pot ser mÃ©s gran que la de desmuntatge.";                
+    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )   $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
+    if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran o igual que la d'acabament.";
+    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] ) $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                
     
     if(empty($espais)) $ERRORS[] = "Has d'entrar algun espai";
         
@@ -1266,7 +1330,7 @@ class gestioActions extends sfActions
 	    		if( HorarisPeer::validaMaterial( $D , $idE , $M['material'] , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
 	    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
 	    			$Mater = MaterialPeer::retrieveByPK($M['material'])->getNom();
-	    			$ERRORS[] = "El material $Mater de l'aula $Espai estÃ  reservat el dia $D";
+	    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
     			endif;	    	
 	    	endforeach;     	
     	endforeach;
@@ -1283,38 +1347,6 @@ class gestioActions extends sfActions
     return $ERRORS;
      
   }
-  
-  public function GuardaText($idA)
-  {
-
-    $A = ActivitatsPeer::retrieveByPK($idA);
-            
-    $A->setTnoticia($this->getRequestParameter('TITOL_NOTICIA'));                
-    $A->setDnoticia($this->getRequestParameter('TEXT_NOTICIA'));    
-    $A->setTweb($this->getRequestParameter('TITOL_WEB'));
-    $A->setDweb($this->getRequestParameter('TEXT_WEB'));    
-    $A->setTgeneral($this->getRequestParameter('TITOL_GENERAL'));
-    $A->setDgeneral($this->getRequestParameter('TEXT_GENERAL'));            
-    $A->setPublicaweb($this->hasRequestParameter('PUBLICA'));
-            
-    $aFiles = $this->getRequest()->getFiles();                                  
-    if(strlen($aFiles['IMATGE']['name']) > 5):    	
-		$fileName = $idA.'I.'.self::findexts($aFiles['IMATGE']['name']);		//Codi d'activitat+I+.+ext (1I.png) 
-    	$this->getRequest()->moveFile('IMATGE', sfConfig::get('sf_web_dir').'/images/noticies/'.$fileName);
-    	$A->setImatge($fileName);
-    endif;
-
-    if(strlen($aFiles['PDF']['name']) > 5):    	
-		$fileName = $idA.'P.'.self::findexts($aFiles['PDF']['name']);		//Codi d'activitat+P+.+ext (1I.png) 
-    	$this->getRequest()->moveFile('PDF', sfConfig::get('sf_web_dir').'/images/noticies/'.$fileName);
-    	$A->setPdf($fileName);
-    endif;        
-    
-    $A->save();
-    
-    return $A;
-  }
-  
     
   function sumarmesos($data,$mesos)
   { 

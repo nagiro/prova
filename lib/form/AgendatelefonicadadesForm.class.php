@@ -29,13 +29,13 @@ class AgendatelefonicadadesForm extends BaseFormPropel
     ));
         
     $this->widgetSchema->setNameFormat("agendatelefonicadades[%s]");
-    $this->widgetSchema->setFormFormatterName('Horizontal');
+    $this->widgetSchema->setFormFormatterName('Span');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);            
 
     unset($this['AgendaTelefonica_AgendaTelefonicaID']);
     
-    parent::setup();
+//    parent::setup();
   }
 
   

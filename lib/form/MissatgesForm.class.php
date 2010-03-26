@@ -51,7 +51,8 @@ class MissatgesForm extends sfFormPropel
     	'Publicacio' 	=> date('Y-m-d',time()),    	    	
     ));
     
-    parent::setup();
+    $this->widgetSchema->setFormFormatterName('Span');
+    
   }
   
   public function save($conn = null)

@@ -1,8 +1,11 @@
 <?php use_helper('Form'); ?>
 
-<STYLE>
-.cent { width:100%; }
-</STYLE>
+<style> 
+	.row { width:500px; } 
+	.row_field { width:80%; } 
+	.row_title { width:20%; }
+	.row_field input { width:100%; } 
+</style>
 
 <script type="text/javascript">
 
@@ -31,6 +34,32 @@ function OmpleCerca(text){
 }
 
 
+function linia(id, t, d, n, s, idA)
+{
+	return '			<div id="row['+id+']" class="clear row fb"> ' +
+							'<div class="row_title fb">'+  		
+								'<span class="fb">&nbsp;' +								
+								'</span>' +
+							'</div>' +
+							'<div class="row_field fb">'+
+								'<span class="fb ">' +
+									'<input type="hidden" value="'+idA+'" name="Dades['+id+'][id]"></input>' +
+						      		'<select name="Dades['+id+'][Select]">'+s+'</select>' +
+								'</span>' +
+								'<span class="fb" style="padding-left:5px;">' +
+									'<input style="width:150px" name="Dades['+id+'][Dada]" value="'+d+'" type="text">' +
+								'</span>' +
+								'<span class="fb" style="padding-left:5px;">' +
+									'<input style="width:120px" name="Dades['+id+'][Notes]" type="text" value="'+n+'">' +
+								'</span>' +
+								'<span class="fb" style="padding-left:5px;">' +
+									'<input style="width:10px" type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input>' +
+								'</span>' +							
+							'</div>' +
+						'</div>';		
+
+}
+
 function creaNovaDada()
 {
 	
@@ -39,8 +68,8 @@ function creaNovaDada()
 	$("#id").val(id);		
 				
 	var select  = '<?php echo AgendatelefonicadadesPeer::getSelectHTML() ?>';
-	$("#taula").append('<tr id="row['+id+']"><td><input type="hidden" value="0" name="Dades['+id+'][id]"></input><select name="Dades['+id+'][Select]">'+select+'</select></td><td><input name="Dades['+id+'][Dada]" value="" type="text"></td><td><input name="Dades['+id+'][Notes]" type="text"></td><td><input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input></td></tr>');
-																				
+	$("#taula").append(linia(id, 1,'','',select, 0));
+																					
 }
 
 function creaNovaDadaVella(t, d, n, s, idA)
@@ -50,7 +79,7 @@ function creaNovaDadaVella(t, d, n, s, idA)
 	id = (parseInt(id) + parseInt(1));
 	$("#id").val(id);		
 					
-	$("#taula").append('<tr id="row['+id+']"><td><input type="hidden" value="'+idA+'" name="Dades['+id+'][id]"></input><select name="Dades['+id+'][Select]">'+s+'</select></td><td><input name="Dades['+id+'][Dada]" value="'+d+'" type="text"></td><td><input name="Dades['+id+'][Notes]" value="'+n+'" type="text"></td><td><input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input></td></tr>');
+	$("#taula").append(linia(id, t, d, n, s, idA));
 																				
 }
 
@@ -64,17 +93,13 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
     <?php include_partial('breadcumb',array('text'=>'AGENDA')); ?>
     
     <form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST" id="FCERCA">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">	    	         
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
-	            		<!-- <button name="BCERCA">Prem per buscar</button>  -->
-	            		<button name="BNOU">Nou contacte</button>	            		
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Simple',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BNOU',
+    																'text'=>'Nou contacte')))); ?>
      </form>    
 
       
@@ -82,35 +107,33 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
       
 	<form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">
 		            
-	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gAgenda?accio=C'); ?></div>	 		
-	    	<table class="FORMULARI" width="500px">	    			    		
-                <?php echo $FAgenda?>                			    
-			    <tr><td></td><td colspan="3">			    		
-			    		<input type="hidden" value="<?php echo sizeof($DADES) ?>" id="id"></input>
-			    		<table id="taula">			    	
-			    		</table>			    	
-			    	</td>
-			    </tr>                	             
-			    <tr><td></td><td colspan="3"><input type="button" value="+" id="mesdades"></input></td></tr>   								
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">	            	
-						<?php include_partial('botonera',array('element'=>'TOTA l\'agenda'))?>
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+	 	<div class="REQUADRE fb">
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gAgenda?accio=C')) ?>
+					 	 		
+	 		<div class="FORMULARI fb">
+	 			<?php echo $FAgenda?>
+	 			<input type="hidden" value="<?php echo sizeof($DADES) ?>" id="id"></input>
+	 			<div id="taula">
+	 				<input type="button" value="+" id="mesdades" class="clear fb"></input>		 			
+	 			</div>
+	 		
+	 		<?php include_partial('botoneraDiv',array('element'=>'TOTA l\'agenda')); ?>		
+	 		</div>
+	 			 	 	
+      	</div>
+      	
      </form>    
     
   <?php ELSE: ?>
       
       <DIV class="REQUADRE">   	  
         <DIV class="TITOL">Llistat contactes</DIV>
-      	<TABLE id="LLISTAT_DADES" class="DADES">
+      	<TABLE id="LLISTAT_DADES" class="DADES" style="border-collapse: collapse;" >
 			<!-- Aquí hi apareix el llistat que surt de la funció AJAX gestio/SearchAjaxAgenda i Partial( _listAgenda ) -->      	
       	</TABLE>      
       </DIV>
+      
+              
                
   <?php ENDIF; ?>
                

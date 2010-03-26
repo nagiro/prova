@@ -9,7 +9,7 @@
  */ 
 class MaterialgenericPeer extends BaseMaterialgenericPeer
 {
-
+	
   static public function selectFormulariUsuaris()
   {
   	return array(1=>'Portàtil',2=>'Projector',3=>'DVD',4=>'Microfonia');
@@ -92,8 +92,6 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
     return $RET;    
       
   }
-  
-  
   
   /**
    * Entrem l'identificador de la línia que estem tractant

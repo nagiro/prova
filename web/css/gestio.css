@@ -54,7 +54,7 @@ BUTTON:focus { background: #FFD7DC; }
 .FORMULARI .error_list { color: red; font-size:16px; font-weight:bold;  }
 .FORMULARI .missat_ok { background-color:#FFF5C1; height:30px; text-align:center; }
 .FORMULARI .missat_ko {  }
-.DADES { width:100%; }
+.DADES { width:100%; border-collapse: collapse; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
 .DADES TD.PAR { background-color:#DDDDDD; }
@@ -187,6 +187,11 @@ li.CERCA { border:2px solid #CCCCCC; padding:10px; }
 .bold { font-weight:bold; }    
     
 .PESTANYA_SUPERIOR { float:left; display:block; background-color:transparent; position:relative; left:0px; top:17px; }
+.fb { float:left; display:block; }
+.clear { clear: both; }
+.title { font-weight:bold; }
+.row { padding-bottom:5px; }
+.pp { padding:2px; }
 BUTTON.web {  }
 
 

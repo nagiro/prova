@@ -30,4 +30,16 @@ class CiclesPeer extends BaseCiclesPeer
   	return self::doSelect($C);
   }
   
+  static public function initialize($idC)
+  {
+  	$OC = self::retrieveByPK($idC);
+  	if($OC instanceof Cicles):
+  		return new CiclesForm($OC);
+  	else: 
+  		$OC = new Cicles();
+  		return new CiclesForm($OC);
+  	endif; 
+  	
+  }
+  
 }

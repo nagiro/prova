@@ -21,7 +21,7 @@ class TasquesPeer extends BaseTasquesPeer
 		    $FI = date( "Y-m-d" , mktime( 0 , 0 , 0 , date( 'm' , time() ) , date( 'd' , time() )+7 , date( 'Y' , time() ) ) );	
 		elseif($QUAN == 3):			//Mensual
 			$IN = date( "Y-m-d" , mktime( 0 , 0 , 0 , date( 'm' , time() )   , date( 'd' , time() )   , date( 'Y' , time() ) ) );
-		    $FI = date( "Y-m-d" , mktime( 0 , 0 , 0 , date( 'm' , time()+1 ) , date( 'd' , time() ) , date( 'Y' , time() ) ) );
+		    $FI = date( "Y-m-d" , mktime( 0 , 0 , 0 , date( 'm' , time() ) + 1 , date( 'd' , time() ) , date( 'Y' , time() ) ) );
 		else:
 			$IN = date( "Y-m-d" , mktime( 0 , 0 , 0 , date( 'm' , time() ) , date( 'd' , time() )   , date( 'Y' , time() ) ) );
 		    $FI = date( "Y-m-d" , mktime( 0 , 0 , 0 , date( 'm' , time() ) , date( 'd' , time() )   , date( 'Y' , time() ) ) );				

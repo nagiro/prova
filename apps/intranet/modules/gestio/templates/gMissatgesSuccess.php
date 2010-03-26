@@ -7,42 +7,50 @@
 .gray { background-color: #DDDDDD; }
 .NOM { width:20%; } 
 
+	.row { width:500px; } 
+	.row_field { width:80%; } 
+	.row_title { width:20%; }
+	.row_field input { width:100%; } 
+
+
 </STYLE>
    
     <TD colspan="3" class="CONTINGUT">
       
-    <?php include_partial('breadcumb',array('text'=>'TAULELL')); ?>        
+    <?php include_partial('breadcumb',array('text'=>'TAULELL')); ?>
     
-	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou missatge" />
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
-     </form>  
-      
+    <form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST" id="FCERCA">
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Simple',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Prem per buscar'),
+    														array(
+    																'name'=>'BNOU',
+    																'text'=>'Nou missatge')    														
+    													)
+    										)
+    							); ?>
+     </form>
+            
+          
 
   <?php IF( $NOU || $EDICIO ): ?>
       
-	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">      
-		<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMissatges?accio=C'); ?></div>
-			<table class="FORMULARI" width="70%">
-				<?php echo $FMissatge ?>
-        		<tr>
-		           	<td colspan="2" class="dreta">
-						<?php include_partial('botonera',array('element'=>'el missatge'))?>
-	            	</td>
-	            </tr>				
-			</table>				
-		</DIV>
-		
+	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">
+	
+	 	<div class="REQUADRE fb">
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gMissatges?accio=C')) ?>
+					 	 		
+	 		<div class="FORMULARI fb">
+	 			<?php echo $FMissatge ?>	 		
+	 			<?php include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
+	 		</div>
+	 			 	 	
+      	</div>
+			
 	</form>      
       
   <?php ELSE: ?>

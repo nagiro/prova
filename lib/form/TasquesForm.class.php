@@ -60,6 +60,8 @@ class TasquesForm extends sfFormPropel
     $this->widgetSchema->setNameFormat('tasques[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+    
+    $this->widgetSchema->setFormFormatterName('Span');
 
     $this->setDefault('Aparicio',date('Y-m-d',time()));
     $this->setDefault('Desaparicio',date('Y-m-d',time()));    

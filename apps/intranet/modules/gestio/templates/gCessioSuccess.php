@@ -7,6 +7,13 @@
 .vuitanta { width:80%; }
 .cinquanta { width:50%; }
 .HTEXT { height:100px; }
+
+	.row { width:500px; } 
+	.row_field { width:80%; } 
+	.row_title { width:20%; }
+	.row_field input { width:100%; } 
+
+
 </STYLE>
 
 <script>
@@ -46,7 +53,14 @@ $(document).ready(function() {
 		$("#idV").val(id);		
 				
 		var options = '<?php echo MaterialgenericPeer::selectAjax(); ?>';
-		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select onChange="validaDisponibilitatMaterial(this)" name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
+		$("#divTxt").append(' ' + 
+		'<div class="fb clear" style="width:500px; padding-bottom:20px;" id="row['+id+']">' +
+		'<span style="width:100px;" class="fb">&nbsp;</span>' +
+		'<span style="width:100px;" class="fb"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select></span>' +
+		'<span style="width:150px;" class="fb"><select onChange="validaDisponibilitatMaterial(this)" name="material[' + id + ']" id="material[' + id + ']"></select></span>' +	
+	  	'<span style="width:50px;" class="fb"><button onClick="esborraLinia(' + id + ');" id="mesmaterial">-</button></span>' +	  	 	  	        		
+	  	'</div>');
+				
 		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
 	}
 
@@ -80,61 +94,64 @@ $(document).ready(function() {
 	<?php include_partial('breadcumb',array('text'=>'CESSIÓ')); ?>
                                  
     <form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="FCERCA">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
-	            		<button name="BCERCA">Prem per buscar</button>
-	            		<button name="BNOU_CESSIO">Nova cessió</button>	            			            		
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+    
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Select',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Cerca')
+    														,
+    														array(
+    																'name'=>'BNOU_CESSIO',
+    																'text'=>'Nova cessió')
+    														)    														
+    										)); ?>    
+        
      </form>   
   
   <?php IF( $MODE == 'NOU_CESSIO' || $MODE == 'EDICIO_CESSIO' ): ?>
       
-	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="fcessio">            
-	 	<DIV class="REQUADRE">
-	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C'))?>
-	    	<table class="FORMULARI" width="550px">
-	    	<tr><td class="error" colspan="2"><?php echo ComprovaError($ERROR_OCUPAT); ?></td></tr>	    		    
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FCessio?>                								
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<button class="BOTO_ACTIVITAT" name="BESCULL_MATERIAL">Seguir cessió --></button>						
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="fcessio">
+ 	
+	 	<div class="REQUADRE fb">
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C')) ?>
+						 	 		
+		 		<div class="FORMULARI fb">
+		 		
+		 			<?php echo $FCessio ?>		 		
+		 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BESCULL_MATERIAL','text'=>'Seguir cessió -->')); ?>
+		 					
+		 		</div>
+	 			 	 	
+		</div>
+ 			            
      </form>    
 
   <?php elseif( $MODE == 'ESCULL_MATERIAL' ): ?>
       
-	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="fmaterial">            
-	 	<DIV class="REQUADRE">
-	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C'))?>
-	    	<table class="FORMULARI" width="550px">	    		    		   
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <tr><td id="material"></td></tr>                								
-                <tr>
-                	<td width="100%">
-                	<div class="TITOL">Escull el material de la cessió: </div>
+	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="fmaterial">
+ 	
+	 	<div class="REQUADRE fb">
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C')) ?>
+						 	 		
+		 		<div class="FORMULARI fb">
+		 		<div class="TITOL">Escull el material de la cessió: </div>
+				<div>
+															
                 	<?php 
 						$id = 1;  $VAL = "";
 						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
 	             		foreach($MATERIALOUT AS $M=>$idM):
-	
+	             			             		
 	             		$VAL .= '
-	  	 	  	        		<span id="row['.$id.']">
-	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
-	  	 	  	        			<select onChange="validaDisponibilitatMaterial(this)" name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select>	
-	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
-	  	 	  	        			<br />
-	  	 	  	        		</span>  	 	  	        			
+	  	 	  	        		<div class="fb clear" style="width:500px; padding-bottom:20px;" id="row['.$id.']">
+	  	 	  	        			<span style="width:100px;" class="fb">&nbsp;</span>
+		  	 	  	        		<span style="width:100px;" class="fb"><select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select></span>
+		  	 	  	        		<span style="width:150px;" class="fb"><select style="width:150px" onChange="validaDisponibilitatMaterial(this)" name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select></span>	
+		  	 	  	        		<span style="width:50px;" class="fb"><input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input></span>	  	 	  	        		
+	  	 	  	        		</div>  	 	  	        			
 	             			  ';
 	             		      $id++;      	             		      
 	             		                   		      	
@@ -145,18 +162,13 @@ $(document).ready(function() {
 	             						    
 	             	?>             	             	            
                 	                	                	
-                	</td>
-               	</tr>
-               	<tr>
-               		<td class="TITOL">Material no inventariat<br /><textarea name="material_no_inventariat" ><?php echo $MAT_NO_INV; ?></textarea></td>               		
-               	</tr>
-               	<tr>
-	            	<td colspan="2" class="dreta">
-	            		<button class="BOTO_ACTIVITAT" name="B_SAVE_CESSIO">Finalitzar cessió</button>						
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+				</div>
+				<div class="fb TITOL" style="width:100%">Material no inventariat</div>
+               	<?php include_partial('fieldSpan',array('field'=>'<textarea rows="5" name="material_no_inventariat" >'.$MAT_NO_INV.'</textarea>')); ?>
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'B_SAVE_CESSIO','text'=>'Seguir cessió -->')); ?>		 							 			 			 	 	
+		</div>
+		</div>
+                	
      </form>    
 
   <?php elseif( $MODE == 'FINALITZAT' ): ?>

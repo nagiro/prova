@@ -46,6 +46,7 @@ class CessiomaterialForm extends sfFormPropel
     ));           
     
     $this->widgetSchema->setNameFormat('cessiomaterial[%s]');
+    $this->widgetSchema->setFormFormatterName('Span');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
    

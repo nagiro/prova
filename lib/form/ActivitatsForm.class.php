@@ -15,7 +15,8 @@ class ActivitatsForm extends sfFormPropel
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormInput(array(),array('style'=>'width:400px')),    
-      'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect())),
+/*      'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect())), */
+      'Cicles_CicleID'                  => new sfWidgetFormInputHidden(),
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
       'Preu'                            => new sfWidgetFormInput(),
       'PreuReduit'                      => new sfWidgetFormInput(),
@@ -48,8 +49,9 @@ class ActivitatsForm extends sfFormPropel
     $this->widgetSchema->setNameFormat('activitats[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+    
+    $this->widgetSchema->setFormFormatterName('Span');
 
-    parent::setup();
   }
 
   public function getModelName()

@@ -2,11 +2,17 @@
 <?php use_helper('Javascript')?>
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick.js')?>
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick-ca.js')?>
+<?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
+<?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
 
-  
-    <TD colspan="3" class="CONTINGUT">
+<style>
 
-	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>
+	.row { width:500px; } 
+	.row_field { width:70%; } 
+	.row_title { width:30%; }
+	.row_field input { width:100%; } 
+		
+</style>
 
 	<script type="text/javascript">
 
@@ -18,8 +24,24 @@
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
 		 $("#mesespais").click( function () { creaFormEspais(); });
 		 $("#horaris_HoraPre_hour").change( function () { actualitzaHores(); });
+		 
+		 $("#activitats_cicle").change(function (){ Cicle(this.value); });
+		 
+		 $("#activitats_nom").fadeOut(0);						 
+		 $("label[for=activitats_nom]").fadeOut(0);
 
 	 });
+
+	function Cicle(val)
+	{	
+		if(val == 1){
+			$("#activitats_nom").fadeOut(1000);						 
+			$("label[for=activitats_nom]").fadeOut(1000);
+		} else {
+			$("#activitats_nom").fadeIn(1000);
+			$("label[for=activitats_nom]").fadeIn(1000); 
+		}
+	}
 
 	 //Funció que controla la crida AJAX 
 	function ajax(d, iCtrl)
@@ -81,9 +103,14 @@
 	}
 	
 	</script>
-	                   	                   
-  <?php IF ($MODE['CONSULTA']): ?>
 
+
+  
+<TD colspan="3" class="CONTINGUT">	
+
+	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>
+		                   	                   
+	<?php IF ( isset($MODE['CONSULTA']) || isset($MODE['LLISTAT']) ): ?>
 
 	<form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
 	    <DIV class="REQUADRE">
@@ -112,41 +139,113 @@
 	     </DIV>
      </form>                  
      
-  <?php ENDIF; IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
+  <?php endif; if( isset($MODE['NOU']) || isset($MODE['EDICIO']) ): ?>
+
+	 <!-- Escollim si és un cicle o bé una activitat -->
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
+ 	 		
+	 	<div class="REQUADRE fb">	 	
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>
+		 	
+			<div class="titol"><?php if(isset($MODE['NOU'])): echo 'Editant una activitat nova'; else: echo 'Editant l\'activitat: '.$FActivitat->getValue('Nom'); endif; ?></div>
+				
+	 		<div style="padding-top:10px;" class="FORMULARI fb">
+	 		
+               	<?php echo $FCicle ?>		 		
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BCICLE','text'=>'Segueix editant...')); ?>
+	 					
+	 		</div>
+	 			 	 	
+		</div>
+ 		     
+     </form>         
+
+	<?php elseif( isset($MODE['CICLE']) ): ?>
+
                   
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">     	
-	 	<div class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div>            
-	 	<div class="titol">
-	 		<?php if($MODE['NOU']): echo 'Editant una activitat nova'; else: echo 'Editant l\'activitat: '.$FActivitat->getValue('Nom'); endif; ?>
-	 	</div>	 			 			 		
-	    	<table class="FORMULARI" width="600px">	    	                  			    
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FActivitat ?>                								
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<br>	            		
-	            		<?php echo submit_tag('Segueix editant...',array('name'=>'BSAVEACTIVITAT','class'=>'BOTO_ACTIVITAT'))?>
-	            	</td>
-	            </tr>                	 
-      		</table>      		
-      	</div>
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
+ 	 		
+	 	<div class="REQUADRE fb">	 	
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>
+		 	
+			<div class="titol">Editant la descripció del cicle</div>
+				
+	 		<div style="padding-top:10px;" class="FORMULARI fb">
+	 		
+	 			<?php echo $FCicle ?>		 		
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BCICLESAVE','text'=>'Segueix amb horaris...')); ?>
+	 					
+	 		</div>
+	 			 	 	
+		</div>
+ 		     
      </form>         
     
-  <?php ELSEIF( $MODE['HORARIS'] ): ?>
+  	<?php endif; if( (isset($MODE['ACTIVITAT_CICLE']) || isset($MODE['ACTIVITAT_ALONE'])) ): ?>   
+
+	<DIV class="REQUADRE">
+	<?php // include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>		
+	<div class="titol">Editant les activitats</div>
+		
+		<DIV class="TITOL">Activitats actuals <?php IF( isset($MODE['ACTIVITAT_CICLE']) ): ?> ( <?php echo link_to('Nova activitat','gestio/gActivitats?accio=ACTIVITAT&new=',array('class'=>'blau')) ?> )<?php ENDIF; ?></DIV>
+      	<TABLE class="DADES">
+ 			<?php if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap activitat definida.</TD></TR>'; endif; ?>  
+			<?php 	foreach($ACTIVITATS as $A):
+						$NH = ($A->countHorariss() == 0)?'No té cap horari':'Edita horaris';
+						$DESC = ($A->getDComplet()=="")?'No té descripció':'Edita descripció';
+						echo '<TR>
+								<TD class="" width="">'.link_to($A->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A->getActivitatid()).'</TD>
+								<TD class="" width="100px">'.link_to($NH,'gestio/gActivitats?accio=HORARI&IDA='.$A->getActivitatid()).'</TD>
+								<TD class="" width="100px">'.link_to($DESC,'gestio/gActivitats?accio=DESCRIPCIO&IDA='.$A->getActivitatid()).'</TD>								 
+							  </TR>';
+					endforeach;				
+			?>			                   	
+    	</TABLE>
+    	<table class="DADES">
+    	  <tr>
+    	    <td class="dreta">	            			            		
+    			<?php echo link_to('<input type="button" value="Finalitza i tanca" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=C'); ?>    				            
+	        </td>
+	      </tr>     
+    	</table>     
+    	
+	</DIV>
+		
+	<?php if(isset($FActivitat) && !isset($MODE['DESCRIPCIO'])): ?>
+    
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
+ 	 		
+	 	<div class="REQUADRE fb">	 	
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT')) ?>
+		 	
+			<div class="titol">Descripció de l'activitat</div>
+				
+	 		<div style="padding-top:10px;" class="FORMULARI fb">
+	 		
+	 			<?php echo $FActivitat ?>		 		
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BACTIVITATSAVE','text'=>'Guarda i tanca')); ?>
+	 					
+	 		</div>
+	 			 	 	
+		</div>
+ 		     
+     </form>         
+     
+     <?php endif; ?>
+    	    
+  <?php endif; if( isset($MODE['HORARI']) ): ?>
       
 	<DIV class="REQUADRE">
-	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div>	
+	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=ACTIVITAT'); ?></div>	
 	<div class="titol">
 	 		<?php echo 'Editant horaris de l\'activitat: '.$NOMACTIVITAT; ?>
 	 	</div>
-		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=CH&nou=2',array('class'=>'blau')) ?> )</DIV>
+		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=HORARI&nou=2',array('class'=>'blau')) ?> )</DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
 			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
 						echo '<TR>
-								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=CH&IDH='.$H->getHorarisid()).'</TD>
+								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDH='.$H->getHorarisid()).'</TD>
 								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
 								<TD class="" width="">'.$H->getHorapre('H:i').'</TD>
 								<TD class="" width="">'.$H->getHorainici('H:i').'</TD>
@@ -159,14 +258,6 @@
 				
 			?>			                   	
     	</TABLE>
-    	<table class="DADES">
-    	  <tr>
-    	    <td class="dreta">	            			            		
-    			<?php echo link_to('<input type="button" value="<<-- Tornar anterior"  class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=CA'); ?>    			
-	            <?php echo link_to('<input type="button" value="Segueix editant -->>" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=CT'); ?>
-	        </td>
-	      </tr>     
-    	</table>     
     	
 	</DIV>
 
@@ -179,7 +270,7 @@
 		 
 	     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
 		 	<div class="REQUADRE">
-		 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div> 		
+		 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=HORARI'); ?></div> 		
 		 		<DIV class="TITOL">Edició horaris</DIV>
 		    	<table class="FORMULARI" width="550x">
 		    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
@@ -242,8 +333,8 @@
 	                <tr>
 	                	<td></td>	                	
 		            	<td colspan="2" class="dreta">
-			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Guardar','nom'=>'BSAVEHORARIS')); ?>			 				            		
-			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Esborrar','nom'=>'BDELETEHORARIS')); ?>
+			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Guardar','nom'=>'BHORARISAVE')); ?>			 				            		
+			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Esborrar','nom'=>'BHORARIDELETE')); ?>
 		            	</td>
 		            </tr>                	 
 	      		</table>      		
@@ -252,52 +343,27 @@
 	     
 	<?php endif; ?>
     
-  <?php ELSEIF( $MODE['TEXTOS'] ): ?>
+  <?php endif; if( isset($MODE['DESCRIPCIO']) ): ?>
 
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">     	   
-	 	<div class="REQUADRE">
-	 		<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=C'); ?></div>	 			 		
-		 	<div class="titol">
-		 		<?php echo 'Editant la informació de l\'activitat: '.$NOMACTIVITAT; ?>
-		 	</div>             
-	    	<table class="FORMULARI" width="600px">                  			    	
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FActivitat ?>                								
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<br>	            		
-	            		<?php echo link_to('<input type="button" value="<<-- Torna horaris" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=CH'); ?>
-	            		<?php echo submit_tag('Finalitzar',array('name'=>'BSAVEDESCRIPCIO','class'=>'BOTO_ACTIVITAT'))?>
-	            	</td>
-	            </tr>                	 
-      		</table>      		
-      	</div>
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
+ 	 		
+	 	<div class="REQUADRE fb">	 	
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT')) ?>
+		 	
+			<div class="titol">Informació relativa a l'activitat</div>
+				
+	 		<div style="padding-top:10px;" class="FORMULARI fb">
+	 		
+	 			<?php echo $FActivitat ?>		 		
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BDESCRIPCIOSAVE','text'=>'Guarda i tanca')); ?>
+	 					
+	 		</div>
+	 			 	 	
+		</div>
+ 		               	   
      </form>
       
-  <?php ELSEIF( $MODE['CICLES'] ): ?>
-
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
-	 	<div class="REQUADRE">	 			 		
-	    	<table class="DADES" width="600px">                  			    	
-	    	<tr><td width="150px"></td><td width="400px"></td></tr>
-              <?php
-              	                                      
-                   foreach($LLISTA_CICLES as $C):
-                      
-                      echo '<TR><TD>'.link_to(image_tag('template/bin_closed.png'),'gestio/gActivitats?accio=DC&idC='.$C->getCicleid()).' '.$C->getNom().'</TD><TD>'.$C->getDescripcio().'</TD></TR>';
-                   
-                   endforeach;
-                   echo '<TR><TD class="LINIA">'.input_tag('NOM',$C->getNom()).'</TD><TD class="LINIA">'.input_tag('DESCRIPCIO',$C->getDescripcio()).'</TD></TR>';
-                   echo '</TABLE>';
-                   echo submit_tag('Afegir cicle',array('name'=>'BSAVECICLE'));                   
-               ?>                                                                           								                	 
-      		</table>      		
-      	</div>
-     </form>
-       
-    
-  <?php ELSEIF( $MODE['LLISTAT'] && isset($ACTIVITATS) ): ?>
+  <?php endif; if( isset($MODE['LLISTAT']) && isset($ACTIVITATS) ): ?>
 
 
      <DIV class="REQUADRE">
@@ -315,7 +381,7 @@
 		                  	$PAR = ParImpar($j++);                  	
 		                             
 		                  	echo '	<TR>                      	
-					               		<TD class="'.$PAR.'">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CA&IDA='.$A['ID']).$AVIS.'</TD>
+					               		<TD class="'.$PAR.'">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID']).$AVIS.'</TD>
 					                	<TD class="'.$PAR.'">'.$A['DIA'].'</TD>
 					               		<TD class="'.$PAR.'">'.$A['HORA_INICI'].'</TD>
 					                	<TD class="'.$PAR.'">'.$ESP.'</TD>

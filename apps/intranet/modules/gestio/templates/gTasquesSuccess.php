@@ -5,6 +5,11 @@
 .cinquanta { width:50%; }
 .HTEXT { height:100px; }
 .FETA { text-decoration:line-through; }
+ 
+	.row { width:500px; } 
+	.row_field { width:70%; } 
+	.row_title { width:30%; }
+	.row_field input { width:100%; } 
 
 </STYLE>
 
@@ -49,17 +54,20 @@
     <?php include_partial('breadcumb',array('text'=>'TASQUES')); ?>
     
 	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST" id="FCERCA">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nova tasca" />
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Simple',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Cerca')
+    														,
+    														array(
+    																'name'=>'BNOU',
+    																'text'=>'Nova tasca')
+    														)    														
+    										)); ?>
+
      </form>  
      
 <?php IF( !$NOU && !$EDICIO ): ?>     
@@ -77,15 +85,17 @@
   					<TR>
   						<TD class="ICOINI FETA"><?php echo link_to(image_tag('template/doc_text_image.png').$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
   						<TD class="FETA"><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-					    <TD  width="20%" class="FETA"><?php echo $U?></TD></TR> 											              
+					    <TD  width="20%" class="FETA"><?php echo $U?></TD>
+					</TR> 											              
                 <?php else: ?>
 	                <TR>
 		                <TD class="ICOINI"><?php echo link_to(image_tag('template/doc_text_image.png').$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
 	                	<TD ><?php echo link_to($T->getTitol().$SPAN , "gestio/gTasques".getParam( 'E' , $T->getTasquesid() , $CERCA ) , array('class' => 'tt2') )?></TD>
-					    <TD width="20%"><?php echo $U?></TD></TR> 											
+					    <TD width="20%"><?php echo $U?></TD>
+					</TR> 											
                 <?php endif; ?>					
 				<?php endforeach; ?>
-				<TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_ENCOMANADES);?></TD></TR>     			
+				<TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_ENCOMANADES);?></TD></TR>     			
   		</table>
   	</DIV>
 
@@ -111,26 +121,25 @@
                 		<TD width="20%"><?php echo $U ?></TD></TR>
 				<?php    endif; ?>                	 											
 				<?php endforeach; ?>
-                <TR><TD class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_PERFER);?></TD></TR>
+                <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($CERCA , $TASQUES_PERFER);?></TD></TR>
 		</table>
   	</DIV>     
      
            
   <?php ELSE: ?>
       
- 	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST">      
-		<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gTasques?accio=C'); ?></div>
-			<table class="FORMULARI" width="80%">
-				<tr><td width="15%"></td><td width="60%"></td></tr>
-				<?php echo $FTasca ?>
-        		<tr>
-		           	<td colspan="2" class="dreta">
-	            		<?php include_partial('botonera',array('element'=>'la tasca')); ?>
-	            	</td>
-	            </tr>				
-			</table>				
-		</DIV>		
+ 	<form action="<?php echo url_for('gestio/gTasques') ?>" method="POST">
+ 	
+	 	<div class="REQUADRE fb">
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gTasques?accio=C')) ?>
+						 	 		
+		 		<div class="FORMULARI fb">
+		 			<?php echo $FTasca ?>		 		
+		 			<?php include_partial('botoneraDiv',array('element'=>'la tasca')); ?>		
+		 		</div>
+	 			 	 	
+		</div>
+ 		
 	</form>
     
   <?php ENDIF; ?>      

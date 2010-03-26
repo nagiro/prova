@@ -4,6 +4,12 @@
 .vuitanta { width:80%; }
 .cinquanta { width:50%; }
 .HTEXT { height:100px; }
+
+	.row { width:500px; } 
+	.row_field { width:80%; } 
+	.row_title { width:20%; }
+	.row_field input { width:100%; } 
+
 </STYLE>
 
 <script type="text/javascript">
@@ -45,36 +51,38 @@
     <?php include_partial('breadcumb',array('text'=>'MATERIAL')); ?>
       
     <form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FCERCA">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou material" />
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+    
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Simple',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Cerca')
+    														,
+    														array(
+    																'name'=>'BNOU',
+    																'text'=>'Nou material')
+    														)    														
+    										)); ?>    
+    
      </form>   
     
       
 <?php IF( $NOU || $EDICIO ): ?>
       
-	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FORMSUBMIT">            
-	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMaterial?accio=L'); ?></div>
-	    	<table class="FORMULARI" width="550px">
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FMaterial?>                								
-                <tr>
-                	<td></td>
-		           	<td colspan="2" class="dreta">
-	            		<?php include_partial('botonera',array('element'=>'el material'))?>
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FORMSUBMIT">
+ 	
+	 	<div class="REQUADRE fb">
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gMaterial?accio=L')) ?>
+						 	 		
+		 		<div class="FORMULARI fb">
+		 			<?php echo $FMaterial ?>		 		
+		 			<?php include_partial('botoneraDiv',array('element'=>'el material')); ?>		
+		 		</div>
+	 			 	 	
+		</div>
+ 		
      </form>    
 
 <?php ELSE: ?>
