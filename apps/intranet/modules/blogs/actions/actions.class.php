@@ -100,6 +100,7 @@ class blogsActions extends sfActions
 	  	$C->add(AppBlogsFormsEntriesPeer::FORM_ID, $this->FORM_ID);
 	  	$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT_WAIT);
 	  	
+	  	//Treballem i migrem els camps que hem marcat com "Per publicar"
 	  	foreach(AppBlogsFormsEntriesPeer::doSelect($C) as $OO):
 	  		$RET = array();
 	  		foreach( explode("@@@",$OO->getDades()) as $E ):
@@ -169,7 +170,25 @@ class blogsActions extends sfActions
 			$OO->save();
 			
   		endforeach;  		
+  		  		
+  		/**
+  		 * Captem els valors que han estat marcats com "Per arxivar" i els passem a "arxivats"
+  		 */
   		
+	  	$C = new Criteria();
+	  	$C->add(AppBlogsFormsEntriesPeer::FORM_ID, $this->FORM_ID);
+	  	$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_EMMAGATZEMAT_WAIT);
+
+	  	foreach(AppBlogsFormsEntriesPeer::doSelect($C) as $OO):
+	  		$OO->setEstat(AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_EMMAGATZEMAT);
+	  		$OO->save();
+	  	endforeach;
+	  	
+	  	
+	  	/**
+	  	 * Procès de canvi de lloc les notícies que ja han passat a una altra pàgina
+	  	 */
+	  	
 	  	//Captem les notícies que han de canviar de pàgina... (Actual->Passades)
 	  	$C = new Criteria();
 	  	$C->add(AppBlogsEntriesPeer::PAGE_ID,  $this->PAGE_ID_QUE_ESTA_PASSANT);	  	
