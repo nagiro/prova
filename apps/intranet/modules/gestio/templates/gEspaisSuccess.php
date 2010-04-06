@@ -74,7 +74,7 @@
         		<?php
         		
         		//Linia d'espais
-        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">MESOS/ESPAIS</TD>'; foreach($MESOS as $K=>$M) echo '<TD class="LINIA" id="TITOL_TAULA">'.$K.'</TD>'; echo '</TR>';
+        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">ESPAIS/MESOS</TD>'; foreach($MESOS as $K=>$M) echo '<TD class="LINIA" id="TITOL_TAULA">'.$K.'</TD>'; echo '</TR>';
         		
         		//Iniciem la taula
         		foreach($ESPAIS as $KE=>$E):
@@ -97,6 +97,34 @@
         		?>
       	</TABLE>      
       </DIV>
+
+<?php elseif(isset($DADES_MESOS_HORES)): ?>
+
+      <DIV class="REQUADRE">
+        <DIV class="TITOL">Calendari d'activitats</DIV>
+      	<TABLE class="DADES">
+        		<?php        		
+        		//Linia d'hores
+        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">DIES/HORES</TD>'; for($i = 8; $i < 24; $i++) echo '<TD class="LINIA" id="TITOL_TAULA">'.$i.'</TD>'; echo '</TR>';
+        		
+        		//Iniciem la taula        		
+        		foreach($DADES_MESOS_HORES as $T=>$HORES):
+        			if($T > 0):
+	        		   echo '<TR><TD class="LINIA" id="TITOL_TAULA">'.date('d',$T).'</TD>';
+	        		   for($i = 8; $i < 24; $i++):
+	        		      if(isset($DADES_MESOS_HORES[$T][$i]))
+	        		         echo '<TD class="LINIA">'.$DADES_MESOS_ESPAIS[$T][$i].'</TD>';
+	        		      else
+	        		         echo '<TD class="LINIA">-</TD>';
+	        		   endfor;
+	        		   echo '</TR>';              		     		   
+	        		 endif;
+        		endforeach;
+        		        		                   	
+        		?>
+      	</TABLE>      
+      </DIV>
+
 
 <?php endif; ?>    
   

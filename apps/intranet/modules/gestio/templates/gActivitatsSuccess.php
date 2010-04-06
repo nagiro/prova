@@ -16,14 +16,10 @@
 
 	<script type="text/javascript">
 
-	function jq(myid)
-	  { return '#'+myid.replace(/:/g,"\\:").replace(/\./g,"\\.");}
-	
 	 $(document).ready(function() {	
 		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1								
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
 		 $("#mesespais").click( function () { creaFormEspais(); });
-		 $("#horaris_HoraPre_hour").change( function () { actualitzaHores(); });
 		 
 		 $("#activitats_cicle").change(function (){ Cicle(this.value); });
 		 
@@ -31,6 +27,10 @@
 		 $("label[for=activitats_nom]").fadeOut(0);
 
 	 });
+
+	function jq(myid)
+	  { return '#'+myid.replace(/:/g,"\\:").replace(/\./g,"\\.");}
+	
 
 	function Cicle(val)
 	{	
@@ -185,7 +185,7 @@
 
 	<DIV class="REQUADRE">
 	<?php // include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>		
-	<div class="titol">Editant les activitats</div>
+	<div class="titol">Editant les activitats ( <?php echo $CICLE ?> )</div>
 		
 		<DIV class="TITOL">Activitats actuals <?php IF( isset($MODE['ACTIVITAT_CICLE']) ): ?> ( <?php echo link_to('Nova activitat','gestio/gActivitats?accio=ACTIVITAT&new=',array('class'=>'blau')) ?> )<?php ENDIF; ?></DIV>
       	<TABLE class="DADES">
@@ -333,8 +333,8 @@
 	                <tr>
 	                	<td></td>	                	
 		            	<td colspan="2" class="dreta">
-			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Guardar','nom'=>'BHORARISAVE')); ?>			 				            		
-			            	<?php include_partial('botonera',array('element'=>'l\'horari','tipus'=>'Esborrar','nom'=>'BHORARIDELETE')); ?>
+			            	<?php include_partial('botonera',array('element'=>'l\\\'horari','tipus'=>'Guardar','nom'=>'BHORARISAVE')); ?>			 				            		
+			            	<?php include_partial('botonera',array('element'=>'l\\\'horari','tipus'=>'Esborrar','nom'=>'BHORARIDELETE')); ?>
 		            	</td>
 		            </tr>                	 
 	      		</table>      		
@@ -589,7 +589,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 		        if(isset($CALENDARI[$CalDia])):
 		        	$SELECCIONAT = "SELECCIONAT";
 		        	$SPAN  = '<span>';				 
-		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= $CAL['HORA'].' - '.$CAL['TITOL'].'<br />';
+		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= $CAL['HORAI'].' -> '.$CAL['HORAF'].'('.$CAL['ESPAIS'].') || '.$CAL['TITOL'].'('.$CAL['ORGANITZADOR'].')<br />';
 		            $SPAN .= '</span>';
 		        else: 
 		        	$SELECCIONAT = "";

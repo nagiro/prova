@@ -1,9 +1,16 @@
 <STYLE>
 .cent { width:100%; }
+
+.row { width:600px; } 
+.row_field { width:80%; } 
+.row_title { width:20%; }
+ 
+
 </STYLE>
 
-<?php use_helper('Form'); ?>
 
+<?php use_helper('Form'); ?>
+<?php use_javascript('jquery.simpleMultiSelect.js')?>
 
 <script type="text/javascript">
 
@@ -16,6 +23,8 @@
 		if(D_ESPAIS.selectedIndex<0){ alert('Has d\'escollir com a mínim un espai on realitzar l\'acte'); return false; }		
 	}
 
+	$('select').simpleMultiSelect();
+
 </script>
    
     <TD colspan="3" class="CONTINGUT">
@@ -23,40 +32,39 @@
     <?php include_partial('breadcumb',array('text'=>'RESERVES')); ?>
     
     <form action="<?php echo url_for('gestio/gReserves') ?>" method="POST">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            	<!-- <input type="submit" name="BNOU" value="Nova reserva" /> -->
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Simple',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Prem per buscar'),
+    													)
+    										)
+    							); ?>    
      </form>   
       
   <?php IF( $MODE['NOU'] || $MODE['EDICIO'] ): ?>
       
-      	<form action="<?php echo url_for('gestio/gReserves') ?>" method="POST">            
-	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gReserves?accio=C'); ?></div>
-	    	<table class="FORMULARI" width="550px">
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-	    		<tr><TD>Qui sol·licita?</TD>
-	    			<TD><?php  
-	    				$OUsuari = UsuarisPeer::retrieveByPK($FReserva->getObject()->getUsuarisusuariid());
-	    				if($OUsuari instanceof Usuaris) echo $OUsuari->getDni().' - '.$OUsuari->getNomComplet(); 
-	    			 ?></TD></tr>
-                <?php echo $FReserva?>                								
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">
-	            		<?php include_partial('botonera',array('element'=>'el formulari','tipus'=>'Guardar')); ?>
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+	<form action="<?php echo url_for('gestio/gReserves') ?>" method="POST">
+	
+	 	<div class="REQUADRE fb">
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gReserves?accio=C')) ?>
+					 	 		
+	 		<div class="FORMULARI fb">
+	 			<?php $OUsuari = UsuarisPeer::retrieveByPK($FReserva->getObject()->getUsuarisusuariid());
+	 					$qui = "No trobat";
+	    				if($OUsuari instanceof Usuaris) $qui = $OUsuari->getDni().' - '.$OUsuari->getNomComplet(); ?>
+	 			<?php include_partial('fieldSpan',array('label'=>'Qui sol·licita?','field'=>$qui)); ?>
+
+				<?php echo $FReserva ?>	 				 				 			    	    
+	 			
+	 			<?php include_partial('botoneraDiv',array('noclear'=>true,'element'=>'el formulari','tipus'=>'Guardar')); ?>
+	 			<?php include_partial('botoneraDiv',array('noclear'=>true,'tipus'=>'Blanc','text'=>'Envia resolució','nom'=>'SEND_RESOLUTION')) ?>	 			 					
+	 		</div>
+	 			 	 	
+      	</div>
+		      	            
      </form>          
 
   <?php ELSE: ?>

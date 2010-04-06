@@ -28,7 +28,6 @@
     	
     		<span style="width:30px;"><b>Cerca:</b><br /><?php echo $FCerca['text']->render(); ?></span>
     		<span style="width:30px;"><?php echo $FCerca['select']->render(); ?></span>    	
-    	
     	<?php foreach($BOTONS as $B): ?>	    			    	
     		<span><button type="submit" name="<?php echo $B['name']; ?>"><?php echo $B['text']; ?></button></span>
     	<?php endforeach; ?>

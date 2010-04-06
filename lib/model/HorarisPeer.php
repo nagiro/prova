@@ -117,8 +117,16 @@ class HorarisPeer extends BaseHorarisPeer
          endif;             
          if(!empty($titol)):              
             $dia = mktime(0,0,0,$H->getDia('m'),$H->getDia('d'),$H->getDia('Y'));
+            $ESPAIS = "";
+                        
+            foreach($H->getHorarisespaiss() as $E) $ESPAIS .= $E->getEspais()->getNom(); 
+            
+            $RET[$dia][$H->getActivitatsActivitatid()]['ORGANITZADOR']  = $H->getActivitats()->getOrganitzador(); 
+		    $RET[$dia][$H->getActivitatsActivitatid()]['ESPAIS']  = $ESPAIS; //Guardem l'hora que acaba            
 	        $RET[$dia][$H->getActivitatsActivitatid()]['TITOL'] =  $titol; //Guardem el dia que es fa l'activitat      
-		    $RET[$dia][$H->getActivitatsActivitatid()]['HORA']  = $H->getHorainici(); //Guardem el dia que es fa l'activitat
+		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAI']  = $H->getHorainici(); //Guardem el dia que es fa l'activitat
+		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAF']  = $H->getHorafi(); //Guardem l'hora que acaba
+		    		    
 	     endif;	     
       endforeach;
       return $RET;
@@ -213,6 +221,45 @@ class HorarisPeer extends BaseHorarisPeer
      
      return $RET;     
   }  
+  
+  static public function getMesosEspaisHores($any,$espai,$mes)
+  {
+     $RET = array(array(array()));
+              
+	 $SQL = "
+	     	 SELECT count(*) as count , h.horaInici as hi , h.horaFi as hf , h.dia as dia 
+	     	   FROM horarisespais he , horaris h , espais e
+	 		  WHERE he.Espais_EspaiID = e.EspaiID
+	   			AND he.Horaris_HorarisID = h.HorarisID
+	   			AND e.EspaiID = $espai
+	   			AND YEAR(h.dia) = $any
+	   			AND MONTH(h.dia) = $mes
+	   		 GROUP BY h.horainici, h.horafi , h.dia          
+	     ";
+	   		 
+     $con = Propel::getConnection(); $stmt = $con->prepare($SQL); $stmt->execute();     
+	 
+     while($rs = $stmt->fetch(PDO::FETCH_OBJ)):
+     	$res = explode('-',$rs->dia);      
+        $time = mktime(0,0,0,$res[1],$res[0],$res[2]);
+        $hourIT = explode(':',$rs->hi);
+        $hourI = intval($hourIT[0]);
+        $hourFT = explode(':',$rs->hf);
+        $hourF = intval($hourFT[0]);
+        
+        for($i = $hourI; $i <= $hourF; $i++):
+           	if(isset($RET[$time][$i])):
+           		$RET[$time][$i] += $rs->count;
+           	else:
+           		if($time > 0) $RET[$time][$i] = $rs->count;
+           	endif;
+        endfor;
+                
+     endwhile;               
+     
+     return $RET;     
+  } 
+  
   
   static public function validaDia( $DIA , $idE , $HoraPre , $HoraPost , $idH )
   {

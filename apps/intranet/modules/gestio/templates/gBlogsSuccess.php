@@ -1,4 +1,3 @@
-<?php use_helper('Javascript')?> 	
 <?php use_helper('Form')?>
  	
  	<script type="text/javascript">
@@ -9,8 +8,23 @@
 		updatePage();
 		updateEntry();
 		$("#tabs").tabs();
-		afegirArxiu();				
+		afegirArxiu();
+		$('.hidden1').fadeIn(0);
+	 	$('.hidden2').fadeOut(0);
 	 });
+
+	function Activa(id)
+	{
+		$('#hidden1_'+id).fadeOut(0);
+	 	$('#hidden2_'+id).fadeIn(500);
+	}
+
+	function Desactiva(id)
+	{
+		$('#hidden2_'+id).fadeOut(0);
+	 	$('#hidden1_'+id).fadeIn(500);
+	}
+
 
 	function afegirArxiu()
 	{
@@ -68,15 +82,29 @@
 		
 		 $.post(
 				 '<?php echo url_for('gestio/gBlogs') ?>', 
-				 { accio: "AJAX_ESTAT_FORM", APP_FORM: id, ESTAT: sel.options[sel.selectedIndex].value },
+				 { accio: "AJAX_ESTAT_FORM", APP_FORM_ENTRY: id, ESTAT: sel.options[sel.selectedIndex].value },
 				   function(data){
 					   alert(data);				     
 				   });		 	 
 	}
-	
-	 
-	
+
+	function GuardaComentari( id )
+	{
+		
+		 $.post(
+				 '<?php echo url_for('gestio/gBlogs') ?>', 
+				 { accio: "AJAX_SAVE_OBJECCIONS", APP_FORM_ENTRY: id, OBJECCIONS: $("#objeccio_"+id).val() },
+				   function(data){
+					   alert(data);				     
+				   });		 	 
+	}
+
+		
 	</script>
+	
+	<style>
+		.hidden2 { border:1px solid gray; }
+	</style>
  
     <TD colspan="3" class="CONTINGUT">
 
@@ -169,7 +197,7 @@
 					<tr>
 					 	<td><select id="APP_FORM" style="width:300px;" name="APP_FORM"><?php echo $FORMS_ARRAY ?></select></td>
 					 	<td>					 		
-			 				<button class="BOTO_ACTIVITAT" name="B_VIEW_FORM">Visualitza</button>			 					 				 			 			 		      				 				 						 									 		
+			 				<button class="BOTO_ACTIVITAT" name="B_VIEW_FORM">Visualitza</button>			 					 				 			 			 		      				 				 						 									 					 				
 					 	</td>
 					</tr>
 					
@@ -294,8 +322,23 @@
 	    			 			options_for_select(AppBlogsFormsEntriesPeer::selectEstats(),$F->getEstat()).
 	    					'</select>
 	    				  </td>';
-	    			echo '<td>'.$F->getId().' - ';	    				
-	    			foreach($F->getArrayElements() as $K=>$V):	    			
+	    			echo '<td>';
+	    			echo '<div class="hidden1" id="hidden1_'.$F->getId().'">';	    			
+	    			echo $F->getId().' | ';
+	    			foreach($F->getArrayElements() as $K=>$V):
+
+	    				if(in_array($K,$VIEW_FIELDS)):
+	    					echo '<b>'.$V.'</b> | ';
+	    				endif;
+	    				
+	    			endforeach;
+	    			echo '<a onClick="Activa('.$F->getId().')"><img src="'.sfConfig::get('sf_webroot').'/images/template/add.png'.'" /></a>';
+	    			$O = $F->getObjeccions();
+	    			if(!empty($O)) echo ' <a onClick="Activa('.$F->getId().')"><img src="'.sfConfig::get('sf_webroot').'/images/template/buildings.png'.'" /></a>';
+	    			echo '</div>';
+	    			echo '<div class="hidden2" id="hidden2_'.$F->getId().'">';
+	    			echo '<a onClick="Desactiva('.$F->getId().')"><img src="'.sfConfig::get('sf_webroot').'/images/template/add.png'.'" /></a><br />';
+	    			foreach($F->getArrayElements() as $K=>$V):
 	    				if($K == 'file'):
 	    					foreach($V as $V2):	    						
 	    						$R = '<a href="'.sfConfig::get('sf_webroot').'uploads/formularis/'.$V2.'">'.$V2.'</a>';
@@ -304,7 +347,10 @@
 	    				else: 
 	    					echo '<i>'.$K.'</i>: <b>'.$V.'</b> - ';
 	    				endif; 
-	    			endforeach;
+	    			endforeach;	    				    			
+	    			echo '<br /><b>Comentaris: </b><textarea id="objeccio_'.$F->getId().'">'.$F->getObjeccions().'</textarea>';
+	    			echo '<br /><button name="AJAX_SAVE_OBJECCIONS" onClick="GuardaComentari('.$F->getId().')">Guardar comentari</button>';	    			
+	    			echo '</div>';
 	    			echo '</td>';
 	    			echo '</tr>';
 	    		endforeach;	    	

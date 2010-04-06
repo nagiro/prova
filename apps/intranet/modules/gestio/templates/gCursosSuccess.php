@@ -11,6 +11,12 @@
 .HTEXT { height:100px; }
 .espai { padding-left:5px; padding-right:5px; }
 #comentari { width:40%; }
+
+	.row { width:500px; } 
+	.row_field { width:80%; } 
+	.row_title { width:20%; }
+	.row_field input { width:100%; }
+
 </STYLE>
    
 <script type="text/javascript">
@@ -84,54 +90,52 @@
     <?php include_partial('breadcumb',array('text'=>'CURSOS')); ?>
     
 	<form action="<?php echo url_for('gestio/gCursos'); ?>" method="POST" id="FCERCA">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">	    		          
-	            <?php echo $FCerca; ?>
-	            <tr>	            	
-	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou curs" />
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Select',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Prem per buscar'),
+    														array(
+    																'name'=>'BNOU',
+    																'text'=>'Nou curs')    														
+    													)
+    										)
+    							); ?>
+
      </form>  
 
   <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
 
-   	<form id="FSAVECODICURS" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
-	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=CA'); ?></div>
-	    	<table class="FORMULARI" width="550px">
-	    	<tr><td width="100px"></td><td ></td></tr>
-                <?php echo $FCursCodi; ?>                								
-                <tr>
-                	<td></td>
-		            <td colspan="2" class="dreta">
-	            		<br>	            		
-	            		<?php echo submit_tag('Segueix editant...',array('name'=>'BSAVECODICURS','id'=>'BSAVECODICURS','class'=>'BOTO_ACTIVITAT'))?>
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+   	<form id="FSAVECODICURS" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">
+	
+	 	<div class="REQUADRE fb">
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCursos?accio=CA')) ?>
+					 	 		
+	 		<div class="FORMULARI fb">
+	 			<?php echo $FCursCodi ?>	 		
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BSAVECODICURS','id'=>'BSAVECODICURS', 'class'=>'BOTO_ACTIVITAT' ,'text'=>'Segueix amb horaris...')); ?>		
+	 		</div>
+	 			 	 	
+      	</div>
+			   	            
      </form>         
 
   <?php ELSEIF( $MODE == 'EDICIO_CONTINGUT' ): ?>
             
-   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">            
-	 	<DIV class="REQUADRE">
-	 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gCursos?accio=CA'); ?></div>
-	    	<table class="FORMULARI" width="550px">
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>
-                <?php echo $FCurs; ?>                								
-                <tr>
-                	<td></td>
-		            <td colspan="2" class="dreta">
-						<?php include_partial('botonera',array('element'=>'el curs'))?>
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">
+   	
+	 	<div class="REQUADRE fb">
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCursos?accio=CA')) ?>
+					 	 		
+	 		<div class="FORMULARI fb">
+	 			<?php echo $FCurs ?>	 		
+	 			<?php include_partial('botoneraDiv',array('element'=>'el curs')); ?>		
+	 		</div>
+	 			 	 	
+      	</div>
+      	            
      </form>         
       
     <?php ELSEIF( $MODE == 'LLISTAT_ALUMNES' ): ?>

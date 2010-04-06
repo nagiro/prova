@@ -13,19 +13,21 @@ class BaseAppBlogsFormsEntriesForm extends BaseFormPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'id'      => new sfWidgetFormInputHidden(),
-      'dades'   => new sfWidgetFormTextarea(),
-      'date'    => new sfWidgetFormDateTime(),
-      'form_id' => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsForms', 'add_empty' => false)),
-      'estat'   => new sfWidgetFormInput(),
+      'id'         => new sfWidgetFormInputHidden(),
+      'dades'      => new sfWidgetFormTextarea(),
+      'date'       => new sfWidgetFormDateTime(),
+      'form_id'    => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsForms', 'add_empty' => false)),
+      'estat'      => new sfWidgetFormInput(),
+      'objeccions' => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'id'      => new sfValidatorPropelChoice(array('model' => 'AppBlogsFormsEntries', 'column' => 'id', 'required' => false)),
-      'dades'   => new sfValidatorString(),
-      'date'    => new sfValidatorDateTime(),
-      'form_id' => new sfValidatorPropelChoice(array('model' => 'AppBlogsForms', 'column' => 'id')),
-      'estat'   => new sfValidatorInteger(),
+      'id'         => new sfValidatorPropelChoice(array('model' => 'AppBlogsFormsEntries', 'column' => 'id', 'required' => false)),
+      'dades'      => new sfValidatorString(),
+      'date'       => new sfValidatorDateTime(),
+      'form_id'    => new sfValidatorPropelChoice(array('model' => 'AppBlogsForms', 'column' => 'id')),
+      'estat'      => new sfValidatorInteger(),
+      'objeccions' => new sfValidatorString(),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_forms_entries[%s]');

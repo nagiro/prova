@@ -37,6 +37,8 @@ class CursosCodiForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
     
+    $this->widgetSchema->setFormFormatterName('Span');
+    
   }
 
   public function getModelName()

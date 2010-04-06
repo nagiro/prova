@@ -9,7 +9,7 @@
  */ 
 class UsuarisPeer extends BaseUsuarisPeer
 {
-     
+
   const ADMIN = 1;
   const REGISTERED = 2;
    
@@ -115,7 +115,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 
     foreach($TREB as $T):
       
-      $RET[$T->getUsuariid()] = $T->getNomComplet();    
+      $RET[$T->getUsuariid()] = strtoupper(self::uc_latin1($T->getNomComplet()));    
     
     endforeach;
   
@@ -123,6 +123,17 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   }
  
+
+  static function uc_latin1($str)
+  {
+  	$LATIN1_UC_CHARS = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝ";
+    $LATIN1_LC_CHARS = "àáâãäåæçèéêëìíîïðñòóôõöøùúûüý";
+    
+	$str = strtoupper(strtr($str, $LATIN1_LC_CHARS, $LATIN1_UC_CHARS));
+	return strtr($str, array("ß" => "SS"));
+	    
+  }
+  
   
   static function getUserLogin($login,$password)
   {

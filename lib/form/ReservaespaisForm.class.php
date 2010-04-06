@@ -95,7 +95,10 @@ class ReservaespaisForm extends sfFormPropel
     
     $this->widgetSchema->setNameFormat('reservaespais[%s]');
 
-    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);   
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+ 
+    $this->widgetSchema->setFormFormatterName('Span');
+    
     
   }
 

@@ -107,19 +107,21 @@
 
      <DIV class="REQUADRE">
      	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	    
-        <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=N&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
+        <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=NU&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
       	<TABLE class="DADES">
                 <?php                 
                   if($USUARI->countMatriculess() == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap curs a la Casa de Cultura.</TD></TR>';                                    
-                  foreach($USUARI->getMatriculess() as $M):
-                      $CURSOS = $M->getCursos();                      
-                      echo '<TR><TD class="LINIA">'.$CURSOS->getCodi().'</TD>
-                                <TD class="LINIA">'.$CURSOS->getTitolCurs().'</TD>
-                                <TD class="LINIA">'.$M->getEstatString().'</TD>
-                                <TD class="LINIA">'.$M->getDataInscripcio().'</TD>
-                                <TD class="LINIA">'.$M->getTreduccioString().'</TD>
-                                <TD class="LINIA">'.$M->getComentari().'</TD>                                                                                           
-                            </TR>';                                   
+                  foreach($USUARI->getMatriculess() as $M):                  		
+						$CURSOS = $M->getCursos();           
+	                    if($CURSOS instanceof Cursos):           
+	                    echo '<TR><TD class="LINIA">'.$CURSOS->getCodi().'</TD>
+	                              <TD class="LINIA">'.$CURSOS->getTitolCurs().'</TD>
+	                              <TD class="LINIA">'.$M->getEstatString().'</TD>
+	                              <TD class="LINIA">'.$M->getDataInscripcio().'</TD>
+	                              <TD class="LINIA">'.$M->getTreduccioString().'</TD>
+	                              <TD class="LINIA">'.$M->getComentari().'</TD>                                                                                           
+	                          </TR>';                 
+						endif;                  
                   endforeach;                                                    
                 ?>
       	</TABLE>      

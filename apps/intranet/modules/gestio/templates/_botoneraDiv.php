@@ -1,4 +1,5 @@
-<div class="clear" style="text-align:right; padding-top:40px;">
+<?php $cl = 'clear'; if(isset($noclear)) $cl = ''; ?>
+<div class="<?php echo $cl ?>" style="text-align:right; padding-top:40px;">
 <?php if(!isset($tipus)): ?>
 
 <?php //Exemple: include_partial('botonera',array('element'=>'TOTA l\'agenda')); ?>

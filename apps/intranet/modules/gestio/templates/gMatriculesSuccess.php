@@ -188,14 +188,25 @@
 						$i = 0;
 						foreach($CURSOS as $C):
 	                      	$PAR = ParImpar($i++);
-	                      	$BACKGROUND = " style=\"background:red\"";
+	                      	$nMatriculats = $C->countMatriculats(); 
+	                      	if($nMatriculats >= $C->getPlaces()):
+	                      	
+	                      		$BACKGROUND = " style=\"background:red\"";
+	                      		$nMatriculats = $C->getPlaces();
+	                      		
+	                      	else:
+
+	                      		$BACKGROUND = " style=\"background:green\"";	                      		
+	                      	
+	                      	endif;
+	                      	
 	                      	echo '<TR >							
 	                      			<TD class="LINIA">'.radiobutton_tag('IDC', $C->getIdcursos(), true).'</TD>
 									<TD class="LINIA">'.$C->getCodi().'</TD>
 									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
 									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
 									<TD class="LINIA">'.$C->getPreu().'/'.$C->getPreur().'</TD>
-									<TD class="LINIA" '.$BACKGROUND.'>'.$C->countMatriculats().'/'.$C->getPlaces().'</TD>
+									<TD class="LINIA" '.$BACKGROUND.'>'.$nMatriculats.'/'.$C->getPlaces().'</TD>
 								  </TR>';                		                 															                		                 															
 	                    endforeach;
 	                    echo '<td colspan="6" class="dreta"><br>';	                    	            		

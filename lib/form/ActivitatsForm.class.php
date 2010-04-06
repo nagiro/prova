@@ -15,13 +15,13 @@ class ActivitatsForm extends sfFormPropel
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormInput(array(),array('style'=>'width:400px')),    
-/*      'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect())), */
       'Cicles_CicleID'                  => new sfWidgetFormInputHidden(),
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
       'Preu'                            => new sfWidgetFormInput(),
       'PreuReduit'                      => new sfWidgetFormInput(),
       'Publicable'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
+      'Organitzador'				    => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -33,6 +33,7 @@ class ActivitatsForm extends sfFormPropel
       'PreuReduit'                      => new sfValidatorNumber(array('required' => false)),
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),
       'Estat'                           => new sfValidatorString(array('max_length' => 1, 'required' => false)),
+      'Organitzador'				    => new sfValidatorString(array('required'=>false),array()),
     ));
 
     $this->widgetSchema->setLabels(array(      
@@ -43,6 +44,7 @@ class ActivitatsForm extends sfFormPropel
       'PreuReduit'                      => 'Preu reduït: ',
       'Publicable'                      => 'Visible al web?',
       'Estat'                           => 'Estat actual: ',
+      'Organitzador'				    => 'Organitzador',
     ));
     
     
