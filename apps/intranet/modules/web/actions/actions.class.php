@@ -243,9 +243,9 @@ class webActions extends sfActions
     $this->NOTICIA = null;    
     
     $accio = $this->ParReqSesForm($request,'accio','cp');    
-        
-    if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
     
+    if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
+       
     switch($accio){
 
       //Consulta una pàgina determinada
@@ -270,9 +270,17 @@ class webActions extends sfActions
      				$this->MODE  = 'LLISTAT';
      			endif; 
       																		            	            	
-            else:            	        	            	
+            elseif($this->PAGINA->getIscategoria()):
+                        	  
+            	$this->ACCIO = 'mostra_estructura';
+            	$this->TITOL = $this->PAGINA->getTitolmenu();  
+            	$this->NODES = NodesPeer::getNodes(false);          	
+            	       	            	
+            else:
+             
 		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);		   	                 
-		 		$this->ACCIO = 'noticies';	         	            		 		
+		 		$this->ACCIO = 'noticies';
+		 			         	            		 		
             endif; 
                                                 
             break;

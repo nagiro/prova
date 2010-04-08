@@ -70,5 +70,5 @@ class NodesPeer extends BaseNodesPeer
   	$NODE = self::retrieveByPK($idP);
   	return $NODE; 
   }
-  
+    
 }

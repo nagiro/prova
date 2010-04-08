@@ -41,8 +41,9 @@
 	   case 'registre'   : $calendar = false; include_partial('registre' , array('FUSUARI'=>$FUSUARI, 'ESTAT' => $ESTAT)); break;
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
-	   case 'llistat_activitats': $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS,'TITOL'=>$TITOL,'MODE'=>$MODE)); break;
-	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array('DESCRIPCIO'=>$DESCRIPCIO,'TITOL'=>$TITOL)); break;	   	    
+	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS,'TITOL'=>$TITOL,'MODE'=>$MODE)); break;
+	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array('DESCRIPCIO'=>$DESCRIPCIO,'TITOL'=>$TITOL)); break;
+	   case 'mostra_estructura'   	: $calendar = true; include_partial('mostraEstructura',array('TITOL'=>$TITOL,'PAGINA'=>$PAGINA,'NODES'=>$NODES)); break;	   	    
 	}
 	    	    
     ?>

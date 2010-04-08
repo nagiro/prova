@@ -29,7 +29,7 @@
 	    	echo '<DIV>'.$descripcio.'</DIV>';			    	 					    	
 	    	echo '<DIV class="PEU">';
 	    	echo 	'<br />';
-	    	echo 	link_to('Tornar', url_for('web/index?accio=cp'), array('class'=>'verd','style'=>'float:left; font-weight:bold;'));
+	    	echo 	link_to('Tornar', url_for('web/index?accio=ret'), array('class'=>'verd','style'=>'float:left; font-weight:bold;'));
  			if(!empty($pdf)): 				 
  				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW')); 				
  			endif;

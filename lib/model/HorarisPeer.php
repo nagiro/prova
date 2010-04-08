@@ -187,7 +187,7 @@ class HorarisPeer extends BaseHorarisPeer
   static private function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
     
-  	self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);
+  	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);
     $C->setLimit(200);    
     
     return self::doSelectJoinAll($C);
