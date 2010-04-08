@@ -13,7 +13,7 @@
     		echo '<TABLE class="BOX">';
 	    	echo '<TR>';  
  			if(!empty($imatge)):	    
- 				echo '<TD class="FOTO">'.image_tag('noticies/'.$NOTICIA->getImatge(), array('class'=>'IMG_FOTO')).'</TD>';
+ 				echo '<TD class="FOTO">'.image_tag('noticies/'.$imatge, array('class'=>'IMG_FOTO')).'</TD>';
  			endif;
 	        echo '<TD class="NOTICIA">';
 	        if($DESCRIPCIO instanceof Activitats):
