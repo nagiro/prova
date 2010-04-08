@@ -6,6 +6,7 @@
 	
 	.llistat { padding-left:20px; }
 	.llistat li { padding-left:20px; list-style: none; padding-top:5px; }
+	.llistat A { color:#888888; font-size:10px; text-decoration:none; font-weight:bold; }
 	
 	
 </STYLE>
@@ -43,11 +44,13 @@
 						$RET .= '</ul></li>';
 					endif;
 					
-					$RET .= '<li><a class="negre" href="'.url_for('web/index?accio=cp&node='.$ON->getIdnodes()).'">'.$titol.'</a>';
-									
 					if($ON->getNivell() == $nivell):
 						$RET .= '</li>';							
-					endif; 								
+					endif; 							
+					
+					$RET .= '<li><a class="negre" href="'.url_for('web/index?accio=cp&node='.$ON->getIdnodes()).'">'.$titol.'</a>';
+									
+						
 	
 					$nivell = $ON->getNivell();
 					
