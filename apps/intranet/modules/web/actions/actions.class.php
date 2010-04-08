@@ -270,7 +270,7 @@ class webActions extends sfActions
      				$this->MODE  = 'LLISTAT';
      			endif; 
       																		            	            	
-            elseif($this->PAGINA->getIscategoria()):
+            elseif($this->PAGINA instanceof Nodes && $this->PAGINA->getIscategoria()):
                         	  
             	$this->ACCIO = 'mostra_estructura';
             	$this->TITOL = $this->PAGINA->getTitolmenu();  
