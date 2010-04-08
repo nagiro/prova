@@ -26,7 +26,26 @@ class ActivitatsPeer extends BaseActivitatsPeer
       return self::doSelect($C);
    }
 
+   
    static function getActivitatsDia($dia)
+   {
+
+      $C = new Criteria();
+      $C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+      $C->add(HorarisPeer::DIA, $dia);
+      $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
+                
+      $pager = new sfPropelPager('Horaris', 20);
+	  $pager->setCriteria($C);
+      $pager->setPage($page);
+      $pager->init();    	
+            
+      return $pager; 
+   }
+   
+   
+   
+   static function getActivitatsDia2($dia)
    {
       $RET = array();
 
@@ -109,4 +128,88 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		return self::doSelect($C);
 	}
    	
+			
+	static public function selectCategories($web = false)
+	{
+		$CAT = array();
+		if($web):
+		
+			$CAT['exposicions-general'] = 'Exposicions i arts visuals - General';
+			$CAT['exposicions-historic'] = 'Exposicions i arts visuals - Històric';
+			$CAT['exposicions-actual'] = 'Exposicions i arts visuals - Actual';
+			
+			$CAT['musica-general'] = 'Música i audiovisuals - General';
+			$CAT['musica-historic'] = 'Música i audiovisuals - Històric';
+			$CAT['musica-actual'] = 'Música i audiovisuals - Actual';
+						
+			$CAT['esceniques-general'] = 'Arts escèniques i cinema - General';
+			$CAT['esceniques-historic'] = 'Arts escèniques i cinema - Històric';
+			$CAT['esceniques-actual'] = 'Arts escèniques i cinema - Actual';
+						
+			$CAT['ciencia-general'] = 'Ciència i humanitats - General';
+			$CAT['ciencia-historic'] = 'Ciència i humanitats - Històric';
+			$CAT['ciencia-actual'] = 'Ciència i humanitats - Actual';
+						
+			$CAT['cursos-general'] = 'Cursos - General';
+			$CAT['cursos-historic'] = 'Cursos - Historic';
+			$CAT['cursos-actual'] = 'Cursos - Actual';
+						
+			$CAT['altres-general'] = 'Altres - General';
+			$CAT['altres-historic'] = 'Altres - Historic ';
+			$CAT['altres-actual'] = 'Altres - Actual';
+			
+		else:
+		
+			$CAT['exposicions'] = 'Exposicions i arts visuals';
+			$CAT['musica'] = 'Música i audiovisuals';
+			$CAT['esceniques'] = 'Arts escèniques i cinema';
+			$CAT['ciencia'] = 'Ciència i humanitats';
+			$CAT['cursos'] = 'Cursos';
+			$CAT['altres'] = 'Altres';
+			
+		endif;
+		
+		if($cap) $CAT['cap'] = 'Cap categoria';
+		
+		
+		return $CAT;
+	}
+
+	/**
+	 * Agafem les activitats d'un tipus del menú i d'un mode determinat i les mostrem ordenades per categoria i dia. 
+	 *
+	 * @param unknown_type $cat
+	 * @param unknown_type $mode
+	 * @param unknown_type $idC
+	 */
+	static public function getActsCategoria($cat,$mode,$page = 1, $idC = 0)
+	{		
+		
+		$C = new Criteria();
+		
+		$C->add(self::CATEGORIES,'%'.$cat.'%',CRITERIA::LIKE);	
+		$C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+		$C->addJoin(self::CICLES_CICLEID,CiclesPeer::CICLEID);
+		
+		if($mode == 'historic'):
+			$C->add(HorarisPeer::DIA, date('Y-m-d',time()), CRITERIA::LESS_THAN);
+			$C->addDescendingOrderByColumn(HorarisPeer::DIA);
+		endif;
+		 
+		if($mode == 'actual'):
+			$C->add(HorarisPeer::DIA, date('Y-m-d',time()), CRITERIA::GREATER_EQUAL);
+			$C->addAscendingOrderByColumn(HorarisPeer::DIA);
+		endif; 
+				
+		if($idC > 0) $C->add(self::CICLES_CICLEID,$idC);		
+		
+		$pager = new sfPropelPager('Horaris', 20);
+    	$pager->setCriteria($C);
+    	$pager->setPage($page);
+    	$pager->init();    	
+			    	
+		return $pager;
+				
+	}
+	
 }

@@ -22,6 +22,7 @@ class BaseNodesForm extends BaseFormPropel
       'Ordre'       => new sfWidgetFormInput(),
       'Nivell'      => new sfWidgetFormInput(),
       'Url'         => new sfWidgetFormTextarea(),
+      'Categories'  => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -34,6 +35,7 @@ class BaseNodesForm extends BaseFormPropel
       'Ordre'       => new sfValidatorInteger(array('required' => false)),
       'Nivell'      => new sfValidatorInteger(),
       'Url'         => new sfValidatorString(),
+      'Categories'  => new sfValidatorString(array('max_length' => 100)),
     ));
 
     $this->widgetSchema->setNameFormat('nodes[%s]');

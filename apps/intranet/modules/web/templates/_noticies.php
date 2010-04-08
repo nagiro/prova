@@ -33,6 +33,9 @@
 </script>
 
     <TD colspan="2" class="CONTINGUT">
+    
+    <?php include_partial('breadcumb',array('text'=>'NOTÍCIES')); ?>
+    
     <?php 
     
     	if(!is_null($NOTICIA)):

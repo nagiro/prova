@@ -301,7 +301,7 @@ class gestioActions extends sfActions
 			$contents = fread($handle, filesize($nom));
 			fclose($handle);
 		else:
-			$contents = "No s'ha trobat la pÃ gina.";
+			$contents = "No s'ha trobat la pàgina.";
 		endif;      
       
 		$this->FHtml = new EditorHtmlForm();
@@ -639,13 +639,13 @@ class gestioActions extends sfActions
 				$text = $text."
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRIMAVERA LÃ�RICA<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marjan Nikolovski i Milica Sperovik<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JOSEP MANZANO<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La guitarra a l'època d'Albéniz<br />				
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 16 d'abril, 20.00 h<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dijous, 8 d'abril, 20.00 h<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori Josep Viader<br />				
 				<br />				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5â‚¬ / ReduÃ¯t: 3â‚¬<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
 																					
 		";   		 		
   		if($fila    == 7): $pdf->AddPage(); $fila = 1; endif;  		  		
@@ -1266,7 +1266,7 @@ class gestioActions extends sfActions
     			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
     			if($this->FActivitat->isValid()): 
     				$this->FActivitat->save();
-    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+    				$this->redirect('gestio/gActivitats?accio=DESCRIPCIO');
     			endif; 
     			
     			$THIS->MODE['DESCRIPCIO'] = true;

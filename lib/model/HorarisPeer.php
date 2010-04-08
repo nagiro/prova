@@ -12,6 +12,23 @@ class HorarisPeer extends BaseHorarisPeer
 
   const DESCRIPCIO_WEB = "WEB"; 	
 
+  static public function getCercaWeb($DIA, $TEXT, $DATAI,$DATAF)
+  {
+
+	$C = self::cercaCriteria($DIA, $TEXT, $DATAI,$DATAF,null);
+
+	$C->addGroupByColumn(self::HORARISID);
+	
+	$pager = new sfPropelPager('Horaris', 20);	
+    $pager->setCriteria($C);
+    $pager->setPage($page);
+    $pager->init();
+
+    return $pager;    
+     
+  }
+  
+  
   /**
    * Funció que fa la cerca pel calendari de la pàgina principal i omple l'agenda
    *
@@ -132,10 +149,10 @@ class HorarisPeer extends BaseHorarisPeer
       return $RET;
   } 
   
-  static private function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  static private function cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
-         
-    $C = new Criteria();
+
+  	$C = new Criteria();
     if( $DIA != NULL ) $C->add(self::DIA, $DIA);
     elseif( $DATAI != NULL && $DATAF != NULL ) {
       $data1 = $C->getNewCriterion(self::DIA, $DATAI , CRITERIA::GREATER_EQUAL);
@@ -162,6 +179,15 @@ class HorarisPeer extends BaseHorarisPeer
     
     $C->addDescendingOrderByColumn(self::DIA);   //Ordenem per data
     $C->addDescendingOrderByColumn(self::HORAINICI);   //Ordenem per data
+  	 
+    return $C;
+  	
+  }
+  
+  static private function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  {
+    
+  	self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);
     $C->setLimit(200);    
     
     return self::doSelectJoinAll($C);

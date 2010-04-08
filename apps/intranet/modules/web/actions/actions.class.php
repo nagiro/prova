@@ -241,8 +241,8 @@ class webActions extends sfActions
     
     $this->LoadWEB($request);
     $this->NOTICIA = null;    
-
-    $accio = $request->getParameter('accio');    
+    
+    $accio = $this->ParReqSesForm($request,'accio','cp');    
         
     if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
     
@@ -257,24 +257,63 @@ class webActions extends sfActions
       		$this->SELECCIONAT = $idN;            
             $this->gestionaNodes($idN);            
             
-      		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):       		
-            	$this->ACCIO  = 'web';            	
+      		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):
+      			$CAT = $this->PAGINA->getCategories();
+     			list($cat,$mode) = explode('-',$CAT);
+     			if(empty($cat) || $cat == 'cap'):
+     				$this->ACCIO  = 'web';
+     			else:     				
+     				$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActsCategoria($cat,$mode);
+     				$this->ACCIO = 'llistat_activitats';
+     				$ACT = ActivitatsPeer::selectCategories(true);
+     				$this->TITOL = "Llistat d'activitats a \"".$ACT[$CAT].'"';
+     				$this->MODE  = 'LLISTAT';
+     			endif; 
+      																		            	            	
             else:            	        	            	
 		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);		   	                 
-		 		$this->ACCIO = 'noticies';	         	            
+		 		$this->ACCIO = 'noticies';	         	            		 		
             endif; 
                                                 
             break;
 
+      case 'caa':
+      	
+      			$this->DESCRIPCIO = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
+      			$this->ACCIO = 'showActivitatCategoria';
+      			$this->TITOL = 'DESCRIPCIÓ DE L\'ACTIVITAT';
+      			
+      		break;
+      
+      case 'cc':
+      	
+      			$this->DESCRIPCIO = CiclesPeer::retrieveByPK($request->getParameter('idC'));
+      			$this->ACCIO = 'showActivitatCategoria';
+      			$this->TITOL = 'DESCRIPCIÓ DEL CICLE';
+      			
+      		break;
+            
        //Mostra les activitats quan cliquem un dia del calendari
-	   case 'ca':	        	    		        	    
-	    	$this->ACTIVITATS_LLISTAT = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI));
-	    	$this->ACCIO = 'activitats';
+	   case 'ca':
+	   		        	    		        	    
+	    	$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI));
+	    	$this->ACCIO = 'llistat_activitats';
+	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACALENDARI);
+	    	$this->MODE  = 'LLISTAT';
+	    	
 	       	break;
 
        //Mostra les activitats quan cliquem la cerca
-	   case 'se': 
-	   		$this->CarregaCerca(false,$this->DATACALENDARI); 
+	   case 'se':
+	   	 
+	   		$DATA = $this->DATACALENDARI;
+		    $Di = mktime(0,0,0,date('m',$DATA), 01 , date('Y',$DATA)); 
+		    $Df = mktime(0,0,0, date('m',$DATA)+6 , 01 , date('Y',$DATA));		     		                
+			$this->LLISTAT_ACTIVITATS = HorarisPeer::getCercaWeb(null,$this->CERCA,$Di,$Df);	    		    		    
+			$this->ACCIO = 'llistat_activitats';
+	    	$this->TITOL = 'CERCA D\'ACTIVITATS AMB LES PARAULES "'.$this->CERCA.'"';
+	    	$this->MODE  = 'CERCA';
+	    						 		 			   		
 	   		break;
 	   	   
 	   //Per defecte mostrem les notícies
@@ -311,34 +350,7 @@ class webActions extends sfActions
 		
   }
   
-  
-  /**
-   * Funció crdidada des de Index que em retorna la cerca. Si entrem CONSULTADIA només tornarà 
-   *
-   */
-  public function CarregaCerca($CONSULTADIA = false , $DATA )
-  {      
-
-     $Di = mktime(0,0,0,date('m',$DATA), 01 , date('Y',$DATA)); 
-     $Df = mktime(0,0,0, date('m',$DATA)+1 , 01 , date('Y',$DATA));
-     
-     if($CONSULTADIA):
-        $SOL = HorarisPeer::getCerca( null , $this->CERCA , $Di , $Df , null );	    		    		    
-	    $this->ACTIVITATS_CALENDARI = $SOL['CALENDARI'];
-	    $this->DATA    = $DATA;
-	 else:      
-	     //Passo les activitats i els horaris per marcar al calendari perquè he fet una cerca     
-		 $SOL = HorarisPeer::getCerca( null , $this->CERCA , $Di , $Df , null );	    		    		    
-		 $this->ACTIVITATS_CALENDARI = $SOL['CALENDARI']; 
-		 if(!$CONSULTADIA) $this->ACTIVITATS_LLISTAT = $SOL['ACTIVITATS'];
-		 $this->QUANTES = sizeof($SOL['ACTIVITATS']);
-		 $this->DATA    = $DATA;
-		 $this->ACCIO = 'agenda';
-		 $this->getUser()->setAttribute('HEFETCERCA',true);		 
-	 endif;
-	 	     	        
-  }
-  
+   
   /**
    * Funció on anem a parar si premem un boto de l'apartat de "cursos"
    * 

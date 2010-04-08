@@ -51,6 +51,7 @@ function showElement(theClass) {
   {
   	  	
   	foreach($Menu as $M):
+  	
   		$RET[$M->getIdnodes()]['TITOL'] = $M->getTitolMenu();
   		$RET[$M->getIdnodes()]['NODE'] = $M->getIdnodes();
   		$RET[$M->getIdnodes()]['NIVELL'] = $M->getNivell();
@@ -83,7 +84,7 @@ function showElement(theClass) {
 
   function generaURL( $NODE , $OBERT = false )
   {
-  	$imatge = ($OBERT)?'':'T';
+  	$imatge = ($OBERT)?'':'T';  	
   	switch($NODE['NIVELL']){
   		case 1:
   			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';  

@@ -31,16 +31,18 @@
 	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'FUSUARI' => $FUSUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'FRESERVA' => $FRESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS ) ); break;
 	   case 'remember'   : $calendar = false; include_partial('remember',  array( 'ENVIAT' => $ENVIAT , 'ERROR' => $ERROR , 'FREMEMBER' => $FREMEMBER )); break;
 	   case 'login'      : $calendar = false; include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
-	   case 'agenda'     : $calendar = true;  include_partial('agenda'  ,  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT , 'QUANTES' => $QUANTES , 'DATA' => $DATA )); break;
+//	   case 'agenda'     : $calendar = true;  include_partial('agenda'  ,  array( 'ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT , 'QUANTES' => $QUANTES , 'DATA' => $DATA )); break;
 	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'NOTICIES' => $NOTICIES , 'NOTICIA' => $NOTICIA )); break;
 	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV )); break;
 	   case 'registrat'  : $calendar = true;  include_partial('registrats'); break;
 	   case 'cursos'	 : $calendar = false; include_partial('cursos'); break;
 	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT , 'FConsulta'=>$FConsulta)); break;
-	   case 'activitats' : $calendar = true;  include_partial('activitats' , array('ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;
+//	   case 'activitats' : $calendar = true;  include_partial('activitats' , array('ACTIVITATS_LLISTAT' => $ACTIVITATS_LLISTAT )); break;
 	   case 'registre'   : $calendar = false; include_partial('registre' , array('FUSUARI'=>$FUSUARI, 'ESTAT' => $ESTAT)); break;
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
-	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE));	   	    
+	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
+	   case 'llistat_activitats': $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS,'TITOL'=>$TITOL,'MODE'=>$MODE)); break;
+	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array('DESCRIPCIO'=>$DESCRIPCIO,'TITOL'=>$TITOL)); break;	   	    
 	}
 	    	    
     ?>

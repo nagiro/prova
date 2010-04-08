@@ -13,6 +13,7 @@ class NodesForm extends sfFormPropel
 
   public function setup()
   {
+  	
     $this->setWidgets(array(
       'idNodes'     => new sfWidgetFormInputHidden(),
       'TitolMenu'   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
@@ -23,6 +24,7 @@ class NodesForm extends sfFormPropel
       'isActiva'    => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'HTML'        => new sfWidgetFormInputHidden(),
       'Url'         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
+      'Categories'  => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::selectCategories(true)),array()),
     ));
 
     $this->setValidators(array(
@@ -35,6 +37,7 @@ class NodesForm extends sfFormPropel
       'Ordre'       => new sfValidatorInteger(array('required' => false)),
       'Nivell'      => new sfValidatorInteger(),
       'Url'			=> new sfValidatorString(array('required'=>false)),
+      'Categories'  => new sfValidatorString(array('required'=>false)),
     ));
 
     
@@ -45,6 +48,7 @@ class NodesForm extends sfFormPropel
       'isCategoria' => false,
       'isActiva'    => true,      
       'Url'         => "",
+      'Categories'  => "Tipus",
     ));
     
     $this->widgetSchema->setLabels(array(      

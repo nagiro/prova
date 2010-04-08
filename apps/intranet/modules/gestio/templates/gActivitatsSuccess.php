@@ -6,11 +6,13 @@
 <?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
 
 <style>
-
+	
 	.row { width:500px; } 
 	.row_field { width:70%; } 
 	.row_title { width:30%; }
-	.row_field input { width:100%; } 
+	.row_field input { width:100%; }
+	input.ul_cat { background-color:white; border:0px; width:20px; }
+	li.ul_cat { width:220px; } 
 		
 </style>
 

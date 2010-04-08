@@ -35,7 +35,8 @@ class ActivitatsTextosForm extends sfFormPropel
       'tMig'    	                    => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
       'dMig'	                        => new sfWidgetFormTextareaTinyMCE(),
       'tComplet'                        => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
-      'dComplet'                        => new sfWidgetFormTextareaTinyMCE(),      
+      'dComplet'                        => new sfWidgetFormTextareaTinyMCE(),
+      'Categories'						=> new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>ActivitatsPeer::selectCategories() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_cat')),      
     ));
 
     $this->setValidators(array(
@@ -58,6 +59,7 @@ class ActivitatsTextosForm extends sfFormPropel
       'tComplet'                        => new sfValidatorString(array('required' => false)),
       'dComplet'                        => new sfValidatorString(array('required' => false)),
       'tipusEnviament'					=> new sfValidatorChoice(array('choices'=>ActivitatsPeer::getTipusEnviamentsSelectValidator())),
+      'Categories'						=> new sfValidatorString(array('required'=>false)),      
     ));
 
     $this->widgetSchema->setLabels(array(
@@ -71,7 +73,8 @@ class ActivitatsTextosForm extends sfFormPropel
       'dMig'	                        => 'Text mig: <div class="textExplicacio">Consulta activitat, Notícies, Facebook, Mitjans</div> ',
       'tComplet'                        => 'Títol complet: ',
       'dComplet'                        => 'Text complet: <div class="textExplicacio">Cursos, ús intern</div>',
-      'tipusEnviament'					=> 'Període publicació: <div class="textExplicacio">Quan es publica el text als mitjans?</div>', 
+      'tipusEnviament'					=> 'Període publicació: <div class="textExplicacio">Quan es publica el text als mitjans?</div>',
+      'Categories'						=> 'Categories: ', 
     ));
     
     
@@ -89,5 +92,14 @@ class ActivitatsTextosForm extends sfFormPropel
     return 'Activitats';
   }
   
-	  
+  public function save($conn = null)
+  {
+  	
+	$this->updateObject();
+  	$OR = $this->getObject();  	  	  	  	  	
+  	if(!is_null($this['Categories']->getValue())) $OR->setCategories(implode('@',$this['Categories']->getValue()));  	  	  	
+  	$OR->save();  	
+  	
+  }
+    
 }

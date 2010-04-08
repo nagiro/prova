@@ -24,8 +24,8 @@ class sfWidgetFormSelectManyMy extends sfWidgetFormSelectCheckbox
         'value' => self::escapeOnce($key),
         'id'    => $id = $this->generateId($name, self::escapeOnce($key)),
       );
-
-      if ((is_array($value) && in_array(strval($key), $value)) || strval($key) == strval($value))
+            
+      if ((is_array($value) && in_array($key, $value)) || $key == $value)
       {
         $baseAttributes['checked'] = 'checked';
       }
