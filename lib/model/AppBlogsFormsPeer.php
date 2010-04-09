@@ -42,7 +42,7 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  				$file_ext = substr($V['name'], strripos($V['name'], '.'));
 	  				$file_name = $OO2->getId().'-'.$K.$file_ext;
 	  				$url = sfConfig::get('sf_websysroot').'uploads/formularis/'.$file_name;
-	  				move_uploaded_file($V['tmp_name'], $url);
+	  				move_uploaded_file($V['tmp_name'], $url);	  				 
 	  				$RET['file'][] = $file_name;
 	  			endif; 
 	  		
@@ -64,7 +64,8 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  		$OO2->setDades($SOL);
 	  		$OO2->save();
 	  		
-		} catch(Exception $e){ echo $e->getMessage(); return false; }		
+		} catch(Exception $e){ echo $e->getMessage(); return false; }
+				
 		return true;		
 	}
 	

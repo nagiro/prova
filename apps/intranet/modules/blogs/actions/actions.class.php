@@ -82,7 +82,7 @@ class blogsActions extends sfActions
 		foreach($this->DADES2 as $K => $E):		
 			$this->DADES[$K] = $E;
 		endforeach;
-						
+
 	  	AppBlogsFormsPeer::save($this->FORM_ID,$this->DADES,$request->getFiles() );
 	  	
 	  	$this->MODE = 'FORM_OK';
@@ -139,13 +139,14 @@ class blogsActions extends sfActions
 			if(isset($RET['file'])):
 
 				//Mirem l'extensió de l'arxiu
-    			$path_info = pathinfo(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
+    			$path_info = pathinfo(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);    			    			    			    		
     			
     			//Si l'arxiu és una imatge, el tractem i el posem com a imatge
     			if(strtolower($path_info['extension']) == 'jpg' || strtolower($path_info['extension']) == 'png'): 			
 			
     				try{
-						$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
+    					
+						$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file'],'image/jpeg');
 						$img->resize(200,null);				
 						$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
 							
@@ -160,7 +161,8 @@ class blogsActions extends sfActions
 						$OME->setEntriesId($ON->getId());
 						$OME->setMultimediaId($OM->getId());
 						$OME->save();
-    				} catch(Exception $e){ $e->getMessage(); }
+						
+    				} catch(Exception $e){ echo $e->getCode(); echo $e->getMessage(); }
     				
 				endif;
 								
