@@ -73,6 +73,7 @@
 		if($("#titol_acte").val().length == 0){ alert('Has d\'entrar un títol.'); return false; }
 		if($("#ciutat_acte").val().length == 0){ alert('Has d\'entrar una ciutat.'); return false; }		
 		if($("#datepicker").val().length == 0){ alert('Has d\'entrar una data a l\'esdeveniment.'); return false; }
+		if(comprueba_extension($("#arxiu").val())) { return false; }
 		return true;					
 	}
 
@@ -80,6 +81,33 @@
 	{
 		return (str.indexOf(".") > 2) && (str.indexOf("@") > 0);					
 	}
+	
+	function comprueba_extension(archivo) {
+	   extensiones_permitidas = new Array(".jpg");
+	   mierror = "";
+	   if (!archivo) {
+	      //Si no tengo archivo, es que no se ha seleccionado un archivo en el formulario
+	       mierror = "No has escollit cap arxiu";
+	   }else{
+	      //recupero la extensión de este nombre de archivo
+	      extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
+	      //alert (extension);
+	      //compruebo si la extensión está entre las permitidas
+	      permitida = false;
+	      for (var i = 0; i < extensiones_permitidas.length; i++) {
+	         if (extensiones_permitidas[i] == extension) {
+	         permitida = true;
+	         break;
+	         }
+	      }
+	      if (!permitida) {
+	         mierror = "Només es poden carregar arxius amb extensió: " + extensiones_permitidas.join();	         
+	       } else { return 1; }	    
+	   }
+	   //si estoy aqui es que no se ha podido submitir
+	   alert (mierror);
+	   return 0;
+	} 	
 	 
 	
 </script>
@@ -288,7 +316,7 @@
 	
 			<div style="clear:both; padding-top:5px;">
 				<label style="width:150px" class="TITOL">Imatge</label>
-					<input style="width:300px" type="file" name="arxius[arxiu]">
+					<input style="width:300px" type="file" name="arxius[arxiu]" id="arxiu">
 				<label style="width:150px" class="TITOL">Tipus de notícia</label>
 					<?php echo TipusSelect() ?>									
 			</div>

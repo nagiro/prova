@@ -145,21 +145,21 @@ class blogsActions extends sfActions
     			if(strtolower($path_info['extension']) == 'jpg' || strtolower($path_info['extension']) == 'png'): 			
 			
     				try{
-					$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
-					$img->resize(200,null);				
-					$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
-						
-					$OM = new AppBlogsMultimedia();
-					$OM->setName($RET['file']);
-					$OM->setUrl($RET['file']);
-					$OM->setDate(date('Y-m-d',time()));
-					$OM->setDesc("");
-					$OM->save();
-												
-					$OME = new AppBlogMultimediaEntries();
-					$OME->setEntriesId($ON->getId());
-					$OME->setMultimediaId($OM->getId());
-					$OME->save();
+						$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);
+						$img->resize(200,null);				
+						$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
+							
+						$OM = new AppBlogsMultimedia();
+						$OM->setName($RET['file']);
+						$OM->setUrl($RET['file']);
+						$OM->setDate(date('Y-m-d',time()));
+						$OM->setDesc("");
+						$OM->save();
+													
+						$OME = new AppBlogMultimediaEntries();
+						$OME->setEntriesId($ON->getId());
+						$OME->setMultimediaId($OM->getId());
+						$OME->save();
     				} catch(Exception $e){ $e->getMessage(); }
     				
 				endif;
