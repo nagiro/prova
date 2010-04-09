@@ -73,7 +73,7 @@
 		if($("#titol_acte").val().length == 0){ alert('Has d\'entrar un títol.'); return false; }
 		if($("#ciutat_acte").val().length == 0){ alert('Has d\'entrar una ciutat.'); return false; }		
 		if($("#datepicker").val().length == 0){ alert('Has d\'entrar una data a l\'esdeveniment.'); return false; }
-		if(comprueba_extension($("#arxiu").val())) { return false; }
+		if(!comprueba_extension($("#arxiu").val())) { return false; }
 		return true;					
 	}
 
@@ -102,11 +102,15 @@
 	      }
 	      if (!permitida) {
 	         mierror = "Només es poden carregar arxius amb extensió: " + extensiones_permitidas.join();	         
-	       } else { return 1; }	    
+	       } 
+	       else 
+	       { 
+	       	return true; 
+	       }	    
 	   }
 	   //si estoy aqui es que no se ha podido submitir
 	   alert (mierror);
-	   return 0;
+	   return false;
 	} 	
 	 
 	
