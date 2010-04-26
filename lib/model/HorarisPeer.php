@@ -141,8 +141,8 @@ class HorarisPeer extends BaseHorarisPeer
             $RET[$dia][$H->getActivitatsActivitatid()]['ORGANITZADOR']  = $H->getActivitats()->getOrganitzador(); 
 		    $RET[$dia][$H->getActivitatsActivitatid()]['ESPAIS']  = $ESPAIS; //Guardem l'hora que acaba            
 	        $RET[$dia][$H->getActivitatsActivitatid()]['TITOL'] =  $titol; //Guardem el dia que es fa l'activitat      
-		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAI']  = $H->getHorainici(); //Guardem el dia que es fa l'activitat
-		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAF']  = $H->getHorafi(); //Guardem l'hora que acaba
+		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAI']  = $H->getHorainici('H:i'); //Guardem el dia que es fa l'activitat
+		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAF']  = $H->getHorafi('H:i'); //Guardem l'hora que acaba
 		    		    
 	     endif;	     
       endforeach;
@@ -153,8 +153,13 @@ class HorarisPeer extends BaseHorarisPeer
   {
 
   	$C = new Criteria();
-    if( $DIA != NULL ) $C->add(self::DIA, $DIA);
-    elseif( $DATAI != NULL && $DATAF != NULL ) {
+  	
+  	if(!is_null($DIA))   $DIA   = mktime(0,0,0,date('m',$DIA),date('d',$DIA),date('Y',$DIA));
+  	if(!is_null($DATAI)) $DATAI = mktime(0,0,0,date('m',$DATAI),date('d',$DATAI),date('Y',$DATAI));
+  	if(!is_null($DATAF)) $DATAF = mktime(0,0,0,date('m',$DATAF),date('d',$DATAF),date('Y',$DATAF));
+  	
+    if( !is_null($DIA) ) $C->add(self::DIA, $DIA);
+    elseif( !is_null($DATAI) && !is_null($DATAF) ) {
       $data1 = $C->getNewCriterion(self::DIA, $DATAI , CRITERIA::GREATER_EQUAL);
       $data2 = $C->getNewCriterion(self::DIA, $DATAF , CRITERIA::LESS_EQUAL);
       $data1->addAnd($data2);
@@ -175,10 +180,10 @@ class HorarisPeer extends BaseHorarisPeer
       }
     endforeach;
         
-    if( $IDACTIVITAT != NULL ) $C->add(ActivitatsPeer::ACTIVITATSACTIVITATSID, $IDACTIVITAT, CRITERIA::EQUAL ); //Si enviem una idActivitat, la carreguem
+    if( !is_null($IDACTIVITAT) ) $C->add(ActivitatsPeer::ACTIVITATSACTIVITATSID, $IDACTIVITAT, CRITERIA::EQUAL ); //Si enviem una idActivitat, la carreguem
     
-    $C->addDescendingOrderByColumn(self::DIA);   //Ordenem per data
-    $C->addDescendingOrderByColumn(self::HORAINICI);   //Ordenem per data
+    $C->addAscendingOrderByColumn(self::DIA);   //Ordenem per data
+    $C->addAscendingOrderByColumn(self::HORAINICI);   //Ordenem per data
   	 
     return $C;
   	
@@ -188,7 +193,7 @@ class HorarisPeer extends BaseHorarisPeer
   {
     
   	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);
-    $C->setLimit(200);    
+    //$C->setLimit(200);    
     
     return self::doSelectJoinAll($C);
     

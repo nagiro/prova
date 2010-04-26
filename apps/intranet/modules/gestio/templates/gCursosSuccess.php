@@ -173,7 +173,8 @@
 					$CAT_ANT = "";
 					foreach($CURSOS->getResults() as $C):
 						if($CAT_ANT <> $C->getCategoria()) echo '<TR><TD colspan="6" class="TITOLCAT">'.$C->getCategoriaText().'</TD></TR>';
-						$CAT_ANT = $C->getCategoria(); $SPAN = ""; $PLACES = CursosPeer::getPlaces($C->getIdcursos());											
+						$CAT_ANT = $C->getCategoria(); $SPAN = ""; 
+						$PLACES = CursosPeer::getPlaces($C->getIdcursos());											
                       	$PAR = ParImpar($i++);	                      	
 						echo '<TR>
 								<TD class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos?accio=EC&IDC=".$C->getIdcursos() , array('class' => 'tt2') ).'</TD>
@@ -184,6 +185,7 @@
 								<TD class="'.$PAR.'">'.link_to(image_tag('template/user.png').'<span>Llistat d\'alumnes matriculats.</span>','gestio/gCursos?accio=L&IDC='.$C->getIdcursos() , array('class'=>'tt2') ).'</TD>
 						</TR>';
 					endforeach;
+
 				}     
 				               
              ?>      

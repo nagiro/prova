@@ -57,7 +57,7 @@ BUTTON:focus { background: #FFD7DC; }
 .DADES { width:100%; border-collapse: collapse; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
-.DADES TD.PAR { background-color:#DDDDDD; }
+.DADES TD.PAR { background-color:#EEEEEE; }
 .DADES TD.IPAR { background-color:White; }
 .DADES TH { text-align:left; font-weight:bold; }
 .DADES .TITOLCAT { background-color:rgb(243,177,154); font-weight: bolder; font-style: italic; }

@@ -12,7 +12,9 @@
 	.row_title { width:30%; }
 	.row_field input { width:100%; }
 	input.ul_cat { background-color:white; border:0px; width:20px; }
-	li.ul_cat { width:220px; } 
+	li.ul_cat { width:220px; }
+	#TD1 td { border: 1px solid #DB9296; padding:4px; }
+	#TD1 { border-collapse:collapse; } 
 		
 </style>
 
@@ -109,6 +111,8 @@
 
   
 <TD colspan="3" class="CONTINGUT">	
+
+	<?php // echo phpinfo(); ?>
 
 	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>
 		                   	                   
@@ -372,7 +376,7 @@
         <DIV class="TITOL">Llistat d'activitats </DIV>
       	<TABLE class="DADES">
  			<?php 	if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; 
- 					$i = 0; $j=0; $Tall = 10; 					  			   			
+ 					$i = 0; $j=0; $Tall = 20; 					  			   			
 					foreach($ACTIVITATS as $A):			
 	                  	if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
 	                    
@@ -522,7 +526,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
   {
     
     //Inicialitzem variables i marquem els dies en blanc
-    $Q = 4; 
+    $Q = 3; 
     $mes  = date('m',$DATAI);
     $year = date('Y',$DATAI);
     $RET = "";
@@ -589,10 +593,10 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 		        $CalDia = mktime(0,0,0,$dades['month'],$dades['day'],$dades['year']);
 		        
 		        if(isset($CALENDARI[$CalDia])):
-		        	$SELECCIONAT = "SELECCIONAT";
-		        	$SPAN  = '<span>';				 
-		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= $CAL['HORAI'].' -> '.$CAL['HORAF'].'('.$CAL['ESPAIS'].') || '.$CAL['TITOL'].'('.$CAL['ORGANITZADOR'].')<br />';
-		            $SPAN .= '</span>';
+		        	$SELECCIONAT = "SELECCIONAT";		        	
+		        	$SPAN  = '<span><table id="TD1"><tr><th>Inici</th><th>Fi</th><th>Espai</th><th>Títol</th><th>Organitzador</th></tr>';				 
+		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= '<tr><td><b>'.$CAL['HORAI'].'</b></td><td>'.$CAL['HORAF'].'</td><td><b>'.$CAL['ESPAIS'].'</b></td><td>'.$CAL['TITOL'].'</td><td>'.$CAL['ORGANITZADOR'].'</td></tr>';
+		            $SPAN .= '</table></span>';
 		        else: 
 		        	$SELECCIONAT = "";
 		        endif; 

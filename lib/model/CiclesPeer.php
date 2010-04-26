@@ -10,6 +10,8 @@
 class CiclesPeer extends BaseCiclesPeer
 {
 
+	const NO_PERTANY_A_CAP_CICLE = 1;
+	
   static public function getSelect()
   {
     

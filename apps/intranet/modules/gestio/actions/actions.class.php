@@ -639,11 +639,11 @@ class gestioActions extends sfActions
 				$text = $text."
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JOSEP MANZANO<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La guitarra a l'època d'Albéniz<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ARRELS D'ARREU<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Carles Dénia a cinc<br />				
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dijous, 8 d'abril, 20.00 h<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori Josep Viader<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dimarts, 25 de maig, 20.00 h<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sala La Planeta<br />				
 				<br />				
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
 																					
@@ -1022,8 +1022,10 @@ class gestioActions extends sfActions
     	
     	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
+    			    			
                 $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA['text'],$this->DATAI,$this->DATAF,null);
-                $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                                                                
+                if($this->CERCA['text'] <> "") $this->ACTIVITATS = $HORARIS['ACTIVITATS'];
+               	else $this->ACTIVITATS = array();                                                                 
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
                 $this->MODE['LLISTAT'] = true;                                              
@@ -1033,7 +1035,8 @@ class gestioActions extends sfActions
     	//Consulta que em mostra les activitats quan canvio de mensualitat o any 
     	case 'CC':    		
                 $HORARIS = HorarisPeer::getActivitats(null , $this->CERCA['text'], $this->DATAI, $this->DATAF, null);
-                $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
+                //$this->ACTIVITATS = $HORARIS['ACTIVITATS'];
+                $this->ACTIVITATS = array();                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
                 $this->MODE['LLISTAT'] = true;                                              
@@ -1083,8 +1086,8 @@ class gestioActions extends sfActions
 	    		//Carreguem la descripció del cicle associat a l'activitat i si no en té passem directament al llistat
     			else:    				
     				$FActivitats = ActivitatsPeer::initilize($this->IDA);    				
-    				$cicle = $FActivitats['Cicles_CicleID']->getValue();
-    				if(!is_null($cicle)):
+    				$cicle = $FActivitats['Cicles_CicleID']->getValue();    				
+    				if( !is_null($cicle) && $cicle <> CiclesPeer::NO_PERTANY_A_CAP_CICLE ):
 	    				$this->FCicle = CiclesPeer::initialize($cicle);
 	    				$this->MODE['CICLE'] = true;	
 	    				$this->getUser()->setAttribute('isCicle',1);
