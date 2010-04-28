@@ -16,7 +16,7 @@ class MissatgesForm extends sfFormPropel
       'MissatgeID'       => new sfWidgetFormInputHidden(),
       'Usuaris_UsuariID' => new sfWidgetFormInputHidden(),
       'Titol'            => new sfWidgetFormInput(array(),array('class'=>'text')),
-      'Text'             => new sfWidgetFormTextarea(array(),array('class'=>'text')),
+      'Text'             => new sfWidgetFormTextarea(array(),array('class'=>'text','style'=>'height:150px;')),
       'Date'             => new sfWidgetFormInputHidden(),
       'Publicacio'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),           
     ));

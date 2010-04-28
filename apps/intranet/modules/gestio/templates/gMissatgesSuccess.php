@@ -4,7 +4,7 @@
 .cent { width:100%; }
 .noranta { width:90%; }
 .cinquanta { width:50%; }
-.gray { background-color: #DDDDDD; }
+.gray { background-color: #EEEEEE; }
 .NOM { width:20%; } 
 
 	.row { width:500px; } 
@@ -45,8 +45,8 @@
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gMissatges?accio=C')) ?>
 					 	 		
 	 		<div class="FORMULARI fb">
-	 			<?php echo $FMissatge ?>	 		
-	 			<?php include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
+	 			<?php echo $FMissatge ?>
+	 			<?php if($FMissatge->getObject()->getUsuarisUsuariid() == $IDU)	include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
 	 		</div>
 	 			 	 	
       	</div>
@@ -56,14 +56,17 @@
   <?php ELSE: ?>
   
   	<DIV class="REQUADRE">
-  	<DIV class="TITOL">Llistat de missatges</DIV>
+  	<DIV class="TITOL">Llistat de missatges (<a href="<?php url_for('gestio/gMissatges?accio=SF'); ?>">Veure missatges futurs</a>)</DIV>
   		<table class="DADES">
-                <?php 
-                    if( empty( $MISSATGES ) ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(new Criteria()).' disponibles.</TD></TR>';
+                <?php  
+                    if( $MISSATGES->getNbResults() == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(new Criteria()).' disponibles.</TD></TR>';
                     else { 
                        $dif = "";
-                      	foreach($MISSATGES as $M) {
-                      	    if($dif != $M->getPublicacio('d/m/Y')) echo '<TR><TD class="gray" colspan="3"><b>'.diaSetmana($M->getPublicacio('d-m-Y')).' </b> ( '.$M->getPublicacio('d-m-Y').' )</TD></TR>';
+                      	foreach($MISSATGES->getResults() as $M) {
+                      	    if($dif != $M->getPublicacio('d/m/Y')):
+                      	    	echo '<TR><TD class="LINIA" style="height:20px" colspan="3"></TD></TR>';
+                      	    	echo '<TR><TD class="gray" colspan="3"><b>'.diaSetmanaText($M->getPublicacio('Y-m-d')).' </b></TD></TR>';                      	    	
+                      	    endif; 
                       		$SPAN  = '<span>'.$M->getText().'</span>';
                       		echo "<TR>                      				
                       				<TD>".link_to(image_tag('intranet/Submenu2.png').' '.$M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
@@ -73,6 +76,17 @@
                       	}                    	
                     }
                 ?>     			
+        <tr><td colspan="2" style="text-align:center">
+         
+        <?php
+        	if ($MISSATGES->haveToPaginate()):
+        		if($PAGINA > 1) echo link_to('<-- Veure missatges anteriors', 'gestio/gMissatges?pagina='.$MISSATGES->getPreviousPage());
+  				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
+  				if($PAGINA < $MISSATGES->getLastPage()) echo link_to('Veure missatges següents -->', 'gestio/gMissatges?pagina='.$MISSATGES->getNextPage());  
+			endif; 
+		?>
+        
+        </td></tr>
   		</table>
   	</DIV>
   	  
@@ -96,6 +110,43 @@
       RETURN "?".implode( "&" , $opt);
   }
   
+ 
+  function diaSetmanaText($DIA){
+  		
+		$ret = ""; list($ANY,$MES,$DIA) = explode("-",$DIA);		
+		$DATE = mktime(0,0,0,$MES,$DIA,$ANY);
+		switch(date('N',$DATE)){
+			case '1': $ret = "Dilluns, ".date('d',$DATE); break;  
+			case '2': $ret = "Dimarts, ".date('d',$DATE); break;
+			case '3': $ret = "Dimecres, ".date('d',$DATE); break;
+			case '4': $ret = "Dijous, ".date('d',$DATE); break;
+			case '5': $ret = "Divendres, ".date('d',$DATE); break;
+			case '6': $ret = "Dissabte, ".date('d',$DATE); break;
+			case '7': $ret = "Diumenge, ".date('d',$DATE); break;				
+		}
+				
+		switch(date('m',$DATE)){
+			case '01': $ret .= " de gener"; break;
+			case '02': $ret .= " de febrer"; break;
+			case '03': $ret .= " de març"; break;
+			case '04': $ret .= " d'abril"; break;
+			case '05': $ret .= " de maig"; break;
+			case '06': $ret .= " de juny"; break;
+			case '07': $ret .= " de juliol"; break;
+			case '08': $ret .= " d'agost"; break;
+			case '09': $ret .= " de setembre"; break;
+			case '10': $ret .= " d'octubre"; break;
+			case '11': $ret .= " de novembre"; break;
+			case '12': $ret .= " de desembre"; break;
+		}
+		
+		$ret .= " de ".date('Y',$DATE);
+		
+		return $ret;
+  
+	}
+  
+  
   function diaSetmana($date)
   {
   	
@@ -103,13 +154,13 @@
   	$dia = date('N',mktime(0,0,0,$m,$d,$Y));
   	
   	switch($dia){
-  		case 1: return 'Dilluns';   break;
-  		case 2:	return 'Dimarts';   break;
-  		case 3:	return 'Dimecres';  break;
-  		case 4:	return 'Dijous';    break;
-  		case 5:	return 'Divendres'; break;
-  		case 6:	return 'Dissabte';  break;
-  		case 7:	return 'Diumenge';  break;
+  		case 1: return 'DILLUNS';   break;
+  		case 2:	return 'DIMARTS';   break;
+  		case 3:	return 'DIMECRES';  break;
+  		case 4:	return 'DIJOUS';    break;
+  		case 5:	return 'DIVENDRES'; break;
+  		case 6:	return 'DISSABTE';  break;
+  		case 7:	return 'DIUMENGE';  break;
   	}
   	
   }

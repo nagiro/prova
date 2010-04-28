@@ -28,7 +28,7 @@
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' PERSONAL'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Avui','gestio/main'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Contactes','gestio/gAgenda?accio=C'); ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Taulell','gestio/gMissatges'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Taulell','gestio/gMissatges?accio=I'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Tasques','gestio/gTasques'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio'); ?></TD></TR>                            
@@ -53,7 +53,7 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' DVDs / CDs','gestio/gArxiuDvd?accio=CC'); ?></TD></TR>                                          
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Històric','gestio/gArxiuDocuments?accio=CC'); ?></TD></TR>                            
 			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' LOGIN'; ?></TD></TR>
-			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Logout','web/logout'); ?></TD></TR>
+			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Sortir','web/logout'); ?></TD></TR>
 			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Web','web/index',array('target'=>'_NEW')); ?></TD></TR>			
           </TABLE>
         </CENTER>

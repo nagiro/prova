@@ -1519,8 +1519,10 @@ class gestioActions extends sfActions
     
     //Actualitzem el requadre de cerca
     $this->FCerca = new CercaForm();
-    $this->FCerca->bind($request->getParameter('cerca'));
-    $this->CERCA = $request->getParameter('cerca[text]');    
+    $this->FCerca->bind($request->getParameter('cerca'));          
+    $this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));  	  	
+  	$this->PAGINA	= $this->ParReqSesForm($request,'pagina',1);
+  	$this->accio  	= $this->ParReqSesForm($request,'accio',"");  	  	    
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
     	
@@ -1540,18 +1542,30 @@ class gestioActions extends sfActions
                                       
     switch( $accio )
     {
+    
+      //Entrem per primer cop a aquest apartat
+      case 'I':
+      			$this->getUser()->setAttribute('cerca',"");
+      			$this->CERCA = "";
+      			$this->getUser()->setAttribute('pagina',1);
+      			$this->PAGINA = 1;
+      			$this->getUser()->setAttribute('accio',"");
+      			$this->accio = "";      			
+      			break;
+    	
       case 'N':
                 $this->NOU = true;
                 $OM = new Missatges();
                 $OM->setUsuarisUsuariid($this->getUser()->getAttribute('idU'));
                 $this->FMissatge = new MissatgesForm($OM);
                 $this->getUser()->setAttribute('IDM',0);              	                                                
-                break;                
+                break;                                
       case 'E':
                 $this->EDICIO = true;
                 $IDM = $request->getParameter('IDM');
                 $this->getUser()->setAttribute('IDM',$IDM);
                 $OM = MissatgesPeer::retrieveByPK($IDM);
+                $this->IDU = $this->getUser()->getAttribute('idU');
                 $this->FMissatge = new MissatgesForm($OM);                
                 break;
       case 'S':
@@ -1566,7 +1580,7 @@ class gestioActions extends sfActions
       			$this->IDM = $this->getUser()->getAttribute('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
                 if(!is_null($M)) $M->delete();                
-                break;                    
+                break;                                
       default: 
                 $this->MISSATGE = new Missatges();
                 $this->getUser()->setAttribute('IDM',0);
@@ -1575,7 +1589,7 @@ class gestioActions extends sfActions
     }
     
                     
-    $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA );
+    $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , $this->ACCIO );
     
   }
     

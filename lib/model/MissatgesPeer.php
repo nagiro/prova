@@ -20,7 +20,7 @@ class MissatgesPeer extends BaseMissatgesPeer
      return self::doCount($C);
   }
    
-  static function doSearch( $TEXT )
+  static function doSearch( $TEXT , $PAGE , $ACCIO )
   {
     
      $C = new Criteria();
@@ -34,13 +34,21 @@ class MissatgesPeer extends BaseMissatgesPeer
       $text1Criterion->addOr($text2Criterion);  $C->add($text1Criterion);          
      endforeach;
      
-     $C->addGroupByColumn( MissatgesPeer::MISSATGEID );
-     $C->setLimit(20);
+     $C->addGroupByColumn( MissatgesPeer::MISSATGEID );     
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
-     $C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
-     $ATD = MissatgesPeer::doSelect($C);
-     
-     return $ATD; 
+     $C->addDescendingOrderByColumn(self::MISSATGEID);
+     if($ACCIO <> 'SF'):
+     	$C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
+     else:
+     	$C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::GREATER_THAN );
+     endif;
+                    
+     $pager = new sfPropelPager('Missatges', 20);
+     $pager->setCriteria($C);
+     $pager->setPage($PAGE);
+     $pager->init();    
+      	          
+     return $pager; 
   
   }
   
@@ -52,6 +60,5 @@ class MissatgesPeer extends BaseMissatgesPeer
       $C->addDescendingOrderByColumn(self::PUBLICACIO);
       return MissatgesPeer::doSelect($C);
   }
-    
-
+      
 }
