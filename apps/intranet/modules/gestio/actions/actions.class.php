@@ -1541,6 +1541,7 @@ class gestioActions extends sfActions
     
       //Entrem per primer cop a aquest apartat
       case 'I':
+      	
       			$this->getUser()->setAttribute('cerca',"");
       			$this->CERCA = "";
       			$this->getUser()->setAttribute('pagina',1);
@@ -1551,33 +1552,34 @@ class gestioActions extends sfActions
       			break;
       
       case 'N':
+      	
                 $this->NOU = true;
-                $OM = new Missatges();
-                $OM->setUsuarisUsuariid($this->getUser()->getAttribute('idU'));
-                $this->FMissatge = new MissatgesForm($OM);
+                $this->FMissatge = MissatgesPeer::inicialitza(0,$this->getUser()->getAttribute('idU'));                
                 $this->getUser()->setAttribute('IDM',0);              	                                                
-                break;                                
+                break;
+                                                
       case 'E':
-                $this->EDICIO = true;
+      	
+                $this->EDICIO = true;                
                 $IDM = $request->getParameter('IDM');
                 $this->getUser()->setAttribute('IDM',$IDM);
-                $OM = MissatgesPeer::retrieveByPK($IDM);
-                $this->IDU = $this->getUser()->getAttribute('idU');
-                $this->FMissatge = new MissatgesForm($OM);                
+                $this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getAttribute('idU'));                
+                $this->IDU = $this->getUser()->getAttribute('idU');                      
                 break;
+                
       case 'S':
+      			      			
       			$IDM = $this->getUser()->getAttribute('IDM');
-                $OM = ($IDM > 0)?MissatgesPeer::retrieveByPk($IDM):new Missatges();
-                $this->FMissatge = new MissatgesForm($OM);                 
+      			$this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getAttribute('idU'));                
                 $this->FMissatge->bind($request->getParameter('missatges'));                
-                if ($this->FMissatge->isValid()) { $this->FMissatge->save(); $this->redirect('gestio/gMissatges'); }                              	                                                                                
-                $this->EDICIO = true;   
-                $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );   
+                if ($this->FMissatge->isValid()) { $this->FMissatge->save(); $this->redirect('gestio/gMissatges?accio=I'); }                              	                                                                                
+                $this->EDICIO = true;                      
                 break;
       case 'D':
       			$this->IDM = $this->getUser()->getAttribute('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
-                if(!is_null($M)) $M->delete();                
+                if(!is_null($M)) $M->delete();
+                $this->redirect('gestio/gMissatges?accio=I');                
                 break;
       case 'SF':
       			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , true );      			

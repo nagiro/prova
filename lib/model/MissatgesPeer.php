@@ -10,6 +10,21 @@
 class MissatgesPeer extends BaseMissatgesPeer
 {
 
+  static function inicialitza($id,$idU)
+  {
+  	
+  	$OM = self::retrieveByPK($id);
+  	if($OM instanceof Missatges):
+  		return new MissatgesForm($OM);
+  	else:
+  		$OM = new Missatges();
+  		$OM->setUsuarisUsuariid($idU);
+  		$OM->setDate(date('Y-m-d',time()));
+  		return new MissatgesForm($OM);  		
+  	endif;
+  	  	
+  }
+	
   static function QuantsAvui($idU)
   {
      $C = new Criteria();
