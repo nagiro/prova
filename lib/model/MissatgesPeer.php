@@ -37,11 +37,12 @@ class MissatgesPeer extends BaseMissatgesPeer
      $C->addGroupByColumn( MissatgesPeer::MISSATGEID );     
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
      $C->addDescendingOrderByColumn(self::MISSATGEID);
+     
      if($ACCIO <> 'SF'):
      	$C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
      else:
      	$C->add( MissatgesPeer::PUBLICACIO , date('Y-m-d',time()) , CRITERIA::GREATER_THAN );
-     endif;
+     endif;     
                     
      $pager = new sfPropelPager('Missatges', 20);
      $pager->setCriteria($C);

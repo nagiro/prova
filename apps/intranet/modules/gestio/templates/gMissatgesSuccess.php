@@ -46,7 +46,7 @@
 					 	 		
 	 		<div class="FORMULARI fb">
 	 			<?php echo $FMissatge ?>
-	 			<?php if($FMissatge->getObject()->getUsuarisUsuariid() == $IDU)	include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
+	 			<?php if($FMissatge->getObject()->getUsuarisUsuariid() == $IDU || $NOU)	include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
 	 		</div>
 	 			 	 	
       	</div>
@@ -56,7 +56,7 @@
   <?php ELSE: ?>
   
   	<DIV class="REQUADRE">
-  	<DIV class="TITOL">Llistat de missatges (<a href="<?php url_for('gestio/gMissatges?accio=SF'); ?>">Veure missatges futurs</a>)</DIV>
+  	<DIV class="TITOL">Llistat de missatges (<a href="<?php echo url_for('gestio/gMissatges?accio=SF'); ?>">Veure missatges futurs</a>)</DIV>
   		<table class="DADES">
                 <?php  
                     if( $MISSATGES->getNbResults() == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(new Criteria()).' disponibles.</TD></TR>';

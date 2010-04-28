@@ -1527,20 +1527,16 @@ class gestioActions extends sfActions
     if($request->isMethod('POST') || $request->isMethod('GET')):
     	
     	$accio = $request->getParameter('accio');
-    	if( $request->hasParameter('BCERCA') ) 		$accio = 'C';
-	    if( $request->hasParameter('BNOU') )  		$accio = 'N';
-	    if( $request->hasParameter('BSAVE') ) 		$accio = 'S';
-	    if( $request->hasParameter('BDELETE') )		$accio = 'D';
+    	if( $request->hasParameter('BCERCA') ) 		$this->accio = 'C';
+	    if( $request->hasParameter('BNOU') )  		$this->accio = 'N';
+	    if( $request->hasParameter('BSAVE') ) 		$this->accio = 'S';
+	    if( $request->hasParameter('BDELETE') )		$this->accio = 'D';
 	    
     endif;
 
-    //Inicialitzacions pel template
-    $this->CONSULTA = true; 
-    $this->NOU 		= false; 
-    $this->EDICIO 	= false; 
-    $this->accio 	= NULL;
-                                      
-    switch( $accio )
+    $this->getUser()->setAttribute('accio',$this->accio);
+    
+    switch( $this->accio )
     {
     
       //Entrem per primer cop a aquest apartat
@@ -1552,7 +1548,7 @@ class gestioActions extends sfActions
       			$this->getUser()->setAttribute('accio',"");
       			$this->accio = "";      			
       			break;
-    	
+      
       case 'N':
                 $this->NOU = true;
                 $OM = new Missatges();
@@ -1580,16 +1576,20 @@ class gestioActions extends sfActions
       			$this->IDM = $this->getUser()->getAttribute('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
                 if(!is_null($M)) $M->delete();                
-                break;                                
+                break;
+      case 'SF':
+      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , true );      			
+      			break;
       default: 
                 $this->MISSATGE = new Missatges();
                 $this->getUser()->setAttribute('IDM',0);
+                $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );
                 break;
     
     }
     
                     
-    $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , $this->ACCIO );
+    
     
   }
     
