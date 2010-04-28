@@ -1546,7 +1546,8 @@ class gestioActions extends sfActions
       			$this->getUser()->setAttribute('pagina',1);
       			$this->PAGINA = 1;
       			$this->getUser()->setAttribute('accio',"");
-      			$this->accio = "";      			
+      			$this->accio = "";
+      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );      			
       			break;
       
       case 'N':
@@ -1570,7 +1571,8 @@ class gestioActions extends sfActions
                 $this->FMissatge = new MissatgesForm($OM);                 
                 $this->FMissatge->bind($request->getParameter('missatges'));                
                 if ($this->FMissatge->isValid()) { $this->FMissatge->save(); $this->redirect('gestio/gMissatges'); }                              	                                                                                
-                $this->EDICIO = true;      
+                $this->EDICIO = true;   
+                $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );   
                 break;
       case 'D':
       			$this->IDM = $this->getUser()->getAttribute('IDM');                
