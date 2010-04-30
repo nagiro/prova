@@ -1224,7 +1224,7 @@ class gestioActions extends sfActions
 	    		endforeach;
 	    		
 	    		$espais = $request->getParameter('espais');
-	    		if(!is_array($espais)) $espais = array();
+ 	    		if(!is_array($espais)) $espais = array();
 	    		$this->ESPAISOUT = $espais;
 	    		
 	    		$this->FHorari->bind($request->getParameter('horaris'));
@@ -1317,16 +1317,22 @@ class gestioActions extends sfActions
   		endforeach;  	     		
 	endif;  	
   	  	       
-	
+	//Passem l'hora a format numèric per fer les comprovacions
   	$DBDD['HoraPre']  = strval($horaris['HoraPre']['hour'])*60+strval($horaris['HoraPre']['minute']);
   	$DBDD['HoraIn']   = strval($horaris['HoraInici']['hour'])*60+strval($horaris['HoraInici']['minute']);
   	$DBDD['HoraFi']   = strval($horaris['HoraFi']['hour'])*60+strval($horaris['HoraFi']['minute']);
-  	$DBDD['HoraPost'] = strval($horaris['HoraPost']['hour'])*60+strval($horaris['HoraPost']['minute']);
+  	$DBDD['HoraPost'] = strval($horaris['HoraPost']['hour'])*60+strval($horaris['HoraPost']['minute']);  	  	
   	
-    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )   $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
+    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )    $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
     if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran o igual que la d'acabament.";
-    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] ) $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                
+    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] )  $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                
     
+    //Un cop fetes les verificacions... tornem a posar els valors que guardarem
+    $DBDD['HoraPre']  = $horaris['HoraPre']['hour'].':'.$horaris['HoraPre']['minute'];
+  	$DBDD['HoraIn']   = $horaris['HoraInici']['hour'].':'.$horaris['HoraInici']['minute'];
+  	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
+  	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
+      	
     if(empty($espais)) $ERRORS[] = "Has d'entrar algun espai";
         
     //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
@@ -2214,28 +2220,29 @@ class gestioActions extends sfActions
      
 	$this->setLayout('gestio');
 	        
-	    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-	    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>''));
-	    
-	    //Inicialitzem el formulari de cerca
-	    $this->FCerca = new CercaForm();
-		$this->FCerca->bind($this->CERCA);
-		
-		//Inicialitzem variables
-		$this->MODE = array('CONSULTA'	=> true,
-							'NOU'		=> false, 
-							'EDICIO' 	=> false
-						);
+    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>""));
+    $this->accio = $this->ParReqSesForm($request,'accio',"C");
+    
+    //Inicialitzem el formulari de cerca
+    $this->FCerca = new CercaForm();
+	$this->FCerca->bind($this->CERCA);
+	
+	//Inicialitzem variables
+	$this->MODE = array('CONSULTA'	=> true,
+						'NOU'		=> false, 
+						'EDICIO' 	=> false
+					);
 	    
 	if($request->isMethod('POST') || $request->isMethod('GET')):
 		$accio = $request->getParameter('accio');
-		if($request->hasParameter('BCERCA'))    $accio = 'C';
-		if($request->hasParameter('BNOU')) 	    $accio = 'N';
-		if($request->hasParameter('BSAVE')) 	$accio = 'S';
-		if($request->hasParameter('BDELETE')) 	$accio = 'D';
-	endif;                
-		
-	switch($accio){
+		if($request->hasParameter('BCERCA'))    $this->accio = 'C';
+		if($request->hasParameter('BNOU')) 	    $this->accio = 'N';
+		if($request->hasParameter('BSAVE')) 	$this->accio = 'S';
+		if($request->hasParameter('BDELETE')) 	$this->accio = 'D';
+	endif;                			
+	
+	switch($this->accio){
 	    case 'N':
 	    		$OIncidencia = new Incidencies();
 	    		$OIncidencia->setDataalta(time());
@@ -2262,8 +2269,7 @@ class gestioActions extends sfActions
 		        IncidenciesPeer::retrieveByPK($request->getRequest('IDI'))->delete();    	        
 		        break;    	         	 
 	}
-	
-	    
+		    
 	$this->INCIDENCIES = IncidenciesPeer::getIncidencies($this->CERCA['text'], $this->PAGINA);
   
   }  

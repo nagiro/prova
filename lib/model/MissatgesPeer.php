@@ -74,6 +74,7 @@ class MissatgesPeer extends BaseMissatgesPeer
       $avui = date('Y-m-d',time()); 
       $C->add( self::PUBLICACIO , $avui );
       $C->addDescendingOrderByColumn(self::PUBLICACIO);
+      $C->addDescendingOrderByColumn(self::MISSATGEID);      
       return MissatgesPeer::doSelect($C);
   }
       

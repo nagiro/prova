@@ -13,8 +13,9 @@
 	.row_field input { width:100%; }
 	input.ul_cat { background-color:white; border:0px; width:20px; }
 	li.ul_cat { width:220px; }
-	#TD1 td { border: 1px solid #DB9296; padding:4px; }
-	#TD1 { border-collapse:collapse; } 
+	#TD1 td { border: 0px solid #DB9296; padding:0px 2px; font-size:10px; }
+	#TD1 { border-collapse:collapse; }
+	.LIST2 { padding:10px;  } 
 		
 </style>
 
@@ -376,7 +377,7 @@
         <DIV class="TITOL">Llistat d'activitats </DIV>
       	<TABLE class="DADES">
  			<?php 	if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; 
- 					$i = 0; $j=0; $Tall = 20; 					  			   			
+ 					$i = 0; $j=0; $Tall = 30; 					  			   			
 					foreach($ACTIVITATS as $A):			
 	                  	if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
 	                    
@@ -384,16 +385,18 @@
 		                  	if( !empty( $A['ESPAIS'] ) ):     $ESP = implode("<br />",$A['ESPAIS']); endif;
 		                  	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
 		                  	if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+		                  	$j = 1;
 		                  	$PAR = ParImpar($j++);                  	
-		                             
-		                  	echo '	<TR>                      	
-					               		<TD class="'.$PAR.'">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID']).$AVIS.'</TD>
-					                	<TD class="'.$PAR.'">'.$A['DIA'].'</TD>
-					               		<TD class="'.$PAR.'">'.$A['HORA_INICI'].'</TD>
-					                	<TD class="'.$PAR.'">'.$ESP.'</TD>
-					                	<TD class="'.$PAR.'">'.$MAT.'</TD>						            
-					                </TR>';
-		                  	
+
+	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #DDDDDD; height:5px;" colspan="5"></td></tr>';		                  	
+		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="5">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID']).$AVIS.'</td></tr>';		                  	
+		                  	echo '	<TR>                      						               							                	
+					               		<TD class="LIST2 '.$PAR.'"><B>'.$A['HORA_INICI'].'</b></TD>
+					               		<TD class="LIST2 '.$PAR.'"><B>'.$A['HORA_FI'].'</b></TD>
+					                	<TD class="LIST2 '.$PAR.'">'.$ESP.'</TD>
+					                	<TD class="LIST2 '.$PAR.'">'.$MAT.'</TD>
+					                	<TD class="LIST2 '.$PAR.'">'.$A['DIA'].'</TD>						            
+					                </TR>';		                  			                  	
 	                 	endif;
 	                 	$i++;
 				 	endforeach; 
@@ -595,7 +598,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
 		        if(isset($CALENDARI[$CalDia])):
 		        	$SELECCIONAT = "SELECCIONAT";		        	
 		        	$SPAN  = '<span><table id="TD1"><tr><th>Inici</th><th>Fi</th><th>Espai</th><th>Títol</th><th>Organitzador</th></tr>';				 
-		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= '<tr><td><b>'.$CAL['HORAI'].'</b></td><td>'.$CAL['HORAF'].'</td><td><b>'.$CAL['ESPAIS'].'</b></td><td>'.$CAL['TITOL'].'</td><td>'.$CAL['ORGANITZADOR'].'</td></tr>';
+		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= '<tr><td>'.$CAL['HORAI'].'</td><td>'.$CAL['HORAF'].'</td><td>'.$CAL['ESPAIS'].'</td><td>'.$CAL['TITOL'].'</td><td>'.$CAL['ORGANITZADOR'].'</td></tr>';
 		            $SPAN .= '</table></span>';
 		        else: 
 		        	$SELECCIONAT = "";

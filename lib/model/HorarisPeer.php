@@ -19,7 +19,7 @@ class HorarisPeer extends BaseHorarisPeer
 
 	$C->addGroupByColumn(self::HORARISID);
 	
-	$pager = new sfPropelPager('Horaris', 20);	
+	$pager = new sfPropelPager('Horaris', 30);	
     $pager->setCriteria($C);
     $pager->setPage($page);
     $pager->init();
@@ -113,6 +113,7 @@ class HorarisPeer extends BaseHorarisPeer
 	      $RET[$H->getHorarisid()]['NOM_ACTIVITAT'] = $OActivitats->getNom();   //Guardem les activitats	      
 	      $RET[$H->getHorarisid()]['DIA'] = $H->getDia('d-m-Y');   //Guardem les activitats
 	      $RET[$H->getHorarisid()]['HORA_INICI'] = $H->getHorainici('H:i');   //Guardem les activitats
+	      $RET[$H->getHorarisid()]['HORA_FI'] = $H->getHorafi('H:i');   //Guardem les activitats
 	      $RET[$H->getHorarisid()]['AVIS'] = $H->getAvis();   //Carreguem l'avís per si de cas      
 	      foreach($H->getHorarisespaiss() as $HE):          
 	      	$RET[$H->getHorarisid()]['ESPAIS'][] = (is_null($HE->getEspais()))?"":$HE->getEspais()->getNom();   //Guardem les activitats      	
@@ -192,7 +193,7 @@ class HorarisPeer extends BaseHorarisPeer
   static private function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
     
-  	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);
+  	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);  	
     //$C->setLimit(200);    
     
     return self::doSelectJoinAll($C);
@@ -378,8 +379,8 @@ class HorarisPeer extends BaseHorarisPeer
 	  	$OH->setEspectadors($HORARIS['Espectadors']);
 	  	$OH->setPlaces($HORARIS['Places']);
 		$OH->setDia($D);
-		$OH->save();  //Guardem
-  	
+		$OH->save();  //Guardem				
+		
   		foreach($ESPAIS as $K=>$idE):  			
   			foreach($MATERIAL as $K=>$idM):
   				$OHE = new Horarisespais();				//Creem  un registre per espai i per material de l'horari del dia

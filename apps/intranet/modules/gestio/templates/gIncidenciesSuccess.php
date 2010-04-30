@@ -57,8 +57,12 @@
 					$i = 0;
 					foreach($INCIDENCIES->getResults() as $I):												
                       	$PAR = ParImpar($i++);
-                      	echo '<TR><TD class="'.$PAR.'">'.link_to($I->getTitol(),'gestio/gIncidencies'.getParam( 'E' , $I->getIdincidencia() , $PAGINA )).'</TD>
-						    	  <TD class="'.$PAR.'">'.$I->getEstatText().'</TD></TR>';                                	
+                      	echo '<TR>
+                      	          	<TD class="'.$PAR.'">'.link_to($I->getTitol(),'gestio/gIncidencies'.getParam( 'E' , $I->getIdincidencia() , $PAGINA )).'</TD>
+						    	  	<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>
+                      				<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>
+                      				<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>                      				
+                      	     </TR>';                                	
                     endforeach;
                     
                  endif;                    

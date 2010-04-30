@@ -75,9 +75,8 @@ class HorarisForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);      
 
-    parent::setup();
   }
-
+  
   public function getModelName()
   {
     return 'Horaris';
