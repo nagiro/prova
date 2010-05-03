@@ -41,7 +41,7 @@
 					foreach($ACTIVITATS as $A):						
 						echo '<TR>';                      	
 						if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
-	                  	echo '<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.$AVIS.$A['NOM_ACTIVITAT'].'</TD>';	                    
+	                  	echo '<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.$A['NOM_ACTIVITAT'].$AVIS.'</TD>';	                    
 	                  	echo '<TD><b>'.$A['HORA_INICI'].'</b></TD>';	                  	
 	                  	echo '<TD>'.$A['HORA_FI'].'</TD>';
 	                    echo '<TD>'.implode("<BR />",$A['ESPAIS']).'</TD>';
