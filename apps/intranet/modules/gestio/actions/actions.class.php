@@ -53,7 +53,7 @@ class gestioActions extends sfActions
     $this->TASQUES = TasquesPeer::getCercaTasques(1,$idU,0,true);
     
     //Carreguem les activitats d'avui :D
-    $this->ACTIVITATS = HorarisPeer::getActivitats(date('Y-m-d',time()) , null , null , null , null);
+    $this->ACTIVITATS = HorarisPeer::getActivitats(time() , null , null , null , null);
     $this->ACTIVITATS = $this->ACTIVITATS['ACTIVITATS'];
   
   }
