@@ -296,6 +296,9 @@ class HorarisPeer extends BaseHorarisPeer
   static public function validaDia( $DIA , $idE , $HoraPre , $HoraPost , $idH )
   {
   
+  	//Garantim que si hi ha un altre espai, no comprovi
+  	if($idE == 1) $idE = 0;
+  	
 	$SQL = "  SELECT count(*) as Va
 				FROM horarisespais he, horaris h
     		   WHERE h.DIA = '$DIA'
