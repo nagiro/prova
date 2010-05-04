@@ -34,6 +34,7 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio'); ?></TD></TR>                            
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves d\'espais','gestio/gReserves'); ?></TD></TR>                                                                      
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Informes','gestio/gInformes'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' PROGRAMACIÓ'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=CA'); ?></TD></TR>
 			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Matricules','gestio/gMatricules?accio=CA'); ?></TD></TR>
