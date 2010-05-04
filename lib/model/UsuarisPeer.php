@@ -11,7 +11,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 {
 
   const ADMIN = 1;
-  const REGISTERED = 2;
+  const REGISTERED = 2;  
    
   static function cercaDNI($DNI)
   {
@@ -159,6 +159,11 @@ class UsuarisPeer extends BaseUsuarisPeer
   {
   	return UsuarisPeer::retrieveByPK($idU)->getNomComplet();
   }
-  
+   
+  static public function canSeeComptabilitat($idU)
+  {
+  	$usuaris = array(1,2,4,6,9,11,24);
+  	return (in_array($idU,$usuaris)); 
+  }
 	
 }

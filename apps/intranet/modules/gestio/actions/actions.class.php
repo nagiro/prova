@@ -2903,6 +2903,7 @@ class gestioActions extends sfActions
   {
      
 	$this->setLayout('gestio');
+	$this->POTVEURE = array(1=>UsuarisPeer::canSeeComptabilitat($this->getUser()->getAttribute('idU')));
 	                  
   }  
   
