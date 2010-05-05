@@ -198,8 +198,8 @@
       	<TABLE class="DADES">
  			<?php if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap activitat definida.</TD></TR>'; endif; ?>  
 			<?php 	foreach($ACTIVITATS as $A):
-						$NH = ($A->countHorariss() == 0)?'No té cap horari':'Edita horaris';
-						$DESC = ($A->getDComplet()=="")?'No té descripció':'Edita descripció';
+						$NH = ($A->countHorariss() == 0)?'Afegeix l\'horari':'Edita horaris';
+						$DESC = ($A->getDComplet()=="")?'Afegeix descripció':'Edita descripció';
 						echo '<TR>
 								<TD class="" width="">'.link_to($A->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A->getActivitatid()).'</TD>
 								<TD class="" width="100px">'.link_to($NH,'gestio/gActivitats?accio=HORARI&IDA='.$A->getActivitatid()).'</TD>
@@ -388,12 +388,12 @@
 		                  	$j = 1;
 		                  	$PAR = ParImpar($j++);                  	
 
-	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #DDDDDD; height:5px;" colspan="5"></td></tr>';		                  	
+	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="5"></td></tr>';		                  	
 		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="5">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID']).$AVIS.'</td></tr>';		                  	
 		                  	echo '	<TR>                      						               							                	
-					               		<TD class="LIST2 '.$PAR.'"><B>'.$A['HORA_INICI'].'</b></TD>
+					               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:green;">'.$A['HORA_INICI'].'</span></TD>
 					               		<TD class="LIST2 '.$PAR.'"><B>'.$A['HORA_FI'].'</b></TD>
-					                	<TD class="LIST2 '.$PAR.'">'.$ESP.'</TD>
+					                	<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#800000;">'.$ESP.'</span></TD>
 					                	<TD class="LIST2 '.$PAR.'">'.$MAT.'</TD>
 					                	<TD class="LIST2 '.$PAR.'">'.$A['DIA'].'</TD>						            
 					                </TR>';		                  			                  	

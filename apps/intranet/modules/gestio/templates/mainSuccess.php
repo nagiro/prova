@@ -42,9 +42,9 @@
 						echo '<TR>';                      	
 						if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
 	                  	echo '<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.$A['NOM_ACTIVITAT'].$AVIS.'</TD>';	                    
-	                  	echo '<TD><b>'.$A['HORA_INICI'].'</b></TD>';	                  	
+	                  	echo '<TD><span style="font-weight:bold; font-size:10px; color:green;">'.$A['HORA_INICI'].'</span></TD>';	                  	
 	                  	echo '<TD>'.$A['HORA_FI'].'</TD>';
-	                    echo '<TD>'.implode("<BR />",$A['ESPAIS']).'</TD>';
+	                    echo '<TD><span style="font-weight:bold; font-size:10px; color:#880000;">'.implode("<BR />",$A['ESPAIS']).'</span></TD>';
 	                    echo '<TD>'.implode("<BR />",$A['MATERIAL']).'</TD>';						            
 	                    echo '</TR>';												
                 	endforeach;
