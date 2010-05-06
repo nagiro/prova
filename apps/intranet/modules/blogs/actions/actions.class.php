@@ -45,16 +45,13 @@ class blogsActions extends sfActions
 	    	$url = '<img width="100px" src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
-	    $TEXT = "<html>
-	    		 <body>	
+	    $TEXT = "	
 	    		 <table border=\"0\"><tr><td>$url</td><td>	    		 
 		             <h1>{$post->getTitle()}</h1>
 		             <h2>{$post->getSubtitle1()}</h2>
 		             <h3>{$post->getSubtitle2()}</h3>
 		             <a href=\"{$post->getUrl()}\">Web</a>
-		         </td></tr></table>
-	             </body>	             
-	             </html>	             
+		         </td></tr></table>	             
 	             ";	    
 	             
 	    $item->setContent($TEXT);
