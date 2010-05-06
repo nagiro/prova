@@ -10,6 +10,50 @@
  */
 class blogsActions extends sfActions
 {
+	
+	public function executeNoticiesCulturalsLastPosts()
+	{
+	  $feed = new sfAtom1Feed();
+	
+	  $feed->setTitle('Notícies Culturals de Girona');
+	  $feed->setLink('http://www.casadecultura.org/noticiesculturals');
+	  $feed->setAuthorEmail('giroscopi@casadecultura.org');
+	  $feed->setAuthorName('Giroscopi || Casa de Cultura de Girona');
+	
+	  $feedImage = new sfFeedImage();
+	  $feedImage->setFavicon('http://servidor.casadecultura.org/web_beta/images/blogs/Dissenys/noticies_culturals/blog_02.png');
+	  $feed->setImage($feedImage);
+	
+	  $posts = AppBlogsEntriesPeer::getEntries(1);
+	  	
+	  foreach ($posts->getResults() as $post)
+	  {
+	    $item = new sfFeedItem();
+	    $item->setTitle($post->getTitle());
+	    $item->setLink(sfConfig::get('sf_webrooturl').'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
+	    $item->setAuthorName('Giroscopi');
+	    $item->setAuthorEmail('giroscopi@casadecultura.org');
+	    $item->setPubdate($post->getDate('U'));
+	    $item->setUniqueId($post->getId());
+	    
+	    $TEXT = "<h1>{$post->getTitle()}</h1>
+	             <h2>{$post->getSubtitle1()}</h2>
+	             <h3>{$post->getSubtitle2()}</h3>
+	             <p>{$post->getBody()}</p>
+	             <p><a href=\"{$post->getUrl()}\">{$post->getBody()}</a></p>	             
+	             ";	    
+	    $item->setDescription($TEXT);
+	
+	    $feed->addItem($item);
+	  }
+	
+	  $this->feed = $feed;
+	  $this->setLayout('blank');
+	  $this->setTemplate('RSS');
+	}
+	
+	
+	
  /**
   * Executes index action
   *
