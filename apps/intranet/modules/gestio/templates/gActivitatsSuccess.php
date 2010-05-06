@@ -389,13 +389,12 @@
 		                  	$j = 1;
 		                  	$PAR = ParImpar($j++);                  	
 
-	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="7"></td></tr>';		                  	
-		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="7">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID'],array('style'=>'font-size:12px')).$AVIS.'</td></tr>';		                  	
+	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
+		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID'],array('style'=>'font-size:12px')).$AVIS.'</td></tr>';		                  	
 		                  	echo '	<TR>                      						               							                	
 		                  				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
 					               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>
-					               		<TD class="LIST2 '.$PAR.'"><b>'.$A['HORA_FI'].'</b></TD>
-		                  				<TD class="LIST2 '.$PAR.'">'.$A['HORA_POST'].'</TD>
+					               		<TD class="LIST2 '.$PAR.'"><b>'.$A['HORA_FI'].'</b></TD>		                  				
 					                	<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:#800000;">'.$ESP.'</span></TD>
 					                	<TD class="LIST2 '.$PAR.'">'.$MAT.'</TD>
 					                	<TD class="LIST2 '.$PAR.'">'.$A['DIA'].'</TD>						            
