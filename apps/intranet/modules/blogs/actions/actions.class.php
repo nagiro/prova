@@ -24,9 +24,12 @@ class blogsActions extends sfActions
 	  $feedImage->setFavicon('http://servidor.casadecultura.org/web_beta/images/blogs/Dissenys/noticies_culturals/blog_02.png');
 	  $feed->setImage($feedImage);
 	
-	  $posts = AppBlogsEntriesPeer::getEntries(1);
+	  $C = new Criteria();
+	  $C->add(AppBlogsEntriesPeer::PAGE_ID, 1);
+	  $C->addDescendingOrderByColumn(AppBlogsEntriesPeer::DATE);
+	  $Q = AppBlogsEntriesPeer::doSelect($C);
 	  	
-	  foreach ($posts->getResults() as $post)
+	  foreach ($Q as $post)
 	  {
 	    $item = new sfFeedItem();
 	    $item->setTitle($post->getTitle());
@@ -35,13 +38,24 @@ class blogsActions extends sfActions
 	    $item->setAuthorEmail('giroscopi@casadecultura.org');
 	    $item->setPubdate($post->getDate('U'));
 	    $item->setUniqueId($post->getId());
+	    $IMG = $post->getImages();
+	    if(!$IMG):
+	    	$url = "";	    	
+	    else: 
+	    	$url = '<img src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl();
+	    endif; 
 	    
-	    $TEXT = "<h1>{$post->getTitle()}</h1>
+	    $TEXT = "<html>
+	    		 <body>	    		 
+	    		 $url	    		 
+	             <h1>{$post->getTitle()}</h1>
 	             <h2>{$post->getSubtitle1()}</h2>
 	             <h3>{$post->getSubtitle2()}</h3>
-	             <p>{$post->getBody()}</p>
-	             <p><a href=\"{$post->getUrl()}\">{$post->getBody()}</a></p>	             
+	             <a href=\"{$post->getUrl()}\">Web</a>
+	             </body>	             
+	             </html>	             
 	             ";	    
+	             
 	    $item->setDescription($TEXT);
 	
 	    $feed->addItem($item);
