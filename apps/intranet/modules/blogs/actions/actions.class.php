@@ -42,7 +42,7 @@ class blogsActions extends sfActions
 	    if(!$IMG):
 	    	$url = "";	    	
 	    else: 
-	    	$url = '<img src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl();
+	    	$url = '<img src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
 	    $TEXT = "<html>
@@ -56,7 +56,7 @@ class blogsActions extends sfActions
 	             </html>	             
 	             ";	    
 	             
-	    $item->setDescription($TEXT);
+	    $item->setContent($TEXT);
 	
 	    $feed->addItem($item);
 	  }
