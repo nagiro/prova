@@ -1325,7 +1325,7 @@ class gestioActions extends sfActions
   	
     if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )    $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
     if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran o igual que la d'acabament.";
-    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] )  $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                
+    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] && $DBDD['HoraPost'] > (8*60) )  $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                    
     
     //Un cop fetes les verificacions... tornem a posar els valors que guardarem
     $DBDD['HoraPre']  = $horaris['HoraPre']['hour'].':'.$horaris['HoraPre']['minute'];

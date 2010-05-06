@@ -29,7 +29,7 @@ class HorarisForm extends sfFormPropel
   					'20' =>'20',
   					'21' =>'21',
   					'22' =>'22',
-  					'23' =>'23',  					
+  					'23' =>'23',  					  					
   				  );
 */  	
     $this->setWidgets(array(
