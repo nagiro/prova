@@ -45,7 +45,7 @@ class blogsActions extends sfActions
 	    	$url = '<img width="100px" src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
-	    $url = sfConfig::get('sf_webroot').'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
+	    $url2 = sfConfig::get('sf_webroot').'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
 	    
 	    $TEXT = "	
 	    		 <table border=\"0\"><tr><td>$url</td><td>	    		 
@@ -53,7 +53,7 @@ class blogsActions extends sfActions
 		             <h2>{$post->getSubtitle1()}</h2><br />
 		             <h3>{$post->getSubtitle2()}</h3><br />
 		             <a href=\"{$post->getUrl()}\">Web</a><br />
-		             <a href=\"{$url}\">Notícia original</a>
+		             <a href=\"{$url2}\">Notícia original</a>
 		         </td></tr></table>	             
 	             ";	    
 	             
