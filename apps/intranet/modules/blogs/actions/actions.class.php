@@ -45,7 +45,7 @@ class blogsActions extends sfActions
 	    	$url = '<img width="100px" src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
-	    $url_web = sfConfig::get('sf_webroot').'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
+	    $url_web = sfConfig::get('sf_webrooturl').'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
 	    
 	    $TEXT = "	
 	    		 <table border=\"0\"><tr><td>$url</td><td>	    		 
