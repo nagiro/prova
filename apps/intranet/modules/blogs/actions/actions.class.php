@@ -26,7 +26,7 @@ class blogsActions extends sfActions
 	
 	  $C = new Criteria();
 	  $C->add(AppBlogsEntriesPeer::PAGE_ID, 1);
-	  $C->addDescendingOrderByColumn(AppBlogsEntriesPeer::DATE);
+	  $C->addDescendingOrderByColumn(AppBlogsEntriesPeer::ID);
 	  $Q = AppBlogsEntriesPeer::doSelect($C);
 	  	
 	  foreach ($Q as $post)
@@ -36,7 +36,7 @@ class blogsActions extends sfActions
 	    $item->setLink(sfConfig::get('sf_webrooturl').'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
 	    $item->setAuthorName('Giroscopi');
 	    $item->setAuthorEmail('giroscopi@casadecultura.org');
-//	    $item->setPubdate(time());
+	    $item->setPubdate(time());
 	    $item->setUniqueId($post->getId());
 	    $IMG = $post->getImages();
 	    if(!$IMG):
