@@ -36,7 +36,7 @@ class blogsActions extends sfActions
 	    $item->setLink(sfConfig::get('sf_webrooturl').'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
 	    $item->setAuthorName('Giroscopi');
 	    $item->setAuthorEmail('giroscopi@casadecultura.org');
-	    $item->setPubdate(time());
+//	    $item->setPubdate(time());
 	    $item->setUniqueId($post->getId());
 	    $IMG = $post->getImages();
 	    if(!$IMG):
