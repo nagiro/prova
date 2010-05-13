@@ -1312,7 +1312,7 @@ class gestioActions extends sfActions
 		$DIES = explode(',',$horaris['Dia']);
 		foreach($DIES as $D):  		
   			list($dia,$mes,$any) = explode('/',$D);  		
-  	  		if(!($any > 2000 && $mes < 13 && $dia < 31 )) $ERRORS[] = "La data que has entrat Ã©s incorrecta";
+  	  		if(!($any > 2000 && $mes < 13 && $dia < 32 )) $ERRORS[] = "La data que has entrat és incorrecta";
   			$DBDD['DIES'][] = "$any-$mes-$dia";  		  		
   		endforeach;  	     		
 	endif;  	

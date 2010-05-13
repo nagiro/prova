@@ -13,6 +13,7 @@ $(document).ready(function() {
 	 $("#id").val(1);																		
 	 $("#mesdades").click( function() { creaNovaDada(); });
 	 $("#cerca_text").keyup(function() { OmpleCerca(this.value); });
+	 
 	 <?php 	
 	 	if(isset($DADES)): 			 
 	 		foreach($DADES as $K => $V):	 			
@@ -99,7 +100,8 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
     										'BOTONS'=>array(
     														array(
     																'name'=>'BNOU',
-    																'text'=>'Nou contacte')))); ?>
+    																'text'=>'Nou contacte')    														
+    														))); ?>
      </form>    
 
       
