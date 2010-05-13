@@ -306,10 +306,10 @@ class HorarisPeer extends BaseHorarisPeer
     		   WHERE h.DIA = '$DIA'
     			 AND h.HorarisID = he.Horaris_HorarisID
     			 AND (
-						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPre <= '$HoraPost' ) ) OR
-						( ( h.horaPost >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) ) OR
-						( ( h.horaPre <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
-						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
+						( ( h.horaPre  > '$HoraPre' ) AND ( h.horaPre   < '$HoraPost' ) ) OR
+						( ( h.horaPost > '$HoraPre' ) AND ( h.horaPost  < '$HoraPost' ) ) OR
+						( ( h.horaPre  <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
+						( ( h.horaPre  > '$HoraPre' ) AND ( h.horaPost  < '$HoraPost' ) )
         			)
         		 AND he.Espais_EspaiID = $idE        			        			
         	";
