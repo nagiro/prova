@@ -1152,9 +1152,15 @@ class gestioActions extends sfActions
 	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
 	    		$this->FActivitat->bind($request->getParameter('activitats'));
 	    		if($this->FActivitat->isValid()):
+	    			$nova = $this->FActivitat->isNew();
 	    			$this->FActivitat->save();
 	    			$this->getUser()->setAttribute('IDA',$this->FActivitat->getObject()->getActivitatid());
-	    			$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();
+	    			if($nova):	    				
+	    				$this->redirect('gestio/gActivitats?accio=HORARI&nou='.$this->IDA);
+	    			else: 
+	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+	    			endif; 	    			
 	    		else: 
 	    			if($this->getUser()->getAttribute('isCicle')):
 	    				$this->MODE['ACTIVITAT_CICLE'] = true;

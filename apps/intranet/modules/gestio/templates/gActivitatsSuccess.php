@@ -231,7 +231,7 @@
 	 		<div style="padding-top:10px;" class="FORMULARI fb">
 	 		
 	 			<?php echo $FActivitat ?>		 		
-	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BACTIVITATSAVE','text'=>'Guarda i tanca')); ?>
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BACTIVITATSAVE','text'=>'Guarda i tanca')); ?>	 				 				 			
 	 					
 	 		</div>
 	 			 	 	
