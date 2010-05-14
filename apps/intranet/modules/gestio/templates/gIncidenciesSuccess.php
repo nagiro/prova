@@ -52,22 +52,28 @@
       	<TABLE class="DADES">
  			<?php 
 				if( $INCIDENCIES->getNbResults() == 0 ):
-					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap incidencia amb aquestes dades.</TD></TR>';
+					echo '<TR><TD class="LINIA" colspan="4">No s\'ha trobat cap incidencia amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;
+					echo '<TR>
+                      	  	<th class="titol">Incidència</TH>
+         					<th class="titol">Estat</TH>                      				                      				             	          	
+						    <th class="titol">Data Alta</TH>                      				                      				
+						    <th class="titol">Data Resolució</TH>
+                      	  </TR>';                                	
 					foreach($INCIDENCIES->getResults() as $I):												
                       	$PAR = ParImpar($i++);
                       	echo '<TR>
                       	          	<TD class="'.$PAR.'">'.link_to($I->getTitol(),'gestio/gIncidencies'.getParam( 'E' , $I->getIdincidencia() , $PAGINA )).'</TD>
-						    	  	<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>
-                      				<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>
-                      				<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>                      				
+         							<TD class="'.$PAR.'">'.$I->getEstatText().'</TD>                      				                      				             	          	
+						    	  	<TD class="'.$PAR.'">'.$I->getDataalta('d/m/Y').'</TD>                      				                      				
+						    	  	<TD class="'.$PAR.'">'.$I->getDataresolucio('d/m/Y').'</TD>
                       	     </TR>';                                	
                     endforeach;
                     
                  endif;                    
              ?>      
-              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($INCIDENCIES);?></TD></TR>    	
+              <TR><TD colspan="4" class="TITOL"><?php echo gestorPagines($INCIDENCIES);?></TD></TR>    	
       	</TABLE>      
       </DIV>
   
