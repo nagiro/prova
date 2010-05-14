@@ -11,7 +11,7 @@
 			<TD>Activitats  : 		</TD><TD><?=$NACTIVITATS?></TD></TR> 	 				    	
       	</TABLE>      
       </DIV>
-
+	  
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Missatges d'avui</DIV>
       	<TABLE class="DADES">
@@ -20,8 +20,9 @@
                 	if(empty($MISSATGES)): echo '<tr><td></td></tr>'; endif; 	
                 
 					foreach($MISSATGES as $M):
-						echo '<TR>';                  		
-						echo '	<TD width="70%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">'.$M->getTitol().'<span>'.$M->getText().'</span></a></TD>';						
+						echo '<TR>';
+						$nom_id = "MISS".$M->getMissatgeid();                  								
+						echo '	<TD width="70%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#TB_inline?height=300&width=500&inlineId='.$nom_id.'&modal=false" title="'.$M->getTitol().'" class="thickbox tt2">'.$M->getTitol().'<span id="'.$nom_id.'"><p style="font-size:12px; text-align:justify">'.$M->getText().'</p></span></a></TD>';																								
 						$U = $M->getUsuaris();											
 						echo '  <TD width="20%">'.$U->getNom().' '.$U->getCog1().'</TD>';
 						echo '  <TD width="10%">'.$M->getPublicacio('d/m/Y').'</TD>';
