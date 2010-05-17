@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * 
  * gestio actions.
  *
  * @package    intranet
@@ -976,14 +977,14 @@ class gestioActions extends sfActions
   {
   	
     $this->setLayout('gestio');
-    
-    $this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));
-    $this->PAGINA 	= $this->ParReqSesForm($request,'PAGINA',1);
-    $this->DATAI  	= $this->ParReqSesForm($request,'DATAI',time());    
-    $this->DIA    	= $this->ParReqSesForm($request,'DIA',time());
-    $this->IDA    	= $this->ParReqSesForm($request,'IDA',0);            
-    $accio  		= $this->ParReqSesForm($request,'accio','C');
-    $this->ACTIVITAT_NOVA = false;    
+        
+    $this->CERCA  			= $this->ParReqSesForm($request,'cerca',array('text'=>""));
+    $this->PAGINA 			= $this->ParReqSesForm($request,'PAGINA',1);
+    $this->DATAI  			= $this->ParReqSesForm($request,'DATAI',time());    
+    $this->DIA    			= $this->ParReqSesForm($request,'DIA',time());    
+    $this->IDA    			= $this->ParReqSesForm($request,'IDA',0);        
+    $accio  				= $this->ParReqSesForm($request,'accio','C');
+    $this->ACTIVITAT_NOVA 	= false;    
         
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
@@ -1177,19 +1178,20 @@ class gestioActions extends sfActions
     		
     	//Entrem els horaris de les activitats
     	case 'HORARI':
-    		
+    			
 				$this->CarregaActivitats(); 
-    			    			    			
- 				$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);    			
+    			    			    							
+ 				$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA); 				    		
     			$this->HORARIS = $OActivitat->getHorariss();
-    			$this->NOMACTIVITAT = $OActivitat->getNom();    			
-    			    			
+    			$this->NOMACTIVITAT = $OActivitat->getNom();
+    			    			    			    			
     			$OHorari = new Horaris();
     			$OHorari->setActivitatsActivitatid($this->getUser()->getAttribute('IDA'));    			    			
     			if($request->hasParameter('nou')) $this->FHorari = new HorarisForm($OHorari);     			
     			$this->HORARI = $OHorari;    			   
-				$this->ESPAISOUT = array(); $this->MATERIALOUT = array();    			 		
+				$this->ESPAISOUT = array(); $this->MATERIALOUT = array();				    			 	
     			$this->getUser()->setAttribute('IDH',0);
+    			    			
     			if($request->hasParameter('IDH')):
     				$H = HorarisPeer::retrieveByPK($request->getParameter('IDH'));
     				$this->getUser()->setAttribute('IDH',$request->getParameter('IDH'));    				
@@ -1202,7 +1204,7 @@ class gestioActions extends sfActions
     						$OMaterial = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());    			    			
 			    			$this->MATERIALOUT[] = array('material'=>$HE->getMaterialIdmaterial(),'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());    						 
     					endif;
-    				endforeach;    				
+    				endforeach;    				    				
     			endif;    		    
     					    			
  				 $this->MODE['HORARI'] = true;
@@ -1287,7 +1289,7 @@ class gestioActions extends sfActions
     		break;
     					
     }
-     
+            
   }  
 
   private function CarregaActivitats()
@@ -1635,7 +1637,7 @@ class gestioActions extends sfActions
   //Exemple: $this->ParReqSesForm($request,'cerca',array('text'=>""));
   public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
   {
-  	  	
+  	  	  	
   	$RET = ""; 	    	
   	
   	if(is_array($default)):
@@ -1673,16 +1675,15 @@ class gestioActions extends sfActions
 	else:
 		
 		//Si existeix el parÃ metre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):
-	  	
-	  		$CAMP = $request->getParameter($nomCamp);	  		
-	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
+	  	if($request->hasParameter($nomCamp)):	  		
+	  		$CAMP = $request->getParameter($nomCamp);	  			  		
+	  		$this->getUser()->setAttribute($nomCamp,$CAMP);	  			  			  		  					  		  				  		  		 	  	
 	  		$RET = $CAMP;  		
 	  
 	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
 	  	elseif($this->getUser()->hasAttribute($nomCamp)):
 	  		
-	  		$RET = $this->getUser()->getAttribute($nomCamp);
+	  		$RET = $this->getUser()->getAttribute($nomCamp);	  		
 	  			  		
 	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
 	  	else:

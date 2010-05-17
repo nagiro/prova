@@ -253,7 +253,7 @@
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
 			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
 						echo '<TR>
-								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDH='.$H->getHorarisid()).'</TD>
+								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&IDH='.$H->getHorarisid()).'</TD>
 								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
 								<TD class="" width="">'.$H->getHorapre('H:i').'</TD>
 								<TD class="" width="">'.$H->getHorainici('H:i').'</TD>
