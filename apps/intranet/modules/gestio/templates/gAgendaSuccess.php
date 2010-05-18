@@ -17,8 +17,7 @@ $(document).ready(function() {
 	 <?php 	
 	 	if(isset($DADES)): 			 
 	 		foreach($DADES as $K => $V):	 			
-	 			$T = $V->getTipus(); $D = addslashes($V->getDada()); $N = addslashes($V->getNotes()); $S = AgendatelefonicadadesPeer::getSelectHTML($V->getTipus());
-	 			echo $N;	 		
+	 			$T = $V->getTipus(); $D = addslashes($V->getDada()); $N = addslashes($V->getNotes()); $S = AgendatelefonicadadesPeer::getSelectHTML($V->getTipus());	 				
 	 			echo "creaNovaDadaVella(".$T.",'".$D."','".$N."','".$S."',".$V->getAgendatelefonicadadesid().");";
 	 		endforeach;
 	 	endif;
