@@ -18,11 +18,11 @@
 		endforeach;
 	endif;
 	
-	
+/*	
   function ParImpar($i)
   {
 	if($i % 2 == 0) return "PAR";
 	else return "IPAR";
   }
-
+*/
 ?>

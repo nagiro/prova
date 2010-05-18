@@ -982,7 +982,7 @@ class gestioActions extends sfActions
     $this->PAGINA 			= $this->ParReqSesForm($request,'PAGINA',1);
     $this->DATAI  			= $this->ParReqSesForm($request,'DATAI',time());    
     $this->DIA    			= $this->ParReqSesForm($request,'DIA',time());    
-    $this->IDA    			= $this->ParReqSesForm($request,'IDA',0);        
+    $this->IDA    			= $this->ParReqSesForm($request,'IDA',0);
     $accio  				= $this->ParReqSesForm($request,'accio','C');
     $this->ACTIVITAT_NOVA 	= false;    
         
@@ -1427,15 +1427,16 @@ class gestioActions extends sfActions
   
   public function executeSearchAjaxAgenda(sfWebRequest $request)
   {
-
+/*
   	sfConfig::set('sf_web_debug', false);
   	sfLoader::loadHelpers('Partial');
-  	
+  	  	
   	$C = new Criteria();
-  	$AGENDES = AgendatelefonicadadesPeer::doSearch( $request->getParameter('text') );  	
+  	$this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));
+  	$AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA );  	
   
   	return $this->renderText(get_partial('listAgenda', array('AGENDES' => $AGENDES)));  	           	  	        
-      
+ */     
   }  
   
   
@@ -1507,9 +1508,9 @@ class gestioActions extends sfActions
                 $this->AID = $this->getUser()->getAttribute('AID');
                 $A = AgendatelefonicaPeer::retrieveByPK($this->AID);
                 if(!is_null($A)) $A->delete();  
-                break; 
-      default: 
-                $this->AGENDA = new Agendatelefonica();
+                break;       
+      default:                 
+                $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] );
                 break;
     
     }    

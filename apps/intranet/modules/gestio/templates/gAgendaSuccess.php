@@ -18,6 +18,7 @@ $(document).ready(function() {
 	 	if(isset($DADES)): 			 
 	 		foreach($DADES as $K => $V):	 			
 	 			$T = $V->getTipus(); $D = addslashes($V->getDada()); $N = addslashes($V->getNotes()); $S = AgendatelefonicadadesPeer::getSelectHTML($V->getTipus());
+	 			echo $N;	 		
 	 			echo "creaNovaDadaVella(".$T.",'".$D."','".$N."','".$S."',".$V->getAgendatelefonicadadesid().");";
 	 		endforeach;
 	 	endif;
@@ -29,7 +30,7 @@ $(document).ready(function() {
 function OmpleCerca(text){	
 	$.post(
 		"<?php echo url_for('gestio/SearchAjaxAgenda'); ?>",
-		{ text: text },
+		{ cerca: text },
 		function(data) { $('#LLISTAT_DADES').html(data); });
 
 }
@@ -99,8 +100,11 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
     										'FCerca'=>$FCerca,
     										'BOTONS'=>array(
     														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Cerca'),
+    														array(
     																'name'=>'BNOU',
-    																'text'=>'Nou contacte')    														
+    																'text'=>'Nou contacte')    														    														
     														))); ?>
      </form>    
 
@@ -131,6 +135,9 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
       <DIV class="REQUADRE">   	  
         <DIV class="TITOL">Llistat contactes</DIV>
       	<TABLE id="LLISTAT_DADES" class="DADES" style="border-collapse: collapse;" >
+      		<?php           			 			
+				include_partial('listAgenda', array('AGENDES' => $AGENDES));								      		      		
+      		?>
 			<!-- Aquí hi apareix el llistat que surt de la funció AJAX gestio/SearchAjaxAgenda i Partial( _listAgenda ) -->      	
       	</TABLE>      
       </DIV>
