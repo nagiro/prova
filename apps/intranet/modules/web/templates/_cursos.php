@@ -1,8 +1,8 @@
 <?php use_helper('Form')?>
 <style>
-.LEGEND { font-size:12px; font-weight:bold; padding:10px 10px 10px 10px; }
-FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
-.TITOL_CATEGORIA { background-color: #FFF4F4; color:black; font-weight:bold; padding:5px; font-size:10px; }
+.LLEGENDA { font-size:12px; font-weight:bold; padding:10px 10px 10px 10px; }
+FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
+.TITOL_CATEGORIA { background-color: #DD9D9A; color:black; font-weight:bold; padding:5px; font-size:10px; }
 .TITOL { padding:5px; }
 .LINIA { padding:4px; }
 #MATRICULACIO { font-size:10px; } 
@@ -31,7 +31,7 @@ FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
    		<TR>
       		<TD class="LINIA"><?php echo $C->getCodi()?></TD>
       		<TD class="LINIA"><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
-      		<TD class="LINIA"><?php echo $C->getPreu()?></TD>      							
+      		<TD class="LINIA"><?php echo $C->getPreu()?>€</TD>      							
       		<TD class="LINIA"><?php echo $C->getDatainici('d-m-Y')?></TD>
       		<TD class="LINIA"><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
       	</TR>                		                 										
@@ -42,9 +42,20 @@ FIELDSET { border:1px solid #CCCCCC; padding:10px; margin-right:40px; }
 
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Matricula't</LEGEND>
 		<form method="post" action="<?php echo url_for('web/matriculat') ?>">         
-		   <TABLE class="DADES">
-		   	<TR><TD>Per matricular-se, vostè ha de ser usuari registrat del web de la Casa de Cultura. Si no n'és cliqui a "Sóc un nou usuari"</TD></TR>
-		   	<TR><TD><?php echo submit_tag('Sóc un nou usuari',array('name'=>'BNOUALUMNE')); echo submit_tag('Sóc usuari registrat',array('name'=>'BREGISTRAT'))?></TD></TR>           
+		   <TABLE>
+		   	<TR>
+		   		<TD>
+		   			Per matricular-se, vostè ha de ser usuari registrat del web de la Casa de Cultura.<br /> 
+		   			Si no n'és cliqui a <b>"Sóc un nou usuari"</b>
+		   			<BR /><BR />
+		   		</TD>
+		   	</TR>
+		   	<TR>
+		   		<TD>
+		   			<button name="BNOUALUMNE" class="BOTO_ACTIVITAT">Sóc un nou usuari</button>
+		   			<button name="BREGISTRAT" class="BOTO_ACTIVITAT">Sóc un usuari registrat</button>		   			
+		   		</TD>
+		   	</TR>           
 		   </TABLE>         
 		</form>
    </FIELDSET>
