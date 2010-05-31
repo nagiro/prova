@@ -260,8 +260,8 @@ class MatriculesPeer extends BaseMatriculesPeer
      $TPV['Ds_Merchant_TransactionType'] = '0';
      if($WEB):
         $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/web_beta/web/GetTPV';
-        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/web/matriculat';
-        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/web_beta/web/matriculat';
+        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/web/MatriculaFinal/OK/1';
+        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/web_beta/web/MatriculaFinal';
      else:
         $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/web_beta/gestio/FinalitzaMatricula';                         
         $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/gestio/matriculat';
@@ -322,16 +322,16 @@ class MatriculesPeer extends BaseMatriculesPeer
   	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');
   	$text = "";
   	$text .= "
-  				Benvolgut/da $Nom \n
-  				\n
-  				La seva matrícula al curs $NomCurs s'ha efectuat correctament.\n  				  				
-  				Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona privada amb el seu DNI i contrasenya.\n
-  				Si no disposa de contrasenya en generem una per defecte que és el seu mateix DNI. \n
-  				\n     
-  				L'esperem el dia $dataInici a la classe.\n
-  				\n
-  				Cordialment, Albert Johé.\n
-  				Casa de Cultura de Girona.\n   	
+Benvolgut/da $Nom
+
+La seva matrícula al curs $NomCurs s'ha efectuat correctament.  				  				
+Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona privada amb el seu DNI i contrasenya.
+Si no disposa de contrasenya en generem una per defecte que és el seu mateix DNI.
+     
+L'esperem el dia $dataInici a la classe.
+
+Cordialment, Albert Johé.
+Casa de Cultura de Girona.   	
   	";
   				
    	return $text; 

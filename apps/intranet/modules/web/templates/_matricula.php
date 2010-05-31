@@ -1,67 +1,23 @@
+<style>
+	.REQUADRE { width:450px; }
+	.LLEGENDA { margin:5px; padding-left:10px; padding-right:10px; font-weight: bold; }
+</style>
     <TD colspan="2" class="CONTINGUT">
 
-	<?php  
+	<fieldset class="REQUADRE"><legend class="LLEGENDA">Matricula finalitzada</legend>
+	<?php if($MISSATGE == 'OK'): ?>
+	<p><b>La seva matrícula s'ha realitzat correctament.</b>
+	<br /><br />Per poder-la comprovar, vagi a la seva zona privada. Podrà trobar-la a la part inferior del menú lateral esquerra.   
 	
-
-		if(empty($ACTIVITATS_LLISTAT)):
-			echo "<DIV>NO S'HAN TROBAT ACTIVITATS<DIV>";
-		endif;
-	
-		foreach($ACTIVITATS_LLISTAT as $ACTIVITAT):		
-			if(isset($ACTIVITAT['DESCRIPCIO'])):
-			  echo '<TABLE class="BOX"><TR><TD class="NOTICIA">';	      	      
-		      echo '<DIV class="DATA">'.generaData($ACTIVITAT['DIA']).' a '.implode(" i ",$ACTIVITAT['ESPAIS']).'</DIV>';
-		      echo '<DIV class="TITOL">'.$ACTIVITAT['DESCRIPCIO']['TITOL'].'</DIV>';	      	     
-		      echo '<DIV class="TEXT">'.$ACTIVITAT['DESCRIPCIO']['COS'].'</DIV>';	      
-			  echo '</TD></TR></TABLE>'; 
-			endif;							
-		endforeach;
-		
-	?>
-   
+	</p>
+   	<?php else: ?>
+   		<p><b>Hi ha hagut algun problema realitzant la seva matrícula.</b><br /><br />
+   		      Si us plau posi's en contacte amb la Casa de Cultura de Girona trucant al telèfon 972.20.20.13 o bé enviant un correu electrònic a informatica@casadecultura.org
+   		</p>
+   	<?php endif; ?> 
+      
+      </fieldset>
       
       <DIV STYLE="height:40px;"></DIV>
                 
     </TD>
-    
-    
-<?php 
-
-	function generaData($DIA)
-	{
-
-		$ret = ""; list($ANY,$MES,$DIA) = explode("-",$DIA);
-		$DATE = mktime(0,0,0,$MES,$DIA,$ANY);
-		switch(date('N',$DATE)){
-			case '1': $ret = "Dilluns, ".date('d',$DATE); break;  
-			case '2': $ret = "Dimarts, ".date('d',$DATE); break;
-			case '3': $ret = "Dimecres, ".date('d',$DATE); break;
-			case '4': $ret = "Dijous, ".date('d',$DATE); break;
-			case '5': $ret = "Divendres, ".date('d',$DATE); break;
-			case '6': $ret = "Dissabte, ".date('d',$DATE); break;
-			case '7': $ret = "Diumenge, ".date('d',$DATE); break;				
-		}
-				
-		switch(date('m',$DATE)){
-			case '01': $ret .= " de gener"; break;
-			case '02': $ret .= " de febrer"; break;
-			case '03': $ret .= " de març"; break;
-			case '04': $ret .= " d'abril"; break;
-			case '05': $ret .= " de maig"; break;
-			case '06': $ret .= " de juny"; break;
-			case '07': $ret .= " de juliol"; break;
-			case '08': $ret .= " d'agost"; break;
-			case '09': $ret .= " de setembre"; break;
-			case '10': $ret .= " d'octubre"; break;
-			case '11': $ret .= " de novembre"; break;
-			case '12': $ret .= " de desembre"; break;
-		}
-		
-		$ret .= " de ".date('Y',$DATE);
-		
-		return $ret;
-		
-	}
-
-
-?>
