@@ -488,6 +488,7 @@ class webActions extends sfActions
             $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE']);
             $this->DADES_MATRICULA['CURS'] = $D['CURS'];
               
+            //Retorna id de matrícula
             $matricules = $this->guardaMatricula($this->DADES_MATRICULA); 
               
             //Carreguem el TPV
@@ -498,15 +499,45 @@ class webActions extends sfActions
      }
      
   }
-  
+
+  public function executeGetTPV(sfWebRequest $request)
+  {
+  	
+  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.   
+  	if($request['Ds_Response'] == '0000'):
+  		$idM = $request['Ds_MerchantData'];
+  		$OM = MatriculesPeer::retrieveByPK($idM);
+  		if($OM instanceof Matricules):
+  			$OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT); //Si arriba aquí és que hi ha trobat plaça
+  			$OM->save();
+  			mail('informatica@casadecultura.org','Matrícula Casa de Cultura de Girona',MatriculesPeer::MailMatricula($OM));  			
+  		else: 
+  			mail('informatica@casadecultura.org','Matrícula cobrada i Error en objecte','Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');  			  			
+  		endif; 
+  	else: 
+  		$OM->setEstat(MatriculesPeer::ERROR); //Si arriba aquí és que no ha pagat correctament
+  		$OM->save();
+  	endif;
+  	 
+  } 
+    
   private function guardaMatricula( $DADES_MATRICULA , $EDIT = false , $IDMATRICULA = 0 )
   {
+  	
+     //Quan guardem la matrícula mirem
+     // Si el curs és ple, guardem Estat "En llista d'espera"
+     // Si queden places, guardem en procès i quan hagi pagat se li guardarà.  
      
      $M = new Matricules();
      if($EDIT) { $M = MatriculesPeer::retrieveByPK($IDMATRICULA); $M->setNew(false); }     
      
-     $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);          
-     $M->setEstat(MatriculesPeer::EN_PROCES);        
+     if(CursosPeer::isPle($DADES_MATRICULA['CURS'])):
+		$M->setEstat(MatriculesPeer::EN_ESPERA);
+	 else:  
+     	$M->setEstat(MatriculesPeer::EN_PROCES);
+     endif;
+     
+     $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);
      $M->setComentari("Pagament internet");
      $M->setDatainscripcio($DADES_MATRICULA['DATA']);     
      $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
