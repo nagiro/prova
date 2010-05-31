@@ -293,13 +293,13 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Verificació de la matrícula</LEGEND>	
 
 	<TABLE class="FORMULARI" style="magin-right:40px;">
-		<TR><TD><b>DNI</b></TD>     <TD ><?php echo $DADES_MATRICULA['DNI']; ?></TD></TR>
-	    <TR><TD><b>NOM</b></TD>     <TD ><?php echo $DADES_MATRICULA['NOM']; ?></TD></TR>
-	    <TR><TD><b>PAGAMENT</b></TD><TD ><?php echo MatriculesPeer::textPagament($DADES_MATRICULA['MODALITAT']); ?></TD></TR>
-	    <TR><TD><b>IMPORT</b></TD>  <TD ><?php echo $DADES_MATRICULA['PREU'].'€'; ?></TD></TR>
-	    <TR><TD><b>DATA</b></TD>    <TD ><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
-	    <TR><TD><b>DESCOMPTE</b></TD>  <TD ><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
-	    <TR><TD><b>CURS</b></TD>  <TD >
+		<TR><TD><b>DNI</b></TD>     <TD><?php echo $DADES_MATRICULA['DNI']; ?></TD></TR>
+	    <TR><TD><b>NOM</b></TD>     <TD><?php echo $DADES_MATRICULA['NOM']; ?></TD></TR>
+	    <TR><TD><b>PAGAMENT</b></TD><TD><?php echo MatriculesPeer::textPagament($DADES_MATRICULA['MODALITAT']); ?></TD></TR>
+	    <TR><TD><b>IMPORT</b></TD>  <TD><?php echo $DADES_MATRICULA['PREU'].'€'; ?></TD></TR>
+	    <TR><TD><b>DATA</b></TD>    <TD><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
+	    <TR><TD><b>DESCOMPTE</b></TD>  <TD><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
+	    <TR><TD><b>CURS</b></TD>  <TD>
 	    <TABLE width="100%">                  								
 	    	<?php $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);      ?>                  								
 	        <TR>

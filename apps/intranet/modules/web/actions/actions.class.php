@@ -484,6 +484,7 @@ class webActions extends sfActions
             $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
             $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
             $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
+            //Apliquem els descomptes i gratuït si ja està el grup ple
             $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE']);
             $this->DADES_MATRICULA['CURS'] = $D['CURS'];
               

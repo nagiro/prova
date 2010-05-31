@@ -259,13 +259,13 @@ class MatriculesPeer extends BaseMatriculesPeer
      $TPV['Ds_Merchant_Terminal'] = '1';
      $TPV['Ds_Merchant_TransactionType'] = '0';
      if($WEB):
-        $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/web/matriculat';
-        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/web/matriculat';
-        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/web/matriculat';
+        $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/web_beta/web/matriculat';
+        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/web/matriculat';
+        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/web_beta/web/matriculat';
      else:
-        $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/gestio/matriculat';                         
-        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/gestio/matriculat';
-        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/intranet/intranet_dev.php/gestio/matriculat';
+        $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/web_beta/gestio/matriculat';                         
+        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/gestio/matriculat';
+        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/web_beta/gestio/matriculat';
      endif;
         
      $TPV['Ds_Merchant_ProductDescription'] = 'Matrícula Casa de Cultura';
