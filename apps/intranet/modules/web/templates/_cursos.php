@@ -11,7 +11,7 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
 
 <TD colspan="3" class="CONTINGUT">
 
-   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles</LEGEND>   
+   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Llistat de cursos</LEGEND>   
    <TABLE class="DADES">
            <TR>
         	<TD class="TITOL">Codi</TD>
@@ -29,7 +29,14 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
    <?php    endif; ?>
                        	
    		<TR>
-      		<TD class="LINIA"><?php echo $C->getCodi()?></TD>
+      		<TD class="LINIA">
+      			<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $C->getIdcursos(); ?>&modal=false" class="thickbox">
+      				<?php echo $C->getCodi()?>
+      			</a>
+      			<div style="display: none;" id="hidden<?php echo $C->getIdcursos() ?>">
+      				<?php echo $C->getDescripcio() ?>
+      			</div>
+      		</TD>
       		<TD class="LINIA"><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
       		<TD class="LINIA"><?php echo $C->getPreu()?>€</TD>      							
       		<TD class="LINIA"><?php echo $C->getDatainici('d-m-Y')?></TD>
@@ -46,14 +53,16 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
 		   	<TR>
 		   		<TD>
 		   			Per matricular-se, vostè ha de ser usuari registrat del web de la Casa de Cultura.<br /> 
-		   			Si no n'és cliqui a <b>"Sóc un nou usuari"</b>
+		   			Si vostè ha cursat algun curs o bé s'ha registrat amb anterioritat cliqui a <b>"Sóc un antic alumne o usuari registrat"</b>. <br />
+		   			Si vostè és un nou alumne cliqui a <b>"Sóc un nou usuari"</b>
 		   			<BR /><BR />
 		   		</TD>
 		   	</TR>
 		   	<TR>
 		   		<TD>
-		   			<button name="BNOUALUMNE" class="BOTO_ACTIVITAT">Sóc un nou usuari</button>
-		   			<button name="BREGISTRAT" class="BOTO_ACTIVITAT">Sóc un usuari registrat</button>		   			
+		   			<?php $missatge = "Segueixi si vostè estar segur que: \\n 1.- No ha estat alumne de la Casa de Cultura. \\n 2.- Vostè no té cap usuari creat. \\n Si no n\'està segur, si us plau, cliqui cancel·lar i contacti amb la Casa de Cultura trucant al telèfon 972.20.20.13 o bé enviant un correu a informatica@casadecultura.org."; ?>
+		   			<button onClick="return confirm('<?php echo $missatge ?>')" name="BNOUALUMNE" class="BOTO_ACTIVITAT">Sóc un nou alumne</button>
+		   			<button name="BREGISTRAT" class="BOTO_ACTIVITAT">Sóc antic alumne o usuari registrat</button>		   			
 		   		</TD>
 		   	</TR>           
 		   </TABLE>         

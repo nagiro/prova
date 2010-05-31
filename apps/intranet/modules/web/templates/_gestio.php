@@ -68,7 +68,9 @@
 	TEXTAREA { border:1px solid #CCCCCC; width:90%; }
 	.DADES .LINIA .blue { color:blue; }
 	.DADES .LINIA .blue:hover { color:blue; }
-	.DADES .LINIA .blue:visited { color:blue; }	
+	.DADES .LINIA .blue:visited { color:blue; }
+	.OPCIONS { padding-left:10px; padding-top:5px; }
+	.TITOL_CATEGORIA { background-color: #DD9D9A; color:black; font-weight:bold; padding:5px; font-size:10px; }	
 	
 </style>
 
@@ -78,6 +80,7 @@
 	<?php  
 		
 	   switch($MODUL){
+	   	  case 'landing_page': landing_page( ); break;
 	      case 'gestiona_dades': gestiona_dades( $FUSUARI , $MISSATGE ); break;
 	      case 'gestiona_cursos': gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGE ); break;
 	      case 'gestiona_llistes': gestiona_llistes( $LLISTES , $MISSATGE ); break;
@@ -93,6 +96,30 @@
     
 
 <?php 
+
+function landing_page(){
+?> 
+
+	       
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Zona privada</LEGEND>
+	   	<p>
+	   		Benvingut a la seva zona privada de la Casa de Cultura.<br /> 
+	   		En aquest espai podrà accedir als serveis personalitzats que hem preparat per vostè.<br />
+	   		Per accedir a qualsevol dels serveis podrà fer-ho a través del menú lateral esquerra <b>Zona privada</b> o a través d'aquesta mateixa pàgina.<br /> 
+	   		<br />
+	   		Actualment hi ha disponibles els següents:<br />
+	   		<br />
+	   		<div class="OPCIONS"><a class="verd" href="<?php echo url_for('web/gestio?accio=gd') ?>">· Gestionar les seves dedes personals.</a></div>
+	   		<div class="OPCIONS"><a class="verd" href="<?php echo url_for('web/gestio?accio=gc') ?>">· Gestionar les seves matrícules o matricular-se a un nou curs.</a></div>
+	   		<div class="OPCIONS"><a class="verd" href="<?php echo url_for('web/gestio?accio=gr') ?>">· Reservar un espai de la Casa de Cultura.</a></div>
+	   		<div class="OPCIONS"><a class="verd" href="<?php echo url_for('web/gestio?accio=gl') ?>">· Gestionar la seva subscripció a les llistes informatives.</a></div>	   			   		
+	   	</p>	   		      
+	   
+	   </FIELDSET>
+	   		
+   
+   <?php  
+} 
 
 function gestiona_dades($FUSUARI,$MISSATGE){
 ?> 
@@ -154,7 +181,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
    ?>
    <form method="post" action="<?php echo url_for('web/gestio?accio=im') ?>" id="FORM_CURSOS">
    
-	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats</LEGEND>
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats amb anterioritat</LEGEND>
 	              
 		   <TABLE class="DADES">
 		   
@@ -164,10 +191,18 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 		   
 		   <?php foreach($MATRICULES as $M): ?>
 		      <?php $CURSOS = $M->getCursos(); ?>                           
-		   		<TR><TD><?php echo $CURSOS->getCodi()?></TD>
+		   		<TR>
+		   			<TD>
+						<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $CURSOS->getIdcursos(); ?>&modal=false" class="thickbox">
+      						<?php echo $CURSOS->getCodi()?>
+      					</a>
+      					<div style="display:none" id="hidden<?php echo $CURSOS->getIdcursos() ?>">
+      						<?php echo $CURSOS->getDescripcio() ?>
+      					</div>
+      				</TD>		   				   			
 		      		<TD><?php echo $CURSOS->getTitolCurs()?></TD>
 		      		<TD><?php echo MatriculesPeer::getEstatText( $M->getEstat() )?></TD>
-		      		<TD><?php echo $M->getDataInscripcio()?></TD>
+		      		<TD><?php echo $M->getDataInscripcio('d/m/Y H:i')?></TD>
 		      		<TD><?php echo MatriculesPeer::textDescomptes($M->getTReduccio()) ?></TD>                                                                                             
 			     </TR>                                   
 		   <?php endforeach; ?>                              
@@ -176,24 +211,42 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 	   </FIELDSET>
 	      
 	      
-	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles</LEGEND>
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles actualment </LEGEND>
 	      
 	       	<?php $LCURSOS = CursosPeer::getCursos()->getResults(); ?>
 	       	<?php if(empty($LCURSOS)): echo "Actualment no es pot matricular a cap curs. "; ?>
 			<?php else: ?>	      
 					   <TABLE class="DADES">
+						   <tr>
+						   	<td class="TITOL"></td>
+						   	<td class="TITOL">Codi</td>
+						   	<td class="TITOL">Títol del curs</td>
+						   	<td class="TITOL">Preu</td>
+						   	<td class="TITOL">Inici</td>
+						   	<td class="TITOL">Places</td>
+						   </tr>
 					   <?php $CAT_ANT = ""; ?>   
 					   <?php foreach($LCURSOS as $C): ?>                      
 					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
 					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
-								<TR><TD colspan="6" class="TITOL"><?php echo $C->getCategoriaText()?></TD></TR>
+								<TR><TD colspan="6" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
 					                       	
 					   		<TR>
-					      		<TD><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>
-					      		<TD><?php echo $C->getCodi()?></TD>
+					      		<TD><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>					      		
+					      		<TD>
+					      		
+									<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $C->getIdcursos(); ?>&modal=false" class="thickbox">
+					      				<?php echo $C->getCodi()?>
+					      			</a>
+   			      					<div style="display: none;" id="hidden<?php echo $C->getIdcursos() ?>">
+			      						<?php echo $C->getDescripcio() ?>
+      								</div>
+
+					      		</TD>
+										      							      							      		
 					      		<TD><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
-					      		<TD><?php echo $C->getPreu()?></TD>      							
+					      		<TD><?php echo $C->getPreu()?> €</TD>      							
 					      		<TD><?php echo $C->getDatainici('d-m-Y')?></TD>
 					      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
 					      	</TR>                		                 										
@@ -236,33 +289,30 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
      //Carreguem totes les dades de matrícula     
      foreach($DADES_MATRICULA as $K => $V) { $str = "DADES_MATRICULA[".$K."]"; echo input_hidden_tag($str,$V); }
 
-	?>	
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">                
-                <DIV class="TITOL">Verificació de la matrícula</DIV>				
-				<TABLE class="FORMULARI" style="magin-right:40px;">
-                  	<TR><TD><span class="TITOL">DNI </span></TD>     <TD ><?php echo $DADES_MATRICULA['DNI']; ?></TD></TR>
-                  	<TR><TD><span class="TITOL">NOM </span></TD>     <TD ><?php echo $DADES_MATRICULA['NOM']; ?></TD></TR>
-                  	<TR><TD><span class="TITOL">PAGAMENT </span></TD><TD ><?php echo MatriculesPeer::textPagament($DADES_MATRICULA['MODALITAT']); ?></TD></TR>
-                  	<TR><TD><span class="TITOL">IMPORT </span></TD>  <TD ><?php echo $DADES_MATRICULA['PREU'].'€'; ?></TD></TR>
-                  	<TR><TD><span class="TITOL">DATA </span></TD>    <TD ><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
-                  	<TR><TD><span class="TITOL">DESCOMPTE </span></TD>  <TD ><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
-                  	<TR><TD><span class="TITOL">CURS </span></TD>  <TD >
-                  								<TABLE width="100%">                  								
-                  								<?php $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);      ?>                  								
-	                  								<TR>
-	                  									<TD><?php echo $CURS->getCodi(); ?></TD>
-	                  									<TD><?php echo $CURS->getTitolcurs(); ?></TD>
-	                  									<TD><?php echo CursosPeer::CalculaPreu($CURS->getIdcursos() , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
-	                  								</TR>                  								                  								                  	                           
-                  	                           </TABLE>
-                  	                           </TD></TR>
-                  		<TR><TD colspan="7"><?php echo submit_tag('Matriculeu-me',array('NAME'=>'BSAVE','style'=>'width:100px')); ?><BR /></TD></TR>                  	                                             	
-                </TABLE>			                                  
-            </TD>
-        </TR>
-      </TABLE>
-      
+	?>
+   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Verificació de la matrícula</LEGEND>	
+
+	<TABLE class="FORMULARI" style="magin-right:40px;">
+		<TR><TD><b>DNI</b></TD>     <TD ><?php echo $DADES_MATRICULA['DNI']; ?></TD></TR>
+	    <TR><TD><b>NOM</b></TD>     <TD ><?php echo $DADES_MATRICULA['NOM']; ?></TD></TR>
+	    <TR><TD><b>PAGAMENT</b></TD><TD ><?php echo MatriculesPeer::textPagament($DADES_MATRICULA['MODALITAT']); ?></TD></TR>
+	    <TR><TD><b>IMPORT</b></TD>  <TD ><?php echo $DADES_MATRICULA['PREU'].'€'; ?></TD></TR>
+	    <TR><TD><b>DATA</b></TD>    <TD ><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
+	    <TR><TD><b>DESCOMPTE</b></TD>  <TD ><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
+	    <TR><TD><b>CURS</b></TD>  <TD >
+	    <TABLE width="100%">                  								
+	    	<?php $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);      ?>                  								
+	        <TR>
+	        	<TD><?php echo $CURS->getCodi(); ?></TD>
+	            <TD><?php echo $CURS->getTitolcurs(); ?></TD>
+	            <TD><?php echo CursosPeer::CalculaPreu($CURS->getIdcursos() , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
+			</TR>                  								                  								                  	                           
+		</TABLE>
+	    </TD></TR>
+		<TR><TD colspan="7"><?php echo submit_tag('Matriculeu-me',array('NAME'=>'BSAVE','style'=>'width:100px')); ?><BR /></TD></TR>                  	                                             	
+	</TABLE>			                                  
+	</FIELDSET>
+	
 	</FORM>
 <?php  
 }

@@ -160,7 +160,7 @@ class HorarisPeer extends BaseHorarisPeer
   	if(!is_null($DIA))   $DIA   = mktime(0,0,0,date('m',$DIA),date('d',$DIA),date('Y',$DIA));
   	if(!is_null($DATAI)) $DATAI = mktime(0,0,0,date('m',$DATAI),date('d',$DATAI),date('Y',$DATAI));
   	if(!is_null($DATAF)) $DATAF = mktime(0,0,0,date('m',$DATAF),date('d',$DATAF),date('Y',$DATAF));
-  	
+  	  	
     if( !is_null($DIA) ) $C->add(self::DIA, $DIA);
     elseif( !is_null($DATAI) && !is_null($DATAF) ) {
       $data1 = $C->getNewCriterion(self::DIA, $DATAI , CRITERIA::GREATER_EQUAL);
