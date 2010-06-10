@@ -3,12 +3,13 @@
 /**
  * Material form base class.
  *
+ * @method Material getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMaterialForm extends BaseFormPropel
+abstract class BaseMaterialForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -28,18 +29,18 @@ class BaseMaterialForm extends BaseFormPropel
       'DataCessio'                        => new sfWidgetFormDate(),
       'DataRetorn'                        => new sfWidgetFormDate(),
       'NumFactura'                        => new sfWidgetFormTextarea(),
-      'Preu'                              => new sfWidgetFormInput(),
+      'Preu'                              => new sfWidgetFormInputText(),
       'NotesManteniment'                  => new sfWidgetFormTextarea(),
       'DataBaixa'                         => new sfWidgetFormDate(),
       'DataReparacio'                     => new sfWidgetFormDate(),
-      'Disponible'                        => new sfWidgetFormInput(),
+      'Disponible'                        => new sfWidgetFormInputText(),
       'AltaRegistre'                      => new sfWidgetFormDate(),
-      'isTransferible'                    => new sfWidgetFormInput(),
-      'isAdministratiu'                   => new sfWidgetFormInput(),
+      'isTransferible'                    => new sfWidgetFormInputText(),
+      'isAdministratiu'                   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'idMaterial'                        => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial', 'required' => false)),
+      'idMaterial'                        => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdmaterial()), 'empty_value' => $this->getObject()->getIdmaterial(), 'required' => false)),
       'MaterialGeneric_idMaterialGeneric' => new sfValidatorPropelChoice(array('model' => 'Materialgeneric', 'column' => 'idMaterialGeneric')),
       'Nom'                               => new sfValidatorString(array('required' => false)),
       'Descripcio'                        => new sfValidatorString(array('required' => false)),
@@ -54,14 +55,14 @@ class BaseMaterialForm extends BaseFormPropel
       'DataCessio'                        => new sfValidatorDate(array('required' => false)),
       'DataRetorn'                        => new sfValidatorDate(array('required' => false)),
       'NumFactura'                        => new sfValidatorString(array('required' => false)),
-      'Preu'                              => new sfValidatorInteger(array('required' => false)),
+      'Preu'                              => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'NotesManteniment'                  => new sfValidatorString(array('required' => false)),
       'DataBaixa'                         => new sfValidatorDate(array('required' => false)),
       'DataReparacio'                     => new sfValidatorDate(array('required' => false)),
-      'Disponible'                        => new sfValidatorInteger(array('required' => false)),
+      'Disponible'                        => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
-      'isTransferible'                    => new sfValidatorInteger(),
-      'isAdministratiu'                   => new sfValidatorInteger(),
+      'isTransferible'                    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'isAdministratiu'                   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('material[%s]');

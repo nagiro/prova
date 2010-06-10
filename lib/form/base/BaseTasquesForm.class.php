@@ -3,12 +3,13 @@
 /**
  * Tasques form base class.
  *
+ * @method Tasques getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseTasquesForm extends BaseFormPropel
+abstract class BaseTasquesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -20,16 +21,16 @@ class BaseTasquesForm extends BaseFormPropel
       'Titol'                  => new sfWidgetFormTextarea(),
       'Accio'                  => new sfWidgetFormTextarea(),
       'Reaccio'                => new sfWidgetFormTextarea(),
-      'Estat'                  => new sfWidgetFormInput(),
+      'Estat'                  => new sfWidgetFormInputText(),
       'Aparicio'               => new sfWidgetFormDate(),
       'Desaparicio'            => new sfWidgetFormDate(),
       'DataResolucio'          => new sfWidgetFormDateTime(),
-      'isFeta'                 => new sfWidgetFormInput(),
+      'isFeta'                 => new sfWidgetFormInputText(),
       'AltaRegistre'           => new sfWidgetFormDate(),
     ));
 
     $this->setValidators(array(
-      'TasquesID'              => new sfValidatorPropelChoice(array('model' => 'Tasques', 'column' => 'TasquesID', 'required' => false)),
+      'TasquesID'              => new sfValidatorChoice(array('choices' => array($this->getObject()->getTasquesid()), 'empty_value' => $this->getObject()->getTasquesid(), 'required' => false)),
       'Activitats_ActivitatID' => new sfValidatorPropelChoice(array('model' => 'Activitats', 'column' => 'ActivitatID', 'required' => false)),
       'QuiMana'                => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'QuiFa'                  => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
@@ -40,7 +41,7 @@ class BaseTasquesForm extends BaseFormPropel
       'Aparicio'               => new sfValidatorDate(array('required' => false)),
       'Desaparicio'            => new sfValidatorDate(array('required' => false)),
       'DataResolucio'          => new sfValidatorDateTime(array('required' => false)),
-      'isFeta'                 => new sfValidatorInteger(array('required' => false)),
+      'isFeta'                 => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'AltaRegistre'           => new sfValidatorDate(array('required' => false)),
     ));
 

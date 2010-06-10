@@ -3,32 +3,33 @@
 /**
  * Promocions form base class.
  *
+ * @method Promocions getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BasePromocionsForm extends BaseFormPropel
+abstract class BasePromocionsForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'PromocioID' => new sfWidgetFormInputHidden(),
       'Nom'        => new sfWidgetFormTextarea(),
-      'Ordre'      => new sfWidgetFormInput(),
+      'Ordre'      => new sfWidgetFormInputText(),
       'Extensio'   => new sfWidgetFormTextarea(),
-      'isActiva'   => new sfWidgetFormInput(),
-      'isFixa'     => new sfWidgetFormInput(),
+      'isActiva'   => new sfWidgetFormInputText(),
+      'isFixa'     => new sfWidgetFormInputText(),
       'URL'        => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'PromocioID' => new sfValidatorPropelChoice(array('model' => 'Promocions', 'column' => 'PromocioID', 'required' => false)),
+      'PromocioID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getPromocioid()), 'empty_value' => $this->getObject()->getPromocioid(), 'required' => false)),
       'Nom'        => new sfValidatorString(array('required' => false)),
-      'Ordre'      => new sfValidatorInteger(array('required' => false)),
+      'Ordre'      => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'Extensio'   => new sfValidatorString(array('required' => false)),
-      'isActiva'   => new sfValidatorInteger(array('required' => false)),
-      'isFixa'     => new sfValidatorInteger(),
+      'isActiva'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'isFixa'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'URL'        => new sfValidatorString(),
     ));
 

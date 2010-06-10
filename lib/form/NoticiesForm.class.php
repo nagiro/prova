@@ -19,14 +19,14 @@ class NoticiesForm extends BaseNoticiesForm
   	
     $this->setWidgets(array(
       'idNoticia'      	=> new sfWidgetFormInputHidden(),
-      'TitolNoticia'   	=> new sfWidgetFormInput(array(),array('style'=>'width:400px')),
+      'TitolNoticia'   	=> new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'TextNoticia'    	=> new sfWidgetFormTextareaTinyMCE(),
       'DataPublicacio' 	=> new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'DataDesaparicio' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'Activa'         	=> new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
       'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$web.$this->getObject()->getImatge(), 'is_image'=>true , 'with_delete'=>false)),
       'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$web.$this->getObject()->getAdjunt(),'with_delete'=>false)),
-      'idActivitat'    	=> new sfWidgetFormInput(),
+      'idActivitat'    	=> new sfWidgetFormInputText(),
       
     ));
 

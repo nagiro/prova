@@ -17,11 +17,11 @@ class AgendatelefonicaForm extends BaseFormPropel
   	
     $this->setWidgets(array(
       'AgendaTelefonicaID' => new sfWidgetFormInputHidden(),
-      'Nom'                => new sfWidgetFormInput(array(),array('class'=>'cent')),
-      'NIF'                => new sfWidgetFormInput(array(),array('class'=>'cent')),      
+      'Nom'                => new sfWidgetFormInputText(array(),array('class'=>'cent')),
+      'NIF'                => new sfWidgetFormInputText(array(),array('class'=>'cent')),      
       'Notes'              => new sfWidgetFormTextarea(array(),array('class'=>'cent')),
-      'Tags'               => new sfWidgetFormInput(array(),array('class'=>'cent')),
-      'Entitat'            => new sfWidgetFormInput(array(),array('class'=>'cent'))
+      'Tags'               => new sfWidgetFormInputText(array(),array('class'=>'cent')),
+      'Entitat'            => new sfWidgetFormInputText(array(),array('class'=>'cent'))
     ));
 
     $this->setValidators(array(

@@ -3,23 +3,24 @@
 /**
  * HospiciCategoria form base class.
  *
+ * @method HospiciCategoria getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciCategoriaForm extends BaseFormPropel
+abstract class BaseHospiciCategoriaForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'categoria_id' => new sfWidgetFormInputHidden(),
-      'tipus'        => new sfWidgetFormInput(),
+      'tipus'        => new sfWidgetFormInputText(),
       'nom'          => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'categoria_id' => new sfValidatorPropelChoice(array('model' => 'HospiciCategoria', 'column' => 'categoria_id', 'required' => false)),
+      'categoria_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getCategoriaId()), 'empty_value' => $this->getObject()->getCategoriaId(), 'required' => false)),
       'tipus'        => new sfValidatorString(array('max_length' => 1)),
       'nom'          => new sfValidatorString(),
     ));

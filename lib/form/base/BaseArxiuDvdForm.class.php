@@ -3,19 +3,20 @@
 /**
  * ArxiuDvd form base class.
  *
+ * @method ArxiuDvd getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseArxiuDvdForm extends BaseFormPropel
+abstract class BaseArxiuDvdForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'id'           => new sfWidgetFormInputHidden(),
-      'tipus'        => new sfWidgetFormInput(),
-      'volum'        => new sfWidgetFormInput(),
+      'tipus'        => new sfWidgetFormInputText(),
+      'volum'        => new sfWidgetFormInputText(),
       'url'          => new sfWidgetFormTextarea(),
       'nom'          => new sfWidgetFormTextarea(),
       'data_creacio' => new sfWidgetFormDateTime(),
@@ -23,7 +24,7 @@ class BaseArxiuDvdForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'id'           => new sfValidatorPropelChoice(array('model' => 'ArxiuDvd', 'column' => 'id', 'required' => false)),
+      'id'           => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'tipus'        => new sfValidatorString(array('max_length' => 30)),
       'volum'        => new sfValidatorString(array('max_length' => 30, 'required' => false)),
       'url'          => new sfValidatorString(array('required' => false)),

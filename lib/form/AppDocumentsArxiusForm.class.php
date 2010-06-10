@@ -20,7 +20,7 @@ class AppDocumentsArxiusForm extends sfFormPropel
       'idDocument'                  => new sfWidgetFormInputHidden(),
       'idDirectori'                 => new sfWidgetFormInputHidden(),
       'url'                         => new sfWidgetFormInputFileEditableMy(array('file_src'=>$file_src,'edit_mode'=>true,'with_delete'=>false)),
-      'Nom'                         => new sfWidgetFormInput(array(),array('style'=>'width:300px')),    
+      'Nom'                         => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),    
       'DataCreacio'                 => new sfWidgetFormInputHidden(),      
     ));
 

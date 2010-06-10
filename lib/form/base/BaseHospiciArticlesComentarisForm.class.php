@@ -3,25 +3,26 @@
 /**
  * HospiciArticlesComentaris form base class.
  *
+ * @method HospiciArticlesComentaris getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciArticlesComentarisForm extends BaseFormPropel
+abstract class BaseHospiciArticlesComentarisForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'comentari_id' => new sfWidgetFormInputHidden(),
-      'article_id'   => new sfWidgetFormInput(),
+      'article_id'   => new sfWidgetFormInputText(),
       'qui'          => new sfWidgetFormTextarea(),
       'comentari'    => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'comentari_id' => new sfValidatorPropelChoice(array('model' => 'HospiciArticlesComentaris', 'column' => 'comentari_id', 'required' => false)),
-      'article_id'   => new sfValidatorInteger(),
+      'comentari_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getComentariId()), 'empty_value' => $this->getObject()->getComentariId(), 'required' => false)),
+      'article_id'   => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'qui'          => new sfValidatorString(),
       'comentari'    => new sfValidatorString(),
     ));

@@ -3,12 +3,13 @@
 /**
  * HospiciAgenda form base class.
  *
+ * @method HospiciAgenda getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciAgendaForm extends BaseFormPropel
+abstract class BaseHospiciAgendaForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -23,11 +24,11 @@ class BaseHospiciAgendaForm extends BaseFormPropel
       'hora_final'   => new sfWidgetFormTime(),
       'link'         => new sfWidgetFormTextarea(),
       'ciutat'       => new sfWidgetFormTextarea(),
-      'reserva'      => new sfWidgetFormInput(),
+      'reserva'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'agenda_id'    => new sfValidatorPropelChoice(array('model' => 'HospiciAgenda', 'column' => 'agenda_id', 'required' => false)),
+      'agenda_id'    => new sfValidatorChoice(array('choices' => array($this->getObject()->getAgendaId()), 'empty_value' => $this->getObject()->getAgendaId(), 'required' => false)),
       'titol'        => new sfValidatorString(),
       'text'         => new sfValidatorString(),
       'data_inicial' => new sfValidatorDate(),
@@ -37,7 +38,7 @@ class BaseHospiciAgendaForm extends BaseFormPropel
       'hora_final'   => new sfValidatorTime(),
       'link'         => new sfValidatorString(),
       'ciutat'       => new sfValidatorString(),
-      'reserva'      => new sfValidatorInteger(),
+      'reserva'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('hospici_agenda[%s]');

@@ -14,14 +14,14 @@ class ActivitatsForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
-      'Nom'                             => new sfWidgetFormInput(array(),array('style'=>'width:400px')),    
+      'Nom'                             => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
       'Cicles_CicleID'                  => new sfWidgetFormInputHidden(),
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
-      'Preu'                            => new sfWidgetFormInput(),
-      'PreuReduit'                      => new sfWidgetFormInput(),
+      'Preu'                            => new sfWidgetFormInputText(),
+      'PreuReduit'                      => new sfWidgetFormInputText(),
       'Publicable'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
-      'Organitzador'				    => new sfWidgetFormInput(),
+      'Organitzador'				    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(

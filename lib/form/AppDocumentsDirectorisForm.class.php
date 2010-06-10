@@ -16,7 +16,7 @@ class AppDocumentsDirectorisForm extends sfFormPropel
   	
     $this->setWidgets(array(
       'idDirectori'                     => new sfWidgetFormInputHidden(),
-      'Nom'                             => new sfWidgetFormInput(),
+      'Nom'                             => new sfWidgetFormInputText(),
       'Pare'                            => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsDirectoris', 'add_empty' => true)), 
     ));
 

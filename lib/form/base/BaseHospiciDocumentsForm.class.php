@@ -3,12 +3,13 @@
 /**
  * HospiciDocuments form base class.
  *
+ * @method HospiciDocuments getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciDocumentsForm extends BaseFormPropel
+abstract class BaseHospiciDocumentsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -22,7 +23,7 @@ class BaseHospiciDocumentsForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'document_id' => new sfValidatorPropelChoice(array('model' => 'HospiciDocuments', 'column' => 'document_id', 'required' => false)),
+      'document_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getDocumentId()), 'empty_value' => $this->getObject()->getDocumentId(), 'required' => false)),
       'url'         => new sfValidatorString(),
       'nom'         => new sfValidatorString(),
       'descripcio'  => new sfValidatorString(),

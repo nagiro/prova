@@ -15,14 +15,14 @@ class BaseFitxersForm extends BaseFormPropel
     $this->setWidgets(array(
       'FitxersID'                      => new sfWidgetFormInputHidden(),
       'Usuaris_idUsuari'               => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
-      'EsDocument'                     => new sfWidgetFormInput(),
+      'EsDocument'                     => new sfWidgetFormInputText(),
       'URL'                            => new sfWidgetFormTextarea(),
       'Nom'                            => new sfWidgetFormTextarea(),
       'Descripcio'                     => new sfWidgetFormTextarea(),
       'Tags'                           => new sfWidgetFormTextarea(),
       'DATE'                           => new sfWidgetFormDateTime(),
       'Extensio'                       => new sfWidgetFormTextarea(),
-      'subcategories_has_fitxers_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Subcategories')),
+      'subcategories_has_fitxers_list' => new sfWidgetFormPropelChoice(array('model' => 'Subcategories', 'multiple'=>true)),
     ));
 
     $this->setValidators(array(
@@ -35,7 +35,7 @@ class BaseFitxersForm extends BaseFormPropel
       'Tags'                           => new sfValidatorString(array('required' => false)),
       'DATE'                           => new sfValidatorDateTime(array('required' => false)),
       'Extensio'                       => new sfValidatorString(),
-      'subcategories_has_fitxers_list' => new sfValidatorPropelChoiceMany(array('model' => 'Subcategories', 'required' => false)),
+      'subcategories_has_fitxers_list' => new sfValidatorPropelChoice(array('model' => 'Subcategories', 'required' => false, 'multiple'=>true)),
     ));
 
     $this->widgetSchema->setNameFormat('fitxers[%s]');

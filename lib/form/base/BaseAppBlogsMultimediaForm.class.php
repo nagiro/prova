@@ -3,31 +3,32 @@
 /**
  * AppBlogsMultimedia form base class.
  *
+ * @method AppBlogsMultimedia getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppBlogsMultimediaForm extends BaseFormPropel
+abstract class BaseAppBlogsMultimediaForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'id'                               => new sfWidgetFormInputHidden(),
-      'name'                             => new sfWidgetFormInput(),
+      'name'                             => new sfWidgetFormInputText(),
       'desc'                             => new sfWidgetFormTextarea(),
-      'url'                              => new sfWidgetFormInput(),
+      'url'                              => new sfWidgetFormInputText(),
       'date'                             => new sfWidgetFormDate(),
-      'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'AppBlogsEntries')),
+      'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'AppBlogsEntries')),
     ));
 
     $this->setValidators(array(
-      'id'                               => new sfValidatorPropelChoice(array('model' => 'AppBlogsMultimedia', 'column' => 'id', 'required' => false)),
+      'id'                               => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'name'                             => new sfValidatorString(array('max_length' => 50)),
       'desc'                             => new sfValidatorString(),
       'url'                              => new sfValidatorString(array('max_length' => 255)),
       'date'                             => new sfValidatorDate(),
-      'app_blog_multimedia_entries_list' => new sfValidatorPropelChoiceMany(array('model' => 'AppBlogsEntries', 'required' => false)),
+      'app_blog_multimedia_entries_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppBlogsEntries', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_multimedia[%s]');
@@ -80,7 +81,7 @@ class BaseAppBlogsMultimediaForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

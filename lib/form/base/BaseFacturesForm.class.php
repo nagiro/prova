@@ -3,12 +3,13 @@
 /**
  * Factures form base class.
  *
+ * @method Factures getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseFacturesForm extends BaseFormPropel
+abstract class BaseFacturesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -17,7 +18,7 @@ class BaseFacturesForm extends BaseFormPropel
       'Proveidors_ProveidorID' => new sfWidgetFormPropelChoice(array('model' => 'Proveidors', 'add_empty' => false)),
       'Conceptes_ConcepteID'   => new sfWidgetFormPropelChoice(array('model' => 'Conceptes', 'add_empty' => false)),
       'DataFactura'            => new sfWidgetFormDate(),
-      'Quantitat'              => new sfWidgetFormInput(),
+      'Quantitat'              => new sfWidgetFormInputText(),
       'NumFactura'             => new sfWidgetFormTextarea(),
       'DataPagament'           => new sfWidgetFormDate(),
       'ModalitatPagament'      => new sfWidgetFormTextarea(),
@@ -29,7 +30,7 @@ class BaseFacturesForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'FacturaID'              => new sfValidatorPropelChoice(array('model' => 'Factures', 'column' => 'FacturaID', 'required' => false)),
+      'FacturaID'              => new sfValidatorChoice(array('choices' => array($this->getObject()->getFacturaid()), 'empty_value' => $this->getObject()->getFacturaid(), 'required' => false)),
       'Proveidors_ProveidorID' => new sfValidatorPropelChoice(array('model' => 'Proveidors', 'column' => 'ProveidorID')),
       'Conceptes_ConcepteID'   => new sfValidatorPropelChoice(array('model' => 'Conceptes', 'column' => 'ConcepteID')),
       'DataFactura'            => new sfValidatorDate(array('required' => false)),

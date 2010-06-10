@@ -3,12 +3,13 @@
 /**
  * Nodes form base class.
  *
+ * @method Nodes getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseNodesForm extends BaseFormPropel
+abstract class BaseNodesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,24 +17,24 @@ class BaseNodesForm extends BaseFormPropel
       'idNodes'     => new sfWidgetFormInputHidden(),
       'TitolMenu'   => new sfWidgetFormTextarea(),
       'HTML'        => new sfWidgetFormTextarea(),
-      'isCategoria' => new sfWidgetFormInput(),
-      'isPhp'       => new sfWidgetFormInput(),
-      'isActiva'    => new sfWidgetFormInput(),
-      'Ordre'       => new sfWidgetFormInput(),
-      'Nivell'      => new sfWidgetFormInput(),
+      'isCategoria' => new sfWidgetFormInputText(),
+      'isPhp'       => new sfWidgetFormInputText(),
+      'isActiva'    => new sfWidgetFormInputText(),
+      'Ordre'       => new sfWidgetFormInputText(),
+      'Nivell'      => new sfWidgetFormInputText(),
       'Url'         => new sfWidgetFormTextarea(),
-      'Categories'  => new sfWidgetFormInput(),
+      'Categories'  => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'idNodes'     => new sfValidatorPropelChoice(array('model' => 'Nodes', 'column' => 'idNodes', 'required' => false)),
+      'idNodes'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdnodes()), 'empty_value' => $this->getObject()->getIdnodes(), 'required' => false)),
       'TitolMenu'   => new sfValidatorString(array('required' => false)),
       'HTML'        => new sfValidatorString(array('required' => false)),
-      'isCategoria' => new sfValidatorInteger(array('required' => false)),
-      'isPhp'       => new sfValidatorInteger(),
-      'isActiva'    => new sfValidatorInteger(array('required' => false)),
-      'Ordre'       => new sfValidatorInteger(array('required' => false)),
-      'Nivell'      => new sfValidatorInteger(),
+      'isCategoria' => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'isPhp'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'isActiva'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'Ordre'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'Nivell'      => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'Url'         => new sfValidatorString(),
       'Categories'  => new sfValidatorString(array('max_length' => 100)),
     ));

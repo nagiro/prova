@@ -1,11 +1,11 @@
 <?php
 
-class CercaForm extends sfForm
+class CercaForm extends BaseForm
 {
   public function configure()
   {
     $this->setWidgets(array(
-      'text'    => new sfWidgetFormInput()      
+      'text'    => new sfWidgetFormInputText()      
     ));
     
         

@@ -3,12 +3,13 @@
 /**
  * Matricules form base class.
  *
+ * @method Matricules getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMatriculesForm extends BaseFormPropel
+abstract class BaseMatriculesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,24 +17,24 @@ class BaseMatriculesForm extends BaseFormPropel
       'idMatricules'     => new sfWidgetFormInputHidden(),
       'Usuaris_UsuariID' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
       'Cursos_idCursos'  => new sfWidgetFormPropelChoice(array('model' => 'Cursos', 'add_empty' => true)),
-      'Estat'            => new sfWidgetFormInput(),
+      'Estat'            => new sfWidgetFormInputText(),
       'Comentari'        => new sfWidgetFormTextarea(),
       'DataInscripcio'   => new sfWidgetFormDateTime(),
-      'Pagat'            => new sfWidgetFormInput(),
-      'tReduccio'        => new sfWidgetFormInput(),
-      'tPagament'        => new sfWidgetFormInput(),
+      'Pagat'            => new sfWidgetFormInputText(),
+      'tReduccio'        => new sfWidgetFormInputText(),
+      'tPagament'        => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'idMatricules'     => new sfValidatorPropelChoice(array('model' => 'Matricules', 'column' => 'idMatricules', 'required' => false)),
+      'idMatricules'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdmatricules()), 'empty_value' => $this->getObject()->getIdmatricules(), 'required' => false)),
       'Usuaris_UsuariID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Cursos_idCursos'  => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
-      'Estat'            => new sfValidatorInteger(array('required' => false)),
+      'Estat'            => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
       'DataInscripcio'   => new sfValidatorDateTime(array('required' => false)),
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
-      'tReduccio'        => new sfValidatorInteger(),
-      'tPagament'        => new sfValidatorInteger(),
+      'tReduccio'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
+      'tPagament'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
     ));
 
     $this->widgetSchema->setNameFormat('matricules[%s]');

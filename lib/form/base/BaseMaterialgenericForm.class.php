@@ -3,12 +3,13 @@
 /**
  * Materialgeneric form base class.
  *
+ * @method Materialgeneric getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMaterialgenericForm extends BaseFormPropel
+abstract class BaseMaterialgenericForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -18,7 +19,7 @@ class BaseMaterialgenericForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idMaterialGeneric' => new sfValidatorPropelChoice(array('model' => 'Materialgeneric', 'column' => 'idMaterialGeneric', 'required' => false)),
+      'idMaterialGeneric' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdmaterialgeneric()), 'empty_value' => $this->getObject()->getIdmaterialgeneric(), 'required' => false)),
       'Nom'               => new sfValidatorString(array('required' => false)),
     ));
 

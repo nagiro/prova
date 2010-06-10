@@ -23,7 +23,7 @@ class BaseAgendaactivitatsForm extends BaseFormPropel
       'HoraF'                               => new sfWidgetFormTime(),
       'Link'                                => new sfWidgetFormTextarea(),
       'Ciutat'                              => new sfWidgetFormTextarea(),
-      'projectes_has_agendaactivitats_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Projectes')),
+      'projectes_has_agendaactivitats_list' => new sfWidgetFormPropelChoice(array('model' => 'Projectes','multiple'=>true)),
     ));
 
     $this->setValidators(array(
@@ -37,7 +37,7 @@ class BaseAgendaactivitatsForm extends BaseFormPropel
       'HoraF'                               => new sfValidatorTime(array('required' => false)),
       'Link'                                => new sfValidatorString(array('required' => false)),
       'Ciutat'                              => new sfValidatorString(array('required' => false)),
-      'projectes_has_agendaactivitats_list' => new sfValidatorPropelChoiceMany(array('model' => 'Projectes', 'required' => false)),
+      'projectes_has_agendaactivitats_list' => new sfValidatorPropelChoice(array('model' => 'Projectes', 'required' => false, 'multiple'=>true)),
     ));
 
     $this->widgetSchema->setNameFormat('agendaactivitats[%s]');

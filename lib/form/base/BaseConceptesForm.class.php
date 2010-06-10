@@ -3,27 +3,28 @@
 /**
  * Conceptes form base class.
  *
+ * @method Conceptes getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseConceptesForm extends BaseFormPropel
+abstract class BaseConceptesForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'ConcepteID' => new sfWidgetFormInputHidden(),
-      'Any'        => new sfWidgetFormInput(),
+      'Any'        => new sfWidgetFormInputText(),
       'Capitol'    => new sfWidgetFormTextarea(),
       'Apartat'    => new sfWidgetFormTextarea(),
       'Concepte'   => new sfWidgetFormTextarea(),
-      'Quantitat'  => new sfWidgetFormInput(),
+      'Quantitat'  => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'ConcepteID' => new sfValidatorPropelChoice(array('model' => 'Conceptes', 'column' => 'ConcepteID', 'required' => false)),
-      'Any'        => new sfValidatorInteger(array('required' => false)),
+      'ConcepteID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getConcepteid()), 'empty_value' => $this->getObject()->getConcepteid(), 'required' => false)),
+      'Any'        => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'Capitol'    => new sfValidatorString(array('required' => false)),
       'Apartat'    => new sfValidatorString(array('required' => false)),
       'Concepte'   => new sfValidatorString(array('required' => false)),

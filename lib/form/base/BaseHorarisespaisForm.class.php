@@ -3,12 +3,13 @@
 /**
  * Horarisespais form base class.
  *
+ * @method Horarisespais getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHorarisespaisForm extends BaseFormPropel
+abstract class BaseHorarisespaisForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -20,7 +21,7 @@ class BaseHorarisespaisForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idHorarisEspais'     => new sfValidatorPropelChoice(array('model' => 'Horarisespais', 'column' => 'idHorarisEspais', 'required' => false)),
+      'idHorarisEspais'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdhorarisespais()), 'empty_value' => $this->getObject()->getIdhorarisespais(), 'required' => false)),
       'Material_idMaterial' => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial', 'required' => false)),
       'Espais_EspaiID'      => new sfValidatorPropelChoice(array('model' => 'Espais', 'column' => 'EspaiID', 'required' => false)),
       'Horaris_HorarisID'   => new sfValidatorPropelChoice(array('model' => 'Horaris', 'column' => 'HorarisID', 'required' => false)),

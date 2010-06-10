@@ -3,12 +3,13 @@
 /**
  * Horaris form base class.
  *
+ * @method Horaris getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHorarisForm extends BaseFormPropel
+abstract class BaseHorarisForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -21,16 +22,16 @@ class BaseHorarisForm extends BaseFormPropel
       'HoraPre'                => new sfWidgetFormTime(),
       'HoraPost'               => new sfWidgetFormTime(),
       'Avis'                   => new sfWidgetFormTextarea(),
-      'Espectadors'            => new sfWidgetFormInput(),
-      'Places'                 => new sfWidgetFormInput(),
-      'Titol'                  => new sfWidgetFormInput(),
-      'Preu'                   => new sfWidgetFormInput(),
-      'PreuR'                  => new sfWidgetFormInput(),
-      'Estat'                  => new sfWidgetFormInput(),
+      'Espectadors'            => new sfWidgetFormInputText(),
+      'Places'                 => new sfWidgetFormInputText(),
+      'Titol'                  => new sfWidgetFormInputText(),
+      'Preu'                   => new sfWidgetFormInputText(),
+      'PreuR'                  => new sfWidgetFormInputText(),
+      'Estat'                  => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'HorarisID'              => new sfValidatorPropelChoice(array('model' => 'Horaris', 'column' => 'HorarisID', 'required' => false)),
+      'HorarisID'              => new sfValidatorChoice(array('choices' => array($this->getObject()->getHorarisid()), 'empty_value' => $this->getObject()->getHorarisid(), 'required' => false)),
       'Activitats_ActivitatID' => new sfValidatorPropelChoice(array('model' => 'Activitats', 'column' => 'ActivitatID')),
       'Dia'                    => new sfValidatorDate(array('required' => false)),
       'HoraInici'              => new sfValidatorTime(array('required' => false)),
@@ -38,12 +39,12 @@ class BaseHorarisForm extends BaseFormPropel
       'HoraPre'                => new sfValidatorTime(array('required' => false)),
       'HoraPost'               => new sfValidatorTime(array('required' => false)),
       'Avis'                   => new sfValidatorString(),
-      'Espectadors'            => new sfValidatorInteger(),
-      'Places'                 => new sfValidatorInteger(),
+      'Espectadors'            => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'Places'                 => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'Titol'                  => new sfValidatorString(array('max_length' => 255)),
       'Preu'                   => new sfValidatorNumber(),
       'PreuR'                  => new sfValidatorNumber(),
-      'Estat'                  => new sfValidatorInteger(),
+      'Estat'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('horaris[%s]');

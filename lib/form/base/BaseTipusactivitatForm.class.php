@@ -3,12 +3,13 @@
 /**
  * Tipusactivitat form base class.
  *
+ * @method Tipusactivitat getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseTipusactivitatForm extends BaseFormPropel
+abstract class BaseTipusactivitatForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -18,7 +19,7 @@ class BaseTipusactivitatForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idTipusActivitat' => new sfValidatorPropelChoice(array('model' => 'Tipusactivitat', 'column' => 'idTipusActivitat', 'required' => false)),
+      'idTipusActivitat' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdtipusactivitat()), 'empty_value' => $this->getObject()->getIdtipusactivitat(), 'required' => false)),
       'Nom'              => new sfValidatorString(),
     ));
 

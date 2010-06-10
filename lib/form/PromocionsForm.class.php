@@ -16,7 +16,7 @@ class PromocionsForm extends sfFormPropel
   	
     $this->setWidgets(array(
       'PromocioID' => new sfWidgetFormInputHidden(),
-      'Nom'        => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
+      'Nom'        => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Ordre'      => new sfWidgetFormChoice(array('choices'=>PromocionsPeer::selectOrdre($this->isNew()))),    
       'isActiva'   => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
       'isFixa'     => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),

@@ -3,12 +3,13 @@
 /**
  * Tasquescomentaris form base class.
  *
+ * @method Tasquescomentaris getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseTasquescomentarisForm extends BaseFormPropel
+abstract class BaseTasquescomentarisForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -20,7 +21,7 @@ class BaseTasquescomentarisForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idTasquesComentaris' => new sfValidatorPropelChoice(array('model' => 'Tasquescomentaris', 'column' => 'idTasquesComentaris', 'required' => false)),
+      'idTasquesComentaris' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdtasquescomentaris()), 'empty_value' => $this->getObject()->getIdtasquescomentaris(), 'required' => false)),
       'Tasques_TasquesID'   => new sfValidatorPropelChoice(array('model' => 'Tasques', 'column' => 'TasquesID')),
       'Comentari'           => new sfValidatorString(),
       'Data_2'              => new sfValidatorDate(),

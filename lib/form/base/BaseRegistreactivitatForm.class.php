@@ -3,12 +3,13 @@
 /**
  * Registreactivitat form base class.
  *
+ * @method Registreactivitat getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseRegistreactivitatForm extends BaseFormPropel
+abstract class BaseRegistreactivitatForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -17,16 +18,16 @@ class BaseRegistreactivitatForm extends BaseFormPropel
       'Timestamp' => new sfWidgetFormDateTime(),
       'Accio'     => new sfWidgetFormTextarea(),
       'Dades'     => new sfWidgetFormTextarea(),
-      'idUsuari'  => new sfWidgetFormInput(),
+      'idUsuari'  => new sfWidgetFormInputText(),
       'Taula'     => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'LogID'     => new sfValidatorPropelChoice(array('model' => 'Registreactivitat', 'column' => 'LogID', 'required' => false)),
+      'LogID'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getLogid()), 'empty_value' => $this->getObject()->getLogid(), 'required' => false)),
       'Timestamp' => new sfValidatorDateTime(array('required' => false)),
       'Accio'     => new sfValidatorString(array('required' => false)),
       'Dades'     => new sfValidatorString(array('required' => false)),
-      'idUsuari'  => new sfValidatorInteger(array('required' => false)),
+      'idUsuari'  => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'Taula'     => new sfValidatorString(array('required' => false)),
     ));
 

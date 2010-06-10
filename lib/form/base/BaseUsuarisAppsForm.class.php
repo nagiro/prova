@@ -3,12 +3,13 @@
 /**
  * UsuarisApps form base class.
  *
+ * @method UsuarisApps getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseUsuarisAppsForm extends BaseFormPropel
+abstract class BaseUsuarisAppsForm extends BaseFormPropel
 {
   public function setup()
   {

@@ -16,7 +16,7 @@ class webActions extends sfActions
    * Executes index action
    * 
    */
-   
+   	
   public function LoadWEB(sfWebRequest $request)
   {
 	
@@ -35,8 +35,8 @@ class webActions extends sfActions
 
 	//Carreguem el menú
 	$this->MENU = NodesPeer::retornaMenu();
-	$this->OBERT = $this->getUser()->getAttribute('NODES',array());
-	$this->USUARI = $this->getUser()->getAttribute('idU');
+	$this->OBERT = $this->getUser()->getSessionPar('NODES',array());
+	$this->USUARI = $this->getUser()->getSessionPar('idU');
 
 	//Comprovem si està autentificat o no per mostrar el menú.
     if($this->getUser()->isAuthenticated()){
@@ -47,15 +47,15 @@ class webActions extends sfActions
     
         //Emmagatzemo la data
     if($this->hasRequestParameter('DATACALENDARI')) $this->DATACALENDARI = $this->getRequestParameter('DATACALENDARI');
-    elseif($this->getUser()->hasAttribute('DATACAL')) { $this->DATACALENDARI = $this->getUser()->getAttribute('DATACAL'); if(!is_double($this->DATACALENDARI)) $this->DATACALENDARI = time(); }    
+    elseif($this->getUser()->hasAttribute('DATACAL')) { $this->DATACALENDARI = $this->getUser()->getSessionPar('DATACAL'); if(!is_double($this->DATACALENDARI)) $this->DATACALENDARI = time(); }    
     else $this->DATACALENDARI = time();    
-    $this->getUser()->setAttribute('DATACAL', $this->DATACALENDARI);
+    $this->getUser()->setSessionPar('DATACAL', $this->DATACALENDARI);
 
     //Emmagatzemo la CERCA    
     if($request->hasParameter('CERCA')) $this->CERCA = $request->getParameter('CERCA');
-    elseif($this->getUser()->hasAttribute('CERCA')) $this->CERCA = $this->getUser()->getAttribute('CERCA');
+    elseif($this->getUser()->hasAttribute('CERCA')) $this->CERCA = $this->getUser()->getSessionPar('CERCA');
     else $this->CERCA = "";    
-    $this->getUser()->setAttribute('CERCA',$this->CERCA);
+    $this->getUser()->setSessionPar('CERCA',$this->CERCA);
     
   }
 
@@ -104,7 +104,7 @@ class webActions extends sfActions
   public function executeLogout()
   {
      $this->getUser()->setAuthenticated(false);
-	 $this->getUser()->setAttribute('idU',NULL);
+	 $this->getUser()->setSessionPar('idU',NULL);
 	 $this->redirect('web/index');
   }
   
@@ -115,7 +115,7 @@ class webActions extends sfActions
      $this->setTemplate('index');     
      $this->ACCIO = 'registre';     
      $rand = array(1=>rand(0,10),2=>rand(0,10));
-	 $this->getUser()->setAttribute('rand',$rand);		    
+	 $this->getUser()->setSessionPar('rand',$rand);		    
 	 $this->FUSUARI = new ClientUsuarisForm(new Usuaris(),array('rand'=>$rand));
      $this->ESTAT = '---'; 
   }
@@ -125,7 +125,7 @@ class webActions extends sfActions
   	$this->LoadWEB($request);
   	
   	//Inicialitzem l'usuari per defecte.
-  	$this->FUSUARI = new ClientUsuarisForm(new Usuaris(),array('rand'=>$this->getUser()->getAttribute('rand')));  	     
+  	$this->FUSUARI = new ClientUsuarisForm(new Usuaris(),array('rand'=>$this->getUser()->getSessionPar('rand')));  	     
     $this->FUSUARI->bind($request->getParameter('usuaris'));
   	
   	//Comprovem que el DNI no existeixi. Si ja existeix informem l'usuari
@@ -155,9 +155,11 @@ class webActions extends sfActions
 	 	 	 	  	 
 	 if($request->getMethod('post') && $request->hasParameter('BREMEMBER')):
 	 
-	 	$this->FREMEMBER = new RememberForm(null,array('rand'=>$this->getUser()->getAttribute('rand')));
-	 	$this->FREMEMBER->bind($request->getParameter('remember'));	 
-	 	$dni = $request->getParameter('remember[DNI]');	 
+	 	$this->FREMEMBER = new RememberForm(null,array('rand'=>$this->getUser()->getSessionPar('rand')));
+	 	$this->FREMEMBER->bind($request->getParameter('remember'));
+	 	$temp = $request->getParameter('remember');
+	 	$dni = $temp['DNI'];
+	 		 
 	 	
     	$OUsuari = UsuarisPeer::cercaDNI($dni);
     	if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()): 
@@ -184,7 +186,7 @@ class webActions extends sfActions
 	 
 	 	//Inicialitzem el formulari
 		$rand = array(1=>rand(0,10),2=>rand(0,10));
-		$this->getUser()->setAttribute('rand',$rand);		    	 	
+		$this->getUser()->setSessionPar('rand',$rand);		    	 	
 		$this->FREMEMBER = new RememberForm(null,array('rand'=>$rand));
 	 	$this->ERROR = "";
 	 	$this->ENVIAT = false; 
@@ -217,7 +219,7 @@ class webActions extends sfActions
      		 $L = $request->getParameter('login');     		 
      		 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password']);     		 
      		 if($USUARI instanceof Usuaris):
-     		 	$this->getUser()->setAttribute('idU',$USUARI->getUsuariid());     		
+     		 	$this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());     		
      		 	$this->getUser()->setAuthenticated(true);
     			if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
      		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }
@@ -242,7 +244,7 @@ class webActions extends sfActions
     $this->LoadWEB($request);
     $this->NOTICIA = null;    
     
-    $accio = $this->ParReqSesForm($request,'accio','cp');    
+    $accio = $this->getUser()->ParReqSesForm($request,'accio','cp');    
     
     if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
        
@@ -251,7 +253,7 @@ class webActions extends sfActions
       //Consulta una pàgina determinada
       case 'cp':
       	
-			$idN = $this->ParReqSesForm($request,'node',"");      		      	
+			$idN = $this->getUser()->ParReqSesForm($request,'node',"");      		      	
       		$this->PAGINA = NodesPeer::selectPagina($idN);      		
       		
       		$this->SELECCIONAT = $idN;            
@@ -334,19 +336,19 @@ class webActions extends sfActions
 	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$pagina,true);
 	   		endif; 	   	                 
 	 		$this->ACCIO = 'noticies';	         
-	 		$this->getUser()->setAttribute('HEFETCERCA',false);
-	 		$this->getUser()->setAttribute('NODES',array());	 	   	
+	 		$this->getUser()->setSessionPar('HEFETCERCA',false);
+	 		$this->getUser()->setSessionPar('NODES',array());	 	   	
 			break;		
    }
    
-   $this->OBERT = $this->getUser()->getAttribute('NODES',array());
+   $this->OBERT = $this->getUser()->getSessionPar('NODES',array());
                           
   }
   
   public function gestionaNodes($NO)
   {  	
   	
-	$NODES = $this->getUser()->getAttribute('NODES',array());
+	$NODES = $this->getUser()->getSessionPar('NODES',array());
 	
 	if(in_array($NO,$NODES)):
 		unset($NODES[$NO]);
@@ -354,7 +356,7 @@ class webActions extends sfActions
 		$NODES[$NO] = $NO;
 	endif;
 		
-	$this->getUser()->setAttribute('NODES',$NODES);
+	$this->getUser()->setSessionPar('NODES',$NODES);
 		
   }
   
@@ -388,23 +390,23 @@ class webActions extends sfActions
        case 'gd':
 		    $this->MODUL = 'gestiona_dades';
 		    $this->ACCIO = 'gestio';
-		    $OU = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
+		    $OU = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
 		    
 		    //Entrem la info per la gestió del captcha
 		    $rand = array(1=>rand(0,10),2=>rand(0,10));
-		    $this->getUser()->setAttribute('rand',$rand);		    
+		    $this->getUser()->setSessionPar('rand',$rand);		    
 		    $this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$rand));
 		           	       	     
 	        break;
 	   case 'gc':
 	        $this->MODUL = 'gestiona_cursos';
             $this->ACCIO = 'gestio';                        
-            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari($this->getUser()->getAttribute('idU'));                                                               
+            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari($this->getUser()->getSessionPar('idU'));                                                               
             break;
 	   case 'gl':
 			$this->MODUL = 'gestiona_llistes';
 			$this->ACCIO = 'gestio';
-			$this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getAttribute('idU'));            
+			$this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getSessionPar('idU'));            
 			break;
 	   case 'gr':
 	   		$OO = new Reservaespais();
@@ -412,32 +414,32 @@ class webActions extends sfActions
 	   		$this->FRESERVA = new ClientReservesForm($OO);
 	        $this->MODUL = 'gestiona_reserves';
 	        $this->ACCIO = 'gestio';	        
-	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
-	        $this->getUser()->setAttribute('idR',0);
+	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
+	        $this->getUser()->setSessionPar('idR',0);
 	        if($request->hasParameter('idR')){
 	        	$OR = ReservaespaisPeer::retrieveByPK($this->getRequestParameter('idR'));
 	        	$this->FRESERVA = new ClientReservesForm($OR);
-	        	$this->getUser()->setAttribute('idR',$OR->getReservaespaiid());	        		        
+	        	$this->getUser()->setSessionPar('idR',$OR->getReservaespaiid());	        		        
 	        } 	        
 	        break;
 	   case 'sd':
 	   		$this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';		    		    
-	   		$OU = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
-	   		$this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$this->getUser()->getAttribute('rand')));
+	   		$OU = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
+	   		$this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$this->getUser()->getSessionPar('rand')));
 	   		$this->FUSUARI->bind($request->getParameter('usuaris'));
 	   		if($this->FUSUARI->isValid()) { $this->FUSUARI->save(); $this->MISSATGE[] = "Dades modificades correctament"; }
 	   		else { $this->MISSATGE[] = 'Hi ha algun error a les dades'; }     
 	        break;       	                    	             	        
 	   case 'sl':
-	        UsuarisllistesPeer::saveUsuarisLlistes($request->getParameter('LLISTA'), $this->getUser()->getAttribute('idU'));
+	        UsuarisllistesPeer::saveUsuarisLlistes($request->getParameter('LLISTA'), $this->getUser()->getSessionPar('idU'));
 	        $this->MODUL = 'gestiona_llistes'; $this->ACCIO = 'gestio';
-		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getAttribute('idU'));
+		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getSessionPar('idU'));
 		    $this->MISSATGE[] = "Dades modificades correctament";
 	        break;
 	   case 'sr':
 	   	
 	   		//Carreguem el formulari que hem carregat per edició o res per nou	
-			$OR = ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('idR'));
+			$OR = ReservaespaisPeer::retrieveByPK($this->getUser()->getSessionPar('idR'));
 			
 			//Si en trobem un, creem el formulari altrament un de nou
 			if($OR instanceof Reservaespais) $this->FRESERVA = new ClientReservesForm($OR);
@@ -448,7 +450,7 @@ class webActions extends sfActions
 			
 			//Si és correcte el guardem
 			if($this->FRESERVA->isValid()):
-				$this->FRESERVA->setUser($this->getUser()->getAttribute('idU'));
+				$this->FRESERVA->setUser($this->getUser()->getSessionPar('idU'));
 				$this->FRESERVA->save();
 				$this->renderText('OK');
 				return sfView::NONE;				
@@ -461,14 +463,14 @@ class webActions extends sfActions
 
 	   //Anul·la la reserva
 	   case 'ar':
-	   		$RE = ReservaespaisPeer::retrieveByPK($this->getUser()->getAttribute('idR'));	   			   		
+	   		$RE = ReservaespaisPeer::retrieveByPK($this->getUser()->getSessionPar('idR'));	   			   		
 	   		if($RE instanceof Reservaespais):
 	   			$RE->setEstat(ReservaespaisPeer::ANULADA);
 	   			$RE->save();
 	   		endif;
 	   		
 			//Posem les dades de càrrega del mòdul
-	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getAttribute('idU'));
+	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
 	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';		    	   		
 	   		break;
 	   		
@@ -476,10 +478,10 @@ class webActions extends sfActions
 	   		          	   				   		   		                         
             $D = $request->getParameter('D');
                          
-            $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getAttribute('idU'));
+            $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
             $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
             $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();
-            $this->DADES_MATRICULA['IDU'] = $this->getUser()->getAttribute('idU');
+            $this->DADES_MATRICULA['IDU'] = $this->getUser()->getSessionPar('idU');
             $this->DADES_MATRICULA['MODALITAT'] = MatriculesPeer::PAGAMENT_TARGETA;
             $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
             $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
@@ -627,72 +629,5 @@ class webActions extends sfActions
       $this->setTemplate('index');
       $this->ACCIO = 'funcionament';      
    }
-   
-   
-  //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
-  //Exemple: $this->ParReqSesForm($request,'cerca',array('text'=>""));
-  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
-  {
-  	  	
-  	$RET = ""; 	    	
-  	
-  	if(is_array($default)):
-  	
-	  	//Si existeix el paràmetre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):
-	  	
-	  		$CAMP = $request->getParameter($nomCamp);
-	  		
-	  		//Mirem els elements del formulari i els guardem a la sessió  		  		
-	  		foreach( $CAMP as $NOM => $VALOR ):
-	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
-	  		endforeach;  				  		  		 
-	  		
-	  		$RET = $CAMP;  		
-	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
-	  	elseif($this->existeixAtributArray($nomCamp,$default)):
-	  		$RET = array();
-	  		foreach($default as $NOM => $VALOR):
-	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
-	  		endforeach;
-	  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
-	  	else: 
-	  	
-	  		foreach($default as $NOM => $VALOR):
-	  			$this->getUser()->setAttribute($NOM.$nomCamp, $default);
-	  		endforeach;
-	  		
-	  		$RET = $default;
-	  		
-	  	endif;
-	  	
-	else:
-		
-		//Si existeix el paràmetre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):
-	  	
-	  		$CAMP = $request->getParameter($nomCamp);	  		
-	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
-	  		$RET = $CAMP;  		
-	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
-	  	elseif($this->getUser()->hasAttribute($nomCamp)):
-	  		
-	  		$RET = $this->getUser()->getAttribute($nomCamp);
-	  			  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
-	  	else:
-	  	 	  		  		
-	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
-	  		$RET = $default;
-	  		
-	  	endif;
-	
-	endif;
-  	
-  	return $RET;
-  }
-     
+        
 }

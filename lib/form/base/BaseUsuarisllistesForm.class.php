@@ -3,12 +3,13 @@
 /**
  * Usuarisllistes form base class.
  *
+ * @method Usuarisllistes getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseUsuarisllistesForm extends BaseFormPropel
+abstract class BaseUsuarisllistesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -19,7 +20,7 @@ class BaseUsuarisllistesForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idUsuarisLlistes'  => new sfValidatorPropelChoice(array('model' => 'Usuarisllistes', 'column' => 'idUsuarisLlistes', 'required' => false)),
+      'idUsuarisLlistes'  => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdusuarisllistes()), 'empty_value' => $this->getObject()->getIdusuarisllistes(), 'required' => false)),
       'Llistes_idLlistes' => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
       'Usuaris_UsuarisID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
     ));

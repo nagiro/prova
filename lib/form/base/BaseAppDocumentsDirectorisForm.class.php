@@ -3,12 +3,13 @@
 /**
  * AppDocumentsDirectoris form base class.
  *
+ * @method AppDocumentsDirectoris getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppDocumentsDirectorisForm extends BaseFormPropel
+abstract class BaseAppDocumentsDirectorisForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,14 +17,14 @@ class BaseAppDocumentsDirectorisForm extends BaseFormPropel
       'idDirectori'                     => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormTextarea(),
       'Pare'                            => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsDirectoris', 'add_empty' => true)),
-      'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Usuaris')),
+      'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
     $this->setValidators(array(
-      'idDirectori'                     => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
+      'idDirectori'                     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIddirectori()), 'empty_value' => $this->getObject()->getIddirectori(), 'required' => false)),
       'Nom'                             => new sfValidatorString(),
       'Pare'                            => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
-      'app_documents_permisos_dir_list' => new sfValidatorPropelChoiceMany(array('model' => 'Usuaris', 'required' => false)),
+      'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_documents_directoris[%s]');
@@ -76,7 +77,7 @@ class BaseAppDocumentsDirectorisForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

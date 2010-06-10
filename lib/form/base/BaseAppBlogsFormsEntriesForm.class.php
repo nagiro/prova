@@ -3,12 +3,13 @@
 /**
  * AppBlogsFormsEntries form base class.
  *
+ * @method AppBlogsFormsEntries getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppBlogsFormsEntriesForm extends BaseFormPropel
+abstract class BaseAppBlogsFormsEntriesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -17,16 +18,16 @@ class BaseAppBlogsFormsEntriesForm extends BaseFormPropel
       'dades'      => new sfWidgetFormTextarea(),
       'date'       => new sfWidgetFormDateTime(),
       'form_id'    => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsForms', 'add_empty' => false)),
-      'estat'      => new sfWidgetFormInput(),
+      'estat'      => new sfWidgetFormInputText(),
       'objeccions' => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'id'         => new sfValidatorPropelChoice(array('model' => 'AppBlogsFormsEntries', 'column' => 'id', 'required' => false)),
+      'id'         => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'dades'      => new sfValidatorString(),
       'date'       => new sfValidatorDateTime(),
       'form_id'    => new sfValidatorPropelChoice(array('model' => 'AppBlogsForms', 'column' => 'id')),
-      'estat'      => new sfValidatorInteger(),
+      'estat'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'objeccions' => new sfValidatorString(),
     ));
 

@@ -4,11 +4,13 @@
   <meta http-equiv="content-type" content="text/html; charset=windows-1250">
   <meta name="generator" content="PSPad editor, www.pspad.com">
 
-  <?php include_http_metas() ?>
-  <?php include_metas() ?>
-  
-  <?php include_title() ?>
-  
+    <?php include_http_metas() ?>
+    <?php include_metas() ?>
+    <?php include_title() ?>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <?php include_stylesheets() ?>
+    <?php include_javascripts() ?>
+      
   <link rel="shortcut icon" href="/favicon.ico" />
   
   <title></title>
@@ -29,15 +31,15 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Avui','gestio/main'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Contactes','gestio/gAgenda?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Taulell','gestio/gMissatges?accio=I'); ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Tasques','gestio/gTasques'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Tasques','gestio/gTasques?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial'); ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio'); ?></TD></TR>                            
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves d\'espais','gestio/gReserves'); ?></TD></TR>                                                                      
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio?accio=C'); ?></TD></TR>                            
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves d\'espais','gestio/gReserves?accio=C'); ?></TD></TR>                                                                      
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Informes','gestio/gInformes'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' PROGRAMACIÓ'; ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=CA'); ?></TD></TR>
-			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Matricules','gestio/gMatricules?accio=CA'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=C'); ?></TD></TR>
+			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Matricules','gestio/gMatricules?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Agenda','gestio/gActivitats?accio=C'); ?></TD></TR>             
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Estadístiques','gestio/gEspais'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' WEB'; ?></TD></TR>          
@@ -70,6 +72,7 @@
   </center>
   </body>
 </html>
+
 
 <?php 
 

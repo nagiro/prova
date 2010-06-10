@@ -15,9 +15,9 @@ class AppBlogsMultimediaForm extends BaseAppBlogsMultimediaForm
   {
     $this->setWidgets(array(
       'id'                               => new sfWidgetFormInputHidden(),
-      'name'                             => new sfWidgetFormInput(),
+      'name'                             => new sfWidgetFormInputText(),
       'desc'                             => new sfWidgetFormTextarea(),
-      'url'                              => new sfWidgetFormInput(),
+      'url'                              => new sfWidgetFormInputText(),
       'date'                             => new sfWidgetFormDate(),
     ));
 

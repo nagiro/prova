@@ -17,10 +17,10 @@ class BaseProjectesForm extends BaseFormPropel
       'Entitats_EntitatID'                  => new sfWidgetFormPropelChoice(array('model' => 'Entitats', 'add_empty' => false)),
       'Nom'                                 => new sfWidgetFormTextarea(),
       'Descripcio'                          => new sfWidgetFormTextarea(),
-      'Habilitat'                           => new sfWidgetFormInput(),
-      'projectes_has_agendaactivitats_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Agendaactivitats')),
-      'projectes_has_blogarticles_list'     => new sfWidgetFormPropelChoiceMany(array('model' => 'Blogarticles')),
-      'subcategories_has_projectes_list'    => new sfWidgetFormPropelChoiceMany(array('model' => 'Subcategories')),
+      'Habilitat'                           => new sfWidgetFormInputText(),
+      'projectes_has_agendaactivitats_list' => new sfWidgetFormPropelChoice(array('model' => 'Agendaactivitats', 'multiple'=>true)),
+      'projectes_has_blogarticles_list'     => new sfWidgetFormPropelChoice(array('model' => 'Blogarticles', 'multiple'=>true)),
+      'subcategories_has_projectes_list'    => new sfWidgetFormPropelChoice(array('model' => 'Subcategories', 'multiple'=>true)),
     ));
 
     $this->setValidators(array(
@@ -29,9 +29,9 @@ class BaseProjectesForm extends BaseFormPropel
       'Nom'                                 => new sfValidatorString(),
       'Descripcio'                          => new sfValidatorString(),
       'Habilitat'                           => new sfValidatorInteger(),
-      'projectes_has_agendaactivitats_list' => new sfValidatorPropelChoiceMany(array('model' => 'Agendaactivitats', 'required' => false)),
-      'projectes_has_blogarticles_list'     => new sfValidatorPropelChoiceMany(array('model' => 'Blogarticles', 'required' => false)),
-      'subcategories_has_projectes_list'    => new sfValidatorPropelChoiceMany(array('model' => 'Subcategories', 'required' => false)),
+      'projectes_has_agendaactivitats_list' => new sfValidatorPropelChoice(array('model' => 'Agendaactivitats', 'required' => false, 'multiple'=>true)),
+      'projectes_has_blogarticles_list'     => new sfValidatorPropelChoice(array('model' => 'Blogarticles', 'required' => false, 'multiple'=>true)),
+      'subcategories_has_projectes_list'    => new sfValidatorPropelChoice(array('model' => 'Subcategories', 'required' => false, 'multiple'=>true)),
     ));
 
     $this->widgetSchema->setNameFormat('projectes[%s]');

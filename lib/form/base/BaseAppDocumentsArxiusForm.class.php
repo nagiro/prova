@@ -3,12 +3,13 @@
 /**
  * AppDocumentsArxius form base class.
  *
+ * @method AppDocumentsArxius getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppDocumentsArxiusForm extends BaseFormPropel
+abstract class BaseAppDocumentsArxiusForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -18,16 +19,16 @@ class BaseAppDocumentsArxiusForm extends BaseFormPropel
       'Nom'                         => new sfWidgetFormTextarea(),
       'url'                         => new sfWidgetFormTextarea(),
       'DataCreacio'                 => new sfWidgetFormDate(),
-      'app_documents_permisos_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Usuaris')),
+      'app_documents_permisos_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
     $this->setValidators(array(
-      'idDocument'                  => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'column' => 'idDocument', 'required' => false)),
+      'idDocument'                  => new sfValidatorChoice(array('choices' => array($this->getObject()->getIddocument()), 'empty_value' => $this->getObject()->getIddocument(), 'required' => false)),
       'idDirectori'                 => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
       'Nom'                         => new sfValidatorString(),
       'url'                         => new sfValidatorString(),
       'DataCreacio'                 => new sfValidatorDate(),
-      'app_documents_permisos_list' => new sfValidatorPropelChoiceMany(array('model' => 'Usuaris', 'required' => false)),
+      'app_documents_permisos_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_documents_arxius[%s]');
@@ -80,7 +81,7 @@ class BaseAppDocumentsArxiusForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

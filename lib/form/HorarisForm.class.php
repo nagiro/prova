@@ -40,9 +40,9 @@ class HorarisForm extends sfFormPropel
       'HoraInici'              => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes)),
       'HoraFi'                 => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes)),
       'HoraPost'               => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes)),
-      'Avis'                   => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
-      'Espectadors'            => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
-      'Places'                 => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
+      'Avis'                   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
+      'Espectadors'            => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
+      'Places'                 => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
     ));
 
     $this->setValidators(array(

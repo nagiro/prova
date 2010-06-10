@@ -1,6 +1,6 @@
 <?php
 
-class CercaChoiceForm extends sfForm
+class CercaChoiceForm extends BaseForm
 {
   public function configure()
   {

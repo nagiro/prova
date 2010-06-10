@@ -4,13 +4,14 @@
  
 
 <STYLE>
-.cent { width:100%; }
-.noranta { width:90%; }
-.vuitanta  { width:80%; }
-.setanta { width:75%; }
-.cinquanta { width:50%; }
-.HTEXT { height:100px; }
-.espai { padding-left:5px; padding-right:5px; }
+
+	.cent { width:100%; }
+	.noranta { width:90%; }
+	.vuitanta  { width:80%; }
+	.setanta { width:75%; }
+	.cinquanta { width:50%; }
+	.HTEXT { height:100px; }
+	.espai { padding-left:5px; padding-right:5px; }
 
 </STYLE>
 

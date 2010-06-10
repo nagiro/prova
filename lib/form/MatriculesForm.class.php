@@ -16,10 +16,10 @@ class MatriculesForm extends sfFormPropel
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
   	  'Usuaris_UsuariID' => new sfWidgetFormInputHidden(),  	  
-  	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursosActius())),
+  	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursos())),
       'Estat'            => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::getEstatsSelect())),
       'DataInscripcio'   => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
-      'Pagat'        	 => new sfWidgetFormInput(),
+      'Pagat'        	 => new sfWidgetFormInputText(),
       'tReduccio'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectDescomptes())),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
   	  'Comentari'        => new sfWidgetFormTextarea(),

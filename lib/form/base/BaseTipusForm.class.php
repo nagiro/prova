@@ -3,12 +3,13 @@
 /**
  * Tipus form base class.
  *
+ * @method Tipus getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseTipusForm extends BaseFormPropel
+abstract class BaseTipusForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -19,7 +20,7 @@ class BaseTipusForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idTipus'   => new sfValidatorPropelChoice(array('model' => 'Tipus', 'column' => 'idTipus', 'required' => false)),
+      'idTipus'   => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdtipus()), 'empty_value' => $this->getObject()->getIdtipus(), 'required' => false)),
       'tipusNom'  => new sfValidatorString(array('required' => false)),
       'tipusDesc' => new sfValidatorString(array('required' => false)),
     ));

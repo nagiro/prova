@@ -30,7 +30,7 @@ class gestioActions extends sfActions
   { 
     $this->setLayout('gestio');
     
-    $idU = $this->getUser()->getAttribute('idU');    
+    $idU = $this->getUser()->getSessionPar('idU');    
     
     //Carreguem quantes incidÃ¨ncies noves hi ha
     $this->NINCIDENCIES = IncidenciesPeer::QuantesAvui(); 
@@ -75,13 +75,13 @@ class gestioActions extends sfActions
   		$Usuari = UsuarisPeer::doSelectOne($c);  		
   		if(!is_null($Usuari)): 
   			$this->getUser()->setAuthenticated(true);
-  			$this->getUser()->setAttribute('idU',$Usuari->getUsuariid());  			  			
-  			$this->getUser()->setAttribute('UserLevel',$Usuari->getNivellsIdnivells());
-  			RegistreactivitatPeer::AfegirRegistre($this->getUser()->getAttribute('idU'),RegistreactivitatPeer::LOGIN,null,null);
+  			$this->getUser()->setSessionPar('idU',$Usuari->getUsuariid());  			  			
+  			$this->getUser()->setSessionPar('UserLevel',$Usuari->getNivellsIdnivells());
+  			RegistreactivitatPeer::AfegirRegistre($this->getUser()->getSessionPar('idU'),RegistreactivitatPeer::LOGIN,null,null);
 			  $this->redirect('gestio/main');
   		else:
   			$this->getUser()->setAuthenticated(false);
-  			$this->getUser()->setAttribute('idU',null);  			
+  			$this->getUser()->setSessionPar('idU',null);  			
   		endif;
   	}  	  
   }
@@ -93,9 +93,9 @@ class gestioActions extends sfActions
   {
     $this->setLayout('gestio');
   	if($this->getUser()->hasAttribute('idU'))
-  		RegistreactivitatPeer::AfegirRegistre($this->getUser()->getAttribute('idU'),RegistreactivitatPeer::LOGOUT,null,null);
+  		RegistreactivitatPeer::AfegirRegistre($this->getUser()->getSessionPar('idU'),RegistreactivitatPeer::LOGOUT,null,null);
     	$this->getUser()->setAuthenticated(false);
-    	$this->getUser()->setAttribute('idU',0);  	
+    	$this->getUser()->setSessionPar('idU',0);  	
   }
   
   /**
@@ -125,10 +125,10 @@ class gestioActions extends sfActions
 	
     $this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>""));    
-    $this->IDU    = $this->ParReqSesForm($request,'IDU');            
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $accio  = $this->ParReqSesForm($request,'accio','FC');
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));    
+    $this->IDU    = $this->getUser()->ParReqSesForm($request,'IDU');            
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $accio  = $this->getUser()->ParReqSesForm($request,'accio','FC');
             
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
@@ -146,15 +146,15 @@ class gestioActions extends sfActions
     
     
     
-    $this->getUser()->setAttribute('accio',$accio);
-    $this->getUser()->setAttribute('pagina',$this->PAGINA);        
+    $this->getUser()->setSessionPar('accio',$accio);
+    $this->getUser()->setSessionPar('pagina',$this->PAGINA);        
     
     switch($accio){
     
     	//Nou usuari 
        case 'N':
              $this->MODE['NOU'] = true;
-             $this->getUser()->setAttribute('FidU',0);                          
+             $this->getUser()->setSessionPar('FidU',0);                          
              $this->FUsuari = new UsuarisForm();             
              break;
              
@@ -244,11 +244,11 @@ class gestioActions extends sfActions
     
     if($request->getParameter('accio')=='N'):      
       $this->FPromocio = new PromocionsForm();
-      $this->getUser()->setAttribute('idP',0);    
+      $this->getUser()->setSessionPar('idP',0);    
       $this->NOU = true;
     elseif($request->getParameter('accio')=='E'):
       $OPromocio = PromocionsPeer::retrieveByPK($request->getParameter('IDP'));
-      $this->getUser()->setAttribute('idP',$OPromocio->getPromocioId());
+      $this->getUser()->setSessionPar('idP',$OPromocio->getPromocioId());
       $this->FPromocio = new PromocionsForm($OPromocio);
       $this->EDICIO = true;
     elseif($request->getParameter('BDELETE')): //Esborra
@@ -257,7 +257,7 @@ class gestioActions extends sfActions
     endif;
     
     if($request->hasParameter('BSAVE')):
-      $IDP = $this->getUser()->getAttribute('idP');
+      $IDP = $this->getUser()->getSessionPar('idP');
       if($IDP == 0) $OPromocio = new Promocions();
       else $OPromocio = PromocionsPeer::retrieveByPK($IDP);
       $this->FPromocio = new PromocionsForm($OPromocio);
@@ -286,13 +286,13 @@ class gestioActions extends sfActions
     $this->ERRORS = array(); $this->NOU = false; $this->EDICIO = false; $this->HTML = false;
            
     if($request->getParameter('accio')=='N'):
-      $this->getUser()->setAttribute('idN',0);  
+      $this->getUser()->setSessionPar('idN',0);  
       $this->FNode = new NodesForm();                
       $this->NOU = true;
     elseif($request->getParameter('accio')=='E'):               
       $ONode = NodesPeer::retrieveByPK($request->getParameter('idN'));  
       $this->FNode = new NodesForm($ONode);
-      $this->getUser()->setAttribute('idN',$ONode->getIdnodes());      
+      $this->getUser()->setSessionPar('idN',$ONode->getIdnodes());      
       $this->EDICIO = true;
     elseif($request->getParameter('accio')=='H'):          
       	$NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));
@@ -307,7 +307,7 @@ class gestioActions extends sfActions
       
 		$this->FHtml = new EditorHtmlForm();
 		$this->FHtml->bind(array('titol'=>$NODE->getTitolmenu(),'html'=>$contents));				
-      	$this->getUser()->setAttribute('idN',$NODE->getIdnodes());
+      	$this->getUser()->setSessionPar('idN',$NODE->getIdnodes());
       	$this->NODE = $NODE;                       
       	$this->HTML = true;
     elseif($request->getParameter('accio')=='D'):
@@ -317,7 +317,7 @@ class gestioActions extends sfActions
     endif;
     
     if($request->hasParameter('BSAVE')):
-      $IDN = $this->getUser()->getAttribute('idN');
+      $IDN = $this->getUser()->getSessionPar('idN');
       $ONode = NodesPeer::retrieveByPK($IDN);
       if($IDN > 0) $this->FNode = new NodesForm($ONode);
       else $this->FNode = new NodesForm();      
@@ -326,7 +326,7 @@ class gestioActions extends sfActions
       if($this->FNode->isValid()) $this->FNode->save();             
       $this->EDICIO = false;                
     elseif($request->hasParameter('SaveHTML')):
-      $idN = $this->getUser()->getAttribute('idN');
+      $idN = $this->getUser()->getSessionPar('idN');
       $this->FHtml = new EditorHtmlForm();
       $this->FHtml->bind($request->getParameter('editor'));
 	  $this->NODE = NodesPeer::retrieveByPK($idN);
@@ -351,7 +351,7 @@ class gestioActions extends sfActions
   {
     $this->setLayout('gestio');
 
-    $this->IDL    = $this->ParReqSesForm($request,'IDL');    
+    $this->IDL    = $this->getUser()->ParReqSesForm($request,'IDL');    
     $this->PAGINA = $request->getParameter('PAGINA');    
     $this->MODE   = "";
     
@@ -379,14 +379,14 @@ class gestioActions extends sfActions
     			if($OMissatge instanceof Missatgesmailing):
     			
     				$this->FMissatge = new MissatgesmailingForm($OMissatge);
-    				$this->getUser()->setAttribute('IDM',$OMissatge->getIdmissatge());
+    				$this->getUser()->setSessionPar('IDM',$OMissatge->getIdmissatge());
     				
     			else:
     			
     				$OMissatge = new Missatgesmailing();
     				$OMissatge->setDataAlta(date('Y-m-d',time()));    				
     				$this->FMissatge = new MissatgesmailingForm($OMissatge);
-    				$this->getUser()->setAttribute('IDM',null);
+    				$this->getUser()->setSessionPar('IDM',null);
     				    				
     			endif;     		
     			$this->MODE = 'MISSATGES';    			
@@ -406,7 +406,7 @@ class gestioActions extends sfActions
     	//Esborro un missatge guardat
     	case 'DM':
     			
-    			$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));
+    			$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));
     			
     			if($OMissatge instanceof Missatgesmailing):
     			
@@ -425,7 +425,7 @@ class gestioActions extends sfActions
     	case 'LM':
     		
     			if($this->saveMissatge($request)):
-    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistesArray($this->getUser()->getAttribute('IDM'));    				     				
+    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistesArray($this->getUser()->getSessionPar('IDM'));    				     				
     				    				
 	    			$this->MODE = 'MISSATGES_LLISTES';    				
     			else: 
@@ -438,7 +438,7 @@ class gestioActions extends sfActions
     	case 'SLM':
     		    			
     			$this->saveMissatgeLlistes($request);
-    			$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistes($this->getUser()->getAttribute('IDM'));    			
+    			$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistes($this->getUser()->getSessionPar('IDM'));    			
     			$this->MODE = 'MISSATGES_LLISTES';
     					
     		break;
@@ -454,7 +454,7 @@ class gestioActions extends sfActions
     	//Envio un missatge de prova a l'adreÃ§a que digui l'usuari
     	case 'SP':
     		
-    		try   { MissatgesmailingPeer::sendProvaMessageId($this->getUser()->getAttribute('IDM'),$request->getParameter('email')); }
+    		try   { MissatgesmailingPeer::sendProvaMessageId($this->getUser()->getSessionPar('IDM'),$request->getParameter('email')); }
     		catch (Exception $e) { $e->getMessage(); }	
     		
     		$this->MODE = "FER_PROVA";
@@ -464,7 +464,7 @@ class gestioActions extends sfActions
     	//Envio el missatge a tothom
     	case 'SMT':
     		
-    		try   { MissatgesmailingPeer::sendMessageId($this->getUser()->getAttribute('IDM')); }
+    		try   { MissatgesmailingPeer::sendMessageId($this->getUser()->getSessionPar('IDM')); }
     		catch (Exception $e) { $e->getMessage(); }	
     		
     		$this->MODE = "FER_PROVA";
@@ -479,12 +479,12 @@ class gestioActions extends sfActions
     		    		
       case 'N':      			
       			$this->FLlista = new LlistesForm();
-      			$this->getUser()->setAttribute('idL',0);                 
+      			$this->getUser()->setSessionPar('idL',0);                 
                 $this->MODE = 'NOU';
                 break;
       case 'E': 
                 $OLlista = LlistesPeer::retrieveByPK($request->getParameter('IDL'));
-                $this->getUser()->setAttribute('idL',$OLlista->getIdllistes());
+                $this->getUser()->setSessionPar('idL',$OLlista->getIdllistes());
                 $this->FLlista = new LlistesForm($OLlista);                
                 $this->MODE = 'EDICIO'; 
                 break;                      
@@ -503,7 +503,7 @@ class gestioActions extends sfActions
                 $this->MODE = 'MISSATGES';        
                 break;                
       case 'S': 
-                $IDL = $this->getUser()->getAttribute('idL');
+                $IDL = $this->getUser()->getSessionPar('idL');
                 $OLlista = LlistesPeer::retrieveByPK($IDL);
                 if($OLlista instanceof Llistes) $this->FLlista = new LlistesForm($OLlista);
                 else $this->FLlista = new LlistesForm();                
@@ -549,7 +549,7 @@ class gestioActions extends sfActions
   public function gestionaUsuariLlistes($request)
   {
 
-  		$this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));	    	    	    
+  		$this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));	    	    	    
 	    $this->FCerca = new CercaTextChoiceForm();
 	    $this->FCerca->bind($this->CERCA);
 	    $this->FCerca->setChoice(array('llista'=>'Usuaris pertanyents','nollista'=>'Usuaris no pertanyents'));	    	    
@@ -572,11 +572,11 @@ class gestioActions extends sfActions
   	
 	  	foreach($request->getParameter('LLISTES_ENVIAMENT') as $L):
 	    	
-	    	$IDM = $this->getUser()->getAttribute('IDM');
+	    	$IDM = $this->getUser()->getSessionPar('IDM');
 	    	$OML = MissatgesllistesPeer::retrieveByPK($IDM,$L);    				
 	    	if (!($OML instanceof Missatgesllistes)){
 	    		$OML = new Missatgesllistes();
-	    		$OML->setIdmissatgesllistes($this->getUser()->getAttribute('IDM'));
+	    		$OML->setIdmissatgesllistes($this->getUser()->getSessionPar('IDM'));
 	    		$OML->setLlistesIdllistes($L);
 	    		$OML->setEnviat(null);		
 	    		$OML->save();
@@ -588,7 +588,7 @@ class gestioActions extends sfActions
   public function saveMissatge(sfWebRequest $request)
   {
   	
-  	$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));
+  	$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));
                 
     if($OMissatge instanceof Missatgesmailing):
     	$this->FMissatge = new MissatgesmailingForm($OMissatge);
@@ -600,7 +600,7 @@ class gestioActions extends sfActions
     $this->FMissatge->bind($request->getParameter('missatgesmailing'));
     if($this->FMissatge->isValid()):
  	   $this->FMissatge->save();
-       $this->getUser()->setAttribute('IDM',$this->FMissatge->getObject()->getIdmissatge());
+       $this->getUser()->setSessionPar('IDM',$this->FMissatge->getObject()->getIdmissatge());
        return true;
     else: 
     	return false; 
@@ -875,19 +875,23 @@ class gestioActions extends sfActions
 	endif;
 	    
     switch($accio){    	
+    	case 'C':
+    			$this->getUser()->setSessionPar('PAGINA',1);
+    			$this->getUser()->setSessionPar('cerca',array('text'=>''));
+    		break;
     	case 'N':
-    		$this->getUser()->setAttribute('IDT',0);		//Posem el valor de IDT a 0    		
+    		$this->getUser()->setSessionPar('IDT',0);		//Posem el valor de IDT a 0    		
     		$OT = new Tasques();
     		$this->FTasca = new TasquesForm($OT);
     		$this->NOU = true;
     		break;
     	case 'E':    		
-    		$this->getUser()->setAttribute('IDT',$request->getParameter('IDT'));    					
-    		$this->FTasca = new TasquesForm(TasquesPeer::retrieveByPK($this->getUser()->getAttribute('IDT')));
+    		$this->getUser()->setSessionPar('IDT',$request->getParameter('IDT'));    					
+    		$this->FTasca = new TasquesForm(TasquesPeer::retrieveByPK($this->getUser()->getSessionPar('IDT')));
     		$this->EDICIO = true;
     		break;    		    
     	case 'S':    		
-    		$IDT = $this->getUser()->getAttribute('IDT');
+    		$IDT = $this->getUser()->getSessionPar('IDT');
     		$OT = ($IDT > 0)?TasquesPeer::retrieveByPK($IDT):new Tasques();
     		$this->FTasca = new TasquesForm($OT);
     		$this->FTasca->bind($request->getParameter('tasques'));
@@ -895,7 +899,7 @@ class gestioActions extends sfActions
     		$this->EDICIO = true;    		    		
     		break;	
     	case 'D':    	    
-    	    TasquesPeer::retrieveByPK($this->getUser()->getAttribute('IDT'))->delete();
+    	    TasquesPeer::retrieveByPK($this->getUser()->getSessionPar('IDT'))->delete();
     	    $this->CONSULTA = true;    	        	   
     	    break;
     	case 'F':
@@ -904,12 +908,12 @@ class gestioActions extends sfActions
     	    $this->redirect('gestio/gTasques');    	        	    
     	    break;  
     	default:  
-    		$this->getUser()->setAttribute('IDT',0);		
+    		$this->getUser()->setSessionPar('IDT',0);		
     		break;
     }
 	      
-    $this->TASQUES_ENCOMANADES = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getAttribute('idU'), $this->PAGINA , false);
-	$this->TASQUES_PERFER      = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getAttribute('idU'), $this->PAGINA , true);
+    $this->TASQUES_ENCOMANADES = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getSessionPar('idU'), $this->PAGINA , false);
+	$this->TASQUES_PERFER      = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getSessionPar('idU'), $this->PAGINA , true);
         
   }
   
@@ -919,12 +923,12 @@ class gestioActions extends sfActions
          
   public function netejaParametresSessio()
   {
-  	$this->getUser()->setAttribute('text',"");
-  	$this->getUser()->setAttribute('PAGINA',1);
-  	$this->getUser()->setAttribute('DATAI',time());
-  	$this->getUser()->setAttribute('DIA',time());
-  	$this->getUser()->setAttribute('IDA',0);
-  	$this->getUser()->setAttribute('accio','C');
+  	$this->getUser()->setSessionPar('text',"");
+  	$this->getUser()->setSessionPar('PAGINA',1);
+  	$this->getUser()->setSessionPar('DATAI',time());
+  	$this->getUser()->setSessionPar('DIA',time());
+  	$this->getUser()->setSessionPar('IDA',0);
+  	$this->getUser()->setSessionPar('accio','C');
   
   }
 
@@ -970,26 +974,32 @@ class gestioActions extends sfActions
  	  	    
     return $this->renderText(json_encode($RESPOSTA));
   	  	
-  }
-  
+  } 
   
   public function executeGActivitats(sfWebRequest $request)
-  {
-  	
-    $this->setLayout('gestio');
+  {  	
+
+    $this->setLayout('gestio');    	
+
+   	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);      	    		      			      	           			       
+    endif;    
         
-    $this->CERCA  			= $this->ParReqSesForm($request,'cerca',array('text'=>""));
-    $this->PAGINA 			= $this->ParReqSesForm($request,'PAGINA',1);
-    $this->DATAI  			= $this->ParReqSesForm($request,'DATAI',time());    
-    $this->DIA    			= $this->ParReqSesForm($request,'DIA',time());    
-    $this->IDA    			= $this->ParReqSesForm($request,'IDA',0);
-    $accio  				= $this->ParReqSesForm($request,'accio','C');
-    $this->ACTIVITAT_NOVA 	= false;    
-        
+    $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
+    $this->PAGINA 			= $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $this->DATAI  			= $this->getUser()->ParReqSesForm($request,'DATAI',time());    
+    $this->DIA    			= $this->getUser()->ParReqSesForm($request,'DIA',time());    
+    $this->IDA    			= $this->getUser()->ParReqSesForm($request,'IDA',0);
+    $accio  				= $this->getUser()->ParReqSesForm($request,'accio','C');        
+    
+    $this->ACTIVITAT_NOVA 	= false;        
+
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
 	$this->FCerca->bind(array('text'=>$this->CERCA['text']));
-	
+
 	//Inicialitzem variables
 	$this->MODE = array();
 
@@ -1008,28 +1018,27 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $accio = 'DESCRIPCIO_DELETE';	    	    
     }                
     
-    //Quan cliquem per primer cop a qualsevol de les cerques, la pÃ gina es posa a 1
+    //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
     if($request->getParameter('accio') == 'C') $this->PAGINA = 1;
     if($request->getParameter('accio') == 'CD') { $this->PAGINA = 1; }    
     if($request->hasParameter('DATAI')) { $this->DIA = ""; } 
     
-    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
-    $this->getUser()->setAttribute('accio',$accio);    
-    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova
-    $this->getUser()->setAttribute('DATAI',$this->DATAI);  
-    $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre Ã©s 3 mesos superior a la inicial    
-   
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET    
+    //$this->getUser()->setSessionPar('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova                    
+    
+    $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre Ã©s 3 mesos superior a la inicial        
+	   
     switch($accio){
     	
     	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
-    			    			
+    				    		
                 $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA['text'],$this->DATAI,$this->DATAF,null);
                 if($this->CERCA['text'] <> "") $this->ACTIVITATS = $HORARIS['ACTIVITATS'];
                	else $this->ACTIVITATS = array();                                                                 
-                $this->CALENDARI = $HORARIS['CALENDARI'];
+                $this->CALENDARI = $HORARIS['CALENDARI'];                
                 $this->MODE['CONSULTA'] = true;
-                $this->MODE['LLISTAT'] = true;                                              
+                $this->MODE['LLISTAT'] = true;                                                              
                 break;
     		break;
 
@@ -1057,7 +1066,7 @@ class gestioActions extends sfActions
     	case 'NA':
     			$this->FCicle = new ActivitatsPas1Form();
     			$this->MODE['NOU'] = true;    			
-    			$this->getUser()->setAttribute('IDA',null);    		
+    			$this->getUser()->setSessionPar('IDA',null);    		
     		break;
     		
     	//Pas DOS entrem la descripció del conjunt o passem als horaris
@@ -1069,8 +1078,8 @@ class gestioActions extends sfActions
     				    				
     				//Si és una sola activitat, passem directament als horaris.    			
 	    			if($RA['cicle'] == 1):
-	    				$this->getUser()->setAttribute('isCicle',0);
-	    				$this->getUser()->setAttribute('IDC',0);
+	    				$this->getUser()->setSessionPar('isCicle',0);
+	    				$this->getUser()->setSessionPar('IDC',0);
 	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
 	    				    			
 	    			
@@ -1080,8 +1089,8 @@ class gestioActions extends sfActions
 	    				$OC->setNom($RA['nom']);
 	    				$this->FCicle = new CiclesForm($OC);		    					    					    										
 						$this->MODE['CICLE'] = true;
-						$this->getUser()->setAttribute('isCicle',1);	
-						$this->getUser()->setAttribute('IDC',0);											    					    			
+						$this->getUser()->setSessionPar('isCicle',1);	
+						$this->getUser()->setSessionPar('IDC',0);											    					    			
 	    			endif; 
 
 	    		//Carreguem la descripció del cicle associat a l'activitat i si no en té passem directament al llistat
@@ -1091,11 +1100,11 @@ class gestioActions extends sfActions
     				if( !is_null($cicle) && $cicle <> CiclesPeer::NO_PERTANY_A_CAP_CICLE ):
 	    				$this->FCicle = CiclesPeer::initialize($cicle);
 	    				$this->MODE['CICLE'] = true;	
-	    				$this->getUser()->setAttribute('isCicle',1);
-	    				$this->getUser()->setAttribute('IDC',$this->FCicle->getObject()->getCicleid());
+	    				$this->getUser()->setSessionPar('isCicle',1);
+	    				$this->getUser()->setSessionPar('IDC',$this->FCicle->getObject()->getCicleid());
 	    			else: 	    				
-	    				$this->getUser()->setAttribute('isCicle',0);
-	    				$this->getUser()->setAttribute('IDC',0);
+	    				$this->getUser()->setSessionPar('isCicle',0);
+	    				$this->getUser()->setSessionPar('IDC',0);
 	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
 	    			endif; 
     			endif; 
@@ -1109,7 +1118,7 @@ class gestioActions extends sfActions
 				$this->FCicle->bind($RC,$request->getFiles('cicles'));
 				if($this->FCicle->isValid()):
 					$this->FCicle->save();
-					$this->getUser()->setAttribute('IDC',$this->FCicle->getObject()->getCicleid());
+					$this->getUser()->setSessionPar('IDC',$this->FCicle->getObject()->getCicleid());
 					$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
 				else:
 					$this->MODE['ACTIVITAT'] = true; 					
@@ -1120,14 +1129,14 @@ class gestioActions extends sfActions
     	case 'ACTIVITAT':
     		    		    		
     		//Una activitat d'un cicle
-    		if($this->getUser()->getAttribute('isCicle')):
-    			$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->getNom();
+    		if($this->getUser()->getSessionPar('isCicle')):
+    			$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->getNom();
     			$this->MODE['ACTIVITAT_CICLE'] = true;
-    			$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getAttribute('IDC'));
-    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
+    			$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getSessionPar('IDC'));
+    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));
     			if($request->hasParameter('new')):
-    				$this->FActivitat = ActivitatsPeer::initilize(null,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));    				
-    				$this->getUser()->setAttribute('IDA',0);
+    				$this->FActivitat = ActivitatsPeer::initilize(null,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));    				
+    				$this->getUser()->setSessionPar('IDA',0);
     			endif;
     			
     		//Una sola activitat
@@ -1142,7 +1151,7 @@ class gestioActions extends sfActions
     				$this->ACTIVITATS = array();
     			endif; 
     			
-    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
+    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));
     		endif;
     		     			
     		break;
@@ -1150,12 +1159,12 @@ class gestioActions extends sfActions
     	//Guardem l'activitat
     	case 'ACTIVITAT_SAVE':
     		
-	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getAttribute('isCicle'),$this->getUser()->getAttribute('IDC'));
+	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));
 	    		$this->FActivitat->bind($request->getParameter('activitats'));
 	    		if($this->FActivitat->isValid()):
 	    			$nova = $this->FActivitat->isNew();
 	    			$this->FActivitat->save();
-	    			$this->getUser()->setAttribute('IDA',$this->FActivitat->getObject()->getActivitatid());
+	    			$this->getUser()->setSessionPar('IDA',$this->FActivitat->getObject()->getActivitatid());
 	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();
 	    			if($nova):	    				
 	    				$this->redirect('gestio/gActivitats?accio=HORARI&nou='.$this->IDA);
@@ -1163,10 +1172,10 @@ class gestioActions extends sfActions
 	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
 	    			endif; 	    			
 	    		else: 
-	    			if($this->getUser()->getAttribute('isCicle')):
+	    			if($this->getUser()->getSessionPar('isCicle')):
 	    				$this->MODE['ACTIVITAT_CICLE'] = true;
-    					$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getAttribute('IDC'));
-    					$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->getNom();
+    					$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getSessionPar('IDC'));
+    					$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->getNom();
 					else:
 						$this->MODE['ACTIVITAT_ALONE'] = true;
 	    				$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
@@ -1186,15 +1195,15 @@ class gestioActions extends sfActions
     			$this->NOMACTIVITAT = $OActivitat->getNom();
     			    			    			    			
     			$OHorari = new Horaris();
-    			$OHorari->setActivitatsActivitatid($this->getUser()->getAttribute('IDA'));    			    			
+    			$OHorari->setActivitatsActivitatid($this->getUser()->getSessionPar('IDA'));    			    			
     			if($request->hasParameter('nou')) $this->FHorari = new HorarisForm($OHorari);     			
     			$this->HORARI = $OHorari;    			   
 				$this->ESPAISOUT = array(); $this->MATERIALOUT = array();				    			 	
-    			$this->getUser()->setAttribute('IDH',0);
+    			$this->getUser()->setSessionPar('IDH',0);
     			    			
     			if($request->hasParameter('IDH')):
     				$H = HorarisPeer::retrieveByPK($request->getParameter('IDH'));
-    				$this->getUser()->setAttribute('IDH',$request->getParameter('IDH'));    				
+    				$this->getUser()->setSessionPar('IDH',$request->getParameter('IDH'));    				
     				$this->FHorari = new HorarisForm($H);
     				$this->HORARI  = $H;    				
     				foreach($H->getHorarisespaiss() as $HE):    					
@@ -1216,7 +1225,7 @@ class gestioActions extends sfActions
 	    		$this->NOMACTIVITAT = $OActivitat->getNom();
 	    		$this->HORARIS = $OActivitat->getHorariss();
 	    		
-	    		$idH = $this->getUser()->getAttribute('IDH');
+	    		$idH = $this->getUser()->getSessionPar('IDH');
 	    		$OHorari = HorarisPeer::retrieveByPK($idH);
 	    		if($idH == 0) 	$this->FHorari = new HorarisForm();
 	    		else			$this->FHorari = new HorarisForm($OHorari);
@@ -1288,17 +1297,17 @@ class gestioActions extends sfActions
     			
     		break;
     					
-    }
-            
+    }                                
+    
   }  
 
   private function CarregaActivitats()
   {
   	
-  	if($this->getUser()->getAttribute('isCicle')):
-  		$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->getNom();
+  	if($this->getUser()->getSessionPar('isCicle')):
+  		$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->getNom();
     	$this->MODE['ACTIVITAT_CICLE'] = true;
-    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getAttribute('IDC'));
+    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getSessionPar('IDC'));
     else:
     	$this->CICLE = 'No hi ha cicle';
     	$this->MODE['ACTIVITAT_ALONE'] = true;
@@ -1432,7 +1441,7 @@ class gestioActions extends sfActions
   	sfLoader::loadHelpers('Partial');
   	  	
   	$C = new Criteria();
-  	$this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));
+  	$this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
   	$AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA );  	
   
   	return $this->renderText(get_partial('listAgenda', array('AGENDES' => $AGENDES)));  	           	  	        
@@ -1443,11 +1452,16 @@ class gestioActions extends sfActions
   public function executeGAgenda($request)  
   {  		  	
   	$this->setLayout('gestio');
-
+  	
+  	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+      	$this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>''));      	
+    endif;
+  	  
   	//Inicialitzem les variables
-  	$this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));  	
-  	$this->accio  	= $this->ParReqSesForm($request,'accio',"");
-  	$this->AID  	= $this->ParReqSesForm($request,'AID', null);
+  	$this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));  	
+  	$this->accio  	= $this->getUser()->ParReqSesForm($request,'accio',"");
+  	$this->AID  	= $this->getUser()->ParReqSesForm($request,'AID', null);
   	$this->MODE     = "";  	           	
   	
   	//Tractem el formulari de cerca
@@ -1460,10 +1474,10 @@ class gestioActions extends sfActions
     if( $this->getRequest()->hasParameter('BDELETE') ) $this->accio = 'D';
     if( $this->getRequest()->hasParameter('BCERCA')) $this->accio = 'L';  
 
-    $this->getUser()->setAttribute('accio',$this->accio);
+    $this->getUser()->setSessionPar('accio',$this->accio);
     
     switch( $this->accio )
-    {
+    {    	
       case 'N':
                 $this->MODE = 'NOU';
                 $this->getUser()->setFlash('AID',0);
@@ -1472,7 +1486,7 @@ class gestioActions extends sfActions
       case 'E':
                 $this->MODE = 'EDICIO';
                 $AID = $request->getParameter('AID');
-                $this->getUser()->setAttribute('AID',$AID);                                
+                $this->getUser()->setSessionPar('AID',$AID);                                
                 $OAT = AgendatelefonicaPeer::retrieveByPK($AID);
                 $this->FAgenda = new AgendatelefonicaForm($OAT);
                 if(($OAT instanceof Agendatelefonica )):
@@ -1483,7 +1497,7 @@ class gestioActions extends sfActions
                                                 
                 break;
       case 'S':      			
-      			$AID = $this->getUser()->getAttribute('AID');
+      			$AID = $this->getUser()->getSessionPar('AID');
       			$OAT = AgendatelefonicaPeer::retrieveByPK($AID);      			      		
       			if( $OAT instanceof Agendatelefonica ):
       				$this->FAgenda = new AgendatelefonicaForm($OAT);
@@ -1494,8 +1508,8 @@ class gestioActions extends sfActions
       			$this->FAgenda->bind($request->getParameter('agendatelefonica'));
       			if($this->FAgenda->isValid()):
 					$this->FAgenda->save();					
-					$this->getUser()->setAttribute('AID',$this->FAgenda->getObject()->getAgendatelefonicaid());										
-					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getAttribute('AID')); //Actualitzem tambÃ© les dades relacionades
+					$this->getUser()->setSessionPar('AID',$this->FAgenda->getObject()->getAgendatelefonicaid());										
+					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getSessionPar('AID')); //Actualitzem tambÃ© les dades relacionades
 					$this->MISSATGE = "El registre s'ha modificat correctament.";
 					$this->redirect('gestio/gAgenda?accio=L');
 				else: 
@@ -1505,7 +1519,7 @@ class gestioActions extends sfActions
 				      			      															                                     
                 break;         
       case 'D': 
-                $this->AID = $this->getUser()->getAttribute('AID');
+                $this->AID = $this->getUser()->getSessionPar('AID');
                 $A = AgendatelefonicaPeer::retrieveByPK($this->AID);
                 if(!is_null($A)) $A->delete();  
                 break;       
@@ -1532,12 +1546,20 @@ class gestioActions extends sfActions
   	   	
     $this->setLayout('gestio');
     
+    //Netegem cerca
+  	if($request->getParameter('accio') == 'I'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);      	      			
+      	$this->accio = $this->getUser()->setSessionPar('accio',"");      	      			       
+    endif;    
+    
     //Actualitzem el requadre de cerca
     $this->FCerca = new CercaForm();
     $this->FCerca->bind($request->getParameter('cerca'));          
-    $this->CERCA  	= $this->ParReqSesForm($request,'cerca',array('text'=>""));  	  	
-  	$this->PAGINA	= $this->ParReqSesForm($request,'pagina',1);
-  	$this->accio  	= $this->ParReqSesForm($request,'accio',"");  	  	    
+    $this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));  	  	
+  	$this->PAGINA	= $this->getUser()->ParReqSesForm($request,'pagina',1);
+  	$this->accio  	= $this->getUser()->ParReqSesForm($request,'accio',"");
+  	$this->MODE     = array();  	  	    
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
     	
@@ -1549,49 +1571,43 @@ class gestioActions extends sfActions
 	    
     endif;
 
-    $this->getUser()->setAttribute('accio',$this->accio);
+    $this->getUser()->setSessionPar('accio',$this->accio);
     
     switch( $this->accio )
     {
     
       //Entrem per primer cop a aquest apartat
-      case 'I':
-      	
-      			$this->getUser()->setAttribute('cerca',"");
-      			$this->CERCA = "";
-      			$this->getUser()->setAttribute('pagina',1);
-      			$this->PAGINA = 1;
-      			$this->getUser()->setAttribute('accio',"");
-      			$this->accio = "";
-      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );      			
+      case 'I':      	            		
+      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );      			      			
       			break;
       
       case 'N':
       	
-                $this->NOU = true;
-                $this->FMissatge = MissatgesPeer::inicialitza(0,$this->getUser()->getAttribute('idU'));                
-                $this->getUser()->setAttribute('IDM',0);              	                                                
+                $this->MODE['NOU'] = true;
+                $this->FMissatge = MissatgesPeer::inicialitza(0,$this->getUser()->getSessionPar('idU'));                
+                $this->getUser()->setSessionPar('IDM',0);           
+                $this->IDU = $this->getUser()->getSessionPar('idU');   	                                                
                 break;
                                                 
       case 'E':
       	
-                $this->EDICIO = true;                
+                $this->MODE['EDICIO'] = true;                
                 $IDM = $request->getParameter('IDM');
-                $this->getUser()->setAttribute('IDM',$IDM);
-                $this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getAttribute('idU'));                
-                $this->IDU = $this->getUser()->getAttribute('idU');                      
+                $this->getUser()->setSessionPar('IDM',$IDM);
+                $this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getSessionPar('idU'));                
+                $this->IDU = $this->getUser()->getSessionPar('idU');                      
                 break;
                 
       case 'S':
       			      			
-      			$IDM = $this->getUser()->getAttribute('IDM');
-      			$this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getAttribute('idU'));                
+      			$IDM = $this->getUser()->getSessionPar('IDM');
+      			$this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getSessionPar('idU'));                
                 $this->FMissatge->bind($request->getParameter('missatges'));                
                 if ($this->FMissatge->isValid()) { $this->FMissatge->save(); $this->redirect('gestio/gMissatges?accio=I'); }                              	                                                                                
-                $this->EDICIO = true;                      
+                $this->MODE['EDICIO'] = true;              
                 break;
       case 'D':
-      			$this->IDM = $this->getUser()->getAttribute('IDM');                
+      			$this->IDM = $this->getUser()->getSessionPar('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
                 if(!is_null($M)) $M->delete();
                 $this->redirect('gestio/gMissatges?accio=I');                
@@ -1601,7 +1617,7 @@ class gestioActions extends sfActions
       			break;
       default: 
                 $this->MISSATGE = new Missatges();
-                $this->getUser()->setAttribute('IDM',0);
+                $this->getUser()->setSessionPar('IDM',0);
                 $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );
                 break;
     
@@ -1635,67 +1651,40 @@ class gestioActions extends sfActions
   }
   
   //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
-  //Exemple: $this->ParReqSesForm($request,'cerca',array('text'=>""));
-  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
+  //Exemple: $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
+  public function ParReqSesForm($request, $nomCamp, $default = "") 
   {
   	  	  	
   	$RET = ""; 	    	
   	
-  	if(is_array($default)):
-  	
-	  	//Si existeix el parÃ metre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):
+	//Si hi ha paràmetre per post, el guardem.
+  	if($request->hasParameter($nomCamp)):
+  		  			  			  			  		  		  		
+  		$sessio = $this->getUser()->getSessionPar($nomCamp,$default);
+  	    $temp = $request->getParameter($nomCamp);
+  	    var_dump($temp);  		
+  	    $sessio = $temp;
+  		$this->getUser()->setSessionPar($nomCamp,$sessio);  		
+  		$RET = $request->getParameter($nomCamp);
+  		
+  		echo 'El paràmetre '.$nomCamp.' existeix i hi posem el valor: '.$temp.' i retorna '.$RET.'<br />';  		
+  
+  	//Si no hi ha paràmetre a POST però el tenim a SESSIÓ
+  	elseif($this->getUser()->hasAttribute($nomCamp)):	  		  		
+  		$RET = $this->getUser()->getSessionPar($nomCamp);
+  		
+  		echo 'L\'atribut de sessió existeix '.$nomCamp.' i té el valor: '.$RET.'<br />';	  		
+  			  		
+  	//Si no hi ha SESSIÓ ni POST 
+  	else:
+  	 	  		  		
+  		$this->getUser()->setSessionPar($nomCamp, $default);	  			  	
+  		$RET = $default;
+  		
+  		echo 'Entrem pel valor per defecte del camp '.$nomCamp.' i hi posem el valor: '.$RET.'<br />';
+  		
+  	endif;
 	  	
-	  		$CAMP = $request->getParameter($nomCamp);
-	  		
-	  		//Mirem els elements del formulari i els guardem a la sessiÃ³  		  		
-	  		foreach( $CAMP as $NOM => $VALOR ):
-	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
-	  		endforeach;  				  		  		 
-	  		
-	  		$RET = $CAMP;  		
-	  
-	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
-	  	elseif($this->existeixAtributArray($nomCamp,$default)):
-	  		$RET = array();
-	  		foreach($default as $NOM => $VALOR):
-	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
-	  		endforeach;
-	  		
-	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
-	  	else: 
-	  	
-	  		foreach($default as $NOM => $VALOR):
-	  			$this->getUser()->setAttribute($NOM.$nomCamp, $default);
-	  		endforeach;
-	  		
-	  		$RET = $default;
-	  		
-	  	endif;
-	  	
-	else:
-		
-		//Si existeix el parÃ metre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):	  		
-	  		$CAMP = $request->getParameter($nomCamp);	  			  		
-	  		$this->getUser()->setAttribute($nomCamp,$CAMP);	  			  			  		  					  		  				  		  		 	  	
-	  		$RET = $CAMP;  		
-	  
-	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
-	  	elseif($this->getUser()->hasAttribute($nomCamp)):
-	  		
-	  		$RET = $this->getUser()->getAttribute($nomCamp);	  		
-	  			  		
-	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
-	  	else:
-	  	 	  		  		
-	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
-	  		$RET = $default;
-	  		
-	  	endif;
-	
-	endif;
-  	
   	return $RET;
   }
   
@@ -1705,9 +1694,9 @@ class gestioActions extends sfActions
   	$RET = ""; 	    	
   	   	
   	if($this->getUser()->hasAttribute($nomCamp)):
-  		$RET = $this->getUser()->getAttribute($nomCamp); 
+  		$RET = $this->getUser()->getSessionPar($nomCamp); 
   	else:   	
-  		$this->getUser()->setAttribute($nomCamp, $default);
+  		$this->getUser()->setSessionPar($nomCamp, $default);
   		$RET = $default;
   	endif;
   	
@@ -1728,8 +1717,8 @@ class gestioActions extends sfActions
     
     $this->setLayout('gestio');    
         
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>1));    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $this->CERCA = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>1));    
     $this->TIPUS = $this->CERCA['text'];
     
     //Inicialitzem el formulari de cerca
@@ -1756,20 +1745,20 @@ class gestioActions extends sfActions
     			$OMaterial = new Material();
     			$OMaterial->setMaterialgenericIdmaterialgeneric($this->TIPUS);
     			$this->FMaterial = new MaterialForm($OMaterial);    			
-    			$this->getUser()->setAttribute('IDM',0);
+    			$this->getUser()->setSessionPar('IDM',0);
     			$this->NOU = true;
     			
     		break;
     	case 'E':    			
-    			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
-    			$OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));
+    			$this->getUser()->setSessionPar('IDM',$request->getParameter('IDM'));
+    			$OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));
 				$this->FMaterial = new MaterialForm($OMaterial);
-				$this->getUser()->setAttribute('IDM',$OMaterial->getIdmaterial());   			
+				$this->getUser()->setSessionPar('IDM',$OMaterial->getIdmaterial());   			
     			$this->EDICIO = true;
     		break;
     	case 'S':
     			$OMaterial = new Material();
-    			if($this->getUser()->getAttribute('IDM') > 0): $OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM')); endif;      			    		        		  
+    			if($this->getUser()->getSessionPar('IDM') > 0): $OMaterial = MaterialPeer::retrieveByPK($this->getUser()->getSessionPar('IDM')); endif;      			    		        		  
     		    $this->FMaterial = new MaterialForm($OMaterial);
     		    $this->FMaterial->bind($request->getParameter('material'));
     		    if($this->FMaterial->isValid()):
@@ -1779,7 +1768,7 @@ class gestioActions extends sfActions
     			$this->EDICIO = true;
     		break;
     	case 'D':     			
-    	        MaterialPeer::retrieveByPK($this->getUser()->getAttribute('IDM'))->delete();  	        
+    	        MaterialPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'))->delete();  	        
     	        break;    	         	 
     }
         
@@ -1795,9 +1784,17 @@ class gestioActions extends sfActions
 
 	$this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $accio  = $this->ParReqSesForm($request,'accio','CA');    
+	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>1));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
+      	$this->redirect('gestio/gCursos?accio=CA');      			       
+    endif;    
+	
+	
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $accio  = $this->getUser()->ParReqSesForm($request,'accio','CA');    
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaTextChoiceForm();       
@@ -1816,14 +1813,14 @@ class gestioActions extends sfActions
     }                
     
     //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
-    $this->getUser()->setAttribute('accio',$accio);
-    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
+    $this->getUser()->setSessionPar('accio',$accio);
+    $this->getUser()->setSessionPar('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
             
     switch($accio){
     	
     	//Entrem un curs nou. Agafarem el codi per fer-ne un duplicat o bÃ© un codi nou.
     	case 'NC':    			    				    			    			
-    			$this->getUser()->setAttribute('IDC',null);
+    			$this->getUser()->setSessionPar('IDC',null);
     			$OCurs = new Cursos();    			     			
 				$this->FCursCodi = new CursosCodiForm($OCurs,array('url'=>$this->getController()->genUrl('gestio/SelectCodiCurs')));
 				$this->MODE = 'NOU';
@@ -1836,7 +1833,7 @@ class gestioActions extends sfActions
 				if(!empty($parametres['CodiT'])) $codi = $parametres['CodiT'];				
 				$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una cÃ²pia de l'objecte de l'Ãºltim curs amb aquest codi
     			$OCurs->save();
-    			$this->getUser()->setAttribute('IDC',$OCurs->getIdcursos());    			    		
+    			$this->getUser()->setSessionPar('IDC',$OCurs->getIdcursos());    			    		
     		    $this->FCurs = new CursosForm($OCurs);							//Passem al formulari el curs copiat.    		        		        		    
 				$this->MODE = 'EDICIO_CONTINGUT';       		    	   		    	     		        		        		        		        			
     		break;    		
@@ -1846,7 +1843,7 @@ class gestioActions extends sfActions
     			$OCurs = CursosPeer::retrieveByPK($request->getParameter('IDC'));
     			if($OCurs instanceof Cursos):
     				$this->FCurs = new CursosForm($OCurs);
-    				$this->getUser()->setAttribute('IDC',$OCurs->getIdcursos());
+    				$this->getUser()->setSessionPar('IDC',$OCurs->getIdcursos());
     				$this->MODE = 'EDICIO_CONTINGUT';    				    				       	
     			endif; 
     			$this->MODE = 'EDICIO_CONTINGUT';    			
@@ -1854,11 +1851,11 @@ class gestioActions extends sfActions
     	    		
     	//Guarda el contingut del curs
     	case 'SCC':    			    		        		  
-    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC')));
+    		    $this->FCurs = new CursosForm(CursosPeer::retrieveByPK($this->getUser()->getSessionPar('IDC')));
     		    $this->FCurs->bind($request->getParameter('cursos'));
     		    if($this->FCurs->isValid()):
     		    	$this->FCurs->save();
-    		    	$this->getUser()->setAttribute('IDC',$this->FCurs->getObject()->getIdcursos());
+    		    	$this->getUser()->setSessionPar('IDC',$this->FCurs->getObject()->getIdcursos());
     		    else:
     		    	echo "Problema";     		    
     		    endif;    		        		    
@@ -1866,7 +1863,7 @@ class gestioActions extends sfActions
     		break;
     	//Esborra un curs	
     	case 'D': 
-    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getAttribute('IDC'));
+    			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'));
     			if($OCurs instanceof Cursos):
     				$OCurs->delete();    	        	
 				endif;
@@ -1894,9 +1891,16 @@ class gestioActions extends sfActions
   	
     $this->setLayout('gestio');
         
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>''));
-    $this->IDR    = $this->ParReqSesForm($request,'IDR',0);
+  	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>''));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
+      	$this->IDR = $this->getUser()->setSessionPar('IDR',0);		       
+    endif;    
+        
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>''));
+    $this->IDR    = $this->getUser()->ParReqSesForm($request,'IDR',0);
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();        
@@ -1953,9 +1957,16 @@ class gestioActions extends sfActions
   
     $this->setLayout('gestio');
 
-    $this->CERCA  = $this->ParReqSesForm($request,'cerca',array('text'=>"",'select'=>2));    
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $accio  = $this->ParReqSesForm($request,'accio','CA');       
+	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>2));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
+      	$this->redirect('gestio/gMatricules?accio=CA');      			       
+    endif;    
+        
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>"",'select'=>2));    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $accio  = $this->getUser()->ParReqSesForm($request,'accio','CA');       
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaTextChoiceForm();       
@@ -1979,8 +1990,8 @@ class gestioActions extends sfActions
     }                
     
     //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
-    $this->getUser()->setAttribute('accio',$accio);
-    $this->getUser()->setAttribute('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
+    $this->getUser()->setSessionPar('accio',$accio);
+    $this->getUser()->setSessionPar('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
     
     switch($accio){
 
@@ -2014,10 +2025,10 @@ class gestioActions extends sfActions
     	case 'NU':
     		
 				//Si no és nou, sempre tindrem el número de matrícula. Si és nou, serà  null.     		
-    			if($request->hasParameter('IDM')) $this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
-    			else $this->getUser()->setAttribute('IDM',null);
+    			if($request->hasParameter('IDM')) $this->getUser()->setSessionPar('IDM',$request->getParameter('IDM'));
+    			else $this->getUser()->setSessionPar('IDM',null);
     		
-				$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+				$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));
     			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
 
     			if($request->hasParameter('IDU')) $OMatricula->setUsuarisUsuariid($request->getParameter('IDU'));
@@ -2030,14 +2041,14 @@ class gestioActions extends sfActions
     	//Comprovem les dades que hem entrat de l'usuari
     	case 'SNU':
     		
-    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));
     			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
     			
     			$this->FMatricula = new MatriculesUsuariForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));    			
     			$this->FMatricula->bind($request->getParameter('matricules_usuari'));    			
     			if($this->FMatricula->isValid()):
     				$this->FMatricula->save();
-    				$this->getUser()->setAttribute('IDM',$this->FMatricula->getObject()->getIdmatricules());
+    				$this->getUser()->setSessionPar('IDM',$this->FMatricula->getObject()->getIdmatricules());
     				$this->redirect('gestio/gMatricules?accio=NC');
     			endif;
     			$this->MODE = 'MAT_USUARI';
@@ -2054,7 +2065,7 @@ class gestioActions extends sfActions
 
     	//Guardem la matrícula al curs que hem escollit
     	case 'SAVE_CURS':    		
-    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));    			
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));    			
     			$OMatricula->setCursosIdcursos($request->getParameter('IDC'));
     			$OMatricula->setDatainscripcio(date('Y-m-d H:m',time()));
     			$Preu = CursosPeer::CalculaPreu($OMatricula->getCursosIdcursos(),$OMatricula->getTreduccio());
@@ -2066,13 +2077,13 @@ class gestioActions extends sfActions
 
     	//Mostra la prematrícula i carreguem les dades del pagament
     	case 'FP':    		
-    			$this->MATRICULA = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
+    			$this->MATRICULA = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));
     			    			    			    		     
     		    $PREU = CursosPeer::CalculaTotalPreus(array($this->MATRICULA->getCursosIdcursos()),$this->MATRICULA->getTreduccio());
     		    $NOM  = UsuarisPeer::retrieveByPK($this->MATRICULA->getUsuarisUsuariid())->getNomComplet();
     		    $MATRICULA = $this->MATRICULA->getIdmatricules();
     		    $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos()); //Passem si el curs es ple
-    		    $this->getUser()->setAttribute('isPle',$this->CURS_PLE); //Guardem si el curs Ã©s ple
+    		    $this->getUser()->setSessionPar('isPle',$this->CURS_PLE); //Guardem si el curs Ã©s ple
     			
     			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA);    			    			
     			$this->MODE = 'VALIDACIO_CURS';
@@ -2080,8 +2091,8 @@ class gestioActions extends sfActions
     		    		
     	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalitzaciÃ³.  
     	case 'PAGAMENT':
-    			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getAttribute('IDM'));    			
-    			MatriculesPeer::setMatriculaPagada($this->getUser()->getAttribute('IDM'),$this->getUser()->getAttribute('isPle'));
+    			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));    			
+    			MatriculesPeer::setMatriculaPagada($this->getUser()->getSessionPar('IDM'),$this->getUser()->getSessionPar('isPle'));
     			$MATRICULA->save();
     			$this->MISSATGE = "La matrícula s'ha realitzat correctament.";
     			$this->MODE = 'PAGAMENT';
@@ -2090,7 +2101,7 @@ class gestioActions extends sfActions
     	case 'OK':
     		 if($this->getRequestParameter('Ds_Response') == '0000'):
                  $matricula = $this->getRequestParameter('Ds_MerchantData');
-                 MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getAttribute('isPle'));                 
+                 MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getSessionPar('isPle'));                 
                  $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                 
               else:			            
                  $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
@@ -2099,22 +2110,23 @@ class gestioActions extends sfActions
               break;
         //Esborra una matrícula    		    		
     	case 'D':
-    			$idM = $this->getUser()->getAttribute('IDM');
+    			$idM = $this->getUser()->getSessionPar('IDM');
     			MatriculesPeer::retrieveByPK($idM)->delete();     	            	       
     	    break;
     	    
    	    //Edita una matrícula
     	case 'E':
     			$this->MATRICULA = MatriculesPeer::retrieveByPk($request->getParameter('IDM'));
-    			$this->getUser()->setAttribute('IDM',$request->getParameter('IDM'));
+    			$this->getUser()->setSessionPar('id_matricula',$request->getParameter('IDM'));    			
     			$this->FMATRICULA = new MatriculesForm($this->MATRICULA);
     			$this->MODE = 'EDICIO';
     		break;
     		
     	//Guardem una matrícula modificada
     	case 'SAVE_MATRICULA':    			
-    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getAttribute('IDM'));
-//    			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
+    			
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('id_matricula'));
+    			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
     			
     			$this->FMATRICULA = new MatriculesForm($OMatricula);    			
     			$this->FMATRICULA->bind($request->getParameter('matricules'));    			
@@ -2163,9 +2175,9 @@ class gestioActions extends sfActions
   { 
   	    
     $this->setLayout('gestio');
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-	$this->CERCA = $this->ParReqSesForm($request,'text','cerca');
-	$this->accio = $this->ParReqSesForm($request,'accio','ca');
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+	$this->CERCA = $this->getUser()->ParReqSesForm($request,'text','cerca');
+	$this->accio = $this->getUser()->ParReqSesForm($request,'accio','ca');
 	$this->MODE = 'CERCA';
 	
 	
@@ -2183,23 +2195,23 @@ class gestioActions extends sfActions
 			$ONoticia->setDatadesaparicio(date('Y-m-d',time()));
 			$this->FORMULARI = new NoticiesForm($ONoticia);
 			$this->MODE = 'FORMULARI';
-			$this->getUser()->setAttribute('idN',0); 
+			$this->getUser()->setSessionPar('idN',0); 
 			break;
 		case 'E': 			
-			$this->getUser()->setAttribute('idN',$request->getParameter('NOTICIA'));
-			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($this->getUser()->getAttribute('idN')));			
+			$this->getUser()->setSessionPar('idN',$request->getParameter('NOTICIA'));
+			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($this->getUser()->getSessionPar('idN')));			
 			$this->MODE = 'FORMULARI';			
 			break;
 		case 'S':
 
-			$idN = $this->getUser()->getAttribute('idN');					
+			$idN = $this->getUser()->getSessionPar('idN');					
 			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($idN));							
 			$this->FORMULARI->bind($request->getParameter('noticies'),$request->getFiles('noticies'));
 			
 			if($this->FORMULARI->isValid()):
 
 				$this->FORMULARI->save();
-				$this->getUser()->setAttribute('idN',$this->FORMULARI->getObject()->getIdnoticia());
+				$this->getUser()->setSessionPar('idN',$this->FORMULARI->getObject()->getIdnoticia());
 				$this->redirect('gestio/gNoticies?accio=CA');
 			endif; 
 			
@@ -2207,13 +2219,13 @@ class gestioActions extends sfActions
 						
 			break;
 		case 'D':
-			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getAttribute('idN'));
+			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getSessionPar('idN'));
 			if($ON instanceof Noticies) $ON->delete();		
 			break;
 		case 'UPDATE':			
 				NoticiesPeer::migraNoticiesActivitats();
 				NoticiesPeer::netejaNoticies();
-				$this->getUser()->setAttribute('accio','ca');
+				$this->getUser()->setSessionPar('accio','ca');
 //				return sfView::NONE;
 			break;
 						
@@ -2228,9 +2240,16 @@ class gestioActions extends sfActions
      
 	$this->setLayout('gestio');
 	        
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>""));
-    $this->accio = $this->ParReqSesForm($request,'accio',"C");
+  	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);      			       
+    endif;    
+	
+	
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
+    $this->CERCA = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
+    $this->accio = $this->getUser()->ParReqSesForm($request,'accio',"C");
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();
@@ -2254,18 +2273,18 @@ class gestioActions extends sfActions
 	    case 'N':
 	    		$OIncidencia = new Incidencies();
 	    		$OIncidencia->setDataalta(time());
-	    		$OIncidencia->setQuiinforma($this->getUser()->getAttribute('idU'));	    			    		    			    			    	    		
+	    		$OIncidencia->setQuiinforma($this->getUser()->getSessionPar('idU'));	    			    		    			    			    	    		
 	    		$this->FIncidencia = new IncidenciesForm($OIncidencia);    			
 	    		$this->MODE['NOU'] = true;
 	    	break;
 	    case 'E':    			
-	    		$this->getUser()->setAttribute('IDI',$request->getParameter('IDI'));
-	    		$OIncidencia = IncidenciesPeer::retrieveByPK($this->getUser()->getAttribute('IDI'));
+	    		$this->getUser()->setSessionPar('IDI',$request->getParameter('IDI'));
+	    		$OIncidencia = IncidenciesPeer::retrieveByPK($this->getUser()->getSessionPar('IDI'));
 	    		$this->FIncidencia = new IncidenciesForm($OIncidencia);   			
 				$this->MODE['EDICIO'] = true;
 			break;
 		case 'S':    			    		        		  
-			    $this->FIncidencia = new IncidenciesForm(IncidenciesPeer::retrieveByPK($this->getUser()->getAttribute('IDI')));
+			    $this->FIncidencia = new IncidenciesForm(IncidenciesPeer::retrieveByPK($this->getUser()->getSessionPar('IDI')));
 			    $this->FIncidencia->bind($request->getParameter('incidencies'));
 			    if($this->FIncidencia->isValid()):
 			    	$this->FIncidencia->save();
@@ -2287,26 +2306,32 @@ class gestioActions extends sfActions
     
   	$this->setLayout('gestio');
         
-    $this->PAGINA = $this->ParReqSesForm($request,'PAGINA',1);
+  	//Netegem cerca
+  	if($request->getParameter('accio') == 'C'):      		
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>''));    		      			      	      		
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);      	      			      	      	      			       
+    endif;    
+  	
+  	
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
        		                  
     //Inicialitzem el formulari de cerca
-    $this->CERCA = $this->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));
+    $this->CERCA = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));
     $this->FCerca = new CercaTextChoiceForm();       
     $this->FCerca->setChoice(array(1=>'Cedit',0=>'Retornat')); 
 	$this->FCerca->bind($this->CERCA);	
 	$this->MODE = "";
 	$this->ERROR_OCUPAT = "";
-	$this->IDC = $this->ParReqSesForm($request,'IDC',0);
+	$this->IDC = $this->getUser()->ParReqSesForm($request,'IDC',0);
 		
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
 	    $accio = $request->getParameter('accio');
-	    if($request->hasParameter('BCERCA'))    		$accio = 'C';
+	    if($request->hasParameter('BCERCA'))    		$accio = ' ';
 	    if($request->hasParameter('BNOU_CESSIO')) 	    $accio = 'NC';
 	    if($request->hasParameter('BESCULL_MATERIAL'))  $accio = 'EM';
 	    if($request->hasParameter('B_SAVE_CESSIO'))  	$accio = 'SC';	    	    	    	    	    	    	    
-	    if($request->hasParameter('BDELETE_CESSIO')) 	$accio = 'DC';
-	    
+	    if($request->hasParameter('BDELETE_CESSIO')) 	$accio = 'DC';	    
 	    if($request->hasParameter('BSAVE_RETORN'))		$accio = 'SR';
 	    
 	endif;              
@@ -2325,7 +2350,7 @@ class gestioActions extends sfActions
     			$OCessio->setMotiu("la realització d’unes jornades sobre ....");
     			$OCessio->setCondicions("La cessió d'aquest material és gratuït en concepte de col•laboració, que es compromet a restituir-lo en les condicions d'ús que li va ser lliurat un cop hagi finalitzat el període de la instal•lació indicada.");    			    			    	    			
     			$this->FCessio = new CessioForm($OCessio);
-    			$this->getUser()->setAttribute('IDC',0);    			
+    			$this->getUser()->setSessionPar('IDC',0);    			
     			$this->MODE = 'NOU_CESSIO';
     		break;
     		
@@ -2336,7 +2361,7 @@ class gestioActions extends sfActions
     			if(!empty($RCESSIO['cessio_id'])):
     				$this->MATERIALOUT = CessiomaterialPeer::getSelectMaterialOut($RCESSIO['cessio_id']); 
     			endif; 
-    			$this->getUser()->setAttribute('cessio',$request->getParameter('cessio'));
+    			$this->getUser()->setSessionPar('cessio',$request->getParameter('cessio'));
     			
     			$OCESSIO = CessioPeer::retrieveByPK($RCESSIO['cessio_id']);    			     		
     			if($OCESSIO instanceof Cessio) $this->MAT_NO_INV = $OCESSIO->getMaterialNoInventariat();
@@ -2370,7 +2395,7 @@ class gestioActions extends sfActions
 
     	//Valida el material amb AJAX per saber si estÃ  en Ãºs
     	case 'VM':
-    			$RCESSIO = $this->getUser()->getAttribute('cessio');
+    			$RCESSIO = $this->getUser()->getSessionPar('cessio');
     			if(HorarisPeer::isMaterialEnUs($request->getParameter('idM'),$RCESSIO['data_cessio'],$RCESSIO['data_retorn'])):
     				return $this->renderText("El material escollit estÃ  en Ãºs");
     			else: 
@@ -2382,7 +2407,7 @@ class gestioActions extends sfActions
     	//Guarda cessió
     	case 'SC':
     			$ERROR = false; 
-				$RCESSIO = $this->getUser()->getAttribute('cessio');
+				$RCESSIO = $this->getUser()->getSessionPar('cessio');
 				$RMATERIAL = $request->getParameter('material');
 				
     			$OCESSIO = CessioPeer::retrieveByPK($RCESSIO['cessio_id']);    			    			    				    		    			    			    			
@@ -2412,7 +2437,7 @@ class gestioActions extends sfActions
     		
     	//Esborra cessiÃ³
     	case 'DC': 
-    	        CessioPeer::retrieveByPK($this->getUser()->getAttribute('IDC'))->delete();    	        
+    	        CessioPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->delete();    	        
     	        break;
     	        
     	//Guarda retorn
@@ -2437,8 +2462,8 @@ class gestioActions extends sfActions
     			return sfView::NONE;
     		break;
     		    	    	         	     	         	 
-    }
-    
+    }        
+            
     $this->CESSIONS = CessioPeer::getCessions($this->PAGINA,$this->CERCA['select'],$this->CERCA['text']);
   
   }
@@ -2449,8 +2474,8 @@ class gestioActions extends sfActions
   
     $this->setLayout('gestio');
 
-    $this->IDD	= $this->ParReqSesForm($request,'IDD',0);    
-    $accio  	= $this->ParReqSesForm($request,'accio','GP');
+    $this->IDD	= $this->getUser()->ParReqSesForm($request,'IDD',0);    
+    $accio  	= $this->getUser()->ParReqSesForm($request,'accio','GP');
     $this->MODE = 'CERCA';       
     	
     if($request->isMethod('POST')){
@@ -2466,7 +2491,7 @@ class gestioActions extends sfActions
     }                
     
     //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
-    $this->getUser()->setAttribute('accio',$accio);      
+    $this->getUser()->setSessionPar('accio',$accio);      
     
     switch($accio){
 
@@ -2583,15 +2608,15 @@ class gestioActions extends sfActions
     //You Select a blog -> Choice Menus - Pages
     //Edit Page - Menu 
             
-    $this->APP_BLOG			= $this->ParReqSesForm($request,'APP_BLOG',-1);
-    $this->APP_PAGE			= $this->ParReqSesForm($request,'APP_PAGE',-1);    
-    $this->APP_ENTRY		= $this->ParReqSesForm($request,'APP_ENTRY',-1);
-    $this->APP_MENU			= $this->ParReqSesForm($request,'APP_MENU',-1);
-    $this->APP_MULTIMEDIA	= $this->ParReqSesForm($request,'APP_MULTIMEDIA',-1);
-    $this->APP_FORM			= $this->ParReqSesForm($request,'APP_FORM',1);
-    $this->APP_FORM_ENTRY   = $this->ParReqSesForm($request,'APP_FORM_ENTRY',0);
+    $this->APP_BLOG			= $this->getUser()->ParReqSesForm($request,'APP_BLOG',-1);
+    $this->APP_PAGE			= $this->getUser()->ParReqSesForm($request,'APP_PAGE',-1);    
+    $this->APP_ENTRY		= $this->getUser()->ParReqSesForm($request,'APP_ENTRY',-1);
+    $this->APP_MENU			= $this->getUser()->ParReqSesForm($request,'APP_MENU',-1);
+    $this->APP_MULTIMEDIA	= $this->getUser()->ParReqSesForm($request,'APP_MULTIMEDIA',-1);
+    $this->APP_FORM			= $this->getUser()->ParReqSesForm($request,'APP_FORM',1);
+    $this->APP_FORM_ENTRY   = $this->getUser()->ParReqSesForm($request,'APP_FORM_ENTRY',0);
             
-    $accio  	= $this->ParReqSesForm($request,'accio','GP');
+    $accio  	= $this->getUser()->ParReqSesForm($request,'accio','GP');
     $this->MODE = 'CERCA';       
     	
     if($request->isMethod('POST')){
@@ -2617,12 +2642,12 @@ class gestioActions extends sfActions
 	    
     }                
     
-    $this->getUser()->setAttribute('accio',$accio);      
+    $this->getUser()->setSessionPar('accio',$accio);      
     
     switch($accio){
     	case 'NEW_MENU':
     			$this->FORM_MENU = AppBlogsMenuPeer::initialize( -1 , $this->APP_BLOG );
-    			$this->getUser()->setAttribute('APP_MENU',-1);
+    			$this->getUser()->setSessionPar('APP_MENU',-1);
     		break;
     	case 'EDIT_MENU':
     			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );    			
@@ -2639,14 +2664,14 @@ class gestioActions extends sfActions
     				try { 
     					$this->FORM_MENU->save();
     					$this->APP_MENU = $this->FORM_MENU->getObject()->getId();
-	    				$this->getUser()->setAttribute('APP_MENU',$this->APP_MENU);
+	    				$this->getUser()->setSessionPar('APP_MENU',$this->APP_MENU);
 	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
     				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
     			endif; 
     		break;
     	case 'NEW_PAGE':
     			$this->FORM_PAGE = AppBlogsPagesPeer::initialize( -1 , $this->APP_BLOG );
-    			$this->getUser()->setAttribute('APP_PAGE',-1);
+    			$this->getUser()->setSessionPar('APP_PAGE',-1);
     		break;
     	case 'EDIT_PAGE':
     			$this->FORM_PAGE = AppBlogsPagesPeer::initialize( $this->APP_PAGE , $this->APP_BLOG );
@@ -2665,14 +2690,14 @@ class gestioActions extends sfActions
     				try { 
     					$this->FORM_PAGE->save();
     					$this->APP_PAGE = $this->FORM_PAGE->getObject()->getId();
-	    				$this->getUser()->setAttribute('APP_PAGE',$this->APP_PAGE);
+	    				$this->getUser()->setSessionPar('APP_PAGE',$this->APP_PAGE);
 	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
     				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
     			endif;     			
     		break;
     	case 'NEW_ENTRY':
     			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA', $this->APP_PAGE );
-    			$this->getUser()->setAttribute('APP_ENTRY',-1);
+    			$this->getUser()->setSessionPar('APP_ENTRY',-1);
     			$this->GALLERY = array();
     		break;
     	case 'EDIT_ENTRY':
@@ -2691,7 +2716,7 @@ class gestioActions extends sfActions
     				try { 
     					$this->FORM_ENTRY->save();    								    							
     					$this->APP_ENTRY = $this->FORM_ENTRY->getObject()->getId();
-	    				$this->getUser()->setAttribute('APP_ENTRY',$this->APP_ENTRY);
+	    				$this->getUser()->setSessionPar('APP_ENTRY',$this->APP_ENTRY);
 	    				$this->GUARDA_IMATGES($request->getFiles('arxiu'),$request->getParameter('desc'),$this->APP_ENTRY);
 	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
     				} catch (Exception $e) { echo $e->getMessage(); }    					    			    				    
@@ -2719,7 +2744,7 @@ class gestioActions extends sfActions
     				try { 
     					$this->FORM_BLOG->save();
     					$this->APP_BLOG = $this->FORM_BLOG->getObject()->getId();
-    					$this->getUser()->setAttribute('APP_BLOG',$this->APP_BLOG);
+    					$this->getUser()->setSessionPar('APP_BLOG',$this->APP_BLOG);
     					$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
     				} catch (Exception $e) { echo $e->getMessage(); }
     				    				
@@ -2769,11 +2794,11 @@ class gestioActions extends sfActions
     			$this->APP_MENU	 = -1;
     			$this->APP_MULTIMEDIA = -1;
     			$this->APP_FORM = -1;
-    			$this->getUser()->setAttribute('APP_BLOG',-1);
-    			$this->getUser()->setAttribute('APP_PAGE',-1);
-    			$this->getUser()->setAttribute('APP_ENTRY',-1);
-    			$this->getUser()->setAttribute('APP_MENU',-1);
-    			$this->getUser()->setAttribute('APP_MULTIMEDIA',-1);    			
+    			$this->getUser()->setSessionPar('APP_BLOG',-1);
+    			$this->getUser()->setSessionPar('APP_PAGE',-1);
+    			$this->getUser()->setSessionPar('APP_ENTRY',-1);
+    			$this->getUser()->setSessionPar('APP_MENU',-1);
+    			$this->getUser()->setSessionPar('APP_MULTIMEDIA',-1);    			
     		break;
 
     	case 'VIEW_STADISTICS':
@@ -2852,7 +2877,8 @@ class gestioActions extends sfActions
     //Actualitzem el requadre de cerca
     $this->FCerca = new CercaForm();
     $this->FCerca->bind($request->getParameter('cerca'));
-    $this->CERCA = $request->getParameter('cerca[text]');    
+    $temp = $request->getParameter('cerca');
+    $this->CERCA = $temp['text'];    
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
     	
@@ -2875,19 +2901,19 @@ class gestioActions extends sfActions
 /*      case 'N':
                 $this->NOU = true;
                 $OM = new Missatges();
-                $OM->setUsuarisUsuariid($this->getUser()->getAttribute('idU'));
+                $OM->setUsuarisUsuariid($this->getUser()->getSessionPar('idU'));
                 $this->FMissatge = new MissatgesForm($OM);
-                $this->getUser()->setAttribute('IDM',0);              	                                                
+                $this->getUser()->setSessionPar('IDM',0);              	                                                
                 break;                
       case 'E':
                 $this->EDICIO = true;
                 $IDM = $request->getParameter('IDM');
-                $this->getUser()->setAttribute('IDM',$IDM);
+                $this->getUser()->setSessionPar('IDM',$IDM);
                 $OM = MissatgesPeer::retrieveByPK($IDM);
                 $this->FMissatge = new MissatgesForm($OM);                
                 break;
       case 'S':
-      			$IDM = $this->getUser()->getAttribute('IDM');
+      			$IDM = $this->getUser()->getSessionPar('IDM');
                 $OM = ($IDM > 0)?MissatgesPeer::retrieveByPk($IDM):new Missatges();
                 $this->FMissatge = new MissatgesForm($OM);                 
                 $this->FMissatge->bind($request->getParameter('missatges'));                
@@ -2895,7 +2921,7 @@ class gestioActions extends sfActions
                 $this->EDICIO = true;      
                 break;
       case 'D':
-      			$this->IDM = $this->getUser()->getAttribute('IDM');                
+      			$this->IDM = $this->getUser()->getSessionPar('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
                 if(!is_null($M)) $M->delete();                
                 break;                    
@@ -2911,7 +2937,7 @@ class gestioActions extends sfActions
   {
      
 	$this->setLayout('gestio');
-	$this->POTVEURE = array(1=>UsuarisPeer::canSeeComptabilitat($this->getUser()->getAttribute('idU')));
+	$this->POTVEURE = array(1=>UsuarisPeer::canSeeComptabilitat($this->getUser()->getSessionPar('idU')));
 	                  
   }  
   

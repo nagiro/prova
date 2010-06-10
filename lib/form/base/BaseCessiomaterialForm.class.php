@@ -3,12 +3,13 @@
 /**
  * Cessiomaterial form base class.
  *
+ * @method Cessiomaterial getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseCessiomaterialForm extends BaseFormPropel
+abstract class BaseCessiomaterialForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -19,7 +20,7 @@ class BaseCessiomaterialForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idCessioMaterial'    => new sfValidatorPropelChoice(array('model' => 'Cessiomaterial', 'column' => 'idCessioMaterial', 'required' => false)),
+      'idCessioMaterial'    => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdcessiomaterial()), 'empty_value' => $this->getObject()->getIdcessiomaterial(), 'required' => false)),
       'Material_idMaterial' => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial')),
       'cessio_id'           => new sfValidatorPropelChoice(array('model' => 'Cessio', 'column' => 'cessio_id')),
     ));

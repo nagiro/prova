@@ -3,12 +3,13 @@
 /**
  * Incidencies form base class.
  *
+ * @method Incidencies getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseIncidenciesForm extends BaseFormPropel
+abstract class BaseIncidenciesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -18,18 +19,18 @@ class BaseIncidenciesForm extends BaseFormPropel
       'quiresol'      => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
       'titol'         => new sfWidgetFormTextarea(),
       'descripcio'    => new sfWidgetFormTextarea(),
-      'estat'         => new sfWidgetFormInput(),
+      'estat'         => new sfWidgetFormInputText(),
       'dataalta'      => new sfWidgetFormDate(),
       'dataresolucio' => new sfWidgetFormDate(),
     ));
 
     $this->setValidators(array(
-      'idIncidencia'  => new sfValidatorPropelChoice(array('model' => 'Incidencies', 'column' => 'idIncidencia', 'required' => false)),
+      'idIncidencia'  => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdincidencia()), 'empty_value' => $this->getObject()->getIdincidencia(), 'required' => false)),
       'quiinforma'    => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'quiresol'      => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'titol'         => new sfValidatorString(array('required' => false)),
       'descripcio'    => new sfValidatorString(array('required' => false)),
-      'estat'         => new sfValidatorInteger(),
+      'estat'         => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'dataalta'      => new sfValidatorDate(),
       'dataresolucio' => new sfValidatorDate(array('required' => false)),
     ));

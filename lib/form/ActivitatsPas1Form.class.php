@@ -8,14 +8,14 @@
  * @author     Your name here
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
-class ActivitatsPas1Form extends sfForm
+class ActivitatsPas1Form extends BaseForm
 {
 	
   public function setup()
   {
     $this->setWidgets(array(
       'cicle'                     		=> new sfWidgetFormChoice(array('choices'=>array(1=>'Són activitats soltes',2=>'És un cicle / festival / projecte')),array()),
-      'nom'								=> new sfWidgetFormInput(array(),array()),      
+      'nom'								=> new sfWidgetFormInputText(array(),array()),      
     ));
 
     $this->setValidators(array(

@@ -3,12 +3,13 @@
 /**
  * HospiciSubcategoriesElements form base class.
  *
+ * @method HospiciSubcategoriesElements getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciSubcategoriesElementsForm extends BaseFormPropel
+abstract class BaseHospiciSubcategoriesElementsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -19,9 +20,9 @@ class BaseHospiciSubcategoriesElementsForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'element_id'      => new sfValidatorPropelChoice(array('model' => 'HospiciSubcategoriesElements', 'column' => 'element_id', 'required' => false)),
-      'subcategoria_id' => new sfValidatorPropelChoice(array('model' => 'HospiciSubcategoriesElements', 'column' => 'subcategoria_id', 'required' => false)),
-      'tipus'           => new sfValidatorPropelChoice(array('model' => 'HospiciSubcategoriesElements', 'column' => 'tipus', 'required' => false)),
+      'element_id'      => new sfValidatorChoice(array('choices' => array($this->getObject()->getElementId()), 'empty_value' => $this->getObject()->getElementId(), 'required' => false)),
+      'subcategoria_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getSubcategoriaId()), 'empty_value' => $this->getObject()->getSubcategoriaId(), 'required' => false)),
+      'tipus'           => new sfValidatorChoice(array('choices' => array($this->getObject()->getTipus()), 'empty_value' => $this->getObject()->getTipus(), 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('hospici_subcategories_elements[%s]');

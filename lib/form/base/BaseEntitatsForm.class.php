@@ -16,8 +16,8 @@ class BaseEntitatsForm extends BaseFormPropel
       'EntitatID'                       => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormTextarea(),
       'Descripcio'                      => new sfWidgetFormTextarea(),
-      'Habilitat'                       => new sfWidgetFormInput(),
-      'subcategories_has_entitats_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Subcategories')),
+      'Habilitat'                       => new sfWidgetFormInputText(),
+      'subcategories_has_entitats_list' => new sfWidgetFormPropelChoice(array('model' => 'Subcategories', 'multiple'=>true)),
     ));
 
     $this->setValidators(array(
@@ -25,7 +25,7 @@ class BaseEntitatsForm extends BaseFormPropel
       'Nom'                             => new sfValidatorString(array('required' => false)),
       'Descripcio'                      => new sfValidatorString(array('required' => false)),
       'Habilitat'                       => new sfValidatorInteger(array('required' => false)),
-      'subcategories_has_entitats_list' => new sfValidatorPropelChoiceMany(array('model' => 'Subcategories', 'required' => false)),
+      'subcategories_has_entitats_list' => new sfValidatorPropelChoice(array('model' => 'Subcategories', 'required' => false, 'multiple'=>true)),
     ));
 
     $this->widgetSchema->setNameFormat('entitats[%s]');

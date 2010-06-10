@@ -17,13 +17,13 @@ class AppBlogsEntriesForm extends BaseAppBlogsEntriesForm
       'id'                               => new sfWidgetFormInputHidden(),
       'page_id'                          => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsPages', 'add_empty' => false)),
       'lang'                             => new sfWidgetFormChoice(array('choices'=>array('CA'=>'Català'))),
-      'title'                            => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
-      'subtitle1'                        => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
-      'subtitle2'                        => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
+      'title'                            => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),
+      'subtitle1'                        => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),
+      'subtitle2'                        => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),
       'body'                             => new sfWidgetFormTextarea(),
       'date'                             => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
-      'tags'							 => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
-      'url'								 => new sfWidgetFormInput(array(),array('style'=>'width:500px')),   
+      'tags'							 => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),
+      'url'								 => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),   
     ));
 
     $this->setValidators(array(

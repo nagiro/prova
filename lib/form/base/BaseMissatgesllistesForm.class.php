@@ -3,12 +3,13 @@
 /**
  * Missatgesllistes form base class.
  *
+ * @method Missatgesllistes getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMissatgesllistesForm extends BaseFormPropel
+abstract class BaseMissatgesllistesForm extends BaseFormPropel
 {
   public function setup()
   {

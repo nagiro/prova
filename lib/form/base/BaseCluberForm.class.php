@@ -17,7 +17,7 @@ class BaseCluberForm extends BaseFormPropel
       'Nivells_idNivells'  => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => false)),
       'Entitats_EntitatID' => new sfWidgetFormPropelChoice(array('model' => 'Entitats', 'add_empty' => false)),
       'Usuaris_UsuariID'   => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
-      'Habilitat'          => new sfWidgetFormInput(),
+      'Habilitat'          => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(

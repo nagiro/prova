@@ -16,18 +16,18 @@ class BaseSubcategoriesForm extends BaseFormPropel
       'idSubcategories'                  => new sfWidgetFormInputHidden(),
       'Categories_idCategories'          => new sfWidgetFormPropelChoice(array('model' => 'Categories', 'add_empty' => false)),
       'Subcategoria'                     => new sfWidgetFormTextarea(),
-      'subcategories_has_entitats_list'  => new sfWidgetFormPropelChoiceMany(array('model' => 'Entitats')),
-      'subcategories_has_fitxers_list'   => new sfWidgetFormPropelChoiceMany(array('model' => 'Fitxers')),
-      'subcategories_has_projectes_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Projectes')),
+      'subcategories_has_entitats_list'  => new sfWidgetFormPropelChoice(array('model' => 'Entitats', 'multiple'=>true)),
+      'subcategories_has_fitxers_list'   => new sfWidgetFormPropelChoice(array('model' => 'Fitxers', 'multiple'=>true)),
+      'subcategories_has_projectes_list' => new sfWidgetFormPropelChoice(array('model' => 'Projectes', 'multiple'=>true)),
     ));
 
     $this->setValidators(array(
       'idSubcategories'                  => new sfValidatorPropelChoice(array('model' => 'Subcategories', 'column' => 'idSubcategories', 'required' => false)),
       'Categories_idCategories'          => new sfValidatorPropelChoice(array('model' => 'Categories', 'column' => 'idCategories')),
       'Subcategoria'                     => new sfValidatorString(array('required' => false)),
-      'subcategories_has_entitats_list'  => new sfValidatorPropelChoiceMany(array('model' => 'Entitats', 'required' => false)),
-      'subcategories_has_fitxers_list'   => new sfValidatorPropelChoiceMany(array('model' => 'Fitxers', 'required' => false)),
-      'subcategories_has_projectes_list' => new sfValidatorPropelChoiceMany(array('model' => 'Projectes', 'required' => false)),
+      'subcategories_has_entitats_list'  => new sfValidatorPropelChoice(array('model' => 'Entitats', 'required' => false, 'multiple'=>true)),
+      'subcategories_has_fitxers_list'   => new sfValidatorPropelChoice(array('model' => 'Fitxers', 'required' => false, 'multiple'=>true)),
+      'subcategories_has_projectes_list' => new sfValidatorPropelChoice(array('model' => 'Projectes', 'required' => false, 'multiple'=>true)),
     ));
 
     $this->widgetSchema->setNameFormat('subcategories[%s]');

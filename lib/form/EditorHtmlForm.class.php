@@ -1,11 +1,11 @@
 <?php
 
-class EditorHtmlForm extends sfForm
+class EditorHtmlForm extends BaseForm
 {
   public function configure()
   {
     $this->setWidgets(array(
-      'titol' => new sfWidgetFormInput(array(),array('style'=>'width:500px')),
+      'titol' => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),
       'html'  => new sfWidgetFormTextareaTinyMCE(array(),array()),            
     ));
     

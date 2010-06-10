@@ -37,7 +37,7 @@
             
           
 
-  <?php IF( $NOU || $EDICIO ): ?>
+  <?php IF( isset($MODE['NOU']) || isset($MODE['EDICIO']) ): ?>
       
 	<form action="<?php echo url_for('gestio/gMissatges') ?>" method="POST">
 	

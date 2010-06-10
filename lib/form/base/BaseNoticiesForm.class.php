@@ -3,36 +3,37 @@
 /**
  * Noticies form base class.
  *
+ * @method Noticies getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseNoticiesForm extends BaseFormPropel
+abstract class BaseNoticiesForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'idNoticia'       => new sfWidgetFormInputHidden(),
-      'TitolNoticia'    => new sfWidgetFormInput(),
+      'TitolNoticia'    => new sfWidgetFormInputText(),
       'TextNoticia'     => new sfWidgetFormTextarea(),
       'DataPublicacio'  => new sfWidgetFormDate(),
-      'Activa'          => new sfWidgetFormInput(),
-      'Imatge'          => new sfWidgetFormInput(),
-      'Adjunt'          => new sfWidgetFormInput(),
-      'idActivitat'     => new sfWidgetFormInput(),
+      'Activa'          => new sfWidgetFormInputText(),
+      'Imatge'          => new sfWidgetFormInputText(),
+      'Adjunt'          => new sfWidgetFormInputText(),
+      'idActivitat'     => new sfWidgetFormInputText(),
       'DataDesaparicio' => new sfWidgetFormDate(),
     ));
 
     $this->setValidators(array(
-      'idNoticia'       => new sfValidatorPropelChoice(array('model' => 'Noticies', 'column' => 'idNoticia', 'required' => false)),
+      'idNoticia'       => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdnoticia()), 'empty_value' => $this->getObject()->getIdnoticia(), 'required' => false)),
       'TitolNoticia'    => new sfValidatorString(array('max_length' => 100, 'required' => false)),
       'TextNoticia'     => new sfValidatorString(array('required' => false)),
       'DataPublicacio'  => new sfValidatorDate(array('required' => false)),
-      'Activa'          => new sfValidatorInteger(array('required' => false)),
+      'Activa'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'Imatge'          => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'Adjunt'          => new sfValidatorString(array('max_length' => 255, 'required' => false)),
-      'idActivitat'     => new sfValidatorInteger(array('required' => false)),
+      'idActivitat'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
     ));
 

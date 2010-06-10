@@ -15,9 +15,9 @@ class BaseWordStaticalForm extends BaseFormPropel
     $this->setWidgets(array(
       'Paraula'     => new sfWidgetFormInputHidden(),
       'idObject'    => new sfWidgetFormInputHidden(),
-      'Aparicions'  => new sfWidgetFormInput(),
+      'Aparicions'  => new sfWidgetFormInputText(),
       'Modul'       => new sfWidgetFormInputHidden(),
-      'idSecondary' => new sfWidgetFormInput(),
+      'idSecondary' => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(

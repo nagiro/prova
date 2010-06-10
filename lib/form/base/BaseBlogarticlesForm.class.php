@@ -19,7 +19,7 @@ class BaseBlogarticlesForm extends BaseFormPropel
       'Text'                            => new sfWidgetFormTextarea(),
       'Date'                            => new sfWidgetFormDate(),
       'Hora'                            => new sfWidgetFormTime(),
-      'projectes_has_blogarticles_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Projectes')),
+      'projectes_has_blogarticles_list' => new sfWidgetFormPropelChoice(array('model' => 'Projectes', 'multiple'=>true)),
     ));
 
     $this->setValidators(array(
@@ -29,7 +29,7 @@ class BaseBlogarticlesForm extends BaseFormPropel
       'Text'                            => new sfValidatorString(array('required' => false)),
       'Date'                            => new sfValidatorDate(array('required' => false)),
       'Hora'                            => new sfValidatorTime(array('required' => false)),
-      'projectes_has_blogarticles_list' => new sfValidatorPropelChoiceMany(array('model' => 'Projectes', 'required' => false)),
+      'projectes_has_blogarticles_list' => new sfValidatorPropelChoice(array('model' => 'Projectes', 'required' => false, 'multiple'=>true)),
     ));
 
     $this->widgetSchema->setNameFormat('blogarticles[%s]');

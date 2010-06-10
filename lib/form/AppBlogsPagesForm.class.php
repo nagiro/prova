@@ -15,7 +15,7 @@ class AppBlogsPagesForm extends BaseAppBlogsPagesForm
   {
     $this->setWidgets(array(
       'id'      => new sfWidgetFormInputHidden(),
-      'name'    => new sfWidgetFormInput(),
+      'name'    => new sfWidgetFormInputText(),
       'visible' => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'date'    => new sfWidgetFormInputHidden(),
       'type'    => new sfWidgetFormChoice(array('choices'=>AppBlogsPagesPeer::getTypesArray())),

@@ -3,12 +3,13 @@
 /**
  * HospiciEntitats form base class.
  *
+ * @method HospiciEntitats getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciEntitatsForm extends BaseFormPropel
+abstract class BaseHospiciEntitatsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,14 +17,14 @@ class BaseHospiciEntitatsForm extends BaseFormPropel
       'entitat_id' => new sfWidgetFormInputHidden(),
       'nom'        => new sfWidgetFormTextarea(),
       'descripcio' => new sfWidgetFormTextarea(),
-      'habilitat'  => new sfWidgetFormInput(),
+      'habilitat'  => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'entitat_id' => new sfValidatorPropelChoice(array('model' => 'HospiciEntitats', 'column' => 'entitat_id', 'required' => false)),
+      'entitat_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getEntitatId()), 'empty_value' => $this->getObject()->getEntitatId(), 'required' => false)),
       'nom'        => new sfValidatorString(),
       'descripcio' => new sfValidatorString(),
-      'habilitat'  => new sfValidatorInteger(),
+      'habilitat'  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('hospici_entitats[%s]');

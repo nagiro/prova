@@ -15,7 +15,7 @@ class MissatgesmailingForm extends BaseMissatgesmailingForm
   {
     $this->setWidgets(array(
       'idMissatge' => new sfWidgetFormInputHidden(),
-      'titol'      => new sfWidgetFormInput(array(),array('style'=>'width:400px;')),
+      'titol'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px;')),
       'text'       => new sfWidgetFormTextareaTinyMCE(),
       'data_alta'  => new sfWidgetFormInputHidden(),
     ));

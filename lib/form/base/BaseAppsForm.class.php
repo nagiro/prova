@@ -3,12 +3,13 @@
 /**
  * Apps form base class.
  *
+ * @method Apps getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppsForm extends BaseFormPropel
+abstract class BaseAppsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,14 +17,14 @@ class BaseAppsForm extends BaseFormPropel
       'app_id'            => new sfWidgetFormInputHidden(),
       'Nom'               => new sfWidgetFormTextarea(),
       'Url'               => new sfWidgetFormTextarea(),
-      'usuaris_apps_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Usuaris')),
+      'usuaris_apps_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
     $this->setValidators(array(
-      'app_id'            => new sfValidatorPropelChoice(array('model' => 'Apps', 'column' => 'app_id', 'required' => false)),
+      'app_id'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getAppId()), 'empty_value' => $this->getObject()->getAppId(), 'required' => false)),
       'Nom'               => new sfValidatorString(),
       'Url'               => new sfValidatorString(),
-      'usuaris_apps_list' => new sfValidatorPropelChoiceMany(array('model' => 'Usuaris', 'required' => false)),
+      'usuaris_apps_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('apps[%s]');
@@ -76,7 +77,7 @@ class BaseAppsForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

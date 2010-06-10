@@ -3,30 +3,31 @@
 /**
  * Proveidors form base class.
  *
+ * @method Proveidors getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseProveidorsForm extends BaseFormPropel
+abstract class BaseProveidorsForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'ProveidorID' => new sfWidgetFormInputHidden(),
-      'NIF'         => new sfWidgetFormInput(),
+      'NIF'         => new sfWidgetFormInputText(),
       'Nom'         => new sfWidgetFormTextarea(),
-      'Telefon'     => new sfWidgetFormInput(),
-      'CE'          => new sfWidgetFormInput(),
-      'CC'          => new sfWidgetFormInput(),
-      'CP'          => new sfWidgetFormInput(),
+      'Telefon'     => new sfWidgetFormInputText(),
+      'CE'          => new sfWidgetFormInputText(),
+      'CC'          => new sfWidgetFormInputText(),
+      'CP'          => new sfWidgetFormInputText(),
       'Adreca'      => new sfWidgetFormTextarea(),
       'Alta'        => new sfWidgetFormDate(),
       'Ciutat'      => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'ProveidorID' => new sfValidatorPropelChoice(array('model' => 'Proveidors', 'column' => 'ProveidorID', 'required' => false)),
+      'ProveidorID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getProveidorid()), 'empty_value' => $this->getObject()->getProveidorid(), 'required' => false)),
       'NIF'         => new sfValidatorString(array('max_length' => 20, 'required' => false)),
       'Nom'         => new sfValidatorString(array('required' => false)),
       'Telefon'     => new sfValidatorString(array('max_length' => 50, 'required' => false)),

@@ -8,15 +8,15 @@
  * @author     Your name here
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
-class ConsultaForm extends sfForm
+class ConsultaForm extends BaseForm
 {
   public function setup()
   {
     $this->setWidgets(array(
-      'Nom'                     		=> new sfWidgetFormInput(array(),array('style'=>'width:400px')),
-      'Cognoms'                         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),    
-      'Telefon'                  		=> new sfWidgetFormInput(array(),array('style'=>'width:400px')),
-      'Email' 							=> new sfWidgetFormInput(array(),array('style'=>'width:400px')),
+      'Nom'                     		=> new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
+      'Cognoms'                         => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
+      'Telefon'                  		=> new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
+      'Email' 							=> new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Missatge'                        => new sfWidgetFormTextarea(array(),array('style'=>'width:400px')),      
     ));
 

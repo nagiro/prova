@@ -3,12 +3,13 @@
 /**
  * HospiciEntitatElements form base class.
  *
+ * @method HospiciEntitatElements getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciEntitatElementsForm extends BaseFormPropel
+abstract class BaseHospiciEntitatElementsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,14 +17,14 @@ class BaseHospiciEntitatElementsForm extends BaseFormPropel
       'element_id' => new sfWidgetFormInputHidden(),
       'tipus'      => new sfWidgetFormInputHidden(),
       'entitat_id' => new sfWidgetFormInputHidden(),
-      'nivell'     => new sfWidgetFormInput(),
+      'nivell'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'element_id' => new sfValidatorPropelChoice(array('model' => 'HospiciEntitatElements', 'column' => 'element_id', 'required' => false)),
-      'tipus'      => new sfValidatorPropelChoice(array('model' => 'HospiciEntitatElements', 'column' => 'tipus', 'required' => false)),
-      'entitat_id' => new sfValidatorPropelChoice(array('model' => 'HospiciEntitatElements', 'column' => 'entitat_id', 'required' => false)),
-      'nivell'     => new sfValidatorInteger(array('required' => false)),
+      'element_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getElementId()), 'empty_value' => $this->getObject()->getElementId(), 'required' => false)),
+      'tipus'      => new sfValidatorChoice(array('choices' => array($this->getObject()->getTipus()), 'empty_value' => $this->getObject()->getTipus(), 'required' => false)),
+      'entitat_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getEntitatId()), 'empty_value' => $this->getObject()->getEntitatId(), 'required' => false)),
+      'nivell'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('hospici_entitat_elements[%s]');

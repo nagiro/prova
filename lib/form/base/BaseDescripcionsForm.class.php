@@ -16,18 +16,18 @@ class BaseDescripcionsForm extends BaseFormPropel
       'idDescripcions'         => new sfWidgetFormInputHidden(),
       'Activitats_ActivitatID' => new sfWidgetFormPropelChoice(array('model' => 'Activitats', 'add_empty' => false)),
       'Descripcio'             => new sfWidgetFormTextarea(),
-      'Tipus'                  => new sfWidgetFormInput(),
-      'Activa'                 => new sfWidgetFormInput(),
+      'Tipus'                  => new sfWidgetFormInputText(),
+      'Activa'                 => new sfWidgetFormInputText(),
       'Imatge'                 => new sfWidgetFormTextarea(),
       'PDF'                    => new sfWidgetFormTextarea(),
-      'PublicaWEB'             => new sfWidgetFormInput(),
+      'PublicaWEB'             => new sfWidgetFormInputText(),
       'tCurt'                  => new sfWidgetFormTextarea(),
       'dCurt'                  => new sfWidgetFormTextarea(),
       'tMig'                   => new sfWidgetFormTextarea(),
       'dMig'                   => new sfWidgetFormTextarea(),
       'tComplet'               => new sfWidgetFormTextarea(),
       'dComplet'               => new sfWidgetFormTextarea(),
-      'tipusEnviament'         => new sfWidgetFormInput(),
+      'tipusEnviament'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(

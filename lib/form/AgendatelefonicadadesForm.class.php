@@ -16,8 +16,8 @@ class AgendatelefonicadadesForm extends BaseFormPropel
       'AgendaTelefonicaDadesID'             => new sfWidgetFormInputHidden(),
       'AgendaTelefonica_AgendaTelefonicaID' => new sfWidgetFormPropelChoice(array('model' => 'Agendatelefonica', 'add_empty' => false, 'method'=>'hola')),
       'Tipus'                               => new sfWidgetFormChoice(array('choices'=> AgendatelefonicadadesPeer::select())),
-      'Dada'                                => new sfWidgetFormInput(),
-      'Notes'                               => new sfWidgetFormInput(),
+      'Dada'                                => new sfWidgetFormInputText(),
+      'Notes'                               => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(

@@ -3,27 +3,28 @@
 /**
  * Llistes form base class.
  *
+ * @method Llistes getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseLlistesForm extends BaseFormPropel
+abstract class BaseLlistesForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'idLlistes'             => new sfWidgetFormInputHidden(),
       'Nom'                   => new sfWidgetFormTextarea(),
-      'isActiva'              => new sfWidgetFormInput(),
-      'missatgesllistes_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Missatgesmailing')),
+      'isActiva'              => new sfWidgetFormInputText(),
+      'missatgesllistes_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Missatgesmailing')),
     ));
 
     $this->setValidators(array(
-      'idLlistes'             => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
+      'idLlistes'             => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdllistes()), 'empty_value' => $this->getObject()->getIdllistes(), 'required' => false)),
       'Nom'                   => new sfValidatorString(),
-      'isActiva'              => new sfValidatorInteger(),
-      'missatgesllistes_list' => new sfValidatorPropelChoiceMany(array('model' => 'Missatgesmailing', 'required' => false)),
+      'isActiva'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'missatgesllistes_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Missatgesmailing', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('llistes[%s]');
@@ -76,7 +77,7 @@ class BaseLlistesForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

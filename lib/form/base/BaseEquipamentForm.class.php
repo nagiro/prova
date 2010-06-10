@@ -3,25 +3,26 @@
 /**
  * Equipament form base class.
  *
+ * @method Equipament getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseEquipamentForm extends BaseFormPropel
+abstract class BaseEquipamentForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'EquipamentID'       => new sfWidgetFormInputHidden(),
       'Factures_FacturaID' => new sfWidgetFormPropelChoice(array('model' => 'Factures', 'add_empty' => false)),
-      'Tipus'              => new sfWidgetFormInput(),
+      'Tipus'              => new sfWidgetFormInputText(),
       'DataCompra'         => new sfWidgetFormDate(),
       'Dades'              => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'EquipamentID'       => new sfValidatorPropelChoice(array('model' => 'Equipament', 'column' => 'EquipamentID', 'required' => false)),
+      'EquipamentID'       => new sfValidatorChoice(array('choices' => array($this->getObject()->getEquipamentid()), 'empty_value' => $this->getObject()->getEquipamentid(), 'required' => false)),
       'Factures_FacturaID' => new sfValidatorPropelChoice(array('model' => 'Factures', 'column' => 'FacturaID')),
       'Tipus'              => new sfValidatorString(array('max_length' => 100, 'required' => false)),
       'DataCompra'         => new sfValidatorDate(array('required' => false)),

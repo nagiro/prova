@@ -3,12 +3,13 @@
 /**
  * Agendatelefonicadades form base class.
  *
+ * @method Agendatelefonicadades getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAgendatelefonicadadesForm extends BaseFormPropel
+abstract class BaseAgendatelefonicadadesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -21,7 +22,7 @@ class BaseAgendatelefonicadadesForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'AgendaTelefonicaDadesID'             => new sfValidatorPropelChoice(array('model' => 'Agendatelefonicadades', 'column' => 'AgendaTelefonicaDadesID', 'required' => false)),
+      'AgendaTelefonicaDadesID'             => new sfValidatorChoice(array('choices' => array($this->getObject()->getAgendatelefonicadadesid()), 'empty_value' => $this->getObject()->getAgendatelefonicadadesid(), 'required' => false)),
       'AgendaTelefonica_AgendaTelefonicaID' => new sfValidatorPropelChoice(array('model' => 'Agendatelefonica', 'column' => 'AgendaTelefonicaID')),
       'Tipus'                               => new sfValidatorString(array('required' => false)),
       'Dada'                                => new sfValidatorString(array('required' => false)),

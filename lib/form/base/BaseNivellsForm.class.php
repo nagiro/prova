@@ -3,12 +3,13 @@
 /**
  * Nivells form base class.
  *
+ * @method Nivells getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseNivellsForm extends BaseFormPropel
+abstract class BaseNivellsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -18,7 +19,7 @@ class BaseNivellsForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required' => false)),
+      'idNivells' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdnivells()), 'empty_value' => $this->getObject()->getIdnivells(), 'required' => false)),
       'Nom'       => new sfValidatorString(array('required' => false)),
     ));
 

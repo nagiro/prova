@@ -3,12 +3,13 @@
 /**
  * AppBlogMultimediaEntries form base class.
  *
+ * @method AppBlogMultimediaEntries getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppBlogMultimediaEntriesForm extends BaseFormPropel
+abstract class BaseAppBlogMultimediaEntriesForm extends BaseFormPropel
 {
   public function setup()
   {

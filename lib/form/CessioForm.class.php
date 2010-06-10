@@ -15,7 +15,7 @@ class CessioForm extends BaseCessioForm
     $this->setWidgets(array(
       'cessio_id'      => new sfWidgetFormInputHidden(),
       'usuari_id'      => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectUsuaris()),array()),
-      'representant'   => new sfWidgetFormInput(array(),array('style'=>'width:300px;')),
+      'representant'   => new sfWidgetFormInputText(array(),array('style'=>'width:300px;')),
       'data_cessio'    => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'data_retorn'    => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'motiu'		   => new sfWidgetFormTextarea(array(),array()),

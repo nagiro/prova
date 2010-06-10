@@ -15,8 +15,8 @@ class AppBlogsMenuForm extends BaseAppBlogsMenuForm
   	
     $this->setWidgets(array(
       'id'        => new sfWidgetFormInputHidden(),
-      'name'      => new sfWidgetFormInput(),      
-      'order'     => new sfWidgetFormInput(),
+      'name'      => new sfWidgetFormInputText(),      
+      'order'     => new sfWidgetFormInputText(),
       'blog_id'   => new sfWidgetFormInputHidden(),
       'father_id' => new sfWidgetFormChoice(array('choices'=>AppBlogsMenuPeer::getBlogMenusArray($this->getOption('APP_BLOG')))),
       'page_id'   => new sfWidgetFormChoice(array('choices'=>AppBlogsPagesPeer::getBlogPagesArray($this->getOption('APP_BLOG')))),      

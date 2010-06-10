@@ -3,31 +3,32 @@
 /**
  * AppBlogsEntries form base class.
  *
+ * @method AppBlogsEntries getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppBlogsEntriesForm extends BaseFormPropel
+abstract class BaseAppBlogsEntriesForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'id'                               => new sfWidgetFormInputHidden(),
       'page_id'                          => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsPages', 'add_empty' => false)),
-      'lang'                             => new sfWidgetFormInput(),
-      'title'                            => new sfWidgetFormInput(),
-      'subtitle1'                        => new sfWidgetFormInput(),
-      'subtitle2'                        => new sfWidgetFormInput(),
+      'lang'                             => new sfWidgetFormInputText(),
+      'title'                            => new sfWidgetFormInputText(),
+      'subtitle1'                        => new sfWidgetFormInputText(),
+      'subtitle2'                        => new sfWidgetFormInputText(),
       'body'                             => new sfWidgetFormTextarea(),
       'date'                             => new sfWidgetFormDateTime(),
-      'tags'                             => new sfWidgetFormInput(),
+      'tags'                             => new sfWidgetFormInputText(),
       'url'                              => new sfWidgetFormTextarea(),
-      'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'AppBlogsMultimedia')),
+      'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'AppBlogsMultimedia')),
     ));
 
     $this->setValidators(array(
-      'id'                               => new sfValidatorPropelChoice(array('model' => 'AppBlogsEntries', 'column' => 'id', 'required' => false)),
+      'id'                               => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'page_id'                          => new sfValidatorPropelChoice(array('model' => 'AppBlogsPages', 'column' => 'id')),
       'lang'                             => new sfValidatorString(array('max_length' => 4)),
       'title'                            => new sfValidatorString(array('max_length' => 255)),
@@ -37,7 +38,7 @@ class BaseAppBlogsEntriesForm extends BaseFormPropel
       'date'                             => new sfValidatorDateTime(),
       'tags'                             => new sfValidatorString(array('max_length' => 150)),
       'url'                              => new sfValidatorString(),
-      'app_blog_multimedia_entries_list' => new sfValidatorPropelChoiceMany(array('model' => 'AppBlogsMultimedia', 'required' => false)),
+      'app_blog_multimedia_entries_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppBlogsMultimedia', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_entries[%s]');
@@ -90,7 +91,7 @@ class BaseAppBlogsEntriesForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

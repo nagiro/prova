@@ -18,14 +18,14 @@ class CiclesForm extends BaseCiclesForm
   	
     $this->setWidgets(array(
       'CicleID'  => new sfWidgetFormInputHidden(),
-      'Nom'      => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'Nom'      => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'Imatge'   => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
       'PDF'      => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
-      'tCurt'    => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'tCurt'    => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dCurt'    => new sfWidgetFormTextareaTinyMCE(),
-      'tMig'     => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'tMig'     => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dMig'     => new sfWidgetFormTextareaTinyMCE(),
-      'tComplet' => new sfWidgetFormInput(array(),array('style'=>'width:300px')),
+      'tComplet' => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dComplet' => new sfWidgetFormTextareaTinyMCE(),
     ));
 

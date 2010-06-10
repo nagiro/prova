@@ -3,12 +3,13 @@
 /**
  * Reservaespais form base class.
  *
+ * @method Reservaespais getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseReservaespaisForm extends BaseFormPropel
+abstract class BaseReservaespaisForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -17,37 +18,37 @@ class BaseReservaespaisForm extends BaseFormPropel
       'Representacio'      => new sfWidgetFormTextarea(),
       'Responsable'        => new sfWidgetFormTextarea(),
       'PersonalAutoritzat' => new sfWidgetFormTextarea(),
-      'PrevisioAssistents' => new sfWidgetFormInput(),
-      'EsCicle'            => new sfWidgetFormInput(),
-      'Exempcio'           => new sfWidgetFormInput(),
-      'Pressupost'         => new sfWidgetFormInput(),
-      'ColaboracioCCG'     => new sfWidgetFormInput(),
+      'PrevisioAssistents' => new sfWidgetFormInputText(),
+      'EsCicle'            => new sfWidgetFormInputText(),
+      'Exempcio'           => new sfWidgetFormInputText(),
+      'Pressupost'         => new sfWidgetFormInputText(),
+      'ColaboracioCCG'     => new sfWidgetFormInputText(),
       'Comentaris'         => new sfWidgetFormTextarea(),
-      'Estat'              => new sfWidgetFormInput(),
+      'Estat'              => new sfWidgetFormInputText(),
       'Usuaris_usuariID'   => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
       'Organitzadors'      => new sfWidgetFormTextarea(),
       'DataActivitat'      => new sfWidgetFormTextarea(),
       'HorariActivitat'    => new sfWidgetFormTextarea(),
       'TipusActe'          => new sfWidgetFormTextarea(),
       'Nom'                => new sfWidgetFormTextarea(),
-      'isEnregistrable'    => new sfWidgetFormInput(),
+      'isEnregistrable'    => new sfWidgetFormInputText(),
       'EspaisSolicitats'   => new sfWidgetFormTextarea(),
       'MaterialSolicitat'  => new sfWidgetFormTextarea(),
       'DataAlta'           => new sfWidgetFormDateTime(),
       'Compromis'          => new sfWidgetFormTextarea(),
-      'Codi'               => new sfWidgetFormInput(),
+      'Codi'               => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'ReservaEspaiID'     => new sfValidatorPropelChoice(array('model' => 'Reservaespais', 'column' => 'ReservaEspaiID', 'required' => false)),
+      'ReservaEspaiID'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getReservaespaiid()), 'empty_value' => $this->getObject()->getReservaespaiid(), 'required' => false)),
       'Representacio'      => new sfValidatorString(array('required' => false)),
       'Responsable'        => new sfValidatorString(array('required' => false)),
       'PersonalAutoritzat' => new sfValidatorString(array('required' => false)),
-      'PrevisioAssistents' => new sfValidatorInteger(array('required' => false)),
-      'EsCicle'            => new sfValidatorInteger(array('required' => false)),
-      'Exempcio'           => new sfValidatorInteger(array('required' => false)),
-      'Pressupost'         => new sfValidatorInteger(array('required' => false)),
-      'ColaboracioCCG'     => new sfValidatorInteger(array('required' => false)),
+      'PrevisioAssistents' => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'EsCicle'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'Exempcio'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'Pressupost'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'ColaboracioCCG'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'Comentaris'         => new sfValidatorString(array('required' => false)),
       'Estat'              => new sfValidatorString(array('max_length' => 1, 'required' => false)),
       'Usuaris_usuariID'   => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
@@ -56,7 +57,7 @@ class BaseReservaespaisForm extends BaseFormPropel
       'HorariActivitat'    => new sfValidatorString(),
       'TipusActe'          => new sfValidatorString(),
       'Nom'                => new sfValidatorString(),
-      'isEnregistrable'    => new sfValidatorInteger(),
+      'isEnregistrable'    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'EspaisSolicitats'   => new sfValidatorString(),
       'MaterialSolicitat'  => new sfValidatorString(),
       'DataAlta'           => new sfValidatorDateTime(array('required' => false)),

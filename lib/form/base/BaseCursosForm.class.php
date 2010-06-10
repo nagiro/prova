@@ -3,27 +3,28 @@
 /**
  * Cursos form base class.
  *
+ * @method Cursos getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseCursosForm extends BaseFormPropel
+abstract class BaseCursosForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
       'TitolCurs'       => new sfWidgetFormTextarea(),
-      'isActiu'         => new sfWidgetFormInput(),
-      'Places'          => new sfWidgetFormInput(),
+      'isActiu'         => new sfWidgetFormInputText(),
+      'Places'          => new sfWidgetFormInputText(),
       'Codi'            => new sfWidgetFormTextarea(),
       'Descripcio'      => new sfWidgetFormTextarea(),
-      'Preu'            => new sfWidgetFormInput(),
-      'Preur'           => new sfWidgetFormInput(),
+      'Preu'            => new sfWidgetFormInputText(),
+      'Preur'           => new sfWidgetFormInputText(),
       'Horaris'         => new sfWidgetFormTextarea(),
       'Categoria'       => new sfWidgetFormTextarea(),
-      'OrdreSortida'    => new sfWidgetFormInput(),
+      'OrdreSortida'    => new sfWidgetFormInputText(),
       'DataAparicio'    => new sfWidgetFormDate(),
       'DataDesaparicio' => new sfWidgetFormDate(),
       'DataFiMatricula' => new sfWidgetFormDate(),
@@ -31,17 +32,17 @@ class BaseCursosForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idCursos'        => new sfValidatorPropelChoice(array('model' => 'Cursos', 'column' => 'idCursos', 'required' => false)),
+      'idCursos'        => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdcursos()), 'empty_value' => $this->getObject()->getIdcursos(), 'required' => false)),
       'TitolCurs'       => new sfValidatorString(array('required' => false)),
-      'isActiu'         => new sfValidatorInteger(array('required' => false)),
-      'Places'          => new sfValidatorInteger(array('required' => false)),
+      'isActiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'Places'          => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'Codi'            => new sfValidatorString(array('required' => false)),
       'Descripcio'      => new sfValidatorString(array('required' => false)),
-      'Preu'            => new sfValidatorInteger(array('required' => false)),
-      'Preur'           => new sfValidatorInteger(array('required' => false)),
+      'Preu'            => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'Preur'           => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'Horaris'         => new sfValidatorString(array('required' => false)),
       'Categoria'       => new sfValidatorString(array('required' => false)),
-      'OrdreSortida'    => new sfValidatorInteger(array('required' => false)),
+      'OrdreSortida'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'DataAparicio'    => new sfValidatorDate(array('required' => false)),
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
       'DataFiMatricula' => new sfValidatorDate(array('required' => false)),

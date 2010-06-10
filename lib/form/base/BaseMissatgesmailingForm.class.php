@@ -3,12 +3,13 @@
 /**
  * Missatgesmailing form base class.
  *
+ * @method Missatgesmailing getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMissatgesmailingForm extends BaseFormPropel
+abstract class BaseMissatgesmailingForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -17,15 +18,15 @@ class BaseMissatgesmailingForm extends BaseFormPropel
       'titol'                 => new sfWidgetFormTextarea(),
       'text'                  => new sfWidgetFormTextarea(),
       'data_alta'             => new sfWidgetFormDate(),
-      'missatgesllistes_list' => new sfWidgetFormPropelChoiceMany(array('model' => 'Llistes')),
+      'missatgesllistes_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Llistes')),
     ));
 
     $this->setValidators(array(
-      'idMissatge'            => new sfValidatorPropelChoice(array('model' => 'Missatgesmailing', 'column' => 'idMissatge', 'required' => false)),
+      'idMissatge'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdmissatge()), 'empty_value' => $this->getObject()->getIdmissatge(), 'required' => false)),
       'titol'                 => new sfValidatorString(),
       'text'                  => new sfValidatorString(),
       'data_alta'             => new sfValidatorDate(),
-      'missatgesllistes_list' => new sfValidatorPropelChoiceMany(array('model' => 'Llistes', 'required' => false)),
+      'missatgesllistes_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Llistes', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('missatgesmailing[%s]');
@@ -78,7 +79,7 @@ class BaseMissatgesmailingForm extends BaseFormPropel
       return;
     }
 
-    if (is_null($con))
+    if (null === $con)
     {
       $con = $this->getConnection();
     }

@@ -3,31 +3,32 @@
 /**
  * AppBlogsMenu form base class.
  *
+ * @method AppBlogsMenu getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAppBlogsMenuForm extends BaseFormPropel
+abstract class BaseAppBlogsMenuForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'id'        => new sfWidgetFormInputHidden(),
-      'name'      => new sfWidgetFormInput(),
+      'name'      => new sfWidgetFormInputText(),
       'page_id'   => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsPages', 'add_empty' => true)),
-      'order'     => new sfWidgetFormInput(),
+      'order'     => new sfWidgetFormInputText(),
       'blog_id'   => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsBlogs', 'add_empty' => false)),
-      'father_id' => new sfWidgetFormInput(),
+      'father_id' => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'id'        => new sfValidatorPropelChoice(array('model' => 'AppBlogsMenu', 'column' => 'id', 'required' => false)),
+      'id'        => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'name'      => new sfValidatorString(array('max_length' => 50)),
       'page_id'   => new sfValidatorPropelChoice(array('model' => 'AppBlogsPages', 'column' => 'id', 'required' => false)),
-      'order'     => new sfValidatorInteger(),
+      'order'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'blog_id'   => new sfValidatorPropelChoice(array('model' => 'AppBlogsBlogs', 'column' => 'id')),
-      'father_id' => new sfValidatorInteger(),
+      'father_id' => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_menu[%s]');

@@ -16,7 +16,7 @@ class IncidenciesForm extends sfFormPropel
       'idIncidencia'  => new sfWidgetFormInputHidden(),
       'quiinforma'    => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
       'quiresol'      => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
-      'titol'         => new sfWidgetFormInput(array(),array('style'=>'width:400px')),
+      'titol'         => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'descripcio'    => new sfWidgetFormTextarea(array(),array('style'=>'width:400px')),
       'estat'         => new sfWidgetFormChoice(array('choices'=>IncidenciesPeer::getEstatSelect())),
       'dataalta'      => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),

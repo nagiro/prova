@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Espais filter form base class.
+ *
+ * @package    intranet
+ * @subpackage filter
+ * @author     Your name here
+ */
+abstract class BaseEspaisFormFilter extends BaseFormFilterPropel
+{
+  public function setup()
+  {
+    $this->setWidgets(array(
+      'Nom'     => new sfWidgetFormFilterInput(),
+      'Ordre'   => new sfWidgetFormFilterInput(array('with_empty' => false)),
+    ));
+
+    $this->setValidators(array(
+      'Nom'     => new sfValidatorPass(array('required' => false)),
+      'Ordre'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+    ));
+
+    $this->widgetSchema->setNameFormat('espais_filters[%s]');
+
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+
+    parent::setup();
+  }
+
+  public function getModelName()
+  {
+    return 'Espais';
+  }
+
+  public function getFields()
+  {
+    return array(
+      'EspaiID' => 'Number',
+      'Nom'     => 'Text',
+      'Ordre'   => 'Number',
+    );
+  }
+}

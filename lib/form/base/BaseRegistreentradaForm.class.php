@@ -3,23 +3,24 @@
 /**
  * Registreentrada form base class.
  *
+ * @method Registreentrada getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseRegistreentradaForm extends BaseFormPropel
+abstract class BaseRegistreentradaForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'RegistreEntradaID' => new sfWidgetFormInputHidden(),
-      'Projecte'          => new sfWidgetFormInput(),
+      'Projecte'          => new sfWidgetFormInputText(),
       'Dades'             => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
-      'RegistreEntradaID' => new sfValidatorPropelChoice(array('model' => 'Registreentrada', 'column' => 'RegistreEntradaID', 'required' => false)),
+      'RegistreEntradaID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getRegistreentradaid()), 'empty_value' => $this->getObject()->getRegistreentradaid(), 'required' => false)),
       'Projecte'          => new sfValidatorString(array('max_length' => 20, 'required' => false)),
       'Dades'             => new sfValidatorString(array('required' => false)),
     ));

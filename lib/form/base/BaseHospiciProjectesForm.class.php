@@ -3,12 +3,13 @@
 /**
  * HospiciProjectes form base class.
  *
+ * @method HospiciProjectes getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseHospiciProjectesForm extends BaseFormPropel
+abstract class BaseHospiciProjectesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -16,14 +17,14 @@ class BaseHospiciProjectesForm extends BaseFormPropel
       'projecte_id' => new sfWidgetFormInputHidden(),
       'nom'         => new sfWidgetFormTextarea(),
       'descripcio'  => new sfWidgetFormTextarea(),
-      'habilitat'   => new sfWidgetFormInput(),
+      'habilitat'   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'projecte_id' => new sfValidatorPropelChoice(array('model' => 'HospiciProjectes', 'column' => 'projecte_id', 'required' => false)),
+      'projecte_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getProjecteId()), 'empty_value' => $this->getObject()->getProjecteId(), 'required' => false)),
       'nom'         => new sfValidatorString(),
       'descripcio'  => new sfValidatorString(),
-      'habilitat'   => new sfValidatorInteger(),
+      'habilitat'   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('hospici_projectes[%s]');

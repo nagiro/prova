@@ -47,10 +47,11 @@ class CursosPeer extends BaseCursosPeer
   	
 	$RET = array();
 	$C = new Criteria();
-		 	  	  	  
-  	$C->addDescendingOrderByColumn( self::DATAAPARICIO );
-  	$C->addAscendingOrderByColumn( self::CATEGORIA ); 	  	
-  	$C->addDescendingOrderByColumn( self::TITOLCURS );
+
+	$C->addAscendingOrderByColumn( self::CATEGORIA );
+	$C->addDescendingOrderByColumn( self::TITOLCURS );
+  	$C->addDescendingOrderByColumn( 'YEAR('.self::DATAINICI.')' );
+  	$C->addDescendingOrderByColumn( 'MONTH('.self::DATAINICI.')' );  	
   		
   	foreach(self::doSelect($C) as $CURS):
   		$DATA = $CURS->getDatafimatricula();  		  		

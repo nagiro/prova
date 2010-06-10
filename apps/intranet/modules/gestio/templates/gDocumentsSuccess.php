@@ -1,4 +1,4 @@
-<?php use_helper('Form')?>
+<?php use_helper('Form') ?>
 <?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
 <?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
  
@@ -69,8 +69,8 @@ $(document).ready( function() {
 	             ?>
 	                   	
 	            <td colspan="3" class="dreta"><br>
-	            	<?php echo submit_tag('Afegir usuari',array('name'=>'B_NEW_USER','class'=>'BOTO_ACTIVITAT')) ?>
-	 				<?php echo submit_tag('Actualitza els permisos',array('name'=>'B_UPDATE_PERMISOS','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
+	            	<button name="B_NEW_USER" class="BOTO_ACTIVITAT">Afegir usuari</button>
+	            	<button name="B_UPDATE_PERMISOS" class="BOTO_ACTIVITAT"> Actualitza els permisos</button> 	            			            	
 	            </td>
 	                               	
 	      	</TABLE>      
@@ -89,7 +89,7 @@ $(document).ready( function() {
 	    		<tr><th>Nom del nou directori: </th><td><?php echo input_tag('NOMDIR'); ?></td></tr>
 	 				 		
 	 			<td colspan="2" class="dreta"><br>
-	 				<?php echo submit_tag('Guarda el directori',array('name'=>'B_SAVE_NOU','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
+	 				<button name="B_SAVE_NOU" class="BOTO_ACTIVITAT">Guarda el directori</button>	 					            			            	
 	            </td>
 	 		      
 	        </table>
@@ -107,8 +107,8 @@ $(document).ready( function() {
 	    		<?php echo $FDIRECTORI ?>
 	 				 		
 	 			<td colspan="2" class="dreta"><br>
-	 				<?php echo submit_tag('Guarda el directori',array('name'=>'B_SAVE_EDITA_DIRECTORI','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
-	 				<?php echo submit_tag('Esborra el directori',array('name'=>'B_DELETE_DIRECTORI','class'=>'BOTO_ACTIVITAT')) ?>
+	 				<button name="B_SAVE_EDITA_DIRECTORI" class="BOTO_ACTIVITAT">Guarda el directori</button>
+	 				<button name="B_DELETE_DIRECTORI" class="BOTO_ACTIVITAT">Esborra el directori</button>	 				
 	            </td>
 	 		      
 	        </table>
@@ -127,7 +127,7 @@ $(document).ready( function() {
 	    	<table class="FORMULARI" width="100%">
 	    		<?php echo $FPERMISOS; ?>
 	 			<td colspan="2" class="dreta"><br>
-	 				<?php echo submit_tag('Afegeix el nou usuari',array('name'=>'B_NOU_USUARI_PERMISOS','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
+	 				<button name="B_NOU_USUARI_PERMISOS" class="BOTO_ACTIVITAT">Afegeix el nou usuari</button>	 					            			            
 	            </td>
 	 		      
 	        </table>

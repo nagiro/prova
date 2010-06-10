@@ -14,8 +14,8 @@ class BaseCategoriesForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idCategories' => new sfWidgetFormInputHidden(),
-      'Tipus'        => new sfWidgetFormInput(),
-      'Categoria'    => new sfWidgetFormInput(),
+      'Tipus'        => new sfWidgetFormInputText(),
+      'Categoria'    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(

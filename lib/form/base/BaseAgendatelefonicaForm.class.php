@@ -3,27 +3,28 @@
 /**
  * Agendatelefonica form base class.
  *
+ * @method Agendatelefonica getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseAgendatelefonicaForm extends BaseFormPropel
+abstract class BaseAgendatelefonicaForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'AgendaTelefonicaID' => new sfWidgetFormInputHidden(),
-      'Nom'                => new sfWidgetFormInput(),
-      'NIF'                => new sfWidgetFormInput(),
+      'Nom'                => new sfWidgetFormInputText(),
+      'NIF'                => new sfWidgetFormInputText(),
       'DataAlta'           => new sfWidgetFormDate(),
       'Notes'              => new sfWidgetFormTextarea(),
-      'Tags'               => new sfWidgetFormInput(),
-      'Entitat'            => new sfWidgetFormInput(),
+      'Tags'               => new sfWidgetFormInputText(),
+      'Entitat'            => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'AgendaTelefonicaID' => new sfValidatorPropelChoice(array('model' => 'Agendatelefonica', 'column' => 'AgendaTelefonicaID', 'required' => false)),
+      'AgendaTelefonicaID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getAgendatelefonicaid()), 'empty_value' => $this->getObject()->getAgendatelefonicaid(), 'required' => false)),
       'Nom'                => new sfValidatorString(array('max_length' => 30, 'required' => false)),
       'NIF'                => new sfValidatorString(array('max_length' => 15, 'required' => false)),
       'DataAlta'           => new sfValidatorDate(array('required' => false)),

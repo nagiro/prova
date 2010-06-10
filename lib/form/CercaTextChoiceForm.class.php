@@ -1,11 +1,11 @@
 <?php
 
-class CercaTextChoiceForm extends sfForm
+class CercaTextChoiceForm extends BaseForm
 {
   public function configure()
   {
     $this->setWidgets(array(
-      'text'    => new sfWidgetFormInput(),
+      'text'    => new sfWidgetFormInputText(),
       'select'  => new sfWidgetFormChoice(array('choices'=>array()))            
     ));
     

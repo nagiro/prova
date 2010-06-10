@@ -3,20 +3,21 @@
 /**
  * Cicles form base class.
  *
+ * @method Cicles getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseCiclesForm extends BaseFormPropel
+abstract class BaseCiclesForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
       'CicleID'  => new sfWidgetFormInputHidden(),
       'Nom'      => new sfWidgetFormTextarea(),
-      'Imatge'   => new sfWidgetFormInput(),
-      'PDF'      => new sfWidgetFormInput(),
+      'Imatge'   => new sfWidgetFormInputText(),
+      'PDF'      => new sfWidgetFormInputText(),
       'tCurt'    => new sfWidgetFormTextarea(),
       'dCurt'    => new sfWidgetFormTextarea(),
       'tMig'     => new sfWidgetFormTextarea(),
@@ -26,7 +27,7 @@ class BaseCiclesForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'CicleID'  => new sfValidatorPropelChoice(array('model' => 'Cicles', 'column' => 'CicleID', 'required' => false)),
+      'CicleID'  => new sfValidatorChoice(array('choices' => array($this->getObject()->getCicleid()), 'empty_value' => $this->getObject()->getCicleid(), 'required' => false)),
       'Nom'      => new sfValidatorString(array('required' => false)),
       'Imatge'   => new sfValidatorString(array('max_length' => 255)),
       'PDF'      => new sfValidatorString(array('max_length' => 255)),

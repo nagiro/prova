@@ -3,12 +3,13 @@
 /**
  * Poblacions form base class.
  *
+ * @method Poblacions getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BasePoblacionsForm extends BaseFormPropel
+abstract class BasePoblacionsForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -20,7 +21,7 @@ class BasePoblacionsForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'idPoblacio' => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'column' => 'idPoblacio', 'required' => false)),
+      'idPoblacio' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdpoblacio()), 'empty_value' => $this->getObject()->getIdpoblacio(), 'required' => false)),
       'Nom'        => new sfValidatorString(),
       'Comarca'    => new sfValidatorString(),
       'CodiPostal' => new sfValidatorString(),

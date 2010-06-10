@@ -3,12 +3,13 @@
 /**
  * Missatges form base class.
  *
+ * @method Missatges getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMissatgesForm extends BaseFormPropel
+abstract class BaseMissatgesForm extends BaseFormPropel
 {
   public function setup()
   {
@@ -22,7 +23,7 @@ class BaseMissatgesForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'MissatgeID'       => new sfValidatorPropelChoice(array('model' => 'Missatges', 'column' => 'MissatgeID', 'required' => false)),
+      'MissatgeID'       => new sfValidatorChoice(array('choices' => array($this->getObject()->getMissatgeid()), 'empty_value' => $this->getObject()->getMissatgeid(), 'required' => false)),
       'Usuaris_UsuariID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'Titol'            => new sfValidatorString(array('required' => false)),
       'Text'             => new sfValidatorString(array('required' => false)),

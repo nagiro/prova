@@ -1,5 +1,4 @@
 <?php use_helper('Form') ?>
-<?php use_helper('Javascript')?>
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick.js')?>
 <?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick-ca.js')?>
 <?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
@@ -116,7 +115,7 @@
 
 	<?php // echo phpinfo(); ?>
 
-	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>
+	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>		
 		                   	                   
 	<?php IF ( isset($MODE['CONSULTA']) || isset($MODE['LLISTAT']) ): ?>
 
@@ -540,7 +539,6 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
     $mesI = $mes;
     $mesF = $mes+$Q;      
 
-  
     //Omplim els mesos
     $RET .= '<tr>'; $dies = array(); $IndexMes = 0;
     for($mes = $mesI; $mes < $mesF; $mes++):  
@@ -563,7 +561,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
     		if($diaSetmana == 7) $week++;
     		
     	endfor;
-    	
+    	    	
     	$RET .= "<TD class=\"titol_mes\" colspan=\"7\">".mesos($mesReal)."</TD><td width=\"20px\"></td>";
     	    
     endfor;
