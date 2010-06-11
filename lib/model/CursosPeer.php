@@ -130,9 +130,12 @@ class CursosPeer extends BaseCursosPeer
   {
      
      $CURS = self::retrieveByPK($idC); $C = new Criteria();
-     $C->addOr(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_NO_PAGAT );
-     $C->addOr(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_PAGAT );
-     $C->addAnd(MatriculesPeer::CURSOS_IDCURSOS, $idC);     
+     
+     $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_NO_PAGAT );
+     $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_PAGAT );
+     $C1->addOr($C2);
+     $C->add($C1);
+     $C->add(MatriculesPeer::CURSOS_IDCURSOS, $idC);     
      $MATRICULES = $CURS->countMatriculess($C);
      $PLACES = $CURS->getPlaces();
      return array('OCUPADES'=>$MATRICULES , 'TOTAL'=>$PLACES);
