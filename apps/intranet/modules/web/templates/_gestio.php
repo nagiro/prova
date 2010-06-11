@@ -1,5 +1,4 @@
 <?php use_helper('Form'); ?>
-<?php use_helper('Javascript')?>
 
 <script>
 
