@@ -157,7 +157,7 @@ class webActions extends sfActions
     	$OUsuari = UsuarisPeer::cercaDNI($dni);
     	if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()): 
  				    			    	
- 			$BODY = "Benvolgut/da, \n\n La seva contrasenya és : {$OUsuari->getPasswd()}.\n\n Cordialment, Casa de Cultura de Girona. ";
+ 			$BODY = "Benvolgut/da, <br /> La seva contrasenya és : <b>{$OUsuari->getPasswd()}</b>. <br /><br />Cordialment,<br /> Casa de Cultura de Girona. ";
 			$this->ENVIAT = $this->sendMail('informatica@casadecultura.org',$OUsuari->getEmail(),' CCG :: Recordatori de contrasenya ',$BODY);          
 
 		elseif($this->FREMEMBER->isValid()):
@@ -626,7 +626,7 @@ class webActions extends sfActions
       $this->ACCIO = 'funcionament';      
    }
 
-   private function sendMail($to,$from,$subject,$body = "",$files = array())
+   private function sendMail($from,$to,$subject,$body = "",$files = array())
    {
    	
 		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
