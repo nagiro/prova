@@ -333,15 +333,15 @@ class MatriculesPeer extends BaseMatriculesPeer
   	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');
   	$text = "";
   	$text .= "
-Benvolgut/da $Nom
+Benvolgut/da $Nom<br /><br />
 
-La seva matrícula al curs $NomCurs s'ha efectuat correctament.  				  				
-Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona privada amb el seu DNI i contrasenya.
-Si no disposa de contrasenya en generem una per defecte que és el seu mateix DNI.
-     
-L'esperem el dia $dataInici a la classe.
-
-Cordialment, Albert Johé.
+La seva matrícula al curs $NomCurs s'ha efectuat correctament.<br />  				  				
+Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona o bé cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/login\">aquí </a>.<br />
+Si no recorda o no sap la seva contrasenya cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/remember\">aquí </a>.<br />
+<br />     
+L'esperem el dia $dataInici a la classe.<br />
+<br />
+Cordialment, Albert Johé.<br />
 Casa de Cultura de Girona.   	
   	";
   				

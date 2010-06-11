@@ -504,9 +504,13 @@ class webActions extends sfActions
   			$OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT); //Si arriba aquí és que hi ha trobat plaça
   			$OM->save();
   			$this->sendMail('informatica@casadecultura.org',
-  							'informatica@casadecultura.org',
+  							$OM->getUsuaris()->getEmail(),  							
   							'Matrícula Casa de Cultura de Girona',
   							MatriculesPeer::MailMatricula($OM));  			
+			$this->sendMail('informatica@casadecultura.org',
+  							'informatica@casadecultura.org',
+  							'Matrícula Casa de Cultura de Girona',
+  							MatriculesPeer::MailMatricula($OM));  							
   		else:
 	  		$this->sendMail('informatica@casadecultura.org',
 	  						'informatica@casadecultura.org',
