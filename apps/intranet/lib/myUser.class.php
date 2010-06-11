@@ -20,7 +20,6 @@ class myUser extends sfBasicSecurityUser
   	return $A[$nomCamp];  	  	
   	
   }
-
   
   public function setSessionPar($nomCamp,$value)
   {
@@ -41,5 +40,5 @@ class myUser extends sfBasicSecurityUser
   	else return $default;
   	
   }
- 
+
 }

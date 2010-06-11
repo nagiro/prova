@@ -81,15 +81,8 @@ class webActions extends sfActions
              " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('EMAIL')}".
              " vol fer el següent comentari : {$FConsulta->getValue('Missatge')} "; 
           
-	try {
-	 
-	  $mailer = new Swift(new Swift_Connection_NativeMail());
-	  $message = new Swift_Message(' CCG :: Formulari contacte Web ', $BODY, 'text/html');
-	 
-	  $mailer->send($message, 'informatica@casadecultura.org', 'web@casadecultura.cat');
-	  $mailer->disconnect();
-	} catch (Exception $e) {  $mailer->disconnect(); }     
-          
+	  $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org',' CCG :: Formulari contacte Web ',$BODY);
+               
   }
   
   public function executeContacte(sfWebRequest $request)
@@ -164,22 +157,19 @@ class webActions extends sfActions
     	$OUsuari = UsuarisPeer::cercaDNI($dni);
     	if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()): 
  				    			    	
- 			$BODY = "Benvolgut/da, \n\n La seva contrasenya és : {$OUsuari->getPasswd()}.\n\n Cordialment, Casa de Cultura de Girona. ";          
-			try {
-					$mailer = new Swift(new Swift_Connection_NativeMail());
-					$message = new Swift_Message(' CCG :: Recordatori de contrasenya ', $BODY, 'text/html');
- 
-					$mailer->send($message, $OUsuari->getEmail(), 'informatica@casadecultura.org');
-  					$mailer->disconnect();
-				} catch (Exception $e) {  $mailer->disconnect(); }
-				
-				$this->ENVIAT = true;
+ 			$BODY = "Benvolgut/da, \n\n La seva contrasenya és : {$OUsuari->getPasswd()}.\n\n Cordialment, Casa de Cultura de Girona. ";
+			$this->ENVIAT = $this->sendMail('informatica@casadecultura.org',$OUsuari->getEmail(),' CCG :: Recordatori de contrasenya ',$BODY);          
+
 		elseif($this->FREMEMBER->isValid()):
+		
 			$this->ERROR = "El DNI no existeix o suma incorrecte.";
 			$this->ENVIAT = false; 			
-		else: 
+			
+		else:
+		 
 			$this->ERROR = "";
-			$this->ENVIAT = false; 								 		 			
+			$this->ENVIAT = false;
+			 								 		 			
 		endif;
 					 		 
 	 else:
@@ -513,9 +503,15 @@ class webActions extends sfActions
   		if($OM instanceof Matricules):
   			$OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT); //Si arriba aquí és que hi ha trobat plaça
   			$OM->save();
-  			mail('informatica@casadecultura.org','Matrícula Casa de Cultura de Girona',MatriculesPeer::MailMatricula($OM));  			
-  		else: 
-  			mail('informatica@casadecultura.org','Matrícula cobrada i Error en objecte','Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');  			  			
+  			$this->sendMail('informatica@casadecultura.org',
+  							'informatica@casadecultura.org',
+  							'Matrícula Casa de Cultura de Girona',
+  							MatriculesPeer::MailMatricula($OM));  			
+  		else:
+	  		$this->sendMail('informatica@casadecultura.org',
+	  						'informatica@casadecultura.org',
+	  						'Matrícula cobrada i Error en objecte',
+	  						'Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');   			  			  			
   		endif; 
   	else: 
   		$OM->setEstat(MatriculesPeer::ERROR); //Si arriba aquí és que no ha pagat correctament
@@ -629,5 +625,20 @@ class webActions extends sfActions
       $this->setTemplate('index');
       $this->ACCIO = 'funcionament';      
    }
-        
+
+   private function sendMail($to,$from,$subject,$body = "",$files = array())
+   {
+   	
+		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
+		
+		foreach($files as $F):
+			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
+		endforeach;
+		
+		$swift_message->setBody($body,'text/html');
+		
+		return $this->getMailer()->send($swift_message);
+		
+   }
+   
 }
