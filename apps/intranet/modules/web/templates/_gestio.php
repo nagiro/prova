@@ -254,7 +254,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					   </TABLE>
 					   <br /><br />
 					   <TABLE class="FORMULARI" width="100%">					   		
-					   		<TR><TD width="100px"><b>DESCOMPTE</b></TD><td><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptes(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>
+					   		<TR><TD width="100px"><b>DESCOMPTE</b></TD><td><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptesWeb(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>
 					   		<TR><TD width="100px"></TD><td><?php if(!empty($LCURSOS)) echo submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')); ?></TD></TR>
 					   </TABLE>
 					   

@@ -49,6 +49,17 @@ class MatriculesPeer extends BaseMatriculesPeer
               self::REDUCCIO_GRATUIT => 'Gratuït'
             );
   }
+
+  static function selectDescomptesWeb()
+  {
+     return array(
+              self::REDUCCIO_CAP => 'Cap',
+              self::REDUCCIO_MENOR_25_ANYS => 'Estudiant menor de 25 anys',
+              self::REDUCCIO_JUBILAT => 'Jubilat',
+              self::REDUCCIO_ATURAT => 'Aturat',              
+            );
+  }
+  
   
   static function textDescomptes($D)
   {  
