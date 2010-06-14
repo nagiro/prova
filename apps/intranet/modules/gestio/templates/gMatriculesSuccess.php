@@ -1,7 +1,6 @@
 <?php use_helper('Form')?>
 <?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
 <?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
- 
 
 <STYLE>
 
@@ -67,9 +66,7 @@
 		 
 	}
 
-</script>
-   
-   
+</script>   
    
     <TD colspan="3" class="CONTINGUT">
         

@@ -125,8 +125,14 @@ class gestioActions extends sfActions
 	
     $this->setLayout('gestio');
 
+    if($request->getParameter('accio') == 'CC'):
+    	$this->getUser()->setSessionPar('cerca',array('text'=>""));
+    	$this->getUser()->setSessionPar('PAGINA',1);
+    	$this->redirect('gestio/gUsuaris?accio=FC');
+    endif; 
+    
     $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));    
-    $this->IDU    = $this->getUser()->ParReqSesForm($request,'IDU');            
+    $this->IDU    = $this->getUser()->ParReqSesForm($request,'id_usuari',0);            
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->getUser()->ParReqSesForm($request,'accio','FC');
             
@@ -164,6 +170,13 @@ class gestioActions extends sfActions
              $USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->FUsuari = new UsuarisForm($USUARI);                          
              break;
+       
+		//Esborra un usuari
+        case 'D':
+        	$OU = UsuarisPeer::retrieveByPK($this->IDU);
+        	$OU->delete();
+        	$this->redirect('gestio/gUsuaris?accio=FC');        	
+        	break;
        
        //Mostra les llistes a les que estÃ  subscrit un usuari
        case 'L': 
@@ -1947,14 +1960,14 @@ class gestioActions extends sfActions
   }
 
   /**
-   * MatrÃ­cules
+   * Matrícules
    *
    */
    
   
   public function executeGMatricules(sfWebRequest $request)
-  {
-  
+  {    	
+  	  	  	
     $this->setLayout('gestio');
 
 	//Netegem cerca
@@ -1989,7 +2002,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BSAVE')) 		 $accio = 'SAVE_MATRICULA';
     }                
     
-    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setSessionPar('accio',$accio);
     $this->getUser()->setSessionPar('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
     
@@ -2109,15 +2122,16 @@ class gestioActions extends sfActions
               $this->MODE = 'PAGAMENT';
               break;
         //Esborra una matrícula    		    		
-    	case 'D':
-    			$idM = $this->getUser()->getSessionPar('IDM');
+    	case 'D':    			    			
+    	 			
+    			$idM = $this->getUser()->getSessionPar('IDM');    			
     			MatriculesPeer::retrieveByPK($idM)->delete();     	            	       
     	    break;
     	    
    	    //Edita una matrícula
     	case 'E':
     			$this->MATRICULA = MatriculesPeer::retrieveByPk($request->getParameter('IDM'));
-    			$this->getUser()->setSessionPar('id_matricula',$request->getParameter('IDM'));    			
+    			$this->getUser()->setSessionPar('IDM',$request->getParameter('IDM'));    			
     			$this->FMATRICULA = new MatriculesForm($this->MATRICULA);
     			$this->MODE = 'EDICIO';
     		break;
@@ -2125,7 +2139,7 @@ class gestioActions extends sfActions
     	//Guardem una matrícula modificada
     	case 'SAVE_MATRICULA':    			
     			
-    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('id_matricula'));
+    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));
     			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
     			
     			$this->FMATRICULA = new MatriculesForm($OMatricula);    			
@@ -2155,9 +2169,7 @@ class gestioActions extends sfActions
 				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC'));
 				$this->MODE = 'LMATRICULES';
 			break;		
-    }
-  	
-  
+    }  	      
   }
   
   public function GuardaMatricula(sfFormPropel $Matricula)

@@ -17,6 +17,7 @@
     <!--    <base href="http://localhost/intranet_dev.php" /> -->  
     <!--   	<base href="http://servidor.casadecultura.cat/intranet/intranet_dev.php" /> -->
   </head>
+  
   <body class="CCG">
   <center>
     <TABLE class="TAULA">
@@ -47,7 +48,7 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Promocions','gestio/gPromocions'); ?></TD></TR>                                                                          
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Notícies','gestio/gNoticies'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' USUARIS'; ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Gestió d\'usuaris','gestio/gUsuaris?accio=FC'); ?></TD></TR>              
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Gestió d\'usuaris','gestio/gUsuaris?accio=CC'); ?></TD></TR>              
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Llistes','gestio/gLlistes'); ?></TD></TR>                                        
 			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' APLICACIONS'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Documents','gestio/gDocuments?accio=GP'); ?></TD></TR>                                          

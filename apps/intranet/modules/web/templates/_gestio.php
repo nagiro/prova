@@ -226,11 +226,10 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 						   </tr>
 					   <?php $CAT_ANT = ""; ?>   
 					   <?php foreach($LCURSOS as $C): ?>                      
-					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>
-					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
+					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>					   
 								<TR><TD colspan="6" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
-					                       	
+					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>					                       	
 					   		<TR>
 					      		<TD><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>					      		
 					      		<TD>

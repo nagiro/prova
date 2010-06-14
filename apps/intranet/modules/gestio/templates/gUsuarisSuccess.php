@@ -107,7 +107,7 @@
 
      <DIV class="REQUADRE">
      	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	    
-        <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=NU&IDU='.$USUARI->getUsuariid()); ?>)</DIV>
+        <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=NU&id_usuari='.$USUARI->getUsuariid()); ?>)</DIV>
       	<TABLE class="DADES">
                 <?php                 
                   if($USUARI->countMatriculess() == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap curs a la Casa de Cultura.</TD></TR>';                                    
@@ -214,7 +214,7 @@
 	   
 	    $A = ""; 
 	    if(!empty($PAGINA)) $A[] = 'PAGINA='.$PAGINA;
-	    if(!empty($IDU)) $A[] = 'IDU='.$IDU;
+	    if(!empty($IDU)) $A[] = 'id_usuari='.$IDU;
 	    if(!empty($ACCIO)) $A[] = 'accio='.$ACCIO;
 	    if(!empty($A)) return '?'.implode('&',$A); 
 	    else return '';
