@@ -10,9 +10,14 @@
  */
 class ClientUsuarisForm extends sfFormPropel
 {
+	
+	
   public function setup()
   {
-  	  	
+
+  	$C = new Criteria();
+    $C->AddAscendingOrderByColumn(PoblacionsPeer::NOM);
+  	
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
       'Nivells_idNivells' => new sfWidgetFormInputHidden(),
@@ -24,7 +29,7 @@ class ClientUsuarisForm extends sfFormPropel
       'Email'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Adreca'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'CodiPostal'        => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
-      'Poblacio'          => new sfWidgetFormPropelChoice(array('model' => 'Poblacions', 'add_empty' => true)),
+      'Poblacio'          => new sfWidgetFormPropelChoice(array('model' => 'Poblacions',  'criteria' => $C , 'add_empty' => true)),
       'Poblaciotext'      => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Telefon'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Mobil'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
@@ -36,7 +41,7 @@ class ClientUsuarisForm extends sfFormPropel
     $rand = $this->getOption('rand');
     $sol = $rand[1]+$rand[2];
     $inv = "El resultat %value% no és correcte.";
-         
+    
     $this->setValidators(array(
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required'=>false)),
@@ -48,7 +53,7 @@ class ClientUsuarisForm extends sfFormPropel
       'Email'             => new sfValidatorString(array('max_length' => 30, 'required' => false)),
       'Adreca'            => new sfValidatorString(array('required' => false)),
       'CodiPostal'        => new sfValidatorInteger(array('required' => false)),
-      'Poblacio'          => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'column' => 'idPoblacio', 'required' => false)),
+      'Poblacio'          => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'criteria' => $C , 'column' => 'idPoblacio', 'required' => false)),
       'Poblaciotext'      => new sfValidatorString(array('required' => false)),
       'Telefon'           => new sfValidatorString(array('required' => false)),
       'Mobil'             => new sfValidatorString(array('required' => false)),
@@ -68,7 +73,7 @@ class ClientUsuarisForm extends sfFormPropel
       'Adreca'            => 'Adreça postal: ',
       'CodiPostal'        => 'Codi postal: ',
       'Poblacio'          => 'Població: ',
-      'Poblaciotext'      => 'Població: ',
+      'Poblaciotext'      => 'Població (Altres): ',
       'Telefon'           => 'Telèfon: ',
       'Mobil'             => 'Mòbil: ',
       'Entitat'           => 'Entitat: ',

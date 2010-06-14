@@ -87,8 +87,6 @@ class UsuarisMatriculesForm extends UsuarisForm
 	         return -3;
 	//si todavia no se ha verificado devuelve error
 	   return 0;
-	}
-  
-  
+	}  
     
 }

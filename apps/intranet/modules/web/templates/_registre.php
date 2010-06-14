@@ -1,11 +1,29 @@
 <?php use_helper('Form')?>
 
+<style>
+
+	.DH { display:block; float:left; padding-top:5px; }
+
+	fieldset { border:3px solid #F3F3F3; margin-right:40px; padding:10px; }
+	.MISSAT { color:black; font-weight:bold; font-size:10px; vertical-align:middle; text-align:center; background-color:White; padding-bottom:10px; }
+	.CURS { font-size: 12px; padding:5px; vertical-align:bottom;  }
+	.LLEGENDA { font-size:12px; font-weight:bold; padding:10px 10px 10px 10px;  }
+	TEXTAREA { border:1px solid #CCCCCC; width:90%; }
+	.DADES .LINIA .blue { color:blue; }
+	.DADES .LINIA .blue:hover { color:blue; }
+	.DADES .LINIA .blue:visited { color:blue; }
+	.OPCIONS { padding-left:10px; padding-top:5px; }
+	.TITOL_CATEGORIA { background-color: #DD9D9A; color:black; font-weight:bold; padding:5px; font-size:10px; }	
+	
+</style>
+
+
 <script type="text/javascript">
 
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}  
 
 	function ValidaReserva(){	
-		if(valida_nif_cif_nie(fRegistre.usuaris_DNI.value) < 1) { alert("El DNI entrat no és correcte"); return false; }		
+		if(valida_nif_cif_nie(fRegistre.usuaris_DNI.value) < 1) { alert("El DNI entrat no és correcte. \nRecordi escriure el format 99999999A. "); return false; }		
 		if(vacio(fRegistre.usuaris_Passwd.value)== false){ alert("Has d\'entrar una contrasenya"); return false; }
 		if(vacio(fRegistre.usuaris_Nom.value)== false){ alert("Has d'omplir el nom"); return false; }
 		if(vacio(fRegistre.usuaris_Cog1.value)== false){ alert("Has d'omplir el primer cognom"); return false; }

@@ -124,7 +124,7 @@
 					if( $CURSOS->getNbResults() == 0 ):
 						echo '<TR><TD class="LINIA" colspan="3">No hi ha cap curs amb aquests paràmetres.</TD></TR>';
 					else: 
-						echo '<TR><TD class="TITOL">CODI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD></TR>';
+						echo '<TR><TD class="TITOL">CODI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD><TD class="TITOL">PLACES</TD></TR>';
 						$i = 0;
 						foreach($CURSOS->getResults() as $C):
 	                      	$PAR = ParImpar($i++);
@@ -132,11 +132,12 @@
 									<TD class="LINIA">'.link_to($C->getCodi(),'gestio/gMatricules?accio=LMC&IDC='.$C->getIdcursos()).'</TD>
 									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
 									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
+									<TD class="LINIA">'.$C->countMatriculats().'/'.$C->getPlaces().'</TD>
 								  </TR>';                		                 															                		                 															
 	                    endforeach;
 	                 endif;                     
 	             ?>      
-	              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($CURSOS);?></TD></TR>    	
+	              <TR><TD colspan="4" class="TITOL"><?php echo gestorPagines($CURSOS);?></TD></TR>    	
 	      	</TABLE>      
 	      </DIV>
 
@@ -221,8 +222,8 @@
   <?php 
 	
 		if($MATRICULA->getPagat() > 0 && ( $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TARGETA || $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TELEFON ) ):
-           echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-//         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
+//           echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
                   
            foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
          
@@ -296,7 +297,9 @@
 									<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>
 									<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>
 									<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
-								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>							
+								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().' '.
+				            										'<a href="'.url_for('gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules()).'"><img src="'.sfConfig::get('sf_webroot').'/images/template/printer.png'.'" /></a>
+								                     		       </TD>							
 								  </TR>';                		                 															                		                 															
 	                   endforeach; 	                  
 	                 endif;       

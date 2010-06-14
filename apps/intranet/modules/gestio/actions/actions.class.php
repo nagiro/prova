@@ -2169,6 +2169,46 @@ class gestioActions extends sfActions
 				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC'));
 				$this->MODE = 'LMATRICULES';
 			break;		
+		case 'P':
+				$IDP = $request->getParameter('IDP');
+				$OM = MatriculesPeer::retrieveByPK($IDP);
+				$OU = $OM->getUsuaris();
+				$OC = $OM->getCursos();
+				
+				$doc = new sfTinyDoc();
+				$doc->createFrom(array('extension' => 'docx'));
+				$doc->loadXml('word/document.xml');
+
+				$doc->mergeXmlField('doc', $OU->getDni());
+				$doc->mergeXmlField('nom', $OU->getNomComplet());				
+				$doc->mergeXmlField('pagament', utf8_decode($OM->getTpagamentString()));
+				$doc->mergeXmlField('preu', $OM->getPagat());
+				$doc->mergeXmlField('data', $OM->getDatainscripcio('d/m/Y H:i'));
+				$doc->mergeXmlField('red', $OM->getTreduccioString());
+				$doc->mergeXmlField('curs', $OC->getCodi().' - '.$OC->getTitolcurs());
+				$doc->mergeXmlField('inici', $OC->getDatainici('d/m/Y'));
+				$doc->mergeXmlField('horaris', $OC->getHoraris());
+
+				$doc->saveXml();
+				$doc->close();
+				$doc->sendResponse();
+				$doc->remove();
+				
+				throw new sfStopException; 
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			break;
     }  	      
   }
   
