@@ -27,13 +27,15 @@ class ActivitatsPeer extends BaseActivitatsPeer
    }
 
    
-   static function getActivitatsDia($dia)
+   static function getActivitatsDia($dia,$page = 1)
    {
 
       $C = new Criteria();
       $C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
       $C->add(HorarisPeer::DIA, $dia);
       $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
+      $C->add(self::PUBLICAWEB,1);
+      $C->addAscendingOrderByColumn(HorarisPeer::HORAINICI);
                 
       $pager = new sfPropelPager('Horaris', 20);
 	  $pager->setCriteria($C);

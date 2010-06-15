@@ -45,9 +45,9 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
   echo '<DIV class="div_taula">';
   echo '<table class="t_calendari">';  
   echo '<tr>
-          <td width="25" class="titol">'.link_to('&lt;',"web/index?DATACALENDARI=$MesAnterior").'</td>
-          <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('','',time())).'</td>         
-          <td width="25" class="titol">'.link_to('&gt;',"web/index?DATACALENDARI=$MesSeguent").'</td>
+          <td width="25" class="titol">'.link_to('&lt;',"web/index?accio=ca&DATACALENDARI=$MesAnterior").'</td>
+          <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('ca','',time())).'</td>         
+          <td width="25" class="titol">'.link_to('&gt;',"web/index?accio=ca&DATACALENDARI=$MesSeguent").'</td>
         </tr>';
   echo '<tr>
           <td width="25" class="dies">Dll</td>

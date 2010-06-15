@@ -12,11 +12,10 @@ class HorarisPeer extends BaseHorarisPeer
 
   const DESCRIPCIO_WEB = "WEB"; 	
 
-  static public function getCercaWeb($DIA, $TEXT, $DATAI,$DATAF)
+  static public function getCercaWeb($DIA, $TEXT, $DATAI,$DATAF, $page = 1)
   {
 
-	$C = self::cercaCriteria($DIA, $TEXT, $DATAI,$DATAF,null);
-
+	$C = self::cercaCriteria($DIA, $TEXT, $DATAI,$DATAF,null);	
 	$C->addGroupByColumn(self::HORARISID);
 	
 	$pager = new sfPropelPager('Horaris', 30);	
@@ -184,6 +183,8 @@ class HorarisPeer extends BaseHorarisPeer
     endforeach;
         
     if( !is_null($IDACTIVITAT) ) $C->add(ActivitatsPeer::ACTIVITATSACTIVITATSID, $IDACTIVITAT, CRITERIA::EQUAL ); //Si enviem una idActivitat, la carreguem
+    
+    $C->addJoin(self::ACTIVITATS_ACTIVITATID,ActivitatsPeer::ACTIVITATID);
     
     $C->addAscendingOrderByColumn(self::DIA);   //Ordenem per data
     $C->addAscendingOrderByColumn(self::HORAINICI);   //Ordenem per data

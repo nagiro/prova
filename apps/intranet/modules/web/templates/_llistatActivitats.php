@@ -22,25 +22,29 @@
 	
 		echo '<TABLE class="BOX FORMAT">';
     	echo '<tr>
-    				<th style="text-align:left">Activitat</th>
-    				<th style="text-align:left">Cicle</th>    				
+    				<th style="text-align:left">Activitat</th>    				    				
     				<th style="text-align:left">Dia</th>
     				<th style="text-align:left">Hora</th>
     		  </tr>';
 	
 		foreach($LLISTAT_ACTIVITATS->getResults() as $A):
+					
+			$OA 		= $A->getActivitats();
+			$OC 		= $OA->getCicles();			
+			$nom_act    = $OA->getTMig();			
 			
-		
-			$OA 		= $A->getActivitats(); 
-			$OC			= $OA->getCicles();
-			$nom_act    = $OA->getTMig();
-
 			if(!empty($nom_act)):
 		    	echo '<tr>';
-		    	echo '<td>'.link_to($OA->getNom(),'web/index?accio=caa&idA='.$OA->getActivitatid()).'</td>';
-		    	echo '<td>'.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid()).'</td>';		    	
+		    	
+		    	echo '<td>';
+		    	echo 	link_to($OA->getNom(),'web/index?accio=caa&idA='.$OA->getActivitatid());
+		    			if($OC->getCicleid() > 1) echo '('.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid()).')';		    			
+		    	echo   '</td>';
+		    			    	
 		    	echo '<td>'.generaData($A->getDia('Y-m-d')).'</td>';
+		    	
 		    	echo '<td>'.$A->getHoraInici('H:i').'</td>';
+		    	
 		    	echo '</tr>';
 		    endif; 
 	    			 		 	    				                  

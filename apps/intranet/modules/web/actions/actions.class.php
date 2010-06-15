@@ -235,6 +235,8 @@ class webActions extends sfActions
     $this->NOTICIA = null;    
     
     $accio = $this->getUser()->ParReqSesForm($request,'accio','cp');    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'pagina',1);
+    $this->DATACALENDARI = $this->getUser()->ParReqSesForm($request,'DATACALENDARI',time());
     
     if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
        
@@ -251,7 +253,9 @@ class webActions extends sfActions
             
       		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):
       			$CAT = $this->PAGINA->getCategories();
-     			list($cat,$mode) = explode('-',$CAT);
+      			if(!sizeof($CAT)){
+     				list($cat,$mode) = explode('-',$CAT);
+      			} else {  $cat = 'cap'; }
      			if(empty($cat) || $cat == 'cap'):
      				$this->ACCIO  = 'web';
      			else:     				
@@ -296,7 +300,7 @@ class webActions extends sfActions
        //Mostra les activitats quan cliquem un dia del calendari
 	   case 'ca':
 	   		        	    		        	    
-	    	$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI));
+	    	$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI),$this->PAGINA);
 	    	$this->ACCIO = 'llistat_activitats';
 	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACALENDARI);
 	    	$this->MODE  = 'LLISTAT';
@@ -308,14 +312,17 @@ class webActions extends sfActions
 	   	 
 	   		$DATA = $this->DATACALENDARI;
 		    $Di = mktime(0,0,0,date('m',$DATA), 01 , date('Y',$DATA)); 
-		    $Df = mktime(0,0,0, date('m',$DATA)+6 , 01 , date('Y',$DATA));		     		                
-			$this->LLISTAT_ACTIVITATS = HorarisPeer::getCercaWeb(null,$this->CERCA,$Di,$Df);	    		    		    
+		    $Df = mktime(0,0,0, date('m',$DATA)+6 , 01 , date('Y',$DATA));		    		     		               
+			$this->LLISTAT_ACTIVITATS = HorarisPeer::getCercaWeb(null,$this->CERCA,$Di,$Df,$this->PAGINA);	    		    		    
 			$this->ACCIO = 'llistat_activitats';
 	    	$this->TITOL = 'CERCA D\'ACTIVITATS AMB LES PARAULES "'.$this->CERCA.'"';
-	    	$this->MODE  = 'CERCA';
-	    						 		 			   		
+	    	$this->MODE  = 'CERCA';	    						 		 			   		
 	   		break;
 	   	   
+	   //Retorna
+	   case 'ret':
+		   		$this->redirect('web/index?accio=ca&DATACALENDARI='.$this->getUser()->getSessionPar('DATACALENDARI'));
+	   		break;
 	   //Per defecte mostrem les notícies
 	   case 'no':	   		
 	   default: 	   	

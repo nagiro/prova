@@ -18,10 +18,21 @@
 	        echo '<TD class="NOTICIA">';
 	        if($DESCRIPCIO instanceof Activitats):
 				echo '	<DIV class="DATA">';
-				
-					foreach($DESCRIPCIO->getHorariss() as $H): 
-						echo generaData($H->getDia('Y-m-d')).' a les '.$H->getHoraInici('H:i').'<br />'; 
-					endforeach; 		        	  
+
+					$RET = array(); 
+					foreach($DESCRIPCIO->getHorariss() as $H):
+						$OE = $H->getHorarisespaiss();						
+						$noms = array();
+						foreach($OE as $E):
+							$noms[] = $E->getEspais()->getNom();
+						endforeach;	
+						$RET[generaData($H->getDia('Y-m-d')).' a les '.$H->getHoraInici('H:i')] = implode(',',$noms);
+						 
+					endforeach;
+
+					foreach($RET as $K=>$R):
+						echo $K.' ( '.$R.' )<br />';
+					endforeach;
 				        			                   
 				echo '  </DIV>';
 			endif;     					        	        
