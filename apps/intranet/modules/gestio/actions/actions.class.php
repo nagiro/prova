@@ -2170,6 +2170,7 @@ class gestioActions extends sfActions
 				$this->MODE = 'LMATRICULES';
 			break;		
 		case 'P':
+			
 				$IDP = $request->getParameter('IDP');
 				$OM = MatriculesPeer::retrieveByPK($IDP);
 				$OU = $OM->getUsuaris();
@@ -2184,7 +2185,7 @@ class gestioActions extends sfActions
 				$doc->mergeXmlField('pagament', utf8_decode($OM->getTpagamentString()));
 				$doc->mergeXmlField('preu', $OM->getPagat());
 				$doc->mergeXmlField('data', $OM->getDatainscripcio('d/m/Y H:i'));
-				$doc->mergeXmlField('red', $OM->getTreduccioString());
+				$doc->mergeXmlField('reduir', $OM->getTreduccioString());
 				$doc->mergeXmlField('curs', $OC->getCodi().' - '.$OC->getTitolcurs());
 				$doc->mergeXmlField('inici', $OC->getDatainici('d/m/Y'));
 				$doc->mergeXmlField('horaris', $OC->getHoraris());
@@ -2195,18 +2196,6 @@ class gestioActions extends sfActions
 				$doc->remove();
 				
 				throw new sfStopException; 
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 				
 			break;
     }  	      
