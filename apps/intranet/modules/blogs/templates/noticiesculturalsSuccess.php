@@ -73,7 +73,7 @@
 		if($("#titol_acte").val().length == 0){ alert('Has d\'entrar un títol.'); return false; }
 		if($("#ciutat_acte").val().length == 0){ alert('Has d\'entrar una ciutat.'); return false; }		
 		if($("#datepicker").val().length == 0){ alert('Has d\'entrar una data a l\'esdeveniment.'); return false; }
-		if($("#datepicker").val().length > 0 && !comprueba_extension($("#arxiu").val())) { return false; }
+		if(!comprueba_extension($("#arxiu").val())) { return false; }
 		return true;					
 	}
 
@@ -87,7 +87,8 @@
 	   mierror = "";
 	   if (!archivo) {
 	      //Si no tengo archivo, es que no se ha seleccionado un archivo en el formulario
-	       mierror = "No has escollit cap arxiu";
+	      // mierror = "No has escollit cap arxiu";
+	      return true;
 	   }else{
 	      //recupero la extensión de este nombre de archivo
 	      extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
