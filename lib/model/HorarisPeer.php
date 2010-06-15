@@ -15,7 +15,8 @@ class HorarisPeer extends BaseHorarisPeer
   static public function getCercaWeb($DIA, $TEXT, $DATAI,$DATAF, $page = 1)
   {
 
-	$C = self::cercaCriteria($DIA, $TEXT, $DATAI,$DATAF,null);	
+	$C = self::cercaCriteria($DIA, $TEXT, $DATAI,$DATAF,null);
+	$C->add(self::PUBLICAWEB,1);	
 	$C->addGroupByColumn(self::HORARISID);
 	
 	$pager = new sfPropelPager('Horaris', 30);	
