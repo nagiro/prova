@@ -16,7 +16,7 @@ class HorarisPeer extends BaseHorarisPeer
   {
 
 	$C = self::cercaCriteria($DIA, $TEXT, $DATAI,$DATAF,null);
-	$C->add(self::PUBLICAWEB,1);	
+	$C->add(ActivitatsPeer::PUBLICAWEB,1);	
 	$C->addGroupByColumn(self::HORARISID);
 	
 	$pager = new sfPropelPager('Horaris', 30);	
