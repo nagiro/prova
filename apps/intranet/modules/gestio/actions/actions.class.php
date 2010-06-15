@@ -999,8 +999,8 @@ class gestioActions extends sfActions
         $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
       	$this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());       	    
-      	$this->DIA    = $this->getUser()->ParReqSesForm('DIA',time());	
-      	$this->IDA    = $this->getUser()->ParReqSesForm('IDA',0);	      			      	           			       
+      	$this->DIA    = $this->getUser()->setSessionPar('DIA',time());	
+      	$this->IDA    = $this->getUser()->setSessionPar('IDA',0);	      			      	           			       
     endif;    
         
     $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
