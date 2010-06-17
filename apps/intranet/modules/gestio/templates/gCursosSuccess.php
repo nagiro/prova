@@ -151,7 +151,7 @@
 			<?php if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; } ?>
 				<TR>
 					<TD class="LINIA" width="15%"><?php echo $U->getDni(); ?></TD>
-					<TD class="LINIA" width="40%"><?php echo $U->getNomComplet(); ?><BR /><?php echo $U->getTelefon(); ?> | <?php echo $M->getDatainscripcio(); ?></TD>
+					<TD class="LINIA" width="40%"><?php echo $U->getNomComplet(); ?><BR /><?php echo $U->getAdreca(); ?><BR /><?php echo $U->getCodiPostal(); ?> - <?php echo $U->getPoblacioString(); ?><BR /><?php echo $U->getTelefon(); ?> | <?php echo $M->getDatainscripcio(); ?></TD>
 					<TD class="LINIA" width="45%"><?php echo $C->getCodi(); ?> <?php echo $C->getTitolcurs(); ?> (<?php echo $PREU.'€'.$TEXT_REDUCCIO; ?>) <br />
 					                     		  <?php echo MatriculesPeer::getEstatText($M->getEstat()); ?> <?php echo $M->getComentari(); ?></TD>							
 				</TR>
