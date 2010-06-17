@@ -2125,9 +2125,8 @@ class gestioActions extends sfActions
               $this->MODE = 'PAGAMENT';
               break;
         //Esborra una matrícula    		    		
-    	case 'D':    			    			
-    	 			
-    			$idM = $this->getUser()->getSessionPar('IDM');    			
+    	case 'D':    			    			    	 			
+    			$idM = $this->getUser()->getSessionPar('IDM');    			    			    			
     			MatriculesPeer::retrieveByPK($idM)->delete();     	            	       
     	    break;
     	    
