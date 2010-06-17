@@ -28,6 +28,7 @@ abstract class BaseHorarisForm extends BaseFormPropel
       'Preu'                   => new sfWidgetFormInputText(),
       'PreuR'                  => new sfWidgetFormInputText(),
       'Estat'                  => new sfWidgetFormInputText(),
+      'Responsable'            => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
@@ -45,6 +46,7 @@ abstract class BaseHorarisForm extends BaseFormPropel
       'Preu'                   => new sfValidatorNumber(),
       'PreuR'                  => new sfValidatorNumber(),
       'Estat'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'Responsable'            => new sfValidatorString(),
     ));
 
     $this->widgetSchema->setNameFormat('horaris[%s]');

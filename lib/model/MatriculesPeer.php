@@ -246,7 +246,11 @@ class MatriculesPeer extends BaseMatriculesPeer
   static function getMatriculesCurs($idC){
       $C = new Criteria();
       $C->add(MatriculesPeer::CURSOS_IDCURSOS , $idC);
-      $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);      
+      $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
+      $C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
+      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
+      $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
+      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);                  
   	    	  	
       return MatriculesPeer::doSelect($C);
   }

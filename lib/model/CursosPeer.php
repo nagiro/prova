@@ -123,6 +123,11 @@ class CursosPeer extends BaseCursosPeer
   	$c2 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::EN_ESPERA);
   	$c1->addOr($c2);
   	$C->add($c1);  	  	
+  	$C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
+    $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
+    $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
+    $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
+  	  	
   	return $Curs->getMatriculess($C);
   }
 

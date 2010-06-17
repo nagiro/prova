@@ -292,7 +292,7 @@
 				            $C = $M->getCursos();
 				            $U = $M->getUsuaris();
 				            $TEXT_REDUCCIO ="";
-				            $PREU = $M->getPagat();
+				            $PREU = $M->getPagat();				            
 				            echo '<TR>
 									<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>
 									<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>

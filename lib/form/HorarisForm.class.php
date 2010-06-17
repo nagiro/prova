@@ -41,6 +41,7 @@ class HorarisForm extends sfFormPropel
       'HoraFi'                 => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes)),
       'HoraPost'               => new sfWidgetFormTime(array('can_be_empty'=>false,'minutes'=>$minutes)),
       'Avis'                   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
+      'Responsable'			   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Espectadors'            => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
       'Places'                 => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
     ));
@@ -54,6 +55,7 @@ class HorarisForm extends sfFormPropel
       'HoraPre'                => new sfValidatorTime(array('required' => false)),
       'HoraPost'               => new sfValidatorTime(array('required' => false)),
       'Avis'                   => new sfValidatorString(array('required'=>false)),
+      'Responsable'            => new sfValidatorString(array('required'=>false)),
       'Espectadors'            => new sfValidatorInteger(array('required'=>false)),
       'Places'                 => new sfValidatorInteger(array('required'=>false)),
     ));
@@ -66,6 +68,7 @@ class HorarisForm extends sfFormPropel
       'HoraPre'                => 'Hora preparació: ',
       'HoraPost'               => 'Hora recollida: ',
       'Avis'                   => 'Avís: ',
+      'Responsable'            => 'Responsable: ',
       'Espectadors'            => 'Espectadors: ',
       'Places'                 => 'Places: ',
     ));
