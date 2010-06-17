@@ -196,7 +196,7 @@ class blogsActions extends sfActions
 		  		
 				$ON->save(); //Guardem la notícia
 				
-	  		} catch (Excepcion $e){ echo $e->getMessage(); }
+	  		
 			
 			//Guardem les imatges
 			if(isset($RET['file'])):
@@ -233,6 +233,8 @@ class blogsActions extends sfActions
 						
 			$OO->setEstat(AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT);
 			$OO->save();
+			
+	  		} catch (Excepcion $e){ echo $e->getCode(); echo $e->getMessage(); }
 			
   		endforeach;  		
   		  		
