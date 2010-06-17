@@ -170,29 +170,33 @@ class blogsActions extends sfActions
 				endif; 	
 	  		endforeach;
 	  		
-	  		$ON = new AppBlogsEntries();
-	  		$ON->setLang('CA');
-	  		$ON->setTitle($RET['titol']);
-	  		$ON->setSubtitle1($RET['subtitol1']);
-	  		$ON->setSubtitle2($RET['ciutat_acte'].', '.$this->dataText($RET['dia_acte']));
-	  		$ON->setBody($RET['text']);
-	  		$ON->setTags($RET['tipus']);
-	  		echo stripos($RET['web'],'http://');
-	  		if(!stripos($RET['web'],'http://')) $ON->setUrl('http://'.$RET['web']);
-	  		else $ON->setUrl($RET['web']);	  		
-	  		$ON->setDate($RET['dia_acte']);
-	  			  		
-	  		$dia = $RET['dia_acte'];
-	  		
-			if($dia >= $today && $dia < $next_month):
-	  			$ON->setPageId($this->PAGE_ID_QUE_ESTA_PASSANT);	  			
-			elseif($dia < $today):
-				$ON->setPageId($this->PAGE_ID_QUE_HA_PASSAT);
-			elseif($dia > $next_month):
-				$ON->setPageId($this->PAGE_ID_QUE_PASSARA);
-			endif; 			
-	  		
-			$ON->save(); //Guardem la notícia
+	  		try{
+	  			
+		  		$ON = new AppBlogsEntries();
+		  		$ON->setLang('CA');
+		  		$ON->setTitle($RET['titol']);
+		  		$ON->setSubtitle1($RET['subtitol1']);
+		  		$ON->setSubtitle2($RET['ciutat_acte'].', '.$this->dataText($RET['dia_acte']));
+		  		$ON->setBody($RET['text']);
+		  		$ON->setTags($RET['tipus']);
+		  		echo stripos($RET['web'],'http://');
+		  		if(!stripos($RET['web'],'http://')) $ON->setUrl('http://'.$RET['web']);
+		  		else $ON->setUrl($RET['web']);	  		
+		  		$ON->setDate($RET['dia_acte']);
+		  			  		
+		  		$dia = $RET['dia_acte'];
+		  		
+				if($dia >= $today && $dia < $next_month):
+		  			$ON->setPageId($this->PAGE_ID_QUE_ESTA_PASSANT);	  			
+				elseif($dia < $today):
+					$ON->setPageId($this->PAGE_ID_QUE_HA_PASSAT);
+				elseif($dia > $next_month):
+					$ON->setPageId($this->PAGE_ID_QUE_PASSARA);
+				endif; 			
+		  		
+				$ON->save(); //Guardem la notícia
+				
+	  		} catch (Excepcion $e){ echo $e->getMessage(); }
 			
 			//Guardem les imatges
 			if(isset($RET['file'])):
