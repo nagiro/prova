@@ -160,7 +160,7 @@ class gestioActions extends sfActions
     	//Nou usuari 
        case 'N':
              $this->MODE['NOU'] = true;
-             $this->getUser()->setSessionPar('FidU',0);                          
+             $this->getUser()->setSessionPar('id_usuari',0);                          
              $this->FUsuari = new UsuarisForm();             
              break;
              
