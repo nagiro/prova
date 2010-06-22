@@ -82,8 +82,6 @@
 			$RET .= '</td><td>'.$ARXIU->getNom().'</td></tr>';
 											
 		endforeach;
-		ECHO 'PermisosDir: '.$PERMISOS_AL_DIR;
-		echo 'Edicio: '.NivellsPeer::EDICIO;
 		if($PERMISOS_AL_DIR == NivellsPeer::EDICIO):
 			$RET .= '<tr>
 						<td>'.link_to(image_tag('template/new.png').'<span>Carrega un arxiu nou a aquesta carpeta</span>',url_for('apps/gDocuments?accio=UPLOAD&IDD='.$DIRECTORI_ACTUAL_ID->getIddirectori()),array('class'=>'tt2')).'</td>						

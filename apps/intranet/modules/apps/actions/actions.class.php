@@ -24,15 +24,15 @@ class appsActions extends sfActions
   public function executeGDocuments(sfWebRequest $request)
   {
   	
-    $IDU        = $this->getUser()->getAttribute('idU');
-  	$IDD        = $this->ParReqSesForm( $request , 'IDD' , 1 );
-  	$IDA		= $this->ParReqSesForm( $request , 'IDA' , null );  	  	  	
-  	$accio      = $this->ParReqSesForm( $request , 'accio' , 'CD' );
+    $IDU        = $this->getUser()->getSessionPar('idU');
+  	$IDD        = $this->getUser()->ParReqSesForm($request , 'IDD' , 1 );
+  	$IDA		= $this->getUser()->ParReqSesForm( $request , 'IDA' , null );  	  	  	
+  	$accio      = $this->getUser()->ParReqSesForm( $request , 'accio' , 'CD' );
   	$this->MODE = "CONSULTA";
   	
   	if($request->hasParameter('B_SAVE_UPLOAD')) $accio = 'SAVE_UPLOAD';
   	
-  	$this->getUser()->setAttribute('accio',$accio);
+  	$this->getUser()->setSessionPar('accio',$accio);
   	
   	switch($accio){
   	
@@ -91,89 +91,5 @@ class appsActions extends sfActions
   	$this->setLayout('gestio_apps');
   	
   }
-  
-  
-  //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
-  //Exemple: $this->ParReqSesForm($request,'cerca',"",array('text'=>""));
-  public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
-  {
-  	  	
-  	$RET = ""; 	    	
-  	
-  	if(is_array($default)):
-  	
-	  	//Si existeix el paràmetre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):
-	  	
-	  		$CAMP = $request->getParameter($nomCamp);
-	  		
-	  		//Mirem els elements del formulari i els guardem a la sessió  		  		
-	  		foreach( $CAMP as $NOM => $VALOR ):
-	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
-	  		endforeach;  				  		  		 
-	  		
-	  		$RET = $CAMP;  		
-	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
-	  	elseif($this->existeixAtributArray($nomCamp,$default)):
-	  		$RET = array();
-	  		foreach($default as $NOM => $VALOR):
-	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
-	  		endforeach;
-	  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
-	  	else: 
-	  	
-	  		foreach($default as $NOM => $VALOR):
-	  			$this->getUser()->setAttribute($NOM.$nomCamp, $default);
-	  		endforeach;
-	  		
-	  		$RET = $default;
-	  		
-	  	endif;
-	  	
-	else:
-		
-		//Si existeix el paràmetre carreguem el nom actual
-	  	if($request->hasParameter($nomCamp)):
-	  	
-	  		$CAMP = $request->getParameter($nomCamp);	  		
-	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
-	  		$RET = $CAMP;  		
-	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
-	  	elseif($this->getUser()->hasAttribute($nomCamp)):
-	  		
-	  		$RET = $this->getUser()->getAttribute($nomCamp);
-	  			  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
-	  	else:
-	  	 	  		  		
-	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
-	  		$RET = $default;
-	  		
-	  	endif;
-	
-	endif;
-  	
-  	return $RET;
-  }
-  
-  public function ParSesForm($valor, $nomCamp, $default = "") 
-  {
-
-  	$RET = ""; 	    	
-  	   	
-  	if($this->getUser()->hasAttribute($nomCamp)):
-  		$RET = $this->getUser()->getAttribute($nomCamp); 
-  	else:   	
-  		$this->getUser()->setAttribute($nomCamp, $default);
-  		$RET = $default;
-  	endif;
-  	
-  	return $RET;
-  }
-  
-  
   
 }

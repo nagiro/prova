@@ -26,7 +26,6 @@ class AppDocumentsPermisosDirPeer extends BaseAppDocumentsPermisosDirPeer
 	
 	static public function getPermis($IDU,$IDD)
 	{
-		
 		$C = new Criteria();
 		$C->add(self::IDUSUARI,$IDU);
 		$C->add(self::IDDIRECTORI,$IDD);
