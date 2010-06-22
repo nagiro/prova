@@ -653,11 +653,11 @@ class gestioActions extends sfActions
 				$text = $text."
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ARRELS D'ARREU<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Carles Dénia a cinc<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITON FRAUCA<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L'altre llibre de les bèsties<br />				
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dimarts, 25 de maig, 20.00 h<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sala La Planeta<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 9 de juliol, 20.00 h<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori de la Casa de Cultura de Girona<br />				
 				<br />				
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
 																					

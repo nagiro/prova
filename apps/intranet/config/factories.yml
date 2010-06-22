@@ -54,3 +54,8 @@ all:
       db_id_col:    sess_id
       db_data_col:  sess_data
       db_time_col:  sess_time
+      
+  user:
+    class: myUser
+    param:      
+      timeout: 86000
