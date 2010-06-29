@@ -621,6 +621,44 @@ class gestioActions extends sfActions
  
   }
 
+  public function executeGEntrades(sfWebRequest $request)
+  {
+
+    $this->setLayout('gestio');
+
+    $this->IDE = $this->getUser()->ParReqSesForm($request,'IDE');    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA');        
+    $this->MODE   = "";
+    
+    $accio = $request->getParameter('accio');
+    if($request->hasParameter('BCERCA')){ $accio = 'U'; $this->PAGINA = 1; }
+    if($request->hasParameter('BNOU')) $accio = 'N';
+    if($request->hasParameter('BEDITA')) $accio = 'E';
+    if($request->hasParameter('BSAVE')) $accio = 'S';
+    if($request->hasParameter('BDELETE')) $accio = 'D';
+    if($request->hasParameter('BPRINT')) $accio = 'P';    
+        
+    switch($accio)
+    {    
+    	case 'N':        			
+    		break;
+    		
+    	case 'E':
+    		break;
+    		
+    	case 'S':    		
+    		break;
+    
+    	case 'D':
+    		break;
+    		    
+    	case 'P':
+    		    			    		    					
+    		break;    		    
+    }        
+  	
+  }
+  
   public function executePrintEntrades()
   {
   	
@@ -2981,7 +3019,24 @@ class gestioActions extends sfActions
      
 	$this->setLayout('gestio');
 	$this->POTVEURE = array(1=>UsuarisPeer::canSeeComptabilitat($this->getUser()->getSessionPar('idU')));
-	                  
+	$this->accio = $request->getParameter('accio');
+	
+	switch($this->accio){
+		case 'MAT_DIA_PAG':
+				$this->DADES = array();
+				foreach(MatriculesPeer::getMatriculesPagadesDia($request->getParameter('mode_pagament')) as $OM):
+					$OU = $OM->getUsuaris();
+					$OC = $OM->getCursos();
+					$this->DADES[$OM->getIdmatricules()]['DATA'] = $OM->getDatainscripcio('d/m/Y');
+					$this->DADES[$OM->getIdmatricules()]['IMPORT'] = $OM->getPagat();
+					$this->DADES[$OM->getIdmatricules()]['DNI'] = $OU->getDni();
+					$this->DADES[$OM->getIdmatricules()]['NOM'] = $OU->getNomComplet();
+					$this->DADES[$OM->getIdmatricules()]['CURS'] = $OC->getCodi();
+				endforeach;				 
+			break;
+	}
+	
+	
   }  
   
   

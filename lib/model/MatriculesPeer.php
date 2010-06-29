@@ -329,6 +329,17 @@ class MatriculesPeer extends BaseMatriculesPeer
      }   
   }
   
+  static public function getMatriculesPagadesDia($modePagament = 20)
+  {
+  	$C = new Criteria();
+  	$C->add(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
+  	$C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
+  	$C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
+  	$C->addJoin(MatriculesPeer::CURSOS_IDCURSOS, CursosPeer::IDCURSOS);
+  	$C->add(matriculesPeer::TPAGAMENT, $modePagament );  	
+  	return self::doSelect($C);
+  }
+  
   public function MailMatricula($OM)
   {
   	
