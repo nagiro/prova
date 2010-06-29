@@ -3023,7 +3023,7 @@ class gestioActions extends sfActions
 	
 	switch($this->accio){
 		case 'MAT_DIA_PAG':
-				$this->DADES = array();
+				$this->DADES = array();				
 				foreach(MatriculesPeer::getMatriculesPagadesDia($request->getParameter('mode_pagament')) as $OM):
 					$OU = $OM->getUsuaris();
 					$OC = $OM->getCursos();

@@ -17,6 +17,7 @@
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TARGETA) ?>"> Ta </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TELEFON) ?>"> Tf </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TRANSFERENCIA) ?>"> Tr </a>
+      					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament=0') ?>"> All </a>
       				</td></tr>      			
       		<?php endif; ?>
       			
