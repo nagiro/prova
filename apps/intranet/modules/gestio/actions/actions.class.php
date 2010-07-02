@@ -2892,12 +2892,14 @@ class gestioActions extends sfActions
 
     	case 'VIEW_FORM':
 
+    			$datai = mktime(0,0,0,date('m',time())-2,date('d',time()),date('Y',time()));
+    		
     			//Carrega les dades del formulari
     			$C = new Criteria();
     			$C->add(AppBlogsFormsEntriesPeer::FORM_ID,$this->APP_FORM);
     			$C->addAscendingOrderByColumn(AppBlogsFormsEntriesPeer::ESTAT);
     			//$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_CAP);    			
-				$this->VIEW_FORM_ENTRIES = AppBlogsFormsEntriesPeer::getEntries($this->APP_FORM);
+				$this->VIEW_FORM_ENTRIES = AppBlogsFormsEntriesPeer::getEntries($this->APP_FORM,date('Y-m-d',$datai));
 				$this->VIEW_FIELDS = AppBlogsFormsEntriesPeer::getFields($this->APP_FORM);
 				    			
     		break;
@@ -3013,7 +3015,11 @@ class gestioActions extends sfActions
     $this->DVDS = ArxiuDvdPeer::cerca($this->CERCA);
     
   }
-    
+
+  //**************************************************************************************************************************************************
+  // Informes
+  //**************************************************************************************************************************************************
+  
   public function executeGInformes(sfWebRequest $request)
   {
      
@@ -3041,7 +3047,14 @@ class gestioActions extends sfActions
   
   
   //**************************************************************************************************************************************************
+  // Control de personal i feines
   //**************************************************************************************************************************************************
   
+  public function executeGPersonal(sfWebRequest $request)
+  {
+  	$this->setLayout('gestio');
+  	$this->CALENDARI = array();
+  	$this->DATAI = time();
+  }
   
 }

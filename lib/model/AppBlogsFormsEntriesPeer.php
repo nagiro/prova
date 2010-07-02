@@ -31,12 +31,14 @@ class AppBlogsFormsEntriesPeer extends BaseAppBlogsFormsEntriesPeer
 		
 	}
 	
-	static public function getEntries($idF)
+	static public function getEntries($idF,$datai = null)
 	{
+				
 		$RET = array();
 		$C = new Criteria();
 		$C->add(self::FORM_ID,$idF);
 		$C->add(self::ESTAT,self::ESTAT_ELIMINAT, CRITERIA::NOT_EQUAL);
+		if(!is_null($datai)): $C->add(self::DATE, $datai , CRITERIA::GREATER_THAN); endif; 
 		$C->addDescendingOrderByColumn(self::DATE);
 					
 		return self::doSelect($C);
