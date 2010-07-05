@@ -2087,7 +2087,7 @@ class gestioActions extends sfActions
     			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
 
     			if($this->getUser()->getSessionPar('ID_NEW_USER') > 0) $OMatricula->setUsuarisUsuariid($this->getUser()->getSessionPar('ID_NEW_USER'));
-    			elseif($request->hasParameter('IDU')) $OMatricula->setUsuarisUsuariid($request->getParameter('IDU'));
+    			elseif($request->hasParameter('id_usuari')) $OMatricula->setUsuarisUsuariid($request->getParameter('id_usuari'));
     			else $OMatricula->setUsuarisUsuariid(1);    			
     			
     			$this->FMatricula = new MatriculesUsuariForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
