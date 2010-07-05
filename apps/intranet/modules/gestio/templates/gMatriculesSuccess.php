@@ -260,7 +260,7 @@
  	
  	<DIV class="REQUADRE">	    
     <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
-		<h2><?php echo $MISSATGE; ?></h2>	
+		<h2>La matrícula s'ha realitzat correctament.<br /> Prem <?php echo link_to('aquí','gestio/gMatricules?accio=P&IDP='.$MATRICULA->getIdmatricules()); ?> per veure el reguard.</h2>			
     </DIV>
  	 	  
   <?php ELSEIF( $MODE == 'EDICIO' ): ?>
@@ -295,7 +295,7 @@
 				            $PREU = $M->getPagat();				            
 				            echo '<TR>
 									<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>
-									<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'</TD>
+									<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().'<br />'.$U->getEmail().'</TD>
 									<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
 								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().' '.
 				            										'<a href="'.url_for('gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules()).'"><img src="'.sfConfig::get('sf_webroot').'/images/template/printer.png'.'" /></a>

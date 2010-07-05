@@ -1534,7 +1534,7 @@ class gestioActions extends sfActions
     {    	
       case 'N':
                 $this->MODE = 'NOU';
-                $this->getUser()->setFlash('AID',0);
+                $this->getUser()->setSessionPar('AID',0);                
                 $this->FAgenda = new AgendatelefonicaForm();                          
                 break;                
       case 'E':
@@ -2067,7 +2067,8 @@ class gestioActions extends sfActions
     			$this->FUsuari = new UsuarisMatriculesForm(new Usuaris());    			
     			$this->FUsuari->bind($request->getParameter('usuaris'));
     			if($this->FUsuari->isValid()):
-    				$this->FUsuari->save();    			
+    				$this->FUsuari->save();
+    				$this->getUser()->setSessionPar('ID_NEW_USER',$this->FUsuari->getObject()->getUsuariid());    				    			
     				$this->redirect('gestio/gMatricules?accio=NU');
     			endif; 
     			    							    	    		
@@ -2085,7 +2086,9 @@ class gestioActions extends sfActions
 				$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));
     			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
 
-    			if($request->hasParameter('IDU')) $OMatricula->setUsuarisUsuariid($request->getParameter('IDU'));
+    			if($this->getUser()->getSessionPar('ID_NEW_USER') > 0) $OMatricula->setUsuarisUsuariid($this->getUser()->getSessionPar('ID_NEW_USER'));
+    			elseif($request->hasParameter('IDU')) $OMatricula->setUsuarisUsuariid($request->getParameter('IDU'));
+    			else $OMatricula->setUsuarisUsuariid(1);    			
     			
     			$this->FMatricula = new MatriculesUsuariForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
     			$this->MODE = 'MAT_USUARI';
@@ -2143,12 +2146,12 @@ class gestioActions extends sfActions
     			$this->MODE = 'VALIDACIO_CURS';
     		break;
     		    		
-    	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalitzaciÃ³.  
+    	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
     	case 'PAGAMENT':
     			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));    			
     			MatriculesPeer::setMatriculaPagada($this->getUser()->getSessionPar('IDM'),$this->getUser()->getSessionPar('isPle'));
     			$MATRICULA->save();
-    			$this->MISSATGE = "La matrícula s'ha realitzat correctament.";
+    			$this->MATRICULA = $MATRICULA;    			
     			$this->MODE = 'PAGAMENT';
     		break;
     	//Si hem fet un pagament amb targeta, anem a la segÃ¼ent pantalla. 
@@ -3055,6 +3058,42 @@ class gestioActions extends sfActions
   	$this->setLayout('gestio');
   	$this->CALENDARI = array();
   	$this->DATAI = time();
+  	$this->TREBALLADORS = UsuarisPeer::selectTreballadors();
+  	
+  	$data = mktime(0,0,0,date('m',time()),date('d',time()),date('Y',time()));  	
+  	
+  	$this->CALENDARI[1]['TREBALLADOR'] = 'Albert Johé';  	
+  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
+  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][2] = 'Acabar de fer allò que s\'havia pro.';
+  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '8:00 - 12:00';
+  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '4:00 - 10:00';
+  	$this->CALENDARI[1]['DIES'][$data]['MISSATGE'] = '';  	  	
+  	$this->CALENDARI[1]['DIES'][$data]['TREBALLA'] = true;
+  	
+  	$data = mktime(0,0,0,date('m',time()),date('d',time())+1,date('Y',time()));
+  	
+  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
+  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][2] = 'Acabar de fer allò que s\'havia pro.';
+  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '8:00 - 12:00';
+  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '4:00 - 10:00';
+  	$this->CALENDARI[1]['DIES'][$data]['MISSATGE'] = '';  	  	
+  	$this->CALENDARI[1]['DIES'][$data]['TREBALLA'] = true;
+  	
+  	  	
+  	$data = mktime(0,0,0,date('m',time()),date('d',time())+1,date('Y',time()));
+  	
+  	$this->CALENDARI[1]['DIES'][$data]['MISSATGE'][1] = 'No hi sóc, perquè tinc un AP.';  	  	
+  	$this->CALENDARI[1]['DIES'][$data]['TREBALLA'] = false;
+  	
+  	
+  	$this->CALENDARI[2]['TREBALLADOR'] = 'Rosa Maria Vallmajó';  	
+  	$this->CALENDARI[2]['DIES'][$data]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
+  	$this->CALENDARI[2]['DIES'][$data]['HORARIS'][] = '8:00 - 12:00';
+  	$this->CALENDARI[2]['DIES'][$data]['HORARIS'][] = '4:00 - 10:00';
+  	$this->CALENDARI[2]['DIES'][$data]['MISSATGE'] = '';  	  	
+  	$this->CALENDARI[2]['DIES'][$data]['TREBALLA'] = true;
+    	
+  	
   }
   
 }

@@ -31,6 +31,9 @@ class UsuarisForm extends sfFormPropel
       'Habilitat'         => new sfWidgetFormInputCheckbox(array(),array('value'=>true , 'style'=>'width:200px')),
     ));
 
+    $C = new Criteria();
+    $C->addAscendingOrderByColumn(PoblacionsPeer::NOM);
+    
     $this->setValidators(array(
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
@@ -42,7 +45,7 @@ class UsuarisForm extends sfFormPropel
       'Email'             => new sfValidatorEmail(array('max_length' => 30, 'required' => true)),
       'Adreca'            => new sfValidatorString(array('required' => false)),
       'CodiPostal'        => new sfValidatorInteger(array('required' => false)),
-      'Poblacio'          => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'column' => 'idPoblacio', 'required' => false)),
+      'Poblacio'          => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'criteria' => $C , 'column' => 'idPoblacio', 'required' => false)),
       'Poblaciotext'      => new sfValidatorString(array('required' => false)),
       'Telefon'           => new sfValidatorString(array('required' => false)),
       'Mobil'             => new sfValidatorString(array('required' => false)),
