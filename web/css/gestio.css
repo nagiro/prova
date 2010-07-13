@@ -52,8 +52,8 @@ BUTTON:focus { background: #FFD7DC; }
 .FORMULARI .BOTO_ACTIVITAT:hover { background-color: #82BC8E; border: 1px solid black; padding:5px;  }
 .FORMULARI .BOTO_PERILL { background-color: red; border: 1px solid black; padding:5px;  }
 .FORMULARI .error_list { color: red; font-size:16px; font-weight:bold;  }
-.FORMULARI .missat_ok { background-color:#FFF5C1; height:30px; text-align:center; }
-.FORMULARI .missat_ko {  }
+.FORMULARI .missat_ok { background-color:#FFF5C1; height:30px; text-align:left; }
+.FORMULARI .missat_ko { background-color:red; color:white; height:30px; text-align:left; }
 .DADES { width:100%; border-collapse: collapse; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }

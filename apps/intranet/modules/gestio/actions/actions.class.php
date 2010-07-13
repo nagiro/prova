@@ -626,40 +626,58 @@ class gestioActions extends sfActions
 
     $this->setLayout('gestio');
 
-    $this->IDE = $this->getUser()->ParReqSesForm($request,'IDE');    
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA');        
+    $this->IDE = $this->getUser()->ParReqSesForm($request,'IDE',0);    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);        
     $this->MODE   = "";
     
     $accio = $request->getParameter('accio');
-    if($request->hasParameter('BCERCA')){ $accio = 'U'; $this->PAGINA = 1; }
-    if($request->hasParameter('BNOU')) $accio = 'N';
-    if($request->hasParameter('BEDITA')) $accio = 'E';
-    if($request->hasParameter('BSAVE')) $accio = 'S';
-    if($request->hasParameter('BDELETE')) $accio = 'D';
-    if($request->hasParameter('BPRINT')) $accio = 'P';    
-        
+    if($request->hasParameter('BSAVE')) $accio = 'SAVE';
+    if($request->hasParameter('BDELETE')) $accio = 'DELETE';        
+            
     switch($accio)
     {    
-    	case 'N':        			
+    	case 'C':
+    			// $this->ENTRADES = EntradesPeer::getList($this->PAGINA);
+    		break;
+    	case 'NOU': 
+    			$this->MODE = 'NOU';      
+    			$this->FENTRADES = EntradesPeer::initialize(); 			
     		break;
     		
-    	case 'E':
+    	case 'EDITA':
+    			$this->MODE = 'EDITA';    			      
+    			$this->FENTRADES = EntradesPeer::initialize($this->IDE);
     		break;
     		
-    	case 'S':    		
+    	case 'SAVE':    		
+    			$PE = $request->getParameter('entrades');
+    			$FE = EntradesPeer::initialize($PE['idEntrada']);
+    			$FE->bind($PE);
+    			if($FE->isValid()):
+    				$FE->save();    				
+    			else: 
+    				$this->MODE = 'EDITA';
+    			endif; 
     		break;
     
-    	case 'D':
+    	case 'DELETE':
+    			$PE = $request->getParameter('entrades');
+    			$FE = EntradesPeer::initialize($PE['idEntrada']);
+    			$FE->getObject()->delete();
     		break;
     		    
-    	case 'P':
-    		    			    		    					
+    	case 'PRINT':
+    			$FE = EntradesPeer::initialize($this->IDE);
+    			$OE = $FE->getObject();    			
+    		    $this->executePrintEntrades($OE);			    		    					
     		break;    		    
     }        
+    
+    $this->ENTRADES = EntradesPeer::getList($this->PAGINA);
   	
   }
   
-  public function executePrintEntrades()
+  public function executePrintEntrades($OE)
   {
   	
   	$config = sfTCPDFPluginConfigHandler::loadConfig();
@@ -691,13 +709,13 @@ class gestioActions extends sfActions
 				$text = $text."
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>$i</b>
 				<br />								
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITON FRAUCA<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L'altre llibre de les bèsties<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OE->getTitol()."<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OE->getSubtitol()."<br />				
 				<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Divendres, 9 de juliol, 20.00 h<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auditori de la Casa de Cultura de Girona<br />				
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OE->getData()."<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OE->getLloc()."<br />				
 				<br />				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Preu: 5€ / Reduït: 3€<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$OE->getPreu()."<br />
 																					
 		";   		 		
   		if($fila    == 7): $pdf->AddPage(); $fila = 1; endif;  		  		
@@ -2088,7 +2106,6 @@ class gestioActions extends sfActions
 
     			if($this->getUser()->getSessionPar('ID_NEW_USER') > 0) $OMatricula->setUsuarisUsuariid($this->getUser()->getSessionPar('ID_NEW_USER'));
     			elseif($request->hasParameter('id_usuari')) $OMatricula->setUsuarisUsuariid($request->getParameter('id_usuari'));
-    			else $OMatricula->setUsuarisUsuariid(1);    			
     			
     			$this->FMatricula = new MatriculesUsuariForm($OMatricula,array('url'=>$this->getController()->genUrl('gestio/SelectUser')));
     			$this->MODE = 'MAT_USUARI';
@@ -3055,44 +3072,60 @@ class gestioActions extends sfActions
   
   public function executeGPersonal(sfWebRequest $request)
   {
+  	
   	$this->setLayout('gestio');
   	$this->CALENDARI = array();
-  	$this->DATAI = time();
-  	$this->TREBALLADORS = UsuarisPeer::selectTreballadors();
+  	$this->USUARI = $this->getUser()->getSessionPar('idU');
+  	$this->IDU = $request->getParameter('IDU');
+  	$this->IDP = $request->getParameter('IDPERSONAL');
+  	$this->DATE = $request->getParameter('DATE');
   	
-  	$data = mktime(0,0,0,date('m',time()),date('d',time()),date('Y',time()));  	
+  	if($request->hasParameter('DATAI')) $this->DATAI = $request->getParameter('DATAI');
+  	else $this->DATAI = time();
   	
-  	$this->CALENDARI[1]['TREBALLADOR'] = 'Albert Johé';  	
-  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
-  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][2] = 'Acabar de fer allò que s\'havia pro.';
-  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '8:00 - 12:00';
-  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '4:00 - 10:00';
-  	$this->CALENDARI[1]['DIES'][$data]['MISSATGE'] = '';  	  	
-  	$this->CALENDARI[1]['DIES'][$data]['TREBALLA'] = true;
+  	$accio = $request->getParameter('accio');
   	
-  	$data = mktime(0,0,0,date('m',time()),date('d',time())+1,date('Y',time()));
+  	if($request->hasParameter('BSAVE')):  $accio = "SAVE_CHANGE";  endif; 
   	
-  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
-  	$this->CALENDARI[1]['DIES'][$data]['FEINES'][2] = 'Acabar de fer allò que s\'havia pro.';
-  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '8:00 - 12:00';
-  	$this->CALENDARI[1]['DIES'][$data]['HORARIS'][] = '4:00 - 10:00';
-  	$this->CALENDARI[1]['DIES'][$data]['MISSATGE'] = '';  	  	
-  	$this->CALENDARI[1]['DIES'][$data]['TREBALLA'] = true;
+
+  	$this->CALENDARI = PersonalPeer::getHoraris($this->DATAI);
   	
-  	  	
-  	$data = mktime(0,0,0,date('m',time()),date('d',time())+1,date('Y',time()));
-  	
-  	$this->CALENDARI[1]['DIES'][$data]['MISSATGE'][1] = 'No hi sóc, perquè tinc un AP.';  	  	
-  	$this->CALENDARI[1]['DIES'][$data]['TREBALLA'] = false;
-  	
-  	
-  	$this->CALENDARI[2]['TREBALLADOR'] = 'Rosa Maria Vallmajó';  	
-  	$this->CALENDARI[2]['DIES'][$data]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
-  	$this->CALENDARI[2]['DIES'][$data]['HORARIS'][] = '8:00 - 12:00';
-  	$this->CALENDARI[2]['DIES'][$data]['HORARIS'][] = '4:00 - 10:00';
-  	$this->CALENDARI[2]['DIES'][$data]['MISSATGE'] = '';  	  	
-  	$this->CALENDARI[2]['DIES'][$data]['TREBALLA'] = true;
-    	
+  	switch($accio){
+  		case 'EDIT_DATE':
+  				//Editem un dia, i podem esborrar un canvi o bé afegir-ne un de nou.
+  				$this->DADES_DIA_USUARI = PersonalPeer::getDadesUpdates($this->DATE, $this->IDU);  				  
+  			break;  			
+  		case 'NEW_CHANGE':
+  				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU);  				
+  			break;
+  		case 'EDIT_CHANGE':
+  				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU,$this->IDP);
+  			break;  			
+  		case 'SAVE_CHANGE':  				
+  				$RP = $request->getParameter('personal');
+  				list($year,$month,$day) = explode("-",$RP['idData']);  				  				    
+  				$idP = $RP['idPersonal']; $idU = $RP['idUsuari']; $idD = mktime(0,0,0,$month,$day,$year);
+  										
+  				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $idD,$idU,$idP);
+  				$this->FPERSONAL->bind($RP);
+  				
+  				$this->IDP  = $this->FPERSONAL->getObject()->getIdpersonal();
+  				$this->IDU  = $idU;
+  				$this->DATE = $idD; 
+  				
+  				if($this->FPERSONAL->isValid()):
+  					$this->FPERSONAL->save();
+  					$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$idD.'&IDU='.$idU);
+  				else: 
+  					$this->ERROR[] = "Hi ha algun problema amb el formulari.";
+  				endif; 
+  			break;
+  		case 'DELETE_CHANGE':
+				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU,$this->IDP);
+				$this->FPERSONAL->getObject()->delete();
+				$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$this->DATE.'&IDU='.$this->IDU);				  			
+  			break;
+  	}
   	
   }
   

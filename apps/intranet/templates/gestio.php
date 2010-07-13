@@ -32,12 +32,12 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Avui','gestio/main'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Contactes','gestio/gAgenda?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Taulell','gestio/gMissatges?accio=I'); ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Tasques','gestio/gTasques?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio?accio=C'); ?></TD></TR>                            
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves d\'espais','gestio/gReserves?accio=C'); ?></TD></TR>                                                                      
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Informes','gestio/gInformes'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Horaris i feines','gestio/gPersonal'); ?></TD></TR>              
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' PROGRAMACIÓ'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=C'); ?></TD></TR>
 			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Matricules','gestio/gMatricules?accio=C'); ?></TD></TR>
@@ -53,6 +53,7 @@
 			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' APLICACIONS'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Documents','gestio/gDocuments?accio=GP'); ?></TD></TR>                                          
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Blogs','gestio/gBlogs?accio=VB'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Entrades','gestio/gEntrades?accio=C'); ?></TD></TR>
 			<TR><TD class="SUBMENU_1"><?php echo imgSub1().' ARXIU'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' DVDs / CDs','gestio/gArxiuDvd?accio=CC'); ?></TD></TR>                                          
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Històric','gestio/gArxiuDocuments?accio=CC'); ?></TD></TR>                            
