@@ -208,13 +208,15 @@
 					endforeach;				
 			?>			                   	
     	</TABLE>
+    	<!-- 
     	<table class="DADES">
     	  <tr>
     	    <td class="dreta">	            			            		
-    			<?php echo link_to('<input type="button" value="Finalitza i tanca" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=C'); ?>    				            
+    			<?php // echo link_to('<input type="button" value="Finalitza i tanca" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=C'); ?>    				            
 	        </td>
 	      </tr>     
-    	</table>     
+    	</table>
+    	 -->     
     	
 	</DIV>
 		
@@ -247,7 +249,7 @@
 	<div class="titol">
 	 		<?php echo 'Editant horaris de l\'activitat: '.$NOMACTIVITAT; ?>
 	 	</div>
-		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=HORARI&nou=2',array('class'=>'blau')) ?> )</DIV>
+		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&nou=2',array('class'=>'blau')) ?> )</DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
 			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
@@ -275,12 +277,14 @@
 		    });   
 		</script>
 		 
-	     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">            
+	     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
+	     	<?php if(isset($MISSATGE)):  ?>
+	     	<div style="padding:20px; margin-left:20px; border:10px solid red; width:650px; background-color: black; color:yellow; font-weight:bold;"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?></div>	     	
+	     	<?php endif; ?>            
 		 	<div class="REQUADRE">
 		 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=HORARI'); ?></div> 		
 		 		<DIV class="TITOL">Edició horaris</DIV>
-		    	<table class="FORMULARI" width="550x">
-		    	<tr><td width="100px"></td><td class="missatge" width="450x"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?> </td></tr>                  			    	
+		    	<table class="FORMULARI" width="550x">		    	                  			    	
 		    	<tr><td width="100px"></td><td width="450x"></td></tr>
 	
 	               	<?php echo $FHorari?>
@@ -389,7 +393,7 @@
 		                  	$PAR = ParImpar($j++);                  	
 
 	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
-		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=CICLE&IDA='.$A['ID'],array('style'=>'font-size:12px')).$AVIS.'</td></tr>';		                  	
+		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A['ID'],array('style'=>'font-size:12px')).$AVIS.'</td></tr>';		                  	
 		                  	echo '	<TR>                      						               							                	
 		                  				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
 					               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>

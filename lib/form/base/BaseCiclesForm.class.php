@@ -24,6 +24,7 @@ abstract class BaseCiclesForm extends BaseFormPropel
       'dMig'     => new sfWidgetFormTextarea(),
       'tComplet' => new sfWidgetFormTextarea(),
       'dComplet' => new sfWidgetFormTextarea(),
+      'extingit' => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -37,6 +38,7 @@ abstract class BaseCiclesForm extends BaseFormPropel
       'dMig'     => new sfValidatorString(),
       'tComplet' => new sfValidatorString(),
       'dComplet' => new sfValidatorString(),
+      'extingit' => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('cicles[%s]');

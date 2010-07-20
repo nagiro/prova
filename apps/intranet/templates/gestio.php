@@ -32,7 +32,7 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Avui','gestio/main'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Contactes','gestio/gAgenda?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Taulell','gestio/gMissatges?accio=I'); ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Material','gestio/gMaterial?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cessio/Reparació','gestio/gCessio?accio=C'); ?></TD></TR>                            
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Reserves d\'espais','gestio/gReserves?accio=C'); ?></TD></TR>                                                                      
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Incidències','gestio/gIncidencies?accio=C'); ?></TD></TR>
@@ -42,11 +42,12 @@
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cursos','gestio/gCursos?accio=C'); ?></TD></TR>
 			  <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Matricules','gestio/gMatricules?accio=C'); ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Agenda','gestio/gActivitats?accio=C'); ?></TD></TR>             
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Estadístiques','gestio/gEspais'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Cicles','gestio/gCicles?accio=C'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Estadístiques','gestio/gEspais?accio=CC'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' WEB'; ?></TD></TR>          
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Gestió estructura','gestio/gEstructura'); ?></TD></TR>
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Promocions','gestio/gPromocions'); ?></TD></TR>                                                                          
-              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Notícies','gestio/gNoticies'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Gestió estructura','gestio/gEstructura?accio=CC'); ?></TD></TR>
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Promocions','gestio/gPromocions?accio=CC'); ?></TD></TR>                                                                          
+              <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Notícies','gestio/gNoticies?accio=CC'); ?></TD></TR>
             <TR><TD class="SUBMENU_1"><?php echo imgSub1().' USUARIS'; ?></TD></TR>
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Gestió d\'usuaris','gestio/gUsuaris?accio=CC'); ?></TD></TR>              
               <TR><TD class="SUBMENU_2"><?php echo link_to(imgSub2().' Llistes','gestio/gLlistes'); ?></TD></TR>                                        

@@ -41,4 +41,21 @@ class myUser extends sfBasicSecurityUser
   	
   }
 
+  public function addLogAction($accio,$model,$dadesBefore = null ,$dadesAfter = null)
+  {
+  	$idU = $this->getSessionPar('idU');
+  	$time = date('Y-m-d H:i',time());
+  	
+  	$O = new Log();
+  	if($idU > 0) $O->setUsuariid($idU);
+  	else $O->setUsuariid(null);
+  	$O->setAccio($accio);
+  	$O->setModel($model);  	
+  	if(!is_null($dadesBefore)) $O->setDadesbefore(serialize($dadesBefore));
+  	if(!is_null($dadesAfter))  $O->setDadesafter(serialize($dadesAfter));  	
+  	$O->setData($time);
+  	$O->save();
+  	
+  }
+  
 }

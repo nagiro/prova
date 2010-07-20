@@ -35,17 +35,6 @@ abstract class BaseEntradesForm extends BaseFormPropel
       'recaptat'  => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
     ));
 
-    $this->widgetSchema->setLabels(array(      
-      'titol'     => 'Títol',
-      'subtitol'  => 'Subtítol',
-      'data'      => 'Data',
-      'lloc'      => 'Lloc',
-      'preu'      => 'Preu',
-      'venudes'   => 'Venudes',
-      'recaptat'  => 'Recaptat',
-    ));
-    
-    
     $this->widgetSchema->setNameFormat('entrades[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

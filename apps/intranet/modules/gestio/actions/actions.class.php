@@ -28,6 +28,9 @@ class gestioActions extends sfActions
    */        
   public function executeMain()
   { 
+  	  	  	
+  	$this->getUser()->addLogAction('inside','Main');
+  	
     $this->setLayout('gestio');
     
     $idU = $this->getUser()->getSessionPar('idU');    
@@ -62,7 +65,7 @@ class gestioActions extends sfActions
   /**
    * FEM UN LOGIN
    */       
-  public function executeLogin()
+/*  public function executeLogin()
   {
     $this->setLayout('gestio');
     
@@ -85,11 +88,11 @@ class gestioActions extends sfActions
   		endif;
   	}  	  
   }
-  
+*/  
   /**
    * FEM UN LOGOUT
    */     
-  public function executeLogout()
+/*  public function executeLogout()
   {
     $this->setLayout('gestio');
   	if($this->getUser()->hasAttribute('idU'))
@@ -97,7 +100,7 @@ class gestioActions extends sfActions
     	$this->getUser()->setAuthenticated(false);
     	$this->getUser()->setSessionPar('idU',0);  	
   }
-  
+*/  
   /**
    * RETORNA CORRECTE SI EL DNI TÃ‰ UN FORMAT CORRECTE.
    **/    
@@ -122,7 +125,7 @@ class gestioActions extends sfActions
   
   public function executeGUsuaris(sfWebRequest $request)
   {    
-	
+	  	
     $this->setLayout('gestio');
 
     if($request->getParameter('accio') == 'CC'):
@@ -157,6 +160,11 @@ class gestioActions extends sfActions
     
     switch($accio){
     
+    	//Hem entrat a usuaris
+    	case 'CC':
+    			$this->getUser()->addLogAction('inside','gUsuaris');
+    		break;
+    		
     	//Nou usuari 
        case 'N':
              $this->MODE['NOU'] = true;
@@ -173,7 +181,11 @@ class gestioActions extends sfActions
        
 		//Esborra un usuari
         case 'D':
+        	
         	$OU = UsuarisPeer::retrieveByPK($this->IDU);
+        	
+        	$this->getUser()->addLogAction($accio,'gUsuaris',$OU);
+        	
         	$OU->delete();
         	$this->redirect('gestio/gUsuaris?accio=FC');        	
         	break;
@@ -204,7 +216,11 @@ class gestioActions extends sfActions
        		 else $this->FUsuari = new UsuarisForm();
        		        		  
              $this->FUsuari->bind($request->getParameter('usuaris'));             
-		     if($this->FUsuari->isValid()) $this->FUsuari->save();		     
+		     if($this->FUsuari->isValid())
+		     { 		     	
+		     	$this->FUsuari->save();
+		     	$this->getUser()->addLogAction($accio,'gUsuaris',$OUsuari,$this->FUsuari->getObject()); 
+		     }		     
 		     $this->MODE['EDICIO'] = true;      
 		     
              break;
@@ -213,13 +229,15 @@ class gestioActions extends sfActions
        case 'DL':   
              $D = $request->getParameter('D');
              foreach($D['IDL'] as $IDL) LlistesPeer::desvincula($this->IDU,$IDL);
+             $this->getUser()->addLogAction($accio,'gUsuaris',$D);
              $this->redirect("gestio/gUsuaris?accio=L");                            
              break;
              
        //Vincula un usuari a la llista de correu
        case 'VL':
-             $D = $request->getParameter('D');
+             $D = $request->getParameter('D');             
              foreach($D['IDL'] as $IDL) LlistesPeer::vincula($this->IDU,$IDL);
+             $this->getUser()->addLogAction($accio,'gUsuaris',$D);
              $this->redirect("gestio/gUsuaris?accio=L");                            
              break;
                            
@@ -232,10 +250,11 @@ class gestioActions extends sfActions
         	
         //Guarda la gestiÃ³ d'aplicacions
         case 'SGA':
-        	        	
-        	UsuarisAppsPeer::save($request->getParameter('PERMIS'),$this->IDU);        	        	
+        	$PERM = $request->getParameter('PERMIS');
+        	UsuarisAppsPeer::save($PERM,$this->IDU);        	        	
         	$this->USUARI = UsuarisPeer::retrieveByPk($this->IDU);
-        	$this->LLISTAT_PERMISOS = UsuarisAppsPeer::getPermisos($this->IDU);        				
+        	$this->LLISTAT_PERMISOS = UsuarisAppsPeer::getPermisos($this->IDU);
+        	$this->getUser()->addLogAction($accio,'gUsuaris',$PERM);        				
         	$this->MODE['GESTIO_APLICACIONS'] = true;
         	break;
     }
@@ -254,7 +273,7 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
         
     $this->ERRORS = array(); $this->EDICIO = false; $this->NOU = false; $this->LLISTES = false; $this->CURSOS = false; $this->PROMOCIO = new Promocions();
-    
+
     if($request->getParameter('accio')=='N'):      
       $this->FPromocio = new PromocionsForm();
       $this->getUser()->setSessionPar('idP',0);    
@@ -266,7 +285,9 @@ class gestioActions extends sfActions
       $this->EDICIO = true;
     elseif($request->getParameter('BDELETE')): //Esborra
       $this->PROMOCIO = PromocionsPeer::retrieveByPK($request->getParameter('IDP'));
-      $this->PROMOCIO->delete();      
+      $this->PROMOCIO->delete();
+    elseif($request->getParameter('accio') == 'CC'):
+    	$this->getUser()->addLogAction('inside','gPromocions');
     endif;
     
     if($request->hasParameter('BSAVE')):
@@ -276,8 +297,8 @@ class gestioActions extends sfActions
       $this->FPromocio = new PromocionsForm($OPromocio);
       $this->FPromocio->bind($request->getParameter('promocions'),$request->getFiles('promocions'));
       
-      if($this->FPromocio->isValid()) { try { $this->FPromocio->save(); } catch (Exception $e) { echo $e->getMessage(); } }
-      else echo "No Ã©s vÃ lida";
+      if($this->FPromocio->isValid()) { try { $this->getUser()->addLogAction('save','gPromocions',$OPromocio,$this->FPromocio->getObject()); $this->FPromocio->save(); } catch (Exception $e) { echo $e->getMessage(); } }
+      else echo "No és vàlida";
          
       $this->EDICIO = true;      
     endif;
@@ -324,9 +345,16 @@ class gestioActions extends sfActions
       	$this->NODE = $NODE;                       
       	$this->HTML = true;
     elseif($request->getParameter('accio')=='D'):
-      $this->NODE = NodesPeer::retrieveByPK($request->getParameter('idN'));      
+      
+      $IDN = $request->getParameter('idN');
+      $this->NODE = NodesPeer::retrieveByPK($IDN);
+
+      $this->getUser()->addLogAction('delete','gEstructura',$this->NODE);
+      
       $this->NODE->delete();
-      $this->NODE = new Nodes();                 
+      $this->NODE = new Nodes();
+    elseif($request->getParameter('accio') == 'CC'):
+    	$this->getUser()->addLogAction('inside','gEstructura');        
     endif;
     
     if($request->hasParameter('BSAVE')):
@@ -336,7 +364,7 @@ class gestioActions extends sfActions
       else $this->FNode = new NodesForm();      
             
       $this->FNode->bind($request->getParameter('nodes'));
-      if($this->FNode->isValid()) $this->FNode->save();             
+      if($this->FNode->isValid()) {  $this->FNode->save(); $this->getUser()->addLogAction('save','gEstructura',$ONode,$this->FNode->getObject()); }             
       $this->EDICIO = false;                
     elseif($request->hasParameter('SaveHTML')):
       $idN = $this->getUser()->getSessionPar('idN');
@@ -347,7 +375,8 @@ class gestioActions extends sfActions
       $fd = fopen(sfConfig::get('sf_web_dir').'/pagines/'.$idN.'.php',"w");
       fwrite($fd,$this->FHtml->getValue('html'));
       $this->NODE->setHTML('/pagines/'.$idN.'.php');
-      $this->NODE->setTitolmenu($this->FHtml->getValue('titol'));      
+      $this->NODE->setTitolmenu($this->FHtml->getValue('titol'));
+      $this->getUser()->addLogAction('saveHTML','gEstructura',$this->NODE);      
       $this->NODE->save();                        
       $this->HTML = true;                
     endif;
@@ -637,7 +666,8 @@ class gestioActions extends sfActions
     switch($accio)
     {    
     	case 'C':
-    			// $this->ENTRADES = EntradesPeer::getList($this->PAGINA);
+    			// $this->ENTRADES = EntradesPeer::getList($this->PAGINA);    	
+    			$this->getUser()->addLogAction('inside','gEntrades');    	    		
     		break;
     	case 'NOU': 
     			$this->MODE = 'NOU';      
@@ -654,7 +684,8 @@ class gestioActions extends sfActions
     			$FE = EntradesPeer::initialize($PE['idEntrada']);
     			$FE->bind($PE);
     			if($FE->isValid()):
-    				$FE->save();    				
+    				$FE->save();    		
+    				$this->getUser()->addLogAction($accio,'gEntrades',$FE->getObject());		
     			else: 
     				$this->MODE = 'EDITA';
     			endif; 
@@ -663,6 +694,7 @@ class gestioActions extends sfActions
     	case 'DELETE':
     			$PE = $request->getParameter('entrades');
     			$FE = EntradesPeer::initialize($PE['idEntrada']);
+    			$this->getUser()->addLogAction($accio,'gEntrades',$FE->getObject());
     			$FE->getObject()->delete();
     		break;
     		    
@@ -859,7 +891,7 @@ class gestioActions extends sfActions
   // GESTIO DE LES ACTIVITATS *******************************************************************
   //******************************************************************************************
   
-  
+/*  
   public function executeGHoraris()
   {
     $this->setLayout('pla');
@@ -910,11 +942,11 @@ class gestioActions extends sfActions
              
 
   }
-  
+*/  
   
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
-  
+/*  
   public function executeGTasques(sfWebRequest $request)  
   {
      
@@ -985,11 +1017,11 @@ class gestioActions extends sfActions
 	$this->TASQUES_PERFER      = TasquesPeer::getCercaTasques($this->CERCA, $this->getUser()->getSessionPar('idU'), $this->PAGINA , true);
         
   }
-  
+*/  
   
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
-         
+/*         
   public function netejaParametresSessio()
   {
   	$this->getUser()->setSessionPar('text',"");
@@ -1000,7 +1032,7 @@ class gestioActions extends sfActions
   	$this->getUser()->setSessionPar('accio','C');
   
   }
-
+*/
   public function executeSelectCodiCurs(sfWebRequest $request)
   {
   	
@@ -1051,20 +1083,27 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');    	
 
    	//Netegem cerca
-  	if($request->getParameter('accio') == 'C'):      		
+/*  	if($request->getParameter('accio') == 'C'):      		
         $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
       	$this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());       	    
       	$this->DIA    = $this->getUser()->setSessionPar('DIA',time());	
       	$this->IDA    = $this->getUser()->setSessionPar('IDA',0);	      			      	           			       
     endif;    
-        
+*/        
     $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
-    $this->PAGINA 			= $this->getUser()->ParReqSesForm($request,'PAGINA',1);
-    $this->DATAI  			= $this->getUser()->ParReqSesForm($request,'DATAI',time());    
+    $this->PAGINA 			= $this->getUser()->ParReqSesForm($request,'PAGINA',1);    
+/*    $this->DATAI  			= $this->getUser()->ParReqSesForm($request,'DATAI',time());    
     $this->DIA    			= $this->getUser()->ParReqSesForm($request,'DIA',time());    
     $this->IDA    			= $this->getUser()->ParReqSesForm($request,'IDA',0);
-    $accio  				= $this->getUser()->ParReqSesForm($request,'accio','C');        
+    $accio  				= $this->getUser()->ParReqSesForm($request,'accio','C');
+*/
+    
+    $this->PAGINA 			= $request->getParameter('PAGINA',1);    
+    $this->DATAI  			= $request->getParameter('DATAI',time());    
+    $this->DIA    			= $request->getParameter('DIA',time());    
+    $this->IDA    			= $request->getParameter('IDA',0);
+    $this->accio 			= $request->getParameter('accio','C');            
     
     $this->ACTIVITAT_NOVA 	= false;        
 
@@ -1076,18 +1115,18 @@ class gestioActions extends sfActions
 	$this->MODE = array();
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { $accio = 'C'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    		$accio = 'NA';
-	    elseif($request->hasParameter('BCICLE')) 			$accio = 'CICLE';
-	    elseif($request->hasParameter('BCICLESAVE'))		$accio = 'CICLE_SAVE';
-	    elseif($request->hasParameter('BACTIVITAT')) 		$accio = 'ACTIVITAT';
-	    elseif($request->hasParameter('BACTIVITATSAVE')) 	$accio = 'ACTIVITAT_SAVE';
-	    elseif($request->hasParameter('BHORARI')) 			$accio = 'HORARI';
-	    elseif($request->hasParameter('BHORARISAVE')) 		$accio = 'HORARI_SAVE';
-	    elseif($request->hasParameter('BHORARIDELETE')) 	$accio = 'HORARI_DELETE';
-	    elseif($request->hasParameter('BDESCRIPCIO')) 		$accio = 'DESCRIPCIO';
-	    elseif($request->hasParameter('BDESCRIPCIOSAVE')) 	$accio = 'DESCRIPCIO_SAVE';
-	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $accio = 'DESCRIPCIO_DELETE';	    	    
+	    if($request->hasParameter('BCERCA')) { $this->accio = 'C'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    		$this->accio = 'ACTIVITAT';
+	    elseif($request->hasParameter('BCICLE')) 			$this->accio = 'CICLE';
+	    elseif($request->hasParameter('BCICLESAVE'))		$this->accio = 'CICLE_SAVE';
+	    elseif($request->hasParameter('BACTIVITAT')) 		$this->accio = 'ACTIVITAT';
+	    elseif($request->hasParameter('BACTIVITATSAVE')) 	$this->accio = 'ACTIVITAT_SAVE';
+	    elseif($request->hasParameter('BHORARI')) 			$this->accio = 'HORARI';
+	    elseif($request->hasParameter('BHORARISAVE')) 		$this->accio = 'HORARI_SAVE';
+	    elseif($request->hasParameter('BHORARIDELETE')) 	$this->accio = 'HORARI_DELETE';
+	    elseif($request->hasParameter('BDESCRIPCIO')) 		$this->accio = 'DESCRIPCIO';
+	    elseif($request->hasParameter('BDESCRIPCIOSAVE')) 	$this->accio = 'DESCRIPCIO_SAVE';
+	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $this->accio = 'DESCRIPCIO_DELETE';	    	    
     }                
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
@@ -1100,11 +1139,13 @@ class gestioActions extends sfActions
     
     $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre Ã©s 3 mesos superior a la inicial        
 	   
-    switch($accio){
+    switch($this->accio){
     	
     	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
-    				    		
+
+    			$this->getUser()->addLogAction('inside','gActivitats');
+    		
                 $HORARIS = HorarisPeer::getActivitats(null,$this->CERCA['text'],$this->DATAI,$this->DATAF,null);
                 if($this->CERCA['text'] <> "") $this->ACTIVITATS = $HORARIS['ACTIVITATS'];
                	else $this->ACTIVITATS = array();                                                                 
@@ -1115,7 +1156,7 @@ class gestioActions extends sfActions
     		break;
 
     	//Consulta que em mostra les activitats quan canvio de mensualitat o any 
-    	case 'CC':    		
+    	case 'CC':     			   		
                 $HORARIS = HorarisPeer::getActivitats(null , $this->CERCA['text'], $this->DATAI, $this->DATAF, null);
                 //$this->ACTIVITATS = $HORARIS['ACTIVITATS'];
                 $this->ACTIVITATS = array();                
@@ -1134,120 +1175,37 @@ class gestioActions extends sfActions
                 $this->MODE['LLISTAT'] = true;                                                              
     		break;    	
     		    		
-		//Entrem al primer pas d'una activitat.    		
-    	case 'NA':
-    			$this->FCicle = new ActivitatsPas1Form();
-    			$this->MODE['NOU'] = true;    			
-    			$this->getUser()->setSessionPar('IDA',null);    		
-    		break;
-    		
-    	//Pas DOS entrem la descripció del conjunt o passem als horaris
-    	case 'CICLE':
-    		
-    			//És una activitat nova!!
-    			if(!$request->hasParameter('IDA')):
-    				$RA = $request->getParameter('activitats');
-    				    				
-    				//Si és una sola activitat, passem directament als horaris.    			
-	    			if($RA['cicle'] == 1):
-	    				$this->getUser()->setSessionPar('isCicle',0);
-	    				$this->getUser()->setSessionPar('IDC',0);
-	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
-	    				    			
-	    			
-	    			//Si és un cicle, apareix una descripció nova del cicle
-	    			else:    			
-	    				$OC = new Cicles();
-	    				$OC->setNom($RA['nom']);
-	    				$this->FCicle = new CiclesForm($OC);		    					    					    										
-						$this->MODE['CICLE'] = true;
-						$this->getUser()->setSessionPar('isCicle',1);	
-						$this->getUser()->setSessionPar('IDC',0);											    					    			
-	    			endif; 
-
-	    		//Carreguem la descripció del cicle associat a l'activitat i si no en té passem directament al llistat
-    			else:    				
-    				$FActivitats = ActivitatsPeer::initilize($this->IDA);    				
-    				$cicle = $FActivitats['Cicles_CicleID']->getValue();    				
-    				if( !is_null($cicle) && $cicle <> CiclesPeer::NO_PERTANY_A_CAP_CICLE ):
-	    				$this->FCicle = CiclesPeer::initialize($cicle);
-	    				$this->MODE['CICLE'] = true;	
-	    				$this->getUser()->setSessionPar('isCicle',1);
-	    				$this->getUser()->setSessionPar('IDC',$this->FCicle->getObject()->getCicleid());
-	    			else: 	    				
-	    				$this->getUser()->setSessionPar('isCicle',0);
-	    				$this->getUser()->setSessionPar('IDC',0);
-	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
-	    			endif; 
-    			endif; 
-    		 
-    		break;
-    	    		
-    	//Guardem el projecte o activitat
-    	case 'CICLE_SAVE':
-				$RC = $request->getParameter('cicles');
-				$this->FCicle = CiclesPeer::initialize($RC['CicleID']);
-				$this->FCicle->bind($RC,$request->getFiles('cicles'));
-				if($this->FCicle->isValid()):
-					$this->FCicle->save();
-					$this->getUser()->setSessionPar('IDC',$this->FCicle->getObject()->getCicleid());
-					$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
-				else:
-					$this->MODE['ACTIVITAT'] = true; 					
-				endif;     			
-    		break;
-    		
     	//Entrem les activitats... que necessitem
     	case 'ACTIVITAT':
-    		    		    		
-    		//Una activitat d'un cicle
-    		if($this->getUser()->getSessionPar('isCicle')):
-    			$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->getNom();
-    			$this->MODE['ACTIVITAT_CICLE'] = true;
-    			$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getSessionPar('IDC'));
-    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));
-    			if($request->hasParameter('new')):
-    				$this->FActivitat = ActivitatsPeer::initilize(null,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));    				
-    				$this->getUser()->setSessionPar('IDA',0);
-    			endif;
-    			
-    		//Una sola activitat
-    		else: 
-    			$this->CICLE = "No pertany a cap cicle";   		
-    			$this->MODE['ACTIVITAT_ALONE'] = true;
-    			$OA = ActivitatsPeer::retrieveByPK($this->IDA);
-    			
-    			if($OA instanceof Activitats):
-    				$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
-    			else:
-    				$this->ACTIVITATS = array();
-    			endif; 
-    			
-    			$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));
-    		endif;
+
+    		$this->CarregaActivitats($request,true);
     		     			
     		break;
     		
     	//Guardem l'activitat
     	case 'ACTIVITAT_SAVE':
+
+    			$RP = $request->getParameter('activitats');
+    			$this->IDA = $RP['ActivitatID'];
+    			$this->IDC = $RP['Cicles_CicleID'];
     		
-	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->getUser()->getSessionPar('isCicle'),$this->getUser()->getSessionPar('IDC'));
+	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->IDC);	    		
 	    		$this->FActivitat->bind($request->getParameter('activitats'));
 	    		if($this->FActivitat->isValid()):
 	    			$nova = $this->FActivitat->isNew();
-	    			$this->FActivitat->save();
-	    			$this->getUser()->setSessionPar('IDA',$this->FActivitat->getObject()->getActivitatid());
+	    			$this->FActivitat->save();	    			
+	    			$this->getUser()->addLogAction($accio,'gActivitats',$this->FActivitat->getObject());
 	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();
 	    			if($nova):	    				
-	    				$this->redirect('gestio/gActivitats?accio=HORARI&nou='.$this->IDA);
+	    				$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA.'&nou='.$this->IDA);
 	    			else: 
-	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT');
+	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);
 	    			endif; 	    			
 	    		else: 
 	    			if($this->getUser()->getSessionPar('isCicle')):
 	    				$this->MODE['ACTIVITAT_CICLE'] = true;
-    					$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getSessionPar('IDC'));
-    					$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->getNom();
+    					$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC);
+    					$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();
 					else:
 						$this->MODE['ACTIVITAT_ALONE'] = true;
 	    				$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
@@ -1260,7 +1218,7 @@ class gestioActions extends sfActions
     	//Entrem els horaris de les activitats
     	case 'HORARI':
     			
-				$this->CarregaActivitats(); 
+				$this->CarregaActivitats($request,false); 
     			    			    							
  				$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA); 				    		
     			$this->HORARIS = $OActivitat->getHorariss();
@@ -1293,14 +1251,17 @@ class gestioActions extends sfActions
 		
     	case 'HORARI_SAVE':
     		
+    			$RP = $request->getParameter('horaris');
+    			$this->IDA = $RP['Activitats_ActivitatID'];
+    			$this->IDH = $RP['HorarisID'];
+    		
 	    		$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
 	    		$this->NOMACTIVITAT = $OActivitat->getNom();
 	    		$this->HORARIS = $OActivitat->getHorariss();
 	    		
-	    		$idH = $this->getUser()->getSessionPar('IDH');
-	    		$OHorari = HorarisPeer::retrieveByPK($idH);
-	    		if($idH == 0) 	$this->FHorari = new HorarisForm();
-	    		else			$this->FHorari = new HorarisForm($OHorari);
+	    		$OHorari = HorarisPeer::retrieveByPK($this->IDH);
+	    		if($this->IDH == 0) 	$this->FHorari = new HorarisForm();
+	    		else					$this->FHorari = new HorarisForm($OHorari);
 	    		
 	    		$this->MATERIALOUT = array();
 	    		$material = $request->getParameter('material');
@@ -1319,13 +1280,14 @@ class gestioActions extends sfActions
 	    		$this->FHorari->bind($request->getParameter('horaris'));
 	    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$this->MATERIALOUT,$this->ESPAISOUT);
 	    		if(empty($RET)):
+	    			$this->getUser()->addLogAction($accio,'gActivitats',$this->FHorari->getObject());
 	    			$this->MISSATGE = array(1=>'Horari guardat correctament');
-	    			$this->redirect('gestio/gActivitats?accio=HORARI');
+	    			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA);
 	    		else:
 	    			$this->MISSATGE = $RET;
 	    		endif; 
 	    		
-	    		$this->CarregaActivitats();
+	    		$this->CarregaActivitats($request,false);
 	    		
 	    		$this->MODE['HORARI'] = true;
 	    			    			    		    	    			
@@ -1333,15 +1295,17 @@ class gestioActions extends sfActions
     		
     	case 'HORARI_DELETE':
 
-    			$RH = $request->getParameter('horaris');
-    			HorarisPeer::retrieveByPK($RH['HorarisID'])->delete();    			
+    			$RH = $request->getParameter('horaris');    			
+    			$OH = HorarisPeer::retrieveByPK($RH['HorarisID']);
+    			$this->getUser()->addLogAction($accio,'gActivitats',$OH);
+    			$OH->delete();    			    			
 	   			$this->redirect('gestio/gActivitats?accio=HORARI');
 	   			
     		break;
     		
     	case 'DESCRIPCIO':
     		
-    			$this->CarregaActivitats();
+    			$this->CarregaActivitats($request,false);
     			
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
     			$this->NOMACTIVITAT = $OActivitat->getNom();
@@ -1352,13 +1316,17 @@ class gestioActions extends sfActions
     	
     	case 'DESCRIPCIO_SAVE':
     			
-    			$this->CarregaActivitats();
+    			$RP = $request->getParameter('activitats');
+    			$this->IDA = $RP['ActivitatID'];
+    			
+    			$this->CarregaActivitats($request,false);
     			$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
     			$this->FActivitat = new ActivitatsTextosForm($OActivitat);
     			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
     			if($this->FActivitat->isValid()): 
     				$this->FActivitat->save();
-    				$this->redirect('gestio/gActivitats?accio=DESCRIPCIO');
+    				$this->getUser()->addLogAction($accio,'gActivitats',$this->FActivitat->getObject());
+    				$this->redirect('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$this->IDA);
     			endif; 
     			
     			$THIS->MODE['DESCRIPCIO'] = true;
@@ -1373,19 +1341,41 @@ class gestioActions extends sfActions
     
   }  
 
-  private function CarregaActivitats()
+  private function CarregaActivitats($request,$with_form)
   {
-  	
-  	if($this->getUser()->getSessionPar('isCicle')):
-  		$this->CICLE = CiclesPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->getNom();
-    	$this->MODE['ACTIVITAT_CICLE'] = true;
-    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->getUser()->getSessionPar('IDC'));
-    else:
-    	$this->CICLE = 'No hi ha cicle';
-    	$this->MODE['ACTIVITAT_ALONE'] = true;
-    	$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
-    endif;
-  	
+    	//Si una activitat pertany a un cicle ensenyo totes les del cicle
+	    $OA = ActivitatsPeer::retrieveByPK($this->IDA);
+	    
+		//Si és una activitat i pertany a un cicle
+	    if($OA instanceof Activitats && $OA->getCiclesCicleid() > 1):
+	    	
+	    	$IDC = $OA->getCiclesCicleid();
+	    	$this->CICLE = CiclesPeer::retrieveByPK($IDC)->getNom();    			
+	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($IDC);
+	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize($this->IDA,true,$IDC);    			
+	    	$this->MODE['ACTIVITAT_CICLE'] = true;
+	    	
+	    	if($request->hasParameter('new') && $with_form ):
+	    		$this->FActivitat = ActivitatsPeer::initilize(null,true,$IDC);    				
+	    		$this->getUser()->setSessionPar('IDA',0);
+	    	endif;
+	    	
+	    //Una sola activitat
+	    else: 
+	    	$this->CICLE = "No pertany a cap cicle";   		
+	    	$this->MODE['ACTIVITAT_ALONE'] = true;
+	    	$OA = ActivitatsPeer::retrieveByPK($this->IDA);
+	    	
+	    	if($OA instanceof Activitats):
+	    		$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
+	    	else:
+	    		$this->ACTIVITATS = array();
+	    	endif; 
+	    	
+	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize($this->IDA,false,1);
+	    	
+	    endif;		
+  	  	
   }
   
   public function GuardaHorari($horaris, $material, $espais)
@@ -1423,23 +1413,39 @@ class gestioActions extends sfActions
   	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
       	
     if(empty($espais)) $ERRORS[] = "Has d'entrar algun espai";
-        
+
     //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
     foreach($DBDD['DIES'] as $D):
         	    
-    	foreach($espais as $E=>$idE):
-	    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] ) > 0 ):
-	    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
-	    		$ERRORS[] = "El dia $D coincideix a l'espai $Espai amb una altra activitat";
-	    	endif;
-				    	
-	    	foreach($material as $M):
-	    		if( HorarisPeer::validaMaterial( $D , $idE , $M['material'] , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
-	    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
-	    			$Mater = MaterialPeer::retrieveByPK($M['material'])->getNom();
-	    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
-    			endif;	    	
-	    	endforeach;     	
+    	foreach($espais as $E=>$idE):    		
+    		//Si l'usuari bloqueja un espai hem de mirar que no hi hagi cap activitat aquell dia. 
+    		if($idE == 22)
+    		{
+				$RS = HorarisPeer::getActivitatsDia($D);
+				if(sizeof($RS) > 0) { $ERRORS[] = "El dia $D hi ha ".sizeof($RS)." activitat(s) que impedeixen el bloqueig."; }
+			}
+			else
+			{ 
+	    		//Mirem si encaixa amb alguna altra activitat solta
+		    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] ) > 0 )
+		    	{
+		    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
+			    	$ERRORS[] = "El dia $D coincideix a l'espai $Espai amb una altra activitat";
+		    	}
+			    //Comprovem que no hi hagi un problema amb un dia bloquejat
+			    elseif( HorarisPeer::validaDiaBloqueig($D,$horaris['HorarisID']) )
+			    {			    		
+		    			$ERRORS[] = "El dia $D hi ha una activitat que bloqueja tots els espais!";		    					    			    		 
+			    }
+					    	
+		    	foreach($material as $M):
+		    		if( HorarisPeer::validaMaterial( $D , $idE , $M['material'] , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
+		    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
+		    			$Mater = MaterialPeer::retrieveByPK($M['material'])->getNom();
+		    			$ERRORS[] = "El material $Mater de l'aula $Espai està reservat el dia $D";
+	    			endif;	    	
+		    	endforeach;
+    		}    	
     	endforeach;
         	    	
     endforeach;
@@ -1490,6 +1496,8 @@ class gestioActions extends sfActions
 	elseif(!empty($this->CERCA_MES) && !empty($this->CERCA_ESPAI)):
 		$this->DADES_MESOS_HORES = HorarisPeer::getMesosEspaisHores($this->CERCA_ANY,$this->CERCA_ESPAI,$this->CERCA_MES);
 		//Busquem per cada dia del mes, les hores ocupades
+	elseif($request->getParameter('accio') == 'CC'):
+		$this->getUser()->addLogAction('inside','gEspais');    	
 	endif;
 	
       
@@ -1550,6 +1558,12 @@ class gestioActions extends sfActions
     
     switch( $this->accio )
     {    	
+    	
+      case 'C':
+    			$this->getUser()->addLogAction('inside','gAgenda');
+    			$this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] );
+    			break;
+    	
       case 'N':
                 $this->MODE = 'NOU';
                 $this->getUser()->setSessionPar('AID',0);                
@@ -1579,7 +1593,8 @@ class gestioActions extends sfActions
 
       			$this->FAgenda->bind($request->getParameter('agendatelefonica'));
       			if($this->FAgenda->isValid()):
-					$this->FAgenda->save();					
+					$this->FAgenda->save();
+					$this->getUser()->addLogAction($accio,'gAgenda',$this->FAgenda->getObject());					
 					$this->getUser()->setSessionPar('AID',$this->FAgenda->getObject()->getAgendatelefonicaid());										
 					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getSessionPar('AID')); //Actualitzem tambÃ© les dades relacionades
 					$this->MISSATGE = "El registre s'ha modificat correctament.";
@@ -1593,7 +1608,7 @@ class gestioActions extends sfActions
       case 'D': 
                 $this->AID = $this->getUser()->getSessionPar('AID');
                 $A = AgendatelefonicaPeer::retrieveByPK($this->AID);
-                if(!is_null($A)) $A->delete();  
+                if(!is_null($A)) { $this->getUser()->addLogAction($accio,'gAgenda',$A); $A->delete(); }  
                 break;       
       default:                 
                 $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] );
@@ -1650,7 +1665,8 @@ class gestioActions extends sfActions
     
       //Entrem per primer cop a aquest apartat
       case 'I':      	            		
-      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );      			      			
+      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false );
+      			$this->getUser()->addLogAction('inside','gMissatges');      			      			
       			break;
       
       case 'N':
@@ -1675,13 +1691,17 @@ class gestioActions extends sfActions
       			$IDM = $this->getUser()->getSessionPar('IDM');
       			$this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getSessionPar('idU'));                
                 $this->FMissatge->bind($request->getParameter('missatges'));                
-                if ($this->FMissatge->isValid()) { $this->FMissatge->save(); $this->redirect('gestio/gMissatges?accio=I'); }                              	                                                                                
+                if ($this->FMissatge->isValid()) { 
+                	$this->FMissatge->save();
+                	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());   
+                	$this->redirect('gestio/gMissatges?accio=I'); 
+                }                              	                                                                                
                 $this->MODE['EDICIO'] = true;              
                 break;
       case 'D':
       			$this->IDM = $this->getUser()->getSessionPar('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
-                if(!is_null($M)) $M->delete();
+                if(!is_null($M)) { $M->delete(); $this->getUser()->addLogAction($accio,'gMisatges',$M); }
                 $this->redirect('gestio/gMissatges?accio=I');                
                 break;
       case 'SF':
@@ -1724,7 +1744,7 @@ class gestioActions extends sfActions
   
   //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
   //Exemple: $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
-  public function ParReqSesForm($request, $nomCamp, $default = "") 
+/*  public function ParReqSesForm($request, $nomCamp, $default = "") 
   {
   	  	  	
   	$RET = ""; 	    	
@@ -1775,7 +1795,7 @@ class gestioActions extends sfActions
   	return $RET;
   }
   
-  
+*/  
   
   /**
    * GestiÃ³ de l'inventari i del material
@@ -1813,6 +1833,9 @@ class gestioActions extends sfActions
 	endif;                
 	
     switch($accio){
+    	case 'C':
+    		   	$this->getUser()->addLogAction('inside','gMaterial');
+    			break;
     	case 'N':
     			$OMaterial = new Material();
     			$OMaterial->setMaterialgenericIdmaterialgeneric($this->TIPUS);
@@ -1835,12 +1858,15 @@ class gestioActions extends sfActions
     		    $this->FMaterial->bind($request->getParameter('material'));
     		    if($this->FMaterial->isValid()):
     		    	$this->FMaterial->save();
+    		    	$this->getUser()->addLogAction($accio,'gMaterial',$this->FMaterial->getObject());
     		    	$this->redirect('gestio/gMaterial?accio=C');
     		    endif;     		        		    
     			$this->EDICIO = true;
     		break;
     	case 'D':     			
-    	        MaterialPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'))->delete();  	        
+    	        $OM = MaterialPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));
+    	        $this->getUser()->addLogAction($accio,'gMaterial',$OM);
+    	        $OM->delete();    	          	        
     	        break;    	         	 
     }
         
@@ -1927,6 +1953,7 @@ class gestioActions extends sfActions
     		    $this->FCurs->bind($request->getParameter('cursos'));
     		    if($this->FCurs->isValid()):
     		    	$this->FCurs->save();
+    		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());
     		    	$this->getUser()->setSessionPar('IDC',$this->FCurs->getObject()->getIdcursos());
     		    else:
     		    	echo "Problema";     		    
@@ -1937,6 +1964,7 @@ class gestioActions extends sfActions
     	case 'D': 
     			$OCurs = CursosPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'));
     			if($OCurs instanceof Cursos):
+    				$this->getUser()->addLogAction($accio,'gCursos',$OCurs);
     				$OCurs->delete();    	        	
 				endif;
 				$this->redirect('gestio/gCursos?accio=CA');
@@ -1952,6 +1980,9 @@ class gestioActions extends sfActions
 		case 'L': 
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));
 				$this->MODE = 'LLISTAT_ALUMNES'; 
+			break;
+		case 'C':
+				$this->getUser()->addLogAction('inside','gCursos');
 			break;
     }           
   }
@@ -2005,13 +2036,19 @@ class gestioActions extends sfActions
     		    $this->FReserva->bind($request->getParameter('reservaespais'));    		    
     		    if($this->FReserva->isValid()):
     		    	$this->FReserva->save();
+    		    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);
     		    	$this->redirect('gestio/gReserves?accio=NN');
     		    endif;     		        		    
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'D': 
-    	        ReservaespaisPeer::retrieveByPK($this->IDR)->delete();    	        
-    	        break;    	         	 
+    	        $OR = ReservaespaisPeer::retrieveByPK($this->IDR);
+    	        $this->getUser()->addLogAction($accio,'gReserves',$OR);
+    	        $OR->delete();    	        
+    	        break;    	 
+    	case 'C':
+				$this->getUser()->addLogAction('inside','gReserves');
+    			break;        	 
     }
         
     $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA['text'],$this->PAGINA);    
@@ -2086,6 +2123,7 @@ class gestioActions extends sfActions
     			$this->FUsuari->bind($request->getParameter('usuaris'));
     			if($this->FUsuari->isValid()):
     				$this->FUsuari->save();
+    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FUsuari->getObject());
     				$this->getUser()->setSessionPar('ID_NEW_USER',$this->FUsuari->getObject()->getUsuariid());    				    			
     				$this->redirect('gestio/gMatricules?accio=NU');
     			endif; 
@@ -2122,6 +2160,7 @@ class gestioActions extends sfActions
     			$this->FMatricula->bind($request->getParameter('matricules_usuari'));    			
     			if($this->FMatricula->isValid()):
     				$this->FMatricula->save();
+    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMatricula->getObject());
     				$this->getUser()->setSessionPar('IDM',$this->FMatricula->getObject()->getIdmatricules());
     				$this->redirect('gestio/gMatricules?accio=NC');
     			endif;
@@ -2146,6 +2185,7 @@ class gestioActions extends sfActions
     			$OMatricula->setEstat(MatriculesPeer::EN_PROCES);
     			$OMatricula->setPagat($Preu);    			
     			$OMatricula->save();
+    			$this->getUser()->addLogAction($accio,'gMatricules',$OMatricula);
     			$this->redirect('gestio/gMatricules?accio=FP');
     		break;
 
@@ -2168,6 +2208,7 @@ class gestioActions extends sfActions
     			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));    			
     			MatriculesPeer::setMatriculaPagada($this->getUser()->getSessionPar('IDM'),$this->getUser()->getSessionPar('isPle'));
     			$MATRICULA->save();
+    			$this->getUser()->addLogAction($accio,'gMatricules',$MATRICULA);
     			$this->MATRICULA = $MATRICULA;    			
     			$this->MODE = 'PAGAMENT';
     		break;
@@ -2175,7 +2216,8 @@ class gestioActions extends sfActions
     	case 'OK':
     		 if($this->getRequestParameter('Ds_Response') == '0000'):
                  $matricula = $this->getRequestParameter('Ds_MerchantData');
-                 MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getSessionPar('isPle'));                 
+                 MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getSessionPar('isPle'));
+                 $this->getUser()->addLogAction($accio,'gMatricules',$matricula);                 
                  $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                 
               else:			            
                  $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
@@ -2185,7 +2227,9 @@ class gestioActions extends sfActions
         //Esborra una matrícula    		    		
     	case 'D':    			    			    	 			
     			$idM = $this->getUser()->getSessionPar('IDM');    			    			    			
-    			MatriculesPeer::retrieveByPK($idM)->delete();     	            	       
+    			$OM = MatriculesPeer::retrieveByPK($idM); 
+    			$this->getUser()->addLogAction($accio,'gMatricules',$OM);
+    			$OM->delete();    	            	       
     	    break;
     	    
    	    //Edita una matrícula
@@ -2205,7 +2249,8 @@ class gestioActions extends sfActions
     			$this->FMATRICULA = new MatriculesForm($OMatricula);    			
     			$this->FMATRICULA->bind($request->getParameter('matricules'));    			
     			if($this->FMATRICULA->isValid()):
-    				$this->FMATRICULA->save();    				
+    				$this->FMATRICULA->save();
+    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMATRICULA->getObject());    				
     				$this->redirect('gestio/gMatricules?accio=CA');
     			endif;
     			$this->MODE = 'EDICIO';    		
@@ -2258,6 +2303,9 @@ class gestioActions extends sfActions
 				throw new sfStopException; 
 				
 			break;
+		case 'C':
+				$this->getUser()->addLogAction('inside','gMatricules');
+			break;
     }  	      
   }
   
@@ -2290,6 +2338,9 @@ class gestioActions extends sfActions
     }                    
     
 	switch($this->accio){
+		case 'CC':
+			$this->getUser()->addLogAction('inside','gNoticies');
+			break;
 		case 'N':
 			$ONoticia = new Noticies();
 			$ONoticia->setDatapublicacio(date('Y-m-d',time()));
@@ -2312,6 +2363,7 @@ class gestioActions extends sfActions
 			if($this->FORMULARI->isValid()):
 
 				$this->FORMULARI->save();
+				$this->getUser()->addLogAction($accio,'gNoticies',$this->FORMULARI->getObject());
 				$this->getUser()->setSessionPar('idN',$this->FORMULARI->getObject()->getIdnoticia());
 				$this->redirect('gestio/gNoticies?accio=CA');
 			endif; 
@@ -2320,10 +2372,11 @@ class gestioActions extends sfActions
 						
 			break;
 		case 'D':
-			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getSessionPar('idN'));
-			if($ON instanceof Noticies) $ON->delete();		
+			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getSessionPar('idN'));			
+			if($ON instanceof Noticies) {  $ON->delete(); $this->getUser()->addLogAction($accio,'gNoticies',$ON); }		
 			break;
 		case 'UPDATE':			
+				$this->getUser()->addLogAction($accio,'gNoticies',null);
 				NoticiesPeer::migraNoticiesActivitats();
 				NoticiesPeer::netejaNoticies();
 				$this->getUser()->setSessionPar('accio','ca');
@@ -2371,6 +2424,9 @@ class gestioActions extends sfActions
 	endif;                			
 	
 	switch($this->accio){
+		case 'C':
+				$this->getUser()->addLogAction('inside','gIncidencies');
+			break;
 	    case 'N':
 	    		$OIncidencia = new Incidencies();
 	    		$OIncidencia->setDataalta(time());
@@ -2389,12 +2445,15 @@ class gestioActions extends sfActions
 			    $this->FIncidencia->bind($request->getParameter('incidencies'));
 			    if($this->FIncidencia->isValid()):
 			    	$this->FIncidencia->save();
+			    	$this->getUser()->addLogAction($accio,'gIncidencies',$this->FIncidencia->getObject());
 			    	$this->redirect('gestio/gIncidencies?accio=C');
 			    endif; 
 			    $this->MODE['EDICIO'] = true;    		        		        			
 			break;
 		case 'D': 
-		        IncidenciesPeer::retrieveByPK($request->getRequest('IDI'))->delete();    	        
+		        $OI = IncidenciesPeer::retrieveByPK($request->getRequest('IDI'));
+		        $this->getUser()->addLogAction($accio,'gNoticies',$OI);
+		        $OI->delete();    	        
 		        break;    	         	 
 	}
 		    
@@ -2439,7 +2498,9 @@ class gestioActions extends sfActions
 	
 	
     switch($accio){
-    	
+    	case 'C':
+			$this->getUser()->addLogAction('inside','gCessio');
+    		break;
     	//Nova Cessió
     	case 'NC':
     			$OCessio = new Cessio();
@@ -2525,12 +2586,14 @@ class gestioActions extends sfActions
     		    	$OMC->setMaterialIdmaterial($idM);
     		    	$OMC->setCessioId($IDC);
     		    	$OMC->save();
+    		    	$this->getUser()->addLogAction($accio,'gCessio',$OMC);
     		     		    
     		    endforeach;
      		    
     		    if($request->hasParameter('material_no_inventariat')):
     		    	$FCESSIO->getObject()->setMaterialNoInventariat($request->getParameter('material_no_inventariat'));
     		    	$FCESSIO->getObject()->save();
+    		    	$this->getUser()->addLogAction($accio,'gCessio',$FCESSIO->getObject());
     		    endif; 
     		    
     		    $this->MODE = 'FINALITZAT';    		        		        			
@@ -2538,7 +2601,9 @@ class gestioActions extends sfActions
     		
     	//Esborra cessiÃ³
     	case 'DC': 
-    	        CessioPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'))->delete();    	        
+    	        $OC = CessioPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'));
+    	        $this->getUser()->addLogAction($accio,'gCessio',$OC);
+    	        $OC->delete();    	        
     	        break;
     	        
     	//Guarda retorn
@@ -2550,6 +2615,7 @@ class gestioActions extends sfActions
     		    $this->FCessio->bind($RCESSIO);
     		    if($this->FCessio->isValid()): 
     		    	$this->FCessio->save();
+    		    	$this->getUser()->addLogAction($accio,'gCessio',$this->FCessio->getObject());
     		    	$this->redirect('gestio/gCessio?accio=C');
     		    endif;
     		    $this->MODE = 'EDICIO_RETORN';
@@ -2596,6 +2662,10 @@ class gestioActions extends sfActions
     
     switch($accio){
 
+    	case 'GP':
+			$this->getUser()->addLogAction('inside','gDocuments');
+    		break;
+    	
     	//Visualitza permisos que tenen els usuaris en el directori
     	case 'VP':    		
 			
@@ -2614,6 +2684,7 @@ class gestioActions extends sfActions
     			$NOMDIR = $request->getParameter('NOMDIR');
     			if(!empty($NOMDIR)):
     				AppDocumentsDirectorisPeer::save($NOMDIR, $this->IDD);
+    				$this->getUser()->addLogAction($accio,'gDocuments',$this->IDD);
     			endif; 
     			$this->MODE = "CONSULTA";	    			    						  	
     		break;
@@ -2634,6 +2705,7 @@ class gestioActions extends sfActions
     			$this->FDIRECTORI->bind($request->getParameter('app_documents_directoris'));
     			if($this->FDIRECTORI->isValid()):
     				$this->FDIRECTORI->save();
+    				$this->getUser()->addLogAction($accio,'gDocuments',$this->FDIRECTORI->getObject());
     				$this->redirect('gestio/gDocuments?accio=VP');
     			endif;     			    		
     			$this->MODE = "EDITA_DIRECTORI";						  	
@@ -2644,6 +2716,7 @@ class gestioActions extends sfActions
     			$OD = AppDocumentsDirectorisPeer::retrieveByPK($this->IDD);
     			if($OD instanceof AppDocumentsDirectoris):
     				$OD->delete();
+    				$this->getUser()->addLogAction($accio,'gDocuments',$OD);
     				$this->redirect('gestio/gDocuments?accio=VP');
     			endif; 
 
@@ -2660,8 +2733,9 @@ class gestioActions extends sfActions
     	//Guarda els nous permisos
     	case 'SAVE_UPDATE_PERMISOS':				
 				foreach($request->getParameter('nivell') as $idU=>$idN):					
-					AppDocumentsPermisosDirPeer::save($idU,$idN,$this->IDD);
+					AppDocumentsPermisosDirPeer::save($idU,$idN,$this->IDD);					
 				endforeach;
+				$this->getUser()->addLogAction($accio,'gDocuments',$request->getParameter('nivell'));
 				$this->redirect('gestio/gDocuments?accio=VP');
     		break;
     		
@@ -2676,6 +2750,7 @@ class gestioActions extends sfActions
     		$this->FPERMISOS->bind($OP);
     		if($this->FPERMISOS->isValid()):
     			$this->FPERMISOS->save();
+    			$this->getUser()->addLogAction($accio,'gDocuments',$this->FPERMISOS->getObject());
     			$this->redirect('gestio/gDocuments?accio=VP');
     		endif;     		
     		$this->MODE = 'NOU_USUARI';    		
@@ -2755,7 +2830,8 @@ class gestioActions extends sfActions
     		break;      
     	case 'DELETE_MENU':
     			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG );
-    			$this->FORM_MENU->getObject()->delete();
+    			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_MENU->getObject());
+    			$this->FORM_MENU->getObject()->delete();    			
     			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
     		break;
     	case 'SAVE_MENU':    			
@@ -2764,6 +2840,7 @@ class gestioActions extends sfActions
     			if($this->FORM_MENU->isValid()):
     				try { 
     					$this->FORM_MENU->save();
+    					$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_MENU->getObject());
     					$this->APP_MENU = $this->FORM_MENU->getObject()->getId();
 	    				$this->getUser()->setSessionPar('APP_MENU',$this->APP_MENU);
 	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
@@ -2780,7 +2857,8 @@ class gestioActions extends sfActions
     	case 'DELETE_PAGE':
     			try { 
     					$this->FORM_PAGE = AppBlogsPagesPeer::initialize( $this->APP_PAGE , $this->APP_BLOG );
-    					$this->FORM_PAGE->getObject()->delete();
+    					$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_PAGE->getObject());
+    					$this->FORM_PAGE->getObject()->delete();    					
     					$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');    					     				
     				} catch (Exception $e) { echo $e->getMessage(); }
     		break;
@@ -2790,6 +2868,7 @@ class gestioActions extends sfActions
     			if($this->FORM_PAGE->isValid()):
     				try { 
     					$this->FORM_PAGE->save();
+    					$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_PAGE->getObject());
     					$this->APP_PAGE = $this->FORM_PAGE->getObject()->getId();
 	    				$this->getUser()->setSessionPar('APP_PAGE',$this->APP_PAGE);
 	    				$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
@@ -2807,6 +2886,7 @@ class gestioActions extends sfActions
     		break;
     	case 'DELETE_ENTRY':
     			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA' , $this->APP_PAGE );
+    			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_ENTRY->getObject());
     			$this->FORM_ENTRY->getObject()->delete();
     			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
     		break;
@@ -2815,7 +2895,8 @@ class gestioActions extends sfActions
     			$this->FORM_ENTRY->bind($request->getParameter('app_blogs_entries'));    			
     			if($this->FORM_ENTRY->isValid()):
     				try { 
-    					$this->FORM_ENTRY->save();    								    							
+    					$this->FORM_ENTRY->save();    							
+    					$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_ENTRY->getObject());	    							
     					$this->APP_ENTRY = $this->FORM_ENTRY->getObject()->getId();
 	    				$this->getUser()->setSessionPar('APP_ENTRY',$this->APP_ENTRY);
 	    				$this->GUARDA_IMATGES($request->getFiles('arxiu'),$request->getParameter('desc'),$this->APP_ENTRY);
@@ -2832,10 +2913,12 @@ class gestioActions extends sfActions
     		break;      
     	case 'DELETE_BLOG':
     			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG );
+    			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_BLOG->getObject());
     			$this->FORM_BLOG->getObject()->delete();
     			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
     		break;    		
     	case 'DELETE_IMAGE':    			
+    			$this->getUser()->addLogAction($accio,'gBlogs',$this->APP_MULTIMEDIA);
     			AppBlogsMultimediaPeer::deleteMultimeda($this->APP_MULTIMEDIA);     		
     		break;
     	case 'SAVE_BLOG':
@@ -2844,6 +2927,7 @@ class gestioActions extends sfActions
     			if($this->FORM_BLOG->isValid()):
     				try { 
     					$this->FORM_BLOG->save();
+    					$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_BLOG->getObject());
     					$this->APP_BLOG = $this->FORM_BLOG->getObject()->getId();
     					$this->getUser()->setSessionPar('APP_BLOG',$this->APP_BLOG);
     					$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');     				
@@ -2899,7 +2983,8 @@ class gestioActions extends sfActions
     			$this->getUser()->setSessionPar('APP_PAGE',-1);
     			$this->getUser()->setSessionPar('APP_ENTRY',-1);
     			$this->getUser()->setSessionPar('APP_MENU',-1);
-    			$this->getUser()->setSessionPar('APP_MULTIMEDIA',-1);    			
+    			$this->getUser()->setSessionPar('APP_MULTIMEDIA',-1);
+    			$this->getUser()->addLogAction('inside','gBlogs');    			
     		break;
 
     	case 'VIEW_STADISTICS':
@@ -3046,6 +3131,7 @@ class gestioActions extends sfActions
 	$this->setLayout('gestio');
 	$this->POTVEURE = array(1=>UsuarisPeer::canSeeComptabilitat($this->getUser()->getSessionPar('idU')));
 	$this->accio = $request->getParameter('accio');
+	$this->getUser()->addLogAction('inside','gInformes');
 	
 	switch($this->accio){
 		case 'MAT_DIA_PAG':
@@ -3091,6 +3177,9 @@ class gestioActions extends sfActions
   	$this->CALENDARI = PersonalPeer::getHoraris($this->DATAI);
   	
   	switch($accio){
+  		case 'CC':
+			$this->getUser()->addLogAction('inside','gPersonal');
+  			break;
   		case 'EDIT_DATE':
   				//Editem un dia, i podem esborrar un canvi o bé afegir-ne un de nou.
   				$this->DADES_DIA_USUARI = PersonalPeer::getDadesUpdates($this->DATE, $this->IDU);  				  
@@ -3115,6 +3204,7 @@ class gestioActions extends sfActions
   				
   				if($this->FPERSONAL->isValid()):
   					$this->FPERSONAL->save();
+  					$this->getUser()->addLogAction($accio,'gPersonal',$this->FPERSONAL->getObject());
   					$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$idD.'&IDU='.$idU);
   				else: 
   					$this->ERROR[] = "Hi ha algun problema amb el formulari.";
@@ -3122,10 +3212,69 @@ class gestioActions extends sfActions
   			break;
   		case 'DELETE_CHANGE':
 				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU,$this->IDP);
+				$this->getUser()->addLogAction($accio,'gPersonal',$this->FPERSONAL->getObject());
 				$this->FPERSONAL->getObject()->delete();
 				$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$this->DATE.'&IDU='.$this->IDU);				  			
   			break;
   	}
+  	
+  }
+  
+  public function executeGCicles(sfWebRequest $request)
+  {
+
+    $this->setLayout('gestio');
+
+    $this->IDE = $this->getUser()->ParReqSesForm($request,'IDC',0);    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);        
+    $this->MODE   = "";
+    
+    $accio = $request->getParameter('accio');
+    if($request->hasParameter('BSAVE')) $accio = 'SAVE';
+    if($request->hasParameter('BDELETE')) $accio = 'DELETE';        
+            
+    switch($accio)
+    {    
+    	case 'C':
+			$this->getUser()->addLogAction('inside','gCicles');
+    		break;
+    	case 'NOU': 
+    			$this->MODE = 'NOU';      
+    			$this->FCICLES = CiclesPeer::initialize(0); 			
+    		break;
+    		
+    	case 'EDITA':
+    			$this->MODE = 'EDITA';    			      
+    			$this->FCICLES = CiclesPeer::initialize($request->getParameter('IDC'));
+    		break;
+    		
+    	case 'LLISTA':
+    			$this->FCICLES = CiclesPeer::initialize($request->getParameter('IDC'));
+    			$this->LACTIVITATS = ActivitatsPeer::getActivitatsCicles($request->getParameter('IDC'));
+    		break;
+    		
+    	case 'SAVE':    		    		
+    			$PC = $request->getParameter('cicles');
+    			$this->FCICLES = CiclesPeer::initialize($PC['CicleID']);
+    			$this->FCICLES->bind($PC,$request->getFiles());
+    			if($this->FCICLES->isValid()):
+    				$this->FCICLES->save();    				
+    				$this->getUser()->addLogAction($accio,'gCicles',$this->FCICLES->getObject());
+    			else: 
+    				$this->MODE = 'EDITA';
+    			endif; 
+    		break;
+    
+    	case 'DELETE':
+    			$PC = $request->getParameter('cicles');
+    			$FC = EntradesPeer::initialize($PC['CicleID']);
+    			$this->getUser()->addLogAction($accio,'gCicles',$FC);
+    			$FC->getObject()->delete();
+    		break;
+    		    		    
+    }        
+    
+    $this->CICLES = CiclesPeer::getList($this->PAGINA);
   	
   }
   

@@ -17,6 +17,7 @@ class CiclesForm extends BaseCiclesForm
   	$URL_PDF    = sfConfig::get('sf_web_dir').'/images/noticies';
   	
     $this->setWidgets(array(
+	  'extingit' => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),    
       'CicleID'  => new sfWidgetFormInputHidden(),
       'Nom'      => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'Imatge'   => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
@@ -26,7 +27,7 @@ class CiclesForm extends BaseCiclesForm
       'tMig'     => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dMig'     => new sfWidgetFormTextareaTinyMCE(),
       'tComplet' => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
-      'dComplet' => new sfWidgetFormTextareaTinyMCE(),
+      'dComplet' => new sfWidgetFormTextareaTinyMCE(),      
     ));
 
     $this->setValidators(array(
@@ -40,6 +41,21 @@ class CiclesForm extends BaseCiclesForm
       'dMig'     => new sfValidatorString(array('required' => false)),
       'tComplet' => new sfValidatorString(array('required' => false)),
       'dComplet' => new sfValidatorString(array('required' => false)),
+      'extingit' => new sfValidatorChoice(array('choices'=>array(0,1)),array()),
+    ));
+    
+    $this->widgetSchema->setLabels(array(
+      'extingit' => 'Extingit? ',      
+      'Nom'      => 'Nom: ',
+      'Imatge'   => 'Imatge: ',
+      'PDF'      => 'PDF: ',
+      'tCurt'    => 'Títol curt: ',
+      'dCurt'    => 'Text curt: ',
+      'tMig'     => 'Títol mig: ',
+      'dMig'     => 'Text mig: ',
+      'tComplet' => 'Títol complet: ',
+      'dComplet' => 'Text complet: ',
+      
     ));
     
     $this->widgetSchema->setNameFormat('cicles[%s]');

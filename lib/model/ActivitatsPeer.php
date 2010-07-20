@@ -106,14 +106,14 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		return $RET;
 	}
 	
-	static public function initilize($idA,$isCicle = 0,$cicle = 0)
+	static public function initilize($idA , $cicle = 0)
 	{
 		$OA = ActivitatsPeer::retrieveByPK($idA);
 		if($OA instanceof Activitats):
 			return new ActivitatsForm($OA);
 		else:
 			$OA = new Activitats();
-			if($isCicle):
+			if($cicle > 0):
 				$OA->setCiclesCicleid($cicle);
 			else:
 				$OA->setCiclesCicleid(null);
@@ -171,7 +171,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 			
 		endif;
 		
-		if($cap) $CAT['cap'] = 'Cap categoria';
+//		if($cap) $CAT['cap'] = 'Cap categoria';
 		
 		
 		return $CAT;

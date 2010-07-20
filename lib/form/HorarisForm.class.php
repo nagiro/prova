@@ -70,7 +70,7 @@ class HorarisForm extends sfFormPropel
       'Avis'                   => 'Avís: ',
       'Responsable'            => 'Responsable: ',
       'Espectadors'            => 'Espectadors: ',
-      'Places'                 => 'Places: ',
+      'Places'                 => 'Places: ',      
     ));
     
     

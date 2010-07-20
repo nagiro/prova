@@ -296,6 +296,17 @@ class HorarisPeer extends BaseHorarisPeer
      return $RET;     
   } 
   
+  static public function validaDiaBloqueig($DIA, $HORARI)
+  {
+  	//Tenim un dia amb bloqueig de tots els espais
+	$C = new Criteria();	
+	$C->add(self::DIA, $DIA);	
+	$C->addJoin(self::HORARISID, HorarisespaisPeer::HORARIS_HORARISID);
+	$C->add(HorarisEspaisPeer::ESPAIS_ESPAIID, 22);
+	$C->add(self::HORARISID,$HORARI,CRITERIA::NOT_EQUAL);	
+	return (self::doCount($C) > 0)?1:0;  	
+  }
+  
   
   static public function validaDia( $DIA , $idE , $HoraPre , $HoraPost , $idH )
   {
@@ -313,7 +324,7 @@ class HorarisPeer extends BaseHorarisPeer
 						( ( h.horaPre  <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
 						( ( h.horaPre  > '$HoraPre' ) AND ( h.horaPost  < '$HoraPost' ) )
         			)
-        		 AND he.Espais_EspaiID = $idE        			        			
+        		 AND he.Espais_EspaiID = $idE        		         			        			
         	";
 	
    	 if( $idH > 0 ) $SQL .= " AND he.Horaris_HorarisID <> $idH";
@@ -353,8 +364,7 @@ class HorarisPeer extends BaseHorarisPeer
      return $rs->Va;  	
   	
   }
-  
-  
+    
   static public function save( $HORARIS, $DBDD , $MATERIAL , $ESPAIS )
   {
 	
@@ -421,5 +431,11 @@ class HorarisPeer extends BaseHorarisPeer
 		return (HorarisespaisPeer::doCount($C) > 0);
 	}
   
+	static public function getActivitatsDia($D)
+	{
+		$C = new Criteria();
+		$C->add(self::DIA, $D);
+		return self::doSelect($C);
+	}
   
 }

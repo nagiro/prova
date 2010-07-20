@@ -203,23 +203,28 @@ class webActions extends sfActions
      endif; 
      
      if($request->isMethod('POST')):
+     	$L = $request->getParameter('login');     		 
      	$this->FLogin = new LoginForm();
-     	$this->FLogin->bind($request->getParameter('login'));
-     	if($this->FLogin->isValid()):
-     		 $L = $request->getParameter('login');     		 
+     	$this->FLogin->bind($L);
+     	if($this->FLogin->isValid()):     		 
      		 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password']);     		 
      		 if($USUARI instanceof Usuaris):
-     		 	$this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());     		
+     		 	$this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());     		 	      		
      		 	$this->getUser()->setAuthenticated(true);
     			if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
      		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }
-     		 	     		 		    		   			    		
+
+     		 	//Guardem un registre del login
+     		 	$this->getUser()->addLogAction('login','login',$L);
+     		 	
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=landing');     		 	
-     		 else: 
+     		 else:     		 	
+     		 	$this->getUser()->addLogAction('error','login',$L);     		 
      		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
      		 endif;
         else:
+        	 $this->getUser()->addLogAction('error','login',$L);
         	 $this->ERROR = "El DNI o la contrasenya són incorrectes";
 			 $this->ACCIO = 'login';
         endif;     		 

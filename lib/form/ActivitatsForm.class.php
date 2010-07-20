@@ -15,14 +15,14 @@ class ActivitatsForm extends sfFormPropel
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
-      'Cicles_CicleID'                  => new sfWidgetFormInputHidden(),
+      'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect())),
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
       'Preu'                            => new sfWidgetFormInputText(),
       'PreuReduit'                      => new sfWidgetFormInputText(),
       'Publicable'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
       'Organitzador'				    => new sfWidgetFormInputText(),
-      'Responsable'		 			    => new sfWidgetFormInputText(),
+      'Responsable'		 			    => new sfWidgetFormInputText(),      
     ));
 
     $this->setValidators(array(
@@ -35,20 +35,19 @@ class ActivitatsForm extends sfFormPropel
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),
       'Estat'                           => new sfValidatorString(array('max_length' => 1, 'required' => false)),
       'Organitzador'				    => new sfValidatorString(array('required'=>false),array()),
-      'Responsable'					    => new sfValidatorString(array('required'=>false),array()),
-    
+      'Responsable'					    => new sfValidatorString(array('required'=>false),array()),          
     ));
 
     $this->widgetSchema->setLabels(array(      
       'Nom'                             => 'Nom de l\'activitat: ',    
-      'Cicles_CicleID'                  => 'A quin projecte pertany? ',
+      'Cicles_CicleID'                  => 'A quin cicle pertany? ',
       'TipusActivitat_idTipusActivitat' => 'Quin format té? ',
       'Preu'                            => 'Preu: ',
       'PreuReduit'                      => 'Preu reduït: ',
       'Publicable'                      => 'Visible al web?',
       'Estat'                           => 'Estat actual: ',
       'Organitzador'				    => 'Organitzador',
-      'Responsable'				    	=> 'Responsable',
+      'Responsable'				    	=> 'Responsable',      
     ));
     
     
