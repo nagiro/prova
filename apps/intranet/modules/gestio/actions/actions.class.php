@@ -1083,14 +1083,14 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');    	
 
    	//Netegem cerca
-/*  	if($request->getParameter('accio') == 'C'):      		
+  	if($request->getParameter('accio') == 'C'):      		
         $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
-      	$this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());       	    
-      	$this->DIA    = $this->getUser()->setSessionPar('DIA',time());	
-      	$this->IDA    = $this->getUser()->setSessionPar('IDA',0);	      			      	           			       
+//      	$this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());       	    
+//      	$this->DIA    = $this->getUser()->setSessionPar('DIA',time());	
+ //     	$this->IDA    = $this->getUser()->setSessionPar('IDA',0);	      			      	           			       
     endif;    
-*/        
+        
     $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
     $this->PAGINA 			= $this->getUser()->ParReqSesForm($request,'PAGINA',1);    
 /*    $this->DATAI  			= $this->getUser()->ParReqSesForm($request,'DATAI',time());    
