@@ -231,9 +231,15 @@
 				
 	 		<div style="padding-top:10px;" class="FORMULARI fb">
 	 		
-	 			<?php echo $FActivitat ?>		 		
-	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BACTIVITATSAVE','text'=>'Guarda i tanca')); ?>	 				 				 			
-	 					
+	 			<?php echo $FActivitat ?>
+	 			<div style="text-align:right; padding-top:40px;">
+				<button type="submit" name="BACTIVITATSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+					<?php echo image_tag('template/disk.png').' Guarda ' ?>
+				</button>
+				<button type="submit" name="<?php echo "BACTIVITATDELETE".(isset($nom)?"_$nom":"") ?>" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar <?php echo $element ?>? No ho podràs recuperar! ')">
+					<?php echo image_tag('tango/16x16/status/user-trash-full.png').' Eliminar' ?>
+				</button>	 				 				 				 				 				 				 			
+	 			</div>	
 	 		</div>
 	 			 	 	
 		</div>

@@ -1121,6 +1121,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BCICLESAVE'))		$this->accio = 'CICLE_SAVE';
 	    elseif($request->hasParameter('BACTIVITAT')) 		$this->accio = 'ACTIVITAT';
 	    elseif($request->hasParameter('BACTIVITATSAVE')) 	$this->accio = 'ACTIVITAT_SAVE';
+	    elseif($request->hasParameter('BACTIVITATDELETE')) 	$this->accio = 'ACTIVITAT_DELETE';
 	    elseif($request->hasParameter('BHORARI')) 			$this->accio = 'HORARI';
 	    elseif($request->hasParameter('BHORARISAVE')) 		$this->accio = 'HORARI_SAVE';
 	    elseif($request->hasParameter('BHORARIDELETE')) 	$this->accio = 'HORARI_DELETE';
@@ -1214,6 +1215,24 @@ class gestioActions extends sfActions
 	    		endif; 
     			
     		break;
+
+    	//Esborrem una activitat
+    	case 'ACTIVITAT_DELETE':
+
+    			$RP = $request->getParameter('activitats');
+    			$this->IDA = $RP['ActivitatID'];
+    			$this->IDC = $RP['Cicles_CicleID'];
+    		
+	    		$this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->IDC);
+	    		$OA = $this->FActivitat->getObject();
+	    		if($OA instanceof Activitats):
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);
+	    			$OA->delete();
+	    			$this->redirect('gestio/gActivitats?accio=CC');
+	    		endif; 	    		
+	    		    			    			
+    		break;
+    		
     		
     	//Entrem els horaris de les activitats
     	case 'HORARI':
