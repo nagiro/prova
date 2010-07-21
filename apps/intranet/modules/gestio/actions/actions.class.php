@@ -1179,7 +1179,7 @@ class gestioActions extends sfActions
     	//Entrem les activitats... que necessitem
     	case 'ACTIVITAT':
 
-    		$this->CarregaActivitats($request,true);
+    		$this->CarregaActivitats($request,$request->getParameter('form',true));
     		     			
     		break;
     		
