@@ -1316,8 +1316,10 @@ class gestioActions extends sfActions
 
     			$RH = $request->getParameter('horaris');    			
     			$OH = HorarisPeer::retrieveByPK($RH['HorarisID']);
-    			$this->getUser()->addLogAction($accio,'gActivitats',$OH);
-    			$OH->delete();    			    			
+    			if($OH instanceof Horaris):
+	    			$this->getUser()->addLogAction($accio,'gActivitats',$OH);
+	    			$OH->delete();    			    			
+	    		endif; 
 	   			$this->redirect('gestio/gActivitats?accio=HORARI');
 	   			
     		break;
