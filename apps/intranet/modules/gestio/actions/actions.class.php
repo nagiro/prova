@@ -1244,7 +1244,7 @@ class gestioActions extends sfActions
     			$this->NOMACTIVITAT = $OActivitat->getNom();
     			    			    			    			
     			$OHorari = new Horaris();
-    			$OHorari->setActivitatsActivitatid($this->getUser()->getSessionPar('IDA'));    			    			
+    			$OHorari->setActivitatsActivitatid($this->IDA);    			    			
     			if($request->hasParameter('nou')) $this->FHorari = new HorarisForm($OHorari);     			
     			$this->HORARI = $OHorari;    			   
 				$this->ESPAISOUT = array(); $this->MATERIALOUT = array();				    			 	
