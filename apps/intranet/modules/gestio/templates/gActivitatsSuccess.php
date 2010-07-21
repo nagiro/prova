@@ -173,7 +173,7 @@
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
  	 		
 	 	<div class="REQUADRE fb">	 	
-		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>
+		 	<?php echo include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>
 		 	
 			<div class="titol">Editant la descripció del cicle</div>
 				
@@ -225,7 +225,7 @@
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
  	 		
 	 	<div class="REQUADRE fb">	 	
-		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT')) ?>
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT&IDA='.$IDA)) ?>
 		 	
 			<div class="titol">Descripció de l'activitat</div>
 				
@@ -251,7 +251,7 @@
   <?php endif; if( isset($MODE['HORARI']) ): ?>
       
 	<DIV class="REQUADRE">
-	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=ACTIVITAT'); ?></div>	
+	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$IDA); ?></div>	
 	<div class="titol">
 	 		<?php echo 'Editant horaris de l\'activitat: '.$NOMACTIVITAT; ?>
 	 	</div>
@@ -365,7 +365,7 @@
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
  	 		
 	 	<div class="REQUADRE fb">	 	
-		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT')) ?>
+		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT&IDA='.$IDA)) ?>
 		 	
 			<div class="titol">Informació relativa a l'activitat</div>
 				
