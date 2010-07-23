@@ -20,7 +20,7 @@ function showElement(theClass) {
 		<TD class="MENU"><center>
 		<div id="ESPAI"></div>      
 
-        <?php echo llistaMenu($MENU,$OBERT,$SELECCIONAT)?>
+        <?php echo llistaMenu($MENU,$OBERT)?>
         
 <?php    if($TIPUS_MENU == 'ADMIN'): ?>	  	   	  	   		     
 		  	   <TR><TD class="SUBMENU_1"><?php echo link_to(image_tag('intranet/Submenu1.png', array('align'=>'ABSMIDDLE')).' Zona privada' , 'web/index', array( 'anchor' => true ))?></TD></TR>
@@ -46,62 +46,67 @@ function showElement(theClass) {
 		
 <?php	endif;
   
-
-  function llistaMenu($Menu, $OBERT = 0 , $SELECCIONAT = 0)
+  function llistaMenu($Menu, $OBERT = 0)
   {
-  	  	
-  	foreach($Menu as $M):
   	
-  		$RET[$M->getIdnodes()]['TITOL'] = $M->getTitolMenu();
-  		$RET[$M->getIdnodes()]['NODE'] = $M->getIdnodes();
-  		$RET[$M->getIdnodes()]['NIVELL'] = $M->getNivell();
-  		$RET[$M->getIdnodes()]['URL'] = $M->getUrl();
-  		  		  		  	
-  	endforeach;
-
   	$Obert = array(1=>false,2=>false,3=>false); $NivellAnt = 0;
   	
   	echo '<TABLE class="MENU_TABLE">';
+  	
+  	//Creem els inodes
+  	foreach($Menu as $M):
+
+		if($M->getNivell() == 1):
+		  			   			
+  			$Obert['1'] = (array_key_exists($M->getIdnodes(),$OBERT));
+  			echo generaURL($M,$Obert['1']);
+  			
+  		elseif($M->getNivell() == 2):
+  		
+			if($Obert['1']) echo generaURL($M,$Obert['2']); 	  		
+			$Obert['2'] = (array_key_exists($M->getIdnodes(),$OBERT));
+			  			
+  		elseif($M->getNivell() == 3):
+  		
+			if($Obert['2'] && $Obert['1']) echo generaURL($M,$Obert['3']);
+			$Obert['3'] = (array_key_exists($M->getIdnodes(),$OBERT));
+			  			
+  		endif;  		
   	  	
-  	foreach($RET as $N => $D):
-  		  		
-  		if($D['NIVELL'] == 1):  			   			
-  			if(array_key_exists($D['NODE'],$OBERT)) $Obert['1'] = true;
-  			else $Obert['1'] = false;
-  			echo generaURL($D,$Obert['1']);
-  		elseif($D['NIVELL'] == 2):
-			if($Obert['1']) echo generaURL($D,$Obert['2']); 	  		
-			if(array_key_exists($D['NODE'],$OBERT)) $Obert['2'] = true;
-  			else $Obert['2'] = false;
-  		elseif($D['NIVELL'] == 3):
-			if($Obert['2'] && $Obert['1']) echo generaURL($D,$Obert['3']); 	  		
-			if(array_key_exists($D['NODE'],$OBERT)) $Obert['3'] = true;
-  			else $Obert['3'] = false;
-  		endif;
-  	endforeach;		  		  
+  	endforeach;  	
+  	
+
     		
   }
 
   function generaURL( $NODE , $OBERT = false )
   {
-  	$imatge = ($OBERT)?'':'T';  	
-  	switch($NODE['NIVELL']){
-  		case 1:
-  			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';  
-			else return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';  			 
-  			break;
-  		case 2:
-  			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>'; 
-  			else return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';  			
-  			break;
-  		case 3:
-  			if(!empty($NODE['URL'])) return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], $NODE['URL'],array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';  
-  			else return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE['TITOL'], 'web/index?accio=cp&node='.$NODE['NODE']).'</TD></TR>';
-  			break; 
-  	}
-  	  	
+  	$imatge = ($OBERT)?'':'T';
+  	$id_nivell = $NODE->getNivell();  	
+  	$URL = $NODE->getUrl();
+
+	if($id_nivell == 1):
+	  	if(!empty($URL)): 						return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
+	  	else:
+	  		if($NODE->getCategories() == 'cap') return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
+	  		else 								return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+		endif;		
+	elseif($id_nivell == 2):
+	  	if(!empty($URL)): 						return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
+	  	else:
+	  		if($NODE->getCategories() == 'cap') return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
+	  		else 								return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+		endif;				
+	elseif($id_nivell == 3):
+	  	if(!empty($URL)): 						return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
+	  	else:
+	  		if($NODE->getCategories() == 'cap') return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
+	  		else 								return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+		endif;					
+	endif; 
+  	   			 
   }
-  
+    
   function AltresApps($USUARI)
   {  	
   	$PERMISOS = UsuarisAppsPeer::getPermisosOO($USUARI);

@@ -21,7 +21,7 @@
 
   	<?php IF( isset($MODE['NOU']) || isset($MODE['EDICIO']) ): ?>
       
-	<form action="<?php echo url_for('gestio/gCicles') ?>" method="POST">
+	<form action="<?php echo url_for('gestio/gCicles') ?>" method="POST" enctype="multipart/form-data">
 	
 	 	<div class="REQUADRE fb">
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCicles?accio=C')) ?>

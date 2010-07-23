@@ -77,15 +77,7 @@
                     }
                 ?>     			
         <tr><td colspan="2" style="text-align:center">
-         
-        <?php
-        	if ($MISSATGES->haveToPaginate()):
-        		if($PAGINA > 1) echo link_to('<-- Veure missatges anteriors', 'gestio/gMissatges?pagina='.$MISSATGES->getPreviousPage());
-  				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
-  				if($PAGINA < $MISSATGES->getLastPage()) echo link_to('Veure missatges següents -->', 'gestio/gMissatges?pagina='.$MISSATGES->getNextPage());  
-			endif; 
-		?>
-        
+        	<?php echo setPager($MISSATGES,'gestio/gMissatges?a=a',$PAGINA); ?>         
         </td></tr>
   		</table>
   	</DIV>

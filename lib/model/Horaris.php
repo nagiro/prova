@@ -20,4 +20,12 @@ class Horaris extends BaseHoraris
 		return $RET;
 	}
 	
+	public function getArrayEspais()
+	{
+		$RET = array();		
+		foreach($this->getHorarisespaiss() as $HE):																									
+			$RET[] = $HE->getEspais();									
+		endforeach;		
+		return $RET;
+	}
 }

@@ -152,7 +152,7 @@ class HorarisPeer extends BaseHorarisPeer
       return $RET;
   } 
   
-  static private function cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  static public function cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
 
   	$C = new Criteria();
@@ -194,7 +194,7 @@ class HorarisPeer extends BaseHorarisPeer
   	
   }
   
-  static private function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  static public function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
     
   	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);  	

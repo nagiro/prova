@@ -10,7 +10,7 @@
         		<br /><br />
         	</TD>
         </TR>                         
-        <TR><TD><?php getCalendari( $DATACALENDARI , $ACTIVITATS_CALENDARI , $CERCA ); ?></TD></TR>                 
+        <TR><TD><?php getCalendari( $DATACAL , $ACTIVITATS_CALENDARI , $CERCA ); ?></TD></TR>                 
  		<?php 
 		
 			foreach($BANNERS as $B):
@@ -45,9 +45,9 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
   echo '<DIV class="div_taula">';
   echo '<table class="t_calendari">';  
   echo '<tr>
-          <td width="25" class="titol">'.link_to('&lt;',"web/index?accio=ca&DATACALENDARI=$MesAnterior").'</td>
+          <td width="25" class="titol">'.link_to('&lt;',"web/index?accio=cdc&DATACAL=$MesAnterior").'</td>
           <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('ca','',time())).'</td>         
-          <td width="25" class="titol">'.link_to('&gt;',"web/index?accio=ca&DATACALENDARI=$MesSeguent").'</td>
+          <td width="25" class="titol">'.link_to('&gt;',"web/index?accio=cdc&DATACAL=$MesSeguent").'</td>
         </tr>';
   echo '<tr>
           <td width="25" class="dies">Dll</td>

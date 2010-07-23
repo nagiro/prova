@@ -14,8 +14,8 @@ class NoticiesForm extends BaseNoticiesForm
   public function setup()
   {
   	
-  	$path = sfConfig::get('sf_web_dir').'/images/noticies';
-  	$web  = sfConfig::get('sf_webroot').'images/noticies/';
+  	$this->WEB_IMAGE  = 'images/noticies/'; 
+  	$this->WEB_PDF    = 'images/noticies/';
   	
     $this->setWidgets(array(
       'idNoticia'      	=> new sfWidgetFormInputHidden(),
@@ -24,9 +24,9 @@ class NoticiesForm extends BaseNoticiesForm
       'DataPublicacio' 	=> new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'DataDesaparicio' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'Activa'         	=> new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
-      'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$web.$this->getObject()->getImatge(), 'is_image'=>true , 'with_delete'=>false)),
-      'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$web.$this->getObject()->getAdjunt(),'with_delete'=>false)),
-      'idActivitat'    	=> new sfWidgetFormInputText(),
+      'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webrooturl').$this->WEB_IMAGE.$this->getObject()->getImatge(), 'is_image'=>true , 'with_delete'=>false)),
+      'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webrooturl').$this->WEB_PDF.$this->getObject()->getAdjunt(),'with_delete'=>false)),
+      'idActivitat'    	=> new sfWidgetFormInputHidden(),
       
     ));
 
@@ -36,8 +36,8 @@ class NoticiesForm extends BaseNoticiesForm
       'TextNoticia'    	=> new sfValidatorString(array('required' => false)),
       'DataPublicacio' 	=> new sfValidatorDate(array('required' => false)),
       'Activa'         	=> new sfValidatorBoolean(array('required' => false)),
-      'Imatge'         	=> new sfValidatorFile(array('path'=> $path , 'required'=>false)),
-      'Adjunt'         	=> new sfValidatorFile(array('path'=> $path , 'required'=>false)),
+      'Imatge'         	=> new sfValidatorFile(array('path'=> $this->WEB_IMAGE , 'required'=>false)),
+      'Adjunt'         	=> new sfValidatorFile(array('path'=> $this->WEB_PDF , 'required'=>false)),
       'idActivitat'    	=> new sfValidatorInteger(array('required' => false)),
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
     ));
@@ -62,6 +62,36 @@ class NoticiesForm extends BaseNoticiesForm
   public function getModelName()
   {
     return 'Noticies';
+  }
+  
+  public function save($conn = null)
+  {
+  	
+  	parent::save();
+  	
+  	$BASE = sfConfig::get('sf_web_dir').'/'.$this->WEB_IMAGE;  	
+  	$ON = $this->getObject(); 	
+  	if($ON instanceof Noticies):
+  	  		
+  		$I = $ON->getImatge();
+  		if(!empty($I) && file_exists($BASE.$I)):  				
+		  	$img = new sfImage($BASE.$I,'image/jpg');  	
+		    $img->resize(100,100);
+		    $nom = $ON->getIdnoticia().'.jpg';
+		    $img->saveAs($BASE.$nom);
+		    if( $I <> $nom ) unlink($BASE.$I);		    
+		    $ON->setImatge($nom)->save();		    
+	    endif;
+	    
+	    $P = $ON->getAdjunt();  		
+  		if(!empty($P) && file_exists($BASE.$P)):  		
+  			$nom = $ON->getIdnoticia().'.pdf';		
+		  	rename($BASE.$P,$BASE.$nom);
+		    if( $I <> $nom ) unlink($BASE.$P);		    
+		    $ON->setAdjunt($nom)->save();		    
+	    endif;	    	      	    	    	      	    
+	endif;
+	
   }
 
 }

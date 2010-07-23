@@ -39,8 +39,8 @@ class CiclesPeer extends BaseCiclesPeer
   
   static public function getList($PAGE)
   {
-	if($PAGE == 1){  $limit_inf = 1; $limit_sup = 10; }
-	else { $limit_inf = ($PAGE*10)+1; $limit_sup = (($PAGE+1)*10); }
+	if($PAGE == 1){  $limit_inf = 0; $limit_sup = 9; }
+	else { $limit_inf = (($PAGE-1)*10); $limit_sup = (($PAGE)*10)-1; }
   	
   	$connection = Propel::getConnection();
 	$query = 'SELECT c.CicleID, c.Nom, c.extingit, count(*) as c FROM (cicles c INNER JOIN (activitats a INNER JOIN horaris h ON a.ActivitatID = h.Activitats_ActivitatID ) ON c.CicleID = a.Cicles_CicleID) group by c.CicleID, c.Nom, c.extingit ORDER BY c.extingit Asc, h.Dia Desc LIMIT '.$limit_inf.','.$limit_sup;		
@@ -64,6 +64,20 @@ class CiclesPeer extends BaseCiclesPeer
 									
 	return $RET;
   	  	  	
+  }
+  
+  static public function getDataPrimeraActivitat($idC)
+  {
+  	$C = new Criteria();
+  	$C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+  	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
+  	$C->addAscendingOrderByColumn(HorarisPeer::DIA);
+  	
+  	$OH = HorarisPeer::doSelectOne($C);
+  	
+  	if($OH instanceof Horaris) return $OH->getDia('d/m/Y'); 
+  	else return 'n/d';
+  	
   }
   
 }

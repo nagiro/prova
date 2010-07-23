@@ -12,53 +12,147 @@
 
 class webActions extends sfActions
 {
-  /**
-   * Executes index action
-   * 
-   */
-   	
+
+  public function gestionaNodes($NO)
+  {  	
+  	
+	$NODES = $this->getUser()->getSessionPar('NODES',array());
+	
+	if(in_array($NO,$NODES)):
+		unset($NODES[$NO]);
+	else:
+		$NODES[$NO] = $NO;
+	endif;				
+	
+	$this->getUser()->setSessionPar('NODES',$NODES);
+	return $NODES;
+		
+  }
+	
   public function LoadWEB(sfWebRequest $request)
   {
 	
-    $this->setLayout('layout'); $this->ERRORS = array(); $this->FOTOS = array();
-    $this->ACCIO = 'noticies'; $this->TIPUS_MENU = 'WEB';  $this->CERCA = "";      
-    $this->ACTIVITATS_CALENDARI = array(); $this->LLISTES = array(); $this->RESERVES = ARRAY(); 
-    $this->MATRICULES = array(); $this->CURSOS = array(); $this->FUSUARI = new ClientUsuarisForm(); $this->MISSATGE = array();
-    $this->DADES_MATRICULA = array();  
-    $this->OBERT = array(); $this->SELECCIONAT = 0;
+  	//Carrego els banners i les fotos que mostraré
+  	//Si s'entra un menú, carrego el contingut que toca segons el menú
+  		//Si el menú és només títol, mostro l'estructura de directoris
+  		//Si el menú té contingut, 
+  			//Si el contingut és automàtic, mostro el contingut automàtic
+  			//Si el contingut és manual, mostro el contingut manual
+  	//Si s'entra una cerca, carrego les activitats que corresponen a la cerca i marco el calendari els dies
+  	//Si s'entra un dia del calendari, cerco les activitats d'aquell dia
+  	//Si no es cap, carrego les notícies de les últimes activitats...
+  	
+  	$this->setLayout('layout');   	
+  	$this->FOTOS = $this->getFotos();
+  	$this->BANNERS = $this->getBanners();  	
+	$this->MENU = NodesPeer::retornaMenu();	
+	$this->USUARI = $this->getUser()->getSessionPar('idU',0);
+	$this->SELECCIONAT = 0;	  	
+	$this->LLISTAT_ACTIVITATS = array();
+	$this->ACTIVITATS_CALENDARI = array();
+	
+	if($this->getUser()->isAuthenticated()){ $this->TIPUS_MENU = 'ADMIN'; } else { $this->TIPUS_MENU = 'WEB'; }
+    $this->DATACAL = $this->getUser()->ParReqSesForm($request,'DATACAL',time());            
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'p',1);
 
-    //Escollim les 4 fotos de la capçalera
-	$this->FOTOS = $this->getFotos();	
+    //Gestió de menús
+    $idN = $request->getParameter('node',0);   	
+    $this->OBERT = $this->gestionaNodes($idN);    
+      	
+  	$this->accio = $request->getParameter('accio');  	  	
+  	
+  	if($request->hasParameter('BCERCA_x')):    	 
+    	$this->CERCA = $this->getUser()->ParReqSesForm($request,'CERCA',"");
+    	$this->accio = 'c';
+    endif;
+  	
+  	  	
+  	switch($this->accio){  		  		  		
+  		//Contingut manual
+  		case 'mc':
+				$this->NODE = NodesPeer::selectPagina($idN);
+				$this->ACCIO = 'web';								    				
+  			break;
+  			
+  		//Contingut automàtic de cicles		
+  		case 'ac':
+  			$this->NODE = NodesPeer::selectPagina($idN);
+  			if(!$this->NODE->isNew()):
+  				$cat = $this->NODE->getCategories();
+				$this->LLISTAT_CICLES = ActivitatsPeer::getCiclesCategoria($cat);
+	     		$this->ACCIO = 'llistatCiclesCategoria';
+	     		$ACT = ActivitatsPeer::selectCategories(true);
+	     		$this->TITOL = "Cicles i activitats a \"".$ACT[$cat].'"';
+	     		$this->CAT   = $cat;	     		
+	     	endif;   			  			
+  			break;
+  			
+  		//Contingut automàtic d'activitats d'un cicle
+		 case 'aca':
+		 		$this->CAT = $request->getParameter('cat','');
+		 		$this->IDC = $request->getParameter('idc',1);
+		 		$this->PAGINA = $request->getParameter('p',1);
+		 		
+		 		
+		 		$OC = CiclesPeer::retrieveByPK($this->IDC);
+		 		$this->TITOL = 'Llistat d\'activitats del cicle '.$OC->getNom();
+		 				 		
+		 		$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,true,$this->PAGINA);
+  				$this->ACCIO = 'llistatActivitatsCicleCategoria';	     			     			     			
+	     		   			  			
+  			break;
+  			
+  		//Cerca  			
+  		case 'c':  			  			
+  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA );  						
+	    	$this->ACCIO = 'llistat_activitats_cerca';
+	    	$this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';
+	    	$this->MODE  = 'CERCA';			
+  			break;
+  			
+  		//Cerca un dia
+		case 'ca':						
+			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACAL),$this->PAGINA);			
+	    	$this->ACCIO = 'llistat_activitats';
+	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACAL);
+	    	$this->MODE  = 'DIA';			
+  			break;
 
-	//Escollim els 3 banners de portada	
-	$this->BANNERS = $this->getBanners();
-
-	//Carreguem el menú
-	$this->MENU = NodesPeer::retornaMenu();
-	$this->OBERT = $this->getUser()->getSessionPar('NODES',array());
-	$this->USUARI = $this->getUser()->getSessionPar('idU');
-
-	//Comprovem si està autentificat o no per mostrar el menú.
-    if($this->getUser()->isAuthenticated()){
-    	$this->TIPUS_MENU = 'ADMIN';
-    }
-   
-    $this->DATACALENDARI = time();    
-    
-        //Emmagatzemo la data
-    if($this->hasRequestParameter('DATACALENDARI')) $this->DATACALENDARI = $this->getRequestParameter('DATACALENDARI');
-    elseif($this->getUser()->hasAttribute('DATACAL')) { $this->DATACALENDARI = $this->getUser()->getSessionPar('DATACAL'); if(!is_double($this->DATACALENDARI)) $this->DATACALENDARI = time(); }    
-    else $this->DATACALENDARI = time();    
-    $this->getUser()->setSessionPar('DATACAL', $this->DATACALENDARI);
-
-    //Emmagatzemo la CERCA    
-    if($request->hasParameter('CERCA')) $this->CERCA = $request->getParameter('CERCA');
-    elseif($this->getUser()->hasAttribute('CERCA')) $this->CERCA = $this->getUser()->getSessionPar('CERCA');
-    else $this->CERCA = "";    
-    $this->getUser()->setSessionPar('CERCA',$this->CERCA);
-    
-  }
-
+  		//Mostra una sola activitat
+		case 'caa':
+			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
+  			$this->ACCIO = 'mostra_activitat';
+  			$this->TITOL = 'Informació de l\'activitat';	     			     			     		
+			break;		
+			
+  		//Canvi data del calendari
+		case 'cdc':
+				$this->DATACAL = $this->getUser()->ParReqSesForm($request,'DATACAL',time());
+				$this->redirect('web/index?accio=c');							
+			break;
+  		//Mostrem notícies		  	
+		default:
+			
+			$this->IDN = $request->getParameter('idn',0);
+			$this->PAGINA = $request->getParameter('p',1);
+			
+	   		if($this->IDN > 0):	   			
+	   			$this->NOTICIA = NoticiesPeer::getNoticia($this->IDN);
+	   			$this->NOTICIES = null;
+	   		else: 	   			 
+	   			$this->NOTICIA = null;
+	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$this->PAGINA,true);
+	   		endif; 	   	                 
+	 		$this->ACCIO = 'noticies';	         	 		
+	 		$this->getUser()->setSessionPar('NODES',array());	 	   				
+			break;
+			
+			break;					  			
+  	}
+  	  	              
+  }  
+  
+  
   public function executeCursos(sfWebRequest $request)
   {
      $this->LoadWeb($request);
@@ -236,8 +330,19 @@ class webActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {      
     
+  	//Carrego les notícies de les últimes activitats... 
+  	//Carrego els banners que mostraré
+  	//Si s'entra un menú, carrego el contingut que toca segons el menú
+  		//Si el menú és només títol, mostro l'estructura de directoris
+  		//Si el menú té contingut, 
+  			//Si el contingut és automàtic, mostro el contingut automàtic
+  			//Si el contingut és manual, mostro el contingut manual
+  	//Si s'entra una cerca, carrego les activitats que corresponen a la cerca i marco el calendari els dies
+  	//Si s'entra un dia del calendari, cerco les activitats d'aquell dia
+  	
+  	
     $this->LoadWEB($request);
-    $this->NOTICIA = null;    
+/*    $this->NOTICIA = null;    
     
     $accio = $this->getUser()->ParReqSesForm($request,'accio','cp');    
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'pagina',1);
@@ -344,25 +449,9 @@ class webActions extends sfActions
    }
    
    $this->OBERT = $this->getUser()->getSessionPar('NODES',array());
-                          
+*/                          
   }
-  
-  public function gestionaNodes($NO)
-  {  	
-  	
-	$NODES = $this->getUser()->getSessionPar('NODES',array());
-	
-	if(in_array($NO,$NODES)):
-		unset($NODES[$NO]);
-	else:
-		$NODES[$NO] = $NO;
-	endif;
-		
-	$this->getUser()->setSessionPar('NODES',$NODES);
-		
-  }
-  
-   
+     
   /**
    * Funció on anem a parar si premem un boto de l'apartat de "cursos"
    * 

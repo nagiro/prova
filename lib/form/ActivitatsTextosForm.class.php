@@ -13,8 +13,8 @@ class ActivitatsTextosForm extends sfFormPropel
   public function setup()
   {
   	
-  	$URL_IMATGE = sfConfig::get('sf_web_dir').'/images/noticies'; 
-  	$URL_PDF    = sfConfig::get('sf_web_dir').'/images/noticies'; 
+  	$this->WEB_IMATGE = 'images/activitats/'; 
+  	$this->WEB_PDF    = 'images/activitats/'; 
   	
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
@@ -28,8 +28,8 @@ class ActivitatsTextosForm extends sfFormPropel
       'Descripcio'                      => new sfWidgetFormInputHidden(),
 	  'PublicaWEB'                      => new sfWidgetFormChoice(array('choices'=>array(2=>'No',1=>'Sí'))),
       'tipusEnviament'					=> new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getTipusEnviamentsSelect())),
-      'Imatge'                          => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
-      'PDF'                             => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').'images/noticies/'.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),                  
+      'Imatge'                          => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').$this->WEB_IMATGE.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
+      'PDF'                             => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),                  
       'tCurt'                           => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dCurt'                           => new sfWidgetFormTextareaTinyMCE(),
       'tMig'    	                    => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
@@ -49,8 +49,8 @@ class ActivitatsTextosForm extends sfFormPropel
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),
       'Estat'                           => new sfValidatorString(array('max_length' => 1, 'required' => false)),
       'Descripcio'                      => new sfValidatorString(array('required' => false)),
-      'Imatge'                          => new sfValidatorFile(array('path'=>$URL_IMATGE , 'required' => false)),
-      'PDF'                             => new sfValidatorFile(array('path'=>$URL_PDF , 'required' => false)),
+      'Imatge'                          => new sfValidatorFile(array('path'=>$this->WEB_IMATGE , 'required' => false)),
+      'PDF'                             => new sfValidatorFile(array('path'=>$this->WEB_PDF , 'required' => false)),
       'PublicaWEB'                      => new sfValidatorInteger(array('required' => false)),
       'tCurt'                           => new sfValidatorString(array('required' => false)),
       'dCurt'                           => new sfValidatorString(array('required' => false)),
@@ -95,11 +95,37 @@ class ActivitatsTextosForm extends sfFormPropel
   public function save($conn = null)
   {
   	
-	$this->updateObject();
-  	$OR = $this->getObject();  	  	  	  	  	
-  	if(!is_null($this['Categories']->getValue())) $OR->setCategories(implode('@',$this['Categories']->getValue()));  	  	  	
-  	$OR->save();  	
+  	parent::save();
   	
+  	$OR = $this->getObject();
+	  	  	  	  	  	  	
+  	if(!is_null($this['Categories']->getValue())) $OR->setCategories(implode('@',$this['Categories']->getValue()));
+  	
+  	$BASE = sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE;  	
+  	 	
+  	if($OR instanceof Activitats):
+  	  		
+  		$I = $OR->getImatge();
+  		if(!empty($I) && file_exists($BASE.$I)):  				
+		  	$img = new sfImage($BASE.$I,'image/jpg');  	
+		    $img->resize(100,100);
+		    $nom = $OR->getActivitatid().'.jpg';
+		    $img->saveAs($BASE.$nom);
+		    if( $I <> $nom ) unlink($BASE.$I);		    
+		    $OR->setImatge($nom);		    
+	    endif;
+	    
+	    $P = $OR->getPdf();  		
+  		if(!empty($P) && file_exists($BASE.$P)):  		
+  			$nom = $OR->getActivitatid().'.pdf';		
+		  	rename($BASE.$P,$BASE.$nom);
+		    if( $I <> $nom ) unlink($BASE.$P);		    
+		    $OR->setPdf($nom);		    
+	    endif;	    	      	    	    	      	    
+	endif;
+  	
+  	$OR->save();  	
+  	  	
   }
     
 }

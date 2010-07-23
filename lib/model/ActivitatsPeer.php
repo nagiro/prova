@@ -44,7 +44,25 @@ class ActivitatsPeer extends BaseActivitatsPeer
             
       return $pager; 
    }
-   
+
+   static function getActivitatsCerca( $text , $data , $page = 1 )
+   {
+   	  $di = mktime(0,0,0,date('m',$data),1,date('Y',$data));            
+	  $df = mktime(0,0,0,date('m',$data)+1,1,date('Y',$data));
+	  
+	  $C = HorarisPeer::cercaCriteria(null,$text,$di,$df,null);	  
+      $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
+      $C->add(self::PUBLICAWEB,1);      
+      $C->addDescendingOrderByColumn(HorarisPeer::DIA);
+      $C->addGroupByColumn(self::ACTIVITATID);      
+                
+      $pager = new sfPropelPager('Horaris', 20);
+	  $pager->setCriteria($C);
+      $pager->setPage($page);
+      $pager->init();    	
+            
+      return $pager; 
+   }
    
    
    static function getActivitatsDia2($dia)
@@ -122,12 +140,22 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		endif; 
 	}
 	
-	static public function getActivitatsCicles($idC)
+	static public function getActivitatsCicles($idC, $pager = false, $pagina = 1)
 	{
 		$C = new Criteria();
 		$C->add(self::CICLES_CICLEID,$idC);
 		
-		return self::doSelect($C);
+		if($pager):
+			$pager = new sfPropelPager('Activitats', 20);
+			$pager->setCriteria($C);
+			$pager->setPage($pagina);
+			$pager->init();    		            
+			return $pager;
+		else: 
+			return self::doSelect($C);
+		endif; 
+		
+		
 	}
    	
 			
@@ -135,6 +163,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	{
 		$CAT = array();
 		if($web):
+
+			$CAT['cap'] = 'Contingut manual';
 		
 			$CAT['exposicions-general'] = 'Exposicions i arts visuals - General';
 			$CAT['exposicions-historic'] = 'Exposicions i arts visuals - Històric';
@@ -169,10 +199,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 			$CAT['cursos'] = 'Cursos';
 			$CAT['altres'] = 'Altres';
 			
-		endif;
-		
-//		if($cap) $CAT['cap'] = 'Cap categoria';
-		
+		endif;		
 		
 		return $CAT;
 	}
@@ -184,10 +211,12 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	 * @param unknown_type $mode
 	 * @param unknown_type $idC
 	 */
-	static public function getActsCategoria($cat,$mode,$page = 1, $idC = 0)
+	static public function getActsCategoria($cat,$page = 1, $idC = 0)
 	{		
 		
 		$C = new Criteria();
+		
+		list($nom,$mode) = explode("-",$cat);
 		
 		$C->add(self::CATEGORIES,'%'.$cat.'%',CRITERIA::LIKE);	
 		$C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
@@ -212,6 +241,80 @@ class ActivitatsPeer extends BaseActivitatsPeer
 			    	
 		return $pager;
 				
+	}
+	
+	/**
+	 * Agafem els cicles que afecten aquesta categoria i la resta d'activitats que no pertanyen a cap cicle.  
+	 *
+	 * @param unknown_type $cat
+	 * @param unknown_type $mode
+	 * @param unknown_type $idC
+	 */	
+	
+	static public function selectCicleCategoriaActivitat($cat,$idC = 0)
+	{
+		
+		$C = new Criteria();
+		
+		list($nom,$mode) = explode("-",$cat);
+		
+		$C->add(self::CATEGORIES,'%'.$nom.'%',CRITERIA::LIKE);	
+		$C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+		$C->addJoin(self::CICLES_CICLEID,CiclesPeer::CICLEID);
+		
+		if($mode == 'historic'):
+			$C->add(HorarisPeer::DIA, date('Y-m-d',time()), CRITERIA::LESS_THAN);
+			$C->addDescendingOrderByColumn(HorarisPeer::DIA);
+		endif;
+		 
+		if($mode == 'actual'):
+			$C->add(HorarisPeer::DIA, date('Y-m-d',time()), CRITERIA::GREATER_EQUAL);
+			$C->addAscendingOrderByColumn(HorarisPeer::DIA);
+		endif; 			
+
+		if($idC > 0 ) $C->add(self::CICLES_CICLEID, $idC);
+		
+		$C->addGroupByColumn(CiclesPeer::CICLEID);
+		
+		return $C;
+		
+	}
+	
+	static public function getCiclesCategoria($cat,$page = 1)
+	{		
+		
+		$C = self::selectCicleCategoriaActivitat($cat,0);
+				
+		$pager = new sfPropelPager('Cicles', 20);
+    	$pager->setCriteria($C);
+    	$pager->setPage($page);
+    	$pager->init();    	    	
+    	
+		return $pager;
+				
+	}
+	
+	static public function countActivitatsCiclesCategoria( $cat , $idC = 0 )
+	{		
+		
+		$C = self::selectCicleCategoriaActivitat($cat,$idC);
+				
+		return self::doCount($C);
+								
+	}
+	
+	static public function getPrimerHorariActivitat($IDA)
+	{
+		$C = new Criteria();
+		$C->add(HorarisPeer::ACTIVITATS_ACTIVITATID, $IDA);
+		$C->addAscendingOrderByColumn(HorarisPeer::DIA);
+		
+		$OH = HorarisPeer::doSelectOne($C);
+		if($OH instanceof Horaris):
+			return $OH; 
+		else: 
+			return null;
+		endif; 
 	}
 	
 }

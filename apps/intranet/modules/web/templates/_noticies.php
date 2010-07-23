@@ -1,36 +1,3 @@
-<script type="text/javascript">
-
-	$(document).ready(function() {	
-		$('[id*=MOSTRA]').each(function(index){ $(this).fadeOut(0); });
-		$('#MOSTRA1').fadeIn(0);
-		
-	});
-
-	function Mostra(id)
-	{
-				
-		var act = parseInt(id);
-		var seg = parseInt(id)+1;
-		
-		$('#MOSTRA'+act).fadeOut(0);
-		$('#MOSTRA'+seg).fadeIn(2000);
-		
-	}
-
-	function visible(idA)
-	{
-				
-		$('[id*=DIV]').each(function(index){ $(this).fadeOut(2500); })
-		$('[id*=CUR]').each(function(index){ $(this).fadeIn(2500); })
-		$('[id*=MES]').each(function(index){ $(this).fadeIn(2500); })
-		
-		$('#DIV'+idA).fadeIn(2500);
-		$('#CUR'+idA).fadeOut(0);
-		$('#MES'+idA).fadeOut(2500);			
-			
-	}
-	
-</script>
 
     <TD colspan="2" class="CONTINGUT">
     
@@ -83,59 +50,56 @@
     
     
     
-    function mostraNoticies($NOTICIES)
-    {
-    	if($NOTICIES->getNbResults() == 0): echo '<DIV>No hi ha cap notícia activa.<DIV>'; endif;     							
-        
-		$i = 1;
-		
-		echo '<div id="MOSTRA1">';
-		
-		foreach($NOTICIES->getResults() as $N):
+	function mostraNoticies($NOTICIES)
+	{
+	     
+	    if($NOTICIES->getNbResults() == 0): 
+	
+			echo '<DIV>Actualment no hi ha cap notícia.<DIV>';
+	
+		else: 			    
 				
-     		$titol = $N->getTitolnoticia(); $imatge = $N->getImatge(); $pdf = $N->getAdjunt(); $descripcio = $N->getTextnoticia();
-			if(!empty($titol)):               	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      		
-    			echo '<TABLE class="BOX">';
-		    	echo '<TR>';  
-	 			if(!empty($imatge)):	    
-	 				echo '<TD class="FOTO">'.image_tag('noticies/'.$N->getImatge(), array('class'=>'IMG_FOTO')).'</TD>';
-	 			endif;
-		        echo '<TD class="NOTICIA">';			    
-				echo '<DIV class="TITOL">'.$titol.'</DIV>';
-				$dim = 250;
-				echo '<DIV class="TEXT" name="CUR" id="CUR'.$N->getIdnoticia().'" >'.substr( $descripcio , 0 , $dim).'...</div>';
-		    	echo '<DIV class="TEXT AMAGAT" name="DIV" id="DIV'.$N->getIdnoticia().'" >'.$descripcio.'</DIV>';			    	
-	 			if(strlen($descripcio) > $dim):		    	
-		    		echo '<DIV class="PEU"><a href="'.url_for('web/index?accio=no&idN='.$N->getIdnoticia()).'")">'.image_tag('intranet/llegirmes.png', array('style'=>'float:left','id'=>'MES'.$N->getIdnoticia(),'name'=>'MES')).'</a>';
-	 			endif;
-	 			if(!empty($pdf)): 
-	 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW'));
-	 			endif;
-				echo '</DIV>';
-				echo '</TD>';
-		    	echo '</TR>';		    			    			    			    			    	
-		    	echo '</TABLE>';
-	 		endif;	 			 				
-	 	
-		endforeach;
-		
-			if($NOTICIES->haveToPaginate()):
-				echo '<TABLE class="BOX">';
-		   		echo '<TR>';   		
-		        echo '<TD class="NOTICIA" style="text-align:center">';
-				if($NOTICIES->getPage() < $NOTICIES->getLastPage()):		 					    
-					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina='.$NOTICIES->getNextPage()).'">Veure més notícies</a>';
-				else: 
-					echo '<a class="MES_NOTICIES" href="'.url_for('web/index?accio=no&pagina=1').'"> Tornar al principi</a>';										 				
-		    	endif;
-		    	echo '</TD>';
-		    	echo '</TR>';		    			    			    			    			    	
-		    	echo '</TABLE>';
-		    endif;
+			foreach($NOTICIES->getResults() as $ON):
+															
+				$imatge = $ON->getImatge();
+				$pdf = $ON->getAdjunt();			
+				$nom_noticia = '<b>'.$ON->getTitolnoticia().'</b>';
 
-		echo '</div>';
-    }
-    
+//				echo '<div style="border:3px solid #CCCCCC; padding:10px;">';
+				
+					echo '<div style="clear:both;">';							
+					echo '	<div style="width:480px; display:block; float:left; padding-bottom:5px;">'.$nom_noticia.'</div>';									 
+					echo '</div>';
+					
+					echo '<div style="clear:both;">';
+					if($imatge > 0 || $pdf > 0):
+						echo '<div style="width:100px; display:block; float:left; ">';
+						if($imatge > 0) echo image_tag(sfConfig::get('sf_webrooturl').'images/noticies/'.$imatge,array('style'=>'vertical-align:middle'));
+						if($pdf > 0) echo '<br /><div style="padding-top:5px; text-align:center;"><a href="'.sfConfig::get('sf_webrooturl').'images/noticies/'.$pdf.'">Baixa\'t el pdf</a></div>';						
+						echo '<div style="padding-top:4px; text-align:center;"><a href="'.url_for('web/index?accio=no&idn='.$ON->getIdnoticia()).'">Llegir més</a></div>';
+						echo '</div>';					
+						echo '<div style="width:380px; display:block; float:left; padding:5px; ">'.$ON->getTextnoticia().'</div>';
+						echo '<div style="clear:both;">';							
+						echo '	<div style="width:100px; display:block; float:left; ">&nbsp;</div>';														 
+						echo '</div>';				
+						
+					else:					 				
+						echo '<div style="width:480px; display:block; float:left;  padding:5px; ">'.$ON->getTextnoticia().'</div>';
+						echo '<div style="clear:both;">';																											 
+						echo '</div>';									
+					endif; 									 											
+					echo '</div>';								
+				
+//				echo '</div>';
+					
+					echo '<div style="clear:both; height:40px;"></div>';
+				
+			endforeach;
+		
+		endif;
+				
+	}
+
     
     function agrupaespais($ESPAIS)
     {

@@ -10,14 +10,36 @@
     
 	<?php include_partial('breadcumb',array('text'=>'NOTÍCIES')); ?>
 
+    <form action="<?php echo url_for('gestio/gNoticies') ?>" method="POST" id="FCERCA">
+    	<?php include_partial('cerca',array(
+    										'TIPUS'=>'Simple',
+    										'FCerca'=>$FCerca,
+    										'BOTONS'=>array(
+    														array(
+    																'name'=>'BCERCA',
+    																'text'=>'Prem per buscar'),
+    														array(
+    																'name'=>'BNOU',
+    																'text'=>'Nova notícia')    														
+    													)
+    										)
+    							); ?>
+     </form>
+
+
 <?php if($MODE == 'FORMULARI'): ?>
 		
 		<form action="<?php echo url_for('gestio/gNoticies') ?>" method="POST" enctype="multipart/form-data">
 		    <DIV class="REQUADRE">	    
-		    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gNoticies?accio=C'))?>
+		    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gNoticies?accio=CC'))?>
 		    	<table class="FORMULARI">
 		    		<tr><td width="100px"></td><td></td></tr>	    			    		        
-		            <?php echo $FORMULARI ?>	            
+		            <?php echo $FORMULARI ?>
+		            <?php $ON = $FORMULARI->getObject(); ?>
+		            <?php if($ON->getIdactivitat() > 0): ?>
+		            	<?php $nom = ActivitatsPeer::retrieveByPK($ON->getIdactivitat())->getNom(); ?>	            
+		            	<tr><td width="100px"><b>Activitat relacionada:</b></td><td><a target="_NEW" href="<?php echo url_for('gestio/gActivitats?accio=ACTIVITAT&IDA='.$ON->getIdactivitat()) ?>"><?php echo $nom ?></a></td></tr>
+		            <?php endif;  ?>
 		            <tr>		            	
 		            	<td colspan="2" class="dreta">
 							<?php include_partial('botonera',array('element'=>'la notícia')); ?>		            	
@@ -29,35 +51,25 @@
 
 <?php else: ?>
 
-     <form action="<?php echo url_for('gestio/gNoticies') ?>" method="post" enctype="multipart/form-data">
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL">Notícies actives a portada</DIV>
 	    	<table class="DADES">
 	    	<?php           
                 if(sizeof($NOTICIES) == 0 ) { echo '<TR><TD class="LINIA">No hi ha cap notícia activa.</TD></TR>'; }
-                else { echo '<tr><td class="TITOL"></td><td class="TITOL">Títular</td><td class="TITOL">Data publicació</td><td class="TITOL">Data desaparició</td><tr>'; }
+                else { echo '<tr><td class="TITOL">Títol</td><td class="TITOL">Data publicació</td><td class="TITOL">Data desaparició</td><td class="TITOL">Activa?</td><tr>'; }
                  								                           
                 foreach($NOTICIES->getResults() as $N):                                      
-					echo '<TR>
-							<TD width="10%" class="LINIA">'.radiobutton_tag('NOTICIA',$N->getIdnoticia(),false).'</TD>
-							<TD class="LINIA">'.$N->getTitolnoticia().'</TD>
+					echo '<TR>							
+							<TD class="LINIA">'.link_to($N->getTitolnoticia(),'gestio/gNoticies?accio=E&idn='.$N->getIdnoticia()).'</TD>
 							<TD class="LINIA">'.$N->getDatapublicacio().'</TD>							
 							<TD class="LINIA">'.$N->getDatadesaparicio().'</TD>
+							<TD class="LINIA">'.(($N->getActiva())?'Sí':'No').'</TD>							
 						  </TR>';                		                 															
 				endforeach;				
                 ?>         
-                <TR>
-                	<TD colspan="1"></TD>
-                	<TD colspan="3">
-                		<button name="BADD">Nova notícia</button>
-                		<button name="BEDIT">Edita notícia</button>                		                		
-                	</TD>
-                	
-                </TR>
-                <TR><TD colspan="4"><?php echo gestorPagines($NOTICIES);?></TD></TR>       
+                <TR><TD style="border:0px;" colspan="4"><?php echo setPager($NOTICIES,'gestio/gNoticies?a=a',$PAGINA); ?></TD></TR>       
 	        </table>
-	     </DIV>
-     </form>                  
+	     </DIV>                  
 
 	</TD>
 	

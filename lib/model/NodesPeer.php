@@ -22,8 +22,8 @@ class NodesPeer extends BaseNodesPeer
   }
   
   static function retornaMenu($Tambe_invisibles = false)
-  {          
-     return self::getNodes($Tambe_invisibles);
+  {   	 
+  	return self::getNodes($Tambe_invisibles);	  		
   }
   
   static function getNodes($Tambe_invisibles = false)
@@ -65,10 +65,11 @@ class NodesPeer extends BaseNodesPeer
   	return (strlen($URL)>4);  
   }
   
-  static public function selectPagina($idP)
+  static public function selectPagina($idNode)
   {
-  	$NODE = self::retrieveByPK($idP);
-  	return $NODE; 
+  	$NODE = self::retrieveByPK($idNode);
+  	if($NODE instanceof Nodes) return $NODE;
+  	else return new Nodes;  	
   }
     
 }

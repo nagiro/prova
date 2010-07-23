@@ -1127,7 +1127,9 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BHORARIDELETE')) 	$this->accio = 'HORARI_DELETE';
 	    elseif($request->hasParameter('BDESCRIPCIO')) 		$this->accio = 'DESCRIPCIO';
 	    elseif($request->hasParameter('BDESCRIPCIOSAVE')) 	$this->accio = 'DESCRIPCIO_SAVE';
-	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $this->accio = 'DESCRIPCIO_DELETE';	    	    
+	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $this->accio = 'DESCRIPCIO_DELETE';
+	    elseif($request->hasParameter('BGENERANOTICIA')) 	$this->accio = 'GENERA_NOTICIA';	    
+	    
     }                
     
     //Quan cliquem per primer cop a qualsevol de les cerques, la pàgina es posa a 1
@@ -1195,7 +1197,7 @@ class gestioActions extends sfActions
 	    		if($this->FActivitat->isValid()):
 	    			$nova = $this->FActivitat->isNew();
 	    			$this->FActivitat->save();	    			
-	    			$this->getUser()->addLogAction($accio,'gActivitats',$this->FActivitat->getObject());
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
 	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();
 	    			if($nova):	    				
 	    				$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA.'&nou='.$this->IDA);
@@ -1299,7 +1301,7 @@ class gestioActions extends sfActions
 	    		$this->FHorari->bind($request->getParameter('horaris'));
 	    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$this->MATERIALOUT,$this->ESPAISOUT);
 	    		if(empty($RET)):
-	    			$this->getUser()->addLogAction($accio,'gActivitats',$this->FHorari->getObject());
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FHorari->getObject());
 	    			$this->MISSATGE = array(1=>'Horari guardat correctament');
 	    			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA);
 	    		else:
@@ -1317,10 +1319,10 @@ class gestioActions extends sfActions
     			$RH = $request->getParameter('horaris');    			
     			$OH = HorarisPeer::retrieveByPK($RH['HorarisID']);
     			if($OH instanceof Horaris):
-	    			$this->getUser()->addLogAction($accio,'gActivitats',$OH);
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OH);
 	    			$OH->delete();    			    			
 	    		endif; 
-	   			$this->redirect('gestio/gActivitats?accio=HORARI');
+	   			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$RH['Activitats_ActivitatID']);
 	   			
     		break;
     		
@@ -1346,16 +1348,21 @@ class gestioActions extends sfActions
     			$this->FActivitat->bind($request->getParameter('activitats'),$request->getFiles('activitats'));
     			if($this->FActivitat->isValid()): 
     				$this->FActivitat->save();
-    				$this->getUser()->addLogAction($accio,'gActivitats',$this->FActivitat->getObject());
+    				$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
     				$this->redirect('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$this->IDA);
     			endif; 
     			
     			$THIS->MODE['DESCRIPCIO'] = true;
     		
     		break;
-    	
-    	case 'DESCRIPCIO_DELETE':
+
+		case 'GENERA_NOTICIA':
     			
+    			$RP = $request->getParameter('activitats');
+    			$this->IDA = $RP['ActivitatID'];    			
+    			$ONoticia = NoticiesPeer::getNoticiaActivitat($this->IDA);    			
+    			$this->redirect('gestio/gNoticies?accio=E&NOTICIA='.$ONoticia->getIdnoticia());
+    			    			    		
     		break;
     					
     }                                
@@ -1657,7 +1664,7 @@ class gestioActions extends sfActions
     //Netegem cerca
   	if($request->getParameter('accio') == 'I'):      		
         $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
-      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);      	      			
+      	$this->PAGINA = $this->getUser()->setSessionPar('p',1);      	      			
       	$this->accio = $this->getUser()->setSessionPar('accio',"");      	      			       
     endif;    
     
@@ -1665,7 +1672,7 @@ class gestioActions extends sfActions
     $this->FCerca = new CercaForm();
     $this->FCerca->bind($request->getParameter('cerca'));          
     $this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));  	  	
-  	$this->PAGINA	= $this->getUser()->ParReqSesForm($request,'pagina',1);
+  	$this->PAGINA	= $this->getUser()->ParReqSesForm($request,'p',1);
   	$this->accio  	= $this->getUser()->ParReqSesForm($request,'accio',"");
   	$this->MODE     = array();  	  	    
     
@@ -2345,23 +2352,32 @@ class gestioActions extends sfActions
   { 
   	    
     $this->setLayout('gestio');
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
-	$this->CERCA = $this->getUser()->ParReqSesForm($request,'text','cerca');
-	$this->accio = $this->getUser()->ParReqSesForm($request,'accio','ca');
+    
+    $this->FCerca = new CercaForm();
+    $this->FCerca->bind($request->getParameter('cerca'));
+    $this->CERCA = $request->getParameter('cerca');    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'p',1);
+    $this->IDN    = $request->getParameter('idn');    
+    
+	$this->accio = $request->getParameter('accio');
 	$this->MODE = 'CERCA';
 	
 	
     if($request->isMethod('POST')){	      	    
+    	if($request->hasParameter('BNOU'))			$this->accio = 'N';
 	    if($request->hasParameter('BSAVE')) 		$this->accio = 'S';		//Hem entrat una matrícula i passem a la fase de verificaciÃ³
-	    elseif($request->hasParameter('BDELETE')) 	$this->accio = 'D';
-	    elseif($request->hasParameter('BADD'))		$this->accio = 'N';
+	    elseif($request->hasParameter('BDELETE')) 	$this->accio = 'D';	    
 	    elseif($request->hasParameter('BEDIT'))		$this->accio = 'E';
     }                    
     
 	switch($this->accio){
+		
 		case 'CC':
 			$this->getUser()->addLogAction('inside','gNoticies');
+			$this->getUser()->setSessionPar('cerca',"");
+			$this->getUser()->setSessionPar('PAGINA',1);			
 			break;
+			
 		case 'N':
 			$ONoticia = new Noticies();
 			$ONoticia->setDatapublicacio(date('Y-m-d',time()));
@@ -2370,43 +2386,38 @@ class gestioActions extends sfActions
 			$this->MODE = 'FORMULARI';
 			$this->getUser()->setSessionPar('idN',0); 
 			break;
-		case 'E': 			
-			$this->getUser()->setSessionPar('idN',$request->getParameter('NOTICIA'));
-			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($this->getUser()->getSessionPar('idN')));			
+			
+		case 'E': 								
+			$ON = NoticiesPeer::retrieveByPK($this->IDN);
+			$this->FORMULARI = new NoticiesForm($ON);			
 			$this->MODE = 'FORMULARI';			
 			break;
-		case 'S':
 
-			$idN = $this->getUser()->getSessionPar('idN');					
-			$this->FORMULARI = new NoticiesForm(NoticiesPeer::retrieveByPK($idN));							
-			$this->FORMULARI->bind($request->getParameter('noticies'),$request->getFiles('noticies'));
+		case 'S':
+			
+			$RS = $request->getParameter('noticies');			
+			$ON = NoticiesPeer::retrieveByPk($RS['idNoticia']);								
+			$this->FORMULARI = new NoticiesForm($ON);							
+			$this->FORMULARI->bind($RS,$request->getFiles('noticies'));
 			
 			if($this->FORMULARI->isValid()):
-
 				$this->FORMULARI->save();
-				$this->getUser()->addLogAction($accio,'gNoticies',$this->FORMULARI->getObject());
-				$this->getUser()->setSessionPar('idN',$this->FORMULARI->getObject()->getIdnoticia());
-				$this->redirect('gestio/gNoticies?accio=CA');
+				$this->getUser()->addLogAction($this->accio,'gNoticies',$this->FORMULARI->getObject());				
+				$this->redirect('gestio/gNoticies?accio=CC');
 			endif; 
 			
-			$this->MODE = 'FORMULARI';
-						
+			$this->MODE = 'FORMULARI';						
 			break;
-		case 'D':
-			$ON = NoticiesPeer::retrieveByPk($this->getUser()->getSessionPar('idN'));			
-			if($ON instanceof Noticies) {  $ON->delete(); $this->getUser()->addLogAction($accio,'gNoticies',$ON); }		
-			break;
-		case 'UPDATE':			
-				$this->getUser()->addLogAction($accio,'gNoticies',null);
-				NoticiesPeer::migraNoticiesActivitats();
-				NoticiesPeer::netejaNoticies();
-				$this->getUser()->setSessionPar('accio','ca');
-//				return sfView::NONE;
+			
+		case 'D':			
+			$RS = $request->getParameter('noticies');			
+			$ON = NoticiesPeer::retrieveByPk($RS['idNoticia']);			
+			if($ON instanceof Noticies) {  $ON->delete(); $this->getUser()->addLogAction($accio,'gNoticies',$ON); }				
 			break;
 						
 	}
-             
-    $this->NOTICIES = NoticiesPeer::getNoticies("",$this->PAGINA);
+	
+    $this->NOTICIES = NoticiesPeer::getNoticies($this->CERCA['text'],$this->PAGINA);
           
   }
   
@@ -3276,8 +3287,8 @@ class gestioActions extends sfActions
     		
     	case 'SAVE':    		    		
     			$PC = $request->getParameter('cicles');
-    			$this->FCICLES = CiclesPeer::initialize($PC['CicleID']);
-    			$this->FCICLES->bind($PC,$request->getFiles());
+    			$this->FCICLES = CiclesPeer::initialize($PC['CicleID']);    			
+    			$this->FCICLES->bind($PC,$request->getFiles('cicles'));
     			if($this->FCICLES->isValid()):
     				$this->FCICLES->save();    				
     				$this->getUser()->addLogAction($accio,'gCicles',$this->FCICLES->getObject());

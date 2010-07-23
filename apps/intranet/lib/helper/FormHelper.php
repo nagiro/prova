@@ -917,3 +917,22 @@ function _convert_include_custom_for_select($options, &$select_options)
     $select_options[''] = $include_custom;
   }
 }
+
+function setPager($pager,$url,$page){
+	
+	$RET = "<div style=\"font-size:12px;\">";
+	if ($pager->haveToPaginate()):
+		$RET .= link_to('&laquo;', $url.'&p='.$pager->getFirstPage());
+		$RET .= '&nbsp;&nbsp;'.link_to('&lt;', $url.'&p='.$pager->getPreviousPage());
+		$links = $pager->getLinks(); 
+		foreach ($links as $page):
+			$RET .= ($page == $pager->getPage()) ? $page : link_to($page, $url.'&p='.$page);
+			if ($page != $pager->getCurrentMaxLink()): $RET .= '-'; endif;
+		endforeach;
+		$RET .= '&nbsp;&nbsp;'.link_to('&gt;', $url.'&p='.$pager->getNextPage());
+		$RET .= '&nbsp;&nbsp;'.link_to('&raquo;', $url.'&p='.$pager->getLastPage());
+	endif;
+	$RET .= '</div>';
+	return $RET;
+	
+}

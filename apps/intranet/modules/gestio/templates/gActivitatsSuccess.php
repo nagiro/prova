@@ -152,7 +152,7 @@
      <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
  	 		
 	 	<div class="REQUADRE fb">	 	
-		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>
+		 	<?php // include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>
 		 	
 			<div class="titol"><?php if(isset($MODE['NOU'])): echo 'Editant una activitat nova'; else: echo 'Editant l\'activitat: '.$FActivitat->getValue('Nom'); endif; ?></div>
 				
@@ -371,8 +371,17 @@
 				
 	 		<div style="padding-top:10px;" class="FORMULARI fb">
 	 		
-	 			<?php echo $FActivitat ?>		 		
-	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BDESCRIPCIOSAVE','text'=>'Guarda i tanca')); ?>
+	 			<?php echo $FActivitat ?>
+	 			
+				<div class="clear" style="text-align:right; padding-top:40px;">
+					<button type="submit" name="BDESCRIPCIOSAVE" class="BOTO_ACTIVITAT">
+						Guarda i tanca
+					</button>
+					<button type="submit" name="BGENERANOTICIA" class="BOTO_ACTIVITAT">
+						Genera notícia (text mig)
+					</button>
+				</div>
+	 			
 	 					
 	 		</div>
 	 			 	 	

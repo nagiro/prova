@@ -24,8 +24,7 @@
 		echo '<TABLE class="BOX FORMAT">';
     	echo '<tr>
     				<th style="text-align:left">Activitat</th>    				    				
-    				<th style="text-align:left">Dia</th>
-    				<th style="text-align:left">Hora</th>
+    				<th style="text-align:left">Primer dia</th>    				
     		  </tr>';
 	
 		foreach($LLISTAT_ACTIVITATS->getResults() as $A):								
@@ -41,20 +40,17 @@
 		    	echo 	link_to($OA->getNom(),'web/index?accio=caa&idA='.$OA->getActivitatid());
 		    			if($OC->getCicleid() > 1) echo '('.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid()).')';		    			
 		    	echo   '</td>';
+		    	echo '<td>';
+		    		echo GiraData($OA->getPrimeraData());
+		    	echo '</td>';
 		    			    	
-		    	echo '<td>'.generaData($A->getDia('Y-m-d')).'</td>';
-		    	
-		    	echo '<td>'.$A->getHoraInici('H:i').'</td>';
-		    	
 		    	echo '</tr>';
 		    endif; 
 	    			 		 	    				                  
 		endforeach;
 		
-		if($MODE == 'CERCA'):
-			echo '<tr><td colspan="3" style="text-align:center">'.setPager($LLISTAT_ACTIVITATS,'web/index?accio=c',$PAGINA).'</td></tr>';				
-		endif; 
-		
+		echo '<tr><td colspan="3" style="text-align:center">'.setPager($LLISTAT_ACTIVITATS,'web/index?accio=c',$PAGINA).'</td></tr>';				
+ 		
     	echo '</TABLE>';
 	endif;
 
@@ -65,6 +61,12 @@
     
 
     <?php 
+    
+    function GiraData($d)
+    {
+    	list($y,$m,$d) = explode('-',$d);
+    	return $d.'-'.$m.'-'.$y;
+    }
     
 	function generaData($DIA)
 	{
