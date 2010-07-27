@@ -1,14 +1,13 @@
-<?php use_helper('Javascript','Asset')?>
 <?php use_javascript('thickbox-compressed.js')?>
 
-<style>
-
-.fotoEspai { height:50px; }
-.Text TD { padding:5px; vertical-align: top; }
-.llistat { list-style: disc; }
-.llistat li { margin-bottom:5px; }
-
-</style>
+	<style>
+	
+		.fotoEspai { height:50px; }
+		.Text TD { padding:5px; vertical-align: top; }
+		.llistat { list-style: disc; }
+		.llistat li { margin-bottom:5px; }
+	
+	</style>
 
     <TD colspan="3" id="TEXT_WEB" class="CONTINGUT">
 

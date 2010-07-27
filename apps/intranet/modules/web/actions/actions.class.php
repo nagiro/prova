@@ -64,6 +64,8 @@ class webActions extends sfActions
   	if($request->hasParameter('BCERCA_x')):    	 
     	$this->CERCA = $this->getUser()->ParReqSesForm($request,'CERCA',"");
     	$this->accio = 'c';
+    else: 
+    	$this->CERCA = "";
     endif;
   	
   	  	

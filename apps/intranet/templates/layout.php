@@ -10,12 +10,12 @@
     	<TD class="CAPCALERA"></TD>
     	<TD class="CAPCALERA" style="width:512px;" colspan="2" style="">		<div style="vertical-align:bottom; position:relative;">
 			<div class="PESTANYA_SUPERIOR">
-				<a href="<?php echo url_for('web/contacta'); ?>">
+				<a target="_NEW" href="http://www.casadecultura.org/giroscopi">
 					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_03.png'); ?>" /> 
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">
-				<a href="http://www.casadecultura.org/giroscopi">
+				<a target="_NEW" href="#">
 					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_04.png'); ?>" /> 
 				</a>
 			</div>
@@ -30,7 +30,7 @@
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">
-				<a href="http://localhost/hospici_dev.php/directori/inicial">
+				<a href="<?php echo url_for('web/contacte') ?>">
 					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_07.png'); ?>" /> 
 				</a>
 			</div>
