@@ -1,11 +1,4 @@
-<STYLE>
 
-	.FORMAT td { padding:5px; }
-	.FORMAT th { padding:5px; background-color:#CCCCCC; }
-	.FORMAT a { text-decoration: none; font-weight:bold; }
-	
-	
-</STYLE>
     <TD colspan="2" class="CONTINGUT">
 
     <?php include_partial('breadcumb',array('text'=>$TITOL)); ?>
@@ -17,41 +10,45 @@
 		echo '<DIV>No s\'ha trobat cap activitat pública disponible per aquest cicle.<DIV>';
 
 	else: 			    
-			
-		foreach($LLISTAT_ACTIVITATS->getResults() as $OA):
-														
-			$imatge = $OA->getImatge();
-			$pdf = $OA->getPdf();			
-			$nom_activitat = '<b>'.$OA->getTMig().'</b>';
-			
-				echo '<div style="clear:both;">';							
-				echo '	<div style="width:480px; display:block; float:left; padding-bottom:5px;">'.$nom_activitat.'</div>';									 
-				echo '</div>';
-				
-				echo '<div style="clear:both;">';
-				if($imatge > 0 || $pdf > 0):
-					echo '<div style="width:100px; display:block; float:left; ">';
-					if($imatge > 0) echo image_tag(sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge,array('style'=>'vertical-align:middle'));
-					if($pdf > 0) echo '<br /><div style="padding-top:5px; text-align:center;"><a href="'.sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf.'">Baixa\'t el pdf</a></div>';
-					echo '</div>';					
-					echo '<div style="width:380px; display:block; float:left; padding:5px; ">'.$OA->getDmig().'</div>';
-					echo '<div style="clear:both;">';							
-					echo '	<div style="width:100px; display:block; float:left; ">&nbsp;</div>';					
-					echo '	<div style="width:380px; display:block; float:left; padding:5px;"><b>Horaris</b><br />'.generaHoraris($OA->getHorariss()).'</div>';									 
-					echo '</div>';				
-					
-				else:					 				
-					echo '<div style="width:480px; display:block; float:left;  padding:5px; ">'.$OA->getDmig().'</div>';
-					echo '<div style="clear:both;">';												
-					echo '	<div style="width:380px; display:block; float:left; padding:5px;"><b>Horaris</b><br />'.generaHoraris($OA->getHorariss()).'</div>';									 
-					echo '</div>';									
-				endif; 									 											
-				echo '</div>';								
 
-				
-				echo '<div style="clear:both; height:40px;"></div>';
+	
+		$C = CiclesPeer::retrieveByPK($IDC);
+		if($C instanceof Cicles) $nom_cicle = '<b>'.$C->getTMig().'</b>'; else $nom_cicle = "";
+		$NA = CiclesPeer::getActivitatsCicle($C->getCicleID());						
+		$PA = CiclesPeer::getDataPrimeraActivitat($C->getCicleID());
+		$PF = CiclesPeer::getDataUltimaActivitat($C->getCicleID());		
+		$imatge = $C->getImatge();
+		$pdf = $C->getPdf();
+		$enllac = url_for('web/index?accio=ac&node='.$NODE);
+		
+		?>
 			
-		endforeach;
+			<div style="clear:both;">											
+				<div class="df titol_cicle" style="width:150px;">Activitats del cicle</div>
+				<div class="df titol_cicle" style="color: #A73339; width:330px; padding-left:20px;"><?php echo $nom_cicle ?></div>									 
+			</div>
+				
+				<div style="border:2px solid #96BF0D; clear:both; padding:10px;">					
+					<div class="df" style="width:150px;">
+						<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>						
+						<div style="margin-top:20px;font-size:11px;">Del <?php echo $PA ?> al <?php echo $PF ?></div>
+						<div style="margin-top:20px;font-size:11px;">Activitats del cicle: <?php echo $NA ?></div>						
+						<div style="margin-top:0px; font-size:10px"><a href="<?php echo $enllac ?>">Torna al llistat de cicles</a></div>
+						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
+					</div>
+					<div class="df" style="width:330px;">
+						<div style="padding-left:10px; font-size:11px;">							
+							<?php foreach($LLISTAT_ACTIVITATS->getResults() as $OA): ?>								
+									<b><a href="<?php echo url_for('web/index?accio=caa&idA='.$OA->getActivitatid().'&node='.$NODE) ?>"><?php echo $OA->getTCurt(); ?></a></b><br />
+									<?php echo generaHoraris($OA->getHorariss()); ?><br /><br />
+							<?php endforeach; ?>
+																			
+						</div>
+					</div>
+					<div style="clear:both">&nbsp;</div>													
+				</div>					
+				
+		<?php 					
 	
 	endif;
 

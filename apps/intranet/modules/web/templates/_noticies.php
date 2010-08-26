@@ -1,3 +1,4 @@
+<?php use_helper('Form'); ?>
 
     <TD colspan="2" class="CONTINGUT">
     
@@ -6,9 +7,9 @@
     <?php 
     
     	if(!is_null($NOTICIA)):
-    		mostraNoticia($NOTICIA);
+    		mostraNoticia( $NOTICIA , $PAGINA );
     	else: 
-    		mostraNoticies($NOTICIES);    	
+    		mostraNoticies( $NOTICIES , $PAGINA );    	
     	endif; 
 		    	
 	?>
@@ -20,29 +21,31 @@
     <?php 
 
     
-	function mostraNoticia($NOTICIA)
+	function mostraNoticia( $NOTICIA , $PAGINA )
     {
     	     							       											
-     	$titol = $NOTICIA->getTitolnoticia(); $imatge = $NOTICIA->getImatge(); $pdf = $NOTICIA->getAdjunt(); $descripcio = $NOTICIA->getTextnoticia();
+     	$titol = '<b>'.$NOTICIA->getTitolnoticia().'</b>'; $imatge = $NOTICIA->getImatge(); $pdf = $NOTICIA->getAdjunt(); $descripcio = $NOTICIA->getTextnoticia();
+     	
 		if(!empty($titol)):
-    		echo '<TABLE class="BOX">';
-	    	echo '<TR>';  
- 			if(!empty($imatge)):	    
- 				echo '<TD class="FOTO">'.image_tag('noticies/'.$NOTICIA->getImatge(), array('class'=>'IMG_FOTO')).'</TD>';
- 			endif;
-	        echo '<TD class="NOTICIA">';			    
-			echo '<DIV class="TITOL">'.$titol.'</DIV>';
-	    	echo '<DIV>'.$descripcio.'</DIV>';			    	 					    	
-	    	echo '<DIV class="PEU">';
-	    	echo 	'<br />';
-	    	echo 	link_to('Tornar', url_for('web/index?accio=no'), array('class'=>'verd','style'=>'float:left; font-weight:bold;'));
- 			if(!empty($pdf)): 				 
- 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW')); 				
- 			endif;
- 			echo '</DIV>';			
-			echo '</TD>';
-	    	echo '</TR>';		    			    			    			    			    	
-	    	echo '</TABLE>';
+		?>
+																		
+			<div class="titol_noticia"><?php echo $titol ?></div>									 
+			<div style="margin-top:10px;">														
+				<div class="text_noticia"><?php echo $descripcio ?></div>
+				<div class="imatge_noticia"><?php if($imatge > 0): ?> 
+					<img src="<?php echo sfConfig::get('sf_webrooturl').'images/noticies/'.$imatge ?>" style="vertical-align:middle"> <?php endif; ?>					
+					<div style="padding-top:10px; " class="pdf_noticia"><?php if($pdf > 0): ?><a href="<?php echo sfConfig::get('sf_webrooturl').'images/noticies/'.$pdf ?>">Descarrega't el pdf</a><?php endif; ?></div>
+				</div>
+			</div>
+			<div style="clear:both; padding-top:10px;">
+				<div class="llegir_mes"><div style="padding-right:30px;"><a href="<?php echo url_for('web/index?p='.$PAGINA) ?>">Tornar a llistat de notícies</a></div></div>				
+			</div>					
+			
+			<div style="clear:both;">&nbsp;</div>																						
+			
+			<div style="clear:both; height:20px;"></div>
+				
+	    <?php
  		endif;
 
     }
@@ -50,9 +53,9 @@
     
     
     
-	function mostraNoticies($NOTICIES)
-	{
-	     
+	function mostraNoticies($NOTICIES, $PAGINA)
+	{	    		
+		
 	    if($NOTICIES->getNbResults() == 0): 
 	
 			echo '<DIV>Actualment no hi ha cap notícia.<DIV>';
@@ -62,38 +65,31 @@
 			foreach($NOTICIES->getResults() as $ON):
 															
 				$imatge = $ON->getImatge();
-				$pdf = $ON->getAdjunt();			
+				$pdf = $ON->getAdjunt();		
+				$text = closetags($ON->getTextnoticia());	
 				$nom_noticia = '<b>'.$ON->getTitolnoticia().'</b>';
-
-//				echo '<div style="border:3px solid #CCCCCC; padding:10px;">';
-				
-					echo '<div style="clear:both;">';							
-					echo '	<div style="width:480px; display:block; float:left; padding-bottom:5px;">'.$nom_noticia.'</div>';									 
-					echo '</div>';
+			?>
+				<div style="border-bottom:2px solid #CADF86;">
+																
+					<div class="titol_noticia"><?php echo $nom_noticia ?></div>									 
+					<div style="margin-top:10px;">														
+						<div class="text_noticia"><?php echo substr($text,0,400) ?>...</div>
+						<div class="imatge_noticia">
+							<?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/noticies/'.$imatge ?>" style="vertical-align:middle"> <?php endif; ?>
+							<div style="padding-top:10px; " class="pdf_noticia"><?php if($pdf > 0): ?><a href="<?php echo sfConfig::get('sf_webrooturl').'images/noticies/'.$pdf ?>">Descarrega't el pdf</a><?php endif; ?></div>
+						</div>
+					</div>
+					<div style="clear:both; padding-top:10px;">
+						<div class="llegir_mes"><div style="padding-right:30px;"><a href="<?php echo url_for('web/index?idn='.$ON->getIdnoticia().'&p='.$PAGINA) ?>">Ampliar notícia</a></div></div>
+					</div>					
 					
-					echo '<div style="clear:both;">';
-					if($imatge > 0 || $pdf > 0):
-						echo '<div style="width:100px; display:block; float:left; ">';
-						if($imatge > 0) echo image_tag(sfConfig::get('sf_webrooturl').'images/noticies/'.$imatge,array('style'=>'vertical-align:middle'));
-						if($pdf > 0) echo '<br /><div style="padding-top:5px; text-align:center;"><a href="'.sfConfig::get('sf_webrooturl').'images/noticies/'.$pdf.'">Baixa\'t el pdf</a></div>';						
-						echo '<div style="padding-top:4px; text-align:center;"><a href="'.url_for('web/index?accio=no&idn='.$ON->getIdnoticia()).'">Llegir més</a></div>';
-						echo '</div>';					
-						echo '<div style="width:380px; display:block; float:left; padding:5px; ">'.$ON->getTextnoticia().'</div>';
-						echo '<div style="clear:both;">';							
-						echo '	<div style="width:100px; display:block; float:left; ">&nbsp;</div>';														 
-						echo '</div>';				
-						
-					else:					 				
-						echo '<div style="width:480px; display:block; float:left;  padding:5px; ">'.$ON->getTextnoticia().'</div>';
-						echo '<div style="clear:both;">';																											 
-						echo '</div>';									
-					endif; 									 											
-					echo '</div>';								
-				
-//				echo '</div>';
+					<div style="clear:both;">&nbsp;</div>					
+																
+				</div>
 					
-					echo '<div style="clear:both; height:40px;"></div>';
+				<div style="clear:both; height:20px;"></div>
 				
+			<?php	
 			endforeach;
 		
 		endif;

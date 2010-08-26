@@ -148,10 +148,11 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    {
    		$C = new Criteria();
    		$C->addDescendingOrderByColumn(self::RESERVAESPAIID);   		
-   		$OO = self::doSelectOne($C)->getCodi();   		   		
+   		$OO = self::doSelectOne($C);
+   		   		   		
    		$O2 = "";
    		   		
-   		if(empty($OO)):
+   		if($OO instanceof Reservaespais):
    			$O2 = '0000'.date('m',time()).date('Y',time());
    		elseif(date('m',time()) == substr($OO,4,2) && date('Y',time()) == substr($OO,6,4) ):
    			$O2 = sprintf("%'04u%'02u%'04u", strval(intval(substr($OO,0,3))+1) , substr($OO,4,2) , substr($OO,6,4) );

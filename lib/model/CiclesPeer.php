@@ -80,4 +80,30 @@ class CiclesPeer extends BaseCiclesPeer
   	
   }
   
+  static public function getDataUltimaActivitat($idC)
+  {
+  	$C = new Criteria();
+  	$C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+  	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
+  	$C->addDescendingOrderByColumn(HorarisPeer::DIA);
+  	
+  	$OH = HorarisPeer::doSelectOne($C);
+  	
+  	if($OH instanceof Horaris) return $OH->getDia('d/m/Y'); 
+  	else return 'n/d';
+  	
+  }
+
+  static public function getActivitatsCicle($idC)
+  {
+  	$C = new Criteria();  	
+  	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
+  	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
+  	
+  	return ActivitatsPeer::doCount($C);
+  	
+  }
+  
+  
+  
 }

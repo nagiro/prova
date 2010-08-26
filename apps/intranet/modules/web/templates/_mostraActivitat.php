@@ -3,29 +3,50 @@
 
     if(empty($LLISTAT_ACTIVITATS)): echo '<DIV>Aquest dia no hi ha cap activitat pública.<DIV>'; endif;		
 		
-	foreach($LLISTAT_ACTIVITATS as $A):		
-     	$titol = $A->getTmig(); $imatge = $A->getImatge(); $pdf = $A->getPdf(); $descripcio = $A->getDmig();
-		if(!empty($titol)):               	        	        	       	       	       	    	       	       	       	       	       	       	       	      	   	          	           	   	      		
-    		echo '<TABLE class="BOX">';
-	    	echo '<TR>';  
- 			if(!empty($imatge)):	    
- 				echo '<TD class="FOTO">'.image_tag('activitats/'.$imatge, array('class'=>'IMG_FOTO')).'</TD>';
- 			endif;
-	        echo '<TD class="NOTICIA">';
-			echo '	<DIV class="DATA">';
-					foreach($A->getHorariss() as $H): $LE = $H->getArrayEspais(); echo generaData($H->getDia()).' | '.$LE[0]->getNom().' a les '.$H->getHorainici().'<br />'; endforeach; 		        	      		        			                   
-			echo '  </DIV>';			        
-			echo '<DIV class="TITOL">'.$titol.'</DIV>';						
-	    	echo '<DIV class="TEXT">'.$descripcio.'</DIV>';			    	 			
- 			if(!empty($pdf)): 
- 				echo link_to(image_tag('intranet/pdf.png', array('style'=>'float:right')),image_path('noticies/'.$pdf , true) , array('target'=>'_NEW'));
- 			endif;
-			echo '</DIV>';
-			echo '</TD>';
-	    	echo '</TR>';
-	    	echo '</TABLE>';
- 		endif;     	                
-	      	                
+	foreach($LLISTAT_ACTIVITATS as $A):
+			
+		$C = CiclesPeer::retrieveByPK($A->getCiclescicleid());
+		if($C instanceof Cicles) $nom_cicle = '<b>'.$C->getTMig().'</b>'; else $nom_cicle = "";
+		$imatge = $A->getImatge();
+		$pdf = $A->getPdf();
+		$enllac = url_for('web/index?accio=aca&idc='.$A->getCiclescicleid().'&NODE='.$NODE);
+		
+			
+		?>
+			<div style="clear:both;">											
+				<div class="df titol_cicle" style="width:150px;">Activitat del cicle</div>
+				<div class="df titol_cicle" style="color: #A73339; width:330px; padding-left:20px;"><?php echo $nom_cicle ?></div>									 
+			</div>
+			
+			<div style="border:2px solid #96BF0D; clear:both; padding:10px;">
+				<div style="font-size:11px"><b><?php echo $A->getTCurt().'</b>.'.$A->getDCurt() ?></div>
+				<div style="font-size:10px"><?php echo generaHoraris($A->getHorariss()); ?></div>
+				<div style="height:30px;">&nbsp;</div>				
+										
+				<div class="df" style="width:150px;">
+					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
+						<div style="margin-top:20px; font-size:10px"><a href="<?php echo $enllac ?>">Torna a les activitats del cicle</a></div>
+						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
+				</div>
+				<div class="df" style="width:330px;">
+					<div style="padding-left:10px; font-size:10px;">
+						<?php echo $A->getDmig() ?>
+					</div>					
+				</div>
+				
+				<div style="margin-left:150px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">INFORMACIÓ PRÀCTICA</div> 
+				<div style=" margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
+					<div style="padding:10px; font-size:10px;">
+						<?php // echo $A->getIPractica(); ?> Aquí hi anirà la informació pràctica que agafaré del camp IPractica() que he de crear a la base de dades
+					</div>
+				</div>
+				<div style="clear:both">&nbsp;</div>													
+			</div>					
+			
+			<?php 
+			
+			echo '<div style="clear:both; height:40px;"></div>';
+	     	             	      	                
 	endforeach;
     ?>
       <DIV STYLE="height:40px;"></DIV>
@@ -35,6 +56,21 @@
 
     <?php 
 
+    
+    function generaHoraris($LOH)
+    {
+    	$RET = array();
+    	foreach($LOH as $OH):    		
+    		$LOHE = $OH->getHorarisespaiss();
+    		$Espai = $LOHE[0]->getEspais()->getNom();    		
+    		$RET[$OH->getHorarisid()] = generaData($OH->getDia('Y-m-d')).' a '.$Espai.' a les '.$OH->getHorainici('H:i').' h.';    		
+    	endforeach;
+    	
+    	return implode('<br />',$RET);    	
+    }
+    
+
+    
     function agrupaespais($ESPAIS)
     {
        

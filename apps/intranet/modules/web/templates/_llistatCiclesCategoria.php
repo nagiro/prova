@@ -1,11 +1,4 @@
-<STYLE>
-
-	.FORMAT td { padding:5px; }
-	.FORMAT th { padding:5px; background-color:#CCCCCC; }
-	.FORMAT a { text-decoration: none; font-weight:bold; }
-
-
-</STYLE>
+<?php use_helper('Form'); ?>
     <TD colspan="2" class="CONTINGUT">
 
     <?php include_partial('breadcumb',array('text'=>$TITOL)); ?>
@@ -21,33 +14,64 @@
 		foreach($LLISTAT_CICLES->getResults() as $C):
 		
 			$nom_cicle = $C->getTMig();
-			$NA = ActivitatsPeer::countActivitatsCiclesCategoria($CAT,$C->getCicleID());						
+			$NA = CiclesPeer::getActivitatsCicle($C->getCicleID());						
 			$PA = CiclesPeer::getDataPrimeraActivitat($C->getCicleID());
+			$PF = CiclesPeer::getDataUltimaActivitat($C->getCicleID());
 			$imatge = $C->getImatge();
 			$pdf = $C->getPdf();
-			$nom_cicle = '<b><a href="'.url_for('web/index?accio=aca&idc='.$C->getCicleID().'&cat='.$CAT).'">'.$nom_cicle.'</a></b>';
+			$enllac = url_for('web/index?accio=aca&idc='.$C->getCicleID().'&cat='.$CAT.'&NODE='.$NODE); 
+			$nom_cicle = '<b><a href="'.$enllac.'">'.$C->getTmig().'</a></b>';
+			$desc = $C->getDMig();
+			$idC = $C->getCicleID();
 			
-				echo '<div style="clear:both;">';
-			
-				if($C->getCicleID() == 1): 
-					echo '<div style="width:480px; display:inline; padding:5px;">'.$nom_cicle.'</div>';
-				else:
-					echo '<div style="width:280px; display:block; float:left; padding-bottom:5px;">'.$nom_cicle.'</div>';
-					echo '<div style="width:80px; display:block; float:left;">Activitats: <b>'.$NA.'</b></div>';
-					echo '<div style="width:120px; display:block; float:left;">Inici: <b>'.$PA.'</b></div>';
-				endif; 
-				echo '</div>';
-				echo '<div style="clear:both;">';
-				if($imatge > 0 || $pdf > 0):
-					echo '<div style="width:100px; display:block; float:left; ">';
-					if($imatge > 0) echo image_tag(sfConfig::get('sf_webrooturl').'images/cicles/'.$imatge,array('style'=>'vertical-align:middle'));
-					if($pdf > 0) echo '<br /><div style="padding-top:5px; text-align:center;"><a href="'.sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf.'">Baixa\'t el pdf</a></div>';
-					echo '</div>';					
-					echo '<div style="width:380px; display:block; float:left; padding:5px; ">'.$C->getDmig().'</div>';
-				else:					 				
-					echo '<div style="width:480px; display:block; float:left;  padding:5px; ">'.$C->getDmig().'</div>';
-				endif; 									 											
-				echo '</div>';
+			?>
+				<div style="clear:both;">											
+					<div class="df titol_cicle" style="width:150px;">Cicle</div>
+					<div class="df titol_cicle" style="width:330px; padding-left:20px;"><?php echo $nom_cicle ?></div>									 
+				</div>
+				
+				<div style="border:2px solid #96BF0D; clear:both; padding:10px;">					
+					<div class="df" style="width:150px;">
+						<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
+						<?php if($C->getCicleid() > 1): ?>
+							<div style="margin-top:20px;font-size:11px;">Del <?php echo $PA ?> al <?php echo $PF ?></div>
+							<div style="margin-top:20px;font-size:11px;">Activitats del cicle: <?php echo $NA ?></div>
+						<?php endif; ?>
+							<div style="margin-top:0px; font-size:10px"><a href="<?php echo $enllac ?>">Consulta les activitats d'aquest cicle</a></div>
+							<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
+					</div>
+					<div class="df" style="width:330px;">
+					
+						<script>
+						
+							function change(idC){
+								alert(idC);
+								$("C"+idC).toggle();
+								
+							}
+						</script>
+					
+					
+									
+						<div class="<?php // echo 'C'.$idC; ?>" style="padding-left:10px; font-size:11px;">
+							<?php echo closetags(substr($desc,0,600).'...'); ?>
+							<div>
+								<a href="" onClick="change(<?php echo $idC ?>); return false;" >Llegir més</a>
+							</div>
+						</div>
+						<div class="<?php echo 'C'.$idC; ?>" style="display: none; padding-left:10px; font-size:11px;">
+							<?php echo closetags(substr($desc,0,600).'...'); ?>
+							<div style="padding-left:10px; font-size:11px;">
+								<a href="" onClick="change(<?php echo $idC ?>); return false;" >Llegir menys</a>
+							</div>						
+						</div>												
+						
+						
+					</div>
+					<div style="clear:both">&nbsp;</div>													
+				</div>					
+				
+				<?php 
 				
 				echo '<div style="clear:both; height:40px;"></div>';
 			

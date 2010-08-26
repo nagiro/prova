@@ -314,19 +314,19 @@ class HorarisPeer extends BaseHorarisPeer
   	//Garantim que si hi ha un altre espai, no comprovi
   	if($idE == 1) $idE = 0;
   	
+    //HoraPre o HoraPost entre les hores o bé agafa tot l'intèrval    
 	$SQL = "  SELECT count(*) as Va
 				FROM horarisespais he, horaris h
     		   WHERE h.DIA = '$DIA'
     			 AND h.HorarisID = he.Horaris_HorarisID
     			 AND (
-						( ( h.horaPre  > '$HoraPre' ) AND ( h.horaPre   < '$HoraPost' ) ) OR
-						( ( h.horaPost > '$HoraPre' ) AND ( h.horaPost  < '$HoraPost' ) ) OR
-						( ( h.horaPre  <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
-						( ( h.horaPre  > '$HoraPre' ) AND ( h.horaPost  < '$HoraPost' ) )
+                        ( ( '$HoraPre' <=  h.horaPre )  AND ('$HoraPost' >   h.horaPre) ) OR 
+                        ( ( '$HoraPre' <   h.horaPost ) AND ('$HoraPost' >=  h.horaPost) ) OR
+                        ( ( '$HoraPre' >=  h.horaPre )  AND ('$HoraPost' <=  h.horaPost) )                                                 
         			)
         		 AND he.Espais_EspaiID = $idE        		         			        			
         	";
-	
+    
    	 if( $idH > 0 ) $SQL .= " AND he.Horaris_HorarisID <> $idH";
 			
      $con = Propel::getConnection();
@@ -346,10 +346,9 @@ class HorarisPeer extends BaseHorarisPeer
     		   WHERE h.DIA = '$DIA'
     			 AND h.HorarisID = he.Horaris_HorarisID
     			 AND (
-						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPre <= '$HoraPost' ) ) OR
-						( ( h.horaPost >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) ) OR
-						( ( h.horaPre <= '$HoraPre' ) AND ( h.horaPost >= '$HoraPost' ) ) OR
-						( ( h.horaPre >= '$HoraPre' ) AND ( h.horaPost <= '$HoraPost' ) )
+                        ( ( '$HoraPre' <=  h.horaPre )  AND ('$HoraPost' >   h.horaPre) ) OR 
+                        ( ( '$HoraPre' <   h.horaPost ) AND ('$HoraPost' >=  h.horaPost) ) OR
+                        ( ( '$HoraPre' >=  h.horaPre )  AND ('$HoraPost' <=  h.horaPost) )                                                 
         			)
         		 AND he.Material_idMaterial = $idM        			
         	";

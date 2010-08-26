@@ -1,12 +1,5 @@
 <?php use_helper('Form'); ?>
-<STYLE>
 
-	.FORMAT td { padding:5px; }
-	.FORMAT th { padding:5px; background-color:#CCCCCC; }
-	.FORMAT a { text-decoration: none; font-weight:bold; }
-	
-	
-</STYLE>
     <TD colspan="2" class="CONTINGUT">
     
     <?php include_partial('breadcumb',array('text'=>$TITOL)); ?>
@@ -21,7 +14,7 @@
     	endif; 		
 	else: 
 	
-		echo '<TABLE class="BOX FORMAT">';
+		echo '<TABLE id="llistat_activitats_dia">';
     	echo '<tr>
     				<th style="text-align:left">Activitat</th>    				    				
     				<th style="text-align:left">Primer dia</th>    				

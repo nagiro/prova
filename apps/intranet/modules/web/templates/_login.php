@@ -1,14 +1,13 @@
 <STYLE>
 .T1 { display:block; width:100px; float:left;  }
 .T2 { display:block; width:200px; float:left; }
-.T3	{ width:120px; }
+.T3	{ width:120px; font-size:10px; }
 .content { padding:20px; }
 .REQUADRE { margin:0px; }
 </STYLE>
 
     <TD colspan="3" class="CONTINGUT">
-    
-    
+        
 		<form action="<?php echo url_for('web/login') ?>" method="POST" name="form_login">    
 		    <DIV class="REQUADRE" style="width:440px">
 		    	<div class="FORMULARI">

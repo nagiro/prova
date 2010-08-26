@@ -31,7 +31,7 @@
 	}
 	
 	
-	function fesReserva()
+/*	function fesReserva()
 	{
 		if(ValidaReserves()){
 		
@@ -52,7 +52,7 @@
 		} else return false; 
 		
 	}
-		
+*/		
 
 </script>
 
@@ -320,10 +320,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 //MISSATGE Missatge que informa d'algun problema o bé que tot ha anat bé
 
 function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array() ){   
-      
-	if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
-	if($ENABLED) echo '<form name="fReserves" id="fReserves">';      
-	      
+      	      
 	$ESPAIS = explode('@',$FRESERVA->getValue('EspaisSolicitats'));
 	$MATERIAL= explode('@',$FRESERVA->getValue('MaterialSolicitat'));
 	?>
@@ -348,7 +345,12 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
      	</TABLE>     
 	</FIELDSET>		
 	
-	<?php if($ESTAT = 'NOU'): ?>              	
+	<?php if($ESTAT = 'NOU'): 
+  
+  	if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
+	if($ENABLED) echo '<form name="fReserves" id="fReserves" method="post" action="'.url_for('web/gestio?accio=sr').'">';
+
+	?>              	
   
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Nova prereserva</LEGEND>
 		<?php echo $FRESERVA['Estat']->render(); ?>
@@ -469,6 +471,8 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 			</span>
 			</div>      
 	</FIELDSET>
+	
+	<?php if($ENABLED) echo '</form>'; ?>
 
 	<?php endif; ?> 
       		  	

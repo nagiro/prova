@@ -31,7 +31,7 @@
 	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'FUSUARI' => $FUSUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'FRESERVA' => $FRESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS ) ); break;
 	   case 'remember'   : $calendar = false; include_partial('remember',  array( 'ENVIAT' => $ENVIAT , 'ERROR' => $ERROR , 'FREMEMBER' => $FREMEMBER )); break;
 	   case 'login'      : $calendar = false; include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
-	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'NOTICIES' => $NOTICIES , 'NOTICIA' => $NOTICIA )); break;
+	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'NOTICIES' => $NOTICIES , 'NOTICIA' => $NOTICIA , 'PAGINA' => $PAGINA )); break;
 	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV )); break;
 	   case 'registrat'  : $calendar = true;  include_partial('registrats'); break;
 	   case 'cursos'	 : $calendar = false; include_partial('cursos'); break;
@@ -40,11 +40,11 @@
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
 
-	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS,'TITOL'=>$TITOL)); break;
+	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE )); break;
 	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
    	   case 'llistat_activitats_cerca': $calendar = true; include_partial('llistatActivitatsCerca',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
-	   case 'llistatCiclesCategoria': $calendar = true; include_partial('llistatCiclesCategoria',array( 'LLISTAT_CICLES' => $LLISTAT_CICLES , 'TITOL' => $TITOL , 'CAT' => $CAT )); break;
-	   case 'llistatActivitatsCicleCategoria': $calendar = true; include_partial('llistatActivitatsCicleCategoria',array( 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'CAT' => $CAT , 'IDC' => $IDC , 'TITOL' => $TITOL )); break;
+	   case 'llistatCiclesCategoria': $calendar = true; include_partial('llistatCiclesCategoria',array( 'LLISTAT_CICLES' => $LLISTAT_CICLES , 'TITOL' => $TITOL , 'CAT' => $CAT , 'NODE' => $NODE )); break;
+	   case 'llistatActivitatsCicleCategoria': $calendar = true; include_partial('llistatActivitatsCicleCategoria',array( 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'NODE' => $NODE , 'CAT' => $CAT , 'IDC' => $IDC , 'TITOL' => $TITOL )); break;
 
 	   
 	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array( 'DESCRIPCIO' => $DESCRIPCIO , 'TITOL' => $TITOL )); break;

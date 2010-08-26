@@ -58,7 +58,7 @@ class gestioActions extends sfActions
     
     //Carreguem les activitats d'avui :D
     $this->ACTIVITATS = HorarisPeer::getActivitats(time() , null , null , null , null);
-    $this->ACTIVITATS = $this->ACTIVITATS['ACTIVITATS'];
+    $this->ACTIVITATS = $this->ACTIVITATS['ACTIVITATS'];    
   
   }
   
@@ -1453,9 +1453,9 @@ class gestioActions extends sfActions
 				if(sizeof($RS) > 0) { $ERRORS[] = "El dia $D hi ha ".sizeof($RS)." activitat(s) que impedeixen el bloqueig."; }
 			}
 			else
-			{ 
+			{			     
 	    		//Mirem si encaixa amb alguna altra activitat solta
-		    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] ) > 0 )
+		    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] ) > 0 )                
 		    	{
 		    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
 			    	$ERRORS[] = "El dia $D coincideix a l'espai $Espai amb una altra activitat";
@@ -1464,8 +1464,7 @@ class gestioActions extends sfActions
 			    elseif( HorarisPeer::validaDiaBloqueig($D,$horaris['HorarisID']) )
 			    {			    		
 		    			$ERRORS[] = "El dia $D hi ha una activitat que bloqueja tots els espais!";		    					    			    		 
-			    }
-					    	
+			    }                	    	
 		    	foreach($material as $M):
 		    		if( HorarisPeer::validaMaterial( $D , $idE , $M['material'] , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID']) > 0 ):
 		    			$Espai = EspaisPeer::retrieveByPK($idE)->getNom();

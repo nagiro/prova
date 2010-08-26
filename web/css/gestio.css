@@ -23,7 +23,7 @@ hr { margin: 0; padding: 0; border: 0; color: #000;  background-color: #000; hei
 /***********************************/
 
 
-* { font-size:10px; }
+body { font-size:10px; }
 
 BUTTON { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
 BUTTON:focus { background: #FFD7DC; }
@@ -42,19 +42,19 @@ BUTTON:focus { background: #FFD7DC; }
 .REQUADRE .MENU .SUBMEN1 { vertical-align: middle; background-color:white; height:30px; }
 .REQUADRE .OPCIO_FINESTRA { text-align:right; margin-top:-10px; }
 
-.FORMULARI { }
-.FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; }
+.FORMULARI {  }
+.FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; font-size:11px; }
 .FORMULARI TD { padding:2px; vertical-align: middle; }
-.FORMULARI input,select { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
+.FORMULARI input,select { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; font-size:10px; }
 .FORMULARI select option { padding-right:10px; }
 .FORMULARI input:focus,select:focus { background: #FFD7DC; }
-.FORMULARI .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:5px;  }
+.FORMULARI .BOTO_ACTIVITAT { background-color: #6BD281; border: 1px solid black; padding:5px; font-size:10px; }
 .FORMULARI .BOTO_ACTIVITAT:hover { background-color: #82BC8E; border: 1px solid black; padding:5px;  }
 .FORMULARI .BOTO_PERILL { background-color: red; border: 1px solid black; padding:5px;  }
 .FORMULARI .error_list { color: red; font-size:16px; font-weight:bold;  }
 .FORMULARI .missat_ok { background-color:#FFF5C1; height:30px; text-align:left; }
 .FORMULARI .missat_ko { background-color:red; color:white; height:30px; text-align:left; }
-.DADES { width:100%; border-collapse: collapse; }
+.DADES { width:100%; border-collapse: collapse; font-size:11px; }
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
 .DADES TD.PAR { background-color:#EEEEEE; }
@@ -88,12 +88,13 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 #logo { position:relative; left:20px; top:0px; }
 
 .MENU { width:256px; background-color:white; vertical-align:top; } 
-.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; }    
+.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; font-size:11px; }    
 .CALENDARI { width:256px; background-color:white; vertical-align: top; }
 #CALENDARI_ACTIVITATS { width:100%; }
 #CALENDARI_ACTIVITATS A { text-decoration:none; color:black; font-size:10px; }
 #CALENDARI_ACTIVITATS TD { font-size:10px; text-align: left; padding:1px; }
 #CALENDARI_ACTIVITATS .DIES { font-size: 10px; padding:4px;  }
+#CALENDARI_ACTIVITATS .DIES TH { font-size:11px; }
 #CALENDARI_ACTIVITATS .SELECCIONAT { font-weight:bold; }
 #CALENDARI_ACTIVITATS .titol_mes { font-weight:bold;  }
 #MESOS { font-weight:normal; border: 3px solid #F3F3F3; background-color:#FAFAFA; margin-left:5px; font-size:10px; }
@@ -209,20 +210,22 @@ BUTTON.web {  }
 	list-style: circle;
 	list-style-position: outside;
 	margin-left: 30px;
+	font-size:11px;
 }
 
 #TEXT_WEB p {
 	color:black;
 	text-align: justify;
 	margin-bottom: 20px;
-	margin-top: 10px;	
+	margin-top: 10px;
+	font-size:11px;	
 }
 
 #TEXT_WEB h1 {
 	font-size: 20px;
 	font-weight: bold;
 	margin-bottom: 10px;		
-	color: #864444;
+	color: #864444;	
 }
 
 #TEXT_WEB h2 {
@@ -260,3 +263,23 @@ li.ul_material{
 	width:100px; 
 }
  
+/* Notícies */
+.titol_noticia { color:#646466; font-size:12pt;  width:480px; }
+.text_noticia { font-size:11px; width:380px; float:left; }
+.imatge_noticia { width:100px; float:right; }
+.llegir_mes { font-size:11px; width:380px; float:left; text-align:right; }
+.llegir_mes a { color:#96BF0D; text-decoration:none; }
+.pdf_noticia { text-align:center; float:right; width:100px; }
+.pdf_noticia a { text-decoration:none; color:#BBBBBB; font-size:10px; }
+
+.df { display:block; float:left; }
+
+.titol_cicle { font-size:12px; text-decoration:none;  }
+.titol_cicle a { text-decoration:none; color: #A73339; }
+.pdf_cicle { font-size:11px; text-decoration:none; color:#AAAAAA; }
+.pdf_cicle a { text-decoration:none; color:#AAAAAA; }
+
+#llistat_activitats_dia { border:2px solid #DFECB6; width:100%; border-collapse:collapse; font-size:12px; }
+#llistat_activitats_dia th { background-color:#CADF86; padding:5px;}
+#llistat_activitats_dia td { border-bottom:1px solid #CADF86; padding:5px;}
+#llistat_activitats_dia a { text-decoration:none; color:blue; }

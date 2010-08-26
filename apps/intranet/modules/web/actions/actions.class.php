@@ -87,6 +87,7 @@ class webActions extends sfActions
 	     		$this->TITOL = "Cicles i activitats a \"".$ACT[$cat].'"';
 	     		$this->CAT   = $cat;	     		
 	     	endif;   			  			
+	     	$this->NODE = $idN;
   			break;
   			
   		//Contingut automàtic d'activitats d'un cicle
@@ -94,7 +95,7 @@ class webActions extends sfActions
 		 		$this->CAT = $request->getParameter('cat','');
 		 		$this->IDC = $request->getParameter('idc',1);
 		 		$this->PAGINA = $request->getParameter('p',1);
-		 		
+		 		$this->NODE   = $request->getParameter('NODE',0);		 				 		
 		 		
 		 		$OC = CiclesPeer::retrieveByPK($this->IDC);
 		 		$this->TITOL = 'Llistat d\'activitats del cicle '.$OC->getNom();
@@ -123,6 +124,7 @@ class webActions extends sfActions
   		//Mostra una sola activitat
 		case 'caa':
 			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
+			$this->NODE = $request->getParameter('node',0);
   			$this->ACCIO = 'mostra_activitat';
   			$this->TITOL = 'Informació de l\'activitat';	     			     			     		
 			break;		
@@ -473,7 +475,8 @@ class webActions extends sfActions
      $this->setTemplate('index');
      $this->GUARDADA = false;
      
-     $accio = $this->getRequestParameter('accio');
+     $accio = $this->getRequestParameter('accio');     
+     
      
      switch($accio){
 	   case 'landing':
@@ -531,27 +534,34 @@ class webActions extends sfActions
 	        break;
 	   case 'sr':
 	   	
+	   	
+	   	/*
+	   	
+	   		$PR = $request->getParameter('reservaespais');
+	   		
 	   		//Carreguem el formulari que hem carregat per edició o res per nou	
-			$OR = ReservaespaisPeer::retrieveByPK($this->getUser()->getSessionPar('idR'));
-			
+			$OR = ReservaespaisPeer::retrieveByPK($PR['ReservaEspaiID']);
+			if(!($OR instanceof Reservaespais)) $OR = new Reservaespais();			
+
+			$OR->setUsuarisUsuariid($this->getUser()->getSessionPar('idU'));
+				
 			//Si en trobem un, creem el formulari altrament un de nou
 			if($OR instanceof Reservaespais) $this->FRESERVA = new ClientReservesForm($OR);
 			else $this->FRESERVA = new ClientReservesForm(new Reservaespais());
 
 			//Entrem les dades del formulari	
-			$this->FRESERVA->bind($request->getParameter('reservaespais'));
+			$this->FRESERVA->bind($PR);
 			
 			//Si és correcte el guardem
-			if($this->FRESERVA->isValid()):
-				$this->FRESERVA->setUser($this->getUser()->getSessionPar('idU'));
+			if($this->FRESERVA->isValid()):				
 				$this->FRESERVA->save();
 				$this->renderText('OK');
-				return sfView::NONE;				
+//				return sfView::NONE;				
 			else:
 				$this->renderText('KO');
-				return sfView::NONE;
+//				return sfView::NONE;
 			endif;			
-							
+*/							
 	        break;
 
 	   //Anul·la la reserva
