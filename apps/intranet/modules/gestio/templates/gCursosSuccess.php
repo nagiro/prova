@@ -56,10 +56,11 @@
 	function ValidaCodi(){		
 		if( $('#cursos_codi_Codi').val() == 0 && $('#cursos_codi_CodiT').val().length == 0 ){ alert('Si entres un codi nou, has d\'escriure\'l.'); return false; }
 		else 
-		{ 
-			var patt1=new RegExp('^[A-Z]{3}[0-9]{3}\.[0-9]{2,3}$');					
-			if(!patt1.test($('#cursos_codi_Codi').val())) { alert('El codi te un format incorrecte'); return false; }
-			else return true; 
+		{
+            return true;
+//			var patt1=new RegExp('^[A-Z]{3}[0-9]{3}\.[0-9]{2,3}$');					
+//			if(!patt1.test($('#cursos_codi_Codi').val())) { alert('El codi te un format incorrecte'); return false; }
+//			else return true; 
 		}				
 	}
 	
