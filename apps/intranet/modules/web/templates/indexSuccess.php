@@ -50,6 +50,8 @@
 	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array( 'DESCRIPCIO' => $DESCRIPCIO , 'TITOL' => $TITOL )); break;
 	   case 'mostra_estructura'   	: $calendar = true; include_partial('mostraEstructura',array('TITOL'=>$TITOL,'PAGINA'=>$PAGINA,'NODES'=>$NODES)); break;
 	   case 'final_matricula': $calendar = true; include_partial('matricula',array('MISSATGE'=>$MISSATGE)); break;
+       
+       case 'notfound': $calendar = false; include_partial('notfound',array()); break;
 	}
 	    	    
     ?>

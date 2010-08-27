@@ -13,6 +13,14 @@
 class webActions extends sfActions
 {
 
+  public function executeNotfound(sfWebRequest $request)
+  {
+
+     $this->LoadWeb($request);
+     $this->setTemplate('index');
+     $this->ACCIO = 'notfound';    
+  }
+
   public function gestionaNodes($NO)
   {  	
   	
@@ -497,7 +505,7 @@ class webActions extends sfActions
 	   case 'gc':
 	        $this->MODUL = 'gestiona_cursos';
             $this->ACCIO = 'gestio';                        
-            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari($this->getUser()->getSessionPar('idU'));                                                               
+            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari($this->getUser()->getSessionPar('idU'));                                                                           
             break;
 	   case 'gl':
 			$this->MODUL = 'gestiona_llistes';
@@ -578,10 +586,12 @@ class webActions extends sfActions
 	   		break;
 	   		
 	   case 'im':   //Iniciem la matrícula
-	   		          	   				   		   		                         
-            $D = $request->getParameter('D');
-                         
+	   		                                     	   				   		   		                         
+            $D = $request->getParameter('D');                        
+                                                 
             $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
+            
+            $this->DADES_MATRICULA = array();
             $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
             $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();
             $this->DADES_MATRICULA['IDU'] = $this->getUser()->getSessionPar('idU');

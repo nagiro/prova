@@ -15,7 +15,8 @@ TEXTAREA.CONTACTE { border: 1px solid #CCCCCC; }
 
 	<form action="<?php echo url_for('web/enviaContacte')?>" method="post">
    
-		<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Contacta'ns</LEGEND>   
+		<FIELDSET class="REQUADRE">
+            <LEGEND style="padding:5px; font-size:12px; font-weight:bold;">Contacta'ns</LEGEND>   
 	    	<TABLE class="FORMULARI">
 	    	<TR><TD style="width:100px"></TD><TD></TD></TR>
 	    	<?php echo $FConsulta; ?>  	  

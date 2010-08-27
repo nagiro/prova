@@ -33,16 +33,19 @@ BUTTON:focus { background: #FFD7DC; }
 #valor_validacio { font-weight:bold; padding:10px; text-align:center; width:150px; }
 #resultat_validacio { width:20px; }
 
+DIV.text { font-size:11px; }
+
 .REQUADRE { border:5px solid #CCCCCC; margin:20px; padding:20px; width:650px; }
 .REQUADRE .TITOL { font-size:10px; font-weight:bold; margin-bottom:10px;  }
 .REQUADRE .TITOL { background-color:#DDDDDD; border:1px solid #CCCCCC; padding:4px; }
-
 .REQUADRE .MENU { margin-bottom:30px; border:1px solid gray; height:40px; }
 .REQUADRE .MENU .SUBMEN { padding-top:20px; vertical-align: middle; background-color: #CCCCCC; height:30px; }
 .REQUADRE .MENU .SUBMEN1 { vertical-align: middle; background-color:white; height:30px; }
 .REQUADRE .OPCIO_FINESTRA { text-align:right; margin-top:-10px; }
+.REQUADRE .BOTO_ACTIVITAT { font-size:11px; }
+.REQUADRE DIV { font-size:11px; }
 
-.FORMULARI {  }
+.FORMULARI { font-size:11px; }
 .FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; font-size:11px; }
 .FORMULARI TD { padding:2px; vertical-align: middle; }
 .FORMULARI input,select { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; font-size:10px; }

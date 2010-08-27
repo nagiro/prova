@@ -2252,8 +2252,9 @@ class gestioActions extends sfActions
               $this->MODE = 'PAGAMENT';
               break;
         //Esborra una matrícula    		    		
-    	case 'D':    			    			    	 			
-    			$idM = $this->getUser()->getSessionPar('IDM');    			    			    			
+    	case 'D':
+                $RM = $request->getParameter('matricules');
+                $idM = $RM['idMatricules'];                                			    			    	 			    			    			    			    			
     			$OM = MatriculesPeer::retrieveByPK($idM); 
     			$this->getUser()->addLogAction($accio,'gMatricules',$OM);
     			$OM->delete();    	            	       
@@ -2531,6 +2532,7 @@ class gestioActions extends sfActions
     switch($accio){
     	case 'C':
 			$this->getUser()->addLogAction('inside','gCessio');
+            $this->CERCA['select'] = 1;
     		break;
     	//Nova Cessió
     	case 'NC':

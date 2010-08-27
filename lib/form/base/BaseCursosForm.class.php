@@ -29,6 +29,7 @@ abstract class BaseCursosForm extends BaseFormPropel
       'DataDesaparicio' => new sfWidgetFormDate(),
       'DataFiMatricula' => new sfWidgetFormDate(),
       'DataInici'       => new sfWidgetFormDate(),
+      'VisibleWEB'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -47,6 +48,7 @@ abstract class BaseCursosForm extends BaseFormPropel
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
       'DataFiMatricula' => new sfValidatorDate(array('required' => false)),
       'DataInici'       => new sfValidatorDate(array('required' => false)),
+      'VisibleWEB'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('cursos[%s]');

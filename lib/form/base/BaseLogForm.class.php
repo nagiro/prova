@@ -28,7 +28,7 @@ abstract class BaseLogForm extends BaseFormPropel
       'UsuariID'    => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Accio'       => new sfValidatorString(array('max_length' => 50)),
       'Model'       => new sfValidatorString(array('max_length' => 50)),
-      'DadesBefore' => new sfValidatorString(),
+      'DadesBefore' => new sfValidatorString(array('required' => false)),
       'DadesAfter'  => new sfValidatorString(array('required' => false)),
       'Data'        => new sfValidatorDateTime(array('required' => false)),
     ));

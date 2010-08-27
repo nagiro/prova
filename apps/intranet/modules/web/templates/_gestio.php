@@ -180,52 +180,22 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
    ?>
    <form method="post" action="<?php echo url_for('web/gestio?accio=im') ?>" id="FORM_CURSOS">
    
-	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats amb anterioritat</LEGEND>
-	              
-		   <TABLE class="DADES">
-		   
-		   <?php if(sizeof($MATRICULES)==0): ?>
-				<TR><TD>No tenim constància informàtica que hagueu realitzat un curs a la Casa de Cultura. Si no és així, si us plau notifiqueu-nos-ho. </TD></TR>                                   
-		   <?php endif; ?>
-		   
-		   <?php foreach($MATRICULES as $M): ?>
-		      <?php $CURSOS = $M->getCursos(); ?>                           
-		   		<TR>
-		   			<TD>
-						<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $CURSOS->getIdcursos(); ?>&modal=false" class="thickbox">
-      						<?php echo $CURSOS->getCodi()?>
-      					</a>
-      					<div style="display:none" id="hidden<?php echo $CURSOS->getIdcursos() ?>">
-      						<?php echo $CURSOS->getDescripcio() ?>
-      					</div>
-      				</TD>		   				   			
-		      		<TD><?php echo $CURSOS->getTitolCurs()?></TD>
-		      		<TD><?php echo MatriculesPeer::getEstatText( $M->getEstat() )?></TD>
-		      		<TD><?php echo $M->getDataInscripcio('d/m/Y H:i')?></TD>
-		      		<TD><?php echo MatriculesPeer::textDescomptes($M->getTReduccio()) ?></TD>                                                                                             
-			     </TR>                                   
-		   <?php endforeach; ?>                              
-		   </TABLE>
-		      
-	   </FIELDSET>
-	      
-	      
 	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles actualment </LEGEND>
-	      
+       	      
 	       	<?php $LCURSOS = CursosPeer::getCursos()->getResults(); ?>
 	       	<?php if(empty($LCURSOS)): echo "Actualment no es pot matricular a cap curs. "; ?>
 			<?php else: ?>	      
 					   <TABLE class="DADES">
 						   <tr>
-						   	<td class="TITOL"></td>
-						   	<td class="TITOL">Codi</td>
-						   	<td class="TITOL">Títol del curs</td>
-						   	<td class="TITOL">Preu</td>
-						   	<td class="TITOL">Inici</td>
-						   	<td class="TITOL">Places</td>
+						   	<td class="TITOL" colspan="2">CODI</td>						   	
+						   	<td class="TITOL">NOM</td>
+						   	<td class="TITOL">PREU</td>
+						   	<td class="TITOL">INICI</td>
+						   	<td class="TITOL">PLACES</td>
 						   </tr>
 					   <?php $CAT_ANT = ""; ?>   
-					   <?php foreach($LCURSOS as $C): ?>                      
+					   <?php foreach($LCURSOS as $C): ?>
+                       <?php if($C->getVisibleweb() == 1): ?>                      
 					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>					   
 								<TR><TD colspan="6" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
@@ -248,19 +218,91 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					      		<TD><?php echo $C->getDatainici('d-m-Y')?></TD>
 					      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
 					      	</TR>                		                 										
-					   <?php $CAT_ANT = $C->getCategoria(); ?>			   
+					   <?php $CAT_ANT = $C->getCategoria(); ?>
+                       <?php endif; ?>			   
 					   <?php endforeach; ?>        					                         
 					   </TABLE>
 					   <br /><br />
+                       
+                       <?php
+                       
+                        //Mirem que l'usuari es pugui matricular segons les dates de matrícules
+                        list($DIA_Y,$DIA_M,$DIA_D) = explode("-",TipusPeer::getDataIniciMatriculaAnticsAlumnes()->getTipusdesc());
+                        list($DIT_Y,$DIT_M,$DIT_D) = explode("-",TipusPeer::getDataIniciMatriculaTothom()->getTipusdesc());
+                        
+                        $DIA_T = mktime(0,0,0,$DIA_M,$DIA_D,$DIA_Y);
+                        $DIT_T = mktime(0,0,0,$DIT_M,$DIT_D,$DIT_Y);
+                             
+                         ?>
+
+                       
 					   <TABLE class="FORMULARI" width="100%">					   		
-					   		<TR><TD width="100px"><b>DESCOMPTE</b></TD><td><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptesWeb(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>
-					   		<TR><TD width="100px"></TD><td><?php if(!empty($LCURSOS)) echo submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')); ?></TD></TR>
+					   		<TR><TD width="100px;" style="font-size:10px;"><b>DESCOMPTE</b></TD><td><?php echo select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptesWeb(),MatriculesPeer::REDUCCIO_CAP))?></TD></TR>
+					   		<TR><TD width="100px"></TD>
+                                <TD>    
+                                    <?php
+                                                                                
+                                        $avui = time();
+                                        
+                                        if(sizeof($MATRICULES) == 0):
+                                            if($avui < $DIT_T):                                                
+                                                echo "<div class=\"text\" style=\"font-weight:bold; \">El peíode de matrícules per a nous alumnes comença el dia ".date('d/m/Y',$DIT_T).'</div>';
+                                            else: 
+                                                echo "<div>".submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')).'</div>';    
+                                            endif;                                                                                
+                                        else: 
+                                            if($avui < $DIA_T):    
+                                                echo "<div style=\"font-size:11px; font-weight:bold; \">El període de matrícules per a antics alumnes comença el dia ".date('d/m/Y',$DIA_T).'</div>';
+                                            else: 
+                                                echo '<div>'.submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')).'</div>';
+                                            endif;                                         
+                                        endif;
+                                     ?>
+                                     <br />
+                                     <div class="text">Si necessita més informació sobre el nou sistema de matrícules, si us plau, cliqui <a href="<?php echo url_for('web/index?accio=mc&idN=35'); ?>">aquí</a>.</div>                                                                                                                                                                  
+                                </TD>
+                            </TR>
 					   </TABLE>
 					   
 			<?php endif; ?>
 		            
 	   </FIELDSET>
-	   	   	
+      
+	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos matriculats amb anterioritat</LEGEND>
+	              
+		   <TABLE class="DADES">
+		   
+		   <?php if(sizeof($MATRICULES)==0): ?>
+				<TR><TD>No tenim constància informàtica que hagueu realitzat un curs a la Casa de Cultura. <br />Si no és així, si us plau notifiqueu-nos-ho. </TD></TR>
+           <?php else: ?>
+                <TR><TD class="titol">CODI</TD>
+                    <TD class="titol">NOM</TD>
+                    <TD class="titol">ESTAT</TD>
+                    <TD class="titol">DATA MATRÍCULA</TD>
+                    <TD class="titol">DESCOMPTE</TD></TR>                                   
+		   <?php endif; ?>
+		   
+		   <?php foreach($MATRICULES as $M): ?>
+		      <?php $CURSOS = $M->getCursos(); ?>                           
+		   		<TR>
+		   			<TD>
+						<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $CURSOS->getIdcursos(); ?>&modal=false" class="thickbox">
+      						<?php echo $CURSOS->getCodi()?>
+      					</a>
+      					<div style="display:none" id="hidden<?php echo $CURSOS->getIdcursos() ?>">
+      						<?php echo $CURSOS->getDescripcio() ?>
+      					</div>
+      				</TD>		   				   			
+		      		<TD><?php echo $CURSOS->getTitolCurs()?></TD>
+		      		<TD><?php echo MatriculesPeer::getEstatText( $M->getEstat() )?></TD>
+		      		<TD><?php echo $M->getDataInscripcio('d/m/Y H:i')?></TD>
+		      		<TD><?php echo MatriculesPeer::textDescomptes($M->getTReduccio()) ?></TD>                                                                                             
+			     </TR>                                   
+		   <?php endforeach; ?>                              
+		   </TABLE>
+		      
+	   </FIELDSET>
+	      	      	   	   	
    	</form>
    
 <?php  
@@ -273,8 +315,8 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
      //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant     
      if($DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TARGETA || $DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TELEFON ):
      	 
-//         echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
+         echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+//         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
          
          foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
          
@@ -298,7 +340,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 	    <TR><TD><b>DATA</b></TD>    <TD><?php echo $DADES_MATRICULA['DATA']; ?></TD></TR>
 	    <TR><TD><b>DESCOMPTE</b></TD>  <TD><?php echo MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']); ?></TD></TR>
 	    <TR><TD><b>CURS</b></TD>  <TD>
-	    <TABLE width="100%">                  								
+	    <TABLE width="100%" class="FORMULARI">                  								
 	    	<?php $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);      ?>                  								
 	        <TR>
 	        	<TD><?php echo $CURS->getCodi(); ?></TD>

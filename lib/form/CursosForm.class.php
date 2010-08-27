@@ -17,6 +17,7 @@ class CursosForm extends sfFormPropel
       'Codi'            => new sfWidgetFormInputText(array(),array('style'=>'width:100px;')),
       'TitolCurs'       => new sfWidgetFormInputText(array(),array('style'=>'width:100%;')),
       'isActiu'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
+      'VisibleWEB'      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Places'          => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),      
       'Descripcio'      => new sfWidgetFormTextareaTinyMCE(array(),array('style'=>'width:100%;')),
       'Preu'            => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),
@@ -46,6 +47,7 @@ class CursosForm extends sfFormPropel
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
       'DataFiMatricula' => new sfValidatorDate(array('required' => false)),
       'DataInici'       => new sfValidatorDate(array('required' => false)),
+      'VisibleWEB'      => new sfValidatorInteger(array('required' => true)),
     ));
 
     
@@ -62,7 +64,8 @@ class CursosForm extends sfFormPropel
       'DataAparicio'    => 'Data d\'aparició: ',
       'DataDesaparicio' => 'Data de desaparició: ',
       'DataFiMatricula' => 'Data de fi de matriculació: ',
-      'DataInici'       => 'Data d\'inici del curs: '
+      'DataInici'       => 'Data d\'inici del curs: ',
+      'VisibleWEB'      => 'Visible al web?',
     ));
     
     
