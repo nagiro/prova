@@ -43,8 +43,9 @@
 	}
 	
 	function validaCodi(q){
-		var userPattern = new RegExp("^[A-Za-z]{3}[0-9]{3}\.[0-9]{2}$");		
-		if (userPattern.exec(q) == null) return false; else return true;
+//		var userPattern = new RegExp("^[A-Za-z]{3}[0-9]{3}\.[0-9]{2}$");		
+//		if (userPattern.exec(q) == null) return false; else return true;
+        return true;
 	}
 
 	function CanviaCodiCurs(){		
