@@ -32,7 +32,8 @@ all:
     escaping_method:        ESC_SPECIALCHARS
 
     # Enable the database manager
-    use_database:           true
+    use_database:           true    
+    
 
     webroot:                /intranet/
     websysroot:             C:\Documents and Settings\casacultura\Escritorio\htdocs\trunk\intranet\web\
@@ -45,9 +46,10 @@ all:
     # webrooturl:             http://servidor.casadecultura.org/web_beta/
     # timeout:                84600
     
-    
-    
-
   .actions:
     login_module: web
     login_action: login
+    
+    error_404_module: web
+    error_404_action: notfound
+    
