@@ -191,7 +191,7 @@
 				}     
 				               
              ?>      
-              <TR><TD colspan="6" class="TITOL"><?php echo gestorPagines($CURSOS);?></TD></TR>    	
+              <TR><TD colspan="6" class="TITOL"><?php echo gestorPagines($CURSOS,$MODE);?></TD></TR>    	
       	</TABLE>      
       </DIV>
 
@@ -213,13 +213,13 @@ function getParam( $accio = "" , $IDC = "" , $PAGINA = 1 )
     RETURN "?".implode( "&" , $opt);
 }
 
-function gestorPagines($CURSOS)
+function gestorPagines($CURSOS,$accio)
 {
   if($CURSOS->haveToPaginate())
   {       
-     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gCursos'.getParam(NULL, NULL, $CURSOS->getPreviousPage()));
+     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gCursos'.getParam($accio, NULL, $CURSOS->getPreviousPage()));
      echo " ";
-     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gCursos'.getParam(NULL, NULL, $CURSOS->getNextPage()));
+     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gCursos'.getParam($accio, NULL, $CURSOS->getNextPage()));
   }
 }
 

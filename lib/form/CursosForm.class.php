@@ -25,10 +25,10 @@ class CursosForm extends sfFormPropel
       'Horaris'         => new sfWidgetFormInputText(array(),array('style'=>'width:50%;')),
       'Categoria'       => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCategories())),
       'OrdreSortida'    => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),
-      'DataAparicio'    => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
-      'DataDesaparicio' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
-      'DataFiMatricula' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
-      'DataInici'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataAparicio'    => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataDesaparicio' => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataFiMatricula' => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
+      'DataInici'       => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
     ));
 
     $this->setValidators(array(

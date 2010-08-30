@@ -1943,7 +1943,7 @@ class gestioActions extends sfActions
             
     switch($accio){
     	
-    	//Entrem un curs nou. Agafarem el codi per fer-ne un duplicat o bÃ© un codi nou.
+    	//Entrem un curs nou. Agafarem el codi per fer-ne un duplicat o bé un codi nou.
     	case 'NC':    			    				    			    			
     			$this->getUser()->setSessionPar('IDC',null);
     			$OCurs = new Cursos();    			     			
@@ -1955,8 +1955,8 @@ class gestioActions extends sfActions
     	case 'SC':
 				$parametres = $request->getParameter('cursos_codi'); 			//Agafo el codi
 				$codi = $parametres['Codi'];
-				if(!empty($parametres['CodiT'])) $codi = $parametres['CodiT'];				
-				$OCurs = CursosPeer::getCopyCursByCodi($parametres['Codi']); 	//Carrego una cÃ²pia de l'objecte de l'Ãºltim curs amb aquest codi
+				if($parametres['CodiT'] != "") $codi = $parametres['CodiT'];				
+				$OCurs = CursosPeer::getCopyCursByCodi($codi); 	        //Carrego una còpia de l'objecte de l'últim curs amb aquest codi
     			$OCurs->save();
     			$this->getUser()->setSessionPar('IDC',$OCurs->getIdcursos());    			    		
     		    $this->FCurs = new CursosForm($OCurs);							//Passem al formulari el curs copiat.    		        		        		    
@@ -1998,11 +1998,11 @@ class gestioActions extends sfActions
     	    break;
 		case 'CI' :	
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::PASSAT , $this->PAGINA , $this->CERCA['text']);
-				$this->MODE = 'CONSULTA';				 
+				$this->MODE = 'CI';				 
 			break;		
 		case 'CA' :				
 				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA['text'] );				
-				$this->MODE = 'CONSULTA';
+				$this->MODE = 'CA';
 			break;					
 		case 'L': 
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC'));

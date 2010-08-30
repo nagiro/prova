@@ -58,6 +58,7 @@ class webActions extends sfActions
 	$this->SELECCIONAT = 0;	  	
 	$this->LLISTAT_ACTIVITATS = array();
 	$this->ACTIVITATS_CALENDARI = array();
+    $this->MISSATGE = array();
 	
 	if($this->getUser()->isAuthenticated()){ $this->TIPUS_MENU = 'ADMIN'; } else { $this->TIPUS_MENU = 'WEB'; }
     $this->DATACAL = $this->getUser()->ParReqSesForm($request,'DATACAL',time());            
@@ -481,7 +482,7 @@ class webActions extends sfActions
   {
      $this->LoadWEB($request);
      $this->setTemplate('index');
-     $this->GUARDADA = false;
+     $this->GUARDADA = false;     
      
      $accio = $this->getRequestParameter('accio');     
      

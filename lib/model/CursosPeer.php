@@ -69,7 +69,7 @@ class CursosPeer extends BaseCursosPeer
 	$C = new Criteria();  	
   	$C->add(self::ISACTIU , true);  	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addDescendingOrderByColumn( self::DATAAPARICIO );	
+  	$C->addAscendingOrderByColumn( self::DATAAPARICIO );	
 
   	foreach(self::doSelect($C) as $CURS): 
   		$RET[$CURS->getIdcursos()] = $CURS->getCodi().' - '.$CURS->getTitolcurs();
@@ -82,9 +82,9 @@ class CursosPeer extends BaseCursosPeer
   static function getCursos($mode = self::ACTIU , $PAGINA = 1, $CERCA = "")
   {
   	$C = new Criteria();  	
-  	if($mode == self::ACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;  	
+  	if($mode == self::ACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;        	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addDescendingOrderByColumn( self::DATADESAPARICIO );
+  	$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
   	$C->addAscendingOrderByColumn( self::CODI );
   	
   	
@@ -94,7 +94,7 @@ class CursosPeer extends BaseCursosPeer
 		$C1->addOr($C2); $C->add($C1);  		  	
   	endif; 
 
-  	$pager = new sfPropelPager('Cursos', 30);
+ 	$pager = new sfPropelPager('Cursos', 30);
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);
 	$pager->init();  	
@@ -106,9 +106,9 @@ class CursosPeer extends BaseCursosPeer
   {
   	$C = new Criteria();  	  	  
     $C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addDescendingOrderByColumn( self::DATAAPARICIO );
+  	$C->addAscendingOrderByColumn( self::DATAAPARICIO );
   	
-  	$pager = new sfPropelPager('Cursos', 20);
+  	$pager = new sfPropelPager('Cursos', 30);
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);
 	$pager->init();  	
