@@ -94,7 +94,7 @@ class CursosPeer extends BaseCursosPeer
 		$C1->addOr($C2); $C->add($C1);  		  	
   	endif; 
 
- 	$pager = new sfPropelPager('Cursos', 30);
+ 	$pager = new sfPropelPager('Cursos', 50);
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);
 	$pager->init();  	
@@ -108,7 +108,7 @@ class CursosPeer extends BaseCursosPeer
     $C->addAscendingOrderByColumn( self::CATEGORIA );
   	$C->addAscendingOrderByColumn( self::DATAAPARICIO );
   	
-  	$pager = new sfPropelPager('Cursos', 30);
+  	$pager = new sfPropelPager('Cursos', 50);
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);
 	$pager->init();  	
