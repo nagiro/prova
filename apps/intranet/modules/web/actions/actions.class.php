@@ -185,7 +185,7 @@ class webActions extends sfActions
      $FConsulta->bind($request->getParameter('consulta'));
 
      $BODY = "El senyor/a {$FConsulta->getValue('Cognoms')}, {$FConsulta->getValue('Nom')}".
-             " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('EMAIL')}".
+             " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('Email')}".
              " vol fer el següent comentari : {$FConsulta->getValue('Missatge')} "; 
           
 	  $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org',' CCG :: Formulari contacte Web ',$BODY);
