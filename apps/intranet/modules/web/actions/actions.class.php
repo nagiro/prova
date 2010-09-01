@@ -717,8 +717,10 @@ class webActions extends sfActions
 		if($O->getIsfixa()):					
 			$TEMP['FIX'][$O->getExtensio()]['URL'] = $O->getUrl();
 			$TEMP['FIX'][$O->getExtensio()]['IMG'] = $O->getExtensio();				
+            $TEMP['FIX'][$O->getExtensio()]['Nom'] = $O->getNom();
 		else:
 			$TEMP['VAR'][$i]['URL'] = $O->getUrl();
+            $TEMP['VAR'][$i]['Nom'] = $O->getNom();
 			$TEMP['VAR'][$i++]['IMG'] = $O->getExtensio();
 		endif;
 	endforeach;

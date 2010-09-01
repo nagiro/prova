@@ -1,4 +1,28 @@
 <?php use_helper('Form')?>
+<style>
+
+    #destacats{
+        font-size:12px; 
+        font-weight:bold; 
+        text-align:center; 
+        background-color:#CCCCCC; 
+        color:#606060;        
+    }
+    
+    #titol_noticia { 
+        color: #999999; 
+        font-weight:bold; 
+        font-size:10px; 
+        padding-top:10px; 
+    }
+    
+    #contingut_noticia { 
+        text-align:right;
+        padding-bottom:10px; 
+        border-bottom:2px solid #CCCCCC; 
+    }
+
+</style>
 <TD class="CALENDARI">
 	<CENTER>
 
@@ -10,14 +34,17 @@
         		<br /><br />
         	</TD>
         </TR>                         
-        <TR><TD><?php getCalendari( $DATACAL , $ACTIVITATS_CALENDARI , $CERCA ); ?></TD></TR>                 
+        <TR><TD><?php getCalendari( $DATACAL , $ACTIVITATS_CALENDARI , $CERCA ); ?></TD></TR>
+        <TR><TD id="destacats">DESTACATS</TD></TR>
+                                 
  		<?php 
 		
 			foreach($BANNERS as $B):
 										
 				$URL = (empty($B['URL']))?'web/index':$B['URL'];
 				
-				echo '<TR><TD>'.link_to(
+                echo '<TR><TD id="titol_noticia">&raquo; '.$B['Nom'].'</TD></TR>';
+				echo '<TR><TD id="contingut_noticia">'.link_to(
 									image_tag(
 										'banners/'.$B['IMG'] , 
 										array('class'=>'BANNER')), 
@@ -27,6 +54,7 @@
 			endforeach;
 	
 		?>
+        
       </TABLE>      
     </CENTER>      
     </TD>
