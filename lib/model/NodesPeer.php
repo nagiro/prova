@@ -72,4 +72,14 @@ class NodesPeer extends BaseNodesPeer
   	else return new Nodes;  	
   }
     
+  static public function getFills($NODE)
+  {
+    $C = new Criteria();
+    $NIVELL = $NODE->getNivell();
+    $ORDRE = $NODE->getOrdre();
+    $C->add(self::ORDRE, $ORDRE , CRITERIA::GREATER_THAN);
+//    $C->add(self::NIVELL, $NIVELL, CRITERIA::GREATER_EQUAL);
+    $C->addAscendingOrderByColumn(self::ORDRE);
+    return self::doSelect($C);
+  }
 }
