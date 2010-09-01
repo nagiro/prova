@@ -9,7 +9,10 @@
 	    	if(!empty($P) && file_exists($WEB)) include($WEB); 
 	    	else echo "Encara no hi ha continguts...";
 	    else: 
-	    	echo "";
+            //Carregar els nodes que depenen de mi 
+            //I dibuixar estructura d'arbre
+            print_r($NODE);
+	    	echo "Això és un node categoria";
 	    endif;  
     	
     ?>

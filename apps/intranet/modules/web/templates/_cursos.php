@@ -22,7 +22,8 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
         </TR>
 
    <?php $CAT_ANT = ""; ?>   
-   <?php foreach(CursosPeer::getCursos()->getResults() as $C): ?>                      
+   <?php foreach(CursosPeer::getCursos()->getResults() as $C): ?>
+   <?php if($C->getVisibleweb() == 1): ?>                      
    <?php    if($CAT_ANT <> $C->getCategoria()): ?>
    <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>
 			<TR><TD colspan="5" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
@@ -42,7 +43,8 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
       		<TD class="LINIA"><?php echo $C->getDatainici('d-m-Y')?></TD>
       		<TD class="LINIA"><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
       	</TR>                		                 										
-   <?php $CAT_ANT = $C->getCategoria(); ?>			   
+   <?php $CAT_ANT = $C->getCategoria(); ?>
+   <?php endif; ?>			   			   
    <?php endforeach; ?>                              
    </TABLE>         
    </FIELDSET>
