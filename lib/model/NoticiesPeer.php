@@ -27,7 +27,8 @@ class NoticiesPeer extends BaseNoticiesPeer
 
 //		if($filtreWEB):
 //			$C->addDescendingOrderByColumn(self::DATAPUBLICACIO);
-//		else: 
+//		else:
+            $C->addAscendingOrderByColumn(self::ORDRE); 
 			$C->addAscendingOrderByColumn(self::DATAPUBLICACIO);
 //		endif; 
 
@@ -90,4 +91,5 @@ class NoticiesPeer extends BaseNoticiesPeer
 			return $ON;
 		endif; 
 	}	
+    
 }

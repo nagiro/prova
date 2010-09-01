@@ -52,18 +52,19 @@
 <?php else: ?>
 
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Notícies actives a portada</DIV>
+	    <DIV class="TITOL">Notícies a portada</DIV>
 	    	<table class="DADES">
 	    	<?php           
                 if(sizeof($NOTICIES) == 0 ) { echo '<TR><TD class="LINIA">No hi ha cap notícia activa.</TD></TR>'; }
-                else { echo '<tr><td class="TITOL">Títol</td><td class="TITOL">Data publicació</td><td class="TITOL">Data desaparició</td><td class="TITOL">Activa?</td><tr>'; }
+                else { echo '<tr><td class="TITOL">Títol</td><td class="TITOL">Data publicació</td><td class="TITOL">Data desaparició</td><td class="TITOL">Activa?</td><td class="TITOL">Ordre</td><tr>'; }
                  								                           
-                foreach($NOTICIES->getResults() as $N):                                      
+                foreach($NOTICIES->getResults() as $N):                                                          
 					echo '<TR>							
 							<TD class="LINIA">'.link_to($N->getTitolnoticia(),'gestio/gNoticies?accio=E&idn='.$N->getIdnoticia()).'</TD>
 							<TD class="LINIA">'.$N->getDatapublicacio().'</TD>							
 							<TD class="LINIA">'.$N->getDatadesaparicio().'</TD>
 							<TD class="LINIA">'.(($N->getActiva())?'Sí':'No').'</TD>							
+                            <TD class="LINIA">'.$N->getOrdre().'</TD>
 						  </TR>';                		                 															
 				endforeach;				
                 ?>         

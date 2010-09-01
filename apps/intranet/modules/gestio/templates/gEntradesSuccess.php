@@ -31,9 +31,9 @@
          
         <?php
         	if ($ENTRADES->haveToPaginate()):
-        		if($PAGINA > 1) echo link_to('<-- Veure entrades anteriors', 'gestio/gEntrades?pagina='.$ENTRADES->getPreviousPage());
+        		if($PAGINA > 1) echo link_to('<-- Veure entrades anteriors', 'gestio/gEntrades?PAGINA='.$ENTRADES->getPreviousPage());
   				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
-  				if($PAGINA < $ENTRADES->getLastPage()) echo link_to('Veure entrades següents -->', 'gestio/gEntrades?pagina='.$ENTRADES->getNextPage());  
+  				if($PAGINA < $ENTRADES->getLastPage()) echo link_to('Veure entrades següents -->', 'gestio/gEntrades?PAGINA='.$ENTRADES->getNextPage());  
 			endif; 
 		?>
         

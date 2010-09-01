@@ -20,14 +20,14 @@ class NoticiesForm extends BaseNoticiesForm
     $this->setWidgets(array(
       'idNoticia'      	=> new sfWidgetFormInputHidden(),
       'TitolNoticia'   	=> new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
-      'TextNoticia'    	=> new sfWidgetFormTextareaTinyMCE(),
+      'TextNoticia'    	=> new sfWidgetFormTextareaTinyMCE(),      
       'DataPublicacio' 	=> new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'DataDesaparicio' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'Activa'         	=> new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
+      'Ordre'           => new sfWidgetFormInputText(array(),array('style'=>'width:50px;')),
       'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webrooturl').$this->WEB_IMAGE.$this->getObject()->getImatge(), 'is_image'=>true , 'with_delete'=>false)),
       'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webrooturl').$this->WEB_PDF.$this->getObject()->getAdjunt(),'with_delete'=>false)),
-      'idActivitat'    	=> new sfWidgetFormInputHidden(),
-      
+      'idActivitat'    	=> new sfWidgetFormInputHidden(),      
     ));
 
     $this->setValidators(array(
@@ -36,6 +36,7 @@ class NoticiesForm extends BaseNoticiesForm
       'TextNoticia'    	=> new sfValidatorString(array('required' => false)),
       'DataPublicacio' 	=> new sfValidatorDate(array('required' => false)),
       'Activa'         	=> new sfValidatorBoolean(array('required' => false)),
+      'Ordre'           => new sfValidatorInteger(array(),array()),
       'Imatge'         	=> new sfValidatorFile(array('path'=> $this->WEB_IMAGE , 'required'=>false)),
       'Adjunt'         	=> new sfValidatorFile(array('path'=> $this->WEB_PDF , 'required'=>false)),
       'idActivitat'    	=> new sfValidatorInteger(array('required' => false)),
@@ -48,6 +49,7 @@ class NoticiesForm extends BaseNoticiesForm
       	'DataPublicacio' 	=> 'Data publicació: ',
     	'DataDesaparicio' 	=> 'Data desaparició: ',
       	'Activa'         	=> 'Activa? ',
+        'Order'             => 'Ordre: ',
       	'Imatge'         	=> 'Imatge: ',
       	'Adjunt'         	=> 'Doc. adjunt: ',
       	'idActivitat'    	=> 'Activitat relacionada: ',    
