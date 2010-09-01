@@ -20,7 +20,7 @@ class PromocionsForm extends sfFormPropel
       'Ordre'      => new sfWidgetFormChoice(array('choices'=>PromocionsPeer::selectOrdre($this->isNew()))),    
       'isActiva'   => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
       'isFixa'     => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
-      'URL'        => new sfWidgetFormInputHidden(),      
+      'URL'        => new sfWidgetFormInputText(array(),array()),      
     ));
     
     $this->setValidators(array(
@@ -46,7 +46,14 @@ class PromocionsForm extends sfFormPropel
 	$url = sfConfig::get('sf_websysroot').'/images/banners';	
 	$this->validatorSchema['Extensio'] = new sfValidatorFile(array('path'=>$url,'required' => false));
     
-    
+    $this->widget_schema->setLabels(array(      
+      'Nom'        => 'Títol',
+      'Ordre'      => 'Ordre',    
+      'isActiva'   => 'Activa?',
+      'isFixa'     => 'Fixe?',
+      'URL'        => 'URL',
+    ));
+        
     $this->widgetSchema->setNameFormat('promocions[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

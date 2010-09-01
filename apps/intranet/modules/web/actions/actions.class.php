@@ -265,7 +265,8 @@ class webActions extends sfActions
     	if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()): 
  				    			    	
  			$BODY = "Benvolgut/da, <br /> La seva contrasenya és : <b>{$OUsuari->getPasswd()}</b>. <br /><br />Cordialment,<br /> Casa de Cultura de Girona. ";
-			$this->ENVIAT = $this->sendMail('informatica@casadecultura.org',$OUsuari->getEmail(),' CCG :: Recordatori de contrasenya ',$BODY);          
+			$this->ENVIAT = $this->sendMail('informatica@casadecultura.org',$OUsuari->getEmail(),' CCG :: Recordatori de contrasenya ',$BODY);
+            $this->ENVIAT = $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org', '[CCG::RECORDATORI]',$BODY);          
 
 		elseif($this->FREMEMBER->isValid()):
 		
