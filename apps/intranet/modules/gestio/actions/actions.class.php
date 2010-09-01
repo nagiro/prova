@@ -283,10 +283,15 @@ class gestioActions extends sfActions
       $this->getUser()->setSessionPar('idP',$OPromocio->getPromocioId());
       $this->FPromocio = new PromocionsForm($OPromocio);
       $this->EDICIO = true;
-    elseif($request->getParameter('BDELETE')): //Esborra
-      $RP = $request->getParameter('promocions');
+    elseif($request->hasParameter('BDELETE')): //Esborra
+      $RP = $request->getParameter('promocions');      
       $this->PROMOCIO = PromocionsPeer::retrieveByPK($RP['PromocioID']);
-      if($this->PROMOCIO instanceof Promocions): $this->PROMOCIO->delete(); endif; 
+      if($this->PROMOCIO instanceof Promocions):
+        $url = sfConfig::get('sf_websysroot').'/images/banners/'.$this->PROMOCIO->getExtensio(); 
+        unset($url);
+        $this->PROMOCIO->delete(); 
+      endif;
+       
     elseif($request->getParameter('accio') == 'CC'):
     	$this->getUser()->addLogAction('inside','gPromocions');
     endif;
