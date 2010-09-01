@@ -284,8 +284,9 @@ class gestioActions extends sfActions
       $this->FPromocio = new PromocionsForm($OPromocio);
       $this->EDICIO = true;
     elseif($request->getParameter('BDELETE')): //Esborra
-      $this->PROMOCIO = PromocionsPeer::retrieveByPK($request->getParameter('IDP'));
-      $this->PROMOCIO->delete();
+      $RP = $request->getParameter('promocions');
+      $this->PROMOCIO = PromocionsPeer::retrieveByPK($RP['PromocioID']);
+      if($this->PROMOCIO instanceof Promocions): $this->PROMOCIO->delete(); endif; 
     elseif($request->getParameter('accio') == 'CC'):
     	$this->getUser()->addLogAction('inside','gPromocions');
     endif;
