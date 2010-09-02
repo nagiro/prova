@@ -40,6 +40,7 @@ class CiclesPeer extends BaseCiclesPeer
   static public function getList($PAGE = 1)
   {
 	if($PAGE == 1){  $limit_inf = 0; $limit_sup = 9; }
+    elseif($PAGE < 0){ $limit_inf = 0; $limit_sup = 9; } 
 	else { $limit_inf = (($PAGE-1)*10); $limit_sup = (($PAGE)*10)-1; }
   	
   	$connection = Propel::getConnection();
