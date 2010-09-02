@@ -3314,7 +3314,7 @@ class gestioActions extends sfActions
     		break;
     		    		    
     }        
-    
+    echo $this->PAGINA; 
     $this->CICLES = CiclesPeer::getList($this->PAGINA);
   	
   }
