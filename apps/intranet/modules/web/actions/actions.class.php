@@ -119,7 +119,8 @@ class webActions extends sfActions
   			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA );  						
 	    	$this->ACCIO = 'llistat_activitats_cerca';
 	    	$this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';
-	    	$this->MODE  = 'CERCA';			
+	    	$this->MODE  = 'CERCA';
+            $this->PARAM = serialize(array('CERCA'=>$this->CERCA , 'DATACAL' => $this->DATACAL , 'P' => $this->PAGINA , 'accio'=>'c'));         		
   			break;
   			
   		//Cerca un dia
@@ -127,7 +128,8 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACAL),$this->PAGINA);			
 	    	$this->ACCIO = 'llistat_activitats';
 	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACAL);
-	    	$this->MODE  = 'DIA';			
+	    	$this->MODE  = 'DIA';
+            $this->PARAM = serialize(array('DATACAL'=>$this->DATACAL, 'accio'=>'ca'));            			
   			break;
 
   		//Mostra una sola activitat
@@ -135,7 +137,8 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
 			$this->NODE = $request->getParameter('node',0);
   			$this->ACCIO = 'mostra_activitat';
-  			$this->TITOL = 'Informació de l\'activitat';	     			     			     		
+  			$this->TITOL = 'Informació de l\'activitat';
+            $this->PARAM = unserialize($request->getParameter('PARAM'));            	     			     			     		
 			break;		
 			
   		//Canvi data del calendari
