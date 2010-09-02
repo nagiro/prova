@@ -131,7 +131,7 @@ function getParam($ACCIO , $CERCA , $DATA)
    
    if(!empty($ACCIO)) $RET['accio'] = "accio=$ACCIO";
    if(!empty($CERCA)) $RET['CERCA'] = "CERCA=$CERCA";
-   if(!empty($DATA))  $RET['DATACALENDARI'] = "DATACALENDARI=$DATA";
+   if(!empty($DATA))  $RET['DATACAL'] = "DATACAL=$DATA";
    
    return "?".implode('&',$RET);  
 }
