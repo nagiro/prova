@@ -8,9 +8,9 @@
         
     if($LLISTAT_ACTIVITATS->getNbResults() == 0): 
     	if($MODE == 'CERCA'):
-    		echo '<DIV>No s\'ha trobat cap resultat amb aquestes paraules.<DIV>';
+    		echo '<DIV>No s\'ha trobat cap resultat publicable.<DIV>';
     	else: 
-    		echo '<DIV>Aquest dia no hi ha cap activitat pública.<DIV>';
+    		echo '<DIV>No s\'ha trobat cap resultat publicable.<DIV>';
     	endif; 		
 	else: 
 	
@@ -31,7 +31,7 @@
 		    	
 		    	echo '<td>';
 		    	echo 	link_to($OA->getNom(),'web/index?accio=caa&idA='.$OA->getActivitatid().'&PARAM='.$PARAM);
-		    			if($OC->getCicleid() > 1) echo '('.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid()).')';		    			
+		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid().'&PARAM='.$PARAM);		    			
 		    	echo   '</td>';
 		    	echo '<td>';
 		    		echo GiraData($OA->getPrimeraData());

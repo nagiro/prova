@@ -41,6 +41,7 @@
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
 
 	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE , 'PARAM' => $PARAM )); break;
+       case 'mostra_cicle':       $calendar = true; include_partial('mostraCicle',array( 'CICLE' => $CICLE , 'TITOL' => $TITOL , 'PARAM' => $PARAM )); break;
 	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA , 'PARAM' => $PARAM )); break;
    	   case 'llistat_activitats_cerca': $calendar = true; include_partial('llistatActivitatsCerca',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA , 'PARAM' => $PARAM )); break;
 	   case 'llistatCiclesCategoria': $calendar = true; include_partial('llistatCiclesCategoria',array( 'LLISTAT_CICLES' => $LLISTAT_CICLES , 'TITOL' => $TITOL , 'CAT' => $CAT , 'NODE' => $NODE )); break;

@@ -113,6 +113,14 @@ class webActions extends sfActions
   				$this->ACCIO = 'llistatActivitatsCicleCategoria';	     			     			     			
 	     		   			  			
   			break;
+
+        //Consulta un cicle
+         case 'cc':  			  			  				
+            $this->CICLE = CiclesPeer::retrieveByPK($request->getParameter('idC'));
+            $this->ACCIO = 'mostra_cicle';	     	
+	     	$this->TITOL = "Cicle ".$this->CICLE->getNom();             
+            $this->PARAM = unserialize($request->getParameter('PARAM'));            	     			     		   			  			
+  			break;
   			
   		//Cerca  			
   		case 'c':
