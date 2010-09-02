@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" media="screen" href="/web_beta/css/jquery-datepick/jquery.datepick.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="/web_beta/css/thickbox.css" />
 <!--    <script type="text/javascript" src="/web_beta/js/jquery-1.4.1.min.js"></script> -->
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript" src="/web_beta/js/tiny_mce/tiny_mce.js"></script>    
     <script type="text/javascript" src="/web_beta/js/thickbox-compressed.js"></script>
     <script type="text/javascript" src="/web_beta/js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js"></script>        
