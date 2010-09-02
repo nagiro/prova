@@ -102,8 +102,17 @@ class CiclesPeer extends BaseCiclesPeer
   	
   	return ActivitatsPeer::doCount($C);
   	
-  }
-  
-  
+  }  
+
+  static public function getActivitatsCicleList($idC)
+  {
+  	$C = new Criteria();  	
+  	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
+  	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
+  	
+  	return ActivitatsPeer::doSelect($C);
+  	
+  }  
+
   
 }

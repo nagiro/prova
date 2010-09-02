@@ -31,8 +31,8 @@
 		    	echo '<tr>';
 		    	
 		    	echo '<td>';
-		    	echo 	link_to($OA->getNom(),'web/index?accio=caa&idA='.$OA->getActivitatid().'&PARAM='.$PARAM);
-		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid().'&PARAM='.$PARAM);		    			
+		    	echo 	link_to($OA->getNom(),'web/index?accio=caa&idA='.$OA->getActivitatid());
+		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.link_to($OC->getNom(),'web/index?accio=cc&idC='.$OC->getCicleid());		    			
 		    	echo   '</td>';
 		    			    	
 		    	echo '<td>'.generaData($A->getDia('Y-m-d')).'</td>';

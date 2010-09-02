@@ -23,7 +23,8 @@
         			<div style="margin-top:20px;font-size:11px;">Del <?php echo $PA ?> al <?php echo $PF ?></div>
         			<div style="margin-top:20px;font-size:11px;">Activitats del cicle: <?php echo $NA ?></div>
         		<?php endif; ?>
-        			<div style="margin-top:0px; font-size:10px"><?php echo getRetorn($PARAM, $CICLE) ?></div>
+        			<div style="margin-top:0px; font-size:10px"><?php echo getLinkActivitats($CICLE); ?></div>
+                    <div style="margin-top:10px; font-size:10px"><?php echo getRetorn($CICLE) ?></div>
         			<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
         	</div>
         	<div class="df" style="width:330px;">
@@ -96,19 +97,15 @@
 		
 	}
 
-    function getRetorn($PARAM,$CICLE)
+    function getRetorn($CICLE)
     {
-    
-        if(isset($PARAM['accio']) && $PARAM['accio'] == 'ca'):
-            $enllac = url_for('web/index?accio=ca&DATACAL='.$PARAM['DATACAL']);
-            return '<a href="'.$enllac.'">Torna al llistat d\'activitats</a>';
-        elseif(isset($PARAM['accio']) && $PARAM['accio'] == 'c'):
-            $enllac = url_for('web/index?accio=c&DATACAL='.$PARAM['DATACAL'].'&CERCA='.$PARAM['CERCA'].'&P='.$PARAM['P']);
-            return '<a href="'.$enllac.'">Torna al llistat d\'activitats</a>';
-        endif; 
-        
+        return '<a href="javascript:history.back()">Torna al llistat d\'activitats</a>';        
     } 
 
-
+    function getLinkActivitats($CICLE)
+    {            
+        $enllac = url_for('web/index?accio=ccact&idC='.$CICLE->getCicleid());
+        return '<a href="'.$enllac.'">Veure les activitats</a>';                 
+    } 
 
 ?>

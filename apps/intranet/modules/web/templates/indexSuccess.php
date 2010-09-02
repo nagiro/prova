@@ -40,10 +40,12 @@
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
 
-	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE , 'PARAM' => $PARAM )); break;
-       case 'mostra_cicle':       $calendar = true; include_partial('mostraCicle',array( 'CICLE' => $CICLE , 'TITOL' => $TITOL , 'PARAM' => $PARAM )); break;
-	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA , 'PARAM' => $PARAM )); break;
-   	   case 'llistat_activitats_cerca': $calendar = true; include_partial('llistatActivitatsCerca',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA , 'PARAM' => $PARAM )); break;
+	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE )); break;
+       case 'mostra_cicle':       $calendar = true; include_partial('mostraCicle',array( 'CICLE' => $CICLE , 'TITOL' => $TITOL )); break;
+       case 'mostra_activitats_cicle': $calendar = true; include_partial('mostraActivitatsCicle',array( 'IDC' => $IDC , 'TITOL' => $TITOL , 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS )); break;
+       
+	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
+   	   case 'llistat_activitats_cerca': $calendar = true; include_partial('llistatActivitatsCerca',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
 	   case 'llistatCiclesCategoria': $calendar = true; include_partial('llistatCiclesCategoria',array( 'LLISTAT_CICLES' => $LLISTAT_CICLES , 'TITOL' => $TITOL , 'CAT' => $CAT , 'NODE' => $NODE )); break;
 	   case 'llistatActivitatsCicleCategoria': $calendar = true; include_partial('llistatActivitatsCicleCategoria',array( 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'NODE' => $NODE , 'CAT' => $CAT , 'IDC' => $IDC , 'TITOL' => $TITOL )); break;
 

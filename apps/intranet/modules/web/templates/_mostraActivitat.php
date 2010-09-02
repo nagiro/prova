@@ -1,6 +1,9 @@
     <TD colspan="2" class="CONTINGUT">
-    <?php 
 
+    <?php include_partial('breadcumb',array('text'=>$TITOL)); ?>
+
+    <?php
+     
     if(empty($LLISTAT_ACTIVITATS)): echo '<DIV>Aquest dia no hi ha cap activitat pública.<DIV>'; endif;		
 		
 	foreach($LLISTAT_ACTIVITATS as $A):
@@ -24,7 +27,7 @@
 										
 				<div class="df" style="width:150px;">
 					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
-						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn($PARAM,$A,$NODE); ?></div>
+						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn($A,$NODE); ?></div>
 						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
 				</div>
 				<div class="df" style="width:330px;">
@@ -119,19 +122,9 @@
 		
 	}
     
-    function getRetorn($PARAM,$A,$NODE)
-    {
-    
-        if(isset($PARAM['accio']) && $PARAM['accio'] == 'ca'):
-            $enllac = url_for('web/index?accio=ca&DATACAL='.$PARAM['DATACAL']);
-            return '<a href="'.$enllac.'">Torna al llistat d\'activitats</a>';
-        elseif(isset($PARAM['accio']) && $PARAM['accio'] == 'c'):
-            $enllac = url_for('web/index?accio=c&DATACAL='.$PARAM['DATACAL'].'&CERCA='.$PARAM['CERCA'].'&P='.$PARAM['P']);
-            return '<a href="'.$enllac.'">Torna al llistat d\'activitats</a>';
-        else:  
-            $enllac = url_for('web/index?accio=aca&idc='.$A->getCiclescicleid().'&NODE='.$NODE);
-            return '<a href="'.$enllac.'">Torna a les activitats del cicle</a>';
-        endif; 
+    function getRetorn($A,$NODE)
+    {                
+        return '<a href="javascript:history.back()">Torna al llistat d\'activitats</a>';                     
     } 
 
 ?>

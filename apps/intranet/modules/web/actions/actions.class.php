@@ -118,19 +118,26 @@ class webActions extends sfActions
          case 'cc':  			  			  				
             $this->CICLE = CiclesPeer::retrieveByPK($request->getParameter('idC'));
             $this->ACCIO = 'mostra_cicle';	     	
-	     	$this->TITOL = "Cicle ".$this->CICLE->getNom();             
-            $this->PARAM = unserialize($request->getParameter('PARAM'));            	     			     		   			  			
+	     	$this->TITOL = "Cicle ".$this->CICLE->getNom();                                     	     			     		   			  			
+  			break;
+
+        //Llistat activitats de cicle
+         case 'ccact':  			  			  		
+            $this->IDC = $request->getParameter('idC');     
+            $this->CICLE = CiclesPeer::retrieveByPK($this->IDC);       
+            $this->LLISTAT_ACTIVITATS = CiclesPeer::getActivitatsCicleList($this->IDC);
+            $this->ACCIO = 'mostra_activitats_cicle';	     	
+	     	$this->TITOL = "Activitats del cicle ".$this->CICLE->getNom();             
+                        	     			     		   			  			
   			break;
   			
   		//Cerca  			
   		case 'c':
             if($this->CERCA == 'mensual'):
                 $this->CERCA = '';
-                $this->TITOL = 'ACTIVITATS DEL MES';
-                $this->PARAM = serialize(array('CERCA'=>'mensual' , 'DATACAL' => $this->DATACAL , 'P' => $this->PAGINA , 'accio'=>'c'));
+                $this->TITOL = 'ACTIVITATS DEL MES';                
             else: 
-                $this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';
-                $this->PARAM = serialize(array('CERCA'=>$this->CERCA , 'DATACAL' => $this->DATACAL , 'P' => $this->PAGINA , 'accio'=>'c'));
+                $this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';            
             endif;   			  			
   			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA );                                        						
 	    	$this->ACCIO = 'llistat_activitats_cerca';	    	
@@ -142,8 +149,7 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACAL),$this->PAGINA);			
 	    	$this->ACCIO = 'llistat_activitats';
 	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACAL);
-	    	$this->MODE  = 'DIA';
-            $this->PARAM = serialize(array('DATACAL'=>$this->DATACAL, 'accio'=>'ca'));            			
+	    	$this->MODE  = 'DIA';                        			
   			break;        
 
   		//Mostra una sola activitat
@@ -151,8 +157,7 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
 			$this->NODE = $request->getParameter('node',0);
   			$this->ACCIO = 'mostra_activitat';
-  			$this->TITOL = 'Informació de l\'activitat';
-            $this->PARAM = unserialize($request->getParameter('PARAM'));            	     			     			     		
+  			$this->TITOL = 'Informació de l\'activitat';                        	     			     			     		
 			break;		
 			
   		//Canvi data del calendari
