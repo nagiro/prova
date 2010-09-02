@@ -29,6 +29,7 @@ class UsuarisForm extends sfFormPropel
       'Mobil'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Entitat'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Habilitat'         => new sfWidgetFormInputCheckbox(array(),array('value'=>true , 'style'=>'width:200px')),
+      'Actualitzacio'     => new sfWidgetFormInputHidden(array(),array()),
     ));
 
     $C = new Criteria();
@@ -51,11 +52,11 @@ class UsuarisForm extends sfFormPropel
       'Mobil'             => new sfValidatorString(array('required' => false)),
       'Entitat'           => new sfValidatorString(array('required' => false)),
       'Habilitat'         => new sfValidatorBoolean(array('required' => false)),
+      'Actualitzacio'     => new sfValidatorDate(array('required'=>false),array()),
     ));
 
     
-    $this->widgetSchema->setLabels(array(    
-      
+    $this->widgetSchema->setLabels(array(          
       'Nivells_idNivells' => 'Nivell: ',
       'DNI'               => 'DNI: ',
       'Passwd'            => 'Contrasenya: ',
@@ -70,8 +71,7 @@ class UsuarisForm extends sfFormPropel
       'Telefon'           => 'Telèfon: ',
       'Mobil'             => 'Mòbil: ',
       'Entitat'           => 'Entitat: ',
-      'Habilitat'         => 'Habilitat: ',
-        
+      'Habilitat'         => 'Habilitat: ',        
     ));
     
     
@@ -85,6 +85,13 @@ class UsuarisForm extends sfFormPropel
   public function getModelName()
   {
     return 'Usuaris';
+  }
+
+  public function save($conn = null)
+  {
+    $this->updateObject();
+    $this->getObject()->setActualitzacio(date('Y-m-d',time()));
+    $this->getObject()->save();
   }
 	
 }

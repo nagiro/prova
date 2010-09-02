@@ -98,9 +98,9 @@ class ClientUsuarisForm extends sfFormPropel
   	$OU = $this->getObject();  	
   	$OU->setNivellsIdnivells(Nivells::USER);
   	$OU->setHabilitat(true);
+    $OU->setActualitzacio(date('Y-m-d',time()));
   	$OU->save();  
-  }
-  
+  }    
   
   static public function validaDNI($validator, $value, $arguments)
   {

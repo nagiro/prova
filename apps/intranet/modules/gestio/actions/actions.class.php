@@ -175,7 +175,7 @@ class gestioActions extends sfActions
        //Edita un usuari
        case 'E':
              $this->MODE['EDICIO'] = true;    
-             $USUARI = UsuarisPeer::retrieveByPK($this->IDU);
+             $USUARI = UsuarisPeer::retrieveByPK($this->IDU);       
              $this->FUsuari = new UsuarisForm($USUARI);                          
              break;
        
@@ -190,7 +190,7 @@ class gestioActions extends sfActions
         	$this->redirect('gestio/gUsuaris?accio=FC');        	
         	break;
        
-       //Mostra les llistes a les que estÃ  subscrit un usuari
+       //Mostra les llistes a les que està subscrit un usuari
        case 'L': 
              $this->USUARI = UsuarisPeer::retrieveByPK($this->IDU);
              $this->LLISTAT_LLISTES = LlistesPeer::getLlistesDisponibles($this->IDU);
@@ -214,12 +214,14 @@ class gestioActions extends sfActions
        		 $OUsuari = UsuarisPeer::retrieveByPk($this->IDU);
        		 if($OUsuari instanceof Usuaris) $this->FUsuari = new UsuarisForm($OUsuari); 
        		 else $this->FUsuari = new UsuarisForm();
-       		        		  
-             $this->FUsuari->bind($request->getParameter('usuaris'));             
+       		    
+             $RM = $request->getParameter('usuaris');
+                       		  
+             $this->FUsuari->bind($RM);             
 		     if($this->FUsuari->isValid())
 		     { 		     	
 		     	$this->FUsuari->save();
-		     	$this->getUser()->addLogAction($accio,'gUsuaris',$OUsuari,$this->FUsuari->getObject()); 
+                $this->getUser()->addLogAction($accio,'gUsuaris',$OUsuari,$this->FUsuari->getObject()); 
 		     }		     
 		     $this->MODE['EDICIO'] = true;      
 		     
