@@ -36,6 +36,7 @@ abstract class BaseActivitatsForm extends BaseFormPropel
       'Organitzador'                    => new sfWidgetFormInputText(),
       'Categories'                      => new sfWidgetFormInputText(),
       'Responsable'                     => new sfWidgetFormTextarea(),
+      'InfoPractica'                    => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
@@ -61,6 +62,7 @@ abstract class BaseActivitatsForm extends BaseFormPropel
       'Organitzador'                    => new sfValidatorString(array('max_length' => 250)),
       'Categories'                      => new sfValidatorString(array('max_length' => 100)),
       'Responsable'                     => new sfValidatorString(),
+      'InfoPractica'                    => new sfValidatorString(),
     ));
 
     $this->widgetSchema->setNameFormat('activitats[%s]');

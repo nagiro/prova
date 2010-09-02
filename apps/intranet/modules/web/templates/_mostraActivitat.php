@@ -34,10 +34,10 @@
 					</div>					
 				</div>
 				
-				<div style="margin-left:150px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">INFORMACIÓ PRÀCTICA</div> 
+				<div style="margin-left:150px; margin-top:10px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">INFORMACIÓ PRÀCTICA</div> 
 				<div style=" margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
 					<div style="padding:10px; font-size:10px;">
-						<?php // echo $A->getIPractica(); ?> Aquí hi anirà la informació pràctica que agafaré del camp IPractica() que he de crear a la base de dades
+						<?php echo $A->getInfoPractica(); ?>
 					</div>
 				</div>
 				<div style="clear:both">&nbsp;</div>													

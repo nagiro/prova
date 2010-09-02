@@ -36,7 +36,9 @@ class ActivitatsTextosForm extends sfFormPropel
       'dMig'	                        => new sfWidgetFormTextareaTinyMCE(),
       'tComplet'                        => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dComplet'                        => new sfWidgetFormTextareaTinyMCE(),
-      'Categories'						=> new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>ActivitatsPeer::selectCategories() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_cat')),      
+      'InfoPractica'                    => new sfWidgetFormTextareaTinyMCE(),
+      'Categories'						=> new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>ActivitatsPeer::selectCategories() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_cat')),
+            
     ));
 
     $this->setValidators(array(
@@ -59,7 +61,8 @@ class ActivitatsTextosForm extends sfFormPropel
       'tComplet'                        => new sfValidatorString(array('required' => false)),
       'dComplet'                        => new sfValidatorString(array('required' => false)),
       'tipusEnviament'					=> new sfValidatorChoice(array('choices'=>ActivitatsPeer::getTipusEnviamentsSelectValidator())),
-      'Categories'						=> new sfValidatorString(array('required'=>false)),      
+      'Categories'						=> new sfValidatorString(array('required'=>false)),
+      'InfoPractica'                    => new sfValidatorString(array('required'=>false)),      
     ));
 
     $this->widgetSchema->setLabels(array(
@@ -75,6 +78,7 @@ class ActivitatsTextosForm extends sfFormPropel
       'dComplet'                        => 'Text complet: <div class="textExplicacio">Cursos, ús intern</div>',
       'tipusEnviament'					=> 'Període publicació: <div class="textExplicacio">Quan es publica el text als mitjans?</div>',
       'Categories'						=> 'Categories: ', 
+      'InfoPractica'                    => 'Informació pràctica (web)',
     ));
     
     
