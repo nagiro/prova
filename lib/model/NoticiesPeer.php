@@ -22,7 +22,8 @@ class NoticiesPeer extends BaseNoticiesPeer
 //			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
 //			$C->add( self::ACTIVA, true);
 //		else: 
-			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
+			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
+            $C->add( self::DATADESAPARICIO , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
 //		endif;				
 
 //		if($filtreWEB):
