@@ -3,13 +3,19 @@
   <head>
   <meta http-equiv="content-type" content="text/html; charset=windows-1250">
   <meta name="generator" content="PSPad editor, www.pspad.com">
-
     <?php include_http_metas() ?>
     <?php include_metas() ?>
     <?php include_title() ?>
+        
     <link rel="shortcut icon" href="/favicon.ico" />
-    <?php include_stylesheets() ?>
-    <?php include_javascripts() ?>
+    <link rel="stylesheet" type="text/css" media="screen" href="/web_beta/css/gestio.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/web_beta/css/smoothness/jquery-ui-1.7.2.custom.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/web_beta/css/jquery-datepick/jquery.datepick.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/web_beta/css/thickbox.css" />
+    <script type="text/javascript" src="/web_beta/js/jquery-1.4.1.min.js"></script>
+    <script type="text/javascript" src="/web_beta/js/tiny_mce/tiny_mce.js"></script>    
+    <script type="text/javascript" src="/web_beta/js/thickbox-compressed.js"></script>
+    <script type="text/javascript" src="/web_beta/js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js"></script>        
       
   <link rel="shortcut icon" href="/favicon.ico" />
   
