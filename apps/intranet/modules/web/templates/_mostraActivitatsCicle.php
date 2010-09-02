@@ -30,7 +30,7 @@
 			<div class="df" style="width:330px;">
 				<div style="padding-left:10px; font-size:11px;">                    							
 					<?php foreach($LLISTAT_ACTIVITATS as $OA): ?>								
-							<b><a href="<?php echo url_for('web/index?accio=caa&idA='.$OA->getActivitatid()) ?>"><?php echo $OA->getTCurt(); ?></a></b><br />
+							<b><a href="<?php echo url_for('web/index?accio=caa&idA='.$OA->getActivitatid()) ?>"><?php echo $OA->getTMig(); ?></a></b><br />
 							<?php echo generaHoraris($OA->getHorariss()); ?><br /><br />
 					<?php endforeach; ?>
 																	
