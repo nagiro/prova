@@ -8,7 +8,7 @@
 		$C = CiclesPeer::retrieveByPK($A->getCiclescicleid());
 		if($C instanceof Cicles && $C->getCicleID() > 1) $nom_cicle = '<b>'.$C->getTMig().'</b>'; else $nom_cicle = "";
 		$imatge = $A->getImatge();
-		$pdf = $A->getPdf();
+		$pdf = $A->getPdf();                        
 						
         if(!empty($nom_cicle)):	
 		?>
@@ -19,7 +19,7 @@
 		<?php endif; ?>
 			<div style="border:2px solid #96BF0D; clear:both; padding:10px;">
 				<div style="font-size:11px"><b><?php echo $A->getTCurt().'</b>.'.$A->getDCurt() ?></div>
-				<div style="font-size:10px"><?php echo generaHoraris($A->getHorariss()); ?></div>
+				<div style="font-size:10px"><?php echo generaHoraris($A->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
 				<div style="height:30px;">&nbsp;</div>				
 										
 				<div class="df" style="width:150px;">

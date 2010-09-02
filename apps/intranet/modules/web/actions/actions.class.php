@@ -70,7 +70,7 @@ class webActions extends sfActions
       	
   	$this->accio = $request->getParameter('accio');  	  	
   	
-  	if($request->hasParameter('BCERCA_x')):    	 
+  	if($request->hasParameter('BCERCA_x') || $request->hasParameter('CERCA')):    	 
     	$this->CERCA = $this->getUser()->ParReqSesForm($request,'CERCA',"");
     	$this->accio = 'c';
     else: 
@@ -115,12 +115,18 @@ class webActions extends sfActions
   			break;
   			
   		//Cerca  			
-  		case 'c':  			  			
-  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA );  						
-	    	$this->ACCIO = 'llistat_activitats_cerca';
-	    	$this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';
-	    	$this->MODE  = 'CERCA';
-            $this->PARAM = serialize(array('CERCA'=>$this->CERCA , 'DATACAL' => $this->DATACAL , 'P' => $this->PAGINA , 'accio'=>'c'));         		
+  		case 'c':
+            if($this->CERCA == 'mensual'):
+                $this->CERCA = '';
+                $this->TITOL = 'ACTIVITATS DEL MES';
+                $this->PARAM = serialize(array('CERCA'=>'mensual' , 'DATACAL' => $this->DATACAL , 'P' => $this->PAGINA , 'accio'=>'c'));
+            else: 
+                $this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';
+                $this->PARAM = serialize(array('CERCA'=>$this->CERCA , 'DATACAL' => $this->DATACAL , 'P' => $this->PAGINA , 'accio'=>'c'));
+            endif;   			  			
+  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA );                                        						
+	    	$this->ACCIO = 'llistat_activitats_cerca';	    	
+	    	$this->MODE  = 'CERCA';                     		
   			break;
   			
   		//Cerca un dia
@@ -130,7 +136,7 @@ class webActions extends sfActions
 	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACAL);
 	    	$this->MODE  = 'DIA';
             $this->PARAM = serialize(array('DATACAL'=>$this->DATACAL, 'accio'=>'ca'));            			
-  			break;
+  			break;        
 
   		//Mostra una sola activitat
 		case 'caa':
@@ -142,9 +148,8 @@ class webActions extends sfActions
 			break;		
 			
   		//Canvi data del calendari
-		case 'cdc':
-				$this->DATACAL = $this->getUser()->ParReqSesForm($request,'DATACAL',time());
-				$this->redirect('web/index?accio=c');							
+		case 'cdc':				
+				$this->redirect('web/index?accio=c&CERCA=mensual&DATACAL='.$this->DATACAL);							
 			break;
   		//Mostrem notícies		  	
 		default:

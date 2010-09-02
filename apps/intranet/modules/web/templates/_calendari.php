@@ -69,12 +69,13 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
   
   $MesAnterior = mktime( 0 , 0 , 0 , date( 'm' , $DATA ) - 1 , 1 , date( 'Y' , $DATA ) );
   $MesSeguent  = mktime( 0 , 0 , 0 , date( 'm' , $DATA ) + 1 , 1 , date( 'Y' , $DATA ) );
+  $DataMesActual = mktime( 0 , 0 , 0 , date( 'm' , $DATA ) , 1 , date( 'Y' , $DATA ) );
   
   echo '<DIV class="div_taula">';
   echo '<table class="t_calendari">';  
   echo '<tr>
           <td width="25" class="titol">'.link_to('&lt;',"web/index?accio=cdc&DATACAL=$MesAnterior").'</td>
-          <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('ca','',time())).'</td>         
+          <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('c','mensual',$DataMesActual)).'</td>         
           <td width="25" class="titol">'.link_to('&gt;',"web/index?accio=cdc&DATACAL=$MesSeguent").'</td>
         </tr>';
   echo '<tr>
