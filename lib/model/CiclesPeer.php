@@ -39,8 +39,9 @@ class CiclesPeer extends BaseCiclesPeer
   
   static public function getList($PAGE = 1)
   {
-	if($PAGE == 1){  $limit_inf = 0; $limit_sup = 9; }     
-	else { $limit_inf = (($PAGE-1)*10); $limit_sup = (($PAGE)*10)-1; }
+	if($PAGE == 1){  $limit_inf = 0; $limit_sup = 9; }
+    elseif($PAGE > 1) { $limit_inf = (($PAGE-1)*10); $limit_sup = (($PAGE)*10)-1; }
+    else { $limit_inf = 0; $limit_sup = 9; }
   	
   	$connection = Propel::getConnection();
 	$query = 'SELECT c.CicleID, c.Nom, c.extingit, count(*) as c FROM (cicles c INNER JOIN (activitats a INNER JOIN horaris h ON a.ActivitatID = h.Activitats_ActivitatID ) ON c.CicleID = a.Cicles_CicleID) group by c.CicleID, c.Nom, c.extingit ORDER BY c.extingit Asc, h.Dia Desc LIMIT '.$limit_inf.','.$limit_sup;		
