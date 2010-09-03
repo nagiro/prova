@@ -14,6 +14,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
   const ACCEPTADA = 1;
   const DENEGADA  = 2; 
   const ANULADA   = 3;
+  const PENDENT_CONFIRMACIO = 4; 
 
   
   static function selectEstat()
@@ -22,7 +23,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
                     self::EN_ESPERA => 'En espera' ,
                     self::ACCEPTADA => 'Acceptada' ,
                     self::DENEGADA  => 'Denegada',
-                    self::ANULADA   => 'Anul·lada', 
+                    self::ANULADA   => 'Anul·lada',
+                    self::PENDENT_CONFIRMACIO => 'Pendent d\'acceptar condicions', 
      );
   }
   
@@ -149,16 +151,13 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    		$C = new Criteria();
    		$C->addDescendingOrderByColumn(self::RESERVAESPAIID);   		
    		$OO = self::doSelectOne($C);
-   		   		   		
+           		   		   		
    		$O2 = "";
-   		   		
    		if($OO instanceof Reservaespais):
-   			$O2 = '0000'.date('m',time()).date('Y',time());
-   		elseif(date('m',time()) == substr($OO,4,2) && date('Y',time()) == substr($OO,6,4) ):
-   			$O2 = sprintf("%'04u%'02u%'04u", strval(intval(substr($OO,0,3))+1) , substr($OO,4,2) , substr($OO,6,4) );
-   		else: 
-   			$O2 = '0000'.date('m',time()).date('Y',time());   			
-   		endif; 
+            $O2 = $OO->getReservaespaiid().date('m',time()).date('Y',time());
+        else: 
+            $O2 = '0'.date('m',time()).date('Y',time());
+        endif;  
 
    		return $O2;
    }

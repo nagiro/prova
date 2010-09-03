@@ -59,8 +59,12 @@
 
 				<?php echo $FReserva ?>	 				 				 			    	    
 	 			
-	 			<?php include_partial('botoneraDiv',array('noclear'=>true,'element'=>'el formulari','tipus'=>'Guardar')); ?>
-	 			<?php include_partial('botoneraDiv',array('noclear'=>true,'tipus'=>'Blanc','text'=>'Envia resolució','nom'=>'SEND_RESOLUTION')) ?>	 			 					
+                <div class="" style="text-align:right; padding-top:40px;">
+                    <button type="submit" name="SEND_RESOLUTION" class="BOTO_ACTIVITAT">Envia mail condicions</button>	 			
+                    <button type="submit" name="BSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+    				<img src="/intranet/images/template/disk.png" /> Guardar i sortir </button>
+                    
+                </div>		
 	 		</div>
 	 			 	 	
       	</div>
@@ -79,7 +83,8 @@
 					$i = 0;
 					foreach($RESERVES->getResults() as $R):	
 																
-                      	echo '<TR><TD>'.link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</TD>
+                      	echo '<TR><TD>'.link_to($R->getCodi(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</td>
+                                  <TD>'.$R->getNom().'</TD>
                       	    	  <TD><a href="#" class="tt2"><span>'.$R->getUsuaris()->getDades().'</span>'.$R->getUsuaris()->getNomComplet().'</a></TD>
                       	          <TD>'.$R->getDataalta('d/m/Y H:i').'</TD>
                       	          <TD>'.$R->getEstatText().'<TD>

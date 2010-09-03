@@ -19,6 +19,7 @@ class webActions extends sfActions
      $this->LoadWeb($request);
      $this->setTemplate('index');
      $this->ACCIO = 'notfound';    
+     
   }
 
   public function gestionaNodes($NO)
@@ -538,14 +539,17 @@ class webActions extends sfActions
 	   case 'gr':
 	   		$OO = new Reservaespais();
 	   		$OO->setCodi(ReservaespaisPeer::getNextCodi());
-	   		$this->FRESERVA = new ClientReservesForm($OO);
+            $OO->setUsuarisUsuariid($this->getUser()->getSessionPar('idU'));
+            $OO->setEstat(ReservaEspaisPeer::EN_ESPERA);
+            
+	   		$this->FRESERVA = new ClientReservesForm($OO);            
 	        $this->MODUL = 'gestiona_reserves';
 	        $this->ACCIO = 'gestio';	        
 	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
 	        $this->getUser()->setSessionPar('idR',0);
 	        if($request->hasParameter('idR')){
-	        	$OR = ReservaespaisPeer::retrieveByPK($this->getRequestParameter('idR'));
-	        	$this->FRESERVA = new ClientReservesForm($OR);
+	        	$OR = ReservaespaisPeer::retrieveByPK($request->getParameter('idR'));
+	        	$this->FRESERVA = new ClientReservesForm($OR);                
 	        	$this->getUser()->setSessionPar('idR',$OR->getReservaespaiid());	        		        
 	        } 	        
 	        break;
@@ -565,16 +569,11 @@ class webActions extends sfActions
 	        break;
 	   case 'sr':
 	   	
-	   	
-	   	/*
-	   	
 	   		$PR = $request->getParameter('reservaespais');
 	   		
 	   		//Carreguem el formulari que hem carregat per edició o res per nou	
 			$OR = ReservaespaisPeer::retrieveByPK($PR['ReservaEspaiID']);
 			if(!($OR instanceof Reservaespais)) $OR = new Reservaespais();			
-
-			$OR->setUsuarisUsuariid($this->getUser()->getSessionPar('idU'));
 				
 			//Si en trobem un, creem el formulari altrament un de nou
 			if($OR instanceof Reservaespais) $this->FRESERVA = new ClientReservesForm($OR);
@@ -584,15 +583,21 @@ class webActions extends sfActions
 			$this->FRESERVA->bind($PR);
 			
 			//Si és correcte el guardem
-			if($this->FRESERVA->isValid()):				
+			if($this->FRESERVA->isValid()):                
 				$this->FRESERVA->save();
-				$this->renderText('OK');
-//				return sfView::NONE;				
+                if($request->hasParameter('BOTO_DEL_RESERVA')):                    
+                    $OO = $this->FRESERVA->getObject();
+                    $OO->setEstat(ReservaespaisPeer::ANULADA);
+                    $OO->save();              
+                endif; 				                
+                $this->MISSATGE = array('Sol·licitud enviada correctament.');				
 			else:
-				$this->renderText('KO');
-//				return sfView::NONE;
+                $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
 			endif;			
-*/							
+            
+            $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
+			$this->MODUL = 'gestiona_reserves';
+	        $this->ACCIO = 'gestio';	       
 	        break;
 
 	   //Anul·la la reserva

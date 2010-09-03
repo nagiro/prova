@@ -19,12 +19,12 @@ class ReservaespaisForm extends sfFormPropel
   	$this->setWidgets(array(
   	  'Codi'               => new sfWidgetFormInputText(array(),array()),
   	  'Estat'              => new sfWidgetFormChoice(array('choices'=>ReservaespaisPeer::selectEstat())),
-  	  'Compromis'		   => new sfWidgetFormTextarea(),
+  	  'CondicionsCCG'      => new sfWidgetFormTextareaTinyMCE(),
       'ReservaEspaiID'     => new sfWidgetFormInputHidden(),
       'Nom'                => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'DataActivitat'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'HorariActivitat'    => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
-      'EspaisSolicitats'   => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>EspaisPeer::select() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')),
+      'EspaisSolicitats'   => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>EspaisPeer::selectFormReserva() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')),
       'MaterialSolicitat'  => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>MaterialgenericPeer::selectFormulariUsuaris(), 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_material')),
       'TipusActe'          => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
       'Representacio'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
@@ -33,13 +33,13 @@ class ReservaespaisForm extends sfFormPropel
       'PersonalAutoritzat' => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
       'PrevisioAssistents' => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'isEnregistrable'    => new sfWidgetFormChoice(array('choices'=>$SN),array()),
-      'EsCicle'            => new sfWidgetFormChoice(array('choices'=>$SN),array()),    
-      'Exempcio'           => new sfWidgetFormChoice(array('choices'=>$SN),array()),
-      'Pressupost'         => new sfWidgetFormChoice(array('choices'=>$SN),array()),
-	  'ColaboracioCCG'     => new sfWidgetFormChoice(array('choices'=>$SN),array()),      
-      'Comentaris'         => new sfWidgetFormTextarea(),      
+      'EsCicle'            => new sfWidgetFormChoice(array('choices'=>$SN),array()),          
+      'Comentaris'         => new sfWidgetFormTextarea(array(),array('rows'=>'10','cols'=>'50','disabled'=>'disabled')),      
       'Usuaris_usuariID'   => new sfWidgetFormInputHidden(),            
-      'DataAlta'           => new sfWidgetFormInputHidden(),  	  
+      'DataAlta'           => new sfWidgetFormInputHidden(),      
+      'DataAcceptacioCondicions' => new sfWidgetFormInputHidden(),
+      'ObservacionsCondicions' => new sfWidgetFormTextarea(array(),array('rows'=>'10','cols'=>'50','disabled'=>'disabled')),
+  	  
     ));
   	  	
     $this->setValidators(array(
@@ -50,9 +50,6 @@ class ReservaespaisForm extends sfFormPropel
       'PersonalAutoritzat' => new sfValidatorString(array('required' => false)),
       'PrevisioAssistents' => new sfValidatorInteger(array('required' => false)),
       'EsCicle'            => new sfValidatorBoolean(array('required' => false)),
-      'Exempcio'           => new sfValidatorBoolean(array('required' => false)),
-      'Pressupost'         => new sfValidatorBoolean(array('required' => false)),
-      'ColaboracioCCG'     => new sfValidatorBoolean(array('required' => false)),
       'Comentaris'         => new sfValidatorString(array('required' => false)),
       'Estat'              => new sfValidatorString(array('max_length' => 1, 'required' => false)),
       'Usuaris_usuariID'   => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
@@ -64,8 +61,10 @@ class ReservaespaisForm extends sfFormPropel
       'isEnregistrable'    => new sfValidatorBoolean(array('required' => false)),
       'DataAlta'           => new sfValidatorDateTime(array('required' => false)),
       'EspaisSolicitats'   => new sfValidatorString(array('required' => false)),
-      'MaterialSolicitat'  => new sfValidatorString(array('required' => false)),
-      'Compromis'		   => new sfValidatorString(array('required' => false)),    
+      'MaterialSolicitat'  => new sfValidatorString(array('required' => false)),      
+      'CondicionsCCG'      => new sfValidatorPass(),
+      'DataAcceptacioCondicions' => new sfValidatorPass(),
+      'ObservacionsCondicions' => new sfValidatorString(array('required'=>false)),    
     ));
     
     $this->widgetSchema->setLabels(array(
@@ -84,13 +83,11 @@ class ReservaespaisForm extends sfFormPropel
       'PersonalAutoritzat' => "Personal autoritzat: ",    
       'PrevisioAssistents' => "Previsió d'assistents: ",
       'EsCicle'            => "És un cicle? ",
-      'Exempcio'           => "Excempció de pagament? ",
-      'Pressupost'         => "Necessiteu pressupost? ",
-	  'ColaboracioCCG'     => "Col·laboració CCG? ",      
       'Comentaris'         => "Comentaris: ",
       'EspaisSolicitats'   => 'Espais: ',
-      'MaterialSolicitat'  => 'Material: ',
-      'Compromis'		   => 'Compromís adquirit: ',
+      'MaterialSolicitat'  => 'Material: ',      
+      'ObservacionsCondicions' => "Observacions ",
+      'CondicionsCCG'      => 'Condicions ',
     ));
     
     $this->widgetSchema->setNameFormat('reservaespais[%s]');

@@ -387,29 +387,54 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
      	</TABLE>     
 	</FIELDSET>		
 	
-	<?php if($ESTAT = 'NOU'): 
-  
+    <?php 
+    
   	if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
 	if($ENABLED) echo '<form name="fReserves" id="fReserves" method="post" action="'.url_for('web/gestio?accio=sr').'">';
-
+    
 	?>              	
-  
-	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Nova prereserva</LEGEND>
+    
+    <?php if($FRESERVA->getObject()->getCondicionsCCG() != ""): ?>
+      
+    	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Finalitzar reserva</LEGEND>			    	    
+ 	    
+  	    <div style="clear: both;" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Condicions</b></span>
+	    	<span class="DH" style="width:450px; height:50px;"><?php echo $FRESERVA->getObject()->getCondicionsCCG(); ?></span>
+	    </div>
+	    	    	    
+	    
+	    <div style="clear:both" class="FORMULARI">
+	    	<span class="DH" style="width:150px;"><b>Observacions</b></span>
+	    	<span class="DH"><?php echo $FRESERVA['ObservacionsCondicions']->render(); ?></span>
+	    </div>
+	    	    				
+		<div style="clear:both; padding-top:20px;" class="FORMULARI">
+			<span class="DH" style="width:150px"></span>
+			<span class="DH" style="width:450px">
+            							  			               
+                <?php //Si encara no està confirmada mostro confirmació, altrament només anul·lació ?>     
+                <?php if($FRESERVA->getObject()->getDataAcceptacioCondicions() == ""): ?>
+      				 	<button id="BOTO_SUBMIT_CONDICIONS" class="BOTO_ACTIVITAT" style="width:140px" >Accepto les condicions</button>  				 	  			
+      			<?php else: ?>					
+    					<button name="BOTO_DEL_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Anul·leu la reserva</button>  					 					
+    			<?php endif; ?>
+                            		        	                   				 	  						
+			</span>
+		</div>        
+              
+	</FIELDSET>
+      
+    <?php endif; ?>
+      
+	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Prereserva</LEGEND>
+        <?php echo $FRESERVA['DataAcceptacioCondicions']->render(); ?>
+        <?php echo $FRESERVA['CondicionsCCG']->render(); ?>
 		<?php echo $FRESERVA['Estat']->render(); ?>
 		<?php echo $FRESERVA['Usuaris_usuariID']->render(); ?>
 		<?php echo $FRESERVA['DataAlta']->render(); ?>
 		<?php echo $FRESERVA['ReservaEspaiID']->render(); ?>
-		<?php echo $FRESERVA['Codi']->render(); ?>	    	    
-	    
-  	    <?php if($FRESERVA->getObject()->getEstat() != ReservaespaisPeer::EN_ESPERA):  ?>
-	    
-  	    <div style="clear: both;" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Compromís adquirit</b></span>
-	    	<span class="DH" style="width:450px; height:50px;"><?php echo $FRESERVA->getObject()->getCompromis(); ?></span>
-	    </div>
-	    
-	    <?php endif; ?>
-	    
+		<?php echo $FRESERVA['Codi']->render(); ?>	    	    	    
 	    
 	    <div style="clear:both" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Nom de l'activitat</b></span>
@@ -477,46 +502,29 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Exempt de pagament?</b></span>
-	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Exempcio']->render(); ?></span>
-	    </div>
-
-		<div style="clear: both;" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Vol un pressupost?</b></span>
-	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Pressupost']->render(); ?></span>
-	    </div>
-
-		<div style="clear: both;" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Personal de suport?</b></span>
-	    	<span class="DH checkbox_list"><?php echo $FRESERVA['ColaboracioCCG']->render(); ?></span>
-	    </div>
-
-		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Comentaris</b></span>
 	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Comentaris']->render(); ?></span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Accepta les condicions?</b><br />(<a class="blue" href="<?php echo url_for('web/espais') ?>" target="_NEW">llegir-les</a>)</span>
-	    	<span class="DH checkbox_list"><?php echo $FRESERVA['Condicions']->render(); ?></span>
+	    	<span class="DH" style="width:150px;"><b>Condicions</b></span>
+	    	<span class="DH checkbox_list"><a class="blue" href="<?php echo url_for('web/espais') ?>" target="_BLANK">Llegeix les condicions</a><br /><span style="color: gray;"> Hauran de ser acceptades un cop validada la seva prereserva</span> </span>
 	    </div>
 				
 		<div style="clear:both; padding-top:20px;" class="FORMULARI">
 			<span class="DH" style="width:150px"></span>
-			<span class="DH" style="width:450px">				
-			<?php if($FRESERVA->isNew()): ?>
-  				 	<button id="BOTO_SUBMIT_RESERVA" class="BOTO_ACTIVITAT" style="width:140px" >Sol·liciteu la reserva</button>  				 	  			
-  			<?php else: ?>
-					<button id="BOTO_NOVA_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Feu una nova reserva</button>
-					<button id="BOTO_DEL_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Anul·leu la reserva</button>  					 					
-			<?php endif; ?>		        		                                   
+			<span class="DH" style="width:450px">
+            
+            <?php if($FRESERVA->getObject()->getDataAlta() == ""): ?>
+  				 	<button id="BOTO_SUBMIT_RESERVA" class="BOTO_ACTIVITAT" style="width:140px" >Sol·liciteu la prereserva</button>  				 	  			  								  					 					
+			<?php endif; ?>		        	            
+            						 	  				 	  					        		                                   
 			</span>
-			</div>      
+		</div>        
+              
 	</FIELDSET>
 	
-	<?php if($ENABLED) echo '</form>'; ?>
-
-	<?php endif; ?> 
+	<?php if($ENABLED) echo '</form>'; ?>	 
       		  	
 <?php } ?>
 <?php 

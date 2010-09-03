@@ -17,7 +17,7 @@ class gestioActions extends sfActions
    */
   public function executeIndex()
   {    
-    //Mirem si l'usuari Ã©s de la CCG o no      
+    //Mirem si l'usuari és de la CCG o no      
       //Si Ã©s de la CCG hem de mostrar la gestiÃ³ completa
     //altrament
       //Si Ã©s un usuari normal nomÃ©s ha de poder veure lo seu      
@@ -2033,12 +2033,10 @@ class gestioActions extends sfActions
   	if($request->getParameter('accio') == 'C'):      		
         $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>''));    		      			      	      		
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
-      	$this->IDR = $this->getUser()->setSessionPar('IDR',0);		       
     endif;    
         
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>''));
-    $this->IDR    = $this->getUser()->ParReqSesForm($request,'IDR',0);
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>''));    
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();        
@@ -2062,13 +2060,15 @@ class gestioActions extends sfActions
     			$this->MODE['NOU'] = true;
     		break;
     	case 'E':    			    			
-    			$OReserva = ReservaespaisPeer::retrieveByPK($this->IDR);
+    			$OReserva = ReservaespaisPeer::retrieveByPK($request->getParameter('IDR'));
 				$this->FReserva = new ReservaespaisForm($OReserva);   			
     			$this->MODE['EDICIO'] = true;
     		break;
-    	case 'S':    			    		        		  
-    		    $this->FReserva = new ReservaespaisForm(ReservaespaisPeer::retrieveByPK($this->IDR));
-    		    $this->FReserva->bind($request->getParameter('reservaespais'));    		    
+    	case 'S':    	
+                $RP = $request->getParameter('reservaespais');
+                $OR = ReservaespaisPeer::retrieveByPK($RP['ReservaEspaiID']);                		    		        		  
+    		    $this->FReserva = new ReservaespaisForm($OR);
+    		    $this->FReserva->bind($RP);    		    
     		    if($this->FReserva->isValid()):
     		    	$this->FReserva->save();
     		    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);
