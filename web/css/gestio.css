@@ -216,6 +216,10 @@ BUTTON.web {  }
 	font-size:11px;
 }
 
+#TEXT_WEB td {		
+	font-size:11px;
+}
+
 #TEXT_WEB p {
 	color:black;
 	text-align: justify;

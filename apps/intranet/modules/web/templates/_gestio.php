@@ -246,7 +246,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
                                         
                                         if(sizeof($MATRICULES) == 0):
                                             if($avui < $DIT_T):                                                
-                                                echo "<div class=\"text\" style=\"font-weight:bold; \">El peíode de matrícules per a nous alumnes comença el dia ".date('d/m/Y',$DIT_T).'</div>';
+                                                echo "<div class=\"text\" style=\"font-weight:bold; \">El període de matrícules per a nous alumnes comença el dia ".date('d/m/Y',$DIT_T).'</div>';
                                             else: 
                                                 echo "<div>".submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')).'</div>';    
                                             endif;                                                                                
