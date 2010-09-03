@@ -1,8 +1,4 @@
 <?php use_helper('Form') ?>
-<?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick.js')?>
-<?php use_javascript('jquery.datepick.package-3.7.1/jquery.datepick-ca.js')?>
-<?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
-<?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
 
 <style>
 	
