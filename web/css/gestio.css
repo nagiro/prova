@@ -216,7 +216,7 @@ BUTTON.web {  }
 	font-size:11px;
 }
 
-#TEXT_WEB td {		
+#TEXT_WEB table, td {		
 	font-size:11px;
 }
 
