@@ -3264,18 +3264,27 @@ class gestioActions extends sfActions
 
     $this->setLayout('gestio');
 
-    $this->IDE = $this->getUser()->ParReqSesForm($request,'IDC',0);    
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);        
+    $this->IDE = $this->getUser()->ParReqSesForm($request,'IDC',0);                
     $this->MODE   = "";
+    
+    $this->PAGINA = $request->getParameter('PAGINA');
+    
+    //Inicialitzem el formulari de cerca
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
+    $this->FCerca = new CercaForm();            
+	$this->FCerca->bind(array('text'=>$this->CERCA['text']));
     
     $accio = $request->getParameter('accio');
     if($request->hasParameter('BSAVE')) $accio = 'SAVE';
-    if($request->hasParameter('BDELETE')) $accio = 'DELETE';        
+    if($request->hasParameter('BDELETE')) $accio = 'DELETE';
+    if($request->hasParameter('BNOU')) $accio = 'NOU';
+            
             
     switch($accio)
     {    
-    	case 'C':
-			$this->getUser()->addLogAction('inside','gCicles');
+    	case 'C':			
+            $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		            
+            $this->getUser()->addLogAction('inside','gCicles');  			   
     		break;
     	case 'NOU': 
     			$this->MODE = 'NOU';      
@@ -3313,7 +3322,7 @@ class gestioActions extends sfActions
     		    		    
     }        
     
-    $this->CICLES = CiclesPeer::getList($this->PAGINA);
+    $this->CICLES = CiclesPeer::getList($this->PAGINA,$this->CERCA['text']);
   	
   }
   

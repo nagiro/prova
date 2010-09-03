@@ -19,6 +19,21 @@
       
     <?php include_partial('breadcumb',array('text'=>'CICLES')); ?>                      
 
+	<form action="<?php echo url_for('gestio/gCicles') ?>" method="POST">
+	    <DIV class="REQUADRE">
+	    	<table class="FORMULARI">          
+	            <?php echo $FCerca ?>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
+	            		<input type="submit" name="BNOU" value="Nou cicle" />
+	            	</td>
+	            </tr>
+	        </table>
+	     </DIV>
+     </form>  
+
+
   	<?php IF( isset($MODE['NOU']) || isset($MODE['EDICIO']) ): ?>
       
 	<form action="<?php echo url_for('gestio/gCicles') ?>" method="POST" enctype="multipart/form-data">
