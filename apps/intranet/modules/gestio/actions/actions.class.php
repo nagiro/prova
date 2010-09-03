@@ -18,9 +18,9 @@ class gestioActions extends sfActions
   public function executeIndex()
   {    
     //Mirem si l'usuari és de la CCG o no      
-      //Si Ã©s de la CCG hem de mostrar la gestiÃ³ completa
+      //Si és de la CCG hem de mostrar la gestió completa
     //altrament
-      //Si Ã©s un usuari normal nomÃ©s ha de poder veure lo seu      
+      //Si és un usuari normal només ha de poder veure lo seu      
   }
   
   /**
@@ -1093,19 +1093,10 @@ class gestioActions extends sfActions
    	//Netegem cerca
   	if($request->getParameter('accio') == 'C'):      		
         $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
-      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
-//      	$this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());       	    
-//      	$this->DIA    = $this->getUser()->setSessionPar('DIA',time());	
- //     	$this->IDA    = $this->getUser()->setSessionPar('IDA',0);	      			      	           			       
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);  			      	           			       
     endif;    
         
-    $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
-    $this->PAGINA 			= $this->getUser()->ParReqSesForm($request,'PAGINA',1);    
-/*    $this->DATAI  			= $this->getUser()->ParReqSesForm($request,'DATAI',time());    
-    $this->DIA    			= $this->getUser()->ParReqSesForm($request,'DIA',time());    
-    $this->IDA    			= $this->getUser()->ParReqSesForm($request,'IDA',0);
-    $accio  				= $this->getUser()->ParReqSesForm($request,'accio','C');
-*/
+    $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));    
     
     $this->PAGINA 			= $request->getParameter('PAGINA',1);    
     $this->DATAI  			= $request->getParameter('DATAI',time());    
@@ -1379,25 +1370,32 @@ class gestioActions extends sfActions
 
   private function CarregaActivitats($request,$with_form)
   {
+    
+        //Si és una activitat que pertany a un cicle se li haurà de passar el cicle. 
+    
     	//Si una activitat pertany a un cicle ensenyo totes les del cicle
 	    $OA = ActivitatsPeer::retrieveByPK($this->IDA);
 	    
-		//Si és una activitat i pertany a un cicle
+		//Editem una activitat d'un cicle.
 	    if($OA instanceof Activitats && $OA->getCiclesCicleid() > 1):
 	    	
-	    	$IDC = $OA->getCiclesCicleid();
-	    	$this->CICLE = CiclesPeer::retrieveByPK($IDC)->getNom();    			
-	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($IDC);
-	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize($this->IDA,true,$IDC);    			
+	    	$this->IDC = $OA->getCiclesCicleid();
+	    	$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();    			
+	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC);
+	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->IDC);    			
 	    	$this->MODE['ACTIVITAT_CICLE'] = true;
-	    	
-	    	if($request->hasParameter('new') && $with_form ):
-	    		$this->FActivitat = ActivitatsPeer::initilize(null,true,$IDC);    				
-	    		$this->getUser()->setSessionPar('IDA',0);
-	    	endif;
-	    	
-	    //Una sola activitat
-	    else: 
+	    		    	
+	    //Creem una activitat d'un cicle 
+	    elseif($request->hasParameter('IDC')):
+        
+            $this->IDC = $request->getParameter('IDC');
+	    	$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();    			
+	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC);
+	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize(null,$this->IDC);    			
+	    	$this->MODE['ACTIVITAT_CICLE'] = true;
+            
+        //Una sola activitat    	    	
+        else:  
 	    	$this->CICLE = "No pertany a cap cicle";   		
 	    	$this->MODE['ACTIVITAT_ALONE'] = true;
 	    	$OA = ActivitatsPeer::retrieveByPK($this->IDA);

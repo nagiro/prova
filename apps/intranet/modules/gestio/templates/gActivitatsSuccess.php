@@ -190,7 +190,7 @@
 	<?php echo include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>		
 	<div class="titol">Editant les activitats ( <?php echo $CICLE ?> )</div>
 		
-		<DIV class="TITOL">Activitats actuals <?php IF( isset($MODE['ACTIVITAT_CICLE']) ): ?> ( <?php echo link_to('Nova activitat','gestio/gActivitats?accio=ACTIVITAT&new=',array('class'=>'blau')) ?> )<?php ENDIF; ?></DIV>
+		<DIV class="TITOL">Activitats actuals <?php IF( isset($MODE['ACTIVITAT_CICLE']) ): ?> ( <?php echo link_to('Nova activitat','gestio/gActivitats?accio=ACTIVITAT&IDC='.$IDC,array('class'=>'blau')) ?> )<?php ENDIF; ?></DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap activitat definida.</TD></TR>'; endif; ?>  
 			<?php 	foreach($ACTIVITATS as $A):
