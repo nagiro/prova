@@ -589,8 +589,13 @@ class webActions extends sfActions
 				$this->FRESERVA->save();
                 if($request->hasParameter('BOTO_DEL_RESERVA')):                    
                     $OO = $this->FRESERVA->getObject();
-                    $OO->setEstat(ReservaespaisPeer::ANULADA);
-                    $OO->save();              
+                    $OO->setEstat(ReservaespaisPeer::ANULADA);                    
+                    $OO->save();  
+                    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());           
+//                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());                    
+                else:
+                    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
+//                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                     
                 endif; 				                
                 $this->MISSATGE = array('Sol·licitud enviada correctament.');				
 			else:

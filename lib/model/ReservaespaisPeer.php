@@ -162,4 +162,30 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    		return $O2;
    }
    
+   static public function sendMailAnulacio($OR)
+   {
+    
+    $Nom = $OR->getUsuaris()->getNomComplet();
+    $DNI = $OR->getUsuaris()->getDni();
+    $CODI = $OR->getCodi();
+    
+    $BODY = "El senyor/a {$Nom} amb DNI {$DNI} ha anul·lat la reserva amb codi {$CODI}"; 
+          
+	return $BODY; 
+    
+   }
+   
+   static public function sendMailNovaReserva($OR)
+   {
+    
+    $Nom = $OR->getUsuaris()->getNomComplet();
+    $DNI = $OR->getUsuaris()->getDni();
+    $CODI = $OR->getCodi();
+    
+    $BODY = "El senyor/a {$Nom} amb DNI {$DNI} ha efectuat la reserva d'espai amb codi {$CODI}"; 
+          
+	return $BODY; 
+        
+   }
+   
 }

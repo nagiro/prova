@@ -29,25 +29,29 @@
             echo '<ul>';
             echo '<li>'.$NODE->getTitolmenu();
             foreach($NODES as $N):
-                                              
-                if($NIVELL_IN >= $N->getNivell()): break; endif;
-                                                                                 
-                if($NIVELL_ACT < $N->getNivell()):
-                    echo "<ul>";
-                elseif($NIVELL_ACT > $N->getNivell()):
-                    echo '</li></ul>';
-                else: 
-                    echo '</li>';                    
-                endif;
-                
-                if($NODE->getCategories() == 'cap'): 
-                    echo '<li><a class="enllac_taula_continguts" href="'.url_for('web/index?accio=mc&node='.$N->getIdnodes()).'">'.$N->getTitolmenu().'</a>';
-                else: 
-                    echo '<li><a class="enllac_taula_continguts" href="'.url_for('web/index?accio=ac&node='.$N->getIdnodes()).'">'.$N->getTitolmenu().'</a>';
-                endif; 
-             
-                $NIVELL_ACT = $N->getNivell();
-                
+            
+                if($NODE->getIsactiu()):  
+                                                            
+                    if($NIVELL_IN >= $N->getNivell()): break; endif;
+                                                                                     
+                    if($NIVELL_ACT < $N->getNivell()):
+                        echo "<ul>";
+                    elseif($NIVELL_ACT > $N->getNivell()):
+                        echo '</li></ul>';
+                    else: 
+                        echo '</li>';                    
+                    endif;
+                    
+                    if($NODE->getCategories() == 'cap'): 
+                        echo '<li><a class="enllac_taula_continguts" href="'.url_for('web/index?accio=mc&node='.$N->getIdnodes()).'">'.$N->getTitolmenu().'</a>';
+                    else: 
+                        echo '<li><a class="enllac_taula_continguts" href="'.url_for('web/index?accio=ac&node='.$N->getIdnodes()).'">'.$N->getTitolmenu().'</a>';
+                    endif; 
+                 
+                    $NIVELL_ACT = $N->getNivell();
+                    
+                 endif;
+                  
             endforeach;
 	    	
 	    endif;  
