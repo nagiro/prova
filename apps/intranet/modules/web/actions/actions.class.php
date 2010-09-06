@@ -50,7 +50,7 @@ class webActions extends sfActions
   	//Si s'entra una cerca, carrego les activitats que corresponen a la cerca i marco el calendari els dies
   	//Si s'entra un dia del calendari, cerco les activitats d'aquell dia
   	//Si no es cap, carrego les notícies de les últimes activitats...
-  	
+  	        
   	$this->setLayout('layout');   	
   	$this->FOTOS = $this->getFotos();
   	$this->BANNERS = $this->getBanners();  	
@@ -77,7 +77,9 @@ class webActions extends sfActions
     else: 
     	$this->CERCA = "";
     endif;
-  	
+    
+    //Carreguem els dies en els que hi ha alguna activitat.     
+    $this->ACTIVITATS_CALENDARI = ActivitatsPeer::getDiesAmbActivitatsMes($this->DATACAL);  	
   	  	
   	switch($this->accio){  		  		  		
   		//Contingut manual

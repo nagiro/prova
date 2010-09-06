@@ -316,5 +316,25 @@ class ActivitatsPeer extends BaseActivitatsPeer
 			return null;
 		endif; 
 	}
-	
+    
+    static public function getDiesAmbActivitatsMes($DATACAL)
+    {
+        $dia_inicial = mktime(0,0,0,date('m',$DATACAL),1,date('Y',$DATACAL));
+        $dia_final   = mktime(0,0,0,date('m',$DATACAL)+1,1,date('Y',$DATACAL));
+        
+        $C = new Criteria();
+        $C->add(ActivitatsPeer::PUBLICAWEB, true);
+        $C->addJoin(HorarisPeer::ACTIVITATS_ACTIVITATID, ActivitatsPeer::ACTIVITATID);
+        $C->add(HorarisPeer::DIA, $dia_inicial, CRITERIA::GREATER_EQUAL);
+        $C->add(HorarisPeer::DIA, $dia_final, CRITERIA::LESS_EQUAL);
+        
+        $RET = array();
+        
+        foreach(HorarisPeer::doSelect($C) as $OH):
+            $RET[$OH->getDia()] = $OH->getDia();
+        endforeach;
+        
+        return $RET;
+    }
+
 }

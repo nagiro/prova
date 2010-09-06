@@ -112,7 +112,7 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
       if( ( $i==1 && $diaInicial > $j ) || ( $diesMes < $diaA )) $valor = "&nbsp;";
       else $valor = $diaA;
     
-      if( $valor <> "&nbsp;" ) {         
+      if( $valor <> "&nbsp;" ) {                 
       	$valor = link_to( $valor , 'web/index'.getParam('ca','',mktime(0,0,0,$mes,$diaA,$any)));
       	if(isset($ACTIVITATS_CALENDARI[date('Y-m-d',mktime(0,0,0,$mes,$diaA,$any))])) $class .= ' HIHAACTIVITAT';
       }

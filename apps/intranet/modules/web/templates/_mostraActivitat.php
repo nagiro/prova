@@ -21,7 +21,7 @@
 			</div>
 		<?php endif; ?>
 			<div style="border:2px solid #96BF0D; clear:both; padding:10px;">
-				<div style="font-size:11px"><b><?php echo $A->getTCurt().'</b>.'.$A->getDCurt() ?></div>
+				<div style="font-size:11px"><b><?php echo $A->getTMig() ?></b></div>
 				<div style="font-size:10px"><?php echo generaHoraris($A->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
 				<div style="height:30px;">&nbsp;</div>				
 										

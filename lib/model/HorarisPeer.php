@@ -436,5 +436,5 @@ class HorarisPeer extends BaseHorarisPeer
 		$C->add(self::DIA, $D);
 		return self::doSelect($C);
 	}
-  
+      
 }

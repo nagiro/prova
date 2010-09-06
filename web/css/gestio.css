@@ -181,7 +181,7 @@ A.blau:hover { text-decoration: underline; }
 .div_taula .selsetmana { background-color: #F9E8E4; color: #6E1F0C; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px; padding:2px; text-align:right; }
 .div_taula .selsetmana a { text-decoration: none; color: #6E1F0C; }
 .div_taula a { text-decoration:none; color: #606060; }
-.div_taula .HIHAACTIVITAT { background-color: lime; font-weight: bold; }    
+.div_taula .HIHAACTIVITAT { background-color:#EEEEEE; color:yellow; font-weight: bold; }    
 
 .CERCA_TITOL { font-size:10px; font-weight: bold; }
 .CERCA_TEXT  { font-size:10px; color:gray; margin-left:20px; }
