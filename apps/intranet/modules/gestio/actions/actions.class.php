@@ -1573,8 +1573,7 @@ class gestioActions extends sfActions
   	  
   	//Inicialitzem les variables
   	$this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));  	
-  	$this->accio  	= $this->getUser()->ParReqSesForm($request,'accio',"");
-  	$this->AID  	= $this->getUser()->ParReqSesForm($request,'AID', null);
+  	$this->accio  	= $request->getParameter('accio','C');  	
   	$this->MODE     = "";  	           	
   	
   	//Tractem el formulari de cerca
@@ -1598,14 +1597,12 @@ class gestioActions extends sfActions
     			break;
     	
       case 'N':
-                $this->MODE = 'NOU';
-                $this->getUser()->setSessionPar('AID',0);                
+                $this->MODE = 'NOU';                                
                 $this->FAgenda = new AgendatelefonicaForm();                          
                 break;                
       case 'E':
                 $this->MODE = 'EDICIO';
-                $AID = $request->getParameter('AID');
-                $this->getUser()->setSessionPar('AID',$AID);                                
+                $AID = $request->getParameter('AID');                                                
                 $OAT = AgendatelefonicaPeer::retrieveByPK($AID);
                 $this->FAgenda = new AgendatelefonicaForm($OAT);
                 if(($OAT instanceof Agendatelefonica )):
@@ -1616,7 +1613,8 @@ class gestioActions extends sfActions
                                                 
                 break;
       case 'S':      			
-      			$AID = $this->getUser()->getSessionPar('AID');
+                $RA = $request->getParameter('agendatelefonica');                
+      			$AID = $RA['AgendaTelefonicaID'];
       			$OAT = AgendatelefonicaPeer::retrieveByPK($AID);      			      		
       			if( $OAT instanceof Agendatelefonica ):
       				$this->FAgenda = new AgendatelefonicaForm($OAT);
@@ -1624,12 +1622,12 @@ class gestioActions extends sfActions
       				$this->FAgenda = new AgendatelefonicaForm(new Agendatelefonica());
       			endif;
 
-      			$this->FAgenda->bind($request->getParameter('agendatelefonica'));
+      			$this->FAgenda->bind($RA);
       			if($this->FAgenda->isValid()):
 					$this->FAgenda->save();
-					$this->getUser()->addLogAction($accio,'gAgenda',$this->FAgenda->getObject());					
-					$this->getUser()->setSessionPar('AID',$this->FAgenda->getObject()->getAgendatelefonicaid());										
-					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->getUser()->getSessionPar('AID')); //Actualitzem tambÃ© les dades relacionades
+					$this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
+                    $this->AID = $this->FAgenda->getObject()->getAgendatelefonicaid();													
+					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->AID); //Actualitzem tambÃ© les dades relacionades
 					$this->MISSATGE = "El registre s'ha modificat correctament.";
 					$this->redirect('gestio/gAgenda?accio=L');
 				else: 
@@ -1639,9 +1637,10 @@ class gestioActions extends sfActions
 				      			      															                                     
                 break;         
       case 'D': 
-                $this->AID = $this->getUser()->getSessionPar('AID');
+                $RA = $request->getParameter('agendatelefonica');                
+      			$this->AID = $RA['AgendaTelefonicaID'];                
                 $A = AgendatelefonicaPeer::retrieveByPK($this->AID);
-                if(!is_null($A)) { $this->getUser()->addLogAction($accio,'gAgenda',$A); $A->delete(); }  
+                if(!is_null($A)) { $this->getUser()->addLogAction($this->accio,'gAgenda',$A); $A->delete(); }  
                 break;       
       default:                 
                 $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] );
