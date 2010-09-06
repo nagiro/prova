@@ -145,7 +145,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		$C = new Criteria();
 		$C->add(self::CICLES_CICLEID,$idC);
         $C->add(self::PUBLICAWEB, true);
-        $C->add(self::CICLES_CICLEID, 1, CRITERIA::LESS_THAN);
+        $C->add(self::CICLES_CICLEID, 1, CRITERIA::GREATER_THAN);
 		
 		if($pager):
 			$pager = new sfPropelPager('Activitats', 20);
@@ -286,7 +286,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	{		
 		
 		$C = self::selectCicleCategoriaActivitat($cat,0);
-        $C->add(self::CICLES_CICLEID, 1, CRITERIA::LESS_THAN);
+        $C->add(self::CICLES_CICLEID, 1, CRITERIA::GREATER_THAN);
 				
 		$pager = new sfPropelPager('Cicles', 20);
     	$pager->setCriteria($C);
