@@ -272,13 +272,7 @@
     	
 	</DIV>
 
-	<?php if(isset($FHorari)): ?>
-		<script type="text/javascript">
-			$(function() {
-		               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo image_path('template/calendar_1.png')?>'});               			
-		    });   
-		</script>
-		 
+	<?php if(isset($FHorari)): ?>		 
 	     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
 	     	<?php if(isset($MISSATGE)):  ?>
 	     	<div style="padding:20px; margin-left:20px; border:10px solid red; width:650px; background-color: black; color:yellow; font-weight:bold;"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?></div>	     	
@@ -352,6 +346,14 @@
 		            </tr>                	 
 	      		</table>      		
 	      	</div>
+            
+		<script type="text/javascript">
+			$(function() {			     
+		               $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo image_path('template/calendar_1.png')?>'});               			
+		    });   
+		</script>
+
+            
 	     </form>
 	     
 	<?php endif; ?>
