@@ -29,8 +29,8 @@
             echo '<ul>';
             echo '<li>'.$NODE->getTitolmenu();
             foreach($NODES as $N):
-            
-                if($NODE->getIsactiu()):  
+                                        
+                if($NODE->getIsactiva()):  
                                                             
                     if($NIVELL_IN >= $N->getNivell()): break; endif;
                                                                                      
