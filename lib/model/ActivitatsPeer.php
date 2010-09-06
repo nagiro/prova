@@ -286,6 +286,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	{		
 		
 		$C = self::selectCicleCategoriaActivitat($cat,0);
+        $C->add(self::CICLES_CICLEID, 1, CRITERIA::LESS_THAN);
 				
 		$pager = new sfPropelPager('Cicles', 20);
     	$pager->setCriteria($C);
