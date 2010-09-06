@@ -21,6 +21,8 @@
         padding-bottom:10px; 
         border-bottom:2px solid #CCCCCC; 
     }
+    
+    .div_taula .HIHAACTIVITAT { background-color:#EEEEEE; color:yellow; font-weight: bold; }
 
 </style>
 <TD class="CALENDARI">
