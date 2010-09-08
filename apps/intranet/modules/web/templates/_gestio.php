@@ -415,9 +415,9 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
             							  			               
                 <?php //Si encara no està confirmada mostro confirmació, altrament només anul·lació ?>     
                 <?php if($FRESERVA->getObject()->getDataAcceptacioCondicions() == ""): ?>
-      				 	<button id="BOTO_SUBMIT_CONDICIONS" class="BOTO_ACTIVITAT" style="width:140px" >Accepto les condicions</button>  				 	  			
+      				 	<button type="submit" id="BOTO_SUBMIT_CONDICIONS" class="BOTO_ACTIVITAT" style="width:140px" >Accepto les condicions</button>  				 	  			
       			<?php else: ?>					
-    					<button name="BOTO_DEL_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Anul·leu la reserva</button>  					 					
+    					<button type="submit" name="BOTO_DEL_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Anul·leu la reserva</button>  					 					
     			<?php endif; ?>
                             		        	                   				 	  						
 			</span>
@@ -516,7 +516,7 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 			<span class="DH" style="width:450px">
             
             <?php if($FRESERVA->getObject()->getDataAlta() == ""): ?>
-  				 	<button id="BOTO_SUBMIT_RESERVA" class="BOTO_ACTIVITAT" style="width:140px" >Sol·liciteu la prereserva</button>  				 	  			  								  					 					
+  				 	<button type="submit" id="BOTO_SUBMIT_RESERVA" class="BOTO_ACTIVITAT" style="width:140px" >Sol·liciteu la prereserva</button>  				 	  			  								  					 					
 			<?php endif; ?>		        	            
             						 	  				 	  					        		                                   
 			</span>
