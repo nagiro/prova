@@ -19,7 +19,7 @@
     #contingut_noticia { 
         text-align:right;
         padding-bottom:10px; 
-        border-bottom:2px solid #CCCCCC; 
+        border-bottom:2px solid #CCCCCC;         
     }
     
     .div_taula .HIHAACTIVITAT { color:yellow; font-weight: bold; }
