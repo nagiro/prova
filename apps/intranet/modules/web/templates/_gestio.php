@@ -259,7 +259,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
                                         endif;
                                      ?>
                                      <br />
-                                     <div class="text">Si necessita més informació sobre el nou sistema de matrícules, si us plau, cliqui <a href="<?php echo url_for('web/index?accio=mc&idN=35'); ?>">aquí</a>.</div>                                                                                                                                                                  
+                                     <div class="text">Si necessita més informació sobre el nou sistema de matrícules, si us plau, cliqui <a href="<?php echo url_for('web/index?accio=mc&node=35'); ?>">aquí</a>.</div>                                                                                                                                                                  
                                 </TD>
                             </TR>
 					   </TABLE>
