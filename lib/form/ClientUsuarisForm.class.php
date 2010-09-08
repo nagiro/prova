@@ -19,7 +19,7 @@ class ClientUsuarisForm extends sfFormPropel
       'UsuariID'          => new sfWidgetFormInputHidden(),
       'Nivells_idNivells' => new sfWidgetFormInputHidden(),
       'DNI'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
-      'Passwd'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
+      'Passwd'            => new sfWidgetFormInputPassword(array(),array('style'=>'width:200px')),
       'Nom'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Cog1'              => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Cog2'              => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
