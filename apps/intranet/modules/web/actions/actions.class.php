@@ -592,11 +592,11 @@ class webActions extends sfActions
                     $OO->setEstat(ReservaespaisPeer::ANULADA);                    
                     $OO->save();  
                     $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());           
-//                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());                    
+                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());                    
                 else:
                     $OO = $this->FRESERVA->getObject();
                     $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
-//                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                     
+                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                     
                 endif; 				                
                 $this->MISSATGE = array('Sol·licitud enviada correctament.');				
 			else:

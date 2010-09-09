@@ -14,10 +14,10 @@ class Llistes extends BaseLlistes
 	{
 		
 		$RET = array();
-		$IDL = $this->getIdllistes();
+		$IDL = $this->getIdllistes();        
 		$C = new Criteria();
 		$C->add(UsuarisllistesPeer::LLISTES_IDLLISTES,$IDL);
-		$C->addJoin(UsuarisllistesPeer::IDUSUARISLLISTES, UsuarisPeer::USUARIID);
+		$C->addJoin(UsuarisllistesPeer::USUARIS_USUARISID, UsuarisPeer::USUARIID);
 		
 		foreach(UsuarisPeer::doSelect($C) as $U):
 			$RET[$U->getEmail()] = $U->getEmail();

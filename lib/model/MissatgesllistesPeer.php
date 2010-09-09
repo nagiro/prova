@@ -9,20 +9,16 @@
  */ 
 class MissatgesllistesPeer extends BaseMissatgesllistesPeer
 {
-	
+	//Recollim les llistes a les que s'ha vinculat el missatge
 	static public function getLlistesArray($IDM)
 	{
 		$RET = array();
 				
 		$C = new Criteria();
 		$C->add(self::IDMISSATGESLLISTES,$IDM);
-		
-		foreach(self::doSelect($C) as $ML):
-						
-			$RET[] = $ML->getLlistesIdllistes();
-			 		
-		endforeach;
-		
+        $C->addJoin(self::LLISTES_IDLLISTES, LlistesPeer::IDLLISTES);		
+		foreach(LlistesPeer::doSelect($C) as $OL) { $RET[] = $OL->getIdllistes(); }
+		                
 		return $RET;
 		
 	}

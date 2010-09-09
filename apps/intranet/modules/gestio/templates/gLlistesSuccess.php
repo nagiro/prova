@@ -63,6 +63,7 @@
   <?php IF( $MODE == 'USUARIS' ): ?>
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">
+        <input type="hidden" name="IDL" value="<?php echo $IDL ?>" />    
  	    <DIV class="REQUADRE">
  	    	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gLlistes'))?>
  	    	<DIV class="TITOL">Filtra usuaris</DIV>
@@ -75,42 +76,20 @@
 	            </tr>
 	        </table>
 	     </DIV>
-
-	<?php if($LLISTA): ?>
-	     
+	
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Usuaris a la llista (<?php echo $USUARIS_LLISTA->getNbResults()?>)</DIV>
-	    	<table class="DADES">          
-                  <?php foreach($USUARIS_LLISTA->getResults() as $U): ?>                                                       
-                  	<TR>
-                  		<TD width="10%" class="LINIA"><?php echo checkbox_tag('BAIXA_USUARI[]',$U->getUsuariid())?></TD>
-                  		<TD width="15%" class="LINIA"><?php echo $U->getDni()?></TD>
-                  		<TD width="75%" class="LINIA"><?php echo $U->getNomComplet()?></TD>                  		
-                  	</TR>
-                  <?php endforeach; ?>
-                	<TR>
-                		<TD><?php echo gestorPaginesUsuarisLlista( $USUARIS_LLISTA )?></TD>
-                		<TD></TD><TD><button name="BDESVINCULA">DESVINCULA</button></TD></TR>                   	  
-	        </table>
-	     </DIV>
-                     
-	<?php else: ?>                     
-                     
-		<DIV class="REQUADRE">
-	    <DIV class="TITOL">Usuaris disponibles (<?php echo $USUARIS_DISPONIBLES->getNbResults()?>)</DIV>
-	    	<table class="DADES">          
-            <?php foreach($USUARIS_DISPONIBLES->getResults() as $U):   // $U = new Usuaris(); ?>                                                       
-                  	<TR>
-                  		<TD width="10%" class="LINIA"><?php echo checkbox_tag('ALTA_USUARI[]',$U->getUsuariid())?></TD>
-                  		<TD width="15%" class="LINIA"><?php echo $U->getDni()?></TD>
-                  		<TD width="75%" class="LINIA"><?php echo $U->getNomComplet()?></TD>                  		
-                  	</TR>
-                  <?php endforeach; ?>    
-	                <TR><TD><?php echo gestorPaginesUsuarisNoLlista( $USUARIS_DISPONIBLES )?></TD><TD></TD><TD><?php echo submit_tag('VINCULA',array('name'=>'BVINCULA'))?></TD></TR>                   	  
-	        </table>
-	     </DIV>
-
-      <?php endif; ?>
+            <table width="100%">
+                <tr>
+                    <td style="vertical-align:top;">
+                        <?php echo select_tag('BAIXA_USUARI',options_for_select($VINCULATS,array(),array()),array('multiple'=>true,'width'=>"200px",'height'=>'500px')); ?>
+                    </td>
+                    <td style="vertical-align:top;">
+                        <?php echo select_tag('ALTA_USUARI',options_for_select($DESVINCULATS,array(),array()),array('multiple'=>true,'width'=>"200px")); ?>
+                    </td>
+                </tr>
+                <tr><td><button name="BDESVINCULA">DESVINCULA</button></td><td><button name="BVINCULA">VINCULA</button></td></tr>
+            </table>                            	                  
+        </DIV>
       
        </form>
 
@@ -119,13 +98,14 @@
 
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
-	 	<DIV class="REQUADRE">	 	
+	 	<DIV class="REQUADRE">
+         <DIV class="TITOL">Escriu el missatge</DIV>	             	
 	    	<table class="FORMULARI" width="600px">	    	
                 <?php echo $FMissatge?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br>
+	            		<br />
 	            		<button class="BOTO_ACTIVITAT" name="BSAVE_MISSATGE">Guardar</button>	            		    			
 	            		<button class="BOTO_ACTIVITAT" name="BSEGUEIX_LLISTES">Segueix -->></button>	            			            	            		
 	            	</td>
@@ -142,7 +122,9 @@
 
 
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
-	 	<DIV class="REQUADRE">	 	
+	 	<DIV class="REQUADRE">	 
+         <DIV class="TITOL">Escull les llistes on vols enviar-lo </DIV>
+            <input type="hidden" name="IDM" value="<?php echo $IDM ?>" />	
 	    	<table class="FORMULARI" width="600px">
 	    		<tr><td>Llistes: </td><td><?php echo select_tag('LLISTES_ENVIAMENT',options_for_select(LlistesPeer::select(),$LLISTES_ENVIAMENT),array('multiple'=>true)); ?></td></tr>	    	                								
                 <tr>
@@ -165,10 +147,12 @@
   <?php IF( $MODE == 'FER_PROVA' ): ?>
 
 
-	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
+	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">
+        <input type="hidden" name="IDM" value="<?php echo $IDM ?>" />            
 	 	<DIV class="REQUADRE">	 	
+        <DIV class="TITOL">Envia el missatge</DIV>
 	    	<table class="FORMULARI" width="600px">
-	    		<tr><td>Email: </td><td><?php echo input_tag('email'); ?></td></tr>	    	                								
+	    		<tr><td>Email de prova: </td><td><?php echo input_tag('email'); ?></td></tr>	    	                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
@@ -196,7 +180,7 @@
   <?php IF( $MODE == 'LLISTAT' ): ?>
 
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Llistat de missatges de la llista:  <?php echo $LLISTA->getNom(); ?></DIV>
+	    <DIV class="TITOL">Llistat de missatges de la llista:  <?php echo $LLISTA->getNom(); ?> (<a href="<?php echo url_for('gestio/gLlistes?accio=EM&IDL='.$IDL); ?>">Nou missatge</a>)</DIV>
 	    	<table class="DADES">	    		       
 	    			
 		    	  <?php if($LMISSATGES->getNbResults() == 0): ?>
@@ -251,9 +235,7 @@ function creaOpcions($IDL , $ACCIO = NULL)
 	
   $R  = link_to('<span>Gestió dels usuaris de la llista</span>'.image_tag('template/user.png',array('alt'=>'Gestió d\'usuaris de la llista.')),'gestio/gLlistes?accio=U&IDL='.$IDL,array('class'=>'tt2'));
   $R .= " ";  
-  $R .= link_to('<span>Llistat de missatges enviats</span>'.image_tag('template/page_white_stack.png',array('alt'=>'Llistat de missatges enviats.')),'gestio/gLlistes?accio=L&IDL='.$IDL,array('class'=>'tt2'));
-  $R .= " ";
-  $R .= link_to('<span>Genera pdf per imprimir etiquetes</span>'.image_tag('template/printer.png',array('alt'=>'Genera PDF amb etiquetes.')),'gestio/gLlistes?accio=P&IDL='.$IDL,array('class'=>'tt2'));
+  $R .= link_to('<span>Llistat de missatges enviats</span>'.image_tag('template/page_white_stack.png',array('alt'=>'Llistat de missatges enviats.')),'gestio/gLlistes?accio=L&IDL='.$IDL,array('class'=>'tt2'));  
   
   return $R;
 }

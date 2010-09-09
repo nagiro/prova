@@ -44,37 +44,46 @@ class UsuarisllistesPeer extends BaseUsuarisllistesPeer
     return $C;
   } 
    
-
-  static public function getUsuarisLlista( $CERCA , $IDL , $PAGINA )
+   
+  static public function getVinculatsArray($IDL, $CERCA)
   {
-          
      $C = self::CercaUsuaris($CERCA);     
      $C->add(UsuarisllistesPeer::LLISTES_IDLLISTES , $IDL);     
      $C->addJoin(UsuarisllistesPeer::USUARIS_USUARISID , UsuarisPeer::USUARIID);
+     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
+     $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
+     $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
      
-     $pager = new sfPropelPager('Usuaris', 10);
-     $pager->setCriteria($C);
-     $pager->setPage($PAGINA);
-     $pager->init();
-     return $pager;
+     $RET = array();
+     
+     foreach(UsuarisPeer::doSelect($C) as $OU):
+        $RET[$OU->getUsuariid()] = $OU->getNomComplet();
+     endforeach;
+     
+     return $RET;
 
-  } 
+  }
   
-  static public function getUsuarisNoLlista( $CERCA , $IDL , $PAGINA )
+  static public function getDesvinculatsArray($IDL, $CERCA)
   {
-  	
+    
   	 $SQL = "UsuariID not in (SELECT Usuaris_UsuarisID FROM usuarisllistes where Llistes_idLlistes = $IDL) ";
     	
   	 $C = self::CercaUsuaris($CERCA);     
-     $C->add(UsuarisPeer::USUARIID, $SQL , Criteria::CUSTOM);     
-
-     $pager = new sfPropelPager('Usuaris', 10);
-     $pager->setCriteria($C);
-     $pager->setPage($PAGINA);
-     $pager->init();
-     return $pager;
-  } 
-  
+     $C->add(UsuarisPeer::USUARIID, $SQL , Criteria::CUSTOM);
+     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
+     $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
+     $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
+          
+     $RET = array();
+     
+     foreach(UsuarisPeer::doSelect($C) as $OU):
+        $RET[$OU->getUsuariid()] = $OU->getNomComplet();
+     endforeach;
+     
+     return $RET;
+    
+  }  
   
   static public function getUsuarisLlistaEmail($idL)
   {

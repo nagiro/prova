@@ -401,7 +401,12 @@ class gestioActions extends sfActions
   {
     $this->setLayout('gestio');
 
-    $this->IDL    = $this->getUser()->ParReqSesForm($request,'IDL');    
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>''));	    	    	    
+    $this->FCerca = new CercaForm();
+	$this->FCerca->bind($this->CERCA);
+
+    $this->IDL = $request->getParameter('IDL',0);      
+    $this->IDM = $request->getParameter('IDM',0);  
     $this->PAGINA = $request->getParameter('PAGINA');    
     $this->MODE   = "";
     
@@ -424,21 +429,17 @@ class gestioActions extends sfActions
     {
     	//Edito un missatge o en creo un de nou.
     	case 'EM':
-    			$OMissatge = MissatgesmailingPeer::retrieveByPK($request->getParameter('IDM'));
+                
+    			$OMissatge = MissatgesmailingPeer::retrieveByPK($this->IDM);
     			
-    			if($OMissatge instanceof Missatgesmailing):
-    			
-    				$this->FMissatge = new MissatgesmailingForm($OMissatge);
-    				$this->getUser()->setSessionPar('IDM',$OMissatge->getIdmissatge());
-    				
-    			else:
-    			
+    			if(!($OMissatge instanceof Missatgesmailing)):    			    				    				    				    			
     				$OMissatge = new Missatgesmailing();
-    				$OMissatge->setDataAlta(date('Y-m-d',time()));    				
-    				$this->FMissatge = new MissatgesmailingForm($OMissatge);
-    				$this->getUser()->setSessionPar('IDM',null);
-    				    				
+    				$OMissatge->setDataAlta(date('Y-m-d',time()));
+                    $OMissatge->setText(MissatgesmailingPeer::getTemplate());                                           				    				                        				                        				    				
     			endif;     		
+                
+                $this->FMissatge = new MissatgesmailingForm($OMissatge);
+                
     			$this->MODE = 'MISSATGES';    			
     		break;
     		
@@ -473,11 +474,10 @@ class gestioActions extends sfActions
     
     	//Mostro les llistes a les que puc enviar el missatge
     	case 'LM':
-    		
+                        		
     			if($this->saveMissatge($request)):
-    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistesArray($this->getUser()->getSessionPar('IDM'));    				     				
-    				    				
-	    			$this->MODE = 'MISSATGES_LLISTES';    				
+    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistesArray($this->IDM);    				     				    				    				
+        			$this->MODE = 'MISSATGES_LLISTES';    				
     			else: 
     				$this->MODE = 'MISSATGES'; 			
     			endif;     			    			
@@ -503,20 +503,15 @@ class gestioActions extends sfActions
 
     	//Envio un missatge de prova a l'adreÃ§a que digui l'usuari
     	case 'SP':
-    		
-    		try   { MissatgesmailingPeer::sendProvaMessageId($this->getUser()->getSessionPar('IDM'),$request->getParameter('email')); }
-    		catch (Exception $e) { $e->getMessage(); }	
-    		
+            		
+    		$this->SendProvaMissatge($this->IDM , $request->getParameter('email'));    			    		
     		$this->MODE = "FER_PROVA";
    		
     		break;
 
     	//Envio el missatge a tothom
-    	case 'SMT':
-    		
-    		try   { MissatgesmailingPeer::sendMessageId($this->getUser()->getSessionPar('IDM')); }
-    		catch (Exception $e) { $e->getMessage(); }	
-    		
+    	case 'SMT':    		
+            $this->sendTothomMissatge($this->IDM);    			    		
     		$this->MODE = "FER_PROVA";
    		
     		break;
@@ -538,13 +533,15 @@ class gestioActions extends sfActions
                 $this->FLlista = new LlistesForm($OLlista);                
                 $this->MODE = 'EDICIO'; 
                 break;                      
-      case 'VINCULA':               
-               $ALTA_USUARIS = $request->getParameter('ALTA_USUARI');
-               foreach($ALTA_USUARIS as $U) UsuarisllistesPeer::Vincula($U,$this->IDL);                             
+      case 'VINCULA':                               
+               $ALTA_USUARIS = $request->getParameter('ALTA_USUARI');                                                            
+               foreach($ALTA_USUARIS as $K=>$U) UsuarisllistesPeer::Vincula($U,$this->IDL);
+               $this->redirect('gestio/gLlistes?accio=U&IDL='.$this->IDL);                             
             break;
       case 'DESVINCULA':                              
-               $BAIXA_USUARIS = $request->getParameter('BAIXA_USUARI');               
-               foreach($BAIXA_USUARIS as $U) UsuarisllistesPeer::Desvincula($U,$this->IDL);               
+               $BAIXA_USUARIS = $request->getParameter('BAIXA_USUARI');                              
+               foreach($BAIXA_USUARIS as $K=>$U) UsuarisllistesPeer::Desvincula($U,$this->IDL);
+               $this->redirect('gestio/gLlistes?accio=U&IDL='.$this->IDL);               
             break;
       
       case 'MV':                               
@@ -561,10 +558,9 @@ class gestioActions extends sfActions
                 if($this->FLlista->isValid()) $this->FLlista->save();
                 $this->MODE = 'EDICIO';                
                 break;       	         	       
-      case 'L': 
-               $IDL = $this->getRequestParameter('IDL');               
-               $this->LLISTA = LlistesPeer::retrieveByPK($IDL); 
-               $this->LMISSATGES = LlistesPeer::getMissatges($IDL,null,$this->PAGINA);                             
+      case 'L':                                              
+               $this->LLISTA = LlistesPeer::retrieveByPK($this->IDL); 
+               $this->LMISSATGES = LlistesPeer::getMissatges($this->IDL,null,$this->PAGINA);                             
                $this->MODE = 'LLISTAT';
                break;
       case 'SEND':               
@@ -574,8 +570,10 @@ class gestioActions extends sfActions
       case 'U_EMAIL':
       		
       		break;
-      case 'U':
-      			$this->gestionaUsuariLlistes($request);
+      case 'U':    
+                $this->VINCULATS = UsuarisllistesPeer::getVinculatsArray( $this->IDL , $this->CERCA['text'] );
+                $this->DESVINCULATS = UsuarisllistesPeer::getDesvinculatsArray( $this->IDL , $this->CERCA['text'] );
+                $this->MODE = "USUARIS";
       		break;       
       case 'VINCULA':
       			$this->gestionaUsuariLlistes($request);
@@ -594,28 +592,31 @@ class gestioActions extends sfActions
 	$this->LLISTES = LlistesPeer::doSelect(new Criteria());
 	$this->MISSATGES = MissatgesmailingPeer::getMissatges($this->PAGINA);
   
-  }
-
-  public function gestionaUsuariLlistes($request)
-  {
-
-  		$this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));	    	    	    
-	    $this->FCerca = new CercaTextChoiceForm();
-	    $this->FCerca->bind($this->CERCA);
-	    $this->FCerca->setChoice(array('llista'=>'Usuaris pertanyents','nollista'=>'Usuaris no pertanyents'));	    	    
-	    		          
-    	if($this->CERCA['select'] == 'llista'):
-    		$this->USUARIS_LLISTA = UsuarisllistesPeer::getUsuarisLlista( $this->CERCA['text'] ,  $this->IDL , $this->PAGINA );
-    		$this->LLISTA = true;
-    	else:
-         	$this->USUARIS_DISPONIBLES = UsuarisllistesPeer::getUsuarisNoLlista( $this->CERCA['text'] , $this->IDL , $this->PAGINA );
-         	$this->LLISTA = false;
-    	endif;
-    	
-    	$this->MODE = 'USUARIS';
-  	
-  }
+  }  
   
+  private function sendProvaMissatge($idM,$mail)
+  {    		
+    $OM = MissatgesmailingPeer::retrieveByPK($idM);    
+	return $this->getMailer()->composeAndSend('informatica@casadecultura.org',$mail,$OM->getTitol(),$OM->getText());	
+  }
+
+  private function sendTothomMissatge($idM)
+  { 
+    
+    $OM = MissatgesmailingPeer::retrieveByPK($idM);
+    
+	if($OM instanceof Missatgesmailing):		
+    	//Recuperem les llistes			
+    	foreach($OM->getLlistesEnviament() as $L){    	       
+            foreach($L->getMailsUsuaris() as $mail){                
+    			$this->getMailer()->composeAndSend('informatica@casadecultura.org',$mail,$OM->getTitol(),$OM->getText());
+    		}
+    	}
+			
+    endif;
+	
+  }
+
   
   public function saveMissatgeLlistes(sfWebRequest $request)
   {
@@ -638,23 +639,18 @@ class gestioActions extends sfActions
   public function saveMissatge(sfWebRequest $request)
   {
   	
-  	$OMissatge = MissatgesmailingPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));
+    $RM = $request->getParameter('missatgesmailing');
+    $this->IDM = $RM['idMissatge'];             
+    
+  	$OMissatge = MissatgesmailingPeer::retrieveByPK($this->IDM);
                 
-    if($OMissatge instanceof Missatgesmailing):
-    	$this->FMissatge = new MissatgesmailingForm($OMissatge);
-    else: 
+    if(!($OMissatge instanceof Missatgesmailing)):
         $OMissatge = new Missatgesmailing();                	                	
     	$this->FMissatge = new MissatgesmailingForm($OMissatge);
-	endif;              
-	
-    $this->FMissatge->bind($request->getParameter('missatgesmailing'));
-    if($this->FMissatge->isValid()):
- 	   $this->FMissatge->save();
-       $this->getUser()->setSessionPar('IDM',$this->FMissatge->getObject()->getIdmissatge());
-       return true;
-    else: 
-    	return false; 
-    endif; 
+	endif;              	
+    $this->FMissatge->bind($RM);
+    if($this->FMissatge->isValid()){ $this->FMissatge->save(); $this->IDM = $this->FMissatge->getObject()->getIdmissatge(); return true; }         	   
+    else { return false; }            	             
  
   }
 

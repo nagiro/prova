@@ -122,5 +122,5 @@ class LlistesPeer extends BaseLlistesPeer
      return sizeof($MAILS);
   }
   
-  
+
 }
