@@ -360,8 +360,8 @@ class MatriculesPeer extends BaseMatriculesPeer
 
         <p>Benvolgut/da '.$Nom.'</p>
         
-        <p>La seva matrícula al curs '.$NomCurs.' s\'ha efectuat correctament. Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona o bé cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/login\">aquí </a>.
-        Si no recorda o no sap la seva contrassenya cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/remember\">aquí </a>.
+        <p>La seva matrícula al curs '.$NomCurs.' s\'ha efectuat correctament. Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona o bé cliqui <a href="http://servidor.casadecultura.cat/web_beta/web/login">aquí </a>.
+        Si no recorda o no sap la seva contrassenya cliqui <a href="http://servidor.casadecultura.cat/web_beta/web/remember">aquí </a>.
         </p>     
         <p>L\'esperem el dia '.$dataInici.' a la classe.</p>                
         <p>Cordialment, <br />Casa de Cultura de Girona</p>
