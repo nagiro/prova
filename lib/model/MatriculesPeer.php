@@ -138,8 +138,7 @@ class MatriculesPeer extends BaseMatriculesPeer
      
      $C->add($C1);
      
-     $C->addJoin( array( UsuarisPeer::USUARIID ) , array( self::USUARIS_USUARIID ) , CRITERIA::RIGHT_JOIN );
-//     self::doSelectJoinCursos()
+     $C->addJoin( array( UsuarisPeer::USUARIID ) , array( self::USUARIS_USUARIID ) , CRITERIA::LEFT_JOIN );     
      
      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
