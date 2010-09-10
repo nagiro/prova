@@ -10,13 +10,17 @@ class myUser extends sfBasicSecurityUser
   	  	
   	if($request->hasParameter($nomCamp)):
   		$par = $request->getParameter($nomCamp);
-  	  	$A[$nomCamp] = $par;
+  	  	$A[$nomCamp] = $par;        
   	elseif(!isset($A[$nomCamp])):
-  	 	$A[$nomCamp] = $default;  		  		  		  		
+  	 	$A[$nomCamp] = $default;          		  		  		
   	endif;
-		  	
+
+    
+    $A[$nomCamp] = ($A[$nomCamp] == 'images')?$default:$A[$nomCamp]; 
+                  				  	
   	$this->setAttribute('sessio',$A);  	  	  	  	
   	  	  	  	
+  
   	return $A[$nomCamp];  	  	
   	
   }
@@ -36,7 +40,7 @@ class myUser extends sfBasicSecurityUser
   {
   	
   	$A = $this->getAttribute('sessio',array());
-  	if(isset($A[$nomCamp])) return $A[$nomCamp];
+  	if(isset($A[$nomCamp])){ $NOM = $A[$nomCamp]; if($NOM == 'images') $NOM = $default; return $NOM; }
   	else return $default;
   	
   }

@@ -1089,13 +1089,14 @@ class gestioActions extends sfActions
    	//Netegem cerca
   	if($request->getParameter('accio') == 'C'):      		
         $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
-      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);  			      	           			       
+      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);  			      
+        $this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());	           			       
     endif;    
         
     $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));    
     
-    $this->PAGINA 			= $request->getParameter('PAGINA',1);    
-    $this->DATAI  			= $request->getParameter('DATAI',time());    
+    $this->PAGINA 			= $request->getParameter('PAGINA',1);
+    $this->DATAI            = $this->getUser()->ParReqSesForm($request,'DATAI',time());                
     $this->DIA    			= $request->getParameter('DIA',time());    
     $this->IDA    			= $request->getParameter('IDA',0);
     $this->accio 			= $request->getParameter('accio','C');            
@@ -1158,7 +1159,7 @@ class gestioActions extends sfActions
                 $HORARIS = HorarisPeer::getActivitats(null , $this->CERCA['text'], $this->DATAI, $this->DATAF, null);
                 //$this->ACTIVITATS = $HORARIS['ACTIVITATS'];
                 $this->ACTIVITATS = array();                
-                $this->CALENDARI = $HORARIS['CALENDARI'];
+                $this->CALENDARI = $HORARIS['CALENDARI'];                
                 $this->MODE['CONSULTA'] = true;
                 $this->MODE['LLISTAT'] = true;                                              
             break;
@@ -1166,7 +1167,7 @@ class gestioActions extends sfActions
     		
     	//Consulta que em mostra les activitats d'un dia seleccionat del calendari
     	case 'CD':    		
-                $HORARIS = HorarisPeer::getActivitats($this->DIA , $this->CERCA['text'], $this->DATAI, $this->DATAF, null);
+                $HORARIS = HorarisPeer::getActivitats($this->DIA , $this->CERCA['text'], null , null , null);
                 $this->ACTIVITATS = $HORARIS['ACTIVITATS'];                
                 $this->CALENDARI = $HORARIS['CALENDARI'];
                 $this->MODE['CONSULTA'] = true;
@@ -2160,7 +2161,7 @@ class gestioActions extends sfActions
     			  	
     		break;
     	
-    	
+    	// Nou usuari
     	case 'NU':
     		
 				//Si no és nou, sempre tindrem el número de matrícula. Si és nou, serà  null.     		
@@ -2223,30 +2224,33 @@ class gestioActions extends sfActions
     			    			    			    		     
     		    $PREU = CursosPeer::CalculaTotalPreus(array($this->MATRICULA->getCursosIdcursos()),$this->MATRICULA->getTreduccio());
     		    $NOM  = UsuarisPeer::retrieveByPK($this->MATRICULA->getUsuarisUsuariid())->getNomComplet();
+                $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos()); //Passem si el curs es ple
     		    $MATRICULA = $this->MATRICULA->getIdmatricules();
-    		    $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos()); //Passem si el curs es ple
-    		    $this->getUser()->setSessionPar('isPle',$this->CURS_PLE); //Guardem si el curs Ã©s ple
+                    		        		    
     			
     			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA);    			    			
     			$this->MODE = 'VALIDACIO_CURS';
     		break;
     		    		
     	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
-    	case 'PAGAMENT':
+    	case 'PAGAMENT':                
     			$MATRICULA = MatriculesPeer::retrieveByPK($this->getUser()->getSessionPar('IDM'));    			
-    			MatriculesPeer::setMatriculaPagada($this->getUser()->getSessionPar('IDM'),$this->getUser()->getSessionPar('isPle'));
+    			MatriculesPeer::setMatriculaPagada($this->getUser()->getSessionPar('IDM'));                
     			$MATRICULA->save();
     			$this->getUser()->addLogAction($accio,'gMatricules',$MATRICULA);
-    			$this->MATRICULA = $MATRICULA;    			
+    			$this->MATRICULA = $MATRICULA;                    			
     			$this->MODE = 'PAGAMENT';
+                $this->SendMailMatricula($MATRICULA);       			  							
     		break;
+            
     	//Si hem fet un pagament amb targeta, anem a la segÃ¼ent pantalla. 
     	case 'OK':
     		 if($this->getRequestParameter('Ds_Response') == '0000'):
                  $matricula = $this->getRequestParameter('Ds_MerchantData');
-                 MatriculesPeer::setMatriculaPagada($matricula,$this->getUser()->getSessionPar('isPle'));
+                 MatriculesPeer::setMatriculaPagada($matricula);
                  $this->getUser()->addLogAction($accio,'gMatricules',$matricula);                 
-                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                 
+                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";
+                 $this->SendMailMatricula($MATRICULA);                                  
               else:			            
                  $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
               endif;
@@ -2336,6 +2340,18 @@ class gestioActions extends sfActions
 				$this->getUser()->addLogAction('inside','gMatricules');
 			break;
     }  	      
+  }
+  
+  //Envia el correu d'una matrícula
+  public function SendMailMatricula($OM){
+    $this->sendMail('informatica@casadecultura.org',
+  					$OM->getUsuaris()->getEmail(),  							
+  					'Matrícula Casa de Cultura de Girona',
+  					MatriculesPeer::MailMatricula($OM));  			
+	$this->sendMail('informatica@casadecultura.org',
+					'informatica@casadecultura.org',
+					'Matrícula Casa de Cultura de Girona',
+					MatriculesPeer::MailMatricula($OM));
   }
   
   public function GuardaMatricula(sfFormPropel $Matricula)

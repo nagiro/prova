@@ -530,7 +530,7 @@ function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY
             $SPAN .= '</span>';
           } else { $SELECCIONAT = ""; }
                                         
-          $RET .= '<TD class="DIES" style="background-color:'.$background.';">'.link_to($diaA.$SPAN,"gestio/gActivitats?accio=CD&DIA=".$CalDia , array('class'=>"tt2 $SELECCIONAT")).'</TD>';
+          $RET .= '<TD class="DIES" style="background-color:'.$background.';">'.link_to($diaA.$SPAN,"gestio/gActivitats?accio=CD&DATAI=".$this->DATAI."&DIA=".$CalDia , array('class'=>"tt2 $SELECCIONAT")).'</TD>';
           
         endif;    
       endfor;

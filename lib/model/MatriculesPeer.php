@@ -248,6 +248,7 @@ class MatriculesPeer extends BaseMatriculesPeer
       $C->add(MatriculesPeer::CURSOS_IDCURSOS , $idC);
       $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
       $C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
+      $C->addDescendingOrderByColumn(MatriculesPeer::ESTAT);
       $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
       $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
       $C->addAscendingOrderByColumn(UsuarisPeer::NOM);                  
@@ -299,15 +300,17 @@ class MatriculesPeer extends BaseMatriculesPeer
      return $TPV;
   }
   
-  static public function setMatriculaPagada($M,$isPle)
+  static public function setMatriculaPagada($M)
   {
-    $MATRICULA = MatriculesPeer::retrieveByPK($M); 
+    $MATRICULA = MatriculesPeer::retrieveByPK($M);
+    $CURS_PLE = CursosPeer::isPle($MATRICULA->getCursosIdcursos()); //Passem si el curs es ple 
   	
-  	 //Mirem si el curs és ple. Si es ple, guardem com en espera.
-     if(!$isPle){
+  	 //Mirem si el curs és ple. Si es ple i no hi ha cap import pagat, guardem com en espera.
+     if(!$CURS_PLE){
      	$MATRICULA->setEstat(self::ACCEPTAT_PAGAT);	
      } else {
-		$MATRICULA->setEstat(self::EN_ESPERA);     
+        if($MATRICULA->getPagat() > 0){ $MATRICULA->setEstat(self::ACCEPTAT_PAGAT); }
+        else { $MATRICULA->setEstat(self::EN_ESPERA); }     
      }
                
      $MATRICULA->save();
@@ -347,19 +350,24 @@ class MatriculesPeer extends BaseMatriculesPeer
   	$NomCurs = $OM->getCursos()->getCodi().' | '.$OM->getCursos()->getTitolcurs();
   	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');
   	$text = "";
-  	$text .= "
-Benvolgut/da $Nom<br /><br />
+  	$text .= '
 
-La seva matrícula al curs $NomCurs s'ha efectuat correctament.<br />  				  				
-Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona o bé cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/login\">aquí </a>.<br />
-Si no recorda o no sap la seva contrasenya cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/remember\">aquí </a>.<br />
-<br />     
-L'esperem el dia $dataInici a la classe.<br />
-<br />
-Cordialment, Albert Johé.<br />
-Casa de Cultura de Girona.   	
-  	";
-  				
+        <table width="640px" style="font-family: sans-serif; font-size:14px; margin:0 auto; border:0px solid #B33330;">
+        <tr><td align="center" style=" padding:20px;"><img width="200px" src="http://servidor.casadecultura.org/downloads/logos/CCG_BLANC.jpg" /></td></tr>
+        <tr><td style="border-top:2px solid #B33330;padding: 20px; text-align: left;">
+
+        <p>Benvolgut/da '.$Nom.'</p>
+        
+        <p>La seva matrícula al curs '.$NomCurs.' s\'ha efectuat correctament. Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona o bé cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/login\">aquí </a>.
+        Si no recorda o no sap la seva contrassenya cliqui <a href=\"http://servidor.casadecultura.cat/web_beta/web/remember\">aquí </a>.
+        </p>     
+        <p>L\'esperem el dia '.$dataInici.' a la classe.</p>                
+        <p>Cordialment, <br />Casa de Cultura de Girona</p>
+        <p><span style="font-size:10px; font-style: italic; color: gray;">En cas de resposta afirmativa, les vostres dades seran incorporades a un fitxer titularitat de la Fundaci&oacute; Casa de Cultura creat sota la seva responsabilitat per a gestionar les activitats que s&rsquo;hi porten a terme i per a informar-ne a persones que hi estiguin interessades. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d&rsquo;adoptar les mesures legalment previstes i les t&egrave;cnicament necess&agrave;ries per evitar-ne un acc&eacute;s o qualsevol classe de tractament no autoritzat. Podran ser cedides a altres persones amb les quals la Casa de Cultura col&bull;labora en la programaci&oacute; i organitzaci&oacute; d&rsquo;activitats, exclusivament a l&rsquo;efecte de fer-vos arribar la informaci&oacute; que vost&egrave; manifesta estar interessat en rebre. Per qualsevol altre cessi&oacute; requerir&iacute;em pr&egrave;viament el seu consentiment. En qualsevol cas podeu exercir els vostres drets d&rsquo;acc&eacute;s, rectificaci&oacute; i cancel&bull;laci&oacute; tot adre&ccedil;ant-se a: Sr/a. Director/a de la Casa de Cultura, Pla&ccedil;a de l&rsquo;Hospital 6, 17002 GIRONA, tel&egrave;fon 972 202 013 i correu electr&ograve;nic  secretaria@casadecultura.org.</span></p>
+        
+        </td></tr>
+        </table>';
+      				
    	return $text; 
   	
   }

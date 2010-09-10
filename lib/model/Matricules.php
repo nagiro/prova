@@ -18,17 +18,17 @@ class Matricules extends BaseMatricules
   
   public function getTpagamentString()
   {
-  	return TipusPeer::retrieveByPK($this->getTpagament())->getTipusdesc();
+  	return MatriculesPeer::textPagament($this->getTpagament());
   }
   
   public function getTreduccioString()
   {  
-  	return TipusPeer::retrieveByPK($this->getTreduccio())->getTipusdesc();  	
+  	return MatriculesPeer::textDescomptes($this->getTreduccio());  	
   }
   
   public function getEstatString()
   {  
-  	return TipusPeer::retrieveByPK($this->getEstat())->getTipusdesc();  	
+  	return MatriculesPeer::getEstatText($this->getEstat());  	
   }
  
 

@@ -7,6 +7,8 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
 .LINIA { padding:4px; }
 #MATRICULACIO { font-size:10px; } 
 #VULLMATRICULARME {  }
+
+
 </style>
 
 <TD colspan="3" class="CONTINGUT">
@@ -31,12 +33,14 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
                        	
    		<TR>
       		<TD class="LINIA">
-      			<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $C->getIdcursos(); ?>&modal=false" class="thickbox">
-      				<?php echo $C->getCodi()?>
-      			</a>
-      			<div style="display: none;" id="hidden<?php echo $C->getIdcursos() ?>">
-      				<?php echo $C->getDescripcio() ?>
-      			</div>
+                <div style="clear:both;">
+          			<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $C->getIdcursos(); ?>&modal=false" class="thickbox">
+          				<?php echo $C->getCodi()?>
+          			</a>
+          			<div style="display: none;" id="hidden<?php echo $C->getIdcursos() ?>">
+          				<?php echo $C->getDescripcio() ?>
+          			</div>
+                </div>
       		</TD>
       		<TD class="LINIA"><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
       		<TD class="LINIA"><?php echo $C->getPreu()?>€</TD>      							
