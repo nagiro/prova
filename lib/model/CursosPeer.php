@@ -84,7 +84,7 @@ class CursosPeer extends BaseCursosPeer
   	$C = new Criteria();  	
   	if($mode == self::ACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;        	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
+  	//$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
   	$C->addAscendingOrderByColumn( self::CODI );
   	
   	
