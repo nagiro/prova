@@ -637,7 +637,7 @@ class webActions extends sfActions
             $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
             //Apliquem els descomptes i gratuït si ja està el grup ple
             $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE']);
-            $this->DADES_MATRICULA['CURS'] = $D['CURS'];
+            $this->DADES_MATRICULA['CURS'] = $D['CURS'];                        
               
             //Retorna id de matrícula
             $matricules = $this->guardaMatricula($this->DADES_MATRICULA); 
@@ -659,17 +659,26 @@ class webActions extends sfActions
   	if($request->getParameter('Ds_Response') == '0000'):
   		$idM = $request->getParameter('Ds_MerchantData');
   		$OM = MatriculesPeer::retrieveByPK($idM);
-  		if($OM instanceof Matricules):
-  			$OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT); //Si arriba aquí és que hi ha trobat plaça
-  			$OM->save();
-  			$this->sendMail('informatica@casadecultura.org',
-  							$OM->getUsuaris()->getEmail(),  							
-  							'Matrícula Casa de Cultura de Girona',
-  							MatriculesPeer::MailMatricula($OM));  			
-			$this->sendMail('informatica@casadecultura.org',
-  							'informatica@casadecultura.org',
-  							'Matrícula Casa de Cultura de Girona',
-  							MatriculesPeer::MailMatricula($OM));  							
+  		if($OM instanceof Matricules):            
+            if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):              			  			
+      			$this->sendMail('informatica@casadecultura.org',
+      							$OM->getUsuaris()->getEmail(),  							
+      							'Matrícula Casa de Cultura de Girona',
+      							MatriculesPeer::MailMatricula($OM));  			
+    			$this->sendMail('informatica@casadecultura.org',
+      							'informatica@casadecultura.org',
+      							'Matrícula Casa de Cultura de Girona',
+      							MatriculesPeer::MailMatricula($OM));  							
+             else: 
+      			$this->sendMail('informatica@casadecultura.org',
+      							$OM->getUsuaris()->getEmail(),  							
+      							'Matrícula Casa de Cultura de Girona',
+      							MatriculesPeer::MailMatriculaFAIL($OM));  			
+    			$this->sendMail('informatica@casadecultura.org',
+      							'informatica@casadecultura.org',
+      							'Matrícula Casa de Cultura de Girona',
+      							MatriculesPeer::MailMatriculaFAIL($OM));                          
+             endif; 
   		else:
 	  		$this->sendMail('informatica@casadecultura.org',
 	  						'informatica@casadecultura.org',

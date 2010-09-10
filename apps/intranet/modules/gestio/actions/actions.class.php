@@ -2344,14 +2344,25 @@ class gestioActions extends sfActions
   
   //Envia el correu d'una matrícula
   public function SendMailMatricula($OM){
-    $this->sendMail('informatica@casadecultura.org',
-  					$OM->getUsuaris()->getEmail(),  							
-  					'Matrícula Casa de Cultura de Girona',
-  					MatriculesPeer::MailMatricula($OM));  			
-	$this->sendMail('informatica@casadecultura.org',
-					'informatica@casadecultura.org',
-					'Matrícula Casa de Cultura de Girona',
-					MatriculesPeer::MailMatricula($OM));
+    if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):
+        $this->sendMail('informatica@casadecultura.org',
+      					$OM->getUsuaris()->getEmail(),  							
+      					'Matrícula Casa de Cultura de Girona',
+      					MatriculesPeer::MailMatricula($OM));  			
+    	$this->sendMail('informatica@casadecultura.org',
+    					'informatica@casadecultura.org',
+    					'Matrícula Casa de Cultura de Girona',
+    					MatriculesPeer::MailMatricula($OM));
+     else: 
+        $this->sendMail('informatica@casadecultura.org',
+      					$OM->getUsuaris()->getEmail(),  							
+      					'Matrícula Casa de Cultura de Girona',
+      					MatriculesPeer::MailMatriculaFAIL($OM));  			
+    	$this->sendMail('informatica@casadecultura.org',
+    					'informatica@casadecultura.org',
+    					'Matrícula Casa de Cultura de Girona',
+    					MatriculesPeer::MailMatriculaFAIL($OM));     
+     endif; 
   }
   
   public function GuardaMatricula(sfFormPropel $Matricula)
@@ -3336,5 +3347,23 @@ class gestioActions extends sfActions
     $this->CICLES = CiclesPeer::getList($this->PAGINA,$this->CERCA['text']);
   	
   }
+  
+  
+   private function sendMail($from,$to,$subject,$body = "",$files = array())
+   {
+   	
+		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
+		
+		foreach($files as $F):
+			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
+		endforeach;
+		
+		$swift_message->setBody($body,'text/html');
+		
+		return $this->getMailer()->send($swift_message);
+		
+   }
+
+  
   
 }

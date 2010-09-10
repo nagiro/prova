@@ -315,8 +315,8 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
      //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant     
      if($DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TARGETA || $DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TELEFON ):
      	 
-//         echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
+         echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+//         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
          
          foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
          
@@ -328,6 +328,8 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 
      //Carreguem totes les dades de matrícula     
      foreach($DADES_MATRICULA as $K => $V) { $str = "DADES_MATRICULA[".$K."]"; echo input_hidden_tag($str,$V); }
+     $IDC = $DADES_MATRICULA['CURS'];     
+     $ESPLE = (CursosPeer::isPle($IDC))?'(EN ESPERA)':'';
 
 	?>
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Verificació de la matrícula</LEGEND>	
@@ -344,7 +346,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 	    	<?php $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);      ?>                  								
 	        <TR>
 	        	<TD><?php echo $CURS->getCodi(); ?></TD>
-	            <TD><?php echo $CURS->getTitolcurs(); ?></TD>
+	            <TD><?php echo $CURS->getTitolcurs().' '.$ESPLE; ?></TD>
 	            <TD><?php echo CursosPeer::CalculaPreu($CURS->getIdcursos() , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
 			</TR>                  								                  								                  	                           
 		</TABLE>
