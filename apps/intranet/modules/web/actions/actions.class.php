@@ -658,8 +658,9 @@ class webActions extends sfActions
   	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.   
   	if($request->getParameter('Ds_Response') == '0000'):
   		$idM = $request->getParameter('Ds_MerchantData');
-  		$OM = MatriculesPeer::retrieveByPK($idM);
-  		if($OM instanceof Matricules):            
+  		$OM = MatriculesPeer::retrieveByPK($idM);                
+  		if($OM instanceof Matricules):           
+            MatriculesPeer::setMatriculaPagada($OM); 
             if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):              			  			
       			$this->sendMail('informatica@casadecultura.org',
       							$OM->getUsuaris()->getEmail(),  							
