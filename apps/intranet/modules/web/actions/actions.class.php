@@ -659,9 +659,8 @@ class webActions extends sfActions
   	if($request->getParameter('Ds_Response') == '0000'):
   		$idM = $request->getParameter('Ds_MerchantData');
   		$OM = MatriculesPeer::retrieveByPK($idM);                
-  		if($OM instanceof Matricules):           
-            MatriculesPeer::setMatriculaPagada($OM); 
-            if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):              			  			
+  		if($OM instanceof Matricules):                        
+            if(MatriculesPeer::setMatriculaPagada($OM)):              			  			
       			$this->sendMail('informatica@casadecultura.org',
       							$OM->getUsuaris()->getEmail(),  							
       							'Matrícula Casa de Cultura de Girona',
