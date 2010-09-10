@@ -223,8 +223,8 @@
   <?php 
 	
 		if($MATRICULA->getPagat() > 0 && ( $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TARGETA || $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TELEFON ) ):
-//           echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
+           echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+//         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
                   
            foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
          
