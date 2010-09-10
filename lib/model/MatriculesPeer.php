@@ -115,9 +115,13 @@ class MatriculesPeer extends BaseMatriculesPeer
      $C3 = $C->getNewCriterion(CursosPeer::CATEGORIA, '%'.$CERCA.'%',CRITERIA::LIKE);	               
      $C1->addOr($C2); $C1->addOr($C3);	$C->add($C1);
      
-     $C->addDescendingOrderByColumn(CursosPeer::DATAINICI);
-          
-     $pager = new sfPropelPager('Cursos', 10);
+     $C->add(CursosPeer::ISACTIU, 1);
+     
+     $C->addAscendingOrderByColumn( CursosPeer::CATEGORIA );
+  	 $C->addAscendingOrderByColumn( CursosPeer::DATADESAPARICIO );
+  	 $C->addAscendingOrderByColumn( CursosPeer::CODI );
+                 
+     $pager = new sfPropelPager('Cursos', 40);
 	 $pager->setCriteria($C);
 	 $pager->setPage($PAGINA);
 	 $pager->init();
