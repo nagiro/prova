@@ -303,19 +303,22 @@ class MatriculesPeer extends BaseMatriculesPeer
   static public function setMatriculaPagada($M)
   {
     
+    $RET = false; 
     $MATRICULA = MatriculesPeer::retrieveByPK($M);
     $CURS_PLE = CursosPeer::isPle($MATRICULA->getCursosIdcursos()); //Passem si el curs es ple 
   	
   	 //Mirem si el curs és ple. Si es ple i no hi ha cap import pagat, guardem com en espera.
      if(!$CURS_PLE){
      	$MATRICULA->setEstat(self::ACCEPTAT_PAGAT);
-        return true; 	
+        $RET = true; 	
      } else {
-        if($MATRICULA->getPagat() > 0){ $MATRICULA->setEstat(self::ACCEPTAT_PAGAT); return true; }
-        else { $MATRICULA->setEstat(self::EN_ESPERA); return false;  }     
+        if($MATRICULA->getPagat() > 0){ $MATRICULA->setEstat(self::ACCEPTAT_PAGAT); $RET = true; }
+        else { $MATRICULA->setEstat(self::EN_ESPERA); $RET = false;  }     
      }
                
      $MATRICULA->save();
+     
+     return $RET; 
      
   }
   
