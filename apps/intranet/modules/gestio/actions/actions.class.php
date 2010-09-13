@@ -2276,11 +2276,12 @@ class gestioActions extends sfActions
     	//Guardem una matrícula modificada
     	case 'SAVE_MATRICULA':    			
     			
-    			$OMatricula = MatriculesPeer::retrieveByPk($this->getUser()->getSessionPar('IDM'));
+                $RS = $request->getParameter('matricules');                
+    			$OMatricula = MatriculesPeer::retrieveByPk($RS['idMatricules']);
     			if(!($OMatricula instanceof Matricules)) $OMatricula = new Matricules();
     			
     			$this->FMATRICULA = new MatriculesForm($OMatricula);    			
-    			$this->FMATRICULA->bind($request->getParameter('matricules'));    			
+    			$this->FMATRICULA->bind($RS);    			
     			if($this->FMATRICULA->isValid()):
     				$this->FMATRICULA->save();
     				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMATRICULA->getObject());    				
