@@ -730,6 +730,7 @@ class webActions extends sfActions
      $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
      $M->setTpagament(MatriculesPeer::PAGAMENT_TARGETA);
      $M->setCursosIdcursos($DADES_MATRICULA['CURS']);
+     $M->setPagat($DADES_MATRICULA['PREU']);     
      $M->save();
      
      return $M->getIdmatricules();

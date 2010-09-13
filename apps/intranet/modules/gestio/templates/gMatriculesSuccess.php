@@ -203,7 +203,7 @@
 	                      	echo '<TR >							
 	                      			<TD class="LINIA">'.radiobutton_tag('IDC', $C->getIdcursos(), true).'</TD>
 									<TD class="LINIA">'.$C->getCodi().'</TD>
-									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
+									<TD class="LINIA">'.$C->getTitolcurs().' ('.$C->getHoraris().')</TD>
 									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
 									<TD class="LINIA">'.$C->getPreu().'/'.$C->getPreur().'</TD>
 									<TD class="LINIA" '.$BACKGROUND.'>'.$nMatriculats.'/'.$C->getPlaces().'</TD>
