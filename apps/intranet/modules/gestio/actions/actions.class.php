@@ -1378,7 +1378,7 @@ class gestioActions extends sfActions
 	    	
 	    	$this->IDC = $OA->getCiclesCicleid();
 	    	$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();    			
-	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC);
+	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,false,1,false);
 	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize($this->IDA,$this->IDC);    			
 	    	$this->MODE['ACTIVITAT_CICLE'] = true;
 	    		    	
@@ -1387,7 +1387,7 @@ class gestioActions extends sfActions
         
             $this->IDC = $request->getParameter('IDC');
 	    	$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();    			
-	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC);
+	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,false,1,false);
 	    	if($with_form) $this->FActivitat = ActivitatsPeer::initilize(null,$this->IDC);    			
 	    	$this->MODE['ACTIVITAT_CICLE'] = true;
             
