@@ -47,6 +47,8 @@ class CursosPeer extends BaseCursosPeer
   	
 	$RET = array();
 	$C = new Criteria();
+    
+    $C->add( self::ISACTIU , true );
 
 	$C->addAscendingOrderByColumn( self::CATEGORIA );
 	$C->addDescendingOrderByColumn( self::TITOLCURS );

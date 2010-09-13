@@ -2267,8 +2267,7 @@ class gestioActions extends sfActions
     	    
    	    //Edita una matrícula
     	case 'E':
-    			$this->MATRICULA = MatriculesPeer::retrieveByPk($request->getParameter('IDM'));
-    			$this->getUser()->setSessionPar('IDM',$request->getParameter('IDM'));    			
+    			$this->MATRICULA = MatriculesPeer::retrieveByPk($request->getParameter('IDM'));    			    			
     			$this->FMATRICULA = new MatriculesForm($this->MATRICULA);
     			$this->MODE = 'EDICIO';
     		break;
