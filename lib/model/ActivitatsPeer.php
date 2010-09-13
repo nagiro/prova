@@ -140,11 +140,11 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		endif; 
 	}
 	
-	static public function getActivitatsCicles($idC, $pager = false, $pagina = 1)
+	static public function getActivitatsCicles($idC, $pager = false, $pagina = 1, $publicaweb = true)
 	{
 		$C = new Criteria();
 		$C->add(self::CICLES_CICLEID,$idC);
-        $C->add(self::PUBLICAWEB, true);        
+        if($publicaweb) $C->add(self::PUBLICAWEB, true);        
 		
 		if($pager):
 			$pager = new sfPropelPager('Activitats', 20);
