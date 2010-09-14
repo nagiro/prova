@@ -3200,11 +3200,12 @@ class gestioActions extends sfActions
 				foreach(MatriculesPeer::getMatriculesPagadesDia($request->getParameter('mode_pagament')) as $OM):
 					$OU = $OM->getUsuaris();
 					$OC = $OM->getCursos();
-					$this->DADES[$OM->getIdmatricules()]['DATA'] = $OM->getDatainscripcio('d/m/Y H:i');
+					$this->DADES[$OM->getIdmatricules()]['DATA'] = $OM->getDatainscripcio('d/m/Y');
 					$this->DADES[$OM->getIdmatricules()]['IMPORT'] = $OM->getPagat();
 					$this->DADES[$OM->getIdmatricules()]['DNI'] = $OU->getDni();
 					$this->DADES[$OM->getIdmatricules()]['NOM'] = $OU->getNomComplet();
-					$this->DADES[$OM->getIdmatricules()]['CURS'] = $OC->getCodi();                                                            
+					$this->DADES[$OM->getIdmatricules()]['CURS'] = $OC->getCodi();
+                    $this->DADES[$OM->getIdmatricules()]['HORA'] = $OM->getDatainscripcio('H:i');                                                           
 				endforeach;				 
 			break;
 	}

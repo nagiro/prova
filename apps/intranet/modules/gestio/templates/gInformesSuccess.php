@@ -32,6 +32,7 @@
       	<TABLE class="DADES">
       		<tr>
       			<th>Data</th>
+                <th>Hora</th>
       			<th>Import</th>
       			<th>DNI</th>
       			<th>Nom</th>
@@ -50,6 +51,7 @@
       		<?php endif; ?>      		      			      			
       		<tr>
       			<td><?php echo $D['DATA'] ?></td>
+                <td><?php echo $D['HORA'] ?></td>
       			<td><?php echo $D['IMPORT'] ?></td>
       			<td><?php echo $D['DNI'] ?></td>
       			<td><?php echo $D['NOM'] ?></td>
