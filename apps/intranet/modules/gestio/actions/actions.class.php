@@ -2336,6 +2336,8 @@ class gestioActions extends sfActions
                 $doc->mergeXmlField('base', $OM->getPagat());
                 $doc->mergeXmlField('iva', '0%');
                 $doc->mergeXmlField('total', $OM->getPagat());
+                $doc->mergeXmlField('dia', $OC->getDatainici('d/m/Y'));
+                $doc->mergeXmlField('horari', $OC->getHoraris());                
                 
 				$doc->saveXml();
 				$doc->close();
