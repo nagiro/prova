@@ -180,7 +180,7 @@
                       	$PAR = ParImpar($i++);	                      	
 						echo '<TR>
 								<TD class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos?accio=EC&IDC=".$C->getIdcursos() , array('class' => 'tt2') ).'</TD>
-								<TD class="'.$PAR.'">'.$C->getTitolcurs().'</TD>
+								<TD class="'.$PAR.'">'.$C->getTitolcurs().' ('.$C->getHoraris().')</TD>
 								<TD class="'.$PAR.'">'.$C->getPreu().'€ </TD>
 								<TD class="'.$PAR.'">'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>							
 								<TD class="'.$PAR.'">'.$C->getDatainici('d-m-Y').'</TD>

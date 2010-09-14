@@ -2317,17 +2317,26 @@ class gestioActions extends sfActions
 				$doc = new sfTinyDoc();
 				$doc->createFrom(array('extension' => 'docx'));
 				$doc->loadXml('word/document.xml');
+                                                
+                $mat = 'MAT'.$OM->getIdmatricules();                 
 
-				$doc->mergeXmlField('doc', $OU->getDni());
-				$doc->mergeXmlField('nom', $OU->getNomComplet());				
-				$doc->mergeXmlField('pagament', utf8_decode($OM->getTpagamentString()));
-				$doc->mergeXmlField('preu', $OM->getPagat());
-				$doc->mergeXmlField('data', $OM->getDatainscripcio('d/m/Y H:i'));
-				$doc->mergeXmlField('reduir', $OM->getTreduccioString());
-				$doc->mergeXmlField('curs', $OC->getCodi().' - '.$OC->getTitolcurs());
-				$doc->mergeXmlField('inici', $OC->getDatainici('d/m/Y'));
-				$doc->mergeXmlField('horaris', $OC->getHoraris());
-
+                $doc->mergeXmlField('factura', $mat );
+                $doc->mergeXmlField('client', $OU->getDni());
+                $doc->mergeXmlField('data', $OM->getDatainscripcio('d/m/Y'));
+                $doc->mergeXmlField('nom', $OU->getNomComplet());
+                $doc->mergeXmlField('telèfon', $OU->getTelefon());
+                $doc->mergeXmlField('identificador', $OU->getDni());
+                $doc->mergeXmlField('carrer', $OU->getAdreca());
+                $doc->mergeXmlField('poble', $OU->getPoblacioString());
+                $doc->mergeXmlField('postal', $OU->getCodipostal());
+                $doc->mergeXmlField('concepte', $OC->getCodi().' - '.$OC->getTitolcurs());
+                $doc->mergeXmlField('preu', $OM->getPagat());
+                $doc->mergeXmlField('quantitat', '1');
+                $doc->mergeXmlField('import', $OM->getPagat());
+                $doc->mergeXmlField('base', $OM->getPagat());
+                $doc->mergeXmlField('iva', '0%');
+                $doc->mergeXmlField('total', $OM->getPagat());
+                
 				$doc->saveXml();
 				$doc->close();
 				$doc->sendResponse();
