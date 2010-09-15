@@ -2045,6 +2045,7 @@ class gestioActions extends sfActions
 	    if($request->hasParameter('BNOU')) 	    $accio = 'N';
 	    if($request->hasParameter('BSAVE')) 	$accio = 'S';
 	    if($request->hasParameter('BDELETE')) 	$accio = 'D';
+        if($request->hasParameter('SEND_RESOLUTION')) $accio = "SR";
 	endif;                
 	
     switch($accio){
@@ -2055,19 +2056,12 @@ class gestioActions extends sfActions
     		break;
     	case 'E':    			    			
     			$OReserva = ReservaespaisPeer::retrieveByPK($request->getParameter('IDR'));
+                $OReserva->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric());
 				$this->FReserva = new ReservaespaisForm($OReserva);   			
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'S':    	
-                $RP = $request->getParameter('reservaespais');
-                $OR = ReservaespaisPeer::retrieveByPK($RP['ReservaEspaiID']);                		    		        		  
-    		    $this->FReserva = new ReservaespaisForm($OR);
-    		    $this->FReserva->bind($RP);    		    
-    		    if($this->FReserva->isValid()):
-    		    	$this->FReserva->save();
-    		    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);
-    		    	$this->redirect('gestio/gReserves?accio=NN');
-    		    endif;     		        		    
+                if($this->saveReservaEspais($request,$accio)) $this->redirect('gestio/gReserves?accio=NN');
     			$this->MODE['EDICIO'] = true;
     		break;
     	case 'D': 
@@ -2077,12 +2071,68 @@ class gestioActions extends sfActions
     	        break;    	 
     	case 'C':
 				$this->getUser()->addLogAction('inside','gReserves');
-    			break;        	 
+    			break;
+       
+        //Envio un correu amb les condicions. 
+        case 'SR':
+        
+                //Primer guardem i el marquem pendent de confirmació 
+                if($this->saveReservaEspais($request,$accio)):
+                    
+                    $OR = $this->FRESERVA->getObject();                    
+                    $OR->setEstat(ReservaespaisPeer::PENDENT_CONFIRMACIO);
+                    $OR->save();                    
+                    
+                    $PARA  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Accepta_Condicions', 
+                                                                'id' => $OR->getReservaespaiid())));
+                    $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
+                                                                'id' => $OR->getReservaespaiid())));                                                            
+                                
+                    //Si no podem carregar un usuari, enviem el correu a informatica@casadecultura.org                                    
+                    if($OR instanceof Reservaespais){                                        
+                        $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
+                        if($OU instanceof Usuaris) $email = $OU->getEmail();
+                        else $email = 'informatica@casadecultura.org';                            
+                    }
+                    
+                    //Enviem el correu a la persona. 
+                    $this->sendMail('informatica@casadecultura.org',
+                                    $email,
+                                    'Reserva d\'espai Casa de Cultura de Girona',
+                                    ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR ));
+                                    
+                    //També una còpia a informàtica
+                    $this->sendMail('informatica@casadecultura.org',
+                                    'secretaria@casadecultura.org',
+                                    'Reserva d\'espai Casa de Cultura de Girona',
+                                    ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR ));
+                                         
+                endif; 
+                break;        	 
     }
         
     $this->RESERVES = ReservaespaisPeer::getReservesSelect($this->CERCA['text'],$this->PAGINA);    
   		
   }
+
+
+    private function saveReservaEspais($request,$accio){
+        
+        $RP = $request->getParameter('reservaespais');
+        $OR = ReservaespaisPeer::retrieveByPK($RP['ReservaEspaiID']);                		    		        		  
+	    $this->FReserva = new ReservaespaisForm($OR);
+	    $this->FReserva->bind($RP);    		    
+	    if($this->FReserva->isValid()):
+	    	$this->FReserva->save();
+	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);	    	
+            return true; 
+        else:
+            return false;  
+	    endif;        
+        
+    }        		        		    
+
+
 
   /**
    * Matrícules

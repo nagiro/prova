@@ -816,4 +816,43 @@ class webActions extends sfActions
 		
    }
    
+   public function executeFormularis(sfWebRequest $request)
+   {
+    
+        $this->LoadWEB($request);
+        $this->setTemplate('index');
+        //Entren crides i es mostra una reposta en web si ha anat bé o no.        
+        $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
+        $PAR = unserialize($PARAMETRES);                
+        switch($PAR['formulari']){
+            
+            //Paràmetres [id = IDReservaEspais]
+            //Només es podrà si l'estat actual és ESPERA_ACCEPTACIÓ_CONDICIONS
+            case 'Reserva_Espais_Mail_Accepta_Condicions':
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+                    if($OR instanceof Reservaespais && $OR->setAcceptada()):                        
+                        $this->MISSATGE = "La seva reserva ha estat acceptada. <br />Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.";
+                    else:
+                        $this->MISSATGE = "Hi ha hagut un error tècnic en l'acceptació. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties";
+                    endif;                         
+                    $this->ACCIO = 'missatge';                    
+                break;
+                
+            //Des del mail la persona no accepta i rebutja les condicions. 
+            case 'Reserva_Espais_Mail_Rebutja_Condicions':
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+                    if($OR instanceof Reservaespais && $OR->setRebutjada()):
+                        
+                        $this->MISSATGE = "La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.";
+                    else:
+                        $this->MISSATGE = "Hi ha hagut un error en l'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties";
+                    endif;                         
+                    $this->ACCIO = 'missatge';                    
+                break;                
+            default:
+                    
+                break;
+        }    
+   }
+   
 }

@@ -43,4 +43,29 @@ class Reservaespais extends BaseReservaespais
    		}
    }
    
+   public function setAcceptada()
+   {
+     if($this->getEstat() == ReservaespaisPeer::PENDENT_CONFIRMACIO):
+         $this->setDataacceptaciocondicions(date('Y-m-d',time()));
+         $this->setEstat(ReservaespaisPeer::ACCEPTADA);
+         $this->save();
+        return true;
+     else: 
+        return false;  
+     endif;  
+   }
+
+   public function setRebutjada()
+   {
+     if($this->getEstat() == ReservaespaisPeer::PENDENT_CONFIRMACIO):
+         $this->setDataacceptaciocondicions(date('Y-m-d',time()));
+         $this->setEstat(ReservaespaisPeer::ANULADA);
+         $this->save();
+         return true; 
+     else: 
+        return false; 
+     endif; 
+     
+   }
+   
 }

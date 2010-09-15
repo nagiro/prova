@@ -60,7 +60,9 @@
 				<?php echo $FReserva ?>	 				 				 			    	    
 	 			
                 <div class="" style="text-align:right; padding-top:40px;">
-                    <button type="submit" name="SEND_RESOLUTION" class="BOTO_ACTIVITAT">Envia mail condicions</button>	 			
+                <?php if($FReserva->getObject()->getEstat() == ReservaespaisPeer::EN_ESPERA): ?>
+                    <button type="submit" name="SEND_RESOLUTION" class="BOTO_ACTIVITAT">Envia mail condicions</button>
+                <?php endif; ?>	 			
                     <button type="submit" name="BSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
     				<img src="/intranet/images/template/disk.png" /> Guardar i sortir </button>
                     
