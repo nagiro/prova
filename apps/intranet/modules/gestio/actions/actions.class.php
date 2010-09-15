@@ -2079,7 +2079,8 @@ class gestioActions extends sfActions
                 //Primer guardem i el marquem pendent de confirmació 
                 if($this->saveReservaEspais($request,$accio)):
                     
-                    $OR = $this->FRESERVA->getObject();                    
+                    $RP = $request->getParameter('reservaespais');
+                    $OR = ReservaespaisPeer::retrieveByPK($RP['ReservaEspaiID']);                                        
                     $OR->setEstat(ReservaespaisPeer::PENDENT_CONFIRMACIO);
                     $OR->save();                    
                     
