@@ -112,7 +112,7 @@ class ActivitatsTextosForm extends sfFormPropel
   		$I = $OR->getImatge();
   		if(!empty($I) && file_exists($BASE.$I)):  				
 		  	$img = new sfImage($BASE.$I,'image/jpg');  	
-		    $img->resize(100,100);
+		    $img->resize(150,150);
 		    $nom = $OR->getActivitatid().'.jpg';
 		    $img->saveAs($BASE.$nom);
 		    if( $I <> $nom ) unlink($BASE.$I);		    

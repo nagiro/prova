@@ -510,7 +510,7 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Condicions</b></span>
-	    	<span class="DH checkbox_list"><a class="blue" href="<?php echo url_for('web/espais') ?>" target="_BLANK">Llegeix les condicions</a><br /><span style="color: gray;"> Hauran de ser acceptades un cop validada la seva prereserva</span> </span>
+	    	<span class="DH checkbox_list"><a class="blue" href="<?php echo url_for('web/espais#condicions') ?>" target="_BLANK">Llegeix les condicions</a><br /><span style="color: gray;"> Hauran de ser acceptades un cop validada la seva prereserva</span> </span>
 	    </div>
 				
 		<div style="clear:both; padding-top:20px;" class="FORMULARI">
