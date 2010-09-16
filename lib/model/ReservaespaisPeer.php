@@ -65,7 +65,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 	      
 	      $C->add($C1);
           
-          $C->add(self::ESTAT, $self::ESBORRADA, CRITERIA::NOT_EQUAL);        
+          $C->add(self::ESTAT, self::ESBORRADA, CRITERIA::NOT_EQUAL);        
 	      
 	  endif;
       
