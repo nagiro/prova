@@ -76,6 +76,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 	    $C1->addOr($C2);  $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5);
 	    $C1->addOr($C6);  $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9);
 	    $C1->addOr($C10); $C->addAnd($C1);
+        $C->add(self::HABILITAT, 1);
     endforeach;
 
     return $C;
