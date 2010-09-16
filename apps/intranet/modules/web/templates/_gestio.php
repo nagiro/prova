@@ -395,40 +395,7 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 	if($ENABLED) echo '<form name="fReserves" id="fReserves" method="post" action="'.url_for('web/gestio?accio=sr').'">';
     
 	?>              	
-    
-    <?php if($FRESERVA->getObject()->getCondicionsCCG() != ""): ?>
-      
-    	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Finalitzar reserva</LEGEND>			    	    
- 	    
-  	    <div style="clear: both;" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Condicions</b></span>
-	    	<span class="DH" style="width:450px; height:50px;"><?php echo $FRESERVA->getObject()->getCondicionsCCG(); ?></span>
-	    </div>
-	    	    	    
-	    
-	    <div style="clear:both" class="FORMULARI">
-	    	<span class="DH" style="width:150px;"><b>Observacions</b></span>
-	    	<span class="DH"><?php echo $FRESERVA['ObservacionsCondicions']->render(); ?></span>
-	    </div>
-	    	    				
-		<div style="clear:both; padding-top:20px;" class="FORMULARI">
-			<span class="DH" style="width:150px"></span>
-			<span class="DH" style="width:450px">
-            							  			               
-                <?php //Si encara no està confirmada mostro confirmació, altrament només anul·lació ?>     
-                <?php if($FRESERVA->getObject()->getDataAcceptacioCondicions() == ""): ?>
-      				 	<button type="submit" id="BOTO_SUBMIT_CONDICIONS" class="BOTO_ACTIVITAT" style="width:140px" >Accepto les condicions</button>  				 	  			
-      			<?php else: ?>					
-    					<button type="submit" name="BOTO_DEL_RESERVA" class="BOTO_ACTIVITAT" style="width:140px">Anul·leu la reserva</button>  					 					
-    			<?php endif; ?>
-                            		        	                   				 	  						
-			</span>
-		</div>        
-              
-	</FIELDSET>
-      
-    <?php endif; ?>
-      
+          
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Prereserva</LEGEND>
         <?php echo $FRESERVA['DataAcceptacioCondicions']->render(); ?>
         <?php echo $FRESERVA['CondicionsCCG']->render(); ?>
