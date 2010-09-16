@@ -14,7 +14,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
   const ACCEPTADA = 1;
   const DENEGADA  = 2; 
   const ANULADA   = 3;
-  const PENDENT_CONFIRMACIO = 4; 
+  const PENDENT_CONFIRMACIO = 4;
+  const ESBORRADA = 5;  
 
   
   static function selectEstat()
@@ -24,7 +25,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
                     self::ACCEPTADA => 'Acceptada' ,
                     self::DENEGADA  => 'Denegada',
                     self::ANULADA   => 'Anul·lada',
-                    self::PENDENT_CONFIRMACIO => 'Pendent d\'acceptar condicions', 
+                    self::PENDENT_CONFIRMACIO => 'Pendent d\'acceptar condicions',
+                    self::ESBORRADA => 'Esborrada', 
      );
   }
   
@@ -45,6 +47,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    {
       $C = new Criteria();
       if(!empty($CERCA)):
+      
 	      $C1 = $C->getNewCriterion(self::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C2 = $C->getNewCriterion(self::REPRESENTACIO , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C3 = $C->getNewCriterion(self::RESPONSABLE , '%'.$CERCA.'%', CRITERIA::LIKE);
@@ -61,6 +64,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 	      $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9); $C1->addOr($C10);
 	      
 	      $C->add($C1);
+          
+          $C->add(self::ESTAT, $self::ESBORRADA, CRITERIA::NOT_EQUAL);        
 	      
 	  endif;
       

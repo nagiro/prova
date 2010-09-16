@@ -13,7 +13,7 @@
 			return ok; 
 		});	   
 		
-		$("#BOTO_SUBMIT_RESERVA").click(fesReserva);
+		$("#BOTO_SUBMIT_RESERVA").click(ValidaReserves);
 		$("#BOTO_NOVA_RESERVA").click(function(){ window.location.href='<?php echo url_for('web/gestio?accio=gr'); ?>'; return false; });
 		$("#BOTO_DEL_RESERVA").click(function(){ window.location.href='<?php echo url_for('web/gestio?accio=ar'); ?>'; return false; });		
 		
@@ -25,35 +25,10 @@
 		if($("#reservaespais_Nom").val().length == 0) { alert("El nom d'activitat no pot estar buit."); return false; }
 		if($("#reservaespais_DataActivitat").val().length == 0) { alert("La data d'activitat no pot estar buit."); return false; }
 		if($("#reservaespais_HorariActivitat").val().length == 0) { alert("L'hora d'activitat no pot estar buida."); return false; }
-		if(espais) { alert("Has d'escollir com a mínim un espai on realitzar l'acte"); return false; }
-		if($("#reservaespais_Condicions").val() == 0) { alert("Has d'acceptar les condicions per fer una prereserva"); return false; }
+		if(espais) { alert("Has d'escollir com a mínim un espai on realitzar l'acte"); return false; }		
 		return true;  				
 	}
 	
-	
-/*	function fesReserva()
-	{
-		if(ValidaReserves()){
-		
-			$.post(
-					"<?php echo url_for('web/gestio?accio=sr'); ?>", 
-					$("#fReserves").serialize(),
-					function (data){ 
-							if(data == 'OK') 
-							{ 
-								alert("Prereserva feta amb èxit.");		
-								window.location.href='<?php echo url_for('web/gestio?accio=gr'); ?>';						
-							} else {
-								alert("Hi ha hagut algun problema fent la prereserva. Si us plau, revisi-la o truqui a secretaria.");								 
-							}
-						}
-					);
-			return false;		
-		} else return false; 
-		
-	}
-*/		
-
 </script>
 
 <style>
@@ -76,8 +51,8 @@
 
    <TD colspan="3" class="CONTINGUT">
 
-	<?php  
-		
+	<?php  		        
+        
 	   switch($MODUL){
 	   	  case 'landing_page': landing_page( ); break;
 	      case 'gestiona_dades': gestiona_dades( $FUSUARI , $MISSATGE ); break;
@@ -363,8 +338,8 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 //RESERVES hi ha un llistat d'objectes reserva
 //MISSATGE Missatge que informa d'algun problema o bé que tot ha anat bé
 
-function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array() ){   
-      	      
+function gestiona_reserves( $FRESERVA , $RESERVES , $MISSATGE = array() ){   
+      	                                
 	$ESPAIS = explode('@',$FRESERVA->getValue('EspaisSolicitats'));
 	$MATERIAL= explode('@',$FRESERVA->getValue('MaterialSolicitat'));
 	?>
@@ -392,10 +367,10 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
     <?php 
     
   	if($FRESERVA->getValue('ReservaEspaiID') > 0) $ENABLED = false; else $ENABLED = true;  
-	if($ENABLED) echo '<form name="fReserves" id="fReserves" method="post" action="'.url_for('web/gestio?accio=sr').'">';
-    
-	?>              	
-          
+	if($ENABLED) echo '<form name="fReserves" id="fReserves" method="post" action="'.url_for('web/gestio?accio=sr').'">';    
+             
+    ?> 
+       	              	           
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Prereserva</LEGEND>
         <?php echo $FRESERVA['DataAcceptacioCondicions']->render(); ?>
         <?php echo $FRESERVA['CondicionsCCG']->render(); ?>
@@ -404,7 +379,9 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 		<?php echo $FRESERVA['DataAlta']->render(); ?>
 		<?php echo $FRESERVA['ReservaEspaiID']->render(); ?>
 		<?php echo $FRESERVA['Codi']->render(); ?>	    	    	    
-	    
+	
+        <?php echo missatgeDiv($MISSATGE); ?>
+        
 	    <div style="clear:both" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Nom de l'activitat</b></span>
 	    	<span class="DH"><?php echo $FRESERVA['Nom']->render(); ?></span>
@@ -542,6 +519,16 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $ESTAT , $MISSATGE = array()
 		   	echo '<TD></TD><TD class="MISSAT_OK">';
 		   	foreach($MISSATGE as $M): echo $M."<BR>";  endforeach;    				
 		   	echo '</TD></TR>';			
+		}		
+	}
+    
+    function missatgeDiv($MISSATGE)
+	{
+		if(sizeof($MISSATGE) > 0)
+		{			
+            echo '<DIV class="FORMULARI"><DIV class="MISSAT_OK" style="clear:both">';		   	
+		   	foreach($MISSATGE as $M): echo $M."<BR>";  endforeach;    				
+		   	echo '</DIV></DIV>';			
 		}		
 	}
 

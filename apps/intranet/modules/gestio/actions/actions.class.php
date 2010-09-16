@@ -2066,8 +2066,9 @@ class gestioActions extends sfActions
     		break;
     	case 'D': 
     	        $OR = ReservaespaisPeer::retrieveByPK($this->IDR);
-    	        $this->getUser()->addLogAction($accio,'gReserves',$OR);
-    	        $OR->delete();    	        
+                $OR->setEstat(ReservaespaisPeer::ESBORRADA);
+                $OR->save();
+    	        $this->getUser()->addLogAction($accio,'gReserves',$OR);    	        
     	        break;    	 
     	case 'C':
 				$this->getUser()->addLogAction('inside','gReserves');

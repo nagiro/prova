@@ -597,7 +597,7 @@ class webActions extends sfActions
                     $OO = $this->FRESERVA->getObject();
                     $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
                     $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                     
-                endif; 				                
+                endif; 			                	                
                 $this->MISSATGE = array('Sol·licitud enviada correctament.');				
 			else:
                 $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
@@ -648,7 +648,7 @@ class webActions extends sfActions
             $this->MODUL = "gestiona_verificacio";                                                      
 	        break;
      }
-     
+               
   }
 
   //Guardem el TPV
