@@ -40,6 +40,7 @@ class Reservaespais extends BaseReservaespais
          case ReservaespaisPeer::DENEGADA: return 'Denegada';
          case ReservaespaisPeer::ANULADA:  return 'Anul·lada';
          case ReservaespaisPeer::PENDENT_CONFIRMACIO: return 'Pendent acceptar condicions';
+         case ReservaespaisPeer::ESBORRADA: return 'Esborrada';
    		}
    }
    

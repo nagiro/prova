@@ -63,12 +63,11 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 	      $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5); $C1->addOr($C6); 
 	      $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9); $C1->addOr($C10);
 	      
-	      $C->add($C1);
-          
-          $C->add(self::ESTAT, self::ESBORRADA, CRITERIA::NOT_EQUAL);        
+	      $C->add($C1);                            
 	      
 	  endif;
-      
+            
+      $C->add(self::ESTAT, self::ESBORRADA, CRITERIA::NOT_EQUAL);
       $C->addDescendingOrderByColumn(self::DATAALTA);
       
                  
