@@ -34,11 +34,11 @@ class ReservaespaisForm extends sfFormPropel
       'PrevisioAssistents' => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'isEnregistrable'    => new sfWidgetFormChoice(array('choices'=>$SN),array()),
       'EsCicle'            => new sfWidgetFormChoice(array('choices'=>$SN),array()),          
-      'Comentaris'         => new sfWidgetFormTextarea(array(),array('rows'=>'10','cols'=>'50','disabled'=>'disabled')),      
+      'Comentaris'         => new sfWidgetFormTextarea(array(),array('rows'=>'10','cols'=>'50')),      
       'Usuaris_usuariID'   => new sfWidgetFormInputHidden(),            
       'DataAlta'           => new sfWidgetFormInputHidden(),      
       'DataAcceptacioCondicions' => new sfWidgetFormInputHidden(),
-      'ObservacionsCondicions' => new sfWidgetFormTextarea(array(),array('rows'=>'10','cols'=>'50','disabled'=>'disabled')),
+      'ObservacionsCondicions' => new sfWidgetFormTextarea(array(),array('rows'=>'10','cols'=>'50')),
   	  
     ));
   	  	

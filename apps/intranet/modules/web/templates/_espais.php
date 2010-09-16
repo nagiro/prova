@@ -71,8 +71,8 @@
 	  	 
         <a name="condicions"></a>	
 		<h3>Condicions de cessió i ús</h3>
-		<P>
-			<UL class="llistat" type="circle">
+		<p>
+			<ul class="llistat" type="circle">
             
 <li>1. La cessió d’espais es factura segons els trams indicats en les tarifes. En el cas que una cessió superi la durada prevista d’ocupació de l’espai, cada hora de més es facturarà a 30 euros o s’aplicarà el tram de tarifa immediatament superior, tant en ús comercial com en ús cultural.  En tot cas, sempre s’aplicarà la mesura que sigui més avantatjosa per a l’usuari.
 </li><li>2. A partir de les 21 hores, cada hora o fragment d’hora que superi el temps de cessió de l’espai tindrà un cost de 30 euros (40 en cap de setmana), tant en tarifa cultural com en tarifa comercial. 
@@ -92,8 +92,78 @@
 </li>
                         
             
-			</UL>
-	    </P>
+			</ul>
+	    </p>
+
+        <a name="tarifes"></a>	
+		<h3>Tarifes de cessió d'espais</h3>        
+        <p>En horari de dilluns a divendres, de 9 a 21 hores</p>
+		<p>
+            <table>                
+                <tr><td colspan="3">TARIFA CULTURAL</td></tr>
+                <tr><td></td><td>Fins a tres hores</td><td>Mitja jornada</td></tr>
+                <tr><td>Auditori Josep Viader</td>  <td>100€</td><td>150€</td></tr>
+                <tr><td>Aula Magna</td>             <td> 75€</td><td>125€</td></tr>
+                <tr><td>Aula B</td>                 <td> 60€</td><td> 90€</td></tr>
+                <tr><td>Aula C</td>                 <td> 40€</td><td> 60€</td></tr>
+                <tr><td>Aules 2n pis</td>           <td> 30€</td><td> 45€</td></tr>
+                <tr><td>Sala Domènech Fita</td>     <td> 60€</td><td> 90€</td></tr>
+                <tr><td>Pati</td>                   <td> 75€</td><td>125€</td></tr>                
+                <tr><td>&nbsp;</td>                 <td></td><td></td></tr>
+                <tr><td></td><td>Jornada completa</td><td></td></tr>
+                <tr><td>Auditori Josep Viader</td>  <td>225€</td><td></td></tr>
+                <tr><td>Aula Magna</td>             <td>175€</td><td></td></tr>
+                <tr><td>Aula B</td>                 <td>125€</td><td></td></tr>
+                <tr><td>Aula C</td>                 <td>85€</td><td></td></tr>
+                <tr><td>Aules 2n pis</td>           <td>65€</td><td></td></tr>
+                <tr><td>Sala Domènech Fita</td>     <td>125€</td><td></td></tr>
+                <tr><td>Pati</td>                   <td>175€</td><td></td></tr>
+
+                <tr><td colspan="3">TARIFA COMERCIAL</td></tr>
+                <tr><td></td><td>Fins a tres hores</td><td>Mitja jornada</td></tr>
+                <tr><td>Auditori Josep Viader</td>  <td>200€</td><td>300€</td></tr>
+                <tr><td>Aula Magna</td>             <td>150€</td><td>225€</td></tr>
+                <tr><td>Aula B</td>                 <td>100€</td><td>150€</td></tr>
+                <tr><td>Aula C</td>                 <td> 75€</td><td>110€</td></tr>
+                <tr><td>Aules 2n pis</td>           <td> 50€</td><td> 75€</td></tr>
+                <tr><td>Sala Domènech Fita</td>     <td>100€</td><td>150€</td></tr>
+                <tr><td>Pati</td>                   <td>120€</td><td>180€</td></tr>                
+                <tr><td>&nbsp;</td>                 <td></td><td></td></tr>
+                <tr><td></td><td>Jornada completa</td><td></td></tr>
+                <tr><td>Auditori Josep Viader</td>  <td>450€</td><td></td></tr>
+                <tr><td>Aula Magna</td>             <td>325€</td><td></td></tr>
+                <tr><td>Aula B</td>                 <td>200€</td><td></td></tr>
+                <tr><td>Aula C</td>                 <td>150€</td><td></td></tr>
+                <tr><td>Aules 2n pis</td>           <td>100€</td><td></td></tr>
+                <tr><td>Sala Domènech Fita</td>     <td>200€</td><td></td></tr>
+                <tr><td>Pati</td>                   <td>325€</td><td></td></tr>
+
+                
+                <tr><td>APARELLS AUDIOVISUALS.</td><td>TARIFA CULTURAL</td><td>TARIFA COMERCIAL</td></tr>                
+                <tr><td>Projector </td>                 <td>30€</td><td>60€</td></tr>
+                <tr><td>Aparell reproductor</td>        <td>15€</td><td>30€</td></tr>
+                <tr><td>Piano Auditori</td>             <td>50€</td><td>100€</td></tr>
+                <tr><td>Piano Aula Magna</td>           <td>35€</td><td>70€</td></tr>
+                <tr><td>Pantalla de retroprojecció</td> <td>30€</td><td>60€</td></tr>
+                <tr><td colspan="3">Si l’ús dels pianos requereix un afinació no programada, el cost anirà a càrrec dels usuaris.</td></tr>                                
+                                
+            </table>  
+	    </p>
+
+        <a name="criteris"></a>	
+		<h3>Criteris</h3>
+        
+        <h4>Aplicació de tarifa comercial</h4>
+            <p>En principi, es considerarà activitat comercial tota aquella generada per una entitat privada amb afany de lucre. És possible, tanmateix, que les entitats o empreses privades sol•licitin espais o serveis per a una activitat d’interès general. En aquest cas, és possible autoritzar l’activitat amb exempció de despeses. La Casa de Cultura es reserva el dret d’autoritzar o denegar aquesta exempció.</p> 
+            <p>Es consideraran activitats comercials també aquelles que, provenint de l’àmbit públic o privat, no s’adrecin a la ciutadania en general i per a les quals calgui una matrícula, és a dir, que generin un ingressos. És el cas de jornades, congressos, cursos...</p>
+ 
+        <h4>Aplicació de tarifa cultural</h4>
+            <p>S’aplica la tarifa cultural a aquelles cessions d’espai a entitats i activitats d’interès social, cultural i/o sense afany de lucre.</p> 
+            <p>Aquestes activitats poden demanar l’exempció de despeses, que la Fundació Casa de Cultura aprovarà o desestimarà d’acord amb els seus criteris de programació i objectius fundacionals.</p>
+
+        <h4>Diputació de Girona i organismes vinculats</h4>
+            <p>Tots els organismes dependents –directament o indirecta- de la Diputació de Girona estan exempts del pagament de despeses però han de sol•licitar els espais o serveis de manera formalitzada.</p>            
+            <p>En cap cas, la dependència o vinculació amb la Diputació de Girona suposa un tracte preferencial en relació als compromisos ja adquirits o en relació a la pròpia activitat de la Fundació.</p>
    
    </div>
    
