@@ -140,26 +140,26 @@ class ClientUsuarisForm extends sfFormPropel
           $suma += substr((2 * $num[$i]),0,1) + substr((2 * $num[$i]),1,1);
        $n = 10 - substr($suma, strlen($suma) - 1, 1);
     //comprobacion de NIFs especiales (se calculan como CIFs o como NIFs)
-       if (preg_match('^[KLM]{1}', $cif))
+       if (preg_match('(^[KLM]{1})', $cif))
           if ($num[8] == chr(64 + $n) || $num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr($cif, 1, 8) % 23, 1))
              return 1;
           else
              return -1;
     //comprobacion de CIFs
-       if (preg_match('^[ABCDEFGHJNPQRSUVW]{1}', $cif))
+       if (preg_match('(^[ABCDEFGHJNPQRSUVW]{1})', $cif))
           if ($num[8] == chr(64 + $n) || $num[8] == substr($n, strlen($n) - 1, 1))
              return 2;
           else
              return -2;
     //comprobacion de NIEs
        //T
-       if (preg_match('^[T]{1}', $cif))
+       if (preg_match('(^[T]{1})', $cif))
           if ($num[8] == preg_match('^[T]{1}[A-Z0-9]{8}$', $cif))
              return 3;
           else
              return -3;
        //XYZ
-       if (preg_match('^[XYZ]{1}', $cif))
+       if (preg_match('(^[XYZ]{1})', $cif))
           if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr(str_replace(array('X','Y','Z'), array('0','1','2'), $cif), 0, 8) % 23, 1))
              return 3;
           else
