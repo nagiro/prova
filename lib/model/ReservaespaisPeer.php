@@ -220,7 +220,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     
    }
 
-   static public function getCondicionsGeneric()
+   static public function getCondicionsGeneric($OR)
    {
   	
   	$text = "";
@@ -228,13 +228,13 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 
         <p>Senyors,</p>
         <br />
-        <p>D’acord amb la sol·licitud rebuda, la Fundació Casa de Cultura de Girona ha acordat la següent cessió d’espai a l’Associació AECC-Catalunya contra el Càncer:</p> 
+        <p>D’acord amb la sol·licitud rebuda, la Fundació Casa de Cultura de Girona ha acordat la següent cessió d’espai a '.$OR->getRepresentacio().':</p> 
         <br /><br />
-        <p><b>Espai:</b> Aula 7 de la Casa de Cultura<br />
-        <b>Activitat:</b> Curs d’Artteràpia<br />
-        <b>Dies:</b> 7, 14, 21 i 28 d’octubre, 4, 11, 18, 25 de novembre, i 2, 9 i 16 de desembre de 2010<br />
-        <b>Horari:</b> d’11 a 12.30 hores<br />
-        <b>Equipament:</b> No s’ha sol•licitat equipament<br /></p>
+        <p><b>Espai:</b> '.$OR->getEspaisString().'<br />
+        <b>Activitat:</b> '.$OR->getNom().'<br />
+        <b>Dies:</b> '.$OR->getDataactivitat().'<br />
+        <b>Horari:</b> '.$OR->getHorariactivitat().'<br />
+        <b>Equipament:</b> No s’ha sol·licitat equipament<br /></p>
         <br /><br />
         <p><b>Despeses</b></p>
         <p>La Casa de Cultura de Girona, amb la voluntat de donar suport a aquesta activitat, eximeix l’organització de les despeses de cessió d’aquest espai que, segons les tarifes aprovades per la Junta Rectora de la Fundació, tindria un cost de 550 euros (IVA no inclòs).</p> 

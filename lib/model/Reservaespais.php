@@ -32,6 +32,17 @@ class Reservaespais extends BaseReservaespais
       return implode('<br />',$sol);
    }
 
+   public function getEspaisString()
+   {
+      $sol = array();
+      $espais = explode('@',$this->espaissolicitats);
+      foreach($espais as $E):
+         $ESPAI = EspaisPeer::retrieveByPK($E);         
+         $sol[$ESPAI->getEspaiid()] = $ESPAI->getNom();
+      endforeach;
+      return implode(' , ',$sol);
+   }
+   
    public function getEstatText()
    {
       switch($this->getEstat()){

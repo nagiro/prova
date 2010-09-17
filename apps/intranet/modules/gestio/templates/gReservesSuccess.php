@@ -115,9 +115,9 @@ function gestorPagines($MODEL)
   if($MODEL->haveToPaginate())
   {       
   	 echo '<TR><TD colspan="3" class="TITOL">';  	 
-     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gReserves'.getParam( null , null , $MODEL->getPreviousPage() ));
+     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gReserves?PAGINA='.$MODEL->getPreviousPage());
      echo " ";
-     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gReserves'.getParam( null , null , $MODEL->getNextPage()));
+     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gReserves?PAGINA='.$MODEL->getNextPage());
      echo '</TD></TR>';
   }
 }

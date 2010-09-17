@@ -2056,7 +2056,7 @@ class gestioActions extends sfActions
     		break;
     	case 'E':    			    			
     			$OReserva = ReservaespaisPeer::retrieveByPK($request->getParameter('IDR'));
-                $OReserva->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric());
+                $OReserva->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric($OReserva));
 				$this->FReserva = new ReservaespaisForm($OReserva);   			
     			$this->MODE['EDICIO'] = true;
     		break;
