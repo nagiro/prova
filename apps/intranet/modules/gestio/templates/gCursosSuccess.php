@@ -183,7 +183,7 @@
 								<TD class="'.$PAR.'">'.$C->getTitolcurs().' ('.$C->getHoraris().')</TD>
 								<TD class="'.$PAR.'">'.$C->getPreu().'€ </TD>
 								<TD class="'.$PAR.'">'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>							
-								<TD class="'.$PAR.'">'.$C->getDatainici('d-m-Y').'</TD>
+								<TD width="70px" class="'.$PAR.'">'.$C->getDatainici('d-m-Y').'</TD>
 								<TD class="'.$PAR.'">'.link_to(image_tag('template/user.png').'<span>Llistat d\'alumnes matriculats.</span>','gestio/gCursos?accio=L&IDC='.$C->getIdcursos() , array('class'=>'tt2') ).'</TD>
 						</TR>';
 					endforeach;
