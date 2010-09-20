@@ -20,6 +20,27 @@ class Reservaespais extends BaseReservaespais
       
       return $E;
    }
+
+
+   public function getMaterialString()
+   {
+    
+    $sol = array();
+    $material = explode('@',$this->getMaterialsolicitat());
+    
+    foreach($material as $M):
+        switch($M){
+            case '1': $sol[] = 'Portàtil'; break;
+            case '2': $sol[] = 'Projector'; break;
+            case '3': $sol[] = 'DVD'; break; 
+            case '4': $sol[] = 'Microfonia'; break;  
+        }
+    endforeach;
+    
+    if(sizeof($sol) == 0) return 'No s\'ha sol·licitat material.';
+    else return implode(' , ',$sol);
+       
+   }
    
    public function getEspais()
    {

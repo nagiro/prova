@@ -234,7 +234,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
         <b>Activitat:</b> '.$OR->getNom().'<br />
         <b>Dies:</b> '.$OR->getDataactivitat().'<br />
         <b>Horari:</b> '.$OR->getHorariactivitat().'<br />
-        <b>Equipament:</b> No s’ha sol·licitat equipament<br /></p>
+        <b>Equipament:</b> '.$OR->getMaterialString().'</p>
         <br /><br />
         <p><b>Despeses</b></p>
         <p>La Casa de Cultura de Girona, amb la voluntat de donar suport a aquesta activitat, eximeix l’organització de les despeses de cessió d’aquest espai que, segons les tarifes aprovades per la Junta Rectora de la Fundació, tindria un cost de 550 euros (IVA no inclòs).</p> 
