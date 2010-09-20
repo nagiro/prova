@@ -167,7 +167,7 @@
         <DIV class="TITOL">Llistat de cursos </DIV>
       	<TABLE class="DADES">
  			<?php 
- 				
+ 				                                
 				if( $CURSOS->getNbResults() == 0 ){
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap curs amb aquestes dades.</TD></TR>';
 				} else { 
@@ -176,15 +176,16 @@
 					foreach($CURSOS->getResults() as $C):
 						if($CAT_ANT <> $C->getCategoria()) echo '<TR><TD colspan="6" class="TITOLCAT">'.$C->getCategoriaText().'</TD></TR>';
 						$CAT_ANT = $C->getCategoria(); $SPAN = ""; 
-						$PLACES = CursosPeer::getPlaces($C->getIdcursos());											
+						$PLACES = CursosPeer::getPlaces($C->getIdcursos());
+                        $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FF7373;\"":"";											
                       	$PAR = ParImpar($i++);	                      	
 						echo '<TR>
-								<TD class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos?accio=EC&IDC=".$C->getIdcursos() , array('class' => 'tt2') ).'</TD>
-								<TD class="'.$PAR.'">'.$C->getTitolcurs().' ('.$C->getHoraris().')</TD>
-								<TD class="'.$PAR.'">'.$C->getPreu().'€ </TD>
-								<TD class="'.$PAR.'">'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>							
-								<TD width="70px" class="'.$PAR.'">'.$C->getDatainici('d-m-Y').'</TD>
-								<TD class="'.$PAR.'">'.link_to(image_tag('template/user.png').'<span>Llistat d\'alumnes matriculats.</span>','gestio/gCursos?accio=L&IDC='.$C->getIdcursos() , array('class'=>'tt2') ).'</TD>
+								<TD '.$ple.' class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos?accio=EC&IDC=".$C->getIdcursos() , array('class' => 'tt2') ).'</TD>
+								<TD '.$ple.' class="'.$PAR.'">'.$C->getTitolcurs().' ('.$C->getHoraris().')</TD>
+								<TD '.$ple.' class="'.$PAR.'">'.$C->getPreu().'€ </TD>
+								<TD '.$ple.' class="'.$PAR.'">'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>							
+								<TD '.$ple.' width="70px" class="'.$PAR.'">'.$C->getDatainici('d-m-Y').'</TD>
+								<TD '.$ple.' class="'.$PAR.'">'.link_to(image_tag('template/user.png').'<span>Llistat d\'alumnes matriculats.</span>','gestio/gCursos?accio=L&IDC='.$C->getIdcursos() , array('class'=>'tt2') ).'</TD>
 						</TR>';
 					endforeach;
 

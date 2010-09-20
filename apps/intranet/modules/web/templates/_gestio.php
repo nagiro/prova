@@ -165,7 +165,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 						   	<td class="TITOL" colspan="2">CODI</td>						   	
 						   	<td class="TITOL">NOM</td>
 						   	<td class="TITOL">PREU</td>
-						   	<td class="TITOL">INICI</td>
+						   	<td class="TITOL" width="70px">INICI</td>
 						   	<td class="TITOL">PLACES</td>
 						   </tr>
 					   <?php $CAT_ANT = ""; ?>   
@@ -174,10 +174,12 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>					   
 								<TR><TD colspan="6" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
-					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>					                       	
+					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); 
+                                   $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FF7373;\"":"";                       
+                       ?>					                       	
 					   		<TR>
-					      		<TD><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>					      		
-					      		<TD>
+					      		<TD <?php echo $ple ?>><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>					      		
+					      		<TD <?php echo $ple ?>>
 					      		
 									<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $C->getIdcursos(); ?>&modal=false" class="thickbox">
 					      				<?php echo $C->getCodi()?>
@@ -188,10 +190,10 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 
 					      		</TD>
 										      							      							      		
-					      		<TD><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
-					      		<TD><?php echo $C->getPreu()?> €</TD>      							
-					      		<TD><?php echo $C->getDatainici('d-m-Y')?></TD>
-					      		<TD><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
+					      		<TD <?php echo $ple ?>><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
+					      		<TD <?php echo $ple ?>><?php echo $C->getPreu()?> €</TD>      							
+					      		<TD <?php echo $ple ?>><?php echo $C->getDatainici('d-m-Y')?></TD>
+					      		<TD <?php echo $ple ?>><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
 					      	</TR>                		                 										
 					   <?php $CAT_ANT = $C->getCategoria(); ?>
                        <?php endif; ?>			   
