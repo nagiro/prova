@@ -84,13 +84,13 @@
 				else: 
 					$i = 0;
                     echo '<TR><TH colspan="5">EN ESPERA</TH></TR>';
-                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::EN_ESPERA);
+                    echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::EN_ESPERA);
                     echo '<TR><TH colspan="5">PENDENT CONFIRMACIÓ</TH></TR>';
-                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::PENDENT_CONFIRMACIO);
+                    echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::PENDENT_CONFIRMACIO);
                     echo '<TR><TH colspan="5">ANUL·LAT</TH></TR>';
-                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::ANULADA);
+                    echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::ANULADA);
                     echo '<TR><TH colspan="5">ACCEPTAT</TH></TR>';
-                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::ACCEPTADA);                    					
+                    echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::ACCEPTADA);                    					
                  endif;                    
              ?>
               
