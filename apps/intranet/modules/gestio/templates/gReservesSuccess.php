@@ -83,13 +83,13 @@
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap reserva amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;
-                    echo '<TR><TH colspan="5">EN ESPERA</TH></TR>';
+                    echo '<TR><TD class="titol" colspan="5">EN ESPERA</TD></TR>';
                     echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::EN_ESPERA);
-                    echo '<TR><TH colspan="5">PENDENT CONFIRMACIÓ</TH></TR>';
+                    echo '<TR><TD class="titol" colspan="5">PENDENT CONFIRMACIÓ</TD></TR>';
                     echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::PENDENT_CONFIRMACIO);
-                    echo '<TR><TH colspan="5">ANUL·LAT</TH></TR>';
+                    echo '<TR><TD class="titol" colspan="5">ANUL·LAT</TD></TR>';
                     echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::ANULADA);
-                    echo '<TR><TH colspan="5">ACCEPTAT</TH></TR>';
+                    echo '<TR><TD class="titol" colspan="5">ACCEPTAT</TD></TR>';
                     echo IteratorReserves($RESERVES->getResults(), ReservaespaisPeer::ACCEPTADA);                    					
                  endif;                    
              ?>
