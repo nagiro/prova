@@ -15,7 +15,9 @@ abstract class BaseCessioForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'cessio_id'               => new sfWidgetFormInputHidden(),
-      'usuari_id'               => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => false)),
+      'usuari_id'               => new sfWidgetFormInputText(),
+      'nom'                     => new sfWidgetFormTextarea(),
+      'dni'                     => new sfWidgetFormInputText(),
       'representant'            => new sfWidgetFormInputText(),
       'motiu'                   => new sfWidgetFormTextarea(),
       'condicions'              => new sfWidgetFormTextarea(),
@@ -30,7 +32,9 @@ abstract class BaseCessioForm extends BaseFormPropel
 
     $this->setValidators(array(
       'cessio_id'               => new sfValidatorChoice(array('choices' => array($this->getObject()->getCessioId()), 'empty_value' => $this->getObject()->getCessioId(), 'required' => false)),
-      'usuari_id'               => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
+      'usuari_id'               => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'nom'                     => new sfValidatorString(),
+      'dni'                     => new sfValidatorString(array('max_length' => 10)),
       'representant'            => new sfValidatorString(array('max_length' => 100)),
       'motiu'                   => new sfValidatorString(),
       'condicions'              => new sfValidatorString(),

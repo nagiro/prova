@@ -9,8 +9,8 @@
 .HTEXT { height:100px; }
 
 	.row { width:500px; } 
-	.row_field { width:80%; } 
-	.row_title { width:20%; }
+	.row_field { width:75%; } 
+	.row_title { width:25%; }
 	.row_field input { width:100%; } 
 
 
@@ -54,10 +54,10 @@ $(document).ready(function() {
 				
 		var options = '<?php echo MaterialgenericPeer::selectAjax(); ?>';
 		$("#divTxt").append(' ' + 
-		'<div class="fb clear" style="width:500px; padding-bottom:20px;" id="row['+id+']">' +
-		'<span style="width:100px;" class="fb">&nbsp;</span>' +
+		'<div class="fb clear" style="width:500px; padding-bottom:5px;" id="row['+id+']">' +
+		'<span style="width:20px;" class="fb">&nbsp;</span>' +
 		'<span style="width:100px;" class="fb"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select></span>' +
-		'<span style="width:150px;" class="fb"><select onChange="validaDisponibilitatMaterial(this)" name="material[' + id + ']" id="material[' + id + ']"></select></span>' +	
+		'<span style="width:300px;" class="fb"><select onChange="validaDisponibilitatMaterial(this)" name="material[' + id + ']" id="material[' + id + ']"></select></span>' +	
 	  	'<span style="width:50px;" class="fb"><button onClick="esborraLinia(' + id + ');" id="mesmaterial">-</button></span>' +	  	 	  	        		
 	  	'</div>');
 				
@@ -222,7 +222,7 @@ $(document).ready(function() {
                       	$DRet = $C->getDataretornat('d/m/Y');
                       	$DRetT = (is_null($DRet))?"No s'ha retornat.":$DRet;                      	                      	
                       	echo "<TR>                      			                      			
-                      			<TD class=\"$PAR\">".UsuarisPeer::getNom($C->getUsuariid())."</TD>
+                      			<TD class=\"$PAR\">".$C->getNom()."</TD>
                       			<TD class=\"dreta $PAR\">".$C->getDataCessio('d/m/Y')."</TD>
                       			<TD class=\"dreta $PAR\">".$C->getDataRetorn('d/m/Y')."</TD>								                      			
                       			<TD class=\"dreta $PAR\">".$DRetT."</TD>

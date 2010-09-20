@@ -19,8 +19,7 @@ class CessioPeer extends BaseCessioPeer
    
    static public function printDocument($OCESSIO)
    {
-  
-   	  $OU = $OCESSIO->getUsuaris();
+     	  
    	  $OCM = $OCESSIO->getCessiomaterials();   	  
 
    	  $MAT = "";
@@ -34,12 +33,13 @@ class CessioPeer extends BaseCessioPeer
 	  $doc->createFrom(array('extension' => 'docx'));
 	  $doc->loadXml('word/document.xml');
 
-	  $doc->mergeXmlField('NOM',$OU->getNomComplet());
-	  $doc->mergeXmlField('DNI',$OU->getDni());
+	  $doc->mergeXmlField('NOM',$OCESSIO->getNom());
+	  $doc->mergeXmlField('DNI',$OCESSIO->getDni());
 	  $doc->mergeXmlField('REPRESENTANT',$OCESSIO->getRepresentant());	  
 	  $doc->mergeXmlField('MATERIAL',$MAT);	  
 	  if($OCESSIO->getMaterialNoInventariat() != '') 
 	  	$doc->mergeXmlField('MATERIAL_NO_INVENTARIAT',' i '.$OCESSIO->getMaterialNoInventariat());	  	  
+      else $doc->mergeXmlField('MATERIAL_NO_INVENTARIAT','');
 	  $doc->mergeXmlField('MOTIU',$OCESSIO->getMotiu());	  	  
 	  $doc->mergeXmlField('CONDICIONS1',$OCESSIO->getCondicions());
 	  $doc->mergeXmlField('DATA_SORTIDA',$OCESSIO->getDataCessio());

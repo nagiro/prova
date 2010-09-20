@@ -2630,6 +2630,7 @@ class gestioActions extends sfActions
     	case 'NC':
     			$OCessio = new Cessio();
     			$OCessio->setRetornat(false);
+                $OCessio->setUsuariId(null);
 	    		$OCessio->setEstatRetornat("");
 	    		$OCessio->setDataretornat(null);
     			$OCessio->setDatacessio(date('m/d/Y',time()));
@@ -2661,6 +2662,7 @@ class gestioActions extends sfActions
     	//Edita Cessio
     	case 'EC':    			    			
     			$OCessio = CessioPeer::retrieveByPK($this->IDC);
+                $OCessio->setUsuariId(null);
 				$this->FCessio = new CessioForm($OCessio,array('url'=>$this->getController()->genUrl('gestio/SelectCeditA')));				   			
     			$this->MODE = 'EDICIO_CESSIO';
     		break;
