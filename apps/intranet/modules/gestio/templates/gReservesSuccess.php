@@ -83,15 +83,14 @@
 					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap reserva amb aquestes dades.</TD></TR>';
 				else: 
 					$i = 0;
-					foreach($RESERVES->getResults() as $R):	
-																
-                      	echo '<TR><TD>'.link_to($R->getCodi(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</td>
-                                  <TD>'.$R->getNom().'</TD>
-                      	    	  <TD><a href="#" class="tt2"><span>'.$R->getUsuaris()->getDades().'</span>'.$R->getUsuaris()->getNomComplet().'</a></TD>
-                      	          <TD>'.$R->getDataalta('d/m/Y H:i').'</TD>
-                      	          <TD>'.$R->getEstatText().'<TD>
-                      	      </TR>';
-                    endforeach;
+                    echo '<TR><TH colspan="5">EN ESPERA</TH></TR>';
+                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::EN_ESPERA);
+                    echo '<TR><TH colspan="5">PENDENT CONFIRMACIÓ</TH></TR>';
+                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::PENDENT_CONFIRMACIO);
+                    echo '<TR><TH colspan="5">ANUL·LAT</TH></TR>';
+                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::ANULADA);
+                    echo '<TR><TH colspan="5">ACCEPTAT</TH></TR>';
+                    echo IteratorReserves($RESERVES->getResults(), ReservesPeer::ACCEPTADA);                    					
                  endif;                    
              ?>
               
@@ -108,6 +107,22 @@
     </TD>        
     
 <?php 
+
+function IteratorReserves($RESERVES,$ESTAT)
+{
+    $RET = "";
+    foreach($RESERVES->getResults() as $R):
+        if($R->getEstat() == $ESTAT):	                                    							
+          	$RET .= '<TR><TD>'.link_to($R->getCodi(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</td>
+                      <TD>'.$R->getNom().'</TD>
+          	    	  <TD><a href="#" class="tt2"><span>'.$R->getUsuaris()->getDades().'</span>'.$R->getUsuaris()->getNomComplet().'</a></TD>
+          	          <TD>'.$R->getDataalta('d/m/Y H:i').'</TD>
+          	          <TD>'.$R->getEstatText().'<TD>
+          	      </TR>';
+        endif; 
+    endforeach;
+    return $RET;    
+}
 
 
 function gestorPagines($MODEL)
