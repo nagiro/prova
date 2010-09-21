@@ -145,19 +145,11 @@
      <DIV class="REQUADRE">     
         <DIV class="TITOL">Llistat d'alumnes </DIV>
       	<TABLE class="DADES">
- 			<?php if( sizeof($MATRICULES) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>'; endif; ?>  
-			<?php foreach($MATRICULES as $M): ?>
-			<?php $C = $M->getCursos(); ?>
-			<?php $U = $M->getUsuaris(); ?>
-			<?php $TEXT_REDUCCIO ="";    ?>
-			<?php if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; } ?>
-				<TR>
-					<TD class="LINIA" width="15%"><?php echo $U->getDni(); ?></TD>
-					<TD class="LINIA" width="40%"><?php echo $U->getNomComplet(); ?><BR /><?php echo $U->getAdreca(); ?><BR /><?php echo $U->getCodiPostal(); ?> - <?php echo $U->getPoblacioString(); ?><BR /><?php echo $U->getTelefon(); ?> | <?php echo $M->getDatainscripcio(); ?><br /><?php echo $U->getEmail(); ?></TD>
-					<TD class="LINIA" width="45%"><?php echo $C->getCodi(); ?> <?php echo $C->getTitolcurs(); ?> (<?php echo $PREU.'€'.$TEXT_REDUCCIO; ?>) <br />
-					                     		  <?php echo MatriculesPeer::getEstatText($M->getEstat()); ?> <?php echo $M->getComentari(); ?></TD>							
-				</TR>
-			<?php endforeach; ?>                        	
+ 			<?php if( sizeof($MATRICULES) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>'; endif; ?>            
+            <TR><TD class="TITOL" colspan="3">ACCEPTATS</TD></TR> 
+            <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_PAGAT); ?>
+            <TR><TD class="TITOL" colspan="3">EN ESPERA</TD></TR>
+            <?php echo mostraCursos($MATRICULES,MatriculesPeer::EN_ESPERA); ?>                           			                        	
       	</TABLE>      
       </DIV>
       
@@ -203,6 +195,28 @@
     </TD>    
 
 <?php 
+
+function mostraCursos($MATRICULES, $estat)
+{
+    $RET = "";
+    foreach($MATRICULES as $M):
+        $C = $M->getCursos();
+        $U = $M->getUsuaris();
+        $TEXT_REDUCCIO =""; 
+        if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; }
+        if($M->getEstat() == $estat):
+          	$RET .= '<TR>';
+			$RET .= '<TD class="LINIA" width="15%">'.$U->getDni().'</TD>';
+			$RET .= '<TD class="LINIA" width="40%">'.$U->getNomComplet().'<BR />'.$U->getAdreca().'<BR />'.$U->getCodiPostal().' - '.$U->getPoblacioString().'<BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().' <br />'.$U->getEmail().'</TD>';
+			$RET .= '<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO .') <br />';
+			$RET .= MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>';							
+			$RET .= '</TR>';
+        endif; 
+   endforeach;
+   
+   return $RET; 
+}
+
 
 function getParam( $accio = "" , $IDC = "" , $PAGINA = 1 )
 {
