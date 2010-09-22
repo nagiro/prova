@@ -203,7 +203,7 @@ function mostraCursos($MATRICULES, $estat)
         $C = $M->getCursos();
         $U = $M->getUsuaris();
         $TEXT_REDUCCIO =""; 
-        if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $C->getPreu(); } else { $PREU = $C->getPreur(); $TEXT_REDUCCIO = ' |R'; }
+        if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $M->getPagat(); } else { $PREU = $M->getPagat(); $TEXT_REDUCCIO = ' |R'; }
         if($M->getEstat() == $estat):
           	$RET .= '<TR>';
 			$RET .= '<TD class="LINIA" width="15%">'.$U->getDni().'</TD>';
