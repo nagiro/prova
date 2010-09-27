@@ -28,14 +28,14 @@
 	
 	<?php if(isset($DADES_DIA_USUARI)): ?>
      <DIV class="REQUADRE">          
-        <DIV class="TITOL">Llistat del dia (<?php echo date('Y-m-d',$DIA) ?>)</DIV>
+        <DIV class="TITOL">Llistat del dia <?php echo date('Y-m-d',$DIA) ?> (<a href="<?php echo url_for('gestio/gPersonal?accio=NEW_CHANGE&DATE='.$DATE.'&IDU='.$IDU) ?>">Nova instrucció</a>)</DIV>
       	<TABLE class="DADES">
       		<TR>				
 				<TD class="LINIA"><b>TIPUS</b></TD>
 				<TD class="LINIA"><b>TEXT</b></TD>							
 				<TD class="LINIA"><b>REVISIÓ</b></TD>								
 			</TR>
- 			<?php if( sizeof($DADES_DIA_USUARI) == 0 ): echo '<TR><TD colspan="4" class="LINIA">No hi ha cap notificació aquest dia. ('.link_to('Afegir-ne una','gestio/gPersonal?accio=NEW_CHANGE&DATE='.$DATE.'&IDU='.$IDU).') </TD></TR>'; endif; ?>  
+ 			<?php if( sizeof($DADES_DIA_USUARI) == 0 ): echo '<TR><TD colspan="4" class="LINIA">No hi ha cap notificació aquest dia. </TD></TR>'; endif; ?>  
 			<?php foreach($DADES_DIA_USUARI as $D): ?>						
 				<TR>				
 					<TD class="LINIA">
@@ -172,18 +172,18 @@ function menu($seleccionat = 1,$nova = false)
                 endforeach;
                                                         
                 $SPAN .= '<b>Horari: </b>'.$ULTIM_HORARI; 
-    			$SPAN .= '<br /><br />';                                                          
-                                        
+    			$SPAN .= '<br />';                                                          
+                $i = 1;                                        
                 foreach($DADES['DIES'][$diaA] as $D2):
                                                         
                     //Si la línia és de feina, la mostrem 
     				if($D2->getTipus() == PersonalPeer::FEINA):
-    					$SPAN .= '<b>Tasques: </b><br />'.substr($D2->getText(),0,100).'...';
+    					$SPAN .= '<br /><b>'.$i++.' . (T)</b> '.substr($D2->getText(),0,100).'...';
     				endif; 						
                     
                     //Si hi ha un canvi en l'horari, la marquem  
     				if($D2->getTipus() == PersonalPeer::CANVI_HORARI):
-    					$SPAN .= '<b>Canvi horari: </b><br />'.$D2->getText();
+    					$SPAN .= '<br /><b>'.$i++.'. (H)</b> '.$D2->getText();
     				endif;
                     
     				//Si no hi és... no apareix el número i requadre en vermell. 
