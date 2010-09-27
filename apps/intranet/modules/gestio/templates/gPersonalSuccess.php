@@ -27,26 +27,22 @@
 	</DIV>                  
 	
 	<?php if(isset($DADES_DIA_USUARI)): ?>
-     <DIV class="REQUADRE">     
-        <DIV class="TITOL">Llistat de modificacions </DIV>
+     <DIV class="REQUADRE">          
+        <DIV class="TITOL">Llistat del dia (<?php echo date('Y-m-d',$DIA) ?>)</DIV>
       	<TABLE class="DADES">
       		<TR>				
-				<TD class="LINIA"><b>FEINES</b></TD>
-				<TD class="LINIA"><b>HORARI</b></TD>							
-				<TD class="LINIA"><b>REVISIÓ</b></TD>
-				<TD class="LINIA"><b>OPCIONS</b></TD>				
+				<TD class="LINIA"><b>TIPUS</b></TD>
+				<TD class="LINIA"><b>TEXT</b></TD>							
+				<TD class="LINIA"><b>REVISIÓ</b></TD>								
 			</TR>
  			<?php if( sizeof($DADES_DIA_USUARI) == 0 ): echo '<TR><TD colspan="4" class="LINIA">No hi ha cap notificació aquest dia. ('.link_to('Afegir-ne una','gestio/gPersonal?accio=NEW_CHANGE&DATE='.$DATE.'&IDU='.$IDU).') </TD></TR>'; endif; ?>  
 			<?php foreach($DADES_DIA_USUARI as $D): ?>						
 				<TR>				
-					<TD class="LINIA"><?php echo $D->getFeines(); ?></TD>
-					<TD class="LINIA"><?php echo $D->getHorari(); ?></TD>							
+					<TD class="LINIA">
+                        <a href="<?php echo url_for('gestio/gPersonal?accio=EDIT_CHANGE&DATE='.$DATE.'&IDU='.$D->getIdusuari().'&IDPERSONAL='.$D->getIdpersonal()) ?>">
+                            <?php echo $D->getTipusString(); ?></a></TD>
+					<TD class="LINIA"><?php echo $D->getText(); ?></TD>							
 					<TD class="LINIA"><?php echo $D->getDataRevisio(); ?></TD>
-					<TD class="LINIA">					
-					<?php $data = mktime(0,0,0,$D->getIddata('m'),$D->getIddata('d'),$D->getIddata('Y')); ?>
-						<?php echo link_to(image_tag('template/blog.png'),'gestio/gPersonal?accio=EDIT_CHANGE&IDU='.$D->getIdusuari().'&DATE='.$data.'&IDPERSONAL='.$D->getIdpersonal()); ?>
-						<?php echo link_to(image_tag('template/cancel.png'),'gestio/gPersonal?accio=DELETE_CHANGE&IDU='.$D->getIdusuari().'&DATE='.$data.'&IDPERSONAL='.$D->getIdpersonal()); ?>						
-					</TD>
 				</TR>
 			<?php endforeach; ?>                        	
       	</TABLE>      
@@ -161,34 +157,55 @@ function menu($seleccionat = 1,$nova = false)
 			if(($dia-$dia_setmana+1)+$i == $dia): $style .= 'font-weight:bold;'; endif; 
 	
 			$SPAN = "";						 
-			if(isset($DADES['DATA'][$diaA])):
-				$D2 = $DADES['DATA'][$diaA];
+			if(isset($DADES['DIES'][$diaA])):
+                				
+                $CANVI_HORARI = false;
+                $AP = false;  
+                                                
 				$SPAN = "<span>";
-				if(isset($D2['HORARI'])): 
-					$SPAN .= '<b>Horaris: </b>'.implode(" || ",$D2['HORARI']); 
-					$SPAN .= '<br /><br />';
-					$ULTIM_HORARI = $D2['HORARI'];
-				else: 
-					$SPAN .= '<b>Horaris: </b> '.implode(" || ",$ULTIM_HORARI); 
-					$SPAN .= '<br /><br />';
-				endif; 
-				if(isset($D2['FEINA'])):
-					$SPAN .= '<b>Tasques: </b><br />'.implode(" <br /> ",$D2['FEINA']);
-				endif; 						
-				$SPAN .= "</span>";
+                                
+                foreach($DADES['DIES'][$diaA] as $D2):                  
+                    //Quan vingui un canvi d'horari aquest quedarà fins que en vingui un altre                
+    				if($D2->getTipus() == PersonalPeer::HORARI_USUARI): 					
+    					$ULTIM_HORARI = $D2->getText();                          				                                         
+    				endif; 
+                endforeach;
+                                                        
+                $SPAN .= '<b>Horari: </b>'.$ULTIM_HORARI; 
+    			$SPAN .= '<br /><br />';                                                          
+                                        
+                foreach($DADES['DIES'][$diaA] as $D2):
+                                                        
+                    //Si la línia és de feina, la mostrem 
+    				if($D2->getTipus() == PersonalPeer::FEINA):
+    					$SPAN .= '<b>Tasques: </b><br />'.substr($D2->getText(),0,100).'...';
+    				endif; 						
+                    
+                    //Si hi ha un canvi en l'horari, la marquem  
+    				if($D2->getTipus() == PersonalPeer::CANVI_HORARI):
+    					$SPAN .= '<b>Canvi horari: </b><br />'.$D2->getText();
+    				endif;
+                    
+    				//Si no hi és... no apareix el número i requadre en vermell. 
+    				//Si hi ha canvi d'horaris, el requadre serà en taronja
+    				//Si hi ha feines és en groc fluorescent. 																
+    				if($D2->getTipus() == PersonalPeer::AP_FESTA): 
+                        $fons = "background-color:red;"; 
+                        $AP = true;
+    				elseif($D2->getTipus() == PersonalPeer::CANVI_HORARI && !$AP): 
+                        $fons = "background-color:orange;"; 
+                        $CANVI_HORARI = true;
+    				elseif($D2->getTipus() == PersonalPeer::FEINA && !$AP && !$CANVI_HORARI): 
+                        $fons = "background-color:yellow;";
+    				endif;                     
+                    
+				endforeach;
+                $SPAN .= "</span>";				
 				
-				
-				//Si no hi és... no apareix el número i requadre en vermell. 
-				//Si hi ha canvi d'horaris, el requadre serà en taronja
-				//Si hi ha feines és en groc fluorescent. 																
-				if(!$D2['TREBALLA']): $fons = "background-color:red;";
-				elseif($D2['CANVI_HORARI']): $fons = "background-color:orange;";
-				elseif(isset($D2['FEINA'])): $fons = "background-color:yellow;";
-				endif; 
 			else:
 			 
 				$SPAN = "<span>";				 
-				$SPAN .= '<b>Horaris: </b>'.implode(" || ",$ULTIM_HORARI); 
+				$SPAN .= '<b>Horaris: </b>'.$ULTIM_HORARI; 
 				$SPAN .= '<br /><br />';						
 				$SPAN .= "</span>";
 							

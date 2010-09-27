@@ -15,10 +15,8 @@ class PersonalForm extends sfFormPropel
       'idPersonal'     => new sfWidgetFormInputHidden(),
       'idUsuari'       => new sfWidgetFormInputHidden(),
       'idData'         => new sfWidgetFormInputHidden(),
-      'treballa'       => new sfWidgetFormChoice(array('choices'=>array(1=>'Treballa',0=>'Festiu'))),
-      'feines'         => new sfWidgetFormTextarea(),
-      'horari'         => new sfWidgetFormTextarea(),
-      'missatge'       => new sfWidgetFormTextarea(),
+      'tipus'          => new sfWidgetFormChoice(array('choices'=>PersonalPeer::getTipusArray())),
+      'text'           => new sfWidgetFormTextarea(),
       'data_revisio'   => new sfWidgetFormDate(),
       'data_alta'      => new sfWidgetFormInputHidden(),
       'data_baixa'     => new sfWidgetFormInputHidden(),
@@ -29,10 +27,8 @@ class PersonalForm extends sfFormPropel
       'idPersonal'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdpersonal()), 'empty_value' => $this->getObject()->getIdpersonal(), 'required' => false)),
       'idUsuari'       => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')),
       'idData'         => new sfValidatorDate(),
-      'treballa'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'feines'         => new sfValidatorString(array('required' => false)),
-      'horari'         => new sfValidatorString(array('required' => false)),
-      'missatge'       => new sfValidatorString(array('required' => false)),
+      'tipus'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'text'           => new sfValidatorString(array('required' => false)),
       'data_revisio'   => new sfValidatorDate(array('required' => false)),
       'data_alta'      => new sfValidatorDateTime(array('required' => false)),
       'data_baixa'     => new sfValidatorDate(array('required' => false)),
@@ -42,15 +38,11 @@ class PersonalForm extends sfFormPropel
     $this->widgetSchema->setNameFormat('personal[%s]');
 
     $this->widgetSchema->setLabels(array(            
-      'treballa' => 'Treballa?',
-      'feines'   => 'Feines a fer',
-      'horari'   => 'Horari',
-      'missatge' => 'Missatge',
+      'tipus' => 'Tipus',
+      'text'   => 'Text',
       'data_revisio' => 'Revisat a ',      
     ));
-    
-    
-    
+            
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
     
   }

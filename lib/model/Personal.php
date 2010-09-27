@@ -20,7 +20,16 @@ require 'lib/model/om/BasePersonal.php';
  */
 class Personal extends BasePersonal {
 
-	
+	public function getTipusString()
+    {
+        switch($this->getTipus()){
+            case PersonalPeer::AP_FESTA: return 'AP o Festa'; break;
+            case PersonalPeer::FEINA: return 'Feina'; break;
+            case PersonalPeer::CANVI_HORARI: return 'Horari puntual'; break;
+            case PersonalPeer::HORARI_USUARI: return 'Horari habitual'; break;
+            default: return 'Desconegut'; break;
+        }
+    }
 	
 	
 } 

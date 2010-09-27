@@ -3290,8 +3290,12 @@ class gestioActions extends sfActions
   	$this->setLayout('gestio');
   	$this->CALENDARI = array();
   	$this->USUARI = $this->getUser()->getSessionPar('idU');
+    
+    //Usuari a qui se li aplica
   	$this->IDU = $request->getParameter('IDU');
+    //Identificador de línia 
   	$this->IDP = $request->getParameter('IDPERSONAL');
+    //Data a la que s'ha fet.
   	$this->DATE = $request->getParameter('DATE');
   	
   	if($request->hasParameter('DATAI')) $this->DATAI = $request->getParameter('DATAI');
@@ -3300,8 +3304,8 @@ class gestioActions extends sfActions
   	$accio = $request->getParameter('accio');
   	
   	if($request->hasParameter('BSAVE')):  $accio = "SAVE_CHANGE";  endif; 
+    if($request->hasParameter('BDELETE')):  $accio = "DELETE_CHANGE";  endif;
   	
-
   	$this->CALENDARI = PersonalPeer::getHoraris($this->DATAI);
   	
   	switch($accio){
@@ -3310,7 +3314,8 @@ class gestioActions extends sfActions
   			break;
   		case 'EDIT_DATE':
   				//Editem un dia, i podem esborrar un canvi o bé afegir-ne un de nou.
-  				$this->DADES_DIA_USUARI = PersonalPeer::getDadesUpdates($this->DATE, $this->IDU);  				  
+  				$this->DADES_DIA_USUARI = PersonalPeer::getDadesUpdates($this->DATE, $this->IDU);
+                $this->DIA = $this->DATE;  				  
   			break;  			
   		case 'NEW_CHANGE':
   				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU);  				
@@ -3338,11 +3343,16 @@ class gestioActions extends sfActions
   					$this->ERROR[] = "Hi ha algun problema amb el formulari.";
   				endif; 
   			break;
-  		case 'DELETE_CHANGE':
-				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU,$this->IDP);
-				$this->getUser()->addLogAction($accio,'gPersonal',$this->FPERSONAL->getObject());
-				$this->FPERSONAL->getObject()->delete();
-				$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$this->DATE.'&IDU='.$this->IDU);				  			
+  		case 'DELETE_CHANGE':            
+                $RP = $request->getParameter('personal');
+                list($year,$month,$day) = explode("-",$RP['idData']);  				  				    
+  				$idP = $RP['idPersonal']; $idU = $RP['idUsuari']; $idD = mktime(0,0,0,$month,$day,$year);
+                                                  
+				$OP = PersonalPeer::retrieveByPK($RP['idPersonal']);
+                $OP->setDatabaixa(date('Y-m-d',time()));
+                $OP->setUsuariupdateid($this->USUARI);                
+                $OP->save();
+				$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$idD.'&IDU='.$idU);				  			
   			break;
   	}
   	
