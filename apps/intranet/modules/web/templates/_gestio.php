@@ -344,6 +344,7 @@ function gestiona_reserves( $FRESERVA , $RESERVES , $MISSATGE = array() ){
       	                                
 	$ESPAIS = explode('@',$FRESERVA->getValue('EspaisSolicitats'));
 	$MATERIAL= explode('@',$FRESERVA->getValue('MaterialSolicitat'));
+    
 	?>
 	
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Prereserves anteriors</LEGEND>

@@ -134,13 +134,14 @@ class PersonalPeer extends BasePersonalPeer {
             $mida = 100;
             $TEXT = $OP->getText();
             $SUBTEXT = $TEXT;
-                        
+            $U = $OP->getUsuarisRelatedByUsuariupdateid();
+                                    
             if(strlen($TEXT) > $mida) { $SUBTEXT = substr($TEXT,0,$mida); $TEXT = $TEXT.' (...) '; }            
                         
             $RET[] = array(
                         'TEXT'      => $TEXT,
                         'SUBTEXT'   => $SUBTEXT,
-                        'USUARI'    => $OP->getUsuarisRelatedByUsuariupdateid()->getNomComplet());                                                            
+                        'USUARI'    => $U->getNom().' '.$U->getCog1());                                                            
         endforeach;
                 
         return $RET;                
@@ -153,13 +154,15 @@ class PersonalPeer extends BasePersonalPeer {
         $C->add(self::IDDATA, date('Y-m-d',$date));
         $C->add(self::TIPUS, self::FEINA, Criteria::NOT_EQUAL);
         $C->add(self::DATA_BAIXA, null, Criteria::ISNULL );
-        $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);
+        $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);                
         $RET = array();
         
-        foreach(self::doSelect($C) as $OP):
+        foreach(self::doSelect($C) as $OP):        
             $mida = 100;
             $TEXT = $OP->getText();
             $SUBTEXT = $TEXT;
+            $U1 = $OP->getUsuarisRelatedByUsuariupdateid();
+            $U2 = $OP->getUsuarisRelatedByIdusuari();
                         
             if(strlen($TEXT) > $mida) { $SUBTEXT = substr($TEXT,0,$mida); $TEXT = $TEXT.' (...) '; }            
                         
@@ -167,8 +170,8 @@ class PersonalPeer extends BasePersonalPeer {
                         'TIPUS'     => $OP->getTipus(),
                         'TEXT'      => $TEXT,
                         'SUBTEXT'   => $SUBTEXT,
-                        'USUARI'    => $OP->getUsuarisRelatedByUsuariupdateid()->getNomComplet(),
-                        'USUARIA'   => $OP->getUsuarisRelatedByIdusuari()->getNomComplet());                                                            
+                        'USUARI'    => $U1->getNom().' '.$U1->getCog1(),
+                        'USUARIA'   => $U2->getNom().' '.$U2->getCog1());                           
         endforeach;
                 
         return $RET;                

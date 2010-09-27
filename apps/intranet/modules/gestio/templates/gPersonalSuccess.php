@@ -32,8 +32,9 @@
       	<TABLE class="DADES">
       		<TR>				
 				<TD class="LINIA"><b>TIPUS</b></TD>
-				<TD class="LINIA"><b>TEXT</b></TD>							
-				<TD class="LINIA"><b>REVISIÓ</b></TD>								
+				<TD class="LINIA"><b>TEXT</b></TD>
+                <TD class="LINIA"><b>CREAT</b></TD>							
+				<TD class="LINIA"><b>REVISIÓ</b></TD>                								
 			</TR>
  			<?php if( sizeof($DADES_DIA_USUARI) == 0 ): echo '<TR><TD colspan="4" class="LINIA">No hi ha cap notificació aquest dia. </TD></TR>'; endif; ?>  
 			<?php foreach($DADES_DIA_USUARI as $D): ?>						
@@ -41,7 +42,8 @@
 					<TD class="LINIA">
                         <a href="<?php echo url_for('gestio/gPersonal?accio=EDIT_CHANGE&DATE='.$DATE.'&IDU='.$D->getIdusuari().'&IDPERSONAL='.$D->getIdpersonal()) ?>">
                             <?php echo $D->getTipusString(); ?></a></TD>
-					<TD class="LINIA"><?php echo $D->getText(); ?></TD>							
+					<TD class="LINIA"><?php echo $D->getText(); ?></TD>
+                    <TD class="LINIA"><?php echo $D->getUsuarisRelatedByUsuariupdateid()->getNomComplet(); ?></TD>							
 					<TD class="LINIA"><?php echo $D->getDataRevisio(); ?></TD>
 				</TR>
 			<?php endforeach; ?>                        	
