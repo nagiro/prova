@@ -1,5 +1,5 @@
 <TD colspan="3" class="CONTINGUT">
-    
+     
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Resum d'avui</DIV>
       	<TABLE class="DADES">

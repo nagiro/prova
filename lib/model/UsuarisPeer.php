@@ -88,6 +88,8 @@ class UsuarisPeer extends BaseUsuarisPeer
   {
     $C = new Criteria();
     $C->add(UsuarisPeer::NIVELLS_IDNIVELLS,UsuarisPeer::ADMIN);
+    $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
+    $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
     $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
     $C->add(UsuarisPeer::HABILITAT , true);
     $TREB = self::doSelect($C);
