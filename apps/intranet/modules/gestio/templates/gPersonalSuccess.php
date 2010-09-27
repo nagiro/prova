@@ -143,7 +143,7 @@ function menu($seleccionat = 1,$nova = false)
 	    	
 	    	$style = ""; $marc = ""; $fons = "";
 	   
-	    	$diaA = mktime(0,0,0,$mes,($dia-$dia_setmana+1)+$i,$year);
+	    	$diaA = mktime(0,0,0,$mes,($dia-$dia_setmana+1)+$i,$year);            
 	    
 			if( ( $j == 6 || $j == 7 ) ):
 				$fons = "background-color: beige;";
@@ -154,7 +154,7 @@ function menu($seleccionat = 1,$nova = false)
 				$j++;
 			endif;  
 			
-			if(($dia-$dia_setmana+1)+$i == $dia): $style .= 'font-weight:bold;'; endif; 
+			if(($dia-$dia_setmana+1)+$i == $dia): $style .= 'font-weight:bold;'; endif;             
 	
 			$SPAN = "";						 
 			if(isset($DADES['DIES'][$diaA])):
@@ -173,17 +173,17 @@ function menu($seleccionat = 1,$nova = false)
                                                         
                 $SPAN .= '<b>Horari: </b>'.$ULTIM_HORARI; 
     			$SPAN .= '<br />';                                                          
-                $i = 1;                                        
+                $index = 1;                                        
                 foreach($DADES['DIES'][$diaA] as $D2):
                                                         
                     //Si la línia és de feina, la mostrem 
     				if($D2->getTipus() == PersonalPeer::FEINA):
-    					$SPAN .= '<br /><b>'.$i++.' . (T)</b> '.substr($D2->getText(),0,100).'...';
+    					$SPAN .= '<br /><b>'.$index++.' . (T)</b> '.substr($D2->getText(),0,100).'...';
     				endif; 						
                     
                     //Si hi ha un canvi en l'horari, la marquem  
     				if($D2->getTipus() == PersonalPeer::CANVI_HORARI):
-    					$SPAN .= '<br /><b>'.$i++.'. (H)</b> '.$D2->getText();
+    					$SPAN .= '<br /><b>'.$index++.'. (H)</b> '.$D2->getText();
     				endif;
                     
     				//Si no hi és... no apareix el número i requadre en vermell. 
@@ -210,7 +210,7 @@ function menu($seleccionat = 1,$nova = false)
 				$SPAN .= "</span>";
 							
 			endif; 
-			//Si la persona hi és el marc és verd i si no hi és, el marc és vermell.			 
+			//Si la persona hi és el marc és verd i si no hi és, el marc és vermell.			             
 			$RET .= '<TD class="DIES" style="'.$marc.$fons.$style.'" >'.link_to(date('d',$diaA).$SPAN,"gestio/gPersonal?accio=EDIT_DATE&IDU=".$idU."&DATE=".$diaA, array('class'=>"tt2")).'</TD>';
 	                      
 	      endfor;
