@@ -61,18 +61,31 @@
 	</DIV>
 
 	<DIV class="REQUADRE">
-		<DIV class="TITOL">Feines per avui</DIV>
+		<DIV class="TITOL">Feines i notificacions per avui</DIV>
       	<TABLE class="DADES">
-                <?php       
-                
-                	if(empty($MISSATGES)): echo '<tr><td></td></tr>'; endif;
-                
-					foreach($TASQUES->getResults() as $T):
-						$U = $T->getUsuarisRelatedByQuimana()->getNom()." ".$T->getUsuarisRelatedByQuimana()->getCog1();
-						$SPAN = '<SPAN>'.$T->getAparicio('d/m/Y').' -> '.$T->getDesaparicio('d/m/Y').'<br />'.$T->getAccio().'</SPAN>';
+                <?php
+
+					foreach($NOTIFICACIONS as $F):						
+						$SPAN = '<SPAN>'.$F['TEXT'].'</SPAN>';
+                        $TIPUS = "N/D";
+                        switch($F['TIPUS']){
+                            case PersonalPeer::AP_FESTA: $TIPUS = 'Festa'; break;
+                            case PersonalPeer::CANVI_HORARI: $TIPUS = 'Horari puntual'; break;
+                            case PersonalPeer::HORARI_USUARI: $TIPUS = 'Horari habitual'; break;
+                        }                        
 						echo '<TR>
-								<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">'.$T->getTitol().$SPAN.'</TD>																								
-								<TD width="20%">'.$U.'</TD>
+								<TD width="20%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">'.$TIPUS.'</TD>																								
+                                <TD><a href="#" class="tt2">'.$F['SUBTEXT'].$SPAN.'</TD>                                
+								<TD width="20%">'.$F['USUARIA'].'</TD>
+							  </TR>';						
+                	endforeach;
+                                                   
+					foreach($FEINES as $F):						
+						$SPAN = '<SPAN>'.$F['TEXT'].'</SPAN>';
+						echo '<TR>
+								<TD width="20%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">Feina</TD>																								
+                                <TD><a href="#" class="tt2">'.$F['SUBTEXT'].$SPAN.'</TD>                                
+								<TD width="20%">'.$F['USUARI'].'</TD>
 							  </TR>';						
                 	endforeach;
                 ?>                                                       

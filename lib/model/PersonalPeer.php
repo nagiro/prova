@@ -118,6 +118,62 @@ class PersonalPeer extends BasePersonalPeer {
 		endforeach;
 		
 		return $RET;
-	}
+	}   
+    
+    static public function getFeines($idU,$date)
+    {
+        $C = new Criteria();
+        $C->add(self::IDDATA, date('Y-m-d',$date));
+        $C->add(self::IDUSUARI, $idU);
+        $C->add(self::TIPUS, self::FEINA);
+        $C->add(self::DATA_BAIXA, null, Criteria::ISNULL );
+        $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);
+        $RET = array();
+        
+        foreach(self::doSelect($C) as $OP):
+            $mida = 100;
+            $TEXT = $OP->getText();
+            $SUBTEXT = $TEXT;
+                        
+            if(strlen($TEXT) > $mida) { $SUBTEXT = substr($TEXT,0,$mida); $TEXT = $TEXT.' (...) '; }            
+                        
+            $RET[] = array(
+                        'TEXT'      => $TEXT,
+                        'SUBTEXT'   => $SUBTEXT,
+                        'USUARI'    => $OP->getUsuarisRelatedByUsuariupdateid()->getNomComplet());                                                            
+        endforeach;
+                
+        return $RET;                
+    }
+
+    //Agafem tot allò que no és una feina i que afecta als altres usuaris. 
+    static public function getNotificacions($idU,$date)
+    {
+        $C = new Criteria();
+        $C->add(self::IDDATA, date('Y-m-d',$date));
+        $C->add(self::TIPUS, self::FEINA, Criteria::NOT_EQUAL);
+        $C->add(self::DATA_BAIXA, null, Criteria::ISNULL );
+        $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);
+        $RET = array();
+        
+        foreach(self::doSelect($C) as $OP):
+            $mida = 100;
+            $TEXT = $OP->getText();
+            $SUBTEXT = $TEXT;
+                        
+            if(strlen($TEXT) > $mida) { $SUBTEXT = substr($TEXT,0,$mida); $TEXT = $TEXT.' (...) '; }            
+                        
+            $RET[] = array(
+                        'TIPUS'     => $OP->getTipus(),
+                        'TEXT'      => $TEXT,
+                        'SUBTEXT'   => $SUBTEXT,
+                        'USUARI'    => $OP->getUsuarisRelatedByUsuariupdateid()->getNomComplet(),
+                        'USUARIA'   => $OP->getUsuarisRelatedByIdusuari()->getNomComplet());                                                            
+        endforeach;
+                
+        return $RET;                
+    }
+
+    
 	
 } // PersonalPeer

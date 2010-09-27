@@ -53,8 +53,8 @@ class gestioActions extends sfActions
     //Carreguem els missatges d'avui    
     $this->MISSATGES = MissatgesPeer::getMissatgesAvui($idU);
         
-    //Carreguem les tasques d'avui
-    $this->TASQUES = TasquesPeer::getCercaTasques(1,$idU,0,true);
+    $this->FEINES = PersonalPeer::getFeines($idU, time());
+    $this->NOTIFICACIONS = PersonalPeer::getNotificacions($idU, time());
     
     //Carreguem les activitats d'avui :D
     $this->ACTIVITATS = HorarisPeer::getActivitats(time() , null , null , null , null);
