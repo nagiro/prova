@@ -31,34 +31,8 @@
                 ?>                                                         
       	</TABLE>      
       </DIV>
-         
-	<DIV class="REQUADRE">
-		<DIV class="TITOL">Activitats per avui</DIV>
-      	<TABLE class="DADES">
-                <?php                
-                
-                	if(empty($ACTIVITATS)): echo '<tr><td></td></tr>'; endif;
-                
-					foreach($ACTIVITATS as $A):						
-						echo '<TR>';                      	
-						if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
-	                  	echo '<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.$A['NOM_ACTIVITAT'].$AVIS.'</TD>';	                    
-	                  	echo '<TD><span style="font-weight:bold; font-size:10px; color:green;">'.$A['HORA_INICI'].'</span></TD>';	                  	
-	                  	echo '<TD>'.$A['HORA_FI'].'</TD>';
-	                  	$ESPAIS = "";	  
-	                  	$Z = $A['ESPAIS'];                		                  	   
-	                  	if(sizeof($A['ESPAIS']) > 0) $ESPAIS = implode('<br />',$Z);
-	                    echo '<TD><span style="font-weight:bold; font-size:10px; color:#880000;">'.$ESPAIS.'</span></TD>';
-	                    
-	                    $MATERIAL = "";	     	                 	                               	
-	                  	if(sizeof($A['MATERIAL']) > 0) $MATERIAL = implode("<BR />",$A['MATERIAL']);
-	                    echo '<TD>'.$MATERIAL.'</TD>';						            
-	                    echo '</TR>';												
-                	endforeach;
-                	
-                ?>                                                       
-		</TABLE>      
-	</DIV>
+
+
 
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Feines i notificacions per avui</DIV>
@@ -92,6 +66,36 @@
       	</TABLE>      
       </DIV>
 
+
+
+         
+	<DIV class="REQUADRE">
+		<DIV class="TITOL">Activitats per avui</DIV>
+      	<TABLE class="DADES">
+                <?php                
+                
+                	if(empty($ACTIVITATS)): echo '<tr><td></td></tr>'; endif;
+                
+					foreach($ACTIVITATS as $A):						
+						echo '<TR>';                      	
+						if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+	                  	echo '<TD>'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' '.$A['NOM_ACTIVITAT'].$AVIS.'</TD>';	                    
+	                  	echo '<TD><span style="font-weight:bold; font-size:10px; color:green;">'.$A['HORA_INICI'].'</span></TD>';	                  	
+	                  	echo '<TD>'.$A['HORA_FI'].'</TD>';
+	                  	$ESPAIS = "";	  
+	                  	$Z = $A['ESPAIS'];                		                  	   
+	                  	if(sizeof($A['ESPAIS']) > 0) $ESPAIS = implode('<br />',$Z);
+	                    echo '<TD><span style="font-weight:bold; font-size:10px; color:#880000;">'.$ESPAIS.'</span></TD>';
+	                    
+	                    $MATERIAL = "";	     	                 	                               	
+	                  	if(sizeof($A['MATERIAL']) > 0) $MATERIAL = implode("<BR />",$A['MATERIAL']);
+	                    echo '<TD>'.$MATERIAL.'</TD>';						            
+	                    echo '</TR>';												
+                	endforeach;
+                	
+                ?>                                                       
+		</TABLE>      
+	</DIV>
       
             
       <DIV STYLE="height:40px;"></DIV>
