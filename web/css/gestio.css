@@ -102,7 +102,7 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 #CALENDARI_ACTIVITATS .titol_mes { font-weight:bold;  }
 #MESOS { font-weight:normal; border: 3px solid #F3F3F3; background-color:#FAFAFA; margin-left:5px; font-size:10px; }
 #MESOS A { font-size:10px; text-decoration:none; color:black; }
-#MESOS .mesos_unit { font-weight:italic; }
+#MESOS .mesos_unit { font-weight:lighter; }
 #MESOS .negreta { font-weight:bold;  }
 
 .PEU { height:25px; background-color:#1f1a17; color: white; text-align:center; font-size: 10px; vertical-align:middle; }    
