@@ -35,7 +35,7 @@ class ClientReservesForm extends sfFormPropel
       'Responsable'        => new sfWidgetFormInputText(array(),array('style'=>'width:450px')),
       'Organitzadors'      => new sfWidgetFormInputText(array(),array('style'=>'width:450px')),
       'PersonalAutoritzat' => new sfWidgetFormInputText(array(),array('style'=>'width:450px')),    
-      'PrevisioAssistents' => new sfWidgetFormInputText(array(),array('style'=>'width:450px')),
+      'PrevisioAssistents' => new sfWidgetFormChoice(array('choices'=>$this->AssistentsArray()),array()),
       'isEnregistrable'    => new sfWidgetFormChoice(array('choices'=>$SN),array()),
       'EsCicle'            => new sfWidgetFormChoice(array('choices'=>$SN),array()),          
       'Comentaris'         => new sfWidgetFormTextarea(array(),array('style'=>'width:450px')),
@@ -122,6 +122,16 @@ class ClientReservesForm extends sfFormPropel
     endif;   	  	
   	$OR->save();
   	
+  }
+  
+  private function AssistentsArray()
+  {
+    $A = array();
+    for($i=10;$i <= 150; $i=$i+10):
+        $A[$i] = ($i-9).' a '.$i; 
+    endfor;
+    $A['200'] = '+ 150';
+    return $A;
   }
   
 }
