@@ -600,7 +600,7 @@ class webActions extends sfActions
                 endif; 			                	                
                 $this->MISSATGE = array('Sol·licitud enviada correctament.');				
 			else:
-                $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','ERROR FORMULARI RESERVA ESPAIS',serialize($this->FRESERVA));
+                $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','ERROR FORMULARI RESERVA ESPAIS',print_r($this->FRESERVA));
                 $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
 			endif;			
             
