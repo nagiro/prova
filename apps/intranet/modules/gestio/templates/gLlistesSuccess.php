@@ -52,7 +52,7 @@
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-						<?php include_partial('botonera',array('element'=>'la llista')); ?>
+						<?php include_partial('botonera',array('tipus'=>'Guardar','element'=>'la llista')); ?>
 	            	</td>
 	            </tr>                	 
       		</TABLE>
@@ -66,12 +66,13 @@
         <input type="hidden" name="IDL" value="<?php echo $IDL ?>" />    
  	    <DIV class="REQUADRE">
  	    	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gLlistes'))?>
- 	    	<DIV class="TITOL">Filtra usuaris</DIV>
+ 	    	<DIV class="TITOL">Filtra usuaris</DIV>            
 	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
+	            <?php echo $FCerca ?> 
 	            <tr>
-	            	<td colspan="2">
-	            		<button name="BCERCA">Prem per buscar</button>	            			            	
+	            	<td></td>
+                    <td>                    
+                        <button name="BCERCA">Prem per buscar</button></td> 			            			            	
 	            	</td>
 	            </tr>
 	        </table>
@@ -81,15 +82,33 @@
             <table width="100%">
                 <tr>
                     <td style="vertical-align:top;">
-                        <?php echo select_tag('BAIXA_USUARI',options_for_select($VINCULATS,array(),array()),array('multiple'=>true,'width'=>"200px",'height'=>'500px')); ?>
+                        <b>Usuaris subscrits</b><br /><br />
+                        <?php echo select_tag('BAIXA_USUARI',options_for_select($VINCULATS,array(),array()),array('multiple'=>false,'width'=>"200px",'height'=>'500px')); ?>
                     </td>
                     <td style="vertical-align:top;">
-                        <?php echo select_tag('ALTA_USUARI',options_for_select($DESVINCULATS,array(),array()),array('multiple'=>true,'width'=>"200px")); ?>
+                        <b>Usuaris NO subscrits</b><br /><br />
+                        <?php echo select_tag('ALTA_USUARI',options_for_select($DESVINCULATS,array(),array()),array('multiple'=>false,'width'=>"200px")); ?>
                     </td>
                 </tr>
-                <tr><td><button name="BDESVINCULA">DESVINCULA</button></td><td><button name="BVINCULA">VINCULA</button></td></tr>
+                <tr><td><button class="BOTO_ACTIVITAT" name="BDESVINCULA">DESVINCULA</button></td>
+                    <td><button class="BOTO_ACTIVITAT" name="BVINCULA">VINCULA</button></td></tr>
             </table>                            	                  
         </DIV>
+
+
+	    <DIV class="REQUADRE">
+            <table width="100%">
+                <?php include_partial('missatgeTaula',array('MISS'=>$MISSATGE,'colspan' => '1')); ?>
+                <tr>
+                    <td style="vertical-align:top;">
+                        <b>Emails lliures subscrits</b><br /><br />
+                        <?php echo textarea_tag('EMAILS',$EMAILS, array('style'=>'height: 200px')); ?>
+                    </td>                    
+                </tr>
+                <tr><td><button class="BOTO_ACTIVITAT" name="BACTUALITZAEMAILS">ACTUALITZA</button></td><tr>                    
+            </table>                            	                  
+        </DIV>
+
       
        </form>
 
@@ -101,7 +120,7 @@
 	 	<DIV class="REQUADRE">
          <DIV class="TITOL">Escriu el missatge</DIV>	             	
 	    	<table class="FORMULARI" width="600px">	    	
-                <?php echo $FMissatge?>                								
+                <?php echo $FMissatge ?>                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">

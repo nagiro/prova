@@ -14,7 +14,7 @@ class LlistesForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idLlistes' => new sfWidgetFormInputHidden(),
-      'Nom'       => new sfWidgetFormInputText(),
+      'Nom'       => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'isActiva'  => new sfWidgetFormChoice(array('choices'=>array(true=>'Sí',false=>'No'))),
     ));
 

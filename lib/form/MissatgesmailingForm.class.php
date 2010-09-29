@@ -16,10 +16,10 @@ class MissatgesmailingForm extends BaseMissatgesmailingForm
     $this->setWidgets(array(
       'idMissatge' => new sfWidgetFormInputHidden(),
       'titol'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px;')),
-      'text'       => new sfWidgetFormTextareaTinyMCE(),
+      'text'       => new sfWidgetFormTextareaTinyMCE(array(),array()),
       'data_alta'  => new sfWidgetFormInputHidden(),
     ));
-
+    
     $this->setValidators(array(
       'idMissatge' => new sfValidatorPropelChoice(array('model' => 'Missatgesmailing', 'column' => 'idMissatge', 'required' => false)),
       'titol'      => new sfValidatorString(),

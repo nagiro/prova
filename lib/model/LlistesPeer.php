@@ -72,6 +72,12 @@ class LlistesPeer extends BaseLlistesPeer
      return $SELECT;
   }
 
+  static public function getLlistesAll()
+  {
+    $C = new Criteria();
+    return self::doSelect($C);
+  }
+
   /**
    * Retorna els missatges d'una llista
    *

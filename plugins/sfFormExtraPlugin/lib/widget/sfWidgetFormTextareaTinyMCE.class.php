@@ -62,7 +62,7 @@ class sfWidgetFormTextareaTinyMCE extends sfWidgetFormTextarea
   tinyMCE.init({
     mode:                              "exact",
     elements:                          "%s",
-    plugins:                           "media,table,paste",        
+    plugins:                           "media,table,paste,fullscreen",        
     theme:                             "%s",
     language:                          "ca",
     %s
@@ -73,7 +73,7 @@ class sfWidgetFormTextareaTinyMCE extends sfWidgetFormTextarea
     theme_advanced_statusbar_location: "bottom",
     theme_advanced_resizing:           true,
 	theme_advanced_blockformats :      "p,div,h1,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp",
-	theme_advanced_buttons1 :          "bold,italic,underline,separator,justifycenter,justifyfull,bullist,indent,separator,table,separator,undo,redo,separator,link,unlink,image,media,separator,formatselect,separator,code",
+	theme_advanced_buttons1 :          "fullscreen,bold,italic,underline,separator,justifycenter,justifyfull,bullist,indent,separator,table,separator,undo,redo,separator,link,unlink,image,media,separator,formatselect,separator,code",
 	theme_advanced_buttons2 :          "",
 	theme_advanced_buttons3 :          "",
 	file_browser_callback:             'ajaxfilemanager',

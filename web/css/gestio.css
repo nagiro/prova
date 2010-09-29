@@ -87,7 +87,7 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .TAULA { width:1024px; border-collapse: collapse; border:0px; table-layout: fixed; }
 .TAULA .TD { width:256px; }
  
-.CAPCALERA { background-color: #ae1912; height:65px; width:256px; border-top:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
+.CAPCALERA { background-color: #ae1912; height:65px; border-top:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
 #logo { position:relative; left:20px; top:0px; }
 
 .MENU { width:256px; background-color:white; vertical-align:top; } 
