@@ -54,13 +54,15 @@ class CursosPeer extends BaseCursosPeer
 	$C->addDescendingOrderByColumn( self::TITOLCURS );
   	$C->addDescendingOrderByColumn( 'YEAR('.self::DATAINICI.')' );
   	$C->addDescendingOrderByColumn( 'MONTH('.self::DATAINICI.')' );  	
-  		
+  	
+    $RET[0] = 'El curs no està actiu o bé escolliu-ne un';
+      	
   	foreach(self::doSelect($C) as $CURS):
   		$DATA = $CURS->getDatafimatricula();  		  		
 		list($year,$month,$day) = explode("-",$DATA); 
   		$RET[$CURS->getIdcursos()] = $CURS->getCodi().'('.$year.'-'.$month.') - '.$CURS->getTitolcurs();
-  	endforeach;
-  	
+  	endforeach;  	    
+    
   	return $RET;  	
   	
   }
