@@ -46,7 +46,7 @@ DIV.text { font-size:11px; }
 .REQUADRE DIV { font-size:11px; }
 
 .FORMULARI { font-size:11px; }
-.FORMULARI TH { vertical-align:top; text-align:left; max-width: 40px; font-size:11px; }
+.FORMULARI TH { vertical-align:top; text-align:left; font-size:11px; }
 .FORMULARI TD { padding:2px; vertical-align: middle; }
 .FORMULARI input,select { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; font-size:10px; }
 .FORMULARI select option { padding-right:10px; }

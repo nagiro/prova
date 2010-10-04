@@ -148,13 +148,14 @@
 
  	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST" id="form_sel_user">
 	    <DIV class="REQUADRE">	    
-	    	<table class="FORMULARI" width="100%">
-	 			<?php echo $FMatricula; ?>
-	 		
+	    	<table class="FORMULARI" width="100%">                            
+	 			<?php echo $FMatricula; ?>	 		
+                <tr>
 	 			<td colspan="2" class="dreta"><br>
 	 				<?php echo submit_tag('Crea nou usuari',array('name'=>'BADDUSER','class'=>'BOTO_ACTIVITAT')) ?>	            		
 	            	<?php echo submit_tag('Segueix matriculant...',array('name'=>'BSELCURS','class'=>'BOTO_ACTIVITAT')) ?>
 	            </td>
+                </tr>
 	 		      
 	        </table>
 	     </DIV>
@@ -270,10 +271,13 @@
 	    <DIV class="REQUADRE">
 	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules'); ?></div>	    
 	    	<table class="FORMULARI" width="100%">
-	 			<?php echo $FMATRICULA; ?>      
+                <tr><th width="200px">&nbsp;</th><td>&nbsp;</td></tr>
+	 			<?php echo $FMATRICULA; ?>
+                <tr>      
 	 			<td colspan="2" class="dreta"><br>
 					<?php include_partial('botonera',array('element'=>'la matrícula'))?>	            			            	
 	            </td>
+                </tr>
 	        </table>
 	     </DIV>
      </form>
