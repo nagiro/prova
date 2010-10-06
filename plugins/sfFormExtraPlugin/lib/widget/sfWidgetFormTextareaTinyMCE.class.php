@@ -63,6 +63,7 @@ class sfWidgetFormTextareaTinyMCE extends sfWidgetFormTextarea
     mode:                              "exact",
     elements:                          "%s",
     plugins:                           "media,table,paste,fullscreen",        
+    extended_valid_elements : "input[name|size|type|value|onclick],iframe[height|width|src]",
     theme:                             "%s",
     language:                          "ca",
     %s
