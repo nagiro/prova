@@ -94,7 +94,7 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 /* Tira de fotos del home */
 /**************************/
 
-.TIRA_FOTOS .FOTOS { display:block; float:left; width:253px; height:80px; }
+.TIRA_FOTOS .FOTOS { display:block; float:left; width:253px; height:80px;    }
 .TIRA_FOTOS .FOTOS .IMG_FOTO { width:253px; height:80px; border:0px; vertical-align: bottom; }
 .TIRA_FOTOS .ESPAI { float:left; display:block; width:4px; background-color:white; } 
 .TIRA_FOTOS { padding-top:4px; padding-bottom: 4px; background-color:white; height:81px; }
