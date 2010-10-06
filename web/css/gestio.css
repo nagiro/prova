@@ -90,9 +90,20 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .CAPCALERA { background-color: #ae1912; height:65px; border-top:4px solid #ae1912; border-bottom:0px; padding:0px; margin:0px; }
 #logo { position:relative; left:20px; top:0px; }
 
-.MENU { width:256px; background-color:white; vertical-align:top; } 
-.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; font-size:11px; }    
-.CALENDARI { width:256px; background-color:white; vertical-align: top; }
+/**************************/
+/* Tira de fotos del home */
+/**************************/
+
+.TIRA_FOTOS .FOTOS { display:block; float:left; width:253px; height:80px; }
+.TIRA_FOTOS .FOTOS .IMG_FOTO { width:253px; height:80px; border:0px; vertical-align: bottom; }
+.TIRA_FOTOS .ESPAI { float:left; display:block; width:4px; background-color:white; } 
+.TIRA_FOTOS { padding-top:4px; padding-bottom: 4px; background-color:white; height:81px; }
+
+.MENU { width:256px; background-color:white; vertical-align:top; padding-top:40px; } 
+.CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; font-size:11px; }
+.CONTINGUT A { color:#A3C101; text-decoration:none; }
+.CONTINGUT A:hover { text-decoration:underline; }    
+.CALENDARI { width:256px; background-color:white; vertical-align: top; padding-top:20px; }
 #CALENDARI_ACTIVITATS { width:100%; }
 #CALENDARI_ACTIVITATS A { text-decoration:none; color:black; font-size:10px; }
 #CALENDARI_ACTIVITATS TD { font-size:10px; text-align: left; padding:1px; }
@@ -107,12 +118,10 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 
 .PEU { height:25px; background-color:#1f1a17; color: white; text-align:center; font-size: 10px; vertical-align:middle; }    
 .DEGRADAT_INFERIOR { background-image: url(DifuminatInferior.png); background-repeat: repeat-x; }
-#ESPAI { margin-top:20px; width:256px; }
+#ESPAI { width:256px; }
             
-.FOTOS { text-align:center; vertical-align:middle; height:86px; width:256px; margin:0px; padding:0px; background-color:white; border:0px; }
-.FOTOS .IMG_FOTO { width:252px; height:80px; border:0px; vertical-align: bottom; display:block; }
             
-.MENU_TABLE { border-collapse: collapse; margin-top:20px; }
+.MENU_TABLE { border-collapse: collapse; }
 .MENU_TABLE A { color:black; font-size:10px; text-decoration: none; }
 
 TD.SUBMENU_1   { font-size:9px; background-color:#b58282; border:1px solid black; width:165px; height:30px; vertical-align:middle; padding-left:10px; border:1px solid white; }		
@@ -180,8 +189,9 @@ A.blau:hover { text-decoration: underline; }
 .div_taula .numeros { font-family: verdana; font-size: 10px; text-align: right; padding: 2px; }        
 .div_taula .selsetmana { background-color: #F9E8E4; color: #6E1F0C; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px; padding:2px; text-align:right; }
 .div_taula .selsetmana a { text-decoration: none; color: #6E1F0C; }
-.div_taula a { text-decoration:none; color: #606060; }
-.div_taula .HIHAACTIVITAT { background-color:#EEEEEE; color:yellow; font-weight: bold; }    
+.div_taula a { text-decoration:none; color: #606060; }     
+.div_taula .t_calendari .HIHAACTIVITAT A { color:#7D0805; font-weight: bold; }
+
 
 .CERCA_TITOL { font-size:10px; font-weight: bold; }
 .CERCA_TEXT  { font-size:10px; color:gray; margin-left:20px; }
@@ -205,15 +215,19 @@ BUTTON.web {  }
 
 #TEXT_WEB {	
 	font-size:11px;	
-	text-align:justify;
-	font-family: sans-serif; 
+	text-align:left;
+	font-family: Verdana; 
+}
+
+#TEXT_WEB ul {
+    padding-top:5px;
 }
 
 #TEXT_WEB li {
-	list-style: circle;
+	list-style: disc;
 	list-style-position: outside;
 	margin-left: 30px;
-	font-size:11px;
+	font-size:11px;    
 }
 
 #TEXT_WEB table, td {		
@@ -222,23 +236,20 @@ BUTTON.web {  }
 
 #TEXT_WEB p {
 	color:black;
-	text-align: justify;
-	margin-bottom: 20px;
-	margin-top: 10px;
+	text-align: left;	
+    padding-top:15px;	
 	font-size:11px;	
 }
 
 #TEXT_WEB h1 {
 	font-size: 20px;
-	font-weight: bold;
-	margin-bottom: 10px;		
+	font-weight: bold;			
 	color: #864444;	
 }
 
 #TEXT_WEB h2 {
 	font-size: 14px;
-	font-weight: bold;
-	margin-bottom: 10px;
+	font-weight: bold;    	
 	color: #864444;
 }
 

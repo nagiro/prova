@@ -80,7 +80,11 @@
 						</div>
 					</div>
 					<div style="clear:both; padding-top:10px;">
-						<div class="llegir_mes"><div style="padding-right:30px;"><a href="<?php echo url_for('web/index?idn='.$ON->getIdnoticia().'&p='.$PAGINA) ?>">Ampliar notícia</a></div></div>
+						<div class="llegir_mes">
+                            <div style="padding-right:30px;">
+                                <a href="<?php echo url_for('web/index?idn='.$ON->getIdnoticia().'&p='.$PAGINA) ?>">Ampliar notícia</a>
+                            </div>
+                        </div>
 					</div>					
 					
 					<div style="clear:both;">&nbsp;</div>					

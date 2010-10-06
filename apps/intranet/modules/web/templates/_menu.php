@@ -17,8 +17,7 @@ function showElement(theClass) {
 </script>
 
 <?php if($TIPUS_MENU == 'WEB' || $TIPUS_MENU == 'ADMIN'): ?>
-		<TD class="MENU"><center>
-		<div id="ESPAI"></div>      
+		<TD class="MENU"><center>		      
 
         <?php echo llistaMenu($MENU,$OBERT)?>
         
@@ -26,10 +25,10 @@ function showElement(theClass) {
 		  	   <TR><TD class="SUBMENU_1"><?php echo link_to(image_tag('intranet/Submenu1.png', array('align'=>'ABSMIDDLE')).' Zona privada' , 'web/index', array( 'anchor' => true ))?></TD></TR>
 		  	   <TR><TD>
 		  	   		<TABLE>
-		  	   			<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Gestiona dades' , 'web/gestio?accio=gd')?></TD></TR>
-				    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Cursos i matrícules' , 'web/gestio?accio=gc')?></TD></TR>
-		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Reserves d\'espais' , 'web/gestio?accio=gr')?></TD></TR>
-		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' Llistes' , 'web/gestio?accio=gl')?></TD></TR>
+		  	   			<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Gestiona dades' , 'web/gestio?accio=gd')?></TD></TR>
+				    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Cursos i matrícules' , 'web/gestio?accio=gc')?></TD></TR>
+		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Reserves d\'espais' , 'web/gestio?accio=gr')?></TD></TR>
+		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Llistes' , 'web/gestio?accio=gl')?></TD></TR>
 		  	   	    	<?php echo AltresApps($USUARI); ?>
 		  	   	  	</TABLE>
 		  	   	</TD></TR>
@@ -84,35 +83,37 @@ function showElement(theClass) {
   	$imatge = ($OBERT)?'':'T';
   	$id_nivell = $NODE->getNivell();  	
   	$URL = $NODE->getUrl();
+    $RET = "";
 
-	if($id_nivell == 1):
-	  	if(!empty($URL)): 						return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
+	if($id_nivell == 1):                
+	  	if(!empty($URL)): 						$RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
 	  	else:
-	  		if($NODE->getCategories() == 'cap') return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
-	  		else 								return '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
-		endif;		
+	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
+	  		else 								$RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+		endif;		        
 	elseif($id_nivell == 2):
-	  	if(!empty($URL)): 						return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
+	  	if(!empty($URL)): 						$RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
 	  	else:
-	  		if($NODE->getCategories() == 'cap') return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
-	  		else 								return '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
+	  		else 								$RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
 		endif;				
 	elseif($id_nivell == 3):
-	  	if(!empty($URL)): 						return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
+	  	if(!empty($URL)): 						$RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
 	  	else:
-	  		if($NODE->getCategories() == 'cap') return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
-	  		else 								return '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
+	  		else 								$RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
 		endif;					
 	endif; 
   	   			 
+    return $RET; 
   }
     
   function AltresApps($USUARI)
   {  	
   	$PERMISOS = UsuarisAppsPeer::getPermisosOO($USUARI);
-	echo "<TR><TD class=\"SUBMENU_2\">".image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE'))." Altres aplicacions</TD></TR>";  	 
+	echo "<TR><TD class=\"SUBMENU_2\">".image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE'))."&nbsp;&nbsp;&nbsp;Altres aplicacions</TD></TR>";  	 
   	foreach($PERMISOS as $APP):  		
-  		echo "<TR><TD class=\"SUBMENU_3\">".link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).' '.$APP->getNom() , $APP->getUrl() )."</TD></TR>";
+  		echo "<TR><TD class=\"SUBMENU_3\">".link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$APP->getNom() , $APP->getUrl() )."</TD></TR>";
   	endforeach;  	
   }  
 

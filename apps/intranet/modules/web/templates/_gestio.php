@@ -19,6 +19,10 @@
 		
 	});
 	
+    function ActivaBoto(ple){
+        if(ple) { alert('El curs al que vol matricular-se no té places disponibles.\nSi vostè ho desitja pot seguir fent la matrícula gratuïtament i entrarà en llista d\'espera.\nSi és acceptat al curs, nosaltres ens posarem en contacte amb vostè i llavors haurà de formalitzar la matrícula correctament si ho desitja.'); }
+    }
+    
 	function ValidaReserves(){
 		var espais = true;
 		$(".ul_espais:checked").each(function (a){ espais = false; } );						
@@ -175,17 +179,21 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 								<TR><TD colspan="6" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
 					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); 
-                                   $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FF7373;\"":"";                       
+                                   $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FFCCCC;\"":"";
+                                   $jple = ($PLACES['OCUPADES'] == $PLACES['TOTAL']);                                   
+                       
                        ?>					                       	
 					   		<TR>
-					      		<TD <?php echo $ple ?>><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto();','class'=>'class_cursos'))?></TD>					      		
+					      		<TD <?php echo $ple ?>><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto('.$jple.');','class'=>'class_cursos '))?></TD>					      		
 					      		<TD <?php echo $ple ?>>
 					      		
 									<a href="#TB_inline?height=480&width=640&inlineId=hidden<?php echo $C->getIdcursos(); ?>&modal=false" class="thickbox">
 					      				<?php echo $C->getCodi()?>
 					      			</a>
    			      					<div style="display: none;" id="hidden<?php echo $C->getIdcursos() ?>">
-			      						<?php echo $C->getDescripcio() ?>
+                                        <div id="TEXT_WEB">
+			      						 <?php echo $C->getDescripcio() ?>
+                                        </div>
       								</div>
 
 					      		</TD>

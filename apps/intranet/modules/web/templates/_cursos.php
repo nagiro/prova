@@ -20,7 +20,7 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
         	<TD class="TITOL">Títol</TD>
         	<TD class="TITOL">Preu</TD>
         	<TD class="TITOL">Data d'inici</TD>
-        	<TD class="TITOL">Places</TD>
+        	<TD class="TITOL">Vacants</TD>
         </TR>
 
    <?php $CAT_ANT = ""; ?>   
@@ -37,14 +37,16 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
           				<?php echo $C->getCodi()?>
           			</a>
           			<div style="display: none;" id="hidden<?php echo $C->getIdcursos() ?>">
-          				<?php echo $C->getDescripcio() ?>
+                        <div id="TEXT_WEB">
+          				  <?php echo $C->getDescripcio() ?>
+                        </div>
           			</div>
                 </div>
       		</TD>
       		<TD class="LINIA"><?php echo $C->getTitolcurs()?> ( <?php echo $C->getHoraris()?> ) </TD>
       		<TD class="LINIA"><?php echo $C->getPreu()?>€</TD>      							
-      		<TD class="LINIA"><?php echo $C->getDatainici('d-m-Y')?></TD>
-      		<TD class="LINIA"><?php echo $PLACES['OCUPADES'].'/'.$PLACES['TOTAL']?></TD>
+      		<TD class="LINIA" width="70px"><?php echo $C->getDatainici('d-m-Y')?></TD>
+      		<TD class="LINIA"><?php echo (intval($PLACES['TOTAL'])-intval($PLACES['OCUPADES'])) ?></TD>
       	</TR>                		                 										
    <?php $CAT_ANT = $C->getCategoria(); ?>
    <?php endif; ?>			   			   

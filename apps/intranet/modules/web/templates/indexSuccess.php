@@ -1,19 +1,17 @@
+
 <TR>
-	<?php 	  
-		 
-	   $i = 1;
-		foreach($FOTOS as $F):		   
-		   if((sizeof($FOTOS)) == $i):
-              echo '<td class="FOTOS">'.image_tag('portada/IMG'.$F.'.jpg' , array('class'=>'IMG_FOTO')).'</TD>';
-           elseif($i == 1):
-              echo '<td class="FOTOS">'.image_tag('portada/IMG'.$F.'.jpg' , array('class'=>'IMG_FOTO')).'</TD>';
-           else:
-              echo '<td class="FOTOS">'.image_tag('portada/IMG'.$F.'.jpg' , array('class'=>'IMG_FOTO')).'</TD>';
-		   endif;
-			$i++;			
-		endforeach;			
-		
-	?>
+<td colspan="4" style="padding:0px; border:0px;">
+    <div class="TIRA_FOTOS">    
+    	<?php 	  
+    		$i = 1;        
+    		foreach($FOTOS as $F):
+               if($i > 1 && $i <= sizeof($FOTOS)): echo '<div class="ESPAI">&nbsp;</div>'; endif; 
+               echo '<div class="FOTOS">'.image_tag('portada/IMG'.$F.'.jpg' , array('class'=>'IMG_FOTO')).'</div>';
+               $i++;        		   
+    		endforeach;					
+    	?>
+    </div>
+</td>
 </TR>
 
 <TR>

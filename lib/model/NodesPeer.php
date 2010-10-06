@@ -78,6 +78,7 @@ class NodesPeer extends BaseNodesPeer
     $NIVELL = $NODE->getNivell();
     $ORDRE = $NODE->getOrdre();
     $C->add(self::ORDRE, $ORDRE , CRITERIA::GREATER_THAN);
+    $C->add(self::ISACTIVA, true);
 //    $C->add(self::NIVELL, $NIVELL, CRITERIA::GREATER_EQUAL);
     $C->addAscendingOrderByColumn(self::ORDRE);
     return self::doSelect($C);

@@ -7,6 +7,7 @@ FIELDSET { border:2px solid #CCCCCC; padding:10px; margin-right:40px; }
 input.CONTACTE { border:1px solid #CCCCCC; }
 TEXTAREA.CONTACTE { border: 1px solid #CCCCCC; }
 .ENVIAT { font-size: 12px; padding-left:10px; padding-bottom: 10px; }
+.FORMULARI TH { text-align:right; padding-right:10px; }
 </style>
 
 <TD colspan="3" class="CONTINGUT">
@@ -20,7 +21,7 @@ TEXTAREA.CONTACTE { border: 1px solid #CCCCCC; }
 	    	<TABLE class="FORMULARI">
 	    	<TR><TD style="width:100px"></TD><TD></TD></TR>
 	    	<?php echo $FConsulta; ?>  	  
-			<TR><TD></TD><TD><BR /><?php echo submit_tag('Envia missatge');?></TD> </TR>
+			<TR><TD></TD><TD><BR /><?php echo submit_tag('Envia missatge',array('class'=>'BOTO_ACTIVITAT'));?></TD> </TR>
 			</TABLE>
 	   	</FIELDSET>
 	   	

@@ -4,7 +4,7 @@
     #destacats{
         font-size:12px; 
         font-weight:bold; 
-        text-align:center; 
+        text-align:center;                 
         background-color:#CCCCCC; 
         color:#606060;        
     }
@@ -31,7 +31,7 @@
 	<form action="<?php echo url_for('web/index') ?>" method="POST" name="form_calendari">
     	
       <TABLE class="CAL">      
-        <TR><TD><input type="text" name="CERCA"></input>
+        <TR><TD><input style="width:140px; color:gray;" value="Escriu per cercar..." type="text" name="CERCA"></input>
         		<?php echo submit_image_tag('intranet/lupa.png',array('value'=>'BCERCA','name'=>'BCERCA')) ?>         		
         		<br /><br />
         	</TD>
@@ -76,9 +76,9 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
   echo '<DIV class="div_taula">';
   echo '<table class="t_calendari">';  
   echo '<tr>
-          <td width="25" class="titol">'.link_to('&lt;',"web/index?accio=cdc&DATACAL=$MesAnterior").'</td>
-          <td colspan="5" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('c','mensual',$DataMesActual)).'</td>         
-          <td width="25" class="titol">'.link_to('&gt;',"web/index?accio=cdc&DATACAL=$MesSeguent").'</td>
+          <td width="25" style="background-color:white;" class="titol">'.link_to('&lt;',"web/index?accio=cdc&DATACAL=$MesAnterior").'</td>
+          <td colspan="5" style="background-color:white;" class="titol">'.link_to(mesos($mes).' '.$any,'web/index'.getParam('c','mensual',$DataMesActual)).'</td>         
+          <td width="25" style="background-color:white;" class="titol">'.link_to('&gt;',"web/index?accio=cdc&DATACAL=$MesSeguent").'</td>
         </tr>';
   echo '<tr>
           <td width="25" class="dies">Dll</td>
@@ -105,7 +105,7 @@ function getCalendari( $DATA , $ACTIVITATS_CALENDARI , $CERCA ){
       $setmanaIterator = date( 'W' , mktime( 0 , 0 , 0 , $mes , $diaA , $any ) );
       
       //Si és cap de setmana ho posem en negreta
-      if( $j == 7 || $j == 6 ) $class = 'bold';
+//      if( $j == 7 || $j == 6 ) $class = 'bold';
       
       //Si la setmana actual és a la que estem, ho marquem amb vermell      
       if( $setmanaActual == $setmanaIterator ) $class .= ' selsetmana'; else $class .= ' numeros';  
