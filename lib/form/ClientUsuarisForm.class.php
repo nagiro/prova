@@ -107,6 +107,7 @@ class ClientUsuarisForm extends sfFormPropel
     
     //Comprovem que el DNI ja no existeixi a no ser que sigui el mateix usuari.
     $C = new Criteria();
+    $value = strtoupper($value);
     $C->add(UsuarisPeer::USUARIID, $arguments['idU'], CRITERIA::NOT_EQUAL);
     $C->add(UsuarisPeer::DNI, $value);    
     if(UsuarisPeer::doCount($C) > 0):
