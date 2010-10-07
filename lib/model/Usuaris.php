@@ -69,7 +69,8 @@ class Usuaris extends BaseUsuaris
     $mob  = $this->getMobil();
       	
     if(strlen($telf) > 0 ) return $telf;
-    else return $mob;          	
+    elseif(strlen($telf) > 0) return $mob;
+    else return 'n/d';             	
   	  	
   }
 
