@@ -747,8 +747,8 @@ class gestioActions extends sfActions
    	$fila = 1; $columna = 1; $pagina = 1; $pdf->AddPage();
    	$h = 50;
    	$w = 105;
-   	
-	for($i = 1; $i< 121; $i++):
+           	
+	for($i = 1; $i< $OE->getLocalitats(); $i++):
 	
 		if($fila > 3) $text = "<br />"; else $text = "";
 		if($fila > 6) $text .= ""; 

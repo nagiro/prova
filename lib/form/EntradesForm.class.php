@@ -21,6 +21,7 @@ class EntradesForm extends sfFormPropel
       'preu'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px;')),
       'venudes'   => new sfWidgetFormInputText(array(),array('style'=>'width:100px;')),
       'recaptat'  => new sfWidgetFormInputText(array(),array('style'=>'width:100px;')),
+      'localitats'=> new sfWidgetFormInputText(array(),array('style'=>'width:100px;')),
     ));
 
     $this->setValidators(array(
@@ -32,6 +33,7 @@ class EntradesForm extends sfFormPropel
       'preu'      => new sfValidatorString(array('max_length' => 50)),
       'venudes'   => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'recaptat'  => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'localitats'=> new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),      
     ));
 
     $this->widgetSchema->setLabels(array(      
@@ -42,6 +44,7 @@ class EntradesForm extends sfFormPropel
       'preu'      => 'Preu',
       'venudes'   => 'Venudes',
       'recaptat'  => 'Recaptat',
+      'localitats'=> 'Localitats',
     ));
     
     

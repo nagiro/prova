@@ -49,6 +49,7 @@ class EntradesPeer extends BaseEntradesPeer {
 			$OE->setPreu('Preu: 5€ / Reduït: 3€ ');
 			$OE->setVenudes(0);
 			$OE->setRecaptat(0);
+            $OE->setLocalitats(126);
 			return new EntradesForm($OE);			
 		endif; 		
 		
