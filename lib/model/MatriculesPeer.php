@@ -337,6 +337,7 @@ class MatriculesPeer extends BaseMatriculesPeer
         case self::BAIXA : return 'Baixa';
         case self::CANVI_GRUP : return 'Canvi de grup';
         case self::EN_PROCES: return 'En procès de pagament';
+        case self::DEVOLUCIO: return 'Devolució';
         default : return 'NO ESPECIFICAT';  
      }   
   }
