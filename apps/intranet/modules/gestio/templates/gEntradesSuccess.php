@@ -27,7 +27,7 @@
                       	}                    	
                     }
                 ?>     			
-        <tr><td colspan="2" style="text-align:center">
+        <tr><td colspan="4" style="text-align:center">
          
         <?php
         	if ($ENTRADES->haveToPaginate()):

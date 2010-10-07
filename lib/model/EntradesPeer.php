@@ -22,7 +22,9 @@ class EntradesPeer extends BaseEntradesPeer {
 
 	static public function getList($PAGE = 1)
 	{
-		$C = new Criteria();		     
+		$C = new Criteria();
+        
+        $C->addDescendingOrderByColumn(self::IDENTRADA);		     
 	                    
 		$pager = new sfPropelPager('Entrades', 10);
 	    $pager->setCriteria($C);
