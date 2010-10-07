@@ -62,7 +62,7 @@ class Usuaris extends BaseUsuaris
   	  	
   }
   
-  public function getTelefon()
+  public function getTelefon2()
   {
     
   	$telf = $this->getTelefon();
