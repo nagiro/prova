@@ -207,7 +207,7 @@ function mostraCursos($MATRICULES, $estat)
         if($M->getEstat() == $estat):
           	$RET .= '<TR>';
 			$RET .= '<TD class="LINIA" width="15%">'.$U->getDni().'</TD>';
-			$RET .= '<TD class="LINIA" width="40%">'.$U->getNomComplet().'<BR />'.$U->getAdreca().'<BR />'.$U->getCodiPostal().' - '.$U->getPoblacioString().'<BR />'.$U->getTelefon().' | '.$M->getDatainscripcio().' <br />'.$U->getEmail().'</TD>';
+			$RET .= '<TD class="LINIA" width="40%">'.$U->getNomComplet().'<BR />'.$U->getAdreca().'<BR />'.$U->getCodiPostal().' - '.$U->getPoblacioString().'<BR />'.$U->getTelefonString().' | '.$M->getDatainscripcio().' <br />'.$U->getEmail().'</TD>';
 			$RET .= '<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO .') <br />';
 			$RET .= MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>';							
 			$RET .= '</TR>';
