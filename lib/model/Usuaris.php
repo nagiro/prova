@@ -61,5 +61,16 @@ class Usuaris extends BaseUsuaris
   	return $RET;
   	  	
   }
+  
+  public function getTelefon()
+  {
+    
+  	$telf = $this->getTelefon();
+    $mob  = $this->getMobil();
+      	
+    if(strlen($telf) > 0 ) return $telf;
+    else return $mob;          	
+  	  	
+  }
 
 }
