@@ -2387,7 +2387,7 @@ class gestioActions extends sfActions
                 $doc->mergeXmlField('client', $OU->getDni());
                 $doc->mergeXmlField('data', $OM->getDatainscripcio('d/m/Y'));
                 $doc->mergeXmlField('nom', $OU->getNomComplet());
-                $doc->mergeXmlField('telèfon', $OU->getTelefon());
+                $doc->mergeXmlField('telèfon', $OU->getTelefonString());
                 $doc->mergeXmlField('identificador', $OU->getDni());
                 $doc->mergeXmlField('carrer', $OU->getAdreca());
                 $doc->mergeXmlField('poble', $OU->getPoblacioString());
