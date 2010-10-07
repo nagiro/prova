@@ -16,28 +16,22 @@ class NoticiesPeer extends BaseNoticiesPeer
 			$C1->addOr($C2); $C->add($C1);			
 		endif;
 
-		//Hem d'estar en el període de publicació.
-//		if($filtreWEB):			
-//			$C->add( self::DATADESAPARICIO , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
-//			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
-//			$C->add( self::ACTIVA, true);
-//		else: 
         if(!$totes):
 			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
             $C->add( self::DATADESAPARICIO , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
-		endif;				
-
-//		if($filtreWEB):
-//			$C->addDescendingOrderByColumn(self::DATAPUBLICACIO);
-//		else:
-            $C->addAscendingOrderByColumn(self::ORDRE); 
-			$C->addAscendingOrderByColumn(self::DATAPUBLICACIO);
-//		endif; 
-
-		if($filtreWEB && !$totes):
+		endif;
+        
+       	if($filtreWEB && !$totes):
 			$C->add(self::ACTIVA, true);
-		endif; 
-			
+		endif; 				        
+
+        if(!$totes):
+            $C->addAscendingOrderByColumn(self::ORDRE);
+            $C->addAscendingOrderByColumn(self::DATAPUBLICACIO);
+        else: 
+            $C->addDescendingOrderByColumn(self::DATAPUBLICACIO);
+        endif;                  			        
+            
 		$pager = new sfPropelPager('Noticies', 20);
 	 	$pager->setCriteria($C);
 	 	$pager->setPage($PAGINA);
