@@ -2454,11 +2454,14 @@ class gestioActions extends sfActions
   { 
   	    
     $this->setLayout('gestio');
-    
-    $this->FCerca = new CercaForm();
-    $this->FCerca->bind($request->getParameter('cerca'));
-    $this->CERCA = $request->getParameter('cerca');    
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'p',1);
+        
+    //Inicialitzem el formulari de cerca
+    $this->CERCA = $request->getParameter('cerca');
+    $this->FCerca = new CercaTextChoiceForm();       
+    $this->FCerca->setChoice(array(1=>'Actuals',2=>'Totes')); 
+	$this->FCerca->bind($this->CERCA);
+        
+    $this->PAGINA = $request->getParameter('p',1);
     $this->IDN    = $request->getParameter('idn');    
     
 	$this->accio = $request->getParameter('accio');
@@ -2475,9 +2478,8 @@ class gestioActions extends sfActions
 	switch($this->accio){
 		
 		case 'CC':
-			$this->getUser()->addLogAction('inside','gNoticies');
-			$this->getUser()->setSessionPar('cerca',"");
-			$this->getUser()->setSessionPar('PAGINA',1);			
+			$this->getUser()->addLogAction('inside','gNoticies');			
+            $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));			
 			break;
 			
 		case 'N':
@@ -2518,8 +2520,8 @@ class gestioActions extends sfActions
 			break;
 						
 	}
-	
-    $this->NOTICIES = NoticiesPeer::getNoticies($this->CERCA['text'],$this->PAGINA);
+	        
+    $this->NOTICIES = NoticiesPeer::getNoticies($this->CERCA['text'],$this->PAGINA,$this->CERCA['select']);
           
   }
   

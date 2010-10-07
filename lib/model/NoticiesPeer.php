@@ -3,7 +3,7 @@
 class NoticiesPeer extends BaseNoticiesPeer
 {
 	
-	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false)
+	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false, $totes = false)
 	{
 		
 		//Agafem totes les notícies de notícies i les activitats que hem posat que es publiquen com a notícies		
@@ -22,9 +22,10 @@ class NoticiesPeer extends BaseNoticiesPeer
 //			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
 //			$C->add( self::ACTIVA, true);
 //		else: 
+        if(!$totes):
 			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
             $C->add( self::DATADESAPARICIO , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
-//		endif;				
+		endif;				
 
 //		if($filtreWEB):
 //			$C->addDescendingOrderByColumn(self::DATAPUBLICACIO);
@@ -33,7 +34,7 @@ class NoticiesPeer extends BaseNoticiesPeer
 			$C->addAscendingOrderByColumn(self::DATAPUBLICACIO);
 //		endif; 
 
-		if($filtreWEB):
+		if($filtreWEB && !$totes):
 			$C->add(self::ACTIVA, true);
 		endif; 
 			

@@ -100,6 +100,7 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 .TIRA_FOTOS { padding-top:4px; padding-bottom: 4px; background-color:white; height:81px; }
 
 .MENU { width:256px; background-color:white; vertical-align:top; padding-top:40px; } 
+.CONTINGUT_ADMIN { background-color:white; width:512px; vertical-align: top; padding-top:40px; border-right:0px solid white; font-size:11px; }
 .CONTINGUT { width:512px; background-color:white; vertical-align: top; padding-top:40px; border-right:0px solid white; font-size:11px; }
 .CONTINGUT A { color:#A3C101; text-decoration:none; }
 .CONTINGUT A:hover { text-decoration:underline; }    

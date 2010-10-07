@@ -107,7 +107,7 @@
 
 
   
-<TD colspan="3" class="CONTINGUT">	
+<TD colspan="3" class="CONTINGUT_ADMIN">	
 
 	<?php // echo phpinfo(); ?>
 

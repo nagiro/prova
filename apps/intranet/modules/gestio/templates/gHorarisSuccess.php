@@ -33,7 +33,7 @@ SELECT {  border: 1px gray solid; background-color: rgb(250,254,218); margin:2px
 */
 </script>
 
-    <TD colspan="3" class="CONTINGUT" style="padding-left:30px;">    
+    <TD colspan="3" class="CONTINGUT_ADMIN" style="padding-left:30px;">    
     
       <?php echo nice_form_tag('gestio/gHoraris',array('method'=>'post')); ?>
     

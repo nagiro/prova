@@ -8,7 +8,7 @@
 
 </STYLE>
    
-    <TD colspan="3" class="CONTINGUT">
+    <TD colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'INCIDÈNCIES')); ?>
     

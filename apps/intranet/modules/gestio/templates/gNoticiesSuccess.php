@@ -1,18 +1,29 @@
 <?php use_helper('Form')?>
 
+<script type="text/javascript">
+
+	$(document).ready( function() { 
+		$('#cerca_select').change( function() { 
+			$('#FCERCA').submit(); 
+		});		
+	});
+    
+</script>
+
 <style>
 
 #submit { width:100px; }
 
 </style>
 
-    <TD colspan="3" class="CONTINGUT">
+    <TD colspan="3" class="CONTINGUT_ADMIN">
     
 	<?php include_partial('breadcumb',array('text'=>'NOTÍCIES')); ?>
 
-    <form action="<?php echo url_for('gestio/gNoticies') ?>" method="POST" id="FCERCA">
+
+	<form action="<?php echo url_for('gestio/gNoticies'); ?>" method="POST" id="FCERCA">
     	<?php include_partial('cerca',array(
-    										'TIPUS'=>'Simple',
+    										'TIPUS'=>'Select',
     										'FCerca'=>$FCerca,
     										'BOTONS'=>array(
     														array(
@@ -24,7 +35,8 @@
     													)
     										)
     							); ?>
-     </form>
+
+     </form>  
 
 
 <?php if($MODE == 'FORMULARI'): ?>

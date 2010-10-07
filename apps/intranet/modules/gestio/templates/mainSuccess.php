@@ -1,4 +1,4 @@
-<TD colspan="3" class="CONTINGUT">
+<TD colspan="3" class="CONTINGUT_ADMIN">
      
 	<DIV class="REQUADRE">
 		<DIV class="TITOL">Resum d'avui</DIV>
