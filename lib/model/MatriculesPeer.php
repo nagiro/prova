@@ -250,11 +250,12 @@ class MatriculesPeer extends BaseMatriculesPeer
       $C = new Criteria();
       $C->add(MatriculesPeer::CURSOS_IDCURSOS , $idC);
       $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
-      $C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
+      $C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);      
       $C->addDescendingOrderByColumn(MatriculesPeer::ESTAT);
       $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
       $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
-      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);                  
+      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
+      $C->add(MatriculesPeer::ESTAT,MatriculesPeer::EN_PROCES, CRITERIA::NOT_EQUAL);
   	    	  	
       return MatriculesPeer::doSelect($C);
   }
