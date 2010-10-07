@@ -2458,7 +2458,7 @@ class gestioActions extends sfActions
     //Inicialitzem el formulari de cerca
     $this->CERCA = $request->getParameter('cerca');
     $this->FCerca = new CercaTextChoiceForm();       
-    $this->FCerca->setChoice(array(1=>'Actuals',2=>'Totes')); 
+    $this->FCerca->setChoice(array(0=>'Actuals',1=>'Totes')); 
 	$this->FCerca->bind($this->CERCA);
         
     $this->PAGINA = $request->getParameter('p',1);
