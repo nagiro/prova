@@ -83,21 +83,18 @@
                       				<TD class='LINIA'>".link_to(image_tag('intranet/Submenu2.png').' '.$C['TITOL'],'gestio/gCicles?accio=EDITA&IDC='.$id )."</TD>
                       				<TD class='LINIA'>".$C['ACTIVITATS']."</TD>
                       				<TD class='LINIA'>".date('d/m/Y',$C['DIA'])."</TD>
-									<TD class='LINIA'>".(($C['EXTINGIT'])?'Inactiu':'Actiu')."</TD>
-                      				<TD class='LINIA'>".link_to(image_tag('template/text_list_bullets.png').'<span>Llistat d\'activitats pertanyents al cicle</span>','gestio/gCicles?accio=LLISTA&IDC='.$id,array('class'=>'tt2'))."</TD>
-                      				
-                      			  </TR>";                      		
+									<TD class='LINIA'>".(($C['EXTINGIT'])?'Inactiu':'Actiu')."</TD>";
+                                    if($C['ACTIVITATS'] > 0) echo "<TD class='LINIA'>".link_to(image_tag('template/text_list_bullets.png').'<span>Llistat d\'activitats pertanyents al cicle</span>','gestio/gCicles?accio=LLISTA&IDC='.$id,array('class'=>'tt2'))."</TD>";
+                            echo "</TR>";                      		
                       	}                    	
                     }
                 ?>     			
-        <tr><td colspan="2" style="text-align:center">
+        <tr><td colspan="5" style="text-align:center">
          
-        <?php
-        	
-        if($PAGINA > 1) echo link_to('<-- Veure cicles anteriors', 'gestio/gCicles?PAGINA='.($PAGINA-1));
-  		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
-  		echo link_to('Veure cicles següents -->', 'gestio/gCicles?PAGINA='.($PAGINA+1));  
-	 
+        <?php        	
+            if($PAGINA > 1) echo link_to('<-- Veure cicles anteriors', 'gestio/gCicles?PAGINA='.($PAGINA-1));
+      		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
+      		echo link_to('Veure cicles següents -->', 'gestio/gCicles?PAGINA='.($PAGINA+1));          	 
 		?>
         
         </td></tr>

@@ -98,7 +98,7 @@ class CiclesForm extends BaseCiclesForm
   		if(!empty($P) && file_exists($BASE.$P)):  		
   			$nom = $OC->getCicleid().'.pdf';		
 		  	rename($BASE.$P,$BASE.$nom);
-		    if( $I <> $nom ) unlink($BASE.$P);		    
+		    if( $P <> $nom ) unlink($BASE.$P);		    
 		    $OC->setPdf($nom)->save();		    
 	    endif;	    	      	    	    	      	    
 	endif;

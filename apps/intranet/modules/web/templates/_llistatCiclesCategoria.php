@@ -42,27 +42,33 @@
 					</div>
 					<div class="df" style="width:330px;">
 					
-						<script>
-						
+						<script>						
 							function change(idC){
-								alert(idC);
-								$("C"+idC).toggle();
-								
+							     
+								$("#C" + idC + "-R").click( 
+                                        function () {
+                                            $(this).hide();
+                                            $("#C"+idC).show();                                             
+                                            });
+                                $( "#C" + idC ).click( 
+                                        function () {
+                                            $(this).hide();
+                                            $("#C"+idC+"-R").show();                                             
+                                            });                                                                                                                                                                                            
+                                return false; 								
 							}
 						</script>
-					
-					
-									
-						<div class="<?php // echo 'C'.$idC; ?>" style="padding-left:10px; font-size:11px;">
+										            									
+						<div id="<?php echo 'C'.$idC."-R"; ?>" style="padding-left:10px; font-size:11px;">
 							<?php echo closetags(substr($desc,0,600).'...'); ?>
 							<div>
-								<a href="" onClick="change(<?php echo $idC ?>); return false;" >Llegir més</a>
+								<a onClick="change(<?php echo $idC ?>);" >Llegir més</a>
 							</div>
 						</div>
-						<div class="<?php echo 'C'.$idC; ?>" style="display: none; padding-left:10px; font-size:11px;">
-							<?php echo closetags(substr($desc,0,600).'...'); ?>
+						<div id="<?php echo 'C'.$idC; ?>" style="display: none; padding-left:10px; font-size:11px;">
+							<?php echo closetags($desc); ?>
 							<div style="padding-left:10px; font-size:11px;">
-								<a href="" onClick="change(<?php echo $idC ?>); return false;" >Llegir menys</a>
+								<a onClick="change(<?php echo $idC ?>);" >Llegir menys</a>
 							</div>						
 						</div>												
 						

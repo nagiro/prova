@@ -57,12 +57,18 @@ class CiclesPeer extends BaseCiclesPeer
 		
 	$RET = array();			
 	foreach($rs as $k=>$r){
-			
-		list($year,$month,$day) = explode('-',$rs2[$k]['d']);
-		$RET[$r['CicleID']]['DIA'] = mktime(0,0,0,$month,$day,$year);
-		$RET[$r['CicleID']]['ACTIVITATS'] = $r['c'];
-		$RET[$r['CicleID']]['EXTINGIT'] = $r['extingit'];
-		$RET[$r['CicleID']]['TITOL'] = $r['Nom'];		
+      			    		
+    		$RET[$r['CicleID']]['EXTINGIT'] = $r['extingit'];
+    		$RET[$r['CicleID']]['TITOL'] = $r['Nom'];
+            
+      if(is_null($rs2[$k]['d'])):            		
+        $RET[$r['CicleID']]['ACTIVITATS'] = 0;
+        $RET[$r['CicleID']]['DIA'] = 0;
+      else: 
+        list($year,$month,$day) = explode('-',$rs2[$k]['d']);
+	    $RET[$r['CicleID']]['DIA'] = mktime(0,0,0,$month,$day,$year);
+    	$RET[$r['CicleID']]['ACTIVITATS'] = $r['c'];
+      endif;
 		
 	}
 									
