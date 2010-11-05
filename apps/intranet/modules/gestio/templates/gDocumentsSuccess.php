@@ -30,9 +30,9 @@ $(document).ready( function() {
       
     <form action="<?php echo url_for('gestio/gDocuments') ?>" method="POST" id="FCERCA">
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Escull un directori: </DIV>
+	    <DIV class="TITOL">Escull un directori: </DIV>            
 	    	<table class="FORMULARI">
-	    		<?php echo select_tag('IDD',options_for_select(AppDocumentsDirectorisPeer::getSelectDirectoris(),$IDD));  ?>          	
+	    		<?php echo select_tag('IDD',options_for_select(AppDocumentsDirectorisPeer::getSelectDirectoris($IDS),$IDD));  ?>          	
 	            <tr>
 	            	<td colspan="2">
 	            		<input type="submit" name="B_VEURE_PERMISOS" value="Veure permisos" />	            
@@ -48,6 +48,7 @@ $(document).ready( function() {
         
         
 	<form action="<?php echo url_for('gestio/gDocuments') ?>" method="POST">
+        <?php echo input_hidden_tag('IDD',$IDD); ?>
 	      <DIV class="REQUADRE">
 	        <DIV class="TITOL">Llitat d'usuaris i permisos</DIV>
 	      	<TABLE class="DADES">
@@ -83,45 +84,25 @@ $(document).ready( function() {
 
  	<form action="<?php echo url_for('gestio/gDocuments') ?>" method="POST">
 	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Nom del nou directori</DIV>
+	    <DIV class="TITOL">Nom del nou directori</DIV>            
 	    	<table class="FORMULARI" width="100%">
-	    		<tr><th>Directori pare: </th><td><?php echo select_tag('IDD',options_for_select(AppDocumentsDirectorisPeer::getSelectDirectoris(),$IDD));  ?></td></tr>
-	    		<tr><th>Nom del nou directori: </th><td><?php echo input_tag('NOMDIR'); ?></td></tr>
-	 				 		
+                <?php include_partial('missatgeTaula',array('MISS'=>$MISSATGE)); ?>
+                <?php echo $FDir ?>	 				 		
 	 			<td colspan="2" class="dreta"><br>
-	 				<button name="B_SAVE_NOU" class="BOTO_ACTIVITAT">Guarda el directori</button>	 					            			            	
+                    <?php include_partial('botonera',array('element'=>'el directori','tipus'=>'Guardar','nom'=>'B_SAVE_NOU')); ?>	 				          			            	
+                    <?php include_partial('botonera',array('element'=>'el directori','tipus'=>'Esborrar','nom'=>'B_DELETE_DIRECTORI')); ?>                    
 	            </td>
 	 		      
 	        </table>
 	     </DIV>
      </form>	
 
-  <?php ENDIF; ?>
-  
-  <?php IF( $MODE == 'EDITA_DIRECTORI' ):  ?>
-
- 	<form action="<?php echo url_for('gestio/gDocuments') ?>" method="POST">
-	    <DIV class="REQUADRE">
-	    <DIV class="TITOL">Edita el directori</DIV>
-	    	<table class="FORMULARI" width="100%">
-	    		<?php echo $FDIRECTORI ?>
-	 				 		
-	 			<td colspan="2" class="dreta"><br>
-	 				<button name="B_SAVE_EDITA_DIRECTORI" class="BOTO_ACTIVITAT">Guarda el directori</button>
-	 				<button name="B_DELETE_DIRECTORI" class="BOTO_ACTIVITAT">Esborra el directori</button>	 				
-	            </td>
-	 		      
-	        </table>
-	     </DIV>
-     </form>	
-
-  <?php ENDIF; ?>
-  
-  
+  <?php ENDIF; ?>  
   
   <?php IF( $MODE == 'NOU_USUARI' ):  ?>
 
  	<form action="<?php echo url_for('gestio/gDocuments') ?>" method="POST">
+        <?php echo input_hidden_tag('IDD',$IDD); ?>
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL">Escull el nou usuari i els permisos al directori</DIV>
 	    	<table class="FORMULARI" width="100%">

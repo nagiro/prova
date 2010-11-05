@@ -21,6 +21,8 @@ abstract class BaseAgendatelefonicaForm extends BaseFormPropel
       'Notes'              => new sfWidgetFormTextarea(),
       'Tags'               => new sfWidgetFormInputText(),
       'Entitat'            => new sfWidgetFormInputText(),
+      'site_id'            => new sfWidgetFormInputText(),
+      'actiu'              => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -31,6 +33,8 @@ abstract class BaseAgendatelefonicaForm extends BaseFormPropel
       'Notes'              => new sfValidatorString(array('required' => false)),
       'Tags'               => new sfValidatorString(array('max_length' => 100, 'required' => false)),
       'Entitat'            => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'site_id'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('agendatelefonica[%s]');

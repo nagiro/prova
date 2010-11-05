@@ -17,12 +17,14 @@ abstract class BaseTipusForm extends BaseFormPropel
       'idTipus'   => new sfWidgetFormInputHidden(),
       'tipusNom'  => new sfWidgetFormTextarea(),
       'tipusDesc' => new sfWidgetFormTextarea(),
+      'site_id'   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'idTipus'   => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdtipus()), 'empty_value' => $this->getObject()->getIdtipus(), 'required' => false)),
       'tipusNom'  => new sfValidatorString(array('required' => false)),
       'tipusDesc' => new sfValidatorString(array('required' => false)),
+      'site_id'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('tipus[%s]');

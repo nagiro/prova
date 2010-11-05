@@ -18,6 +18,8 @@ abstract class BaseAgendatelefonicaFormFilter extends BaseFormFilterPropel
       'Notes'              => new sfWidgetFormFilterInput(),
       'Tags'               => new sfWidgetFormFilterInput(),
       'Entitat'            => new sfWidgetFormFilterInput(),
+      'site_id'            => new sfWidgetFormFilterInput(),
+      'actiu'              => new sfWidgetFormFilterInput(array('with_empty' => false)),
     ));
 
     $this->setValidators(array(
@@ -27,6 +29,8 @@ abstract class BaseAgendatelefonicaFormFilter extends BaseFormFilterPropel
       'Notes'              => new sfValidatorPass(array('required' => false)),
       'Tags'               => new sfValidatorPass(array('required' => false)),
       'Entitat'            => new sfValidatorPass(array('required' => false)),
+      'site_id'            => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'actiu'              => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('agendatelefonica_filters[%s]');
@@ -51,6 +55,8 @@ abstract class BaseAgendatelefonicaFormFilter extends BaseFormFilterPropel
       'Notes'              => 'Text',
       'Tags'               => 'Text',
       'Entitat'            => 'Text',
+      'site_id'            => 'Number',
+      'actiu'              => 'Number',
     );
   }
 }

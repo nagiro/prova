@@ -3,11 +3,34 @@
 class NoticiesPeer extends BaseNoticiesPeer
 {
 	
-	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false, $totes = false)
+    static public function getCriteriaActiu($C,$idS)
+    {
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        return $C;
+    }
+        
+  	static public function initialize( $idN , $idS )
+	{	   
+		$ON = NoticiesPeer::retrieveByPK($idN);            
+		if(!($ON instanceof Noticies)):            			
+			$ON = new Noticies();
+            $ON->setDatapublicacio(date('Y-m-d',time()));
+			$ON->setDatadesaparicio(date('Y-m-d',time()));
+            $ON->setSiteId($idS);        
+            $ON->setActiu(true);        						
+		endif; 
+        
+        return new NoticiesForm($ON,array('IDS'=>$idS));
+	}
+
+    
+	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false, $totes = false , $idS )
 	{
 		
 		//Agafem totes les notícies de notícies i les activitats que hem posat que es publiquen com a notícies		
 		$C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );
 						
 		//Només les notícies amb el text oportú.
 		if(!empty($TEXT)): 
@@ -40,52 +63,55 @@ class NoticiesPeer extends BaseNoticiesPeer
 		
 	}
 	
-	static public function getNoticia($idN)
+	static public function getNoticia( $idN , $idS )
 	{
-		
-		$ON = self::retrieveByPK($idN);
-		if($ON instanceof Noticies):
-			return $ON; 
-		else:
-			return new Noticies();
-		endif; 
-		
+		$FON = self::initialize($idN,$idS);
+        return $FON->getObject();		
 	}
 	
 	
-	static public function getNoticiaActivitat($IDA)
-	{
-		$C = new Criteria();
-		$C->add(self::IDACTIVITAT,$IDA);
-		$ON = self::retrieveByPK($IDA);
-		if($ON instanceof Noticies):
-			return $ON;
+	static public function getNoticiaActivitat( $IDA , $idS )
+	{	   		        						
+		$OA = ActivitatsPeer::retrieveByPK($IDA);	
+		$OH = ActivitatsPeer::getPrimerHorariActivitat($IDA,$idS);
+		if($OH instanceof Horaris):											
+			list($Y,$M,$D) = explode('-',$OH->getDia());
 		else: 
-			$OA = ActivitatsPeer::retrieveByPK($IDA);	
-			$OH = ActivitatsPeer::getPrimerHorariActivitat($IDA);
-			if($OH instanceof Horaris):											
-				list($Y,$M,$D) = explode('-',$OH->getDia());
-			else: 
-				$D = date('d',time());
-				$M = date('m',time());
-				$Y = date('Y',time());
-			endif; 
-			
-			$diai = mktime(0,0,0,$M,$D-7,$Y);
-			$diaf = mktime(0,0,0,$M,$D,$Y);
-						
-			$ON = new Noticies();
-			$ON->setImatge($OA->getImatge());
-			$ON->setAdjunt($OA->getPdf());
-			$ON->setTitolnoticia($OA->getTmig());
-			$ON->setTextnoticia($OA->getDmig());
-			$ON->setActiva(false);		
-			$ON->setIdactivitat($IDA);
-			$ON->setDatapublicacio(date('Y-m-d',$diai));
-			$ON->setDatadesaparicio(date('Y-m-d',$diaf));
-			$ON->save();		
-			return $ON;
+			$D = date('d',time());
+			$M = date('m',time());
+			$Y = date('Y',time());
 		endif; 
+		
+		$diai = mktime(0,0,0,$M,$D-10,$Y);
+		$diaf = mktime(0,0,0,$M,$D,$Y);
+							
+        $FN = NoticiesPeer::initialize(0,$idS);
+        $ON = $FN->getObject();
+        
+		$ON->setImatge($OA->getImatge());
+		$ON->setAdjunt($OA->getPdf());
+		$ON->setTitolnoticia($OA->getTmig());
+		$ON->setTextnoticia($OA->getDmig());
+		$ON->setActiva(false);		
+		$ON->setIdactivitat($IDA);
+		$ON->setDatapublicacio(date('Y-m-d',$diai));
+		$ON->setDatadesaparicio(date('Y-m-d',$diaf));
+		$ON->save();		
+		return $ON;		         
 	}	
+    
+    static public function selectOrdre($idS)
+    {
+        //Només podem ordenar aquells que la data de fi de publicació és superior a la actual.  
+        $RET = array();
+        $C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );        
+        $C->add(self::DATADESAPARICIO, date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );        
+        $TOP = self::doCount($C);
+        
+        for($i = 1; $i <= $TOP+1; $i++) $RET[$i] = $i;
+        
+        return $RET;            
+    }
     
 }

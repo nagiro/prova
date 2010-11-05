@@ -25,6 +25,8 @@ abstract class BaseCiclesForm extends BaseFormPropel
       'tComplet' => new sfWidgetFormTextarea(),
       'dComplet' => new sfWidgetFormTextarea(),
       'extingit' => new sfWidgetFormInputText(),
+      'site_id'  => new sfWidgetFormInputText(),
+      'actiu'    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -39,6 +41,8 @@ abstract class BaseCiclesForm extends BaseFormPropel
       'tComplet' => new sfValidatorString(),
       'dComplet' => new sfValidatorString(),
       'extingit' => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'  => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('cicles[%s]');

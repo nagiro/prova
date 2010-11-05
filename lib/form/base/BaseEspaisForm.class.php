@@ -17,12 +17,16 @@ abstract class BaseEspaisForm extends BaseFormPropel
       'EspaiID' => new sfWidgetFormInputHidden(),
       'Nom'     => new sfWidgetFormInputText(),
       'Ordre'   => new sfWidgetFormInputText(),
+      'site_id' => new sfWidgetFormInputText(),
+      'actiu'   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'EspaiID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getEspaiid()), 'empty_value' => $this->getObject()->getEspaiid(), 'required' => false)),
       'Nom'     => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'Ordre'   => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
+      'site_id' => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('espais[%s]');

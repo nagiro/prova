@@ -18,6 +18,7 @@ abstract class BaseArxiuDvdFormFilter extends BaseFormFilterPropel
       'nom'          => new sfWidgetFormFilterInput(),
       'data_creacio' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'comentari'    => new sfWidgetFormFilterInput(),
+      'site_id'      => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -27,6 +28,7 @@ abstract class BaseArxiuDvdFormFilter extends BaseFormFilterPropel
       'nom'          => new sfValidatorPass(array('required' => false)),
       'data_creacio' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'comentari'    => new sfValidatorPass(array('required' => false)),
+      'site_id'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('arxiu_dvd_filters[%s]');
@@ -51,6 +53,7 @@ abstract class BaseArxiuDvdFormFilter extends BaseFormFilterPropel
       'nom'          => 'Text',
       'data_creacio' => 'Date',
       'comentari'    => 'Text',
+      'site_id'      => 'Number',
     );
   }
 }

@@ -21,6 +21,8 @@ abstract class BaseCiclesFormFilter extends BaseFormFilterPropel
       'dMig'     => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'tComplet' => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'dComplet' => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'extingit' => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'  => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -33,6 +35,8 @@ abstract class BaseCiclesFormFilter extends BaseFormFilterPropel
       'dMig'     => new sfValidatorPass(array('required' => false)),
       'tComplet' => new sfValidatorPass(array('required' => false)),
       'dComplet' => new sfValidatorPass(array('required' => false)),
+      'extingit' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('cicles_filters[%s]');
@@ -60,6 +64,8 @@ abstract class BaseCiclesFormFilter extends BaseFormFilterPropel
       'dMig'     => 'Text',
       'tComplet' => 'Text',
       'dComplet' => 'Text',
+      'extingit' => 'Number',
+      'site_id'  => 'Number',
     );
   }
 }

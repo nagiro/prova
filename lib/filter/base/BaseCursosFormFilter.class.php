@@ -26,6 +26,8 @@ abstract class BaseCursosFormFilter extends BaseFormFilterPropel
       'DataDesaparicio' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'DataFiMatricula' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'DataInici'       => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'VisibleWEB'      => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'         => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -43,6 +45,8 @@ abstract class BaseCursosFormFilter extends BaseFormFilterPropel
       'DataDesaparicio' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'DataFiMatricula' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'DataInici'       => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'VisibleWEB'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('cursos_filters[%s]');
@@ -75,6 +79,8 @@ abstract class BaseCursosFormFilter extends BaseFormFilterPropel
       'DataDesaparicio' => 'Date',
       'DataFiMatricula' => 'Date',
       'DataInici'       => 'Date',
+      'VisibleWEB'      => 'Number',
+      'site_id'         => 'Number',
     );
   }
 }

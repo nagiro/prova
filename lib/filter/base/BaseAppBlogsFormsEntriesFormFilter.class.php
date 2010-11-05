@@ -17,6 +17,7 @@ abstract class BaseAppBlogsFormsEntriesFormFilter extends BaseFormFilterPropel
       'form_id'    => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsForms', 'add_empty' => true)),
       'estat'      => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'objeccions' => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'    => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseAppBlogsFormsEntriesFormFilter extends BaseFormFilterPropel
       'form_id'    => new sfValidatorPropelChoice(array('required' => false, 'model' => 'AppBlogsForms', 'column' => 'id')),
       'estat'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'objeccions' => new sfValidatorPass(array('required' => false)),
+      'site_id'    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_forms_entries_filters[%s]');
@@ -48,6 +50,7 @@ abstract class BaseAppBlogsFormsEntriesFormFilter extends BaseFormFilterPropel
       'form_id'    => 'ForeignKey',
       'estat'      => 'Number',
       'objeccions' => 'Text',
+      'site_id'    => 'Number',
     );
   }
 }

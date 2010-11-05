@@ -20,6 +20,7 @@ abstract class BaseConceptesForm extends BaseFormPropel
       'Apartat'    => new sfWidgetFormTextarea(),
       'Concepte'   => new sfWidgetFormTextarea(),
       'Quantitat'  => new sfWidgetFormInputText(),
+      'site_id'    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -29,6 +30,7 @@ abstract class BaseConceptesForm extends BaseFormPropel
       'Apartat'    => new sfValidatorString(array('required' => false)),
       'Concepte'   => new sfValidatorString(array('required' => false)),
       'Quantitat'  => new sfValidatorNumber(array('required' => false)),
+      'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('conceptes[%s]');

@@ -18,6 +18,7 @@ abstract class BasePromocionsFormFilter extends BaseFormFilterPropel
       'isActiva'   => new sfWidgetFormFilterInput(),
       'isFixa'     => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'URL'        => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'    => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -27,6 +28,7 @@ abstract class BasePromocionsFormFilter extends BaseFormFilterPropel
       'isActiva'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'isFixa'     => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'URL'        => new sfValidatorPass(array('required' => false)),
+      'site_id'    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('promocions_filters[%s]');
@@ -51,6 +53,7 @@ abstract class BasePromocionsFormFilter extends BaseFormFilterPropel
       'isActiva'   => 'Number',
       'isFixa'     => 'Number',
       'URL'        => 'Text',
+      'site_id'    => 'Number',
     );
   }
 }

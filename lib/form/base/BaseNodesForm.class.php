@@ -24,6 +24,8 @@ abstract class BaseNodesForm extends BaseFormPropel
       'Nivell'      => new sfWidgetFormInputText(),
       'Url'         => new sfWidgetFormTextarea(),
       'Categories'  => new sfWidgetFormInputText(),
+      'site_id'     => new sfWidgetFormInputText(),
+      'actiu'       => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -37,6 +39,8 @@ abstract class BaseNodesForm extends BaseFormPropel
       'Nivell'      => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'Url'         => new sfValidatorString(),
       'Categories'  => new sfValidatorString(array('max_length' => 100)),
+      'site_id'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('nodes[%s]');

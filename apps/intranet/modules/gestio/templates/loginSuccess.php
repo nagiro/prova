@@ -1,31 +1,40 @@
-    <TD colspan="2" class="CONTINGUT">
-    
-      <?php echo form_tag('gestio/login',array('method'=>'post')); ?>
-    
-      <TABLE class="BOX">
-        <TR><TD class="NOTICIA">
-                <DIV class="TITOL">Escriu el teu DNI i contrasenya</DIV>
-                <TABLE width="100%">
-                  <TR><TD><DIV class="TEXT">DNI <br /> <?php echo input_tag('DNI',''); ?></DIV></TD>
-                      <TD><DIV class="TEXT">CONTRASENYA <br /><?php echo input_password_tag('PASSWD',''); ?></DIV></TD>
-                      <TD><DIV class="TEXT"><br /><?php echo submit_tag("Identifica'm",'OK'); ?></DIV></TD>
-                  </TR>
-                </TABLE>                                  
-                                
-              </TD>
-        </TR>
-      </TABLE>
-      
+<STYLE>
+.T1 { display:block; width:100px; float:left;  }
+.T2 { display:block; width:200px; float:left; }
+.T3	{ width:120px; font-size:10px; }
+.content { padding:20px; }
+.REQUADRE { margin:0px; }
+</STYLE>
+<td class="MENU"></td>
+    <TD colspan="3" class="CONTINGUT">
+        
+		<form action="<?php echo url_for('gestio/login') ?>" method="POST">    
+		    <DIV class="REQUADRE" style="width:500px">
+		    	<div class="FORMULARI" style="width:500px;">
+		    	<?php if($ERROR != ""): ?><div class="error" style="padding-bottom:10px;"><?php echo $ERROR?></div><?php endif; ?>          		    	
+			    	<div>	
+			    			<span class="T1"><b>DNI: </b></span>
+			    			<span><?php echo $FLogin['nick']->render(); ?></span>
+			    	</div>
+			    	<div style="clear:both;">	
+			    			<span class="T1"><b>Contrasenya: </b></span>
+			    			<span><?php echo $FLogin['password']->render(); ?></span>
+			    	</div>
+			    	
+			    	<?php $missatge = "Segueixi si vostè estar segur que: \\n 1.- No ha estat alumne de la Casa de Cultura. \\n 2.- Vostè no té cap usuari creat. \\n Si no n\'està segur, si us plau, cliqui cancel·lar i contacti amb la Casa de Cultura trucant al telèfon 972.20.20.13 o bé enviant un correu a informatica@casadecultura.org."; ?>
+			    	
+			    	<div style="clear:both; padding-top:20px;">
+	            		<button type="submit" style="width: 120px;" name="form_login" class="BOTO_ACTIVITAT">Cliqueu per accedir</button>	            			            		
+	            		<button style="width: 120px;" type="submit" name="form_login_remember" class="BOTO_ACTIVITAT">Recordar contrasenya</button>		            					    	
+			    	</div>
+			    	
+			    </div>
+		    	
+		    </DIV>
+		    			    	
+	    </form>   
+            
       <DIV STYLE="height:40px;"></DIV>
-                
-    </TD>    
     
-    
-<!-- FI CONTINGUT -->
-<!-- CALENDARI -->
-    
-    <TD class="CALENDARI">          
-    
+       
     </TD>
-    
-<!-- FI CALENDARI -->

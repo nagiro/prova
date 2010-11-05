@@ -13,10 +13,12 @@ abstract class BaseMaterialgenericFormFilter extends BaseFormFilterPropel
   {
     $this->setWidgets(array(
       'Nom'               => new sfWidgetFormFilterInput(),
+      'site_id'           => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'Nom'               => new sfValidatorPass(array('required' => false)),
+      'site_id'           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('materialgeneric_filters[%s]');
@@ -36,6 +38,7 @@ abstract class BaseMaterialgenericFormFilter extends BaseFormFilterPropel
     return array(
       'idMaterialGeneric' => 'Number',
       'Nom'               => 'Text',
+      'site_id'           => 'Number',
     );
   }
 }

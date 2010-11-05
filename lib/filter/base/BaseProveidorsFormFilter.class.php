@@ -21,6 +21,7 @@ abstract class BaseProveidorsFormFilter extends BaseFormFilterPropel
       'Adreca'      => new sfWidgetFormFilterInput(),
       'Alta'        => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'Ciutat'      => new sfWidgetFormFilterInput(),
+      'site_id'     => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -33,6 +34,7 @@ abstract class BaseProveidorsFormFilter extends BaseFormFilterPropel
       'Adreca'      => new sfValidatorPass(array('required' => false)),
       'Alta'        => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'Ciutat'      => new sfValidatorPass(array('required' => false)),
+      'site_id'     => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('proveidors_filters[%s]');
@@ -60,6 +62,7 @@ abstract class BaseProveidorsFormFilter extends BaseFormFilterPropel
       'Adreca'      => 'Text',
       'Alta'        => 'Date',
       'Ciutat'      => 'Text',
+      'site_id'     => 'Number',
     );
   }
 }

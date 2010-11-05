@@ -12,6 +12,27 @@ class CursosPeer extends BaseCursosPeer
 
    const ACTIU = 1;
    const PASSAT = 0;   
+
+    static public function initialize( $idC , $idS )
+    {
+        $OC = CursosPeer::retrieveByPK($idC);            
+        if($OC instanceof Cursos):            
+        	return new CursosForm($OC);
+        else:
+        	$OC = new Cursos();
+            $OC->setSiteId($idS);          
+            $OC->setActiva(true);                              
+        	return new CursosForm($OC);			
+        endif; 
+    }
+
+   
+  static public function getCriteriaActiu( $C , $idS )
+  {    
+    $C->add(self::ACTIVA, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+  }
    
   static function getSelect()
   {
@@ -83,9 +104,10 @@ class CursosPeer extends BaseCursosPeer
   	
   }
   
-  static function getCursos($mode = self::ACTIU , $PAGINA = 1, $CERCA = "")
+  static function getCursos($mode = self::ACTIU , $PAGINA = 1, $CERCA = "" , $idS )
   {
   	$C = new Criteria();  	
+    $C = self::getCriteriaActiu($C,$idS);
   	if($mode == self::ACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;        	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
   	//$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
@@ -119,10 +141,11 @@ class CursosPeer extends BaseCursosPeer
   	return $pager;  	
   }
       
-  static function getMatricules($idC)
+  static function getMatricules($idC,$idS)
   {
   	$Curs = self::retrieveByPK($idC);
   	$C = new Criteria();
+    $C = MatriculesPeer::getCriteriaActiu($C,$idS);
   	$c1 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::ACCEPTAT_PAGAT);
   	$c2 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::EN_ESPERA);
   	$c1->addOr($c2);
@@ -135,31 +158,26 @@ class CursosPeer extends BaseCursosPeer
   	return $Curs->getMatriculess($C);
   }
 
-  static function getPlaces($idC)
+  static function getPlaces( $idC , $idS )
   {
      
-     $CURS = self::retrieveByPK($idC); $C = new Criteria();
-     
-     $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_NO_PAGAT );
-     $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_PAGAT );
-     $C1->addOr($C2);
-     $C->add($C1);
-     $C->add(MatriculesPeer::CURSOS_IDCURSOS, $idC);     
-     $MATRICULES = $CURS->countMatriculess($C);
+     $FC = self::initialize( $idC , $idS );
+     $CURS = $FC->getObject();          
+     $MATRICULES = $CURS->countMatriculesActives( $idS );
      $PLACES = $CURS->getPlaces();
      return array('OCUPADES'=>$MATRICULES , 'TOTAL'=>$PLACES);
           
   }
   
-  static function isPle($IDC)
+  static function isPle( $IDC , $idS )
   {          
-     $PLACES = CursosPeer::getPlaces($IDC);
+     $PLACES = CursosPeer::getPlaces( $IDC , $idS );
      return ($PLACES['OCUPADES'] >= $PLACES['TOTAL']);              
   }
         
-  static function CalculaPreu($IDCURS , $DESCOMPTE)
+  static function CalculaPreu($IDCURS , $DESCOMPTE , $idS )
   {            
-     $PLACES = CursosPeer::getPlaces($IDCURS);
+     $PLACES = CursosPeer::getPlaces( $IDCURS , $idS );
      if($PLACES['OCUPADES'] >= $PLACES['TOTAL']) $DESCOMPTE = MatriculesPeer::REDUCCIO_GRATUIT;
 
      $CURS = CursosPeer::retrieveByPK($IDCURS);
@@ -174,11 +192,11 @@ class CursosPeer extends BaseCursosPeer
   }
   
   
-  static function CalculaTotalPreus($CURSOS,$DESCOMPTE)
+  static function CalculaTotalPreus( $CURSOS , $DESCOMPTE , $idS )
   {   
      $Preu = 0;
      foreach($CURSOS as $C):
-        $Preu += self::CalculaPreu($C , $DESCOMPTE);
+        $Preu += self::CalculaPreu($C , $DESCOMPTE , $idS );
      endforeach;     
       
      return $Preu;
@@ -201,10 +219,11 @@ class CursosPeer extends BaseCursosPeer
   	
   }
   
-  static function getCodisOptions()
+  static function getCodisOptions($idS)
   {
   	$RET = array();
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
   	$C->addGroupByColumn(self::CODI);
   	$C->addGroupByColumn(self::TITOLCURS);
   	$C->addAscendingOrderByColumn(self::CODI);
@@ -235,33 +254,37 @@ class CursosPeer extends BaseCursosPeer
   	
   }
     
-  static public function getCopyCursByCodi($codi)
+  static public function getCopyCursByCodi($codi,$idS)
   {
-  	$OCurs = self::getByCodi($codi);
-  	
-  	$O2 = new Cursos();
-  	$O2->setCodi($codi);
-  	
+       
+  	$OCurs = self::getByCodi($codi,$idS);
+  	                           	
   	if($OCurs instanceof Cursos):
-  		$O2->setTitolcurs($OCurs->getTitolcurs());
-  		$O2->setPlaces($OCurs->getPlaces());  		
-  		$O2->setDescripcio($OCurs->getDescripcio());
-  		$O2->setPreu($OCurs->getPreu());
-  		$O2->setPreur($OCurs->getPreur());
-  		$O2->setHoraris($OCurs->getHoraris());
-  		$O2->setCategoria($OCurs->getCategoria());
-  		$O2->setOrdresortida($OCurs->getOrdresortida());  		  	
+        $OCurs->setIdcursos(null);
+        $OCurs->setNew(false);
+        $FC = new CursosForm($OCurs); 	
+        $FC->getObject()->setIsactiu(true);
+        $FC->getObject()->setDataaparicio(date('Y-m-d',time()));
+        $FC->getObject()->setDatadesaparicio(date('Y-m-d',time()));
+        $FC->getObject()->setDatainici(date('Y-m-d',time()));
+    else:
+        $OC = new Cursos();
+        $OC->setSiteId($idS);
+        $OC->setActiu(true); 
+        $OC->setCodi($codi);
+        $FC = new CursosForm($OC);                                	  	
   	endif;
-  	
-  	return $O2;
+        	
+  	return $FC;
   }
   
-  static public function getByCodi($codi)
+  static public function getByCodi($codi,$idS)
   {
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
   	$C->add(self::CODI, $codi);
   	$C->addDescendingOrderByColumn(self::IDCURSOS);
   	return self::doSelectOne($C); 	
-  }
+  }  
   
 }

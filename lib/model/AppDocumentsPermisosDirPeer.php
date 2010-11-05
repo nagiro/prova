@@ -2,11 +2,36 @@
 
 class AppDocumentsPermisosDirPeer extends BaseAppDocumentsPermisosDirPeer
 {
-	static public function getLlistatPermisos($IDD)
+    
+    static public function getCriteriaActiu($C,$idS)
+    {
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        return $C;
+    }
+        
+  	static public function initialize( $idU , $idD , $idS , $idN = NivellsPeer::CAP )
+	{	   
+		$O = AppDocumentsPermisosDirPeer::retrieveByPK( $idU , $idD );            
+		if(!($O instanceof AppDocumentsPermisosDir)):            			
+			$O = new AppDocumentsPermisosDir();
+            $O->setidusuari($idU);
+            $O->setIddirectori($idD);
+            $O->setIdnivell($idN);                                    
+            $O->setSiteId($idS);        
+            $O->setActiu(true);        						
+		endif; 
+        
+        return new AppDocumentsPermisosDirForm($O,array('app'=>AppsPeer::APP_DOCUMENTS,'IDS'=>$idS));
+	}
+    
+    
+	static public function getLlistatPermisos( $IDD , $idS )
 	{
 		$RET = array();
 		
 		$C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );
 		$C->add(self::IDDIRECTORI,$IDD);
 		
 		foreach(self::doSelect($C) as $PERM_DIR):
@@ -24,9 +49,10 @@ class AppDocumentsPermisosDirPeer extends BaseAppDocumentsPermisosDirPeer
 		return $RET;
 	}
 	
-	static public function getPermis($IDU,$IDD)
+	static public function getPermis( $IDU , $IDD , $IDS )
 	{
 		$C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );
 		$C->add(self::IDUSUARI,$IDU);
 		$C->add(self::IDDIRECTORI,$IDD);
 		
@@ -38,21 +64,17 @@ class AppDocumentsPermisosDirPeer extends BaseAppDocumentsPermisosDirPeer
 		endif;  
 						
 	}
-	
-	static public function save($idU,$idN,$idD)
-	{
-		$OD = AppDocumentsPermisosDirPeer::retrieveByPK($idU,$idD);
-		if($OD instanceof AppDocumentsPermisosDir):
-			$OD->setIdnivell($idN);
-			$OD->save();
-		else: 
-			$OD = new AppDocumentsPermisosDir();
-			$OD->setIddirectori($idD);
-			$OD->setIdnivell($idN);
-			$OD->setIdusuari($idU);
-			$OD->save();
-		endif;		
-		
-	}
+
+    static public function addUser($idU,$idD,$idS,$idN = NivellsPeer::EDICIO)
+    {        
+        $O = self::initialize( $idU , $idD , $idS , $idN )->getObject();
+        try{
+          $O->setIdusuari($idU);
+          $O->setIddirectori($idD);
+          $O->setIdnivell($idN);
+          $O->save(); 
+          } catch (Exception $e) { return false; }
+        return true;                
+    }
 		
 }

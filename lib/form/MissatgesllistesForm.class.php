@@ -14,7 +14,7 @@ class MissatgesllistesForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idMissatgesLlistes' => new sfWidgetFormInputHidden(),
-      'Llistes_idLlistes'  => new sfWidgetFormChoice(array('choices'=>LlistesPeer::getSelect())),
+      'Llistes_idLlistes'  => new sfWidgetFormChoice(array('choices'=>LlistesPeer::select($this->getOption('IDS')))),
       'Enviat'			   => new sfWidgetFormInputHidden(),
     ));
 

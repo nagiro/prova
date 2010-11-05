@@ -18,6 +18,7 @@ abstract class BaseAppDocumentsPermisosForm extends BaseFormPropel
       'idArxiu'         => new sfWidgetFormInputHidden(),
       'idNivell'        => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => true)),
       'DataModificacio' => new sfWidgetFormDate(),
+      'site_id'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseAppDocumentsPermisosForm extends BaseFormPropel
       'idArxiu'         => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'column' => 'idDocument', 'required' => false)),
       'idNivell'        => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required' => false)),
       'DataModificacio' => new sfValidatorDate(),
+      'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_documents_permisos[%s]');

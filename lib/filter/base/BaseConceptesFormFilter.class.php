@@ -17,6 +17,7 @@ abstract class BaseConceptesFormFilter extends BaseFormFilterPropel
       'Apartat'    => new sfWidgetFormFilterInput(),
       'Concepte'   => new sfWidgetFormFilterInput(),
       'Quantitat'  => new sfWidgetFormFilterInput(),
+      'site_id'    => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseConceptesFormFilter extends BaseFormFilterPropel
       'Apartat'    => new sfValidatorPass(array('required' => false)),
       'Concepte'   => new sfValidatorPass(array('required' => false)),
       'Quantitat'  => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'site_id'    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('conceptes_filters[%s]');
@@ -48,6 +50,7 @@ abstract class BaseConceptesFormFilter extends BaseFormFilterPropel
       'Apartat'    => 'Text',
       'Concepte'   => 'Text',
       'Quantitat'  => 'Number',
+      'site_id'    => 'Number',
     );
   }
 }

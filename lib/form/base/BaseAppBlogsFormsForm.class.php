@@ -18,6 +18,8 @@ abstract class BaseAppBlogsFormsForm extends BaseFormPropel
       'name'        => new sfWidgetFormInputText(),
       'blog_id'     => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsBlogs', 'add_empty' => false)),
       'view_fields' => new sfWidgetFormTextarea(),
+      'site_id'     => new sfWidgetFormInputText(),
+      'actiu'       => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +27,8 @@ abstract class BaseAppBlogsFormsForm extends BaseFormPropel
       'name'        => new sfValidatorString(array('max_length' => 30)),
       'blog_id'     => new sfValidatorPropelChoice(array('model' => 'AppBlogsBlogs', 'column' => 'id')),
       'view_fields' => new sfValidatorString(),
+      'site_id'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_forms[%s]');

@@ -32,6 +32,9 @@ abstract class BaseActivitatsFormFilter extends BaseFormFilterPropel
       'tipusEnviament'                  => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Organitzador'                    => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Categories'                      => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'Responsable'                     => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'InfoPractica'                    => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'                         => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -55,6 +58,9 @@ abstract class BaseActivitatsFormFilter extends BaseFormFilterPropel
       'tipusEnviament'                  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'Organitzador'                    => new sfValidatorPass(array('required' => false)),
       'Categories'                      => new sfValidatorPass(array('required' => false)),
+      'Responsable'                     => new sfValidatorPass(array('required' => false)),
+      'InfoPractica'                    => new sfValidatorPass(array('required' => false)),
+      'site_id'                         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('activitats_filters[%s]');
@@ -93,6 +99,9 @@ abstract class BaseActivitatsFormFilter extends BaseFormFilterPropel
       'tipusEnviament'                  => 'Number',
       'Organitzador'                    => 'Text',
       'Categories'                      => 'Text',
+      'Responsable'                     => 'Text',
+      'InfoPractica'                    => 'Text',
+      'site_id'                         => 'Number',
     );
   }
 }

@@ -25,6 +25,8 @@ abstract class BaseHorarisFormFilter extends BaseFormFilterPropel
       'Preu'                   => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'PreuR'                  => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Estat'                  => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'Responsable'            => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'                => new sfWidgetFormFilterInput(array('with_empty' => false)),
     ));
 
     $this->setValidators(array(
@@ -41,6 +43,8 @@ abstract class BaseHorarisFormFilter extends BaseFormFilterPropel
       'Preu'                   => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'PreuR'                  => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'Estat'                  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'Responsable'            => new sfValidatorPass(array('required' => false)),
+      'site_id'                => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('horaris_filters[%s]');
@@ -72,6 +76,8 @@ abstract class BaseHorarisFormFilter extends BaseFormFilterPropel
       'Preu'                   => 'Number',
       'PreuR'                  => 'Number',
       'Estat'                  => 'Number',
+      'Responsable'            => 'Text',
+      'site_id'                => 'Number',
     );
   }
 }

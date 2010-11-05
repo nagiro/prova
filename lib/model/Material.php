@@ -8,4 +8,9 @@
  * @package lib.model
  */ 
 class Material extends BaseMaterial
-{}
+{
+    public function toString()
+    {
+        return $this->getIdentificador().' - '.$this->getNom();
+    }
+}

@@ -53,3 +53,5 @@ all:
     error_404_module: web
     error_404_action: notfound
     
+    secure_module: gestio
+    secure_action: login

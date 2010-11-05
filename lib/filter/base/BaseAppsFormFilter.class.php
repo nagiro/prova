@@ -14,12 +14,14 @@ abstract class BaseAppsFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'Nom'               => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Url'               => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'           => new sfWidgetFormFilterInput(),
       'usuaris_apps_list' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
       'Nom'               => new sfValidatorPass(array('required' => false)),
       'Url'               => new sfValidatorPass(array('required' => false)),
+      'site_id'           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'usuaris_apps_list' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'required' => false)),
     ));
 
@@ -66,6 +68,7 @@ abstract class BaseAppsFormFilter extends BaseFormFilterPropel
       'app_id'            => 'Number',
       'Nom'               => 'Text',
       'Url'               => 'Text',
+      'site_id'           => 'Number',
       'usuaris_apps_list' => 'ManyKey',
     );
   }

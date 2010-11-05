@@ -30,8 +30,7 @@
                                     
                   foreach($MISSATGES->getResults() as $M):                  
                       echo '<TR><TD class="LINIA">'.link_to($M->getTitol(),'gestio/gLlistes?accio=EM&IDM='.$M->getidMissatge()).'</TD>
-		 	                   	<TD class="LINIA">'.getMissatgesEnviatsLlistes($M).'</TD>
-                                <TD width="80px" class="OPCIONS">'.creaOpcionsM($M->getIdmissatge()).'</TD>
+		 	                   	<TD class="LINIA">'.getMissatgesEnviatsLlistes($M).'</TD>                                
                             </TR>';                                   
                   endforeach;                                  
                 ?>
@@ -143,9 +142,9 @@
 	<form action="<?php echo url_for('gestio/gLlistes') ?>" method="post">            
 	 	<DIV class="REQUADRE">	 
          <DIV class="TITOL">Escull les llistes on vols enviar-lo </DIV>
-            <input type="hidden" name="IDM" value="<?php echo $IDM ?>" />	
+            <?php echo input_hidden_tag('IDM',$IDM); ?>            	
 	    	<table class="FORMULARI" width="600px">
-	    		<tr><td>Llistes: </td><td><?php echo select_tag('LLISTES_ENVIAMENT',options_for_select(LlistesPeer::select(),$LLISTES_ENVIAMENT),array('multiple'=>true)); ?></td></tr>	    	                								
+	    		<tr><td>Llistes: </td><td><?php echo select_tag('LLISTES_ENVIAMENT',options_for_select(LlistesPeer::select($IDS),$LLISTES_ENVIAMENT),array('multiple'=>true)); ?></td></tr>	    	                								
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
@@ -256,13 +255,6 @@ function creaOpcions($IDL , $ACCIO = NULL)
   $R .= " ";  
   $R .= link_to('<span>Llistat de missatges enviats</span>'.image_tag('template/page_white_stack.png',array('alt'=>'Llistat de missatges enviats.')),'gestio/gLlistes?accio=L&IDL='.$IDL,array('class'=>'tt2'));  
   
-  return $R;
-}
-
-function creaOpcionsM($IDM)
-{      
-	
-  $R = link_to('<input type="button" value="Edita missatge">','gestio/gLlistes?accio=EM&IDM='.$IDM,array('class'=>'tt2'));    
   return $R;
 }
 

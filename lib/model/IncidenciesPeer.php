@@ -13,20 +13,27 @@ class IncidenciesPeer extends BaseIncidenciesPeer
    const ESTAT_ESPERA = 10;
    const ESTAT_TREBALLANTHI = 20;
    const ESTAT_RESOLT = 30;
-     
-   
-  static public function QuantesAvui()
+
+  static private function getCriteriaActive($idS)
   {
-     $C = new Criteria();
+    $C = new Criteria();
+    $C->add(self::SITE_ID, $idS);
+    $C->add(self::ACTIU , true);
+    return $C;  
+  }     
+   
+  static public function QuantesAvui($idS)
+  {
+     $C = self::getCriteriaActive($idS);     
      $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
      $C->add(self::DATAALTA , $time , Criteria::GREATER_EQUAL );     
      return self::doCount($C);
   }
    
-  static public function getIncidencies($CERCA = "" , $PAGINA = 1)
+  static public function getIncidencies($CERCA = "" , $PAGINA = 1 , $idS )
   {
      
-      $C = new Criteria();
+      $C = self::getCriteriaActive($idS);      
       $C1 = $C->getNewCriterion(self::TITOL , '%'.$CERCA.'%' , Criteria::LIKE);
       $C2 = $C->getNewCriterion(self::DESCRIPCIO , '%'.$CERCA.'%' , Criteria::LIKE);
       $C1->addOr($C2); $C->add($C1);
@@ -51,7 +58,7 @@ class IncidenciesPeer extends BaseIncidenciesPeer
    * @param unknown_type $D
    * @param unknown_type $IDI
    */
-  static public function save($D, $IDI = 0)
+/*  static public function save($D, $IDI = 0)
   {
      $I = new Incidencies();
      if($IDI == 0) $I->setNew(true); else { $I = IncidenciesPeer::retrieveByPK($IDI); $I->setNew(false); }
@@ -67,5 +74,20 @@ class IncidenciesPeer extends BaseIncidenciesPeer
      return $I;        
      
   }
-   
+*/   
+    static public function initialize( $idI , $idU , $idS )
+    {
+    	$OI = self::retrieveByPK($idI);            
+    	if($OI instanceof Incidencies):            
+    		return new IncidenciesForm($OI);
+    	else:
+    		$OI = new Incidencies();
+    		$OI->setDataalta(time());
+    		$OI->setQuiinforma($idU);       
+            $OI->setActiu(true);
+            $OI->setSiteId($idS);     
+    		return new IncidenciesForm($OI);			
+    	endif; 
+    }
+ 
 }

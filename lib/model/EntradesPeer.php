@@ -35,14 +35,10 @@ class EntradesPeer extends BaseEntradesPeer {
  		
 	}
 	
-	static public function initialize($idE = 0)
-	{
-		
-		$OE = EntradesPeer::retrieveByPK($idE);
-		
-		if($OE instanceof Entrades):
-			return new EntradesForm($OE);	
-		else: 
+	static public function initialize( $idE = 0 , $idS = 0 )
+	{		
+		$OE = EntradesPeer::retrieveByPK($idE);		
+		if(!($OE instanceof Entrades)):
 			$OE = new Entrades();
 			$OE->setTitol('TÍTOL PER DEFECTE');
 			$OE->setSubtitol('SUBTÍTOL PER DEFECTE');
@@ -51,10 +47,10 @@ class EntradesPeer extends BaseEntradesPeer {
 			$OE->setPreu('Preu: 5€ / Reduït: 3€ ');
 			$OE->setVenudes(0);
 			$OE->setRecaptat(0);
-            $OE->setLocalitats(126);
-			return new EntradesForm($OE);			
+            $OE->setLocalitats(126);			
 		endif; 		
 		
+        return new EntradesForm($OE,array('IDS'=>$idS));        
 	}
 	
 } // EntradesPeer

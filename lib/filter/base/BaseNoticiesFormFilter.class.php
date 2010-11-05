@@ -20,6 +20,8 @@ abstract class BaseNoticiesFormFilter extends BaseFormFilterPropel
       'Adjunt'          => new sfWidgetFormFilterInput(),
       'idActivitat'     => new sfWidgetFormFilterInput(),
       'DataDesaparicio' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'Ordre'           => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'         => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -31,6 +33,8 @@ abstract class BaseNoticiesFormFilter extends BaseFormFilterPropel
       'Adjunt'          => new sfValidatorPass(array('required' => false)),
       'idActivitat'     => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'DataDesaparicio' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'Ordre'           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('noticies_filters[%s]');
@@ -57,6 +61,8 @@ abstract class BaseNoticiesFormFilter extends BaseFormFilterPropel
       'Adjunt'          => 'Text',
       'idActivitat'     => 'Number',
       'DataDesaparicio' => 'Date',
+      'Ordre'           => 'Number',
+      'site_id'         => 'Number',
     );
   }
 }

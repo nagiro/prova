@@ -2,6 +2,44 @@
 
 class CessioPeer extends BaseCessioPeer
 {
+
+  static function inicialitza( $id , $idS , $retorn = false )
+  {
+  	
+  	$OC = self::retrieveByPK($id);
+    
+  	if($OC instanceof Cessio):
+        if($retorn):            
+            $OC->setEstatRetornat("");
+    		$OC->setDataretornat(date('Y-m-d',time()));
+            return new CessiomaterialRetornForm($OC);
+        else:
+            return new CessioForm($OC);
+        endif;
+  	else:
+  		$OC = new Cessio();
+        $OC->setRetornat(false);
+        $OC->setUsuariId(null);
+		$OC->setEstatRetornat("");
+		$OC->setDataretornat(null);
+		$OC->setDatacessio(date('m/d/Y',time()));
+		$OC->setDataretorn(date('m/d/Y',time()));
+		$OC->setMotiu( OptionsPeer::getString('CESSIO_TEXT_MOTIU', $idS ) );
+		$OC->setCondicions( OptionsPeer::getString('CESSIO_TEXT_CONDICIONS' , $idS ) );    			    			    	    			          		  		
+        $OC->setSiteId($idS);     
+        $OC->setActiu(true);		
+        if($retorn):
+            $OC->setRetornat(true);
+            $OC->setEstatRetornat("");
+    		$OC->setDataretornat(date('Y-m-d',time()));
+            return new CessiomaterialRetornForm($OC);
+        else:
+            return new CessioForm($OC);
+        endif;  		
+  	endif;
+  	  	
+  }
+
 	
    static public function getCessions($PAGINA,$cedit,$text)
    {

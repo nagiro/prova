@@ -24,10 +24,33 @@ class PersonalPeer extends BasePersonalPeer {
     const CANVI_HORARI = '2';
     const HORARI_USUARI = '3';
     const FEINA = '4';    
+
+    static public function initilize( $idP , $idS )
+    {
+        $OP = PersonalPeer::retrieveByPK($idP);            
+        if($OP instanceof Personal):            
+        	return new PersonalForm($OP);
+        else:
+        	$OP = new Personal();
+            $OP->setSiteId($idS);        
+            $OP->setActiu(true);        
+        	return new PersonalForm($OP);			
+        endif; 
+    }
+
+  static public function getCriteriaActiu( $C , $idS )
+  {    
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+  }
+
     
-	static public function initialize($idUsuari, $data,$idu,$idPersonal = null)
+	static public function initialize($idUsuari, $data,$idu,$idPersonal = null, $idS )
 	{
 		$C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        
 		$C->add(PersonalPeer::IDUSUARI,$idu);		
 		$C->add(PersonalPeer::IDDATA, date('Y-m-d',$data));
 		$C->add(PersonalPeer::IDPERSONAL, $idPersonal);			
@@ -41,7 +64,9 @@ class PersonalPeer extends BasePersonalPeer {
 			$OP->setDataAlta(date('Y-m-d',time()));
 			$OP->setIddata(date('Y-m-d',$data));
 			$OP->setIdusuari($idu);	
-			$OP->setUsuariUpdateId($idUsuari);												
+			$OP->setUsuariUpdateId($idUsuari);	
+            $OP->setSiteId($idS);
+            $OP->setActiu(true);            											
 			return new PersonalForm($OP);
 		endif; 
 		
@@ -58,11 +83,13 @@ class PersonalPeer extends BasePersonalPeer {
         );
     }
 
-	static public function getDadesUpdates($data,$idU)
+	static public function getDadesUpdates( $data , $idU , $idS )
 	{
 		$RET = array();
 		
 		$C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );
+        
 		$C->add(PersonalPeer::IDUSUARI,$idU);		
 		$C->add(PersonalPeer::IDDATA, date('Y-m-d',$data));
         $C->add(PersonalPeer::DATA_BAIXA, null, Criteria::ISNULL);			
@@ -75,7 +102,7 @@ class PersonalPeer extends BasePersonalPeer {
 		return $RET; 
 	}
 	
-	static public function getHoraris($datai)	
+	static public function getHoraris( $datai , $idS )	
 	{
 		$RET = array();
 		
@@ -86,6 +113,7 @@ class PersonalPeer extends BasePersonalPeer {
 		
 		foreach($TREBALLADORS as $idU => $T):
 			$C = new Criteria();
+            $C = self::getCriteriaActiu($C,$idS);
 			$C->add(PersonalPeer::IDUSUARI,$idU);
 			$C->add(PersonalPeer::IDDATA, date('Y-m-d',$datai), CRITERIA::GREATER_EQUAL);
 			$C->add(PersonalPeer::IDDATA, date('Y-m-d',$dataf), CRITERIA::LESS_EQUAL);
@@ -120,13 +148,14 @@ class PersonalPeer extends BasePersonalPeer {
 		return $RET;
 	}   
     
-    static public function getFeines($idU,$date)
+    static public function getFeines( $idU , $date , $idS )
     {
         $C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );
         $C->add(self::IDDATA, date('Y-m-d',$date));
         $C->add(self::IDUSUARI, $idU);
         $C->add(self::TIPUS, self::FEINA);
-        $C->add(self::DATA_BAIXA, null, Criteria::ISNULL );
+                
         $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);
         $RET = array();
         
@@ -148,12 +177,12 @@ class PersonalPeer extends BasePersonalPeer {
     }
 
     //Agafem tot allò que no és una feina i que afecta als altres usuaris. 
-    static public function getNotificacions($idU,$date)
+    static public function getNotificacions( $idU , $date , $idS )
     {
         $C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );
         $C->add(self::IDDATA, date('Y-m-d',$date));
-        $C->add(self::TIPUS, self::FEINA, Criteria::NOT_EQUAL);
-        $C->add(self::DATA_BAIXA, null, Criteria::ISNULL );
+        $C->add(self::TIPUS, self::FEINA, Criteria::NOT_EQUAL);        
         $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);                
         $RET = array();
         

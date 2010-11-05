@@ -110,8 +110,8 @@
         <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=NU&id_usuari='.$USUARI->getUsuariid()); ?>)</DIV>
       	<TABLE class="DADES">
                 <?php                 
-                  if($USUARI->countMatriculess() == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap curs a la Casa de Cultura.</TD></TR>';                                    
-                  foreach($USUARI->getMatriculess() as $M):                  		
+                  if(sizeof($MATRICULES) == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap curs a la Casa de Cultura.</TD></TR>';                                    
+                  foreach($MATRICULES as $M):                  		
 						$CURSOS = $M->getCursos();           
 	                    if($CURSOS instanceof Cursos):           
 	                    echo '<TR><TD class="LINIA">'.$CURSOS->getCodi().'</TD>
@@ -137,8 +137,8 @@
       	<TABLE class="DADES">
                 <?php
                                   
-                  if($USUARI->countReservaespaiss() == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap reserva.</TD></TR>';                                    
-                  foreach($USUARI->getReservaespaiss() as $R):                                            
+                  if(sizeof($RESERVES) == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap reserva.</TD></TR>';                                    
+                  foreach($RESERVES as $R):                                            
                       echo "<TR><TD class=\"LINIA\">".link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid())."</TD><TD class=\"LINIA\">".$R->getUsuaris()->getNomComplet()."</TD><TD class=\"LINIA\">".$R->getDataactivitat()."</TD><TD class=\"LINIA\">".$R->getEstatText()."<TD></TR>";
                   endforeach;                                  
 
@@ -152,11 +152,13 @@
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
      <DIV class="REQUADRE">
-	    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>
+	    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'));
+                echo input_hidden_tag('id_usuari',$USUARI->getUsuariId());
+        
+        ?>
         <DIV class="TITOL">Gestió de permisos d'aplicacions de l'usuari <?php echo $USUARI->getNomComplet() ?></DIV>        
       	<TABLE class="DADES">
-                <?php
-
+                <?php                    
                 	foreach(AppsPeer::select() as $IDAPP => $APP):     
                 		$SELECT = (isset($LLISTAT_PERMISOS[$IDAPP]))?$LLISTAT_PERMISOS[$IDAPP]:NivellsPeer::CAP;                		
                 		           		

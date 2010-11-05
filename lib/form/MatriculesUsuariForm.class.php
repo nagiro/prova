@@ -16,7 +16,7 @@ class MatriculesUsuariForm extends sfFormPropel
   	
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
-  	  'Usuaris_UsuariID' => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectUsuaris()),array()),  	    	    	  
+  	  'Usuaris_UsuariID' => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectUsuaris($this->getOption('IDS'))),array()),  	    	    	  
   	  'Cursos_idCursos'  => new sfWidgetFormInputHidden(),  	  
       'Estat'            => new sfWidgetFormInputHidden(),
       'Comentari'        => new sfWidgetFormInputHidden(),
@@ -28,7 +28,7 @@ class MatriculesUsuariForm extends sfFormPropel
 
     $this->setValidators(array(      
       'idMatricules'     => new sfValidatorPropelChoice(array('model' => 'Matricules', 'column' => 'idMatricules', 'required' => false)),
-      'Usuaris_UsuariID' => new sfValidatorCallback(array('callback'=>array('MatriculesUsuariForm','ComprovaUsuari'), 'arguments' => array() , 'required'=>true)),
+      'Usuaris_UsuariID' => new sfValidatorCallback(array('callback'=>array('MatriculesUsuariForm','ComprovaUsuari'), 'arguments' => array('IDS'=>$this->getOption('IDS')) , 'required'=>true)),
       'Cursos_idCursos'  => new sfValidatorPropelChoice(array('required' => false,'model' => 'Cursos', 'column' => 'idCursos')),
       'Estat'            => new sfValidatorInteger(array('required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
@@ -66,7 +66,7 @@ class MatriculesUsuariForm extends sfFormPropel
   {
   	
   	//Si estem al període d'antics alumnes i no ho és, emetem error
-  	if(!MatriculesPeer::isAnticAlumne($idU) && MatriculesPeer::isPeriodeAnticsAlumnes()){
+  	if(!MatriculesPeer::isAnticAlumne($idU,$arguments['IDS']) && MatriculesPeer::isPeriodeAnticsAlumnes($arguments['IDS'])){
   		throw new sfValidatorError($A, "Error: L'usuari no ha cursat cap curs amb anterioritat");
   	}
   	  	  	  	

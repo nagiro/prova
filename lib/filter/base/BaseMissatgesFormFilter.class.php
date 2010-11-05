@@ -17,6 +17,7 @@ abstract class BaseMissatgesFormFilter extends BaseFormFilterPropel
       'Text'             => new sfWidgetFormFilterInput(),
       'Date'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'Publicacio'       => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'site_id'          => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseMissatgesFormFilter extends BaseFormFilterPropel
       'Text'             => new sfValidatorPass(array('required' => false)),
       'Date'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'Publicacio'       => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'          => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('missatges_filters[%s]');
@@ -48,6 +50,7 @@ abstract class BaseMissatgesFormFilter extends BaseFormFilterPropel
       'Text'             => 'Text',
       'Date'             => 'Date',
       'Publicacio'       => 'Date',
+      'site_id'          => 'Number',
     );
   }
 }

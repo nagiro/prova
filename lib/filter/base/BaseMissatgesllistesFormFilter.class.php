@@ -13,10 +13,12 @@ abstract class BaseMissatgesllistesFormFilter extends BaseFormFilterPropel
   {
     $this->setWidgets(array(
       'Enviat'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'site_id'            => new sfWidgetFormFilterInput(array('with_empty' => false)),
     ));
 
     $this->setValidators(array(
       'Enviat'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'            => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('missatgesllistes_filters[%s]');
@@ -37,6 +39,7 @@ abstract class BaseMissatgesllistesFormFilter extends BaseFormFilterPropel
       'idMissatgesLlistes' => 'ForeignKey',
       'Llistes_idLlistes'  => 'ForeignKey',
       'Enviat'             => 'Date',
+      'site_id'            => 'Number',
     );
   }
 }

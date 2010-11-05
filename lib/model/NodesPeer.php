@@ -9,6 +9,29 @@
  */ 
 class NodesPeer extends BaseNodesPeer
 {
+
+   static public function getCriteriaActiu($C,$idS)
+   {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+   }
+
+ 
+    static public function initialize($idN , $idS , $editor = false )
+	{
+		$ON = NodesPeer::retrieveByPK($idN);            
+		if(!($ON instanceof Nodes)):            			
+			$ON = new Nodes();
+            $ON->setSiteId($idS);        
+            $ON->setActiu(true);        						
+		endif;
+        
+        if($editor) return new EditorHtmlForm($ON,array('IDS'=>$idS));
+        else return new NodesForm($ON,array('IDS'=>$idS));
+         
+	}
+ 
   
   static function getNodesSelect()
   {
@@ -21,31 +44,32 @@ class NodesPeer extends BaseNodesPeer
     return $RET;
   }
   
-  static function retornaMenu($Tambe_invisibles = false)
+  static function retornaMenu($idS , $Tambe_invisibles = false)
   {   	 
-  	return self::getNodes($Tambe_invisibles);	  		
+  	return self::getNodes( $idS , $Tambe_invisibles );	  		
   }
   
-  static function getNodes($Tambe_invisibles = false)
+  static function getNodes( $idS , $Tambe_invisibles = false )
   {
   	 $C = new Criteria();
+     $C = self::getCriteriaActiu($C,$idS);
   	 if(!$Tambe_invisibles) $C->add(self::ISACTIVA,true);
      $C->addAscendingOrderByColumn(self::ORDRE);
           
      return self::doSelect($C);
   }
   
-  static function selectOrdre($NOU = false)
+  static function selectOrdre( $idS , $NOU = false )
   {
      $RET = array();     
-     foreach(self::getNodes() as $N) $RET[$N->getOrdre()] = $N->getOrdre();     
+     foreach(self::getNodes($idS) as $N) $RET[$N->getOrdre()] = $N->getOrdre();     
      if($NOU): $RET[sizeof($RET)+1] = sizeof($RET)+1; endif;
      return $RET;
   }
   
-  static function gestionaOrdre( $desti , $actual )
+  static function gestionaOrdre( $desti , $actual , $idS )
   {   
-     foreach(self::getNodes() as $N):
+     foreach(self::getNodes($idS) as $N):
         $Ordre = $N->getOrdre();     
 	    if($actual == 0){ if($Ordre >= $desti) $N->setOrdre($Ordre+1); }            
 	    elseif($actual < $desti) { if($Ordre > $actual && $Ordre <= $desti) $N->setOrdre($Ordre-1); } 

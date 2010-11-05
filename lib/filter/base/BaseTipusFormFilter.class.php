@@ -14,11 +14,13 @@ abstract class BaseTipusFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'tipusNom'  => new sfWidgetFormFilterInput(),
       'tipusDesc' => new sfWidgetFormFilterInput(),
+      'site_id'   => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'tipusNom'  => new sfValidatorPass(array('required' => false)),
       'tipusDesc' => new sfValidatorPass(array('required' => false)),
+      'site_id'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('tipus_filters[%s]');
@@ -39,6 +41,7 @@ abstract class BaseTipusFormFilter extends BaseFormFilterPropel
       'idTipus'   => 'Number',
       'tipusNom'  => 'Text',
       'tipusDesc' => 'Text',
+      'site_id'   => 'Number',
     );
   }
 }

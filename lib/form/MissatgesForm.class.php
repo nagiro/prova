@@ -18,7 +18,8 @@ class MissatgesForm extends sfFormPropel
       'Titol'            => new sfWidgetFormInputText(array(),array('class'=>'text')),
       'Text'             => new sfWidgetFormTextareaTinyMCE(array(),array('class'=>'text','style'=>'height:150px;')),
       'Date'             => new sfWidgetFormInputHidden(),
-      'Publicacio'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),           
+      'Publicacio'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'site_id'          => new sfWidgetFormInputHidden(array(),array()),           
     ));
 
     $this->setValidators(array(
@@ -28,6 +29,7 @@ class MissatgesForm extends sfFormPropel
       'Text'             => new sfValidatorString(array('required' => false)),
       'Date'             => new sfValidatorDate(array('required' => false)),
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
+      'site_id'          => new sfValidatorPass(array('required' => false)),
     ));
         
     $this->widgetSchema->setNameFormat('missatges[%s]');

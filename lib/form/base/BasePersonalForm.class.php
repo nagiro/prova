@@ -23,6 +23,8 @@ abstract class BasePersonalForm extends BaseFormPropel
       'data_alta'      => new sfWidgetFormDateTime(),
       'data_baixa'     => new sfWidgetFormDate(),
       'usuariUpdateId' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
+      'site_id'        => new sfWidgetFormInputText(),
+      'actiu'          => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -35,6 +37,8 @@ abstract class BasePersonalForm extends BaseFormPropel
       'data_alta'      => new sfValidatorDateTime(array('required' => false)),
       'data_baixa'     => new sfValidatorDate(array('required' => false)),
       'usuariUpdateId' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
+      'site_id'        => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'          => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('personal[%s]');

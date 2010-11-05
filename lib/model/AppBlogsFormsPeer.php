@@ -3,10 +3,33 @@
 class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 {
 	
-	static public function getOptionsForms( $blog_id , $form_id )
+    static public function getCriteriaActiu( $C , $idS )
+    {
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        return $C;
+    }
+        
+  	static public function initialize( $idF , $idS )
+	{	   
+		$OO = AppBlogsFormsPeer::retrieveByPK($idF);            
+		if(!($OO instanceof AppBlogsForms)):            			
+			$OO = new AppBlogsForms();			
+            $OO->setSiteId($idS);        
+            $OO->setActiu(true);        						
+		endif; 
+        
+        return new AppBlogsFormsForm($OO,array('IDS'=>$idS));
+                
+	}        
+    
+    
+	static public function getOptionsForms( $blog_id , $form_id , $idS )
 	{
 
 		$C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        
 		$C->add(self::BLOG_ID, $blog_id);
 						
 		$Q = self::doSelect($C);				
@@ -20,13 +43,14 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 		
 	}
 	
-	static public function save($form_id,$dades,$arxius)
+	static public function save( $form_id , $dades , $arxius , $idS )
 	{
 		
 		try{
 			
-			$OO = AppBlogsFormsPeer::retrieveByPK($form_id);
-			$OO2 = new AppBlogsFormsEntries();	  		
+            $OO = self::initialize($form_id,$idS)->getObject();
+			            
+			$OO2 = AppBlogsFormsEntriesPeer::initialize( 0 , $idS )->getObject();	  		
 	  		$OO2->setDate(date('Y-m-d H:i:s',time()));
 	  		$OO2->setFormId($OO->getId());
 	  		$OO2->save();
@@ -41,7 +65,7 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  			if($V['error'] == 0):
 	  				$file_ext = substr($V['name'], strripos($V['name'], '.'));
 	  				$file_name = $OO2->getId().'-'.$K.$file_ext;
-	  				$url = sfConfig::get('sf_websysroot').'uploads/formularis/'.$file_name;
+	  				$url = OptionsPeer::getString('SF_WEBSYSROOT',$idS).'uploads/formularis/'.$file_name;
 	  				move_uploaded_file($V['tmp_name'], $url);	  				 
 	  				$RET['file'][] = $file_name;
 	  			endif; 
@@ -69,9 +93,10 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 		return true;		
 	}
 	
-	static public function getForms( $blog_id , $num )
+	static public function getForms( $blog_id , $num , $idS )
 	{
 		$C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
 		$C->add(self::BLOG_ID,$blog_id);
 		$OO = self::doSelect($C);
 		if($OO instanceof AppBlogsForms):

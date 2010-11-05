@@ -56,16 +56,16 @@
    <TD colspan="3" class="CONTINGUT">
 
 	<?php  		        
-        
+                
 	   switch($MODUL){
 	   	  case 'landing_page': landing_page( ); break;
 	      case 'gestiona_dades': gestiona_dades( $FUSUARI , $MISSATGE ); break;
-	      case 'gestiona_cursos': gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGE ); break;
+	      case 'gestiona_cursos': gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGE , $LCURSOS); break;
 	      case 'gestiona_llistes': gestiona_llistes( $LLISTES , $MISSATGE ); break;
 	      case 'gestiona_reserves': gestiona_reserves( $FRESERVA , $RESERVES , $MISSATGE ); break;
-	      case 'gestiona_verificacio' : gestiona_verificacio($DADES_MATRICULA , $TPV); break;    
+	      case 'gestiona_verificacio' : gestiona_verificacio( $DADES_MATRICULA , $TPV , $ISPLE ); break;    
 	   }
-		
+       		
 	?>   
       
       <DIV STYLE="height:40px;"></DIV>
@@ -155,13 +155,13 @@ function gestiona_llistes( $LLISTES , $MISSATGE ){
    <?php
 }
 
-function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
+function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES , $LCURSOS ) {
    ?>
    <form method="post" action="<?php echo url_for('web/gestio?accio=im') ?>" id="FORM_CURSOS">
    
 	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles actualment </LEGEND>
        	      
-	       	<?php $LCURSOS = CursosPeer::getCursos()->getResults(); ?>
+	       	<?php $LCURSOS = $LCURSOS->getResults(); ?>
 	       	<?php if(empty($LCURSOS)): echo "Actualment no es pot matricular a cap curs. "; ?>
 			<?php else: ?>	      
 					   <TABLE class="DADES">
@@ -178,10 +178,9 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 					   <?php    if($CAT_ANT <> $C->getCategoria()): ?>					   
 								<TR><TD colspan="6" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
 					   <?php    endif; ?>
-					   <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); 
+					   <?php       $PLACES = $C->getPlacesArray(); 
                                    $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FFCCCC;\"":"";
-                                   $jple = ($PLACES['OCUPADES'] == $PLACES['TOTAL']);                                   
-                       
+                                   $jple = ($PLACES['OCUPADES'] == $PLACES['TOTAL']);                                                          
                        ?>					                       	
 					   		<TR>
 					      		<TD <?php echo $ple ?>><?php echo radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto('.$jple.');','class'=>'class_cursos '))?></TD>					      		
@@ -294,7 +293,7 @@ function gestiona_cursos( $CURSOS , $MATRICULES , $MISSATGES ) {
 }
 
 
-function gestiona_verificacio($DADES_MATRICULA , $TPV)
+function gestiona_verificacio($DADES_MATRICULA , $TPV , $ISPLE )
 {
 
      //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant     
@@ -314,7 +313,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
      //Carreguem totes les dades de matrícula     
      foreach($DADES_MATRICULA as $K => $V) { $str = "DADES_MATRICULA[".$K."]"; echo input_hidden_tag($str,$V); }
      $IDC = $DADES_MATRICULA['CURS'];     
-     $ESPLE = (CursosPeer::isPle($IDC))?'(EN ESPERA)':'';
+     $ESPLE = ($ISPLE)?'(EN ESPERA)':'';
 
 	?>
    <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Verificació de la matrícula</LEGEND>	
@@ -332,7 +331,7 @@ function gestiona_verificacio($DADES_MATRICULA , $TPV)
 	        <TR>
 	        	<TD><?php echo $CURS->getCodi(); ?></TD>
 	            <TD><?php echo $CURS->getTitolcurs().' '.$ESPLE; ?></TD>
-	            <TD><?php echo CursosPeer::CalculaPreu($CURS->getIdcursos() , $DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
+	            <TD><?php echo $CURS->CalculaPreu($DADES_MATRICULA['DESCOMPTE']).'€'; ?></TD>
 			</TR>                  								                  								                  	                           
 		</TABLE>
 	    </TD></TR>

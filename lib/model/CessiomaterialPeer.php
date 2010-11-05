@@ -66,12 +66,65 @@ class CessiomaterialPeer extends BaseCessiomaterialPeer
    		   		   	   		
    }
    
-   static public function getSelectMaterialOut($idC)
+   static public function update($RMATERIAL , $FCessio , $idS)
+   {
+    
+    $MERGE = array();
+    $OC = $FCessio->getObject();
+    $idC = $OC->getCessioId();
+    $ERROR = array();
+    
+    $C = new Criteria();
+    $C->add( self::SITE_ID , $idS );
+    $C->add( self::CESSIO_ID , $idC );
+    $C->add( self::ACTIU , true );    
+    
+    foreach($RMATERIAL as $D=>$idM):
+        if(!MaterialPeer::isLliureFranja($idM,$idS,$OC->getDatacessio(),$OC->getDataRetorn(),'00:00','24:00',null,$idC)):
+            $OM = MaterialPeer::retrieveByPK($idM);    
+            $ERROR[$idM] = $OM->toString(); 
+        endif; 
+    endforeach;
+    
+    if(empty($ERROR)): 
+
+        foreach(self::doSelect($C) as $V):
+            $V->setActiu(false);
+            $V->save();
+            $MERGE[$V->getIdcessiomaterial()] = $V;            
+        endforeach;
+    
+        foreach($RMATERIAL as $D => $idM):    		    	
+                    
+            if(isset($MERGE[$idM])):
+                $MERGE[$idM]->setActiu(true);
+                $MERGE[$idM]->save();            
+            else:
+              	$OMC = new Cessiomaterial();
+                $OMC->setMaterialIdmaterial($idM);
+        		$OMC->setCessioId($idC);
+                $OMC->setSiteId($idS);
+                $OMC->setActiu(true);
+        		$OMC->save();    		
+            endif;
+                		       		      		     		    
+        endforeach;                         
+    endif;
+    
+    return $ERROR;                
+        		              
+   }
+   
+   static public function getSelectMaterialOut( $idC , $idS )
    {
 	   	$C = new Criteria();
+        
 	   	$C->add(self::CESSIO_ID, $idC);
+        $C->add(self::SITE_ID , $idS );
+        $C->add(self::ACTIU , true );
 	   	$C->addJoin(self::MATERIAL_IDMATERIAL,MaterialPeer::IDMATERIAL);
-	   	$RET = array();
+	   	
+        $RET = array();
 	   	
 	   	foreach(MaterialPeer::doSelect($C) as $K=>$V):
 			$RET[] = array('material'=>$V->getIdmaterial(), 'generic'=>$V->getMaterialgenericIdmaterialgeneric());
@@ -97,16 +150,5 @@ class CessiomaterialPeer extends BaseCessiomaterialPeer
   	return $RET;
   	
   }   
-  
-  static public function delete($idC)
-  {
-  	
-  	$C = new Criteria();
-  	$C->add(self::CESSIO_ID,$idC);
-  	foreach(self::doSelect($C) as $OO):
-  		$OO->delete();
-  	endforeach;
-  	
-  }
-   
+       
 }

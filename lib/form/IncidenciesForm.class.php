@@ -21,6 +21,8 @@ class IncidenciesForm extends sfFormPropel
       'estat'         => new sfWidgetFormChoice(array('choices'=>IncidenciesPeer::getEstatSelect())),
       'dataalta'      => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'dataresolucio' => new sfWidgetFormInputHidden(),
+      'site_id'       => new sfWidgetFormInputHidden(),
+      'actiu'         => new sfWidgetFormInputHidden(),
     ));
 
     $this->setValidators(array(
@@ -32,6 +34,8 @@ class IncidenciesForm extends sfFormPropel
       'estat'         => new sfValidatorInteger(),
       'dataalta'      => new sfValidatorDate(array('required'=>false)),
       'dataresolucio' => new sfValidatorDate(array('required'=>false)),
+      'site_id'       => new sfValidatorPass(),
+      'actiu'         => new sfValidatorPass(),      
     ));
 
     $this->widgetSchema->setLabels(array(      

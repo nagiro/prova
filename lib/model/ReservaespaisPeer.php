@@ -17,6 +17,31 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
   const PENDENT_CONFIRMACIO = 4;
   const ESBORRADA = 5;  
 
+    static public function getCriteriaActiu($C,$idS)
+    {
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        return $C;
+    }
+
+
+  static public function initialize($idR , $idS , $idU = 0 , $client = false)
+  {
+    $OR = self::retrieveByPK($idR);            
+	if(!($OR instanceof Reservaespais)):                                    			
+		$OR = new Reservaespais(); 
+  		$OR->setCodi(ReservaespaisPeer::getNextCodi());
+        $OR->setUsuarisUsuariid($idU);
+        $OR->setEstat(ReservaEspaisPeer::EN_ESPERA);                    
+        $OR->setSiteId($idS);        
+        $OR->setActiu(true);        		            			    			    			
+        if($OR->getCondicionsccg() == "") $OR->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric($OR,$idS));					
+	endif; 
+    if($client) return new ClientReservesForm($OR,array('IDS'=>$idS));
+    else return new ReservaespaisForm($OR,array('IDS'=>$idS));
+    
+  }
+
   
   static function selectEstat()
   {
@@ -36,14 +61,14 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     * @param int $Pagina
     * @return Reservaespais
     */
-   static function getReservesPendents()
+/*   static function getReservesPendents()
    {
       $C = new Criteria();
       $C->add( ReservaespaisPeer::ESTAT , ReservaespaisPeer::EN_ESPERA , CRITERIA::EQUAL);
       return ReservaespaisPeer::doSelect($C);
    }
-   
-   static function getReservesSelect($CERCA = "" , $Pagina = 1)
+*/   
+   static function getReservesSelect($CERCA = "" , $Pagina = 1 , $idS )
    {
       $C = new Criteria();
       if(!empty($CERCA)):
@@ -53,7 +78,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 	      $C3 = $C->getNewCriterion(self::RESPONSABLE , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C4 = $C->getNewCriterion(self::PERSONALAUTORITZAT , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C5 = $C->getNewCriterion(self::ORGANITZADORS , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C6 = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C6 = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);          
 	      	      	      
 	      $C7 = $C->getNewCriterion(UsuarisPeer::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C8 = $C->getNewCriterion(UsuarisPeer::DNI , '%'.$CERCA.'%', CRITERIA::LIKE);
@@ -66,9 +91,10 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
 	      $C->add($C1);                            
 	      
 	  endif;
-            
-      $C->add(self::ESTAT, self::ESBORRADA, CRITERIA::NOT_EQUAL);
-      $C->addDescendingOrderByColumn(self::DATAALTA);
+      
+      $C->add( self::SITE_ID , $idS );            
+      $C->add( self::ESTAT , self::ESBORRADA , CRITERIA::NOT_EQUAL );
+      $C->addDescendingOrderByColumn( self::DATAALTA );
       
                  
       $P = new sfPropelPager('Reservaespais', 20);
@@ -87,7 +113,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     * @param int $Pagina
     * @return sfPropelPager
     */
-   static function getReserves($Pagina = 0)
+/*   static function getReserves($Pagina = 0)
    {
         $C = new Criteria();           
         $P = new sfPropelPager('Reservaespais', 10);
@@ -96,16 +122,17 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
         $P->init();
         return $P; 
    }
-   
+*/   
    /**
     * Funció que retorna les reserves que ha fet un usuari
     *
     * @param int $idU
     * @return Reservaespais
     */
-   static function getReservesUsuaris($idU)
+   static function getReservesUsuaris( $idU , $idS )
    {
       $C = new Criteria();
+      $C = self::getCriteriaActiu( $C , $idS );
       $C->add(ReservaespaisPeer::USUARIS_USUARIID , $idU);
       return ReservaespaisPeer::doSelect($C);
    }
@@ -118,7 +145,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     * @param int $IDR
     * @return bool/Reservaespais
     */
-   static function save( $D = array(), $IDU = 0 , $IDR = 0 )   
+/*   static function save( $D = array(), $IDU = 0 , $IDR = 0 )   
    {
       $R = new Reservaespais(); $RETURN = array();
       
@@ -149,7 +176,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       return $R;
             
    }
-      
+*/      
    static function getNextCodi()
    {
    		$C = new Criteria();
@@ -192,60 +219,31 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
         
    }
    
-   static public function sendMailCondicions($OR, $PAREA, $PARER)
+   static public function sendMailCondicions( $OR , $PAREA , $PARER , $idS )
    {
   	
-    $miss = $OR->getCondicionsccg();  	
-  	$text = "";
-  	$text .= '
-
-        <table width="640px" style="font-family: sans-serif; font-size:14px; margin:0 auto; border:0px solid #B33330;">
-        <tr><td align="center" style=" padding:20px;"><img width="200px" src="http://servidor.casadecultura.org/downloads/logos/CCG_BLANC.jpg" /></td></tr>
-        <tr><td style="border-top:2px solid #B33330;padding: 20px; text-align: left;">
-            '.$miss.'
-            <br /><br />            
-            <p><a target="_NEW" href="'.sfConfig::get('sf_webrooturl').'web/Formularis?PAR='.$PAREA.'">Si accepteu les condicions cliqueu aquest enllaç</a><br />
-            <br />
-            <a target="_NEW" href="'.sfConfig::get('sf_webrooturl').'web/Formularis?PAR='.$PARER.'">Si  voleu anul·lar la vostra sol·licitud o no accepteu les condicions, cliqueu aquest enllaç</a>
-            </p>					
-        <br /><br />
-        <p>Cordialment, <br />Casa de Cultura de Girona</p>
-        <br /><br />
-        <p><span style="font-size:10px; font-style: italic; color: gray;">En cas de resposta afirmativa, les vostres dades seran incorporades a un fitxer titularitat de la Fundaci&oacute; Casa de Cultura creat sota la seva responsabilitat per a gestionar les activitats que s&rsquo;hi porten a terme i per a informar-ne a persones que hi estiguin interessades. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d&rsquo;adoptar les mesures legalment previstes i les t&egrave;cnicament necess&agrave;ries per evitar-ne un acc&eacute;s o qualsevol classe de tractament no autoritzat. Podran ser cedides a altres persones amb les quals la Casa de Cultura col&bull;labora en la programaci&oacute; i organitzaci&oacute; d&rsquo;activitats, exclusivament a l&rsquo;efecte de fer-vos arribar la informaci&oacute; que vost&egrave; manifesta estar interessat en rebre. Per qualsevol altre cessi&oacute; requerir&iacute;em pr&egrave;viament el seu consentiment. En qualsevol cas podeu exercir els vostres drets d&rsquo;acc&eacute;s, rectificaci&oacute; i cancel&bull;laci&oacute; tot adre&ccedil;ant-se a: Sr/a. Director/a de la Casa de Cultura, Pla&ccedil;a de l&rsquo;Hospital 6, 17002 GIRONA, tel&egrave;fon 972 202 013 i correu electr&ograve;nic  secretaria@casadecultura.org.</span></p>
-                
-        </td></tr>
-        </table>';
-      				
-   	return $text; 
+    $TEXT = OptionsPeer::getString('RESERVA_ESPAIS_MAILCOND',$idS);
+    $TEXT = str_replace('{{LOGO_URL}}',OptionsPeer::getString('LOGO_URL'),$idS);    
+    $TEXT = str_replace('{{MISSATGE}}',$OR->getCondicionsccg());
+    $TEXT = str_replace('{{URL_ACCEPTA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'web/Formularis?PAR='.$PAREA);
+    $TEXT = str_replace('{{URL_REBUTJA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'web/Formularis?PAR='.$PARER);
+          				
+   	return $TEXT; 
     
    }
 
-   static public function getCondicionsGeneric($OR)
+   static public function getCondicionsGeneric( $OR , $idS )
    {
   	
-  	$text = "";
-  	$text .= '
-
-        <p>Senyors,</p>
-        <br />
-        <p>D’acord amb la sol·licitud rebuda, la Fundació Casa de Cultura de Girona ha acordat la següent cessió d’espai a '.$OR->getRepresentacio().':</p> 
-        <br /><br />
-        <p><b>Espai:</b> '.$OR->getEspaisString().'<br />
-        <b>Activitat:</b> '.$OR->getNom().'<br />
-        <b>Dies:</b> '.$OR->getDataactivitat().'<br />
-        <b>Horari:</b> '.$OR->getHorariactivitat().'<br />
-        <b>Equipament:</b> '.$OR->getMaterialString().'</p>
-        <br /><br />
-        <p><b>Despeses</b></p>
-        <p>La Casa de Cultura de Girona, amb la voluntat de donar suport a aquesta activitat, eximeix l’organització de les despeses de cessió d’aquest espai que, segons les tarifes aprovades per la Junta Rectora de la Fundació, tindria un cost de 550 euros (IVA no inclòs).</p> 
-        
-        <p>Aquesta decisió de la Fundació de la Casa de Cultura no pressuposa l’exempció per a futures activitats, que seran avaluades en cada cas.</p>
-        <br /><br />
-        <p><b>Acceptació de condicions</b></p>
-        <p>La cessió d’espai i equipaments no compromet el personal de la Casa de Cultura a donar assistència tècnica permanent a la vostra activitat ni a incloure-la en els seus materials de difusió.</p> 
-
-    ';      				
-   	return $text; 
+    $TEXT = OptionsPeer::getString('RESERVA_ESPAIS_CONDICIONS',$idS);
+    $TEXT = str_replace('{{REPRESENTACIO}}',$OR->getRepresentacio(),$TEXT);
+    $TEXT = str_replace('{{ESPAIS}}',$OR->getEspaisString(),$TEXT);
+    $TEXT = str_replace('{{NOM}}',$OR->getNom(),$TEXT);
+    $TEXT = str_replace('{{DATA_ACTIVITAT}}',$OR->getDataactivitat(),$TEXT);
+    $TEXT = str_replace('{{HORARI_ACTIVITAT}}',$OR->getHorariactivitat(),$TEXT);
+    $TEXT = str_replace('{{MATERIAL}}',$OR->getMaterialString(),$TEXT);
+      	
+   	return $TEXT; 
     
    }
 

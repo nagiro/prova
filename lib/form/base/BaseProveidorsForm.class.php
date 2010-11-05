@@ -24,6 +24,7 @@ abstract class BaseProveidorsForm extends BaseFormPropel
       'Adreca'      => new sfWidgetFormTextarea(),
       'Alta'        => new sfWidgetFormDate(),
       'Ciutat'      => new sfWidgetFormTextarea(),
+      'site_id'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -37,6 +38,7 @@ abstract class BaseProveidorsForm extends BaseFormPropel
       'Adreca'      => new sfValidatorString(array('required' => false)),
       'Alta'        => new sfValidatorDate(array('required' => false)),
       'Ciutat'      => new sfValidatorString(array('required' => false)),
+      'site_id'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('proveidors[%s]');

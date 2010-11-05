@@ -12,9 +12,11 @@ abstract class BaseAppBlogMultimediaEntriesFormFilter extends BaseFormFilterProp
   public function setup()
   {
     $this->setWidgets(array(
+      'site_id'       => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
+      'site_id'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('app_blog_multimedia_entries_filters[%s]');
@@ -34,6 +36,7 @@ abstract class BaseAppBlogMultimediaEntriesFormFilter extends BaseFormFilterProp
     return array(
       'entries_id'    => 'ForeignKey',
       'multimedia_id' => 'ForeignKey',
+      'site_id'       => 'Number',
     );
   }
 }

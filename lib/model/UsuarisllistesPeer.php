@@ -10,7 +10,37 @@
 class UsuarisllistesPeer extends BaseUsuarisllistesPeer
 {
 
-  static public function Vincula($U , $IDL)
+    static public function getCriteriaActiu($C,$idS)
+    {
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        return $C;
+    }
+        
+  	static public function initialize( $idUL , $idS , $idL = 0 , $idU = 0 )
+	{	   
+		if($idL > 0 && $idU > 0):
+            $C = new Criteria();
+            $C = self::getCriteriaActiu($C,$idS);
+            $C->add(self::USUARIS_USUARISID, $idU);
+            $C->add(self::LLISTES_IDLLISTES, $idL);
+            $O = UsuarisllistesPeer::doSelectOne($C); 
+        else:  
+            $O = UsuarisllistesPeer::retrieveByPK($idUL);
+        endif; 
+        
+		if(!($O instanceof UsuarisllistesPeer)):            			
+			$O = new UsuarisllistesPeer();
+            if( $idL > 0 ) $O->setLlistesIdllistes($idL);
+            if( $idU > 0 ) $O->setUsuarisUsuarisid($idU);            
+            $O->setSiteId($idS);        
+            $O->setActiu(true);        						
+		endif; 
+        
+        return new NoticiesForm($ON,array('IDS'=>$idS));
+	}
+
+  static public function Vincula( $U , $IDL )
   {     
      $ULP = new Usuarisllistes();
      $ULP->setUsuarisUsuarisid($U);
@@ -98,9 +128,10 @@ class UsuarisllistesPeer extends BaseUsuarisllistesPeer
      return $RET;
   }
   
-  static public function getLlistesUsuari($idU){
+  static public function getLlistesUsuari( $idU  , $idS ){
      
      $C = new Criteria();
+     $C = self::getCriteriaActiu( $C , $idS );
      $C->add(UsuarisllistesPeer::USUARIS_USUARISID , $idU);
      
      $SELECT = array();

@@ -32,7 +32,9 @@ class ClientUsuarisForm extends sfFormPropel
       'Mobil'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Entitat'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Habilitat'         => new sfWidgetFormInputHidden(),
-      'captcha2'		  => new sfWidgetFormInputCaptcha(array(),array('value'=>$this->getOption('rand'))),      
+      'captcha2'		  => new sfWidgetFormInputCaptcha(array(),array('value'=>$this->getOption('rand'))),
+      'site_id'           => new sfWidgetFormInputHidden(),
+      'actiu'             => new sfWidgetFormInputHidden(),      
     ));
 
     $rand = $this->getOption('rand');
@@ -56,7 +58,9 @@ class ClientUsuarisForm extends sfFormPropel
       'Entitat'           => new sfValidatorString(array('required' => false)),
       'Habilitat'         => new sfValidatorBoolean(array('required' => false)),
 	  'captcha2'		  => new sfValidatorNumber(array('min'=>$sol,'max'=>$sol),array('invalid'=>$inv,'max'=>$inv,'min'=>$inv)),
-      'DNI'               => new sfValidatorCallback(   array(  'callback'  =>'ClientUsuarisForm::validaDNI', 'arguments' => array('idU'=>$this->getObject()->getUsuariId()))),          
+      'DNI'               => new sfValidatorCallback(   array(  'callback'  =>'ClientUsuarisForm::validaDNI', 'arguments' => array('idU'=>$this->getObject()->getUsuariId()))),
+      'site_id'           => new sfValidatorPass(),
+      'actiu'             => new sfValidatorPass(),                
     ));
 
     $DNIV = $this->getValidator('DNI');        
@@ -109,7 +113,7 @@ class ClientUsuarisForm extends sfFormPropel
     $C = new Criteria();
     $value = strtoupper($value);
     $C->add(UsuarisPeer::USUARIID, $arguments['idU'], CRITERIA::NOT_EQUAL);
-    $C->add(UsuarisPeer::DNI, $value);    
+    $C->add(UsuarisPeer::DNI, $value);
     if(UsuarisPeer::doCount($C) > 0):
         throw new sfValidatorError($validator, 'duplicat');
     endif; 

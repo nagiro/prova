@@ -47,7 +47,7 @@ class Reservaespais extends BaseReservaespais
       $sol = array();
       $espais = explode('@',$this->espaissolicitats);
       foreach($espais as $E):
-         $ESPAI = EspaisPeer::retrieveByPK($E);         
+         $ESPAI = EspaisPeer::initialize( $E , $this->getSiteId() );         
          $sol[$ESPAI->getEspaiid()] = $ESPAI->getNom();
       endforeach;
       return implode('<br />',$sol);
@@ -58,7 +58,7 @@ class Reservaespais extends BaseReservaespais
       $sol = array();
       $espais = explode('@',$this->espaissolicitats);
       foreach($espais as $E):
-         $ESPAI = EspaisPeer::retrieveByPK($E);         
+         $ESPAI = EspaisPeer::initialize( $E , $this->getSiteId() )->getObject();         
          $sol[$ESPAI->getEspaiid()] = $ESPAI->getNom();
       endforeach;
       return implode(' , ',$sol);

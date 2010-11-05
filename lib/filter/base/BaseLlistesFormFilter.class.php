@@ -14,12 +14,14 @@ abstract class BaseLlistesFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'Nom'                   => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'isActiva'              => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'               => new sfWidgetFormFilterInput(),
       'missatgesllistes_list' => new sfWidgetFormPropelChoice(array('model' => 'Missatgesmailing', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
       'Nom'                   => new sfValidatorPass(array('required' => false)),
       'isActiva'              => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'               => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'missatgesllistes_list' => new sfValidatorPropelChoice(array('model' => 'Missatgesmailing', 'required' => false)),
     ));
 
@@ -66,6 +68,7 @@ abstract class BaseLlistesFormFilter extends BaseFormFilterPropel
       'idLlistes'             => 'Number',
       'Nom'                   => 'Text',
       'isActiva'              => 'Number',
+      'site_id'               => 'Number',
       'missatgesllistes_list' => 'ManyKey',
     );
   }

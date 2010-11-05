@@ -15,14 +15,16 @@ class ActivitatsForm extends sfFormPropel
     $this->setWidgets(array(
       'ActivitatID'                     => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
-      'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect())),
-      'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect())),
+      'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect($this->getOption('IDS')))),
+      'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect($this->getOption('IDS')))),
       'Preu'                            => new sfWidgetFormInputText(),
       'PreuReduit'                      => new sfWidgetFormInputText(),
       'Publicable'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
       'Organitzador'				    => new sfWidgetFormInputText(),
-      'Responsable'		 			    => new sfWidgetFormInputText(),      
+      'Responsable'		 			    => new sfWidgetFormInputText(),
+      'site_id'                         => new sfWidgetFormInputHidden(array(),array()),
+      'actiu'                           => new sfWidgetFormInputHidden(array(),array()),      
     ));
 
     $this->setValidators(array(
@@ -35,7 +37,9 @@ class ActivitatsForm extends sfFormPropel
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),
       'Estat'                           => new sfValidatorString(array('max_length' => 1, 'required' => false)),
       'Organitzador'				    => new sfValidatorString(array('required'=>false),array()),
-      'Responsable'					    => new sfValidatorString(array('required'=>false),array()),          
+      'Responsable'					    => new sfValidatorString(array('required'=>false),array()),
+      'site_id'                         => new sfValidatorPass(),
+      'actiu'                           => new sfValidatorPass(),          
     ));
 
     $this->widgetSchema->setLabels(array(      

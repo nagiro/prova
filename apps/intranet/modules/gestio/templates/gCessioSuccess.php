@@ -26,8 +26,8 @@ $(document).ready(function() {
 			$('#FCERCA').submit(); 
 		});
 		
-	   $("#fcessio").submit(function() {		 
-	     if($("#cessiomaterial_Material_idMaterial").val().length == 0 ){ alert("Has d'escollir el material a cedir"); return false; }
+	   $("#fcessio").submit(function() {
+         if($("#cessio_dni").val().length == 0){ alert("Has d'entrar un DNI."); return false; }	     
 	     if($("#autocomplete_cessiomaterial_Cedita").val().length == 0 ){ alert("Cal omplir el camp cedit a!"); return false; }
 		 
 	 	 if(parseInt($("#cessiomaterial_DataRetorn_year").val()) > parseInt($("#cessiomaterial_DataCessio_year").val())) { return true; }
@@ -38,54 +38,53 @@ $(document).ready(function() {
 	   });
 	 });
 
-	function validaDisponibilitatMaterial(a)
-	{
-		$.post(	"<?php echo url_for('gestio/gCessio'); ?>",
-				{ accio: "VM", idM: a.options[a.selectedIndex].value },
-				function (data){ if(data.length > 0) alert(data); });				   		
-	}
 
+
+    //Funció que captura de quin genèric parlem i busca els disponibles. 
+	function ajax(d, iCtrl)
+	{
+
+        <?php 
+            if( isset($FCessio) && $FCessio->getObject() instanceof Cessio ):
+                $diai = $FCessio->getObject()->getDatacessio('Y-m-d');
+                $diaf = $FCessio->getObject()->getDataRetorn('Y-m-d');
+            else: 
+                $diai = '0000-00-00';
+                $diaf = '0000-00-00';                
+            endif; 
+        ?>
+        				
+        $.get(
+                '<?php echo url_for('gestio/AjaxSelectMaterial') ?>',  
+                { diai: '<?php echo $diai; ?>' , 
+                  diaf: '<?php echo $diaf; ?>' ,
+                  dies_franja: true , 
+                  generic: d.value 
+                } , 
+                function(data) { $("select#material\\["+iCtrl+"\\]").html(data); }
+            );                                                
+                                                
+    }
+    
+    //Generem el desplegable de material genèric
 	function creaFormMaterial()
 	{
 		
-		var id = $("#idV").val();		
+		var id = $("#idV").val();        		
 		id = (parseInt(id) + parseInt(1));
-		$("#idV").val(id);		
-				
-		var options = '<?php echo MaterialgenericPeer::selectAjax(); ?>';
-		$("#divTxt").append(' ' + 
-		'<div class="fb clear" style="width:500px; padding-bottom:5px;" id="row['+id+']">' +
-		'<span style="width:20px;" class="fb">&nbsp;</span>' +
-		'<span style="width:100px;" class="fb"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select></span>' +
-		'<span style="width:300px;" class="fb"><select onChange="validaDisponibilitatMaterial(this)" name="material[' + id + ']" id="material[' + id + ']"></select></span>' +	
-	  	'<span style="width:50px;" class="fb"><button onClick="esborraLinia(' + id + ');" id="mesmaterial">-</button></span>' +	  	 	  	        		
-	  	'</div>');
-				
+		$("#idV").val(id);				                        
+        				
+        var options = '<?php echo MaterialgenericPeer::selectAjax() ?>';                
+		$("#divTxt").append(
+                        '<span id="row['+id+']">'+
+                        '<select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select>'+
+                        '<select name="material[' + id + ']" id="material[' + id + ']"></select>' +
+                        '<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
 		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
 	}
 
 	function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 
-	 //Funció que controla la crida AJAX 
-	function ajax(d, iCtrl)
-	{
-												
-		$.getJSON(
-				 "<?php echo url_for('gestio/selectMaterial') ?>",						//Url que visita 
-				 { id: d.value }, 												//Valor seleccionat a la primera llista
-				 function(data,textStatus) { updateJSON( data, textStatus, iCtrl );  } //Carreguem les dades JSON
-				);
-	}
-
-
-	function updateJSON(data, textStatus, iCtrl ){		
-		var options = "";						
-		for (var i = 0; i < data.length; i++) {
-	        options += '<option value="' + data[i].key + '">' + data[i].value + '</option>';				
-		}						
-								
-		$("select#material\\["+iCtrl+"\\]").html(options);								//Actualitzem el control iCtrl
-	}
 
 </script>
    
@@ -132,26 +131,30 @@ $(document).ready(function() {
   <?php elseif( $MODE == 'ESCULL_MATERIAL' ): ?>
       
 	<form action="<?php echo url_for('gestio/gCessio') ?>" method="POST" id="fmaterial">
- 	
+ 
 	 	<div class="REQUADRE fb">
 		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCessio?accio=C')) ?>
-						 	 		
+
+    	     	<?php if(isset($MISSATGE)):  ?>
+    	     	<div style="padding:20px; border:10px solid red; width:550px; background-color: black; color:yellow; font-weight:bold;"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?></div>	     	
+    	     	<?php endif; ?>            						 	 		
 		 		<div class="FORMULARI fb">
 		 		<div class="TITOL">Escull el material de la cessió: </div>
 				<div>
-															
+					<input type="hidden" name="IDC" value="<?php echo $IDC; ?>" />										
                 	<?php 
+ 
 						$id = 1;  $VAL = "";
-						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
+						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;                                	
 	             		foreach($MATERIALOUT AS $M=>$idM):
-	             			             		
+	
 	             		$VAL .= '
-	  	 	  	        		<div class="fb clear" style="width:500px; padding-bottom:20px;" id="row['.$id.']">
-	  	 	  	        			<span style="width:100px;" class="fb">&nbsp;</span>
-		  	 	  	        		<span style="width:100px;" class="fb"><select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select></span>
-		  	 	  	        		<span style="width:150px;" class="fb"><select style="width:150px" onChange="validaDisponibilitatMaterial(this)" name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select></span>	
-		  	 	  	        		<span style="width:50px;" class="fb"><input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input></span>	  	 	  	        		
-	  	 	  	        		</div>  	 	  	        			
+	  	 	  	        		<span id="row['.$id.']">
+	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
+	  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic'],$IDS,$idM['material']),$idM['material']).'</select>	
+	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
+	  	 	  	        			<br />
+	  	 	  	        		</span>  	 	  	        			
 	             			  ';
 	             		      $id++;      	             		      
 	             		                   		      	
@@ -163,6 +166,7 @@ $(document).ready(function() {
 	             	?>             	             	            
                 	                	                	
 				</div>
+                <br />
 				<div class="fb TITOL" style="width:100%">Material no inventariat</div>
                	<?php include_partial('fieldSpan',array('field'=>'<textarea rows="5" name="material_no_inventariat" >'.$MAT_NO_INV.'</textarea>')); ?>
 	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'B_SAVE_CESSIO','text'=>'Seguir cessió -->')); ?>		 							 			 			 	 	

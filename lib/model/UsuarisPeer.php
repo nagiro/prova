@@ -12,7 +12,33 @@ class UsuarisPeer extends BaseUsuarisPeer
 
   const ADMIN = 1;
   const REGISTERED = 2;  
-   
+  
+  static public function initialize( $idU , $idS , $isMatricules = false )
+  {
+    $OU = UsuarisPeer::retrieveByPK($idU);            
+	if(!($OU instanceof Usuaris)):            		
+		$OU = new Usuaris();
+        $OU->setSiteId($idS);        
+        $OU->setActiu(true);
+		$OU->setNivellsIdnivells(2);
+    	$OU->setHabilitat(true);     
+	endif; 
+
+    if($isMatricules):
+        return new UsuarisMatriculesForm($OU);
+    else:
+        return new UsuarisForm($OU);
+    endif; 			    
+
+  }
+  
+  static public function getCriteriaActiu( $C , $idS )
+  {    
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+  }
+     
   static function cercaDNI($DNI)
   {
     $C = new Criteria();
@@ -28,10 +54,11 @@ class UsuarisPeer extends BaseUsuarisPeer
   }
     
   
-  static function cercaTotsCamps($text, $PAGINA = 1)
+  static function cercaTotsCamps( $text , $PAGINA = 1 , $idS )
   {
     
     $C = self::CriteriaCerca($text,new Criteria());
+    $C = self::getCriteriaActiu( $C , $idS );
             
     $pager = new sfPropelPager('Usuaris', 10);
     $pager->setCriteria($C);
@@ -105,9 +132,11 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   }
   
-  static function selectUsuaris()
+  static function selectUsuaris($idS)
   {
     $C = new Criteria();    
+    $C = self::getCriteriaActiu($C,$idS);
+    
     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
 //    $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
     $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
@@ -167,6 +196,6 @@ class UsuarisPeer extends BaseUsuarisPeer
   {
   	$usuaris = array(1,2,4,6,9,11,24);
   	return (in_array($idU,$usuaris)); 
-  }
-	
+  }        
+    
 }

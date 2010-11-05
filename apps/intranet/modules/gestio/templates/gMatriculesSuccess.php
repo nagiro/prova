@@ -133,7 +133,7 @@
 									<TD class="LINIA">'.link_to($C->getCodi(),'gestio/gMatricules?accio=LMC&IDC='.$C->getIdcursos()).'</TD>
 									<TD class="LINIA">'.$C->getTitolcurs().'</TD>
 									<TD class="LINIA">'.$C->getDatainici('d/m/Y').'</TD>
-									<TD class="LINIA">'.$C->countMatriculats().'/'.$C->getPlaces().'</TD>
+									<TD class="LINIA">'.$C->countMatriculats($IDS).'/'.$C->getPlaces().'</TD>
 								  </TR>';                		                 															                		                 															
 	                    endforeach;
 	                 endif;                     
@@ -187,9 +187,10 @@
 					else: 
 						echo '<TR><TD class="TITOL"></TD><TD class="TITOL">CODI</TD><TD class="TITOL">NOM</TD><TD class="TITOL">DATA INICI</TD><TD class="TITOL">PREU</TD><TD class="TITOL">PLACES</TD></TR>';
 						$i = 0;
+                        echo input_hidden_tag('IDM',$IDM);                        
 						foreach($CURSOS as $C):
 	                      	$PAR = ParImpar($i++);
-	                      	$nMatriculats = $C->countMatriculats(); 
+	                      	$nMatriculats = $C->countMatriculats($IDS); 
 	                      	if($nMatriculats >= $C->getPlaces()):
 	                      	
 	                      		$BACKGROUND = " style=\"background:red\"";
@@ -232,7 +233,7 @@
 		else:
 		
 			echo "<form action=\"".url_for('gestio/gMatricules')."\" method=\"POST\">";
-
+            echo input_hidden_tag('IDM',$IDM);
 		endif; 
 	?>  
   

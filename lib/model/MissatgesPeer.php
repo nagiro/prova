@@ -10,7 +10,7 @@
 class MissatgesPeer extends BaseMissatgesPeer
 {
 
-  static function inicialitza($id,$idU)
+  static function inicialitza( $id , $idU , $idS )
   {
   	
   	$OM = self::retrieveByPK($id);
@@ -20,22 +20,24 @@ class MissatgesPeer extends BaseMissatgesPeer
   		$OM = new Missatges();
   		$OM->setUsuarisUsuariid($idU);
   		$OM->setDate(date('Y-m-d',time()));
+        $OM->setSiteId($idS);        
   		return new MissatgesForm($OM);  		
   	endif;
   	  	
   }
 	
-  static function QuantsAvui($idU)
+  static function QuantsAvui( $idU , $idS = 1 )
   {
      $C = new Criteria();
      $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
+     $C->add(self::SITE_ID , $idS );
      $C->add(self::DATE , $time , Criteria::GREATER_EQUAL );
      $C->add(self::USUARIS_USUARIID , $idU);
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
      return self::doCount($C);
   }
    
-  static function doSearch( $TEXT , $PAGE , $ACCIO )
+  static function doSearch( $TEXT , $PAGE , $ACCIO , $idS )
   {
     
      $C = new Criteria();
@@ -49,6 +51,8 @@ class MissatgesPeer extends BaseMissatgesPeer
       $text1Criterion->addOr($text2Criterion);  $C->add($text1Criterion);          
      endforeach;
      
+     $C->add( self::SITE_ID , $idS );
+     $C->add( self::ACTIU , 1 );
      $C->addGroupByColumn( MissatgesPeer::MISSATGEID );     
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
      $C->addDescendingOrderByColumn(self::MISSATGEID);
@@ -68,11 +72,12 @@ class MissatgesPeer extends BaseMissatgesPeer
   
   }
   
-  static function getMissatgesAvui()
+  static function getMissatgesAvui($idS = 1)
   {
       $C = new Criteria();
       $avui = date('Y-m-d',time()); 
       $C->add( self::PUBLICACIO , $avui );
+      $C->add( self::SITE_ID , $idS );
       $C->addDescendingOrderByColumn(self::PUBLICACIO);
       $C->addDescendingOrderByColumn(self::MISSATGEID);      
       return MissatgesPeer::doSelect($C);

@@ -13,10 +13,12 @@ abstract class BaseTipusactivitatFormFilter extends BaseFormFilterPropel
   {
     $this->setWidgets(array(
       'Nom'              => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'          => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'Nom'              => new sfValidatorPass(array('required' => false)),
+      'site_id'          => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('tipusactivitat_filters[%s]');
@@ -36,6 +38,7 @@ abstract class BaseTipusactivitatFormFilter extends BaseFormFilterPropel
     return array(
       'idTipusActivitat' => 'Number',
       'Nom'              => 'Text',
+      'site_id'          => 'Number',
     );
   }
 }

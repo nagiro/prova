@@ -16,11 +16,13 @@ abstract class BaseMaterialgenericForm extends BaseFormPropel
     $this->setWidgets(array(
       'idMaterialGeneric' => new sfWidgetFormInputHidden(),
       'Nom'               => new sfWidgetFormTextarea(),
+      'site_id'           => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'idMaterialGeneric' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdmaterialgeneric()), 'empty_value' => $this->getObject()->getIdmaterialgeneric(), 'required' => false)),
       'Nom'               => new sfValidatorString(array('required' => false)),
+      'site_id'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('materialgeneric[%s]');

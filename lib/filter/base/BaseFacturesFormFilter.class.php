@@ -24,6 +24,7 @@ abstract class BaseFacturesFormFilter extends BaseFormFilterPropel
       'Text'                   => new sfWidgetFormFilterInput(),
       'ValidaUsuari'           => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
       'ValidatData'            => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'site_id'                => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -39,6 +40,7 @@ abstract class BaseFacturesFormFilter extends BaseFormFilterPropel
       'Text'                   => new sfValidatorPass(array('required' => false)),
       'ValidaUsuari'           => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Usuaris', 'column' => 'UsuariID')),
       'ValidatData'            => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'                => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('factures_filters[%s]');
@@ -69,6 +71,7 @@ abstract class BaseFacturesFormFilter extends BaseFormFilterPropel
       'Text'                   => 'Text',
       'ValidaUsuari'           => 'ForeignKey',
       'ValidatData'            => 'Date',
+      'site_id'                => 'Number',
     );
   }
 }

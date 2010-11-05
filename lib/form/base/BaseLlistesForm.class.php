@@ -17,6 +17,8 @@ abstract class BaseLlistesForm extends BaseFormPropel
       'idLlistes'             => new sfWidgetFormInputHidden(),
       'Nom'                   => new sfWidgetFormTextarea(),
       'isActiva'              => new sfWidgetFormInputText(),
+      'site_id'               => new sfWidgetFormInputText(),
+      'actiu'                 => new sfWidgetFormInputText(),
       'missatgesllistes_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Missatgesmailing')),
     ));
 
@@ -24,6 +26,8 @@ abstract class BaseLlistesForm extends BaseFormPropel
       'idLlistes'             => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdllistes()), 'empty_value' => $this->getObject()->getIdllistes(), 'required' => false)),
       'Nom'                   => new sfValidatorString(),
       'isActiva'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'               => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                 => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'missatgesllistes_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Missatgesmailing', 'required' => false)),
     ));
 

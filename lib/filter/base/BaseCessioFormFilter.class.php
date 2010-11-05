@@ -12,7 +12,10 @@ abstract class BaseCessioFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'usuari_id'               => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
+      'site_id'                 => new sfWidgetFormFilterInput(),
+      'usuari_id'               => new sfWidgetFormFilterInput(),
+      'nom'                     => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'dni'                     => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'representant'            => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'motiu'                   => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'condicions'              => new sfWidgetFormFilterInput(array('with_empty' => false)),
@@ -26,7 +29,10 @@ abstract class BaseCessioFormFilter extends BaseFormFilterPropel
     ));
 
     $this->setValidators(array(
-      'usuari_id'               => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Usuaris', 'column' => 'UsuariID')),
+      'site_id'                 => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'usuari_id'               => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'nom'                     => new sfValidatorPass(array('required' => false)),
+      'dni'                     => new sfValidatorPass(array('required' => false)),
       'representant'            => new sfValidatorPass(array('required' => false)),
       'motiu'                   => new sfValidatorPass(array('required' => false)),
       'condicions'              => new sfValidatorPass(array('required' => false)),
@@ -55,7 +61,10 @@ abstract class BaseCessioFormFilter extends BaseFormFilterPropel
   {
     return array(
       'cessio_id'               => 'Number',
-      'usuari_id'               => 'ForeignKey',
+      'site_id'                 => 'Number',
+      'usuari_id'               => 'Number',
+      'nom'                     => 'Text',
+      'dni'                     => 'Text',
       'representant'            => 'Text',
       'motiu'                   => 'Text',
       'condicions'              => 'Text',

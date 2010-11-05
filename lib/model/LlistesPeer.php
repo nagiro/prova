@@ -14,10 +14,32 @@ class LlistesPeer extends BaseLlistesPeer
   const ENVIATS = 1;
   const NO_ENVIATS = 2;
    
+    static public function getCriteriaActiu($C,$idS)
+    {
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        return $C;
+    }
+        
+  	static public function initialize( $idL , $idS )
+	{	   
+		$OL = LlistesPeer::retrieveByPK($idL);            
+		if(!($OL instanceof Llistes)):            			
+			$OL = new Llistes();            
+            $OL->setSiteId($idS);        
+            $OL->setActiu(true);        						
+		endif; 
+        
+        return new LlistesForm($OL,array('IDS'=>$idS));
+	}
+
+   
+   
   //Torna un Select amb les llistes que hi ha disponibles
-  static public function select(){
+  static public function select($idS){
      
      $C = new Criteria();
+     $C = self::getCriteriaActiu($C,$idS);
      $C->add(LlistesPeer::ISACTIVA , true); 
      
      $SELECT = array();     
@@ -59,22 +81,23 @@ class LlistesPeer extends BaseLlistesPeer
   }
   
   
-  static public function getLlistesDisponibles($IDU)
+  static public function getLlistesDisponibles( $IDU , $idS )
   {
      $SELECT = array();
                
-     foreach(self::select() as $K=>$L):
+     foreach(self::select($idS) as $K=>$L):
         $C = new Criteria();     
-        $C->add(UsuarisllistesPeer::USUARIS_USUARISID , $IDU);
-        $C->add(UsuarisllistesPeer::LLISTES_IDLLISTES, $K);
+        $C->add( UsuarisllistesPeer::USUARIS_USUARISID , $IDU );
+        $C->add( UsuarisllistesPeer::LLISTES_IDLLISTES , $K );
         if(UsuarisllistesPeer::doCount($C) == 0) $SELECT[$K] = $L;                 
      endforeach;          
      return $SELECT;
   }
 
-  static public function getLlistesAll()
+  static public function getLlistesAll($idS)
   {
     $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
     return self::doSelect($C);
   }
 
@@ -83,9 +106,11 @@ class LlistesPeer extends BaseLlistesPeer
    *
    * @param INT $MODALITAT
    */
-  static public function getMissatges($IDL , $MODALITAT , $PAGINA = 1)  
+  static public function getMissatges($IDL , $MODALITAT , $PAGINA = 1 , $idS )  
   {
      $C = new Criteria();
+     $C = self::getCriteriaActiu( $C , $idS );
+     $C = MissatgesllistesPeer::getCriteriaActiu( $C , $idS );
      
      $C->add( MissatgesllistesPeer::LLISTES_IDLLISTES , $IDL );
      $C->addJoin(MissatgesllistesPeer::IDMISSATGESLLISTES,MissatgesmailingPeer::IDMISSATGE);     
@@ -102,7 +127,7 @@ class LlistesPeer extends BaseLlistesPeer
   }
   
   
-  static public function EnviaMissatge($IDM)
+  static public function EnviaMissatge($IDM,$idS)
   {
 
     $M = MissatgesllistesPeer::retrieveByPK($IDM);  	  
@@ -114,7 +139,7 @@ class LlistesPeer extends BaseLlistesPeer
 	foreach($MAILS as $Email) {
      	
     	$message = Swift_Message::newInstance($M->getTitol())
-        	 	->setFrom(array('informatica@casadeculutra.org' => 'CCG :: Informació'))
+        	 	->setFrom(OptionsPeer::getString('MAIL_FROM',$idS))
          		->setTo($Email)
          		->setBody($M->getText() , 'text/html');
          		  

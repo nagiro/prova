@@ -22,6 +22,8 @@ abstract class BaseIncidenciesForm extends BaseFormPropel
       'estat'         => new sfWidgetFormInputText(),
       'dataalta'      => new sfWidgetFormDate(),
       'dataresolucio' => new sfWidgetFormDate(),
+      'site_id'       => new sfWidgetFormInputText(),
+      'actiu'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -33,6 +35,8 @@ abstract class BaseIncidenciesForm extends BaseFormPropel
       'estat'         => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'dataalta'      => new sfValidatorDate(),
       'dataresolucio' => new sfValidatorDate(array('required' => false)),
+      'site_id'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('incidencies[%s]');

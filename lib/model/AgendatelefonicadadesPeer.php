@@ -10,7 +10,7 @@
 class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
 {    
    
-  static function doSearch( $TEXT )
+  static function doSearch( $TEXT , $idS = 1 )
   {
     
      $C = new Criteria();
@@ -25,8 +25,8 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
       $text3Criterion = $C->getNewCriterion( AgendatelefonicaPeer::ENTITAT , '%'.$P.'%', CRITERIA::LIKE);
       $text1Criterion->addOr($text2Criterion); $text1Criterion->addOr($text3Criterion);  $C->add($text1Criterion);          
      endforeach;
-     
-     $C->addGroupByColumn( AgendatelefonicaPeer::AGENDATELEFONICAID );
+     $C->add(AgendatelefonicaPeer::SITE_ID, $idS);     
+     $C->addGroupByColumn( AgendatelefonicaPeer::AGENDATELEFONICAID );     
      $C->addAscendingOrderByColumn( AgendatelefonicaPeer::NOM );
      $C->setLimit(20);
      $ATD = AgendatelefonicaPeer::doSelect($C);
@@ -81,80 +81,76 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
   }
   
   static public function inArray($Dades,$id)
-  {
-
-  	foreach($Dades as $K=>$V):
-  	
-  		if($K == $id) return true;
-  	
+  {              
+    
+  	foreach($Dades as $K=>$V):  
+  		if($K == $id) return true;  	     
   	endforeach;
   	
-  	return false;
-  	
+  	return false;  	
   }
+
+  static public function inArray2($Dades,$id)
+  {              
+  	foreach($Dades as $K=>$V):  
+  		if($V['id'] == $id) return true;  	     
+  	endforeach;
+  	
+  	return false;  	
+  }
+
+
+  static public function inArrayId($Dades,$id)
+  {              
+  	foreach($Dades as $K=>$V):  
+  		if($V['id'] == $id) return $K;  	     
+  	endforeach;
+  	
+  	return false;  	
+  }
+
   
-  static function update($DADES_NOVES,$idA)
+  static function update($DADES_NOVES,$idA,$idS = 1)
   {
   	
   	$MERGE = array();
   	
   	//Carreguem totes les dades de l'agenda
-  	$DADES_REALS = AgendatelefonicaPeer::retrieveByPK($idA)->getAgendatelefonicadadess();
-  	
-  	//Guardem els updates i deletes.
+  	$FOA = AgendatelefonicaPeer::initialize($idA,$idS);
+    $DADES_REALS = $FOA->getObject()->getAgendatelefonicadadess();      
+                
+  	//Primer esborrem tots els que tenim entrats i guardem les seves dades 
   	foreach($DADES_REALS as $K=>$V):
-  	
-  		if(self::inArray($DADES_NOVES,$V->getAgendatelefonicadadesid())):
-			$MERGE[$V->getAgendatelefonicadadesid()]['accio'] = 'U';
-			$MERGE[$V->getAgendatelefonicadadesid()]['dades'] = $V;
-		else:
-			$MERGE[$V->getAgendatelefonicadadesid()]['accio'] = 'D';
-			$MERGE[$V->getAgendatelefonicadadesid()]['dades'] = $V;		 
-  		endif;
-  	
+        $V->setActiu(false);
+        $V->save();
+        $MERGE[$V->getAgendatelefonicadadesid()] = $V;              	   	
   	endforeach;
-  	
-  	
-  	//Guardem al merge les dades que s'han d'afegir. 
-  	foreach($DADES_NOVES as $K=>$V):
-  		
-  		if(!self::inArray($MERGE,$K)):					
-			$MERGE[$K]['accio'] = 'A';
-			$MERGE[$K]['dades'] = $V;		 
-  		endif;  	  	
-  	
-  	endforeach;
-  	
-  	//Realitzem les accions sobre les dades
-  	foreach($MERGE as $K=>$D):
-  		  		
-  			if($D['accio'] == 'U'):
-  				
-  				$D['dades']->setNew(false);
-  				$D['dades']->setAgendatelefonicaAgendatelefonicaid($idA);
-  				$D['dades']->setTipus($DADES_NOVES[$K]['Select']);
-  				$D['dades']->setDada($DADES_NOVES[$K]['Dada']);
-  				$D['dades']->setNotes($DADES_NOVES[$K]['Notes']);
-  				$D['dades']->save();  			  			
-  			  			
-  			elseif($D['accio'] == 'D'):
-  			
-  				$D['dades']->delete();
-  			
-  			elseif($D['accio'] == 'A'):
-  			
-  				$DR = new Agendatelefonicadades();
-  				
-  				$DR->setNew(true);
-  				$DR->setAgendatelefonicaAgendatelefonicaid($idA);
-  				$DR->setTipus($D['dades']['Select']);
-  				$DR->setDada($D['dades']['Dada']);
-  				$DR->setNotes($D['dades']['Notes']);
-  				$DR->save();  		
-  			
-  			endif; 
-  			 	
-  		endforeach;
+    
+    foreach($DADES_NOVES as $K=>$V):
+    
+        //Si tenim un id > 0 llavors és update. 
+        if($V['id'] > 0):
+        
+            $MERGE[$V['id']]->setDada($V['Dada']);
+            $MERGE[$V['id']]->setNotes($V['Notes']);
+            $MERGE[$V['id']]->setTipus($V['Select']);
+            $MERGE[$V['id']]->setActiu(true);
+            $MERGE[$V['id']]->save();
+        
+        //Altrament el donem d'alta
+        else: 
+            
+            $DR = new Agendatelefonicadades();  				  				
+			$DR->setAgendatelefonicaAgendatelefonicaid($idA);
+			$DR->setTipus($V['Select']);
+  			$DR->setDada($V['Dada']);
+  			$DR->setNotes($V['Notes']);
+            $DR->setSiteId($idS);
+  			$DR->save();            
+        
+        endif; 
+    
+    endforeach;
   	
   }
 

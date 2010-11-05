@@ -13,10 +13,11 @@ class MissatgesmailingForm extends BaseMissatgesmailingForm
 	
   public function setup()
   {
+            
     $this->setWidgets(array(
       'idMissatge' => new sfWidgetFormInputHidden(),
       'titol'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px;')),
-      'text'       => new sfWidgetFormTextareaTinyMCE(array(),array()),
+      'text'       => new sfWidgetFormTextareaTinyMCE(array(),array()),        
       'data_alta'  => new sfWidgetFormInputHidden(),
     ));
     
@@ -29,7 +30,7 @@ class MissatgesmailingForm extends BaseMissatgesmailingForm
         
     $this->widgetSchema->setNameFormat('missatgesmailing[%s]');
 
-    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);    
     
   }
 

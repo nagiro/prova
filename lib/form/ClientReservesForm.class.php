@@ -117,8 +117,7 @@ class ClientReservesForm extends sfFormPropel
     if($OR->getDataalta() == "") $OR->setDataalta(date('Y-m-d H:i',time()));
     //Si ja s'han enviat les condicions i no tenim data d'acceptació, vol dir que estem guardant la confirmació.
     if($OR->getCondicionsCCG() != "" && $OR->getDataAcceptacioCondicions() == ""):        
-        $OR->setDataAcceptacioCondicions(date('Y-m-d',time()));
-        $OR->setEstat(ReservaespaisPeer::ACCEPTADA);        
+        $OR->setDataAcceptacioCondicions(date('Y-m-d',time()));        
     endif;   	  	
   	$OR->save();
   	

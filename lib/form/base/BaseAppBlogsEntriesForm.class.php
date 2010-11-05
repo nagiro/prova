@@ -24,6 +24,8 @@ abstract class BaseAppBlogsEntriesForm extends BaseFormPropel
       'date'                             => new sfWidgetFormDateTime(),
       'tags'                             => new sfWidgetFormInputText(),
       'url'                              => new sfWidgetFormTextarea(),
+      'site_id'                          => new sfWidgetFormInputText(),
+      'actiu'                            => new sfWidgetFormInputText(),
       'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'AppBlogsMultimedia')),
     ));
 
@@ -38,6 +40,8 @@ abstract class BaseAppBlogsEntriesForm extends BaseFormPropel
       'date'                             => new sfValidatorDateTime(),
       'tags'                             => new sfValidatorString(array('max_length' => 150)),
       'url'                              => new sfValidatorString(),
+      'site_id'                          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'app_blog_multimedia_entries_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppBlogsMultimedia', 'required' => false)),
     ));
 

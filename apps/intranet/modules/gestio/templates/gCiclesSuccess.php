@@ -82,7 +82,7 @@
                       		echo "<TR>                      				
                       				<TD class='LINIA'>".link_to(image_tag('intranet/Submenu2.png').' '.$C['TITOL'],'gestio/gCicles?accio=EDITA&IDC='.$id )."</TD>
                       				<TD class='LINIA'>".$C['ACTIVITATS']."</TD>
-                      				<TD class='LINIA'>".date('d/m/Y',$C['DIA'])."</TD>
+                      				<TD class='LINIA'>".$C['DIA']."</TD>
 									<TD class='LINIA'>".(($C['EXTINGIT'])?'Inactiu':'Actiu')."</TD>";
                                     if($C['ACTIVITATS'] > 0) echo "<TD class='LINIA'>".link_to(image_tag('template/text_list_bullets.png').'<span>Llistat d\'activitats pertanyents al cicle</span>','gestio/gCicles?accio=LLISTA&IDC='.$id,array('class'=>'tt2'))."</TD>";
                             echo "</TR>";                      		

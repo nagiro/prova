@@ -37,6 +37,8 @@ abstract class BaseMaterialForm extends BaseFormPropel
       'AltaRegistre'                      => new sfWidgetFormDate(),
       'isTransferible'                    => new sfWidgetFormInputText(),
       'isAdministratiu'                   => new sfWidgetFormInputText(),
+      'site_id'                           => new sfWidgetFormInputText(),
+      'actiu'                             => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -63,6 +65,8 @@ abstract class BaseMaterialForm extends BaseFormPropel
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
       'isTransferible'                    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'isAdministratiu'                   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                             => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('material[%s]');

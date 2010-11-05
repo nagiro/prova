@@ -17,6 +17,7 @@ abstract class BaseAppBlogsMenuFormFilter extends BaseFormFilterPropel
       'order'     => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'blog_id'   => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsBlogs', 'add_empty' => true)),
       'father_id' => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'   => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseAppBlogsMenuFormFilter extends BaseFormFilterPropel
       'order'     => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'blog_id'   => new sfValidatorPropelChoice(array('required' => false, 'model' => 'AppBlogsBlogs', 'column' => 'id')),
       'father_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_menu_filters[%s]');
@@ -48,6 +50,7 @@ abstract class BaseAppBlogsMenuFormFilter extends BaseFormFilterPropel
       'order'     => 'Number',
       'blog_id'   => 'ForeignKey',
       'father_id' => 'Number',
+      'site_id'   => 'Number',
     );
   }
 }

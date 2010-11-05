@@ -20,6 +20,8 @@ abstract class BaseMissatgesForm extends BaseFormPropel
       'Text'             => new sfWidgetFormTextarea(),
       'Date'             => new sfWidgetFormDateTime(),
       'Publicacio'       => new sfWidgetFormDate(),
+      'site_id'          => new sfWidgetFormInputText(),
+      'actiu'            => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -29,6 +31,8 @@ abstract class BaseMissatgesForm extends BaseFormPropel
       'Text'             => new sfValidatorString(array('required' => false)),
       'Date'             => new sfValidatorDateTime(array('required' => false)),
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
+      'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('missatges[%s]');

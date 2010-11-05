@@ -28,4 +28,35 @@ class Horaris extends BaseHoraris
 		endforeach;		
 		return $RET;
 	}
+    
+    //Funció usada a gActivitats per llistar els espais
+    public function getArrayHorarisEspaisActiusAgrupats()
+    {
+        $RET = array();
+        $C = new Criteria();
+        $C->add( HorarisespaisPeer::HORARIS_HORARISID , $this->getHorarisid() );        
+        $C->add( HorarisespaisPeer::ACTIU , true );
+        $C->add( HorarisespaisPeer::SITE_ID , $this->getSiteId() );
+        $C->addGroupByColumn( HorarisespaisPeer::ESPAIS_ESPAIID );
+        foreach(HorarisespaisPeer::doSelect($C) as $HE):
+            $RET[$HE->getEspaisEspaiid()] = $HE->getEspais()->getNom();
+        endforeach;        
+        return $RET;                
+    }
+    
+    public function getArrayHorarisEspaisMaterial()
+    {
+        $RET = array();
+        $C = new Criteria();
+        $C->add( HorarisespaisPeer::HORARIS_HORARISID , $this->getHorarisid() );
+        $C->add( HorarisespaisPeer::ACTIU , true );
+        $C->add( HorarisespaisPeer::SITE_ID , $this->getSiteId() );
+        $C->addGroupByColumn( HorarisespaisPeer::MATERIAL_IDMATERIAL );
+        foreach(HorarisespaisPeer::doSelect($C) as $HE):            
+            $OM = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());
+            $RET[$OM->getIdmaterial()] = array('material'=>$OM->getIdmaterial(),'nom'=>$OM->toString(),'generic'=>$OM->getMaterialgenericIdmaterialgeneric());
+        endforeach;        
+        return $RET;        
+    } 
+    
 }

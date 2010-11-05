@@ -74,4 +74,31 @@ class Usuaris extends BaseUsuaris
   	  	
   }
 
+    public function getMatricules()
+    {
+        $C = new Criteria();
+        $C = UsuarisPeer::getCriteriaActiu($C,$this->getSiteId());
+        $C = MatriculesPeer::getCriteriaActiu($C , $this->getSiteId()); 
+        
+        $C->addJoin(UsuarisPeer::USUARIID , MatriculesPeer::USUARIS_USUARIID);
+        
+        $C->add(MatriculesPeer::ESTAT, MatriculesPeer::EN_PROCES , CRITERIA::NOT_EQUAL);
+        $C->add(UsuarisPeer::USUARIID, $this->getUsuariid());                
+        
+        return MatriculesPeer::doSelect($C);        
+    }
+
+    public function getReserves()
+    {
+        $C = new Criteria();
+        $C = UsuarisPeer::getCriteriaActiu( $C , $this->getSiteId() );
+        $C = ReservaespaisPeer::getCriteriaActiu( $C , $this->getSiteId() ); 
+        
+        $C->addJoin(UsuarisPeer::USUARIID , ReservaespaisPeer::USUARIS_USUARIID );                
+        $C->add(UsuarisPeer::USUARIID, $this->getUsuariid());                
+        $C->addDescendingOrderByColumn(ReservaespaisPeer::DATAALTA);
+        
+        return ReservaespaisPeer::doSelect($C);        
+    }
+
 }

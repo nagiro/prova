@@ -42,17 +42,18 @@
  		<?php 
 		
 			foreach($BANNERS as $B):
-										
-				$URL = (empty($B['URL']))?'web/index':$B['URL'];
-				
-                echo '<TR><TD id="titol_noticia">&raquo; '.$B['Nom'].'</TD></TR>';
-				echo '<TR><TD id="contingut_noticia">'.link_to(
-									image_tag(
-										'banners/'.$B['IMG'] , 
-										array('class'=>'BANNER')), 
-										url_for( $URL , true ), 
-									array('target' => '_NEW' )).
-					'</TD></TR>';
+                									
+				$URL = (empty($B['URL']) || is_null($B['URL']))?'web/index':$B['URL'];                                
+				try{
+                    echo '<TR><TD id="titol_noticia">&raquo; '.$B['Nom'].'</TD></TR>';
+    				echo '<TR><TD id="contingut_noticia">'.link_to(
+    									image_tag(
+    										'banners/'.$B['IMG'] , 
+    										array('class'=>'BANNER')), 
+    										url_for( $URL , true ), 
+    									array('target' => '_NEW' )).
+    					'</TD></TR>';
+                    } catch (Exception $e){echo $URL.'Caught exception: ',  $e->getMessage(), "\n";}
 			endforeach;
 	
 		?>

@@ -52,9 +52,10 @@ class webActions extends sfActions
   	//Si no es cap, carrego les notícies de les últimes activitats...
   	        
   	$this->setLayout('layout');   	
+    $this->IDS = 1;
   	$this->FOTOS = $this->getFotos();
   	$this->BANNERS = $this->getBanners();  	
-	$this->MENU = NodesPeer::retornaMenu();	
+	$this->MENU = NodesPeer::retornaMenu($this->IDS);	
 	$this->USUARI = $this->getUser()->getSessionPar('idU',0);
 	$this->SELECCIONAT = 0;	  	
 	$this->LLISTAT_ACTIVITATS = array();
@@ -79,7 +80,7 @@ class webActions extends sfActions
     endif;
     
     //Carreguem els dies en els que hi ha alguna activitat.     
-    $this->ACTIVITATS_CALENDARI = ActivitatsPeer::getDiesAmbActivitatsMes($this->DATACAL);  	
+    $this->ACTIVITATS_CALENDARI = ActivitatsPeer::getDiesAmbActivitatsMes( $this->DATACAL , $this->IDS );  	
   	  	
   	switch($this->accio){  		  		  		
   		//Contingut manual
@@ -142,7 +143,7 @@ class webActions extends sfActions
             else: 
                 $this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';            
             endif;   			  			
-  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA );                                        						
+  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA , $this->IDS );                                        						
 	    	$this->ACCIO = 'llistat_activitats_cerca';	    	
 	    	$this->MODE  = 'CERCA';                     		
   			break;
@@ -174,11 +175,11 @@ class webActions extends sfActions
 			$this->PAGINA = $request->getParameter('p',1);
 			
 	   		if($this->IDN > 0):	   			
-	   			$this->NOTICIA = NoticiesPeer::getNoticia($this->IDN);
+	   			$this->NOTICIA = NoticiesPeer::getNoticia($this->IDN,$this->IDS);
 	   			$this->NOTICIES = null;
 	   		else: 	   			 
 	   			$this->NOTICIA = null;
-	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$this->PAGINA,true);
+	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$this->PAGINA,true,FALSE,$this->IDS);
 	   		endif; 	   	                 
 	 		$this->ACCIO = 'noticies';	         	 		
 	 		$this->getUser()->setSessionPar('NODES',array());	 	   				
@@ -346,11 +347,16 @@ class webActions extends sfActions
     			if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
      		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }
 
+                //Carreguem el primer site de l'usuari si en pot veure
+                $firstSite = UsuarisSitesPeer::getFirstSite($USUARI);
+                if(is_null($firstSite)) $this->redirect('gestio/login');
+                else $this->getUser()->setSessionPar('idS',$firstSite);
+
      		 	//Guardem un registre del login
      		 	$this->getUser()->addLogAction('login','login',$L);
      		 	
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
-     		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=landing');     		 	
+     		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=landing');     		 	             
      		 else:     		 	
      		 	$this->getUser()->addLogAction('error','login',$L);     		 
      		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
@@ -377,117 +383,9 @@ class webActions extends sfActions
   			//Si el contingut és manual, mostro el contingut manual
   	//Si s'entra una cerca, carrego les activitats que corresponen a la cerca i marco el calendari els dies
   	//Si s'entra un dia del calendari, cerco les activitats d'aquell dia
-  	
-  	
+  	  	
     $this->LoadWEB($request);
-/*    $this->NOTICIA = null;    
-    
-    $accio = $this->getUser()->ParReqSesForm($request,'accio','cp');    
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'pagina',1);
-    $this->DATACALENDARI = $this->getUser()->ParReqSesForm($request,'DATACALENDARI',time());
-    
-    if($request->hasParameter('BCERCA_x') || ( !empty($this->CERCA) && ( !$request->hasParameter('accio') ))) $accio = 'se';                
-       
-    switch($accio){
-
-      //Consulta una pàgina determinada
-      case 'cp':
-      	
-			$idN = $this->getUser()->ParReqSesForm($request,'node',"");      		      	
-      		$this->PAGINA = NodesPeer::selectPagina($idN);      		
-      		
-      		$this->SELECCIONAT = $idN;            
-            $this->gestionaNodes($idN);            
-            
-      		if($this->PAGINA instanceof Nodes && !$this->PAGINA->getIscategoria()):
-      			$CAT = $this->PAGINA->getCategories();
-      			if(!sizeof($CAT)){
-     				list($cat,$mode) = explode('-',$CAT);
-      			} else {  $cat = 'cap'; }
-     			if(empty($cat) || $cat == 'cap'):
-     				$this->ACCIO  = 'web';
-     			else:     				
-     				$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActsCategoria($cat,$mode);
-     				$this->ACCIO = 'llistat_activitats';
-     				$ACT = ActivitatsPeer::selectCategories(true);
-     				$this->TITOL = "Llistat d'activitats a \"".$ACT[$CAT].'"';
-     				$this->MODE  = 'LLISTAT';
-     			endif; 
-      																		            	            	
-            elseif($this->PAGINA instanceof Nodes && $this->PAGINA->getIscategoria()):
-                        	  
-            	$this->ACCIO = 'mostra_estructura';
-            	$this->TITOL = $this->PAGINA->getTitolmenu();  
-            	$this->NODES = NodesPeer::getNodes(false);          	
-            	       	            	
-            else:
-             
-		   	    $this->NOTICIES = NoticiesPeer::getNoticies('%',1,true);		   	                 
-		 		$this->ACCIO = 'noticies';
-		 			         	            		 		
-            endif; 
-                                                
-            break;
-
-      case 'caa':
-      	
-      			$this->DESCRIPCIO = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
-      			$this->ACCIO = 'showActivitatCategoria';
-      			$this->TITOL = 'DESCRIPCIÓ DE L\'ACTIVITAT';
-      			
-      		break;
-      
-      case 'cc':
-      	
-      			$this->DESCRIPCIO = CiclesPeer::retrieveByPK($request->getParameter('idC'));
-      			$this->ACCIO = 'showActivitatCategoria';
-      			$this->TITOL = 'DESCRIPCIÓ DEL CICLE';
-      			
-      		break;
-            
-       //Mostra les activitats quan cliquem un dia del calendari
-	   case 'ca':
-	   		        	    		        	    
-	    	$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACALENDARI),$this->PAGINA);
-	    	$this->ACCIO = 'llistat_activitats';
-	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACALENDARI);
-	    	$this->MODE  = 'LLISTAT';
-	    	
-	       	break;
-
-       //Mostra les activitats quan cliquem la cerca
-	   case 'se':
-	   	 
-	   		$DATA = $this->DATACALENDARI;
-		    $Di = mktime(0,0,0,date('m',$DATA), 01 , date('Y',$DATA)); 
-		    $Df = mktime(0,0,0, date('m',$DATA)+6 , 01 , date('Y',$DATA));		    		     		               
-			$this->LLISTAT_ACTIVITATS = HorarisPeer::getCercaWeb(null,$this->CERCA,$Di,$Df,$this->PAGINA);	    		    		    
-			$this->ACCIO = 'llistat_activitats';
-	    	$this->TITOL = 'CERCA D\'ACTIVITATS AMB LES PARAULES "'.$this->CERCA.'"';
-	    	$this->MODE  = 'CERCA';	    						 		 			   		
-	   		break;
-	   	   
-	   //Retorna
-	   case 'ret':
-		   		$this->redirect('web/index?accio=ca&DATACALENDARI='.$this->getUser()->getSessionPar('DATACALENDARI'));
-	   		break;
-	   //Per defecte mostrem les notícies
-	   case 'no':	   		
-	   default: 	   	
-	   		if($request->hasParameter('idN')):	   			
-	   			$this->NOTICIA = NoticiesPeer::retrieveByPK($request->getParameter('idN'));
-	   		else: 
-	   			$pagina = ($request->hasParameter('pagina'))?$request->getParameter('pagina'):1; 
-	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$pagina,true);
-	   		endif; 	   	                 
-	 		$this->ACCIO = 'noticies';	         
-	 		$this->getUser()->setSessionPar('HEFETCERCA',false);
-	 		$this->getUser()->setSessionPar('NODES',array());	 	   	
-			break;		
-   }
-   
-   $this->OBERT = $this->getUser()->getSessionPar('NODES',array());
-*/                          
+        
   }
      
   /**
@@ -505,106 +403,106 @@ class webActions extends sfActions
   
   public function executeGestio(sfWebRequest $request)
   {
+    
      $this->LoadWEB($request);
      $this->setTemplate('index');
      $this->GUARDADA = false;     
      
-     $accio = $this->getRequestParameter('accio');     
-     
-     
+     $accio = $this->getRequestParameter('accio');
+     $this->IDU = $this->getUser()->getSessionPar('idU');
+     $this->LLISTES = null;
+     $this->FRESERVA = null;
+     $this->RESERVES = null;
+     $this->MATRICULES = null;
+     $this->CURSOS = null; 
+     $this->LCURSOS = array();
+     $this->FUSUARI = null;
+     $this->ISPLE = false;
+          
      switch($accio){
 	   case 'landing':
+       
 		    $this->MODUL = 'landing_page';
 		    $this->ACCIO = 'gestio';		    		         		
      		break;
+            
        case 'gd':
+       
 		    $this->MODUL = 'gestiona_dades';
 		    $this->ACCIO = 'gestio';
-		    $OU = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
-		    
+		    		    
 		    //Entrem la info per la gestió del captcha
 		    $rand = array(1=>rand(0,10),2=>rand(0,10));
-		    $this->getUser()->setSessionPar('rand',$rand);		    
-		    $this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$rand));
-		           	       	     
+		    $this->getUser()->setSessionPar('rand',$rand);
+            $OU = UsuarisPeer::initialize($this->IDU,$this->IDS,false);		    
+		    $this->FUSUARI = new ClientUsuarisForm($OU->getObject(),array('rand'=>$rand));
 	        break;
+            
 	   case 'gc':
+       
 	        $this->MODUL = 'gestiona_cursos';
             $this->ACCIO = 'gestio';                        
-            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari($this->getUser()->getSessionPar('idU'));                                                                           
+            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );
+            $this->LCURSOS    = CursosPeer::getCursos(CursosPeer::ACTIU,1,"",$this->IDS);                                                                           
             break;
+            
 	   case 'gl':
+       
 			$this->MODUL = 'gestiona_llistes';
 			$this->ACCIO = 'gestio';
-			$this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getSessionPar('idU'));            
+			$this->LLISTES = UsuarisllistesPeer::getLlistesUsuari( $this->IDU , $this->IDS );            
 			break;
-	   case 'gr':
-	   		$OO = new Reservaespais();
-	   		$OO->setCodi(ReservaespaisPeer::getNextCodi());
-            $OO->setUsuarisUsuariid($this->getUser()->getSessionPar('idU'));
-            $OO->setEstat(ReservaEspaisPeer::EN_ESPERA);
             
-	   		$this->FRESERVA = new ClientReservesForm($OO);            
+	   case 'gr':
+       
+            $this->IDR = $request->getParameter('idR',0);
+            $this->RESERVES = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );            
+            $this->FRESERVA = ReservaespaisPeer::initialize( $this->IDR , $this->IDS , $this->IDU , true );	   		
+                           
 	        $this->MODUL = 'gestiona_reserves';
 	        $this->ACCIO = 'gestio';	        
-	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
-	        $this->getUser()->setSessionPar('idR',0);
-	        if($request->hasParameter('idR')){
-	        	$OR = ReservaespaisPeer::retrieveByPK($request->getParameter('idR'));
-	        	$this->FRESERVA = new ClientReservesForm($OR);                
-	        	$this->getUser()->setSessionPar('idR',$OR->getReservaespaiid());	        		        
-	        } 	        
 	        break;
+            
 	   case 'sd':
-	   		$this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';		    		    
-	   		$OU = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
-	   		$this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$this->getUser()->getSessionPar('rand')));
-	   		$this->FUSUARI->bind($request->getParameter('usuaris'));
+       
+	   		$this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';
+            
+            $RP = $request->getParameter('usuaris');                        		    
+	   		$OU = UsuarisPeer::initialize($RP['UsuariID'],$this->IDS)->getObject();	   		
+            $this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$this->getUser()->getSessionPar('rand')));
+	   		$this->FUSUARI->bind($RP);
 	   		if($this->FUSUARI->isValid()) { $this->FUSUARI->save(); $this->MISSATGE[] = "Dades modificades correctament"; }
 	   		else { $this->MISSATGE[] = 'Hi ha algun error a les dades'; }     
-	        break;       	                    	             	        
-	   case 'sl':
-	        UsuarisllistesPeer::saveUsuarisLlistes($request->getParameter('LLISTA'), $this->getUser()->getSessionPar('idU'));
-	        $this->MODUL = 'gestiona_llistes'; $this->ACCIO = 'gestio';
-		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari($this->getUser()->getSessionPar('idU'));
-		    $this->MISSATGE[] = "Dades modificades correctament";
 	        break;
+                   	                    	             	        
+	   case 'sl':
+
+/*            $RP = $request->getParameter( 'LLISTA' );       
+	        UsuarisllistesPeer::saveUsuarisLlistes( $RP , $this->IDU );
+	        
+            $this->MODUL = 'gestiona_llistes'; $this->ACCIO = 'gestio';
+		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari( $this->IDU , $this->IDS );
+		    $this->MISSATGE[] = "Dades modificades correctament";
+*/            
+	        break;
+            
 	   case 'sr':
 	   	
-	   		$PR = $request->getParameter('reservaespais');
-	   		
-	   		//Carreguem el formulari que hem carregat per edició o res per nou	
-			$OR = ReservaespaisPeer::retrieveByPK($PR['ReservaEspaiID']);
-			if(!($OR instanceof Reservaespais)) $OR = new Reservaespais();			
-				
-			//Si en trobem un, creem el formulari altrament un de nou
-			if($OR instanceof Reservaespais) $this->FRESERVA = new ClientReservesForm($OR);
-			else $this->FRESERVA = new ClientReservesForm(new Reservaespais());
-
-			//Entrem les dades del formulari	
-			$this->FRESERVA->bind($PR);
-			
-			//Si és correcte el guardem
-			if($this->FRESERVA->isValid()):                
+	   		$PR = $request->getParameter('reservaespais');	   			   		
+            $this->FRESERVA = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true );							
+			$this->FRESERVA->bind($PR);				
+            if($this->FRESERVA->isValid()):                
 				$this->FRESERVA->save();
-                if($request->hasParameter('BOTO_DEL_RESERVA')):                    
-                    $OO = $this->FRESERVA->getObject();
-                    $OO->setEstat(ReservaespaisPeer::ANULADA);                    
-                    $OO->save();  
-                    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());           
-                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: ANULACIÓ RESERVA ESPAI',ReservaespaisPeer::sendMailAnulacio($OO),array());                    
-                else:
-                    $OO = $this->FRESERVA->getObject();
-                    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
-                    $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                     
-                endif; 			                	                
+                $OO = $this->FRESERVA->getObject();
+                $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
+                $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                      			                	                
                 $this->MISSATGE = array('Sol·licitud enviada correctament.');				
 			else:
                 $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','ERROR FORMULARI RESERVA ESPAIS',print_r($this->FRESERVA));
                 $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
 			endif;			
             
-            $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
+            $this->RESERVES = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );
 			$this->MODUL = 'gestiona_reserves';
 	        $this->ACCIO = 'gestio';	       
 	        break;
@@ -637,14 +535,15 @@ class webActions extends sfActions
             $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
             $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
             //Apliquem els descomptes i gratuït si ja està el grup ple
-            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE']);
-            $this->DADES_MATRICULA['CURS'] = $D['CURS'];                        
+            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE'],$this->IDS);
+            $this->DADES_MATRICULA['CURS'] = $D['CURS'];
+            $this->ISPLE = CursosPeer::isPle($D['CURS'],$this->IDS);                        
               
             //Retorna id de matrícula
-            $matricules = $this->guardaMatricula($this->DADES_MATRICULA); 
+            $matricules = $this->guardaMatricula($this->DADES_MATRICULA,false,0,$this->IDS); 
               
             //Carreguem el TPV
-            $this->TPV = MatriculesPeer::getTPV($this->DADES_MATRICULA['PREU'] , $this->DADES_MATRICULA['NOM'] , $matricules );
+            $this->TPV = MatriculesPeer::getTPV($this->DADES_MATRICULA['PREU'] , $this->DADES_MATRICULA['NOM'] , $matricules , $this->IDS );
             $this->ACCIO = "verifica";
             $this->MODUL = "gestiona_verificacio";                                                      
 	        break;
@@ -709,17 +608,16 @@ class webActions extends sfActions
   	endif; 
   }
   
-  private function guardaMatricula( $DADES_MATRICULA , $EDIT = false , $IDMATRICULA = 0 )
+  private function guardaMatricula( $DADES_MATRICULA , $IDMATRICULA = 0 , $idS )
   {
   	
      //Quan guardem la matrícula mirem
      // Si el curs és ple, guardem Estat "En llista d'espera"
      // Si queden places, guardem en procès i quan hagi pagat se li guardarà.  
      
-     $M = new Matricules();
-     if($EDIT) { $M = MatriculesPeer::retrieveByPK($IDMATRICULA); $M->setNew(false); }     
-     
-     if(CursosPeer::isPle($DADES_MATRICULA['CURS'])):
+     $M = MatriculesPeer::initialize($IDMATRICULA,$idS,false)->getObject();
+                    
+     if(CursosPeer::isPle($DADES_MATRICULA['CURS'],$this->IDS)):
 		$M->setEstat(MatriculesPeer::EN_ESPERA);
 	 else:  
      	$M->setEstat(MatriculesPeer::EN_PROCES);
@@ -737,8 +635,7 @@ class webActions extends sfActions
      return $M->getIdmatricules();
      
   }
-      
-  
+        
   private function getFotos()
   {
   	$FOTOS = array();
@@ -756,9 +653,9 @@ class webActions extends sfActions
   	$TEMP = array('FIX'=>array() , 'VAR'=>array()); $BANNERS = array(); $C = new Criteria();
   	   	
 	//Selecció i consulta de les promocions
-  	$C->add(PromocionsPeer::ISACTIVA, true); $C->addAscendingOrderByColumn(PromocionsPeer::ORDRE);  	  	
-  	$OP = PromocionsPeer::doSelect($C); $i = 0;
-  	foreach($OP as $O):  		
+    $i = 0;      	  
+    $LOP = PromocionsPeer::getAllPromocions($this->IDS);    	  	
+  	foreach($LOP as $O):  		
 		if($O->getIsfixa()):					
 			$TEMP['FIX'][$O->getExtensio()]['URL'] = $O->getUrl();
 			$TEMP['FIX'][$O->getExtensio()]['IMG'] = $O->getExtensio();				

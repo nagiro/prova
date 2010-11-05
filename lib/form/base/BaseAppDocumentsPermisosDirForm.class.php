@@ -17,12 +17,16 @@ abstract class BaseAppDocumentsPermisosDirForm extends BaseFormPropel
       'idUsuari'    => new sfWidgetFormInputHidden(),
       'idDirectori' => new sfWidgetFormInputHidden(),
       'idNivell'    => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => true)),
+      'site_id'     => new sfWidgetFormInputText(),
+      'actiu'       => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'idUsuari'    => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'idDirectori' => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
       'idNivell'    => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required' => false)),
+      'site_id'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('app_documents_permisos_dir[%s]');

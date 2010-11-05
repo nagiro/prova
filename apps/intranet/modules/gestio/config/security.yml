@@ -1,3 +1,6 @@
-default:
+all:
   is_secure: true
-  has_credentials: [admin]
+  credentials: admin
+  
+login:
+  is_secure: false

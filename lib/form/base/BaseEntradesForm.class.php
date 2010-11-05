@@ -23,6 +23,8 @@ abstract class BaseEntradesForm extends BaseFormPropel
       'venudes'    => new sfWidgetFormInputText(),
       'recaptat'   => new sfWidgetFormInputText(),
       'localitats' => new sfWidgetFormInputText(),
+      'site_id'    => new sfWidgetFormInputText(),
+      'actiu'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -35,6 +37,8 @@ abstract class BaseEntradesForm extends BaseFormPropel
       'venudes'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'recaptat'   => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'localitats' => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('entrades[%s]');

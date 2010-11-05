@@ -168,7 +168,7 @@
 					foreach($CURSOS->getResults() as $C):
 						if($CAT_ANT <> $C->getCategoria()) echo '<TR><TD colspan="6" class="TITOLCAT">'.$C->getCategoriaText().'</TD></TR>';
 						$CAT_ANT = $C->getCategoria(); $SPAN = ""; 
-						$PLACES = CursosPeer::getPlaces($C->getIdcursos());
+						$PLACES = CursosPeer::getPlaces($C->getIdcursos(),$IDS);
                         $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FF7373;\"":"";											
                       	$PAR = ParImpar($i++);	                      	
 						echo '<TR>

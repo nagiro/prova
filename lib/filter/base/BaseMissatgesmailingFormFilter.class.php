@@ -15,6 +15,7 @@ abstract class BaseMissatgesmailingFormFilter extends BaseFormFilterPropel
       'titol'                 => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'text'                  => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'data_alta'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
+      'site_id'               => new sfWidgetFormFilterInput(),
       'missatgesllistes_list' => new sfWidgetFormPropelChoice(array('model' => 'Llistes', 'add_empty' => true)),
     ));
 
@@ -22,6 +23,7 @@ abstract class BaseMissatgesmailingFormFilter extends BaseFormFilterPropel
       'titol'                 => new sfValidatorPass(array('required' => false)),
       'text'                  => new sfValidatorPass(array('required' => false)),
       'data_alta'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'               => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'missatgesllistes_list' => new sfValidatorPropelChoice(array('model' => 'Llistes', 'required' => false)),
     ));
 
@@ -69,6 +71,7 @@ abstract class BaseMissatgesmailingFormFilter extends BaseFormFilterPropel
       'titol'                 => 'Text',
       'text'                  => 'Text',
       'data_alta'             => 'Date',
+      'site_id'               => 'Number',
       'missatgesllistes_list' => 'ManyKey',
     );
   }

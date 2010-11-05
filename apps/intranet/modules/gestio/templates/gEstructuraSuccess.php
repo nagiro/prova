@@ -9,7 +9,7 @@
 	<form action="<?php echo url_for('gestio/gEstructura') ?>" method="post">
       <DIV class="REQUADRE">
         <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gEstructura'); ?></div>
-        <DIV class="TITOL">HTML - <?php echo $NODE->getTitolmenu(); ?></DIV>
+        <DIV class="TITOL">HTML - <?php echo $FHtml->getObject()->getTitolmenu(); ?></DIV>
       	<TABLE class="DADES">
       		<?php echo $FHtml ?>
       		<tr>

@@ -16,11 +16,15 @@ abstract class BaseAppBlogMultimediaEntriesForm extends BaseFormPropel
     $this->setWidgets(array(
       'entries_id'    => new sfWidgetFormInputHidden(),
       'multimedia_id' => new sfWidgetFormInputHidden(),
+      'site_id'       => new sfWidgetFormInputText(),
+      'actiu'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'entries_id'    => new sfValidatorPropelChoice(array('model' => 'AppBlogsEntries', 'column' => 'id', 'required' => false)),
       'multimedia_id' => new sfValidatorPropelChoice(array('model' => 'AppBlogsMultimedia', 'column' => 'id', 'required' => false)),
+      'site_id'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blog_multimedia_entries[%s]');

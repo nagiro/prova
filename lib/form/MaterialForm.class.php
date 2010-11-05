@@ -39,6 +39,8 @@ class MaterialForm extends sfFormPropel
       'NotesManteniment'                  => new sfWidgetFormTextarea(array(),array('cols'=>'60','rows'=>'5')),
       'isTransferible'                    => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'isAdministratiu'                   => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
+      'site_id'                           => new sfWidgetFormInputHidden(array(),array()),
+      'actiu'                             => new sfWidgetFormInputHidden(array(),array()),
     ));
 
     
@@ -65,7 +67,9 @@ class MaterialForm extends sfFormPropel
       'Disponible'                        => new sfValidatorInteger(array('required' => false)),
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
       'isTransferible'                    => new sfValidatorChoice(array('choices'=>array(1,0))),
-      'isAdministratiu'                   => new sfValidatorChoice(array('choices'=>array(0,1))),    
+      'isAdministratiu'                   => new sfValidatorChoice(array('choices'=>array(0,1))),
+      'site_id'                           => new sfValidatorPass(array('required'=>false),array()),
+      'actiu'                             => new sfValidatorPass(array('required'=>false),array()),          
     ));
 
     $this->widgetSchema->setLabels(array(

@@ -20,6 +20,8 @@ abstract class BaseAppBlogsMenuForm extends BaseFormPropel
       'order'     => new sfWidgetFormInputText(),
       'blog_id'   => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsBlogs', 'add_empty' => false)),
       'father_id' => new sfWidgetFormInputText(),
+      'site_id'   => new sfWidgetFormInputText(),
+      'actiu'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -29,6 +31,8 @@ abstract class BaseAppBlogsMenuForm extends BaseFormPropel
       'order'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'blog_id'   => new sfValidatorPropelChoice(array('model' => 'AppBlogsBlogs', 'column' => 'id')),
       'father_id' => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'site_id'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_menu[%s]');

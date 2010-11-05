@@ -21,6 +21,7 @@ abstract class BaseArxiuDvdForm extends BaseFormPropel
       'nom'          => new sfWidgetFormTextarea(),
       'data_creacio' => new sfWidgetFormDateTime(),
       'comentari'    => new sfWidgetFormTextarea(),
+      'site_id'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -31,6 +32,7 @@ abstract class BaseArxiuDvdForm extends BaseFormPropel
       'nom'          => new sfValidatorString(array('required' => false)),
       'data_creacio' => new sfValidatorDateTime(array('required' => false)),
       'comentari'    => new sfValidatorString(array('required' => false)),
+      'site_id'      => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('arxiu_dvd[%s]');

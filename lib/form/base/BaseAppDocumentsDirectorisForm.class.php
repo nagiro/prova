@@ -16,14 +16,18 @@ abstract class BaseAppDocumentsDirectorisForm extends BaseFormPropel
     $this->setWidgets(array(
       'idDirectori'                     => new sfWidgetFormInputHidden(),
       'Nom'                             => new sfWidgetFormTextarea(),
-      'Pare'                            => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsDirectoris', 'add_empty' => true)),
+      'Pare'                            => new sfWidgetFormInputText(),
+      'site_id'                         => new sfWidgetFormInputText(),
+      'actiu'                           => new sfWidgetFormInputText(),
       'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
     $this->setValidators(array(
       'idDirectori'                     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIddirectori()), 'empty_value' => $this->getObject()->getIddirectori(), 'required' => false)),
       'Nom'                             => new sfValidatorString(),
-      'Pare'                            => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori', 'required' => false)),
+      'Pare'                            => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'site_id'                         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

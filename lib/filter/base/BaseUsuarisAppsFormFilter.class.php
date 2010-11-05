@@ -13,10 +13,12 @@ abstract class BaseUsuarisAppsFormFilter extends BaseFormFilterPropel
   {
     $this->setWidgets(array(
       'nivell_id' => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => true)),
+      'site_id'   => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'nivell_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Nivells', 'column' => 'idNivells')),
+      'site_id'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('usuaris_apps_filters[%s]');
@@ -37,6 +39,7 @@ abstract class BaseUsuarisAppsFormFilter extends BaseFormFilterPropel
       'usuari_id' => 'ForeignKey',
       'app_id'    => 'ForeignKey',
       'nivell_id' => 'ForeignKey',
+      'site_id'   => 'Number',
     );
   }
 }

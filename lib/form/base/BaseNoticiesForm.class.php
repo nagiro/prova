@@ -24,6 +24,8 @@ abstract class BaseNoticiesForm extends BaseFormPropel
       'idActivitat'     => new sfWidgetFormInputText(),
       'DataDesaparicio' => new sfWidgetFormDate(),
       'Ordre'           => new sfWidgetFormInputText(),
+      'site_id'         => new sfWidgetFormInputText(),
+      'actiu'           => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -37,6 +39,8 @@ abstract class BaseNoticiesForm extends BaseFormPropel
       'idActivitat'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
       'Ordre'           => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('noticies[%s]');

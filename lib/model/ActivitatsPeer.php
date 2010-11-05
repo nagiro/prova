@@ -9,6 +9,14 @@
  */ 
 class ActivitatsPeer extends BaseActivitatsPeer
 {
+    
+   static public function getCriteriaActiu($C,$idS)
+   {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+   }
+
    //Retorna quantes activitats hi ha avui
    static function QuantesAvui()
    {     
@@ -45,12 +53,12 @@ class ActivitatsPeer extends BaseActivitatsPeer
       return $pager; 
    }
 
-   static function getActivitatsCerca( $text , $data , $page = 1 )
+   static function getActivitatsCerca( $text , $data , $page = 1 , $idS )
    {
    	  $di = mktime(0,0,0,date('m',$data),1,date('Y',$data));            
 	  $df = mktime(0,0,0,date('m',$data)+1,1,date('Y',$data));
 	  
-	  $C = HorarisPeer::cercaCriteria(null,$text,$di,$df,null);	  
+	  $C = HorarisPeer::cercaCriteria(null,$text,$di,$df,null,$idS);	  
       $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
       $C->add(self::PUBLICAWEB,1);      
       $C->addDescendingOrderByColumn(HorarisPeer::DIA);
@@ -124,25 +132,35 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		return $RET;
 	}
 	
-	static public function initilize($idA , $cicle = 0)
+    static public function initializeDescription($idA,$idS)
+    {
+        $FA = self::initialize($idA,0,$idS);
+        return new ActivitatsTextosForm($FA->getObject(),array('IDS'=>$idS));
+    }
+    
+	static public function initialize($idA , $cicle = 0, $idS )
 	{
-		$OA = ActivitatsPeer::retrieveByPK($idA);
-		if($OA instanceof Activitats):
-			return new ActivitatsForm($OA);
+		$OA = ActivitatsPeer::retrieveByPK($idA);            
+		if($OA instanceof Activitats):            
+			return new ActivitatsForm($OA,array('IDS' => $idS));
 		else:
 			$OA = new Activitats();
+            $OA->setSiteId($idS);        
+            $OA->setActiu(true);        
 			if($cicle > 0):
 				$OA->setCiclesCicleid($cicle);
 			else:
 				$OA->setCiclesCicleid(null);
 			endif;
-			return new ActivitatsForm($OA);			
+			return new ActivitatsForm($OA,array('IDS'=>$idS));			
 		endif; 
 	}
 	
-	static public function getActivitatsCicles($idC, $pager = false, $pagina = 1, $publicaweb = true)
+	static public function getActivitatsCicles($idC , $idS , $pager = false, $pagina = 1, $publicaweb = true)
 	{
 		$C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        
 		$C->add(self::CICLES_CICLEID,$idC);
         if($publicaweb) $C->add(self::PUBLICAWEB, true);        
 		
@@ -160,7 +178,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	}
    	
 			
-	static public function selectCategories($web = false)
+	static public function selectCategories( $idS , $web = false )
 	{
 		$CAT = array();
 		if($web):
@@ -305,9 +323,11 @@ class ActivitatsPeer extends BaseActivitatsPeer
 								
 	}
 	
-	static public function getPrimerHorariActivitat($IDA)
+	static public function getPrimerHorariActivitat($IDA,$idS)
 	{
 		$C = new Criteria();
+        $C = HorarisPeer::getCriteriaActiu($C,$idS);
+        
 		$C->add(HorarisPeer::ACTIVITATS_ACTIVITATID, $IDA);
 		$C->addAscendingOrderByColumn(HorarisPeer::DIA);
 		
@@ -319,12 +339,17 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		endif; 
 	}
     
-    static public function getDiesAmbActivitatsMes($DATACAL)
+    static public function getDiesAmbActivitatsMes( $DATACAL , $idS )
     {
-        $dia_inicial = mktime(0,0,0,date('m',$DATACAL),1,date('Y',$DATACAL));
-        $dia_final   = mktime(0,0,0,date('m',$DATACAL)+1,1,date('Y',$DATACAL));
         
         $C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        $C = ActivitatsPeer::getCriteriaActiu($C,$idS);
+        $C = HorarisPeer::getCriteriaActiu($C,$idS);
+        
+        $dia_inicial = mktime(0,0,0,date('m',$DATACAL),1,date('Y',$DATACAL));
+        $dia_final   = mktime(0,0,0,date('m',$DATACAL)+1,1,date('Y',$DATACAL));
+                
         $C->add(ActivitatsPeer::PUBLICAWEB, true);
         $C->addJoin(HorarisPeer::ACTIVITATS_ACTIVITATID, ActivitatsPeer::ACTIVITATID);
         $C->add(HorarisPeer::DIA, $dia_inicial, CRITERIA::GREATER_EQUAL);

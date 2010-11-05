@@ -17,6 +17,8 @@ abstract class BaseAppsForm extends BaseFormPropel
       'app_id'            => new sfWidgetFormInputHidden(),
       'Nom'               => new sfWidgetFormTextarea(),
       'Url'               => new sfWidgetFormTextarea(),
+      'site_id'           => new sfWidgetFormInputText(),
+      'actiu'             => new sfWidgetFormInputText(),
       'usuaris_apps_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
@@ -24,6 +26,8 @@ abstract class BaseAppsForm extends BaseFormPropel
       'app_id'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getAppId()), 'empty_value' => $this->getObject()->getAppId(), 'required' => false)),
       'Nom'               => new sfValidatorString(),
       'Url'               => new sfValidatorString(),
+      'site_id'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'             => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'usuaris_apps_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

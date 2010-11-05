@@ -27,9 +27,13 @@ abstract class BaseUsuarisFormFilter extends BaseFormFilterPropel
       'Mobil'                           => new sfWidgetFormFilterInput(),
       'Entitat'                         => new sfWidgetFormFilterInput(),
       'Habilitat'                       => new sfWidgetFormFilterInput(),
+      'Actualitzacio'                   => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'site_id'                         => new sfWidgetFormFilterInput(),
       'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsDirectoris', 'add_empty' => true)),
       'app_documents_permisos_list'     => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsArxius', 'add_empty' => true)),
       'usuaris_apps_list'               => new sfWidgetFormPropelChoice(array('model' => 'Apps', 'add_empty' => true)),
+      'usuaris_menus_list'              => new sfWidgetFormPropelChoice(array('model' => 'GestioMenus', 'add_empty' => true)),
+      'usuaris_sites_list'              => new sfWidgetFormPropelChoice(array('model' => 'Sites', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
@@ -48,9 +52,13 @@ abstract class BaseUsuarisFormFilter extends BaseFormFilterPropel
       'Mobil'                           => new sfValidatorPass(array('required' => false)),
       'Entitat'                         => new sfValidatorPass(array('required' => false)),
       'Habilitat'                       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'Actualitzacio'                   => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'                         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('model' => 'AppDocumentsDirectoris', 'required' => false)),
       'app_documents_permisos_list'     => new sfValidatorPropelChoice(array('model' => 'AppDocumentsArxius', 'required' => false)),
       'usuaris_apps_list'               => new sfValidatorPropelChoice(array('model' => 'Apps', 'required' => false)),
+      'usuaris_menus_list'              => new sfValidatorPropelChoice(array('model' => 'GestioMenus', 'required' => false)),
+      'usuaris_sites_list'              => new sfValidatorPropelChoice(array('model' => 'Sites', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('usuaris_filters[%s]');
@@ -135,6 +143,56 @@ abstract class BaseUsuarisFormFilter extends BaseFormFilterPropel
     $criteria->add($criterion);
   }
 
+  public function addUsuarisMenusListColumnCriteria(Criteria $criteria, $field, $values)
+  {
+    if (!is_array($values))
+    {
+      $values = array($values);
+    }
+
+    if (!count($values))
+    {
+      return;
+    }
+
+    $criteria->addJoin(UsuarisMenusPeer::USUARI_ID, UsuarisPeer::USUARIID);
+
+    $value = array_pop($values);
+    $criterion = $criteria->getNewCriterion(UsuarisMenusPeer::MENU_ID, $value);
+
+    foreach ($values as $value)
+    {
+      $criterion->addOr($criteria->getNewCriterion(UsuarisMenusPeer::MENU_ID, $value));
+    }
+
+    $criteria->add($criterion);
+  }
+
+  public function addUsuarisSitesListColumnCriteria(Criteria $criteria, $field, $values)
+  {
+    if (!is_array($values))
+    {
+      $values = array($values);
+    }
+
+    if (!count($values))
+    {
+      return;
+    }
+
+    $criteria->addJoin(UsuarisSitesPeer::USUARI_ID, UsuarisPeer::USUARIID);
+
+    $value = array_pop($values);
+    $criterion = $criteria->getNewCriterion(UsuarisSitesPeer::SITE_ID, $value);
+
+    foreach ($values as $value)
+    {
+      $criterion->addOr($criteria->getNewCriterion(UsuarisSitesPeer::SITE_ID, $value));
+    }
+
+    $criteria->add($criterion);
+  }
+
   public function getModelName()
   {
     return 'Usuaris';
@@ -159,9 +217,13 @@ abstract class BaseUsuarisFormFilter extends BaseFormFilterPropel
       'Mobil'                           => 'Text',
       'Entitat'                         => 'Text',
       'Habilitat'                       => 'Number',
+      'Actualitzacio'                   => 'Date',
+      'site_id'                         => 'Number',
       'app_documents_permisos_dir_list' => 'ManyKey',
       'app_documents_permisos_list'     => 'ManyKey',
       'usuaris_apps_list'               => 'ManyKey',
+      'usuaris_menus_list'              => 'ManyKey',
+      'usuaris_sites_list'              => 'ManyKey',
     );
   }
 }

@@ -31,9 +31,13 @@ abstract class BaseUsuarisForm extends BaseFormPropel
       'Entitat'                         => new sfWidgetFormTextarea(),
       'Habilitat'                       => new sfWidgetFormInputText(),
       'Actualitzacio'                   => new sfWidgetFormDate(),
+      'site_id'                         => new sfWidgetFormInputText(),
+      'actiu'                           => new sfWidgetFormInputText(),
       'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'AppDocumentsDirectoris')),
       'app_documents_permisos_list'     => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'AppDocumentsArxius')),
       'usuaris_apps_list'               => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Apps')),
+      'usuaris_menus_list'              => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'GestioMenus')),
+      'usuaris_sites_list'              => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Sites')),
     ));
 
     $this->setValidators(array(
@@ -54,9 +58,13 @@ abstract class BaseUsuarisForm extends BaseFormPropel
       'Entitat'                         => new sfValidatorString(array('required' => false)),
       'Habilitat'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'Actualitzacio'                   => new sfValidatorDate(array('required' => false)),
+      'site_id'                         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppDocumentsDirectoris', 'required' => false)),
       'app_documents_permisos_list'     => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppDocumentsArxius', 'required' => false)),
       'usuaris_apps_list'               => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Apps', 'required' => false)),
+      'usuaris_menus_list'              => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'GestioMenus', 'required' => false)),
+      'usuaris_sites_list'              => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Sites', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('usuaris[%s]');
@@ -109,6 +117,28 @@ abstract class BaseUsuarisForm extends BaseFormPropel
       $this->setDefault('usuaris_apps_list', $values);
     }
 
+    if (isset($this->widgetSchema['usuaris_menus_list']))
+    {
+      $values = array();
+      foreach ($this->object->getUsuarisMenuss() as $obj)
+      {
+        $values[] = $obj->getMenuId();
+      }
+
+      $this->setDefault('usuaris_menus_list', $values);
+    }
+
+    if (isset($this->widgetSchema['usuaris_sites_list']))
+    {
+      $values = array();
+      foreach ($this->object->getUsuarisSitess() as $obj)
+      {
+        $values[] = $obj->getSiteId();
+      }
+
+      $this->setDefault('usuaris_sites_list', $values);
+    }
+
   }
 
   protected function doSave($con = null)
@@ -118,6 +148,8 @@ abstract class BaseUsuarisForm extends BaseFormPropel
     $this->saveAppDocumentsPermisosDirList($con);
     $this->saveAppDocumentsPermisosList($con);
     $this->saveUsuarisAppsList($con);
+    $this->saveUsuarisMenusList($con);
+    $this->saveUsuarisSitesList($con);
   }
 
   public function saveAppDocumentsPermisosDirList($con = null)
@@ -220,6 +252,76 @@ abstract class BaseUsuarisForm extends BaseFormPropel
         $obj = new UsuarisApps();
         $obj->setUsuariId($this->object->getPrimaryKey());
         $obj->setAppId($value);
+        $obj->save();
+      }
+    }
+  }
+
+  public function saveUsuarisMenusList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['usuaris_menus_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (null === $con)
+    {
+      $con = $this->getConnection();
+    }
+
+    $c = new Criteria();
+    $c->add(UsuarisMenusPeer::USUARI_ID, $this->object->getPrimaryKey());
+    UsuarisMenusPeer::doDelete($c, $con);
+
+    $values = $this->getValue('usuaris_menus_list');
+    if (is_array($values))
+    {
+      foreach ($values as $value)
+      {
+        $obj = new UsuarisMenus();
+        $obj->setUsuariId($this->object->getPrimaryKey());
+        $obj->setMenuId($value);
+        $obj->save();
+      }
+    }
+  }
+
+  public function saveUsuarisSitesList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['usuaris_sites_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (null === $con)
+    {
+      $con = $this->getConnection();
+    }
+
+    $c = new Criteria();
+    $c->add(UsuarisSitesPeer::USUARI_ID, $this->object->getPrimaryKey());
+    UsuarisSitesPeer::doDelete($c, $con);
+
+    $values = $this->getValue('usuaris_sites_list');
+    if (is_array($values))
+    {
+      foreach ($values as $value)
+      {
+        $obj = new UsuarisSites();
+        $obj->setUsuariId($this->object->getPrimaryKey());
+        $obj->setSiteId($value);
         $obj->save();
       }
     }

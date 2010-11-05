@@ -18,6 +18,8 @@ abstract class BaseMissatgesmailingForm extends BaseFormPropel
       'titol'                 => new sfWidgetFormTextarea(),
       'text'                  => new sfWidgetFormTextarea(),
       'data_alta'             => new sfWidgetFormDate(),
+      'site_id'               => new sfWidgetFormInputText(),
+      'actiu'                 => new sfWidgetFormInputText(),
       'missatgesllistes_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Llistes')),
     ));
 
@@ -26,6 +28,8 @@ abstract class BaseMissatgesmailingForm extends BaseFormPropel
       'titol'                 => new sfValidatorString(),
       'text'                  => new sfValidatorString(),
       'data_alta'             => new sfValidatorDate(),
+      'site_id'               => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                 => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'missatgesllistes_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Llistes', 'required' => false)),
     ));
 

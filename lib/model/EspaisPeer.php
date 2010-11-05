@@ -10,6 +10,25 @@
 class EspaisPeer extends BaseEspaisPeer
 {
 
+  static public function getCriteriaActiu($C,$idS)
+  {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+  }
+
+  static public function initialize( $idE , $idS )
+  {
+    $OE = self::retrieveByPK($idE);            
+	if(!($OE instanceof Espais)):                                    		
+		$OE = new Espais();   		                    
+        $OE->setSiteId($idS);        
+        $OE->setActiu(true);        		            			    			    			        
+		return new EspaisForm($OE);			
+	endif; 
+  }
+
+
 
   static public function select()
   {

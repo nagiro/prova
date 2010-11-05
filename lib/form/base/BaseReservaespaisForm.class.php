@@ -36,6 +36,8 @@ abstract class BaseReservaespaisForm extends BaseFormPropel
       'CondicionsCCG'            => new sfWidgetFormTextarea(),
       'DataAcceptacioCondicions' => new sfWidgetFormDateTime(),
       'ObservacionsCondicions'   => new sfWidgetFormTextarea(),
+      'site_id'                  => new sfWidgetFormInputText(),
+      'actiu'                    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -61,6 +63,8 @@ abstract class BaseReservaespaisForm extends BaseFormPropel
       'CondicionsCCG'            => new sfValidatorString(array('required' => false)),
       'DataAcceptacioCondicions' => new sfValidatorDateTime(array('required' => false)),
       'ObservacionsCondicions'   => new sfValidatorString(array('required' => false)),
+      'site_id'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('reservaespais[%s]');

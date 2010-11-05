@@ -29,6 +29,8 @@ class CursosForm extends sfFormPropel
       'DataDesaparicio' => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
       'DataFiMatricula' => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
       'DataInici'       => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
+      'site_id'         => new sfWidgetFormInputHidden(),
+      'activa'           => new sfWidgetFormInputHidden(),        
     ));
 
     $this->setValidators(array(
@@ -48,6 +50,8 @@ class CursosForm extends sfFormPropel
       'DataFiMatricula' => new sfValidatorDate(array('required' => false)),
       'DataInici'       => new sfValidatorDate(array('required' => false)),
       'VisibleWEB'      => new sfValidatorInteger(array('required' => true)),
+      'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'activa'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),       
     ));
 
     

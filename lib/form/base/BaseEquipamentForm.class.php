@@ -19,6 +19,7 @@ abstract class BaseEquipamentForm extends BaseFormPropel
       'Tipus'              => new sfWidgetFormInputText(),
       'DataCompra'         => new sfWidgetFormDate(),
       'Dades'              => new sfWidgetFormTextarea(),
+      'site_id'            => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -27,6 +28,7 @@ abstract class BaseEquipamentForm extends BaseFormPropel
       'Tipus'              => new sfValidatorString(array('max_length' => 100, 'required' => false)),
       'DataCompra'         => new sfValidatorDate(array('required' => false)),
       'Dades'              => new sfValidatorString(array('required' => false)),
+      'site_id'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('equipament[%s]');

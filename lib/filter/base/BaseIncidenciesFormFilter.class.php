@@ -19,6 +19,7 @@ abstract class BaseIncidenciesFormFilter extends BaseFormFilterPropel
       'estat'         => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'dataalta'      => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'dataresolucio' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'site_id'       => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -29,6 +30,7 @@ abstract class BaseIncidenciesFormFilter extends BaseFormFilterPropel
       'estat'         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'dataalta'      => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'dataresolucio' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('incidencies_filters[%s]');
@@ -54,6 +56,7 @@ abstract class BaseIncidenciesFormFilter extends BaseFormFilterPropel
       'estat'         => 'Number',
       'dataalta'      => 'Date',
       'dataresolucio' => 'Date',
+      'site_id'       => 'Number',
     );
   }
 }

@@ -18,13 +18,13 @@ class NodesForm extends sfFormPropel
       'idNodes'     => new sfWidgetFormInputHidden(),
       'TitolMenu'   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Nivell'      => new sfWidgetFormChoice(array('choices'=>array(0=>'Fora de menú',1=>'Principal',2=>'Secundari',3=>'Terciari'))),      
-      'Ordre'       => new sfWidgetFormChoice(array('choices'=>NodesPeer::selectOrdre($this->isNew()))),      
+      'Ordre'       => new sfWidgetFormChoice(array('choices'=>NodesPeer::selectOrdre($this->getOption('IDS'),$this->isNew()))),      
       'isCategoria' => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'isPhp'       => new sfWidgetFormInputHidden(),
       'isActiva'    => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'HTML'        => new sfWidgetFormInputHidden(),
       'Url'         => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
-      'Categories'  => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::selectCategories(true)),array()),
+      'Categories'  => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::selectCategories($this->getOption('IDS') , true)),array()),
     ));
 
     $this->setValidators(array(
@@ -75,7 +75,7 @@ class NodesForm extends sfFormPropel
   public function save($conn = null)
   {  	
   	$ONodes = $this->getObject();  	
-  	NodesPeer::gestionaOrdre($this->getValue('Ordre'),$ONodes->getOrdre());
+  	NodesPeer::gestionaOrdre($this->getValue('Ordre'),$ONodes->getOrdre(),$this->getOption('IDS'));
   	parent::save();  
   }
 

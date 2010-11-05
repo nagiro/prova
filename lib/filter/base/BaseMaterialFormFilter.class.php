@@ -34,6 +34,7 @@ abstract class BaseMaterialFormFilter extends BaseFormFilterPropel
       'AltaRegistre'                      => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'isTransferible'                    => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'isAdministratiu'                   => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'                           => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -59,6 +60,7 @@ abstract class BaseMaterialFormFilter extends BaseFormFilterPropel
       'AltaRegistre'                      => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'isTransferible'                    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'isAdministratiu'                   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'                           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('material_filters[%s]');
@@ -99,6 +101,7 @@ abstract class BaseMaterialFormFilter extends BaseFormFilterPropel
       'AltaRegistre'                      => 'Date',
       'isTransferible'                    => 'Number',
       'isAdministratiu'                   => 'Number',
+      'site_id'                           => 'Number',
     );
   }
 }

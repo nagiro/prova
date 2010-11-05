@@ -37,7 +37,7 @@ class ActivitatsTextosForm extends sfFormPropel
       'tComplet'                        => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dComplet'                        => new sfWidgetFormTextareaTinyMCE(),
       'InfoPractica'                    => new sfWidgetFormTextareaTinyMCE(),
-      'Categories'						=> new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>ActivitatsPeer::selectCategories() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_cat')),
+      'Categories'						=> new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>ActivitatsPeer::selectCategories($this->getOption('IDS')) , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_cat')),
             
     ));
 

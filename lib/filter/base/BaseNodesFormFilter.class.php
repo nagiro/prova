@@ -21,6 +21,7 @@ abstract class BaseNodesFormFilter extends BaseFormFilterPropel
       'Nivell'      => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Url'         => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Categories'  => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'     => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -33,6 +34,7 @@ abstract class BaseNodesFormFilter extends BaseFormFilterPropel
       'Nivell'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'Url'         => new sfValidatorPass(array('required' => false)),
       'Categories'  => new sfValidatorPass(array('required' => false)),
+      'site_id'     => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('nodes_filters[%s]');
@@ -60,6 +62,7 @@ abstract class BaseNodesFormFilter extends BaseFormFilterPropel
       'Nivell'      => 'Number',
       'Url'         => 'Text',
       'Categories'  => 'Text',
+      'site_id'     => 'Number',
     );
   }
 }

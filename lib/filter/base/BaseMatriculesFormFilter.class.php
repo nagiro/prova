@@ -20,6 +20,7 @@ abstract class BaseMatriculesFormFilter extends BaseFormFilterPropel
       'Pagat'            => new sfWidgetFormFilterInput(),
       'tReduccio'        => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'tPagament'        => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id'          => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -31,6 +32,7 @@ abstract class BaseMatriculesFormFilter extends BaseFormFilterPropel
       'Pagat'            => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'tReduccio'        => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'tPagament'        => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id'          => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('matricules_filters[%s]');
@@ -57,6 +59,7 @@ abstract class BaseMatriculesFormFilter extends BaseFormFilterPropel
       'Pagat'            => 'Number',
       'tReduccio'        => 'Number',
       'tPagament'        => 'Number',
+      'site_id'          => 'Number',
     );
   }
 }

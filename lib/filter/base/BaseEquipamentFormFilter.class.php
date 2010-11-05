@@ -16,6 +16,7 @@ abstract class BaseEquipamentFormFilter extends BaseFormFilterPropel
       'Tipus'              => new sfWidgetFormFilterInput(),
       'DataCompra'         => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'Dades'              => new sfWidgetFormFilterInput(),
+      'site_id'            => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -23,6 +24,7 @@ abstract class BaseEquipamentFormFilter extends BaseFormFilterPropel
       'Tipus'              => new sfValidatorPass(array('required' => false)),
       'DataCompra'         => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'Dades'              => new sfValidatorPass(array('required' => false)),
+      'site_id'            => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('equipament_filters[%s]');
@@ -45,6 +47,7 @@ abstract class BaseEquipamentFormFilter extends BaseFormFilterPropel
       'Tipus'              => 'Text',
       'DataCompra'         => 'Date',
       'Dades'              => 'Text',
+      'site_id'            => 'Number',
     );
   }
 }

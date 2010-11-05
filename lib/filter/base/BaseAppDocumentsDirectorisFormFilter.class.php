@@ -14,12 +14,14 @@ abstract class BaseAppDocumentsDirectorisFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'Nom'                             => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'Pare'                            => new sfWidgetFormPropelChoice(array('model' => 'AppDocumentsDirectoris', 'add_empty' => true)),
+      'site_id'                         => new sfWidgetFormFilterInput(),
       'app_documents_permisos_dir_list' => new sfWidgetFormPropelChoice(array('model' => 'Usuaris', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
       'Nom'                             => new sfValidatorPass(array('required' => false)),
       'Pare'                            => new sfValidatorPropelChoice(array('required' => false, 'model' => 'AppDocumentsDirectoris', 'column' => 'idDirectori')),
+      'site_id'                         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'required' => false)),
     ));
 
@@ -66,6 +68,7 @@ abstract class BaseAppDocumentsDirectorisFormFilter extends BaseFormFilterPropel
       'idDirectori'                     => 'Number',
       'Nom'                             => 'Text',
       'Pare'                            => 'ForeignKey',
+      'site_id'                         => 'Number',
       'app_documents_permisos_dir_list' => 'ManyKey',
     );
   }

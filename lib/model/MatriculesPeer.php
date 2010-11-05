@@ -31,9 +31,34 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TRANSFERENCIA   = '24';
    
    
-  static function QuantesAvui()
+    static public function initialize( $idM , $idS , $selUsuari = false)
+    {
+        $OM = MatriculesPeer::retrieveByPK($idM);            
+        if($OM instanceof Matricules):            
+        	return new MatriculesForm($OM);
+        else:
+        	$OM = new Matricules();
+            $OM->setSiteId($idS);        
+            $OM->setActiu(true);        
+            if($selUsuari):
+                return new MatriculesUsuariForm($OM,array('IDS'=>$idS));
+            else:
+                return new MatriculesForm($OM,array('IDS'=>$idS));
+            endif;			
+        endif; 
+    }
+   
+   
+  static public function getCriteriaActiu( $C , $idS )
+  {    
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+  }
+   
+  static function QuantesAvui($idS)
   {
-     $C = new Criteria();
+     $C = self::getCriteriaActiu(new Criteria(),$idS);     
      $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
      $C->add(self::DATAINSCRIPCIO , $time , Criteria::GREATER_EQUAL );
      return self::doCount($C);     
@@ -92,11 +117,10 @@ class MatriculesPeer extends BaseMatriculesPeer
       }
   }
   
-  static function getCursosMatriculacio()
+  static function getCursosMatriculacio($idS)
   {
-  	
   	$C = new Criteria();
-
+  	$C = CursosPeer::getCriteriaActiu($C,$idS);
 	$C->add(CursosPeer::ISACTIU,true);     
 	$C->addDescendingOrderByColumn(CursosPeer::CATEGORIA);
 	$C->addDescendingOrderByColumn(CursosPeer::CODI);
@@ -105,11 +129,11 @@ class MatriculesPeer extends BaseMatriculesPeer
   	
   }
   
-  static function cercaCursos($CERCA , $PAGINA = 1)
+  static function cercaCursos($CERCA , $PAGINA = 1 , $idS )
   {     
-
-     $C = new Criteria();
-         
+     
+     $C = CursosPeer::getCriteriaActiu( new Criteria() , $idS );
+              
      $C1 = $C->getNewCriterion(CursosPeer::CODI, '%'.$CERCA.'%',CRITERIA::LIKE);
      $C2 = $C->getNewCriterion(CursosPeer::TITOLCURS, '%'.$CERCA.'%',CRITERIA::LIKE);
      $C3 = $C->getNewCriterion(CursosPeer::CATEGORIA, '%'.$CERCA.'%',CRITERIA::LIKE);	               
@@ -129,10 +153,14 @@ class MatriculesPeer extends BaseMatriculesPeer
          
   }
 
-  static function cercaAlumnes( $CERCA , $PAGINA = 1 )
+  static function cercaAlumnes( $CERCA , $PAGINA = 1 , $idS )
   {
+          
+     $C = new Criteria();
+     $C = self::getCriteriaActiu($C,$idS);
+     $C = UsuarisPeer::getCriteriaActiu($C,$idS);
+     $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
      
-     $C = new Criteria();           
      $C1 = $C->getNewCriterion(UsuarisPeer::NOM, '%'.$CERCA.'%',CRITERIA::LIKE);
      $C2 = $C->getNewCriterion(UsuarisPeer::COG1, '%'.$CERCA.'%',CRITERIA::LIKE);
      $C3 = $C->getNewCriterion(UsuarisPeer::COG2, '%'.$CERCA.'%',CRITERIA::LIKE);
@@ -142,7 +170,8 @@ class MatriculesPeer extends BaseMatriculesPeer
      
      $C->add($C1);
      
-     $C->addJoin( array( UsuarisPeer::USUARIID ) , array( self::USUARIS_USUARIID ) );     
+     $C->addJoin( UsuarisPeer::USUARIID , self::USUARIS_USUARIID );
+          
      
      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
@@ -157,9 +186,11 @@ class MatriculesPeer extends BaseMatriculesPeer
   }
   
   
-  static function cercaMatricules($CERCA)
+  static function cercaMatricules( $CERCA , $idS )
   {
-     $C = new Criteria(); 
+     $C = new Criteria();          
+     $C = self::getCriteriaActiu( $C , $idS );
+      
      $C1 = $C->getNewCriterion(CursosPeer::CODI, '%'.$CERCA.'%',CRITERIA::LIKE);
      $C2 = $C->getNewCriterion(CursosPeer::TITOLCURS, '%'.$CERCA.'%',CRITERIA::LIKE);
      $C3 = $C->getNewCriterion(CursosPeer::CATEGORIA, '%'.$CERCA.'%',CRITERIA::LIKE);
@@ -180,11 +211,11 @@ class MatriculesPeer extends BaseMatriculesPeer
   }
 
   //M'informa si actualment estic dins el període de matriculació dels antics alumnes. 
-  static function isPeriodeAnticsAlumnes()
+  static function isPeriodeAnticsAlumnes($idS)
   {
 
-  	$DiAa = TipusPeer::getDataIniciMatriculaAnticsAlumnes();
-  	$DiT  = TipusPeer::getDataIniciMatriculaTothom();
+    $DiAa = OptionsPeer::getString('DATA_MAT_ANTICS',$idS);
+    $DiT  = OptionsPeer::getString('DATA_MAT_TOTHOM',$idS); 
   	$avui = date('Y-m-d',time());
   	
   	return ($DiAa < $avui && $avui < $DiT );
@@ -192,12 +223,15 @@ class MatriculesPeer extends BaseMatriculesPeer
   }
   
   //Ens diu si l'alumne ha fet algun curs durant l'últim any i mig. 
-  static function isAnticAlumne($idU)
+  static function isAnticAlumne( $idU , $idS )
   {
   	
   	$DATA_ANY_I_MIG_ENRRERA = mktime(0,0,0,date('m',time())-18,date('d',time()),date('Y',time()));
   	
   	$C = new Criteria();
+    $C = UsuarisPeer::getCriteriaActiu($C,$idS);
+    $C = CursosPeer::getCriteriaActiu($C,$idS);
+    
   	$C->add(self::USUARIS_USUARIID, $idU);
   	$C->addJoin(self::CURSOS_IDCURSOS,CursosPeer::IDCURSOS);
   	$C->add(CursosPeer::DATAINICI, $DATA_ANY_I_MIG_ENRRERA, CRITERIA::GREATER_THAN);
@@ -206,7 +240,7 @@ class MatriculesPeer extends BaseMatriculesPeer
   	
   }
   
-  static function cercaUsuariMatricules($idU, $PAGINA = 1)
+/*  static function cercaUsuariMatricules($idU, $PAGINA = 1)
   {
     
     $C   = new Criteria();
@@ -220,7 +254,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     return $pager;
      
   }
-  
+*/  
   static function getEstatsSelect()
   {
   	
@@ -237,8 +271,10 @@ class MatriculesPeer extends BaseMatriculesPeer
            
   }
   
-  static function getMatriculesUsuari($idU){
-    $C = new Criteria();
+  static function getMatriculesUsuari($idU,$idS){
+
+    $C = new Criteria();    
+    $C = self::getCriteriaActiu( $C , $idS );
     $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
     $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
@@ -246,8 +282,9 @@ class MatriculesPeer extends BaseMatriculesPeer
     return MatriculesPeer::doSelect($C);
   }
 
-  static function getMatriculesCurs($idC){
+  static function getMatriculesCurs( $idC , $idS ){
       $C = new Criteria();
+      $C = self::getCriteriaActiu( $C , $idS );      
       $C->add(MatriculesPeer::CURSOS_IDCURSOS , $idC);
       $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
       $C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);      
@@ -268,29 +305,29 @@ class MatriculesPeer extends BaseMatriculesPeer
    * @param STRING $NOM
    * @return ARRAY
    */
-  static function getTPV($PREU , $NOM , $matricula, $WEB = true)
+  static function getTPV($PREU , $NOM , $matricula, $idS , $WEB = true)
   {
      $TPV = array();
      
      $TPV['Ds_Merchant_Amount'] = $PREU*100;
      $TPV['Ds_Merchant_Currency'] = '978';
      $TPV['Ds_Merchant_Order'] = date('ymdHis'); 
-     $TPV['Ds_Merchant_MerchantCode'] = '091623116';
+     $TPV['Ds_Merchant_MerchantCode'] = OptionsPeer::getString('TPV_Ds_Merchant_MerchantCode',$idS);
      $TPV['Ds_Merchant_Terminal'] = '1';
      $TPV['Ds_Merchant_TransactionType'] = '0';
      if($WEB):
-        $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/web_beta/web/GetTPV';
-        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/web/MatriculaFinal/OK/1';
-        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/web_beta/web/MatriculaFinal';
+        $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_WEB_Merchant_MerchantURL',$idS);
+        $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_WEB_Ds_Merchant_UrlOK',$idS);
+        $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_WEB_Ds_Merchant_UrlKO',$idS);
      else:
-        $TPV['Ds_Merchant_MerchantURL'] = 'http://servidor.casadecultura.cat/web_beta/gestio/FinalitzaMatricula';                         
-        $TPV['Ds_Merchant_UrlOK'] = 'http://servidor.casadecultura.cat/web_beta/gestio/matriculat';
-        $TPV['Ds_Merchant_UrlKO'] = 'http://servidor.casadecultura.cat/web_beta/gestio/matriculat';
+        $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_Merchant_MerchantURL',$idS);                         
+        $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_Ds_Merchant_UrlOK',$idS);
+        $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_Ds_Merchant_UrlKO',$idS);
      endif;
         
-     $TPV['Ds_Merchant_ProductDescription'] = 'Matrícula Casa de Cultura';
+     $TPV['Ds_Merchant_ProductDescription'] = OptionsPeer::getString('TPV_ProductDescription',$idS);
      $TPV['Ds_Merchant_Titular'] = $NOM;
-     $TPV['Ds_Merchant_MerchantName'] = 'Casa de Cultura';
+     $TPV['Ds_Merchant_MerchantName'] = OptionsPeer::getString('TPV_MerchantName',$idS);
      $TPV['Ds_Merchant_MerchantData'] = $matricula;
               
      $message =  $TPV['Ds_Merchant_Amount'].
@@ -304,25 +341,24 @@ class MatriculesPeer extends BaseMatriculesPeer
      return $TPV;
   }
   
-  static public function setMatriculaPagada($M)
+  static public function setMatriculaPagada( $OM )
   {
     
-    $RET = false; 
-    $MATRICULA = MatriculesPeer::retrieveByPK($M);
-    $CURS_PLE = CursosPeer::isPle($MATRICULA->getCursosIdcursos()); //Passem si el curs es ple 
+    $RET = false;         
+    
+    $CURS_PLE = CursosPeer::isPle( $OM->getCursosIdcursos() , $OM->getSiteId() ); //Passem si el curs es ple 
   	
   	 //Mirem si el curs és ple. Si es ple i no hi ha cap import pagat, guardem com en espera.
      if(!$CURS_PLE){
-     	$MATRICULA->setEstat(self::ACCEPTAT_PAGAT);
-        $RET = true; 	
+     	$OM->setEstat(self::ACCEPTAT_PAGAT);         	
      } else {
-        if($MATRICULA->getPagat() > 0){ $MATRICULA->setEstat(self::ACCEPTAT_PAGAT); $RET = true; }
-        else { $MATRICULA->setEstat(self::EN_ESPERA); $RET = false;  }     
+        if($OM->getPagat() > 0){ $OM->setEstat(self::ACCEPTAT_PAGAT);  }
+        else { $OM->setEstat(self::EN_ESPERA);   }     
      }
                
-     $MATRICULA->save();
+     $OM->save();
      
-     return $RET; 
+     return $OM; 
      
   }
   
@@ -342,9 +378,10 @@ class MatriculesPeer extends BaseMatriculesPeer
      }   
   }
   
-  static public function getMatriculesPagadesDia($modePagament = 0)
+  static public function getMatriculesPagadesDia( $modePagament = 0 , $idS )
   {
   	$C = new Criteria();
+    self::getCriteriaActiu( $C , $idS );
   	$C->add(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
   	$C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);    
   	$C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
@@ -353,62 +390,40 @@ class MatriculesPeer extends BaseMatriculesPeer
   	return self::doSelect($C);
   }
   
-  static public function MailMatricula($OM)
+  static public function MailMatricula( $OM , $idS )
   {
   	
   	$Nom = $OM->getUsuaris()->getNomComplet();
   	$NomCurs = $OM->getCursos()->getCodi().' | '.$OM->getCursos()->getTitolcurs();
-  	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');
-  	$text = "";
-  	$text .= '
-
-        <table width="640px" style="font-family: sans-serif; font-size:14px; margin:0 auto; border:0px solid #B33330;">
-        <tr><td align="center" style=" padding:20px;"><img width="200px" src="http://servidor.casadecultura.org/downloads/logos/CCG_BLANC.jpg" /></td></tr>
-        <tr><td style="border-top:2px solid #B33330;padding: 20px; text-align: left;">
-
-        <p>Benvolgut/da '.$Nom.'</p>
-        
-        <p>La seva matrícula al curs '.$NomCurs.' s\'ha efectuat correctament. Per qualsevol dubte, consulta o suggeriment si us plau adrecis al web de la Casa de Cultura i entri a la seva zona o bé cliqui <a href="http://servidor.casadecultura.cat/web_beta/web/login">aquí </a>.
-        Si no recorda o no sap la seva contrassenya cliqui <a href="http://servidor.casadecultura.cat/web_beta/web/remember">aquí </a>.
-        </p>     
-        <p>L\'esperem el dia '.$dataInici.' a la classe.</p>                
-        <p>Cordialment, <br />Casa de Cultura de Girona</p>
-        <p><span style="font-size:10px; font-style: italic; color: gray;">En cas de resposta afirmativa, les vostres dades seran incorporades a un fitxer titularitat de la Fundaci&oacute; Casa de Cultura creat sota la seva responsabilitat per a gestionar les activitats que s&rsquo;hi porten a terme i per a informar-ne a persones que hi estiguin interessades. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d&rsquo;adoptar les mesures legalment previstes i les t&egrave;cnicament necess&agrave;ries per evitar-ne un acc&eacute;s o qualsevol classe de tractament no autoritzat. Podran ser cedides a altres persones amb les quals la Casa de Cultura col&bull;labora en la programaci&oacute; i organitzaci&oacute; d&rsquo;activitats, exclusivament a l&rsquo;efecte de fer-vos arribar la informaci&oacute; que vost&egrave; manifesta estar interessat en rebre. Per qualsevol altre cessi&oacute; requerir&iacute;em pr&egrave;viament el seu consentiment. En qualsevol cas podeu exercir els vostres drets d&rsquo;acc&eacute;s, rectificaci&oacute; i cancel&bull;laci&oacute; tot adre&ccedil;ant-se a: Sr/a. Director/a de la Casa de Cultura, Pla&ccedil;a de l&rsquo;Hospital 6, 17002 GIRONA, tel&egrave;fon 972 202 013 i correu electr&ograve;nic  secretaria@casadecultura.org.</span></p>
-        
-        </td></tr>
-        </table>';
-      				
-   	return $text; 
+  	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');        
+    
+    $TEXT = OptionsPeer::getString( 'MAIL_MAT_OK' , $idS );    
+    $TEXT = str_replace( '{{LOGO_URL}}', OptionsPeer::getString( 'LOGO_URL' , $idS ) , $TEXT );    
+    $TEXT = str_replace( '{{URL_LOGIN}}', OptionsPeer::getString( 'URL_LOGIN' , $idS ) , $TEXT );
+    $TEXT = str_replace( '{{NOM}}' , $Nom , $TEXT );
+    $TEXT = str_replace( '{{NOM_CURS}}' , $NomCurs , $TEXT );
+    $TEXT = str_replace( '{{DATA_INICI}}' , $dataInici , $TEXT );
+      	
+   	return $TEXT; 
   	
   }
 
-  static public function MailMatriculaFAIL($OM)
+  static public function MailMatriculaFAIL( $OM , $idS )
   {
-  	
+
   	$Nom = $OM->getUsuaris()->getNomComplet();
   	$NomCurs = $OM->getCursos()->getCodi().' | '.$OM->getCursos()->getTitolcurs();
   	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');
-  	$text = "";
-  	$text .= '
 
-        <table width="640px" style="font-family: sans-serif; font-size:14px; margin:0 auto; border:0px solid #B33330;">
-        <tr><td align="center" style=" padding:20px;"><img width="200px" src="http://servidor.casadecultura.org/downloads/logos/CCG_BLANC.jpg" /></td></tr>
-        <tr><td style="border-top:2px solid #B33330;padding: 20px; text-align: left;">
-
-        <p>Benvolgut/da '.$Nom.'</p>
-        
-        <p>La seva matrícula al curs '.$NomCurs.' no s\'ha pogut realitzar. Actualment el curs és ple o bé ha tingut algun problema a l\'hora de realitzar-la. 
-        Si vostè vol comprovar l\'estat de la seva matrícula truqui al telèfon 972.20.20.13 o bé enviï un correu a informatica@casadecultura.org per comprovar què ha succeït.
-        </p>                     
-        <p>Cordialment, <br />Casa de Cultura de Girona</p>
-        <p><span style="font-size:10px; font-style: italic; color: gray;">En cas de resposta afirmativa, les vostres dades seran incorporades a un fitxer titularitat de la Fundaci&oacute; Casa de Cultura creat sota la seva responsabilitat per a gestionar les activitats que s&rsquo;hi porten a terme i per a informar-ne a persones que hi estiguin interessades. La Casa de Cultura es compromet a complir els seus deures de mantenir reserva i d&rsquo;adoptar les mesures legalment previstes i les t&egrave;cnicament necess&agrave;ries per evitar-ne un acc&eacute;s o qualsevol classe de tractament no autoritzat. Podran ser cedides a altres persones amb les quals la Casa de Cultura col&bull;labora en la programaci&oacute; i organitzaci&oacute; d&rsquo;activitats, exclusivament a l&rsquo;efecte de fer-vos arribar la informaci&oacute; que vost&egrave; manifesta estar interessat en rebre. Per qualsevol altre cessi&oacute; requerir&iacute;em pr&egrave;viament el seu consentiment. En qualsevol cas podeu exercir els vostres drets d&rsquo;acc&eacute;s, rectificaci&oacute; i cancel&bull;laci&oacute; tot adre&ccedil;ant-se a: Sr/a. Director/a de la Casa de Cultura, Pla&ccedil;a de l&rsquo;Hospital 6, 17002 GIRONA, tel&egrave;fon 972 202 013 i correu electr&ograve;nic  secretaria@casadecultura.org.</span></p>
-        
-        </td></tr>
-        </table>';
-      				
-   	return $text; 
+    $TEXT = OptionsPeer::getString( 'MAIL_MAT_KO' , $idS );    
+    $TEXT = str_replace( '{{LOGO_URL}}', OptionsPeer::getString( 'LOGO_URL' , $idS ) , $TEXT );    
+    $TEXT = str_replace( '{{URL_LOGIN}}', OptionsPeer::getString( 'URL_LOGIN' , $idS ) , $TEXT );
+    $TEXT = str_replace( '{{NOM}}' , $Nom , $TEXT );
+    $TEXT = str_replace( '{{NOM_CURS}}' , $NomCurs , $TEXT );
+    $TEXT = str_replace( '{{DATA_INICI}}' , $dataInici , $TEXT );
+  	      				
+   	return $TEXT; 
   	
   }  
-  
   
 }

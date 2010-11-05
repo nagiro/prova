@@ -14,11 +14,13 @@ abstract class BaseCessiomaterialFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'Material_idMaterial' => new sfWidgetFormPropelChoice(array('model' => 'Material', 'add_empty' => true)),
       'cessio_id'           => new sfWidgetFormPropelChoice(array('model' => 'Cessio', 'add_empty' => true)),
+      'site_id'             => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'Material_idMaterial' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Material', 'column' => 'idMaterial')),
       'cessio_id'           => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Cessio', 'column' => 'cessio_id')),
+      'site_id'             => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('cessiomaterial_filters[%s]');
@@ -39,6 +41,7 @@ abstract class BaseCessiomaterialFormFilter extends BaseFormFilterPropel
       'idCessioMaterial'    => 'Number',
       'Material_idMaterial' => 'ForeignKey',
       'cessio_id'           => 'ForeignKey',
+      'site_id'             => 'Number',
     );
   }
 }

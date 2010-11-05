@@ -47,7 +47,7 @@
 		 
 		 $.post(
 				 '<?php echo url_for('gestio/gBlogs') ?>', 
-				 { accio: "AJAX_MENU", APP_MENU: MENU_ID },
+				 { accio: "AJAX_MENU", APP_MENU: MENU_ID , APP_BLOG: <?php echo $APP_BLOG ?> , APP_PAGE: <?php echo $APP_PAGE ?> },
 				   function(data){
 					   $('#APP_PAGE').html(data);				     
 				   });		 	 
@@ -59,7 +59,7 @@
 		 
 		 $.post(
 				 '<?php echo url_for('gestio/gBlogs') ?>', 
-				 { accio: "AJAX_PAGE", APP_PAGE: PAGE_ID },
+				 { accio: "AJAX_PAGE", APP_PAGE: PAGE_ID , APP_ENTRY: <?php echo $APP_ENTRY ?> },
 				   function(data){
 					 $('#APP_ENTRY').html(data);				     
 				   });
@@ -157,7 +157,8 @@
 
 <?php if(isset($MENUS_ARRAY)): ?>    
 
-     <form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST">     	
+     <form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST">
+        <?php echo input_hidden_tag('APP_BLOG',$APP_BLOG); ?>     	
 	 	<div class="REQUADRE">
 		 	<div class="OPCIO_FINESTRA">
 		 		<a href="<?php echo url_for('gestio/gBlogs?accio=VB') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a></div>            
@@ -238,6 +239,8 @@
 <?php if(isset($FORM_PAGE)): ?>    
 
 	<form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST">
+        <?php echo input_hidden_tag('APP_BLOG',$APP_BLOG); ?>
+        <?php echo input_hidden_tag('APP_MENU',$APP_MENU); ?>                        
 	 	<div class="REQUADRE">
 	 	<div class="OPCIO_FINESTRA">
 	 		<a href="<?php echo url_for('gestio/gBlogs?accio=VIEW_CONTENT') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a></div>            
@@ -265,6 +268,9 @@
 <?php if(isset($FORM_ENTRY)): ?>    
 
 	<form action="<?php echo url_for('gestio/gBlogs') ?>" method="POST" enctype="multipart/form-data">
+        <?php echo input_hidden_tag('APP_BLOG',$APP_BLOG); ?>
+        <?php echo input_hidden_tag('APP_MENU',$APP_MENU); ?>
+        <?php echo input_hidden_tag('APP_PAGE',$APP_BLOG); ?>
 	 	<div class="REQUADRE">
 	 	<div class="OPCIO_FINESTRA">
 	 		<a href="<?php echo url_for('gestio/gBlogs?accio=VIEW_CONTENT') ?>"><?php echo image_tag('icons/Grey/PNG/action_delete.png') ?></a></div>            

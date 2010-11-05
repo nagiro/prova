@@ -14,9 +14,9 @@ class AppDocumentsPermisosDirForm extends sfFormPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'idUsuari'    => new sfWidgetFormSelect(array('choices'=>UsuarisAppsPeer::getSelectUsuarisPermis($this->getOption('app')))),
-      'idDirectori' => new sfWidgetFormSelect(array('choices'=>AppDocumentsDirectorisPeer::getSelectDirectoris())),
-      'idNivell'    => new sfWidgetFormSelect(array('choices'=>NivellsPeer::getSelectPermisos())),
+      'idUsuari'    => new sfWidgetFormSelect(array('choices'=>UsuarisAppsPeer::getSelectUsuarisPermis($this->getOption('app'),$this->getOption('IDS')))),
+      'idDirectori' => new sfWidgetFormSelect(array('choices'=>AppDocumentsDirectorisPeer::getSelectDirectoris($this->getOption('IDS')))),
+      'idNivell'    => new sfWidgetFormSelect(array('choices'=>NivellsPeer::getSelectPermisos($this->getOption('IDS')))),
     ));
 
     $this->setValidators(array(
@@ -29,6 +29,12 @@ class AppDocumentsPermisosDirForm extends sfFormPropel
 
     $this->setDefault('idDirectori',$this->getOption('IDD'));
     $this->setDefault('idNivell',6);
+
+    $this->widgetSchema->setLabels(array(
+        'idUsuari'=> 'Usuari: ',
+        'idDirectori' => 'Directori: ',
+        'idNivell' => 'Permisos: ',
+    ));
     
     
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

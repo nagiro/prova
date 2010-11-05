@@ -28,8 +28,8 @@ function showElement(theClass) {
 		  	   			<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Gestiona dades' , 'web/gestio?accio=gd')?></TD></TR>
 				    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Cursos i matrícules' , 'web/gestio?accio=gc')?></TD></TR>
 		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Reserves d\'espais' , 'web/gestio?accio=gr')?></TD></TR>
-		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Llistes' , 'web/gestio?accio=gl')?></TD></TR>
-		  	   	    	<?php echo AltresApps($USUARI); ?>
+		 <!--  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Llistes' , 'web/gestio?accio=gl')?></TD></TR> -->
+		  	   	    	<?php echo AltresApps($USUARI,$IDS); ?>
 		  	   	  	</TABLE>
 		  	   	</TD></TR>
 		  	    <TR><TD id="REGISTRAT"><?php echo link_to("TANCA SESSIÓ" , 'web/logout')?></TD></TR>		  	   	
@@ -108,11 +108,11 @@ function showElement(theClass) {
     return $RET; 
   }
     
-  function AltresApps($USUARI)
+  function AltresApps($USUARI,$IDS)
   {  	
-  	$PERMISOS = UsuarisAppsPeer::getPermisosOO($USUARI);
+  	$PERMISOS = UsuarisAppsPeer::getPermisosOO($USUARI,$IDS);    
 	echo "<TR><TD class=\"SUBMENU_2\">".image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE'))."&nbsp;&nbsp;&nbsp;Altres aplicacions</TD></TR>";  	 
-  	foreach($PERMISOS as $APP):  		
+  	foreach($PERMISOS as $APP):  	        	
   		echo "<TR><TD class=\"SUBMENU_3\">".link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$APP->getNom() , $APP->getUrl() )."</TD></TR>";
   	endforeach;  	
   }  

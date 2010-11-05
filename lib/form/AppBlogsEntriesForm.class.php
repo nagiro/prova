@@ -15,7 +15,7 @@ class AppBlogsEntriesForm extends BaseAppBlogsEntriesForm
   {
     $this->setWidgets(array(
       'id'                               => new sfWidgetFormInputHidden(),
-      'page_id'                          => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsPages', 'add_empty' => false)),
+      'page_id'                          => new sfWidgetFormChoice(array('choices'=>AppBlogsPagesPeer::getPagesSelect($this->getOption('APP_BLOG'),$this->getOption('IDS')))),
       'lang'                             => new sfWidgetFormChoice(array('choices'=>array('CA'=>'Català'))),
       'title'                            => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),
       'subtitle1'                        => new sfWidgetFormInputText(array(),array('style'=>'width:500px')),

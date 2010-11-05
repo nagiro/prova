@@ -10,8 +10,16 @@
 class HorarisPeer extends BaseHorarisPeer
 {
 
-  const DESCRIPCIO_WEB = "WEB"; 	
-
+  const DESCRIPCIO_WEB = "WEB";
+  
+  static public function getCriteriaActiu( $C , $idS )
+  {
+    $C->add(self::ACTIU,true);
+    $C->add(self::SITE_ID,$idS);
+    return $C;
+  }
+   	
+/*
   static public function getCercaWeb($DIA, $TEXT, $DATAI,$DATAF, $page = 1)
   {
 
@@ -27,7 +35,7 @@ class HorarisPeer extends BaseHorarisPeer
     return $pager;    
      
   }
-  
+*/  
   
   /**
    * Funció que fa la cerca pel calendari de la pàgina principal i omple l'agenda
@@ -39,6 +47,7 @@ class HorarisPeer extends BaseHorarisPeer
    * @param unknown_type $IDACTIVITAT
    * @return unknown
    */
+/*
   static public function getCerca($DIA, $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
   	 //Fem la cerca
@@ -69,7 +78,8 @@ class HorarisPeer extends BaseHorarisPeer
      return $RET;
      
   }
-  
+*/
+/*  
   static public function getActivitatsGrouped($DIA, $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
   {
      $RET = array(); $ANT = "";
@@ -84,17 +94,18 @@ class HorarisPeer extends BaseHorarisPeer
      
      return $RET;
   }
- 	
- 
+*/ 	
+/* 
   static public function getCalendari($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT, $GESTIO)
   {
      return self::calendari(self::cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT),$GESTIO);
   }
+*/
   
-  static public function getActivitats($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  static public function getActivitats($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT , $idS )
   {
     
-    $HORARIS = self::cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);     
+    $HORARIS = self::cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT , $idS );     
     $RET = ARRAY('ACTIVITATS'=>array(),'CALENDARI'=>array());
     $RET['CALENDARI'] = self::calendari($HORARIS);
     $RET['ACTIVITATS'] = self::activitats($HORARIS);
@@ -102,7 +113,10 @@ class HorarisPeer extends BaseHorarisPeer
     return $RET;
   
   }
-  
+
+  /**
+   * Mostra les activitats al calendari d'agenda
+   * */
   static private function activitats($HORARIS)
   {
 
@@ -125,7 +139,11 @@ class HorarisPeer extends BaseHorarisPeer
 	   return $RET;
      
   }
+
   
+  /**
+   * Mostra les activitats que hi ha al calendari d'agenda
+   * */ 
   static private function calendari($HORARIS,$GESTIO = true)
   {     
       $RET = array(); $titol = "";
@@ -150,12 +168,14 @@ class HorarisPeer extends BaseHorarisPeer
 	     endif;	     
       endforeach;
       return $RET;
-  } 
+  }
+ 
   
-  static public function cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  static public function cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT , $idS )
   {
 
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
   	
   	if(!is_null($DIA))   $DIA   = mktime(0,0,0,date('m',$DIA),date('d',$DIA),date('Y',$DIA));
   	if(!is_null($DATAI)) $DATAI = mktime(0,0,0,date('m',$DATAI),date('d',$DATAI),date('Y',$DATAI));
@@ -186,7 +206,8 @@ class HorarisPeer extends BaseHorarisPeer
     if( !is_null($IDACTIVITAT) ) $C->add(ActivitatsPeer::ACTIVITATSACTIVITATSID, $IDACTIVITAT, CRITERIA::EQUAL ); //Si enviem una idActivitat, la carreguem
     
     $C->addJoin(self::ACTIVITATS_ACTIVITATID,ActivitatsPeer::ACTIVITATID);
-    
+    $C = ActivitatsPeer::getCriteriaActiu($C,$idS);
+            
     $C->addAscendingOrderByColumn(self::DIA);   //Ordenem per data
     $C->addAscendingOrderByColumn(self::HORAINICI);   //Ordenem per data
   	 
@@ -194,12 +215,10 @@ class HorarisPeer extends BaseHorarisPeer
   	
   }
   
-  static public function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT)
+  static public function cerca($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT, $idS )
   {
     
-  	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT);  	
-    //$C->setLimit(200);    
-    
+  	$C = self::cercaCriteria($DIA , $TEXT, $DATAI, $DATAF, $IDACTIVITAT , $idS );  	          
     return self::doSelectJoinAll($C);
     
   } 
@@ -208,7 +227,7 @@ class HorarisPeer extends BaseHorarisPeer
     * Espai per estadístics
     */
    
-  
+/*  
   static public function getMesosEspais($any)
   {
      $RET = array(array(array()));
@@ -232,8 +251,8 @@ class HorarisPeer extends BaseHorarisPeer
      
      return $RET;     
   } 
-  
-  
+*/  
+/*  
   static public function getMesosDiesEspai($any,$espai)
   {
      $RET = array();
@@ -256,8 +275,9 @@ class HorarisPeer extends BaseHorarisPeer
      endwhile;
      
      return $RET;     
-  }  
-  
+  }
+*/  
+/*  
   static public function getMesosEspaisHores($any,$espai,$mes)
   {
      $RET = array(array(array()));
@@ -295,88 +315,65 @@ class HorarisPeer extends BaseHorarisPeer
      
      return $RET;     
   } 
-  
-  static public function validaDiaBloqueig($DIA, $HORARI)
+*/  
+
+/**
+ * Comprova que el dia no estigui bloquejat
+ * */
+  static public function validaDiaBloqueig($DIA, $HORARI, $idS )
   {
   	//Tenim un dia amb bloqueig de tots els espais
-	$C = new Criteria();	
-	$C->add(self::DIA, $DIA);	
-	$C->addJoin(self::HORARISID, HorarisespaisPeer::HORARIS_HORARISID);
+	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);		    		
+    $C->addJoin(self::HORARISID, HorarisespaisPeer::HORARIS_HORARISID);
+    $C = HorarisespaisPeer::getCriteriaActiu($C,$idS);
+    
+    $C->add(self::DIA, $DIA);
 	$C->add(HorarisEspaisPeer::ESPAIS_ESPAIID, 22);
 	$C->add(self::HORARISID,$HORARI,CRITERIA::NOT_EQUAL);	
-	return (self::doCount($C) > 0)?1:0;  	
-  }
+                
+    return (self::doCount($C) > 0)?1:0;  	
+  }  
   
-  
-  static public function validaDia( $DIA , $idE , $HoraPre , $HoraPost , $idH )
+/**
+ * Comprova que el dia estigui lliure 
+ * */
+  static public function validaDia( $DIA , $idE , $HoraPre , $HoraPost , $idH , $idS )
   {
-  
-  	//Garantim que si hi ha un altre espai, no comprovi
-  	if($idE == 1) $idE = 0;
-  	
-    //HoraPre o HoraPost entre les hores o bé agafa tot l'intèrval    
-	$SQL = "  SELECT count(*) as Va
-				FROM horarisespais he, horaris h
-    		   WHERE h.DIA = '$DIA'
-    			 AND h.HorarisID = he.Horaris_HorarisID
-    			 AND (
-                        ( ( '$HoraPre' <=  h.horaPre )  AND ('$HoraPost' >   h.horaPre) ) OR 
-                        ( ( '$HoraPre' <   h.horaPost ) AND ('$HoraPost' >=  h.horaPost) ) OR
-                        ( ( '$HoraPre' >=  h.horaPre )  AND ('$HoraPost' <=  h.horaPost) )                                                 
-        			)
-        		 AND he.Espais_EspaiID = $idE        		         			        			
-        	";
+        
+    //Garantim que si hi ha un altre espai, no comprovi
+    if($idE == 1) $idE = 0;
     
-   	 if( $idH > 0 ) $SQL .= " AND he.Horaris_HorarisID <> $idH";
-			
-     $con = Propel::getConnection();
-     $stmt = $con->prepare($SQL);
-     $stmt->execute();
-
-     $rs = $stmt->fetch(PDO::FETCH_OBJ);
-     return $rs->Va;  	
+    //Tornar-la a fer per fer-la més criteria; 
+    $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    
+    $C->addJoin( self::HORARISID , HorarisespaisPeer::HORARIS_HORARISID );
+    $C = HorarisespaisPeer::getCriteriaActiu($C,$idS);
+    
+    $C->add( HorarisespaisPeer::ESPAIS_ESPAIID, $idE);
+    $C->addAnd( MaterialPeer::getCriteriaSolapament($C,$HoraPre,$HoraPost,HorarisPeer::HORAPRE,HorarisPeer::HORAPOST));
+    $C->add( self::DIA , $DIA );
+        
+    if($idH > 0) $C->add(HorarisespaisPeer::HORARIS_HORARISID, $idH , Criteria::NOT_EQUAL);
+            
+ 	return self::doCount($C);  	  	    		  	
   
   }
-  
-  static public function validaMaterial( $DIA , $idE , $idM , $HoraPre , $HoraPost , $idH)
-  {
-  	
-	$SQL = "  SELECT count(*) as Va
-				FROM horarisespais he, horaris h
-    		   WHERE h.DIA = '$DIA'
-    			 AND h.HorarisID = he.Horaris_HorarisID
-    			 AND (
-                        ( ( '$HoraPre' <=  h.horaPre )  AND ('$HoraPost' >   h.horaPre) ) OR 
-                        ( ( '$HoraPre' <   h.horaPost ) AND ('$HoraPost' >=  h.horaPost) ) OR
-                        ( ( '$HoraPre' >=  h.horaPre )  AND ('$HoraPost' <=  h.horaPost) )                                                 
-        			)
-        		 AND he.Material_idMaterial = $idM        			
-        	";
-	
-	 if( $idH > 0 ) $SQL .= " AND he.Horaris_HorarisID <> $idH";
-	 
-     $con = Propel::getConnection();
-     $stmt = $con->prepare($SQL);
-     $stmt->execute();
-
-     $rs = $stmt->fetch(PDO::FETCH_OBJ);
-     return $rs->Va;  	
-  	
-  }
-    
-  static public function save( $HORARIS, $DBDD , $MATERIAL , $ESPAIS )
+      
+  static public function save( $HORARIS, $DBDD , $MATERIAL , $ESPAIS , $idS )
   {
 	
-  	//Esborrem les dades dels antics horaris sempre i quant sigui nou  	
-	if($HORARIS['HorarisID'] > 0) //Si l'horari NO és nou, l'esborrem
-	{ 
-		
+  	//Marquem tots els horaris com a inactius i els guardarem com a històric          	
+	if($HORARIS['HorarisID'] > 0)
+	{ 		
 		$OH = HorarisPeer::retrieveByPK($HORARIS['HorarisID']);		
 		foreach($OH->getHorarisespaiss() as $HE):
-			$HE->delete();
+			$HE->setActiu(false);
+            $HE->save();
 		endforeach;
-		$OH->delete();
-		
+		$OH->setActiu(false);
+        $OH->save();		
 	}	 	
   	
   	//Per cada un dels dies que ha entrat, creem un horari
@@ -384,8 +381,7 @@ class HorarisPeer extends BaseHorarisPeer
   		  			  
 	  	$OH = new Horaris();
 	  	$OH->setNew(true);
-	  	$NOU = true;	    
-	  	  	
+	  	$NOU = true;	            	  	
 	  	$OH->setActivitatsActivitatid($HORARIS['Activitats_ActivitatID']);
 	  	$OH->setHorainici($DBDD['HoraIn']);
 	  	$OH->setHorapre($DBDD['HoraPre']);
@@ -395,15 +391,19 @@ class HorarisPeer extends BaseHorarisPeer
 	  	$OH->setEspectadors($HORARIS['Espectadors']);
 	  	$OH->setPlaces($HORARIS['Places']);
 		$OH->setDia($D);
+        $OH->setActiu(true);
+        $OH->setSiteid($idS);
 		$OH->save();  //Guardem				
-		
+		                
   		foreach($ESPAIS as $K=>$idE):  			
   			foreach($MATERIAL as $K=>$idM):
   				$OHE = new Horarisespais();				//Creem  un registre per espai i per material de l'horari del dia
   				$OHE->setNew(true);  			
-  				$OHE->setMaterialIdmaterial($idM);
+  				$OHE->setMaterialIdmaterial($idM['material']);
   				$OHE->setEspaisEspaiid($idE);
   				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+                $OHE->setActiu(true);
+                $OHE->setSiteid($idS);
   				$OHE->save();
   			endforeach;
   			if(empty($MATERIAL)):
@@ -412,6 +412,8 @@ class HorarisPeer extends BaseHorarisPeer
   				$OHE->setMaterialIdmaterial(NULL);
   				$OHE->setEspaisEspaiid($idE);
   				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+                $OHE->setActiu(true);
+                $OHE->setSiteid($idS);
   				$OHE->save();
   			endif;
   		endforeach;
@@ -419,21 +421,27 @@ class HorarisPeer extends BaseHorarisPeer
   	endforeach;
   	
   }
-  
-  	static function isMaterialEnUs($idM,$di,$df)
+/*
+Passat a materialPeer  
+  	static function isMaterialEnUs($idM,$di,$df,$idS)
 	{		
 		$C = new Criteria();
 		$C->add(HorarisespaisPeer::MATERIAL_IDMATERIAL, $idM);
 		$C->addJoin(HorarisespaisPeer::HORARIS_HORARISID, HorarisPeer::HORARISID);
-		$C->add(HorarisPeer::DIA, implode('/',$di) , CRITERIA::GREATER_EQUAL);
-		$C->add(HorarisPeer::DIA, implode('/',$df) , CRITERIA::LESS_EQUAL);
+		$C->add(HorarisPeer::DIA, $di , CRITERIA::GREATER_EQUAL);
+		$C->add(HorarisPeer::DIA, $df , CRITERIA::LESS_EQUAL);
+        $C->add(HorarisPeer::SITE_ID, $idS);
+        $C->add(HorarisPeer::ACTIU, true);
 		return (HorarisespaisPeer::doCount($C) > 0);
 	}
-  
-	static public function getActivitatsDia($D)
+*/  
+	static public function getActivitatsDia($D,$idS)
 	{
 		$C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        
 		$C->add(self::DIA, $D);
+                
 		return self::doSelect($C);
 	}
       

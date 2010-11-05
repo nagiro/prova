@@ -14,7 +14,7 @@ class CursosCodiForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
-      'Codi'			=> new sfWidgetFormChoice(array('choices'=>CursosPeer::getCodisOptions()),array('style'=>'width:300px')),
+      'Codi'			=> new sfWidgetFormChoice(array('choices'=>CursosPeer::getCodisOptions($this->getOption('IDS'))),array('style'=>'width:300px')),
       'CodiT'			=> new sfWidgetFormInputText(array(),array()),      
     ));
     

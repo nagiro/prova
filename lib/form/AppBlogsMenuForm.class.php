@@ -15,11 +15,11 @@ class AppBlogsMenuForm extends BaseAppBlogsMenuForm
   	
     $this->setWidgets(array(
       'id'        => new sfWidgetFormInputHidden(),
-      'name'      => new sfWidgetFormInputText(),      
-      'order'     => new sfWidgetFormInputText(),
+      'name'      => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),      
+      'order'     => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'blog_id'   => new sfWidgetFormInputHidden(),
-      'father_id' => new sfWidgetFormChoice(array('choices'=>AppBlogsMenuPeer::getBlogMenusArray($this->getOption('APP_BLOG')))),
-      'page_id'   => new sfWidgetFormChoice(array('choices'=>AppBlogsPagesPeer::getBlogPagesArray($this->getOption('APP_BLOG')))),      
+      'father_id' => new sfWidgetFormChoice(array('choices'=>AppBlogsMenuPeer::getBlogMenusArray($this->getOption('APP_BLOG'),$this->getOption('IDS')))),
+      'page_id'   => new sfWidgetFormChoice(array('choices'=>AppBlogsPagesPeer::getBlogPagesArray($this->getOption('APP_BLOG'),$this->getOption('IDS')))),      
     ));
 
     $this->setValidators(array(

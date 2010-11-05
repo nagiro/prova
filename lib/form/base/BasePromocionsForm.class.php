@@ -21,6 +21,8 @@ abstract class BasePromocionsForm extends BaseFormPropel
       'isActiva'   => new sfWidgetFormInputText(),
       'isFixa'     => new sfWidgetFormInputText(),
       'URL'        => new sfWidgetFormTextarea(),
+      'site_id'    => new sfWidgetFormInputText(),
+      'actiu'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -31,6 +33,8 @@ abstract class BasePromocionsForm extends BaseFormPropel
       'isActiva'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'isFixa'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'URL'        => new sfValidatorString(),
+      'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('promocions[%s]');

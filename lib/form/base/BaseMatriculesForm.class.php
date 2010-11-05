@@ -23,6 +23,8 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'Pagat'            => new sfWidgetFormInputText(),
       'tReduccio'        => new sfWidgetFormInputText(),
       'tPagament'        => new sfWidgetFormInputText(),
+      'site_id'          => new sfWidgetFormInputText(),
+      'actiu'            => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -35,6 +37,8 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
       'tReduccio'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'tPagament'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
+      'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('matricules[%s]');

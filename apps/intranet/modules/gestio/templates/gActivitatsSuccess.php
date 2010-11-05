@@ -44,39 +44,40 @@
 		}
 	}
 
-	 //Funció que controla la crida AJAX 
+    //Funció que captura de quin genèric parlem i busca els disponibles. 
 	function ajax(d, iCtrl)
 	{
 												
-		$.getJSON(
-				 "<?php echo url_for('gestio/selectMaterial') ?>",						//Url que visita 
-				 { id: d.value }, 												//Valor seleccionat a la primera llista
-				 function(data,textStatus) { updateJSON( data, textStatus, iCtrl );  } //Carreguem les dades JSON
-				);
-	}
-
-
-	function updateJSON(data, textStatus, iCtrl ){		
-		var options = "";						
-		for (var i = 0; i < data.length; i++) {
-	        options += '<option value="' + data[i].key + '">' + data[i].value + '</option>';				
-		}						
-								
-		$("select#material\\["+iCtrl+"\\]").html(options);								//Actualitzem el control iCtrl
-	}
-
+        $.get(
+                '<?php echo url_for('gestio/AjaxSelectMaterial') ?>',  
+                { dies: $('#multi999Datepicker').val() , 
+                  horapre: $('#horaris_HoraPre_hour').val()+':'+$('#horaris_HoraPre_minute').val() ,
+                  horapost: $('#horaris_HoraPost_hour').val()+':'+$('#horaris_HoraPost_minute').val(),
+                  generic: d.value 
+                } , 
+                function(data) { $("select#material\\["+iCtrl+"\\]").html(data); }
+            );                                                
+                                                
+    }
+    
+    //Generem el desplegable de material genèric
 	function creaFormMaterial()
 	{
 		
-		var id = $("#idV").val();		
+		var id = $("#idV").val();        		
 		id = (parseInt(id) + parseInt(1));
-		$("#idV").val(id);		
-				
-		var options = '<?php echo MaterialgenericPeer::selectAjax(); ?>';
-		$("#divTxt").append('<span id="row['+id+']"><select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select> <select name="material[' + id + ']" id="material[' + id + ']"></select>	<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
+		$("#idV").val(id);				                        
+        				
+        var options = '<?php echo MaterialgenericPeer::selectAjax() ?>';        
+		$("#divTxt").append(
+                        '<span id="row['+id+']">'+
+                        '<select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select>'+
+                        '<select name="material[' + id + ']" id="material[' + id + ']"></select>' +
+                        '<input type="button" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
 		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
 	}
 
+    //Generem el desplegable dels espais
 	function creaFormEspais()
 	{
 				
@@ -194,8 +195,8 @@
       	<TABLE class="DADES">
  			<?php if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap activitat definida.</TD></TR>'; endif; ?>  
 			<?php 	foreach($ACTIVITATS as $A):
-						$NH = ($A->countHorariss() == 0)?'Afegeix l\'horari':'Edita horaris';
-						$DESC = ($A->getDComplet()=="")?'Afegeix descripció':'Edita descripció';
+						$NH = ($A->countHorarisActius($IDS) == 0)?'Afegeix l\'horari':'Edita horaris';
+						$DESC = ($A->getDMig()=="")?'Afegeix descripció':'Edita descripció';
 						echo '<TR>
 								<TD class="" width="">'.link_to($A->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A->getActivitatid()).'</TD>
 								<TD class="" width="100px">'.link_to($NH,'gestio/gActivitats?accio=HORARI&IDA='.$A->getActivitatid()).'</TD>
@@ -254,7 +255,7 @@
 		<DIV class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&nou=2',array('class'=>'blau')) ?> )</DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
-			<?php 	foreach($HORARIS as $H): $M = $H->getHorarisespaissJoinMaterial(); $HE = $H->getHorarisespaissJoinEspais();
+			<?php 	foreach($HORARIS as $H): $M = $H->getArrayHorarisEspaisMaterial(); $HE = $H->getArrayHorarisEspaisActiusAgrupats();
 						echo '<TR>
 								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&IDH='.$H->getHorarisid()).'</TD>
 								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
@@ -262,8 +263,8 @@
 								<TD class="" width="">'.$H->getHorainici('H:i').'</TD>
 								<TD class="" width="">'.$H->getHorafi('H:i').'</TD>
 								<TD class="" width="">'.$H->getHorapost('H:i').'</TD>
-								<TD class="" width="">'; foreach($HE as $HESPAI): if(is_object($HESPAI->getEspais())): echo $HESPAI->getEspais()->getNom().'<br />'; endif; endforeach; echo '</TD>'; 
-						echo 	'<TD class="" width="">'; foreach($M as $MATERIAL): if(is_object($MATERIAL->getMaterial())): echo $MATERIAL->getMaterial()->getNom().'<br />'; endif; endforeach; echo '</TD>'; 
+								<TD class="" width="">'; foreach($HE as $HESPAI): echo $HESPAI.'<br />'; endforeach; echo '</TD>'; 
+						echo 	'<TD class="" width="">'; foreach($M as $MATERIAL): echo $MATERIAL['nom'].'<br />'; endforeach; echo '</TD>'; 
 						echo '</TR>';
 					endforeach;
 				
@@ -315,13 +316,13 @@
 	
 	             	<?php 
 						$id = 1;  $VAL = "";
-						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;        	
+						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;                                	
 	             		foreach($MATERIALOUT AS $M=>$idM):
 	
 	             		$VAL .= '
 	  	 	  	        		<span id="row['.$id.']">
 	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
-	  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic']),$idM['material']).'</select>	
+	  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic'],$IDS,$idM['material']),$idM['material']).'</select>	
 	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
 	  	 	  	        			<br />
 	  	 	  	        		</span>  	 	  	        			

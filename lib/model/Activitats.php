@@ -73,4 +73,18 @@ class Activitats extends BaseActivitats
         return $this->getHorariss($C);
    }
    
+   public function countHorarisActius($idS)
+   {
+     $C = new Criteria();
+     $C = HorarisPeer::getCriteriaActiu($C,$idS);     
+     return $this->countHorariss($C);
+   }
+   
+   public function getHorarisActius($idS)
+   {    
+     $C = new Criteria();
+     $C = HorarisPeer::getCriteriaActiu($C,$idS);     
+     return $this->getHorariss($C);    
+   }
+   
 }

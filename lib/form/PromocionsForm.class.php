@@ -14,13 +14,17 @@ class PromocionsForm extends sfFormPropel
   public function setup()
   {
   	
+    $this->URL = OptionsPeer::getString('SF_WEBSYSROOT',$this->getOption('IDS')).'images/banners/';    
+    $this->WEB_URL = OptionsPeer::getString('SF_WEBROOTURL',$this->getOption('IDS')).'images/banners/'.$this->getObject()->getExtensio(); 
+    
     $this->setWidgets(array(
       'PromocioID' => new sfWidgetFormInputHidden(),
       'Nom'        => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'URL'        => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
-      'Ordre'      => new sfWidgetFormChoice(array('choices'=>PromocionsPeer::selectOrdre($this->isNew()))),    
+      'Ordre'      => new sfWidgetFormChoice(array('choices'=>PromocionsPeer::selectOrdre($this->getOption('IDS'),$this->isNew()))),    
       'isActiva'   => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
       'isFixa'     => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
+      'Extensio'   => new sfWidgetFormInputFileEditable(array('file_src'=>$this->WEB_URL,'edit_mode'=>true,'is_image'=>true,'with_delete'=>false)),
             
     ));
     
@@ -31,22 +35,9 @@ class PromocionsForm extends sfFormPropel
       'isActiva'   => new sfValidatorInteger(array('required' => false)),
       'isFixa'     => new sfValidatorInteger(),
       'URL'        => new sfValidatorString(array('required'=>false)),
+      'Extensio'   => new sfValidatorFile(array('path'=>$this->URL , 'required' => false)),
     ));
-
-    
-    $OPromocio = $this->getObject();
-  	if($OPromocio instanceOf Promocions):  	
-  		$url = sfConfig::get('sf_webroot').'images/banners/';
-  		$nom = $OPromocio->getExtensio();
-  		$this->setWidget('Extensio', new sfWidgetFormInputFileEditable(array('file_src'=>$url.$nom,'edit_mode'=>true,'is_image'=>true,'with_delete'=>false)));
-	else:
-		$this->setWidget('Extensio', new sfWidgetFormInputFile());
-	endif; 
-
-	//Carreguem les dades de configuració
-	$url = sfConfig::get('sf_websysroot').'/images/banners';	
-	$this->validatorSchema['Extensio'] = new sfValidatorFile(array('path'=>$url,'required' => false));
-    
+        
     $this->widgetSchema->setLabels(array(      
       'Nom'        => 'Títol',
       'Ordre'      => 'Ordre',    
@@ -70,9 +61,15 @@ class PromocionsForm extends sfFormPropel
   {
  	
   	$OPromocions = $this->getObject();  	
-  	PromocionsPeer::gestionaOrdre($this->getValue('Ordre'),$OPromocions->getOrdre());
-  	  	   		  	
-  	parent::save();
+  	PromocionsPeer::gestionaOrdre($this->getValue('Ordre'),$OPromocions->getOrdre(),$this->getOption('IDS'));
+    
+    parent::save();
+    
+    $nom = $OPromocions->getExtensio();
+    if(!empty($nom)):
+        $img = new sfImage($this->URL.$nom, 'image/jpg');
+        $img->resize(171,63)->saveAs($this->URL.$nom);        
+    endif;  	  	   		  	  	
   	   	
   }  
   

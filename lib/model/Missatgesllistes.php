@@ -9,6 +9,7 @@
  */ 
 class Missatgesllistes extends BaseMissatgesllistes
 {
+        
 	public function getLlistesArray()
 	{
 		$RET = array();

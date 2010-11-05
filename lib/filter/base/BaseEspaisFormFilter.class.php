@@ -14,11 +14,13 @@ abstract class BaseEspaisFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'Nom'     => new sfWidgetFormFilterInput(),
       'Ordre'   => new sfWidgetFormFilterInput(array('with_empty' => false)),
+      'site_id' => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'Nom'     => new sfValidatorPass(array('required' => false)),
       'Ordre'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'site_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('espais_filters[%s]');
@@ -39,6 +41,7 @@ abstract class BaseEspaisFormFilter extends BaseFormFilterPropel
       'EspaiID' => 'Number',
       'Nom'     => 'Text',
       'Ordre'   => 'Number',
+      'site_id' => 'Number',
     );
   }
 }

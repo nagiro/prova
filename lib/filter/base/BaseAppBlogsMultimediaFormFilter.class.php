@@ -16,6 +16,7 @@ abstract class BaseAppBlogsMultimediaFormFilter extends BaseFormFilterPropel
       'desc'                             => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'url'                              => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'date'                             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
+      'site_id'                          => new sfWidgetFormFilterInput(),
       'app_blog_multimedia_entries_list' => new sfWidgetFormPropelChoice(array('model' => 'AppBlogsEntries', 'add_empty' => true)),
     ));
 
@@ -24,6 +25,7 @@ abstract class BaseAppBlogsMultimediaFormFilter extends BaseFormFilterPropel
       'desc'                             => new sfValidatorPass(array('required' => false)),
       'url'                              => new sfValidatorPass(array('required' => false)),
       'date'                             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'site_id'                          => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'app_blog_multimedia_entries_list' => new sfValidatorPropelChoice(array('model' => 'AppBlogsEntries', 'required' => false)),
     ));
 
@@ -72,6 +74,7 @@ abstract class BaseAppBlogsMultimediaFormFilter extends BaseFormFilterPropel
       'desc'                             => 'Text',
       'url'                              => 'Text',
       'date'                             => 'Date',
+      'site_id'                          => 'Number',
       'app_blog_multimedia_entries_list' => 'ManyKey',
     );
   }

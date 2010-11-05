@@ -17,20 +17,20 @@
 <TR>
 <!-- MENU -->
 	
-    <?php include_partial('menu', array( 'TIPUS_MENU' => $TIPUS_MENU , 'MENU' => $MENU , 'OBERT' => $OBERT , 'USUARI' => $USUARI) ); ?>
+    <?php include_partial('menu', array( 'TIPUS_MENU' => $TIPUS_MENU , 'MENU' => $MENU , 'OBERT' => $OBERT , 'USUARI' => $USUARI , 'IDS' => $IDS ) ); ?>
 
 <!-- FI MENU -->
 <!-- CONTINGUT -->
 
 	<?php  
-	$calendar = false;
+	$calendar = false;    
 	switch($ACCIO){
 	   case 'web'        : $calendar = true;  include_partial('pagina'  ,  array( 'NODE' => $NODE )); break;
-	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'FUSUARI' => $FUSUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'FRESERVA' => $FRESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS ) ); break;
+	   case 'gestio'     : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'FUSUARI' => $FUSUARI , 'MISSATGE' => $MISSATGE , 'LLISTES' => $LLISTES , 'FRESERVA' => $FRESERVA , 'RESERVES' => $RESERVES , 'MATRICULES' => $MATRICULES , 'CURSOS' => $CURSOS , 'LCURSOS' => $LCURSOS ) ); break;
 	   case 'remember'   : $calendar = false; include_partial('remember',  array( 'ENVIAT' => $ENVIAT , 'ERROR' => $ERROR , 'FREMEMBER' => $FREMEMBER )); break;
 	   case 'login'      : $calendar = false; include_partial('login'   ,  array( 'FLogin' => $FLogin , 'ERROR' => $ERROR )); break; 	      
 	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'NOTICIES' => $NOTICIES , 'NOTICIA' => $NOTICIA , 'PAGINA' => $PAGINA )); break;
-	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV )); break;
+	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV , 'ISPLE' => $ISPLE )); break;
 	   case 'registrat'  : $calendar = true;  include_partial('registrats'); break;
 	   case 'cursos'	 : $calendar = false; include_partial('cursos'); break;
 	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT , 'FConsulta'=>$FConsulta)); break;
@@ -68,7 +68,9 @@
        include_partial('calendari', array( 	'BANNERS' => $BANNERS , 
     										'DATACAL' => $DATACAL , 
     										'ACTIVITATS_CALENDARI' => $ACTIVITATS_CALENDARI ,
-    										'CERCA' => $CERCA ) ); 
+    										'CERCA' => $CERCA , 
+                                            'IDS' => $IDS ,
+                                             ) ); 
        endif;
    
        ?>
