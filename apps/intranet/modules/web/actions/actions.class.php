@@ -89,14 +89,14 @@ class webActions extends sfActions
 				$this->ACCIO = 'web';								    				
   			break;
   			
-  		//Contingut automàtic de cicles		
+  		//Contingut automàtic de cicles
   		case 'ac':
   			$this->NODE = NodesPeer::selectPagina($idN);
   			if(!$this->NODE->isNew()):
   				$cat = $this->NODE->getCategories();
 				$this->LLISTAT_CICLES = ActivitatsPeer::getCiclesCategoria($cat);
 	     		$this->ACCIO = 'llistatCiclesCategoria';
-	     		$ACT = ActivitatsPeer::selectCategories(true);
+	     		$ACT = ActivitatsPeer::selectCategories($this->IDS, true);
 	     		$this->TITOL = "Cicles i activitats a \"".$ACT[$cat].'"';
 	     		$this->CAT   = $cat;	     		
 	     	endif;   			  			

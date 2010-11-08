@@ -46,7 +46,7 @@
 					 	 		
 	 		<div class="FORMULARI fb">
 	 			<?php echo $FMissatge ?>
-	 			<?php if($FMissatge->getObject()->getUsuarisUsuariid() == $IDU || $NOU)	include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
+	 			<?php if($FMissatge->getObject()->getUsuarisUsuariid() == $IDU || isset($MODE['NOU']))	include_partial('botoneraDiv',array('element'=>'el missatge')); ?>		
 	 		</div>
 	 			 	 	
       	</div>
