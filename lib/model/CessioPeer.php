@@ -3,6 +3,13 @@
 class CessioPeer extends BaseCessioPeer
 {
 
+   static public function getCriteriaActiu($C,$idS)
+   {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+   }
+
   static function inicialitza( $id , $idS , $retorn = false )
   {
   	

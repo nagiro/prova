@@ -10,6 +10,13 @@
 class MaterialPeer extends BaseMaterialPeer
 {
 
+   static public function getCriteriaActiu($C,$idS)
+   {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+   }
+
   static function inicialitza( $id , $idMG , $idS )
   {
   	
@@ -72,7 +79,9 @@ class MaterialPeer extends BaseMaterialPeer
   static public function getMaterial($MATERIALGENERIC , $PAGINA = 1, $idS)
   {  	
   	
-    $C = self::criteria($idS);    
+    $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    
     if($MATERIALGENERIC > 0) $C->add(self::MATERIALGENERIC_IDMATERIALGENERIC , $MATERIALGENERIC);    
     
     $pager = new sfPropelPager('Material', 10);
@@ -116,15 +125,18 @@ class MaterialPeer extends BaseMaterialPeer
   {
     
     $OCUPAT = self::getMaterialOcupatHores( $datai , $dataf , $hi , $hf , $idS , $idG );
-
+        
     $RET = array();
-    $C = self::criteria($idS);
+    
+    $C = new Criteria();    
+    $C = self::getCriteriaActiu($C,$idS);
+    
     $C->add( MaterialPeer::MATERIALGENERIC_IDMATERIALGENERIC , $idG );
-    foreach(self::doSelect($C) as $OM):
+    foreach(self::doSelect($C) as $OM):        
         if(!array_key_exists($OM->getIdmaterial(),$OCUPAT)):
             $RET[$OM->getIdmaterial()] = '<option value="'.$OM->getIdmaterial().'">'.addslashes($OM->toString()).'</option>';
         else: 
-            $RET[$OM->getIdmaterial()] = '<option value="'.$OM->getIdmaterial().'" style="text-decoration: line-through">'.addslashes($OM->toString()).'</option>';            
+            $RET[$OM->getIdmaterial()] = '<option value="'.$OM->getIdmaterial().'">(O) '.addslashes($OM->toString()).'</option>';            
         endif;
     endforeach;
     
@@ -135,10 +147,11 @@ class MaterialPeer extends BaseMaterialPeer
   static private function criteriaOcupatCessio($datai , $dataf , $hi , $hf , $idS , $idG = null , $idH = null , $idC = null)
   {
     //Agafo les activitats que tenen material ocupat una data determinada.
-    $C = self::criteria($idS);    
-            
-    $C->add( MaterialPeer::ACTIU , true );
-    $C->add( MaterialPeer::SITE_ID , $idS );        
+    $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);    
+    $C = CessiomaterialPeer::getCriteriaActiu($C,$idS);
+    $C = CessioPeer::getCriteriaActiu($C,$idS);     
+                        
     if(!is_null($idG)) $C->add( MaterialPeer::MATERIALGENERIC_IDMATERIALGENERIC , $idG );
     if(!is_null($idC)) $C->add( CessiomaterialPeer::CESSIO_ID, $idC , Criteria::NOT_EQUAL );
     $C->addJoin( self::IDMATERIAL , CessiomaterialPeer::MATERIAL_IDMATERIAL );
@@ -154,11 +167,13 @@ class MaterialPeer extends BaseMaterialPeer
   {
     //Mirem les activitats que usen material aquests dies. 
     $C = new Criteria();
-    $C->add( HorarisPeer::ACTIU , true );
+    $C = self::getCriteriaActiu($C,$idS);
+    $C = HorarisPeer::getCriteriaActiu($C,$idS);
+    $C = HorarisespaisPeer::getCriteriaActiu($C,$idS);
+    
     $C->addJoin( HorarisPeer::HORARISID , HorarisespaisPeer::HORARIS_HORARISID );
-    $C->add( HorarisespaisPeer::ACTIU , true );
     $C->addJoin( HorarisespaisPeer::MATERIAL_IDMATERIAL , MaterialPeer::IDMATERIAL );
-    $C->add( MaterialPeer::ACTIU , true );
+    
     if(!is_null($idG)) $C->add( MaterialPeer::MATERIALGENERIC_IDMATERIALGENERIC , $idG );    
     if(!is_null($idH)) $C->add( HorarisPeer::HORARISID , $idH, Criteria::NOT_EQUAL);
     $C1 = self::getCriteriaSolapament($C,$datai,$dataf,HorarisPeer::DIA,HorarisPeer::DIA);

@@ -16,6 +16,8 @@
 
 	<script type="text/javascript">
 
+    var hora;
+
 	 $(document).ready(function() {	
 		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1								
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
@@ -25,7 +27,26 @@
 		 
 		 $("#activitats_nom").fadeOut(0);						 
 		 $("label[for=activitats_nom]").fadeOut(0);
-		 $("#horaris_HoraPre_hour").click(actualitzaHores);
+         
+		 $("#horaris_HoraPre_hour").change(function(){
+		      hora = parseInt($("#horaris_HoraPre_hour").val());              
+		      $("#horaris_HoraInici_hour").val(hora);
+              $("#horaris_HoraPost_hour").val(hora+1);
+              $("#horaris_HoraFi_hour").val(hora+1);
+            });
+            
+         $("#horaris_HoraInici_hour").change(function(){
+		      hora = parseInt($("#horaris_HoraInici_hour").val());              		      
+              $("#horaris_HoraPost_hour").val(hora+1);
+              $("#horaris_HoraFi_hour").val(hora+1);
+            });
+            
+         $("#horaris_HoraFi_hour").change(function(){
+		      hora = parseInt($("#horaris_HoraFi_hour").val());
+              $("#horaris_HoraPost_hour").val(hora);
+            });
+         
+         
 
 	 });
 
@@ -92,17 +113,6 @@
 	
 	function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 	function esborraLiniaE(id) { $("#rowE\\["+id+"\\]").remove(); }
-
-	function actualitzaHores(){
-		var a;
-		a =  parseInt($("#horaris_HoraPre_hour").val());
-		af = a+1;		
-		
-		$("#horaris_HoraInici_hour").val(a);
-		$("#horaris_HoraFi_hour").val(af);
-		$("#horaris_HoraPost_hour").val(af);
-		
-	}
 	
 	</script>
 

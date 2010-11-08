@@ -10,6 +10,15 @@
 class CessiomaterialPeer extends BaseCessiomaterialPeer
 {
     
+    
+   static public function getCriteriaActiu($C,$idS)
+   {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID, $idS);
+    return $C;
+   }
+
+    
    /**
     * 
     * @param Cessiomaterial $OCESSIO
