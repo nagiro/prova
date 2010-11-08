@@ -2766,7 +2766,7 @@ class gestioActions extends sfActions
     	case 'DELETE_MENU':
     			$this->FORM_MENU = AppBlogsMenuPeer::initialize( $this->APP_MENU , $this->APP_BLOG , $this->IDS );
     			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_MENU->getObject());
-    			$this->FORM_MENU->getObject()->setActiu(false)->save();    			
+    			$this->FORM_MENU->getObject()->setInactiu();    			
     			$this->redirect('gestio/gBlogs?accio=VIEW_CONTENT');
     		break;
     	case 'SAVE_MENU':
@@ -2801,7 +2801,7 @@ class gestioActions extends sfActions
                         
     					$this->FORM_PAGE = AppBlogsPagesPeer::initialize( $this->APP_PAGE , $this->APP_BLOG , $this->IDS  );
     					$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_PAGE->getObject());
-    					$this->FORM_PAGE->getObject()->setActiu(false)->save();
+    					$this->FORM_PAGE->getObject()->setInactiu();
                             					
     					unset($this->FORM_PAGE); 
                         $this->reloadBlog();
@@ -2849,7 +2849,7 @@ class gestioActions extends sfActions
     			$this->FORM_ENTRY = AppBlogsEntriesPeer::initialize( $this->APP_ENTRY , 'CA' , $this->APP_PAGE , $this->APP_BLOG , $this->IDS );
     			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_ENTRY->getObject());
     			
-                $this->FORM_ENTRY->getObject()->setActiu(false)->save();
+                $this->FORM_ENTRY->getObject()->setInactiu();
                 
     			$this->reloadBlog();
                 
@@ -2887,15 +2887,14 @@ class gestioActions extends sfActions
                 $this->APP_BLOG = $RS['id'];                
                                 
     			$this->FORM_BLOG = AppBlogsBlogsPeer::initialize( $this->APP_BLOG , $this->IDS );
-    			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_BLOG->getObject());
-    			$this->FORM_BLOG->getObject()->setActiu(false)->save();
+    			$this->getUser()->addLogAction($accio,'gBlogs',$this->FORM_BLOG->getObject());                
+    			$this->FORM_BLOG->getObject()->setInactiu();
                 unset($this->FORM_BLOG);
     		break;
                 		
-    	case 'DELETE_IMAGE':    			
-    			$this->getUser()->addLogAction($accio,'gBlogs',$this->APP_MULTIMEDIA);
-                AppBlogsMultimediaPeer::initialize( $this->APP_MULTIMEDIA , $this->IDS )->getObject()->setActiu(false)->save();
-                $this->getUser()->addLogAction($accio,'gBlogs',$this->APP_MULTIMEDIA);    			
+    	case 'DELETE_IMAGE':    			    			
+                AppBlogsMultimediaPeer::initialize( $this->APP_MULTIMEDIA , $this->IDS )->getObject()->setInactiu();
+                $this->getUser()->addLogAction($accio,'gBlogs',$this->APP_MULTIMEDIA);
     		break;
             
     	case 'SAVE_BLOG':

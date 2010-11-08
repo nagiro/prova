@@ -2,6 +2,21 @@
 
 class AppBlogsEntries extends BaseAppBlogsEntries
 {
+
+    public function setInactiu()
+    {
+        $this->setActiu(false);
+        
+        $C = new Criteria();        
+        $C = AppBlogMultimediaEntriesPeer::getCriteriaActiu($C,$this->getSiteId());        
+        foreach($this->getAppBlogMultimediaEntriess() as $OM):
+            $OM->setInactiu();
+        endforeach;
+                
+        $this->save();
+    }
+
+
 	public function getImages()
 	{
 		$C = new Criteria();

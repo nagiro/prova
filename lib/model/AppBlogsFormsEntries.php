@@ -2,6 +2,13 @@
 
 class AppBlogsFormsEntries extends BaseAppBlogsFormsEntries
 {
+
+    public function setInactiu()
+    {
+        $this->setActiu(false);        
+        $this->save();
+    }
+
 	public function getArrayElements()
 	{
 		$SOL = array();
