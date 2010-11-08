@@ -46,14 +46,18 @@ all:
       cache_key_use_host_name:    true
       
   storage:
-    class: sfPDOSessionStorage
-    param:
-      session_name: intranet
-      db_table:     sessions
-      database:     propel
-      db_id_col:    sess_id
-      db_data_col:  sess_data
-      db_time_col:  sess_time
+    class: sfSessionStorage
+    param: 
+      session_name: symfony
+
+#    class: sfPDOSessionStorage
+#    param:
+#      session_name: intranet
+#      db_table:     sessions
+#      database:     propel
+#      db_id_col:    sess_id
+#      db_data_col:  sess_data
+#      db_time_col:  sess_time
       
   user:
     class: myUser

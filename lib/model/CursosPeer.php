@@ -21,7 +21,7 @@ class CursosPeer extends BaseCursosPeer
         else:
         	$OC = new Cursos();
             $OC->setSiteId($idS);          
-            $OC->setActiva(true);                              
+            $OC->setActiu(true);                              
         	return new CursosForm($OC);			
         endif; 
     }
@@ -29,7 +29,7 @@ class CursosPeer extends BaseCursosPeer
    
   static public function getCriteriaActiu( $C , $idS )
   {    
-    $C->add(self::ACTIVA, true);
+    $C->add(self::ACTIU, true);
     $C->add(self::SITE_ID, $idS);
     return $C;
   }

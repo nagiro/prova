@@ -111,7 +111,7 @@ class gestioActions extends sfActions
     //Carreguem quantes matrÃ­cules noves hi ha
     $this->NMATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
     //Carreguem quant material nou hi ha
-//    $this->NMATERIAL    = MaterialPeer::QuantAvui();
+    $this->NMATERIAL    = 0;
     //Carreguem quants missatges nous hi ha
     $this->NMISSATGES   = MissatgesPeer::QuantsAvui($idU , $this->getUser()->getSessionPar('idS'));
     //Carreguem quantes feines s'han fet
@@ -1844,7 +1844,7 @@ class gestioActions extends sfActions
     	case 'D': 
                 $RP = $request->getParameter('cursos');
                 $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );
-                $this->FCurs->getObject()->setActiva(false)->save();                            			    			
+                $this->FCurs->getObject()->setActiu(false)->save();                            			    			
  				$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());    	        					
 				$this->redirect('gestio/gCursos?accio=CA');
     	    break;
