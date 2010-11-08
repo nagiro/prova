@@ -10,7 +10,7 @@
 	    	<table class="DADES">          
                 <?php                                                   
                   foreach($PROMOCIONS as $P):                  	                                         
-                      echo '<TR><td>'.link_to(image_tag('/images/banners/'.$P->getExtensio()),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';                      
+                      echo '<TR><td>'.link_to(image_tag(OptionsPeer::getString('SF_WEBROOT',$IDS).'/images/banners/'.$P->getExtensio(),array('absolute'=>true)),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';                      
                   endforeach;                                  
                   
                 ?>  
