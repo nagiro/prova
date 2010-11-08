@@ -54,7 +54,7 @@ class Horaris extends BaseHoraris
         $C->addGroupByColumn( HorarisespaisPeer::MATERIAL_IDMATERIAL );
         foreach(HorarisespaisPeer::doSelect($C) as $HE):            
             $OM = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());
-            if($OM insntaceof Material):
+            if($OM instanceof Material):
                 $RET[$OM->getIdmaterial()] = array('material'=>$OM->getIdmaterial(),'nom'=>$OM->toString(),'generic'=>$OM->getMaterialgenericIdmaterialgeneric());
             endif;
         endforeach;        
