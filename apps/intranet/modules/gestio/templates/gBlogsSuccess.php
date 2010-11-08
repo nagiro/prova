@@ -321,6 +321,8 @@
 	    	<table>
 	    	<?php 
 	    	
+                $WEBROOT = OptionsPeer::getString('SF_WEBROOT',$IDS);
+            
 	    		foreach($VIEW_FORM_ENTRIES as $F):
 	    			echo '<tr>';
 	    			echo '<td>
@@ -338,16 +340,16 @@
 	    				endif;
 	    				
 	    			endforeach;
-	    			echo '<a onClick="Activa('.$F->getId().')"><img src="'.sfConfig::get('sf_webroot').'/images/template/add.png'.'" /></a>';
+	    			echo '<a onClick="Activa('.$F->getId().')"><img src="'.$WEBROOT.'/images/template/add.png'.'" /></a>';
 	    			$O = $F->getObjeccions();
-	    			if(!empty($O)) echo ' <a onClick="Activa('.$F->getId().')"><img src="'.sfConfig::get('sf_webroot').'/images/template/buildings.png'.'" /></a>';
+	    			if(!empty($O)) echo ' <a onClick="Activa('.$F->getId().')"><img src="'.$WEBROOT.'/images/template/buildings.png'.'" /></a>';
 	    			echo '</div>';
 	    			echo '<div class="hidden2" id="hidden2_'.$F->getId().'">';
-	    			echo '<a onClick="Desactiva('.$F->getId().')"><img src="'.sfConfig::get('sf_webroot').'/images/template/add.png'.'" /></a><br />';
+	    			echo '<a onClick="Desactiva('.$F->getId().')"><img src="'.$WEBROOT.'/images/template/add.png'.'" /></a><br />';
 	    			foreach($F->getArrayElements() as $K=>$V):
 	    				if($K == 'file'):
 	    					foreach($V as $V2):	    						
-	    						$R = '<a href="'.OptionsPeer::getString('SF_WEBROOT',$IDS).'uploads/formularis/'.$V2.'">'.$V2.'</a>';
+	    						$R = '<a href="'.$WEBROOT.'uploads/formularis/'.$V2.'">'.$V2.'</a>';
 	    						echo '<i>'.$K.'</i>: <b>'.$R.'</b> - ';
 	    					endforeach;
 	    				else: 
