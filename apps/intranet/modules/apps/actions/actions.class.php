@@ -23,7 +23,8 @@ class appsActions extends sfActions
   
   public function executeGDocuments(sfWebRequest $request)
   {
-  	
+  
+    $this->IDS  = $this->getUser()->getSessionPar('idS');  	
     $IDU        = $this->getUser()->getSessionPar('idU');
   	$IDD        = $this->getUser()->ParReqSesForm($request , 'IDD' , 1 );
   	$IDA		= $this->getUser()->ParReqSesForm( $request , 'IDA' , null );  	  	  	
@@ -38,39 +39,25 @@ class appsActions extends sfActions
   	
   		//Mostrem el diàleg d'upload
   		case 'UPLOAD':
-  				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
-  				if(!($OA instanceof AppDocumentsArxius)):
-  					$OA = new AppDocumentsArxius();
-  					$OA->setDatacreacio(date('Y-m-d',time()));
-  					$OA->setIddirectori($IDD);  				  					
-  				endif;  				  				  				
-  				$this->FUPLOAD = new AppDocumentsArxiusForm($OA);  				
+                $this->FUPLOAD = AppDocumentsArxiusPeer::initialize($IDA,$IDD,$this->IDS);  				 				  				  				
   				$this->MODE = 'UPLOAD';
   			break;
   		
   		//Guardem un arxiu que hem carregat. 
   		case 'SAVE_UPLOAD':
-  				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
-  				if(!($OA instanceof AppDocumentsArxius)):
-  					$OA = new AppDocumentsArxius();  					
-  				endif;   				  				  				
-  				$this->FUPLOAD = new AppDocumentsArxiusForm($OA);
-  				$this->FUPLOAD->bind($request->getParameter('app_documents_arxius'),$request->getFiles('app_documents_arxius'));
-  				
+                $RP = $request->getParameter('app_documents_arxius');
+                $this->FUPLOAD = AppDocumentsArxiusPeer::initialize($IDA,0,$this->IDS);                
+  				$this->FUPLOAD->bind($RP,$request->getFiles('app_documents_arxius'));  				
   				if($this->FUPLOAD->isValid()): 
   					$this->FUPLOAD->save();  					  				  				
   					$this->redirect('apps/gDocuments?accio=CD');
-  				endif; 
-				  			
+  				endif; 				  			
   				$this->MODE = 'UPLOAD';
   			break;
   			
   		//Esborrem un arxiu guardat prèviament 
   		case 'DELETE':
-  				$OA = AppDocumentsArxiusPeer::retrieveByPK($IDA);
-  				if($OA instanceof AppDocumentsArxius):
-  					$OA->delete();  									
-  				endif;   			
+                $this->FUPLOAD = AppDocumentsArxiusPeer::initialize($IDA,0,$this->IDS)->setInactiu();  				  				
   				$this->redirect('apps/gDocuments?accio=CD'); 	  				  				  								  		  				
   			break;
   			
@@ -80,13 +67,11 @@ class appsActions extends sfActions
   			break;
   	}
   	
-  	$this->ACTUAL = AppDocumentsDirectorisPeer::retrieveByPK($IDD);			  	
-  	if(!($this->ACTUAL instanceof AppDocumentsDirectoris)):
-  		$this->ACTUAL = AppDocumentsDirectorisPeer::retrieveByPK(1);
-  		$this->getUser()->setAttribute('IDD',1);			  		
-  	endif;
-  	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU);
-  	$this->PERMISOS_AL_DIR = AppDocumentsPermisosDirPeer::getPermis($IDU,$IDD);
+  	$this->ACTUAL = AppDocumentsDirectorisPeer::initialize($IDD)->getObject();			  	  	
+	$this->getUser()->setAttribute('IDD',1);			  		
+  	
+  	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU,$this->IDS);
+  	$this->PERMISOS_AL_DIR = AppDocumentsPermisosDirPeer::getPermis($IDU,$IDD,$this->IDS);
   	  	  
   	$this->setLayout('gestio_apps');
   	

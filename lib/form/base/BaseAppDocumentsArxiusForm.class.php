@@ -20,6 +20,7 @@ abstract class BaseAppDocumentsArxiusForm extends BaseFormPropel
       'url'                         => new sfWidgetFormTextarea(),
       'DataCreacio'                 => new sfWidgetFormDate(),
       'site_id'                     => new sfWidgetFormInputText(),
+      'actiu'                       => new sfWidgetFormInputText(),
       'app_documents_permisos_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
@@ -30,6 +31,7 @@ abstract class BaseAppDocumentsArxiusForm extends BaseFormPropel
       'url'                         => new sfValidatorString(),
       'DataCreacio'                 => new sfValidatorDate(),
       'site_id'                     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'app_documents_permisos_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 
