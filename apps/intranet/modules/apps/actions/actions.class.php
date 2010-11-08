@@ -67,7 +67,7 @@ class appsActions extends sfActions
   			break;
   	}
   	
-  	$this->ACTUAL = AppDocumentsDirectorisPeer::initialize($IDD)->getObject();			  	  	
+  	$this->ACTUAL = AppDocumentsDirectorisPeer::initialize($IDD,$this->IDS)->getObject();			  	  	
 	$this->getUser()->setAttribute('IDD',1);			  		
   	
   	$this->DIRECTORIS = AppDocumentsDirectorisPeer::getDirectoris($IDU,$this->IDS);
