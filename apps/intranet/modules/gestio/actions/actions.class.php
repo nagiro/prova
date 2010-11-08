@@ -1095,7 +1095,7 @@ class gestioActions extends sfActions
     			$this->IDA = $RP['ActivitatID'];
     			$this->IDC = $RP['Cicles_CicleID'];
     		
-	    		$this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC);
+	    		$this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC,$this->IDS);
 	    		$OA = $this->FActivitat->getObject();
 	    		if($OA instanceof Activitats):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);                    
