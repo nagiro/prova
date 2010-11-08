@@ -1099,7 +1099,7 @@ class gestioActions extends sfActions
 	    		$OA = $this->FActivitat->getObject();
 	    		if($OA instanceof Activitats):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);
-	    			$OA->delete();
+                    $OA->setActiu(false)->save();	    			
 	    			$this->redirect('gestio/gActivitats?accio=CC');
 	    		endif; 	    		
 	    		    			    			
@@ -1184,7 +1184,7 @@ class gestioActions extends sfActions
     			$OH = HorarisPeer::retrieveByPK($RH['HorarisID']);
     			if($OH instanceof Horaris):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OH);
-	    			$OH->delete();    			    			
+	    			$OH->setActiu(false)->save();    			    			
 	    		endif; 
 	   			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$RH['Activitats_ActivitatID']);
 	   			
@@ -2516,7 +2516,7 @@ class gestioActions extends sfActions
     	case 'DC': 
     	        $OC = CessioPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'));
     	        $this->getUser()->addLogAction($accio,'gCessio',$OC);
-    	        $OC->delete();    	        
+    	        $OC->setActiu(false)->save();    	        
     	        break;
     	        
     	//Guarda retorn
