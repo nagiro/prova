@@ -1098,8 +1098,8 @@ class gestioActions extends sfActions
 	    		$this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC);
 	    		$OA = $this->FActivitat->getObject();
 	    		if($OA instanceof Activitats):
-	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);
-                    $OA->setActiu(false)->save();	    			
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);                    
+                    $OA->setInactiu();
 	    			$this->redirect('gestio/gActivitats?accio=CC');
 	    		endif; 	    		
 	    		    			    			
@@ -1184,7 +1184,7 @@ class gestioActions extends sfActions
     			$OH = HorarisPeer::retrieveByPK($RH['HorarisID']);
     			if($OH instanceof Horaris):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OH);
-	    			$OH->setActiu(false)->save();    			    			
+	    			$OH->setInactiu();    			    			
 	    		endif; 
 	   			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$RH['Activitats_ActivitatID']);
 	   			

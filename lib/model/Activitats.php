@@ -9,6 +9,20 @@
  */ 
 class Activitats extends BaseActivitats
 {
+    
+    public function setInactiu()
+    {
+        $this->setActiu(false);
+        $C = new Criteria();
+        $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteid());
+        
+        foreach($this->getHorariss($C) as $OH):
+            $OH->setInactiu();
+        endforeach;        
+        
+        $this->save();                
+    }
+    
    public function getEspais()
    {
       $RET = array();

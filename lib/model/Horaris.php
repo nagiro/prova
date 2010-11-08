@@ -9,6 +9,19 @@
  */ 
 class Horaris extends BaseHoraris
 {
+
+    public function setInactiu()
+    {
+        $this->setActiu(false);
+        $C = new Criteria();
+        $C = HorarisespaisPeer::getCriteriaActiu($C,$this->getSiteid());
+        
+        foreach($this->getHorarisespaiss($C) as $OHE):            
+            $OHE->setActiu(false)->save();
+        endforeach;        
+        
+        $this->save();                
+    }
 	
 	public function getMaterials()
 	{
