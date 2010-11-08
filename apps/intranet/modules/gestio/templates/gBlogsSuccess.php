@@ -347,7 +347,7 @@
 	    			foreach($F->getArrayElements() as $K=>$V):
 	    				if($K == 'file'):
 	    					foreach($V as $V2):	    						
-	    						$R = '<a href="'.sfConfig::get('sf_webroot').'uploads/formularis/'.$V2.'">'.$V2.'</a>';
+	    						$R = '<a href="'.OptionsPeer::getString('SF_WEBROOT',$IDS).'uploads/formularis/'.$V2.'">'.$V2.'</a>';
 	    						echo '<i>'.$K.'</i>: <b>'.$R.'</b> - ';
 	    					endforeach;
 	    				else: 
