@@ -20,6 +20,12 @@ require 'lib/model/om/BaseOptionsPeer.php';
  */
 class OptionsPeer extends BaseOptionsPeer {
 
+    static public function getCriteriaActiu($C,$idS)
+    {
+        $C->add(self::SITE_ID, $idS);
+        return $C;    
+    }
+
     static public function getString($cond,$idS)
     {
         
@@ -31,6 +37,29 @@ class OptionsPeer extends BaseOptionsPeer {
         else return 'n/d';
         
     }
+    
+    static public function getOptionsArray($IDS)
+    {
+        $RET = array();
+        
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C,$IDS);
+                
+        foreach(self::doSelect($C) as $OO):
+            $RET[$OO->getOptionid()] = $OO->getOptionId();
+        endforeach;        
+         
+        return $RET;
+    }
+    
+    static public function initialize( $idO , $idS , $new )
+    {        
+        $OO = self::retrieveByPK($idO,$idS);            
+        if(!($OO instanceof Options)):                                    		
+        	$OO = new Options();
+            $OO->setSiteId($idS);                  
+        endif;         
+       	return new OptionsForm($OO,array('IDS'=>$idS,'NEW'=>$new));
+    }
 
 } // OptionsPeer
-

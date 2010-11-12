@@ -9,7 +9,7 @@
  */ 
 class NivellsPeer extends BaseNivellsPeer
 {
-
+  const SUPER_ADMIN = 999;
   const CREACIO = 7;
   const CAP = 6;
   const ANTICSMATRICULATS = 5;
@@ -24,8 +24,10 @@ class NivellsPeer extends BaseNivellsPeer
     $nivells = self::doSelect(new Criteria());
     $ret = array();
     foreach($nivells as $N)
-    {
+    {        
       $ret[$N->getIdnivells()] = $N->getNom();
+      //El nivell superadministrador no es pot escollir mai. 
+      unset($ret[self::SUPER_ADMIN]);
     }
     return $ret;
         

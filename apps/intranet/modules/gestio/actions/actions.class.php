@@ -10,57 +10,355 @@
  * @version    SVN: $Id: actions.class.php 2692 2006-11-15 21:03:55Z fabien $
  */
 class gestioActions extends sfActions
-{    
+{
+    
+
+   public function executeUFormularis(sfWebRequest $request)
+   {           
+    
+        $this->setLayout('gestio');
+        $this->DEFAULT = false;
+    
+        //Entren crides i es mostra una reposta en web si ha anat bé o no.        
+        $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
+        $PAR = unserialize($PARAMETRES);                        
+        switch($PAR['formulari']){
+        
+            //Paràmetres [id = IDReservaEspais]
+            //Només es podrà si l'estat actual és ESPERA_ACCEPTACIÓ_CONDICIONS
+            case 'Reserva_Espais_Mail_Accepta_Condicions':
+                    $this->TITOL = "Reserva d'espais";
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+                    if($OR instanceof Reservaespais && $OR->setAcceptada()):
+                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span>';
+                    else:
+                        $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error tècnic en l\'acceptació.<br />Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
+                    endif;                                                                 
+                break;
+                
+            //Des del mail la persona no accepta i rebutja les condicions. 
+            case 'Reserva_Espais_Mail_Rebutja_Condicions':
+                    $this->TITOL = "Reserva d'espais";
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+                    if($OR instanceof Reservaespais && $OR->setRebutjada()):                        
+                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span">';
+                    else:
+                        $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error en l\'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
+                    endif;                                                                 
+                break;                
+            default:                
+            break;
+        }    
+   }
+    
+  public function executeURemember(sfWebRequest $request)
+  {
+
+    $this->setLayout('gestio');
+    $this->ENVIAT = false;
+    $this->IDS = $this->getUser()->getSessionPar('idS');                                                            
+                                                                           
+    $RP = $request->getParameter('remember');
+    $this->FREMEMBER = new RememberForm();
+    $this->ERROR = "";   	 	    
+
+    if($request->hasParameter('BREMEMBER')):
+        $this->FREMEMBER->bind($RP);         
+        $OUsuari = UsuarisPeer::cercaDNI($this->FREMEMBER->getValue('DNI'));
+        if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()):
+  	        $BODY = OptionsPeer::getString('MISSATGE_REMEMBER',$this->IDS);
+            $BODY = str_replace('{{CONTRASSENYA}}',$OUsuari->getPasswd(),$BODY);
+            $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$OUsuari->getEmail(),' Hospici :: Recordatori de contrasenya ',$BODY);
+            $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),'informatica@casadecultura.org', '[Hospici :: RECORDATORI]',$BODY);
+            if(!$this->ENVIAT):
+                $this->ERROR = "Hi ha hagut algun problema enviant la contrassenya.<br /> Si us plau, torni-ho a provar més tard.";
+                $this->ENVIAT = false; 			        			            
+            endif;                   
+        elseif($this->FREMEMBER->isValid()):        		
+            $this->ERROR = "El DNI no existeix o suma incorrecte.";
+            $this->ENVIAT = false; 			        			
+        else:        		         
+        	$this->ERROR = "";
+        	$this->ENVIAT = false;        			 								 		 			
+        endif;        					 		         	                                 
+    endif; 
+                            
+  }
+  
+
+  public function executeUGestio(sfWebRequest $request)
+  {
+
+    $this->setLayout('gestio');
+    $this->accio = $request->getParameter('accio','C');
+    $this->IDU = $this->getUser()->getSessionPar('idU');
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->DEFAULT = false;
+    $this->MISSATGE = ""; 
+    
+    
+    //Consultem tota la info de l'usuari.
+    $this->FDADES      = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
+    $this->LRESERVES   = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );
+    $this->LMATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );
+        
+    if($request->hasParameter('BGESTIONAUSUARI')) $this->accio = 'GESTIONA_USUARI';
+    if($request->hasParameter('BGUARDAUSUARI')) $this->accio = 'GUARDA_USUARI';
+    if($request->hasParameter('BMATRICULA')) $this->accio = 'MATRICULA';
+    if($request->hasParameter('BGESTIONAMATRICULES')) $this->accio = 'GESTIONA_MATRICULES';
+    if($request->hasParameter('BGESTIONARESERVES')) $this->accio = 'GESTIONA_RESERVES';
+    if($request->hasParameter('BGUARDARESERVA')) $this->accio = 'GUARDA_RESERVA';
+    if($request->hasParameter('BACCEPTACONDICIONSRESERVA')) $this->accio = 'ACCEPTA_CONDICIONS_RESERVA';
+    if($request->hasParameter('BANULACONDICIONSRESERVA')) $this->accio = 'ANULA_CONDICIONS_RESERVA';
+            
+    switch($this->accio)
+    {
+        case 'NEW':
+            
+            break;
+        case 'GESTIONA_USUARI':
+                $this->FUSUARI = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
+            break;
+        case 'GUARDA_USUARI':
+                $RP = $request->getParameter('usuaris');
+                $this->FUSUARI = UsuarisPeer::initialize($RP['UsuariID'],$RP['site_id'],false,true);                
+                $this->FUSUARI->bind($RP);
+                if($this->FUSUARI->isValid()):                    
+                    $this->FUSUARI->save();
+                    $this->MISSATGE = array('Usuari guardat correctament.');
+                else: 
+                    $this->MISSATGE = array('Hi ha algun error al formulari.<br />Revisa els camps, si us plau.');                    
+                endif;
+            break;
+            
+        //Pas 1: Mostrem els cursos als que es pot matricular
+        case 'GESTIONA_MATRICULES':
+                $this->LCURSOS = CursosPeer::getCursos(CursosPeer::ACTIU,1,"",$this->IDS);
+                //Retorna la data d'inici de matrícula segons si és antic alumne o no. '
+                $this->DATA_INICI = UsuarisPeer::initialize($this->IDU,$this->IDS,false,false)->getObject()->getDataIniciMatricula();
+            break;
+            
+        //Pas 2: Passem a validació amb TPV
+        case 'MATRICULA':
+        
+            //Agafem el curs que s'ha seleccionat
+            $D = $request->getParameter('D');                        
+                                                 
+            $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
+            
+            $this->DADES_MATRICULA = array();
+            $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
+            $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();
+            $this->DADES_MATRICULA['IDU'] = $USUARI->getUsuariid();
+            $this->DADES_MATRICULA['MODALITAT'] = MatriculesPeer::PAGAMENT_TARGETA;
+            $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
+            $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
+            $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
+            //Apliquem els descomptes i gratuït si ja està el grup ple
+            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE'],$this->IDS);
+            $this->DADES_MATRICULA['CURS'] = $D['CURS'];
+            $this->ISPLE = CursosPeer::isPle($D['CURS'],$this->IDS);
+                          
+            //Retorna id de matrícula            
+            $matricules = $this->guardaMatricula($this->DADES_MATRICULA,0,$this->IDS); 
+              
+            //Carreguem el TPV
+            $this->TPV = MatriculesPeer::getTPV($this->DADES_MATRICULA['PREU'] , $this->DADES_MATRICULA['NOM'] , $matricules , $this->IDS );        
+            break;
+
+        //Pas 3: Acabem la matrícula i guardem els canvis
+        case 'FI_MATRICULA':
+                $this->MISS = "";
+                $this->TITOL = "Matrícules";
+                if($request->getParameter('OK')):
+                    $this->MISS = "Matrícula realitzada correctament.";
+                else:
+                    $this->MISS = "Hi ha hagut algun problema realitzant la matrícula.";
+                endif;                
+            break;
+        
+        case 'GESTIONA_RESERVES':                
+                $this->IDR = $request->getParameter('idR',0);
+                $this->FRESERVA = ReservaespaisPeer::initialize( $this->IDR , $this->IDS , $this->IDU , true );                
+            break;
+            
+        case 'GUARDA_RESERVA':
+
+    	   		$PR = $request->getParameter('reservaespais');
+                $this->FRESERVA = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true );							
+    			$this->FRESERVA->bind($PR);				
+                if($this->FRESERVA->isValid()):                
+    				$this->FRESERVA->save();
+                    $OO = $this->FRESERVA->getObject();
+                    $FROM = OptionsPeer::getString('MAIL_FROM',$this->IDS);
+                    $SEC  = OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS);
+                    $this->sendMail($FROM ,'informatica@casadecultura.org','HOSPICI :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
+                    $this->sendMail($FROM , $SEC,'HOSPICI :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                      			                	                
+                    $this->MISSATGE = array('Sol·licitud enviada correctament.');				
+    			else:
+                    $this->sendMail($FROM , 'informatica@casadecultura.org','HOSPICI :: ERROR AL FORMULARI RESERVA D\'ESPAIS',print_r($this->FRESERVA));
+                    $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
+    			endif;			
+                                    
+            break;
+            
+        case 'ACCEPTA_CONDICIONS_RESERVA':
+            $PR = $request->getParameter('reservaespais');
+            $OR = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true )->getObject();
+                        
+            $PARA  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Accepta_Condicions', 
+                                                         'id' => $OR->getReservaespaiid())));            
+            $this->redirect('gestio/uFormularis?PAR='.$PARA);                                                                   
+            break;
+            
+        case 'BANULACONDICIONSRESERVA':
+            $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
+                                                         'id' => $OR->getReservaespaiid())));
+            $this->redirect('gestio/uFormularis?PAR='.$PARR);
+            break;
+            
+        default:
+            $this->DEFAULT = true;
+    }        
+                            
+  }
+
+  public function executeGetTPV(sfWebRequest $request)
+  {
+  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.   
+  	if($request->getParameter('Ds_Response') == '0000'):
+  		$idM = $request->getParameter('Ds_MerchantData');
+  		$OM = MatriculesPeer::retrieveByPK($idM);
+  		if($OM instanceof Matricules):
+            if(MatriculesPeer::setMatriculaPagada($idM)):              			  			
+      			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
+      							$OM->getUsuaris()->getEmail(),
+      							'Matrícula realitzada correctament',
+      							MatriculesPeer::MailMatricula($OM,$OM->getSiteId()));  			
+    			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
+      							'informatica@casadecultura.org',
+      							'Matrícula realitzada correctament',
+      							MatriculesPeer::MailMatricula($OM,$OM->getSiteId()));  							
+             else: 
+    			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
+      							'informatica@casadecultura.org',
+      							'Matrícula errònia',
+      							MatriculesPeer::MailMatriculaFAIL($OM,$OM->getSiteId()));                          
+             endif; 
+  		else:
+	  		$this->sendMail('informatica@casadecultura.org',
+	  						'informatica@casadecultura.org',
+	  						'Matrícula cobrada i Error en objecte',
+	  						'Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');   			  			  			
+  		endif; 
+  	else: 
+  		$OM->setEstat(MatriculesPeer::ERROR); //Si arriba aquí és que no ha pagat correctament
+  		$OM->save();
+  	endif;
+  	 
+  	return sfView::NONE;
+  }
+
+
+  private function guardaMatricula( $DADES_MATRICULA , $IDMATRICULA = 0 , $idS )
+  {
+  	
+     //Quan guardem la matrícula mirem
+     // Si el curs és ple, guardem Estat "En llista d'espera"
+     // Si queden places, guardem en procès i quan hagi pagat se li guardarà.  
+     
+     $M = MatriculesPeer::initialize($IDMATRICULA,$idS,false)->getObject();
+                            
+     if(CursosPeer::isPle($DADES_MATRICULA['CURS'],$this->IDS)):
+		$M->setEstat(MatriculesPeer::EN_ESPERA);
+	 else:  
+     	$M->setEstat(MatriculesPeer::EN_PROCES);
+     endif;
+     
+     $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);
+     $M->setComentari("Pagament internet");
+     $M->setDatainscripcio($DADES_MATRICULA['DATA']);     
+     $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
+     $M->setTpagament(MatriculesPeer::PAGAMENT_TARGETA);
+     $M->setCursosIdcursos($DADES_MATRICULA['CURS']);
+     $M->setPagat($DADES_MATRICULA['PREU']);
+     $M->setSiteid($idS);     
+     $M->save();
+     
+     return $M->getIdmatricules();
+     
+  }
+
+
   
 /**
  * Executem el login del modul administrador
  **/
 
-  public function executeLogin(sfWebRequest $request)
+  public function executeULogin(sfWebRequest $request)
   {        
-    
-     //Entrem un DNI i amb això hauríem d'entrar a l'administrador si és un usuari.
-     $this->FLogin = new LoginForm();
+     
+     $this->setLayout('gestio');     
+     $this->FLogin = new LoginForm(array('nick'=>"",'password'=>''));
+     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     
      $this->ERROR = "";
-     
-     //Si premem recordar contrassenya... anem al mòdul. 
-     if($request->hasParameter('form_login_remember')):
-     	$this->redirect('gestio/remember');     
-     endif;          
-     
-     if($request->isMethod('POST')):
-     	$L = $request->getParameter('login');     		 
-     	$this->FLogin = new LoginForm();
-     	$this->FLogin->bind($L);
-     	if($this->FLogin->isValid()):     		 
-     		 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password']);     		 
-     		 if($USUARI instanceof Usuaris):
-     		 	$this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());     		 	      		
-     		 	$this->getUser()->setAuthenticated(true);
-    			if($USUARI->getNivellsIdnivells() == 1) { $this->getUser()->addCredential('admin'); }
-     		 	if($USUARI->getNivellsIdnivells() == 2) { $this->getUser()->addCredential('user'); }
-
-                //Carreguem el primer site de l'usuari si en pot veure
-                $firstSite = UsuarisSitesPeer::getFirstSite($USUARI);
-                if(is_null($firstSite)) $this->redirect('gestio/login');
-                else $this->getUser()->setSessionPar('idS',$firstSite);
-
-     		 	//Guardem un registre del login
-     		 	$this->getUser()->addLogAction('login','login',$L);
-     		 	
-     		 	$this->redirectif( $USUARI->getNivellsIdnivells() == 1 , 'gestio/main' );
-     		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=landing');     		 	
-     		 else:     		 	
-     		 	$this->getUser()->addLogAction('error','login',$L);     		 
-     		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
-     		 endif;
-        else:
-        	 $this->getUser()->addLogAction('error','login',$L);
-        	 $this->ERROR = "El DNI o la contrasenya són incorrectes";
-        endif;     		 
-     endif;
                
-  }
+     if($request->hasParameter('BLOGIN')) $this->accio = "LOGIN";
+     if($request->hasParameter('BNEWUSER')) $this->accio = "NEW_USER";
+     if($request->hasParameter('BREMEMBER')) $this->accio = "REMEMBER";
+    
+     switch($this->accio){
+        
+        //Fem un LOGIN
+        case 'LOGIN':           
+            $L = $request->getParameter('login');             
+            $this->FLogin->bind($L);
+ 	        if($this->FLogin->isValid()):
+                //Consultem l'usuari. Per fer una entrada genèrica, 'IDS haurà de ser null.
+                $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],$this->IDS);     		 
+       		    if($USUARI instanceof Usuaris):
+      		 	  $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
+                  $this->getUser()->setSessionPar('idN',$USUARI->getNivellsIdnivells());
+                  $this->getUser()->setAuthenticated(true);
+                  $this->getUser()->addLogAction('login','login',$L);
+                  $idN = $USUARI->getNivellSite($this->IDS);
+                  
+                  if( $idN == 1 ):
+                    $this->getUser()->addCredential('admin');
+                    $this->redirect( 'gestio/main' );
+                  elseif( $idN == 2 ):
+                    $this->getUser()->addCredential('user');
+                    $this->redirect( 'gestio/uGestio' );
+                  else:
+               	 	$this->getUser()->addLogAction('error','login',$L);     		 
+                 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
+                  endif;
+                else:
+                    $this->getUser()->addLogAction('error','login',$L);     		 
+                 	$this->ERROR = "L'usuari o la contrasenya són incorrectes";
+                endif;                                                                                
+            else: 
+                $this->getUser()->addLogAction('error','login',$L);     		 
+                $this->ERROR = "El DNI o la contrasenya són incorrectes";                      		 	                 		 	                     		 	                 	     		 	                 	                 		 		 
+            endif;
+                                                                        
+            break;
+            
+        //Creem un nou usuari
+        case 'NEW_USER':
+                $this->getUser()->setSessionPar('idU',0);
+                $this->getUser()->addCredential('user');
+                $this->redirect('gestio/uGestio?accio=NEW');
+            break;
+            
+        //Si fem um remember de contrassenya
+        case 'REMEMBER':
+                $this->redirect('gestio/uRemember');            
+            break;
+        
+     }
+		   
+  }  
 
 /**
  * Executem l'opció de canviar de site si en tenim més d'un. 
@@ -3300,4 +3598,121 @@ class gestioActions extends sfActions
 		return $this->getMailer()->send($swift_message);
 		
    }
+   
+   
+  public function executeGConfig(sfWebRequest $request)
+  {
+    
+    $this->setLayout('gestio');
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->accio = $request->getParameter('accio','C');
+    $ROPTIONS = $request->getParameter('options',array('option_id'=>''));
+    $RESPAIS = $request->getParameter('espais',array('EspaiID'=>0));    
+    
+    $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
+    $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);
+    
+    if($request->hasParameter('BNEWOPTION')) $this->accio = 'NEW_OPTION';
+    if($request->hasParameter('BSAVEOPTION')) $this->accio = 'SAVE_OPTION';
+    if($request->hasParameter('BSAVEESPAI')) $this->accio = 'SAVE_ESPAI';    
+    if($request->hasParameter('BDELETEESPAI')) $this->accio = 'DELETE_ESPAI';
+    
+    switch($this->accio){
+        case 'AJAX_OPCIO':
+            return $this->renderText(OptionsPeer::getString($request->getParameter('IDO'),$this->IDS));               
+            break;
+        case 'NEW_OPTION':
+            $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,true);
+            break;                                
+        case 'SAVE_OPTION':
+            $this->FOPTIONS->bind($ROPTIONS);
+            if($this->FOPTIONS->isValid()):
+                $this->FOPTIONS->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfig',$this->FOPTIONS->getObject());
+                $this->FOPTIONS = OptionsPeer::initialize($this->FOPTIONS->getObject()->getOptionId(),$this->IDS,false);                
+            endif;                
+            break;
+        case 'SAVE_ESPAI':
+            $this->FESPAIS->bind($RESPAIS);
+            if($this->FESPAIS->isValid()):
+                $this->FESPAIS->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfig',$this->FESPAIS->getObject());
+                $this->FESPAIS  = EspaisPeer::initialize($this->FESPAIS->getObject()->getEspaiid(),$this->IDS);                
+            endif;
+            break;
+        case 'DELETE_ESPAI':                        
+            $this->FESPAIS->getObject()->setActiu(false)->save();            
+            $this->getUser()->addLogAction($this->accio,'gConfig',$this->FESPAIS->getObject());
+            $this->FESPAIS  = EspaisPeer::initialize(0,$this->IDS);                        
+            break;
+    }
+       
+  }   
+  
+  
+  public function executeGConfigSuperAdmin(sfWebRequest $request)
+  {
+    
+    $this->setLayout('gestio');
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->accio = $request->getParameter('accio','C');
+    
+    $RSITES = $request->getParameter('sites',array('site_id'=>1));
+    $this->FSITES = SitesPeer::initialize($RSITES['site_id']);
+           
+    $RUSERSITES = $request->getParameter('usuaris_sites',array('usuari_id' => 0 , 'site_id' => 0));
+    if(!isset($RUSERSITES['usuari_id'])) $RUSERSITES['usuari_id'] = 0;
+    $this->FUSERSITES = UsuarisSitesPeer::initialize($RUSERSITES['usuari_id'] , $RUSERSITES['site_id']);
+
+    
+    if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
+    if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';
+    if($request->hasParameter('BADDUSERSITE')) $this->accio = 'ADD_USER_SITE';
+    if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
+    if($request->hasParameter('BDELETEUSERSITE')) $this->accio = 'DELETE_USER_SITE';
+
+    
+    switch($this->accio){
+        case 'SAVE_SITE':
+            $this->FSITES->bind($RSITES);
+            if($this->FSITES->isValid()):
+                $this->FSITES->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
+                $this->FSITES  = SitesPeer::initialize($this->FSITES->getObject()->getSiteId());                
+            endif;
+            break;
+        case 'DELETE_SITE':                        
+            $this->FSITES->getObject()->setActiu(false)->save();            
+            $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
+            $this->FESPAIS  = SitesPeer::initialize(0,$this->IDS);                        
+            break;
+            
+        case 'ADD_USER_SITE':
+            $OUS = $this->FUSERSITES->getObject();
+            $this->FUSERSITES  = UsuarisSitesPeer::initialize($OUS->getUsuariId(),0,true);                
+            break;
+            
+        case 'SAVE_USER_SITE':
+            $this->FUSERSITES->bind($RUSERSITES);
+            if($this->FUSERSITES->isValid()):
+                $this->FUSERSITES->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FUSERSITES->getObject());
+                $OUS = $this->FUSERSITES->getObject();
+                $this->FUSERSITES  = UsuarisSitesPeer::initialize($OUS->getUsuariId(),$OUS->getSiteId());                
+            endif;
+            break;
+        case 'DELETE_USER_SITE':                        
+            $this->FUSERSITES->getObject()->setActiu(false)->save();            
+            $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
+            $OUS = $this->FUSERSITES->getObject();
+            $this->FUSERSITES  = UsuarisSitesPeer::initialize($OUS->getUsuariId(),0,false);                                    
+            break;
+            
+    }
+    
+    
+    
+  }
+  
+   
 }

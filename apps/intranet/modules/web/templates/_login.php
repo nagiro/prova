@@ -8,7 +8,7 @@
 
     <TD colspan="3" class="CONTINGUT">
         
-		<form action="<?php echo url_for('web/login') ?>" method="POST" name="form_login">    
+		<form action="<?php echo url_for('gestio/login') ?>" method="POST" name="form_login">    
 		    <DIV class="REQUADRE" style="width:500px">
 		    	<div class="FORMULARI" style="width:500px;">
 		    	<?php if($ERROR != ""): ?><div class="error" style="padding-bottom:10px;"><?php echo $ERROR?></div><?php endif; ?>          		    	

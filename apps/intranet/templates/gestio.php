@@ -16,7 +16,8 @@
   <script type="text/javascript" src="<?php echo $BASE.'js/thickbox-compressed.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
-  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>        
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>          
       
   <link rel="shortcut icon" href="/favicon.ico" />
   
@@ -28,24 +29,26 @@
   <center>
     <TABLE class="TAULA">
 <!--  <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>  -->
-    <TR><TD colspan="4" class="CAPCALERA"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'web/index?accio=no'); ?></TD></TR>
+    <TR><TD colspan="4" class="CAPCALERA"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'gestio/ULogin'); ?></TD></TR>
 <!--  <TR><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD><TD class="FOTOS"><?php echo image_tag('intranet/logoCCG.png', array('class'=>'IMG_FOTO')); ?></TD></TR> -->
     <TR>    
       <TD class="MENU">
       
-      <?php 
-        //Carreguem els menús que podrà veure l'usuari
-        $LOM = GestioMenusPeer::getMenusUsuari($sf_user->getSessionPar('idU'),$sf_user->getSessionPar('idS'));
-        $ANT = "";
-        echo '<CENTER><TABLE class="MENU_TABLE">';
-        foreach($LOM as $OM):
-            if($ANT <> $OM->getCategoria()):
-                echo '<TR><TD class="SUBMENU_1">'.imgSub1().' '.$OM->getCategoria().'</TD></TR>';
-                $ANT = $OM->getCategoria();
-            endif; 
-            echo '<TR><TD class="SUBMENU_2">'.link_to(imgSub2().' '.$OM->getTitol(),$OM->getUrl()).'</TD></TR>';
-        endforeach;
-        echo '</TABLE></CENTER>';        
+      <?php
+        if($sf_user->getSessionPar('idU') > 0): 
+            //Carreguem els menús que podrà veure l'usuari                        
+            $LOM = GestioMenusPeer::getMenusUsuari($sf_user->getSessionPar('idU'),$sf_user->getSessionPar('idS'),$sf_user->getSessionPar('idN'));
+            $ANT = "";
+            echo '<CENTER><TABLE class="MENU_TABLE">';
+            foreach($LOM as $OM):
+                if($ANT <> $OM->getCategoria()):
+                    echo '<TR><TD class="SUBMENU_1">'.imgSub1().' '.$OM->getCategoria().'</TD></TR>';
+                    $ANT = $OM->getCategoria();
+                endif; 
+                echo '<TR><TD class="SUBMENU_2">'.link_to(imgSub2().' '.$OM->getTitol(),$OM->getUrl()).'</TD></TR>';
+            endforeach;
+            echo '</TABLE></CENTER>';        
+        endif; 
       ?>      			                  
       </TD>      
     

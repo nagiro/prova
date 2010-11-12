@@ -350,7 +350,7 @@ class MatriculesPeer extends BaseMatriculesPeer
   	
   	 //Mirem si el curs és ple. Si es ple i no hi ha cap import pagat, guardem com en espera.
      if(!$CURS_PLE){
-     	$OM->setEstat(self::ACCEPTAT_PAGAT);         	
+     	$OM->setEstat(self::ACCEPTAT_PAGAT);
      } else {
         if($OM->getPagat() > 0){ $OM->setEstat(self::ACCEPTAT_PAGAT);  }
         else { $OM->setEstat(self::EN_ESPERA);   }     

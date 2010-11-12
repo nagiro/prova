@@ -15,7 +15,8 @@ class AppBlogsMultimediaPeer extends BaseAppBlogsMultimediaPeer
 		$OO = AppBlogsMultimediaPeer::retrieveByPK($id);            
 		if(!($OO instanceof AppBlogsMultimedia)):            			
 			$OO = new AppBlogsMultimedia();
-
+            $OO->setDate(date('Y-m-d',time()));
+            $OO->setDesc("");
             $OO->setSiteId($idS);        
             $OO->setActiu(true);        						
 		endif; 

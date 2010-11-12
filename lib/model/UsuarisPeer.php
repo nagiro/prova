@@ -13,7 +13,7 @@ class UsuarisPeer extends BaseUsuarisPeer
   const ADMIN = 1;
   const REGISTERED = 2;  
   
-  static public function initialize( $idU , $idS , $isMatricules = false )
+  static public function initialize( $idU , $idS , $isMatricules = false , $isWeb = false )
   {
     $OU = UsuarisPeer::retrieveByPK($idU);            
 	if(!($OU instanceof Usuaris)):            		
@@ -26,16 +26,23 @@ class UsuarisPeer extends BaseUsuarisPeer
 
     if($isMatricules):
         return new UsuarisMatriculesForm($OU);
+    elseif($isWeb):
+        return new ClientUsuarisForm($OU);
     else:
         return new UsuarisForm($OU);
     endif; 			    
 
   }
   
-  static public function getCriteriaActiu( $C , $idS )
+  //Comprovem que l'usuari pertanyi a un SITE
+  static public function getCriteriaActiu( $C , $idS = null )
   {    
     $C->add(self::ACTIU, true);
-    $C->add(self::SITE_ID, $idS);
+    if(!is_null($idS)):
+        $C->addJoin(UsuarisSitesPeer::USUARI_ID, self::USUARIID);
+        $C->add(UsuarisSitesPeer::SITE_ID, $idS);
+    endif; 
+    
     return $C;
   }
      
@@ -109,11 +116,12 @@ class UsuarisPeer extends BaseUsuarisPeer
     return $C;
     
   }
-  
-  
-  static function selectTreballadors()
+    
+  static function selectTreballadors($idS)
   {
     $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    
     $C->add(UsuarisPeer::NIVELLS_IDNIVELLS,UsuarisPeer::ADMIN);
     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
     $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
@@ -132,6 +140,30 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   }
   
+  static function selectAllUsers()
+  {
+    
+    $C = new Criteria();        
+    
+    $C->addAscendingOrderByColumn(self::COG1);
+    $C->addAscendingOrderByColumn(self::NOM);
+    $C->add(self::HABILITAT , true);
+    $C->add(self::ACTIU, true);
+    
+    $TREB = self::doSelect($C);
+    $RET = array();
+
+    foreach($TREB as $T):
+      
+      $RET[$T->getUsuariid()] = strtoupper(self::uc_latin1($T->getNomComplet()));    
+    
+    endforeach;
+  
+    return $RET;
+    
+    
+  }
+
   static function selectUsuaris($idS)
   {
     $C = new Criteria();    
@@ -167,12 +199,15 @@ class UsuarisPeer extends BaseUsuarisPeer
   }
   
   
-  static function getUserLogin($login,$password)
+  static function getUserLogin($login,$password,$idS)
   {
   	
-	$C = new Criteria();
+	$C = new Criteria();    
+    $C = self::getCriteriaActiu($C,$idS);
+    
 	$C->add(self::DNI , $login );
-	$C->add(self::PASSWD, $password);
+	$C->add(self::PASSWD, $password);        
+
 	return self::doSelectOne($C);       
   }
   

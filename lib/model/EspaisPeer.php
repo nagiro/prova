@@ -23,16 +23,17 @@ class EspaisPeer extends BaseEspaisPeer
 	if(!($OE instanceof Espais)):                                    		
 		$OE = new Espais();   		                    
         $OE->setSiteId($idS);        
-        $OE->setActiu(true);        		            			    			    			        
-		return new EspaisForm($OE);			
-	endif; 
+        $OE->setActiu(true);        		            			    			    			        					
+	endif;    
+    
+    return new EspaisForm($OE,array('IDS'=>$idS)); 
   }
 
-
-
-  static public function select()
+  static public function select($idS)
   {
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    
   	$C->addAscendingOrderByColumn(self::ORDRE);
   	
     $Espais = self::doSelect($C);
@@ -44,11 +45,13 @@ class EspaisPeer extends BaseEspaisPeer
     return $RET;    
       
   }
-  
-  static public function selectJavascript($sel = -1)
+/*  
+  static public function selectJavascript( $idS , $sel = -1 )
   {
 
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    
   	$C->addAscendingOrderByColumn(self::ORDRE);
   	
     $Espais = self::doSelect($C);
@@ -66,11 +69,17 @@ class EspaisPeer extends BaseEspaisPeer
     return $RET;    
   	
   }
-  
-  static public function selectFormReserva()
+*/
+
+  /**
+   * Usat al formulari ClientReservesPeer
+   * */  
+  static public function selectFormReserva($idS)
   {
     $RET = array();
     $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    
     $C->addAscendingOrderByColumn(self::ORDRE);
     foreach(self::doSelect($C) as $E):
     

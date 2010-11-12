@@ -101,4 +101,24 @@ class Usuaris extends BaseUsuaris
         return ReservaespaisPeer::doSelect($C);        
     }
 
+    public function getNivellSite($idS)
+    {
+        return UsuarisSitesPeer::initialize($this->getUsuariid(),$idS)->getObject()->getNivellId(); 
+    }
+
+    public function getDataIniciMatricula()
+    {
+        $num = MatriculesPeer::getMatriculesUsuari($this->getUsuariid(),$this->getSiteId());
+        $D = 0;
+        if($num > 0):
+            list($Y,$M,$D) = explode('-',OptionsPeer::getString('DATA_MAT_ANTICS',$this->getSiteId()));
+            $D = mktime(0,0,0,$M,$D,$Y);                        
+        else:
+            list($Y,$M,$D) = explode('-',OptionsPeer::getString('DATA_MAT_TOTHOM',$this->getSiteId()));
+            $D = mktime(0,0,0,$M,$D,$Y);                    
+        endif;
+                
+        return $D; 
+    }
+
 }

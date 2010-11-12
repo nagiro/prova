@@ -13,6 +13,7 @@ class blogsActions extends sfActions
 	
 	public function executeNoticiesCulturalsLastPosts()
 	{
+      $this->IDS = 1;       
 	  $feed = new sfAtom1Feed();
 	
 	  $feed->setTitle('Notícies Culturals de Girona');
@@ -25,27 +26,29 @@ class blogsActions extends sfActions
 	  $feed->setImage($feedImage);
 	
 	  $C = new Criteria();
+      $C = AppBlogsEntriesPeer::getCriteriaActiu($C,$this->IDS);
+      
 	  $C->add(AppBlogsEntriesPeer::PAGE_ID, 1);
 	  $C->addDescendingOrderByColumn(AppBlogsEntriesPeer::ID);
 	  $Q = AppBlogsEntriesPeer::doSelect($C);
-	  	
+  	  $WEBROOTURL = OptionsPeer::getString('SF_WEBROOTURL',$this->IDS);
+    
 	  foreach ($Q as $post)
 	  {
 	    $item = new sfFeedItem();
 	    $item->setTitle($post->getTitle());
-	    $item->setLink(sfConfig::get('sf_webrooturl').'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
+	    $item->setLink($WEBROOTURL.'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
 	    $item->setAuthorName('Giroscopi');
 	    $item->setAuthorEmail('giroscopi@casadecultura.org');
-//	    $item->setPubdate(time());
 	    $item->setUniqueId($post->getId());
 	    $IMG = $post->getImages();
 	    if(!$IMG):
 	    	$url = "";	    	
 	    else: 
-	    	$url = '<img width="100px" src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$IMG[0]->getUrl().'">';
+	    	$url = '<img width="100px" src="'.$WEBROOTURL.'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
-	    $url_web = sfConfig::get('sf_webrooturl').'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
+	    $url_web = $WEBROOTURL.'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
 	    
 	    $TEXT = "	
 	    		 <table border=\"0\"><tr><td>$url</td><td>	    		 
@@ -97,7 +100,7 @@ class blogsActions extends sfActions
   		
 	elseif($this->MODE == 'CONTINGUT'):
 	  	$order = ($this->PAGE_ID == $this->PAGE_ID_QUE_HA_PASSAT)?false:true;
-  		$this->NOTICIES = AppBlogsEntriesPeer::getEntries($this->PAGE_ID,$this->PAGINA, $order);
+  		$this->NOTICIES = AppBlogsEntriesPeer::getEntries( $this->PAGE_ID , $this->PAGINA , $order , $this->IDS );
   		$this->MODE = 'CONTINGUT';
   		 
   	elseif( $this->MODE == 'FORM1' ):  						
@@ -142,7 +145,7 @@ class blogsActions extends sfActions
 			$this->DADES[$K] = $E;
 		endforeach;
 
-	  	AppBlogsFormsPeer::save($this->FORM_ID,$this->DADES,$request->getFiles() );
+	  	AppBlogsFormsPeer::save( $this->FORM_ID , $this->DADES , $request->getFiles() , $this->IDS );
 	  	
 	  	$this->MODE = 'FORM_OK';
 	  	
@@ -156,6 +159,8 @@ class blogsActions extends sfActions
 		
 	  	//Captem els que s'han de migrar del formulari
 	  	$C = new Criteria();
+        $C = AppBlogsFormsEntriesPeer::getCriteriaActiu($C,$this->IDS);
+        
 	  	$C->add(AppBlogsFormsEntriesPeer::FORM_ID, $this->FORM_ID);
 	  	$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT_WAIT);
 	  	
@@ -171,9 +176,8 @@ class blogsActions extends sfActions
 	  		endforeach;
 	  		
 	  		try{
-	  			
-		  		$ON = new AppBlogsEntries();
-		  		$ON->setLang('CA');
+	  	
+                $ON = AppBlogsEntriesPeer::initialize(0,'CA',1,1,$this->IDS)->getObject();          				  				  		
 		  		$ON->setTitle($RET['titol']);
 		  		$ON->setSubtitle1($RET['subtitol1']);
 		  		$ON->setSubtitle2($RET['ciutat_acte'].', '.$this->dataText($RET['dia_acte']));
@@ -195,35 +199,31 @@ class blogsActions extends sfActions
 				endif; 			
 		  		
 				$ON->save(); //Guardem la notícia
-				
-	  		
+					  		
 			
 			//Guardem les imatges
 			if(isset($RET['file'])):
-
+                
+                $WEBSYSROOT = OptionsPeer::getString('SF_WEBSYSROOT');
+                
 				//Mirem l'extensió de l'arxiu
-    			$path_info = pathinfo(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file']);    			    			    			    		
+    			$path_info = pathinfo($WEBSYSROOT.'uploads/formularis/'.$RET['file']);    			    			    			    		
     			
     			//Si l'arxiu és una imatge, el tractem i el posem com a imatge
     			if(strtolower($path_info['extension']) == 'jpg' || strtolower($path_info['extension']) == 'png'): 			
 			
     				try{
     					
-						$img = new sfImage(sfConfig::get('sf_websysroot').'uploads/formularis/'.$RET['file'],'image/jpeg');
+						$img = new sfImage($WEBSYSROOT.'uploads/formularis/'.$RET['file'],'image/jpeg');
 						$img->resize(200,null);				
-						$img->saveAs(sfConfig::get('sf_websysroot').'images/blogs/'.$RET['file']);
+						$img->saveAs($WEBSYSROOT.'images/blogs/'.$RET['file']);
 							
-						$OM = new AppBlogsMultimedia();
+						$OM = AppBlogsMultimediaPeer::initialize(0,$this->IDS)->getObject();                        
 						$OM->setName($RET['file']);
-						$OM->setUrl($RET['file']);
-						$OM->setDate(date('Y-m-d',time()));
-						$OM->setDesc("");
+						$OM->setUrl($RET['file']);												
 						$OM->save();
 													
-						$OME = new AppBlogMultimediaEntries();
-						$OME->setEntriesId($ON->getId());
-						$OME->setMultimediaId($OM->getId());
-						$OME->save();
+						$OME = new AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->save();						
 						
     				} catch(Exception $e){ echo $e->getCode(); echo $e->getMessage(); }
     				
@@ -243,6 +243,7 @@ class blogsActions extends sfActions
   		 */
   		
 	  	$C = new Criteria();
+        $C = AppBlogsEntriesPeer::getCriteriaActiu($C,$this->IDS);        
 	  	$C->add(AppBlogsFormsEntriesPeer::FORM_ID, $this->FORM_ID);
 	  	$C->add(AppBlogsFormsEntriesPeer::ESTAT, AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_EMMAGATZEMAT_WAIT);
 
@@ -258,6 +259,8 @@ class blogsActions extends sfActions
 	  	
 	  	//Captem les notícies que han de canviar de pàgina... (Actual->Passades)
 	  	$C = new Criteria();
+        $C = AppBlogsEntriesPeer::getCriteriaActiu($C,$this->IDS);
+        
 	  	$C->add(AppBlogsEntriesPeer::PAGE_ID,  $this->PAGE_ID_QUE_ESTA_PASSANT);	  	
 	  	$C->add(AppBlogsEntriesPeer::DATE, $today, CRITERIA::LESS_THAN); 	  		  	
 	  	
@@ -268,6 +271,8 @@ class blogsActions extends sfActions
   		
 	  	//Captem les notícies que han de canviar de pàgina... (Futures->actual)
 	  	$C = new Criteria();
+        $C = AppBlogsEntriesPeer::getCriteriaActiu($C,$this->IDS);
+        
 	  	$C->add(AppBlogsEntriesPeer::PAGE_ID,  $this->PAGE_ID_QUE_PASSARA);	  	
 	  	$C->add(AppBlogsEntriesPeer::DATE, $today, CRITERIA::GREATER_THAN); 	  	
 	  	$C->add(AppBlogsEntriesPeer::DATE, $next_month, CRITERIA::LESS_THAN); 
@@ -308,7 +313,7 @@ class blogsActions extends sfActions
   	return $RET.$any;
   	
   }
-  
+/*  
   public function executeBiennal(sfWebRequest $request)
   {
   	
@@ -343,7 +348,8 @@ class blogsActions extends sfActions
   	$this->VAL2 = $this->getUser()->getAttribute('VAL2');
   	
   }
-  
+*/
+/*  
   public function executeRSS(sfWebRequest $request)
   {
   	
@@ -403,10 +409,9 @@ class blogsActions extends sfActions
 	endif; 
   }
   
+*/  
   
-  
-  
-  
+
   //Guardem els valors de l'array amb Default[$K]=>$V --> $NOM.$K
   //Exemple: $this->ParReqSesForm($request,'cerca',array('text'=>""));
   public function ParReqSesForm(sfWebRequest $request, $nomCamp, $default = "") 
@@ -472,7 +477,5 @@ class blogsActions extends sfActions
   	
   	return $RET;
   }
-  
-  
-  
+    
 }

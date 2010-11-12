@@ -14,16 +14,18 @@ class RememberForm extends BaseForm
   {
     $this->setWidgets(array(
       'DNI'          	=> new sfWidgetFormInputText(array(),array('style'=>'width:300px;')),            
-      'captcha2'		=> new sfWidgetFormInputCaptcha(array(),array('value'=>$this->getOption('rand'))),         
+      'captcha2'		=> new sfWidgetFormInputCaptcha(array(),array()),               
     ));
         
-    $rand = $this->getOption('rand');
-    $sol = $rand[1]+$rand[2];
-    $inv = "El resultat %value% no és correcte.";
+    $val1 = (date('H',time()) % 10)+1;
+    $val2 = (date('d',time()) % 10)+1;        
+            
+    $sol = $val1+$val2;
+    $inv = "El resultat %value% no és correcte.";    
         
     $this->setValidators(array(
       'DNI'          	=> new sfValidatorPass(array('required'=>true)),      
-	  'captcha2'		=> new sfValidatorNumber(array('min'=>$sol,'max'=>$sol),array('invalid'=>$inv,'max'=>$inv,'min'=>$inv)),    
+	  'captcha2'		=> new sfValidatorNumber(array('min'=>$sol,'max'=>$sol,'required'=>false),array('invalid'=>$inv,'max'=>$inv,'min'=>$inv)),      
     ));
     
     $this->widgetSchema->setLabels(array(                

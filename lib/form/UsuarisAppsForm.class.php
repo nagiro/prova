@@ -16,7 +16,7 @@ class UsuarisAppsForm extends sfFormPropel
     $this->setWidgets(array(
       'usuari_id' => new sfWidgetFormInputHidden(),
       'app_id'    => new sfWidgetFormChoice(array('choices'=>AppsPeer::select())),
-      'nivell_id' => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => true)),
+      'nivell_id' => new sfWidgetFormChoice(array('choices' => NivellsPeer::getSelect())),
     ));
 
     $this->setValidators(array(

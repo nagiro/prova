@@ -14,7 +14,7 @@ class UsuarisForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
-      'Nivells_idNivells' => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => false)),
+      'Nivells_idNivells' => new sfWidgetFormChoice(array('choices' => NivellsPeer::getSelect())),
       'DNI'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Passwd'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Nom'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
@@ -30,6 +30,7 @@ class UsuarisForm extends sfFormPropel
       'Entitat'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Habilitat'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'Actualitzacio'     => new sfWidgetFormInputHidden(array(),array()),
+      'site_id'           => new sfWidgetFormInputHidden(array(),array()),
     ));
 
     $C = new Criteria();
@@ -53,6 +54,7 @@ class UsuarisForm extends sfFormPropel
       'Entitat'           => new sfValidatorString(array('required' => false)),
       'Habilitat'         => new sfValidatorBoolean(array('required' => false)),
       'Actualitzacio'     => new sfValidatorDate(array('required'=>false),array()),
+      'site_id'           => new sfValidatorPass(array(),array()),
     ));
 
     

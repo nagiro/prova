@@ -20,6 +20,7 @@ abstract class BaseGestioMenusForm extends BaseFormPropel
       'categoria'          => new sfWidgetFormTextarea(),
       'ordre'              => new sfWidgetFormInputText(),
       'actiu'              => new sfWidgetFormInputText(),
+      'tipus'              => new sfWidgetFormInputText(),
       'usuaris_menus_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
@@ -30,6 +31,7 @@ abstract class BaseGestioMenusForm extends BaseFormPropel
       'categoria'          => new sfValidatorString(),
       'ordre'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'tipus'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'usuaris_menus_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

@@ -20,4 +20,34 @@ require 'lib/model/om/BaseSitesPeer.php';
  */
 class SitesPeer extends BaseSitesPeer {
     
+    static public function getCriteriaActiu( $C )
+    {
+      $C->add(self::ACTIU,true);      
+      return $C;
+    }    
+    
+    static public function initialize( $idS )
+    {
+        $OO = self::retrieveByPK($idS);            
+        if(!($OO instanceof Sites)):                                    		
+        	$OO = new Sites();       
+            $OO->setNom('');
+            $OO->setActiu(true);     		            			    			    			        			
+        endif;
+         
+       	return new SitesForm($OO,array('IDS'=>$idS));
+    }
+
+    static public function getSelect()
+    {
+        $RET = array();
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C);
+        $RET[''] = 'Nou site...';
+        foreach(self::doSelect($C) as $OS):
+            $RET[$OS->getSiteId()] = $OS->getNom();
+        endforeach;
+        return $RET;
+    }
+    
 } // SitesPeer

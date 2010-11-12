@@ -16,12 +16,14 @@ abstract class BaseSitesForm extends BaseFormPropel
     $this->setWidgets(array(
       'site_id'            => new sfWidgetFormInputHidden(),
       'nom'                => new sfWidgetFormTextarea(),
+      'actiu'              => new sfWidgetFormInputText(),
       'usuaris_sites_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
     $this->setValidators(array(
       'site_id'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getSiteId()), 'empty_value' => $this->getObject()->getSiteId(), 'required' => false)),
       'nom'                => new sfValidatorString(),
+      'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'usuaris_sites_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

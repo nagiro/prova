@@ -20,13 +20,26 @@ require 'lib/model/om/BaseGestioMenusPeer.php';
  */
 class GestioMenusPeer extends BaseGestioMenusPeer {
 
-    static public function getMenusUsuari($idU,$idS)
+    const MENUS_ADMIN = 1;
+    const MENUS_USER  = 2;
+
+    static public function getMenusUsuari($idU,$idS,$admin = 1)
     {
         $C = new Criteria();
-        $C->addJoin(UsuarisMenusPeer::MENU_ID,self::MENU_ID);
-        $C->add(UsuarisMenusPeer::USUARI_ID, $idU);
-        $C->add(UsuarisMenusPeer::SITE_ID, $idS);
-        $C->add(self::ACTIU, 1);
+        
+        if($admin == 1):
+            //Només mostrem els que toquen per l'usuari. '
+            $C->addJoin(UsuarisMenusPeer::MENU_ID,self::MENU_ID);
+            $C->add(UsuarisMenusPeer::USUARI_ID, $idU);
+            $C->add(UsuarisMenusPeer::SITE_ID, $idS);                                    
+            $C->add(self::ACTIU, 1);
+            $C->add(self::TIPUS, self::MENUS_ADMIN);
+        else:                        
+            //Els mostrem tots
+            $C->add(self::TIPUS, self::MENUS_USER);
+            $C->add(self::ACTIU, 1);        
+        endif;                
+        
         $C->addAscendingOrderByColumn(self::ORDRE);
         $LOM = self::doSelect($C);
         return $LOM;                

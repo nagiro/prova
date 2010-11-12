@@ -2,5 +2,16 @@ all:
   is_secure: true
   credentials: admin
   
-login:
+uLogin:
   is_secure: false
+
+uRemember:
+  is_secure: false
+  
+uGestio:
+  is_secure: false
+  credentials: [user,admin]
+
+uFormularis:
+  is_secure: false
+  credentials: [user,admin]

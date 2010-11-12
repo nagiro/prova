@@ -14,8 +14,8 @@ class IncidenciesForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'idIncidencia'  => new sfWidgetFormInputHidden(),
-      'quiinforma'    => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
-      'quiresol'      => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
+      'quiinforma'    => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors($this->getOption('IDS')))),
+      'quiresol'      => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors($this->getOption('IDS')))),
       'titol'         => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'descripcio'    => new sfWidgetFormTextarea(array(),array('style'=>'width:400px')),
       'estat'         => new sfWidgetFormChoice(array('choices'=>IncidenciesPeer::getEstatSelect())),

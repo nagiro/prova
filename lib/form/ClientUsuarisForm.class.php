@@ -32,13 +32,15 @@ class ClientUsuarisForm extends sfFormPropel
       'Mobil'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Entitat'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Habilitat'         => new sfWidgetFormInputHidden(),
-      'captcha2'		  => new sfWidgetFormInputCaptcha(array(),array('value'=>$this->getOption('rand'))),
+      'captcha2'		  => new sfWidgetFormInputCaptcha(array(),array()),
       'site_id'           => new sfWidgetFormInputHidden(),
       'actiu'             => new sfWidgetFormInputHidden(),      
     ));
 
-    $rand = $this->getOption('rand');
-    $sol = $rand[1]+$rand[2];
+    $val1 = (date('H',time()) % 10)+1;
+    $val2 = (date('d',time()) % 10)+1;        
+    
+    $sol = $val1+$val2;
     $inv = "El resultat %value% no és correcte.";
     
     $this->setValidators(array(

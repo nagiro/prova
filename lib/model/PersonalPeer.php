@@ -109,7 +109,7 @@ class PersonalPeer extends BasePersonalPeer {
 		$dataf = mktime(0,0,0,date('m',$datai),date('d',$datai)+21,date('Y',$datai));
 		
         //Seleccionem tots els treballadors 
-		$TREBALLADORS = UsuarisPeer::selectTreballadors();
+		$TREBALLADORS = UsuarisPeer::selectTreballadors($idS);
 		
 		foreach($TREBALLADORS as $idU => $T):
 			$C = new Criteria();

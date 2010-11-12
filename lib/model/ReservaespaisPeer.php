@@ -225,8 +225,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     $TEXT = OptionsPeer::getString('RESERVA_ESPAIS_MAILCOND',$idS);
     $TEXT = str_replace('{{LOGO_URL}}',OptionsPeer::getString('LOGO_URL'),$idS);    
     $TEXT = str_replace('{{MISSATGE}}',$OR->getCondicionsccg());
-    $TEXT = str_replace('{{URL_ACCEPTA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'web/Formularis?PAR='.$PAREA);
-    $TEXT = str_replace('{{URL_REBUTJA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'web/Formularis?PAR='.$PARER);
+    $TEXT = str_replace('{{URL_ACCEPTA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'gestio/uFormularis?PAR='.$PAREA);
+    $TEXT = str_replace('{{URL_REBUTJA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'gestio/uFormularis?PAR='.$PARER);
           				
    	return $TEXT; 
     

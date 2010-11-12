@@ -593,21 +593,7 @@ class webActions extends sfActions
   	return sfView::NONE;
   	
   } 
-    
-  public function executeMatriculaFinal(sfWebRequest $request)
-  {
-  	
-  	$this->LoadWEB($request);
-    $this->setTemplate('index');
-    $this->ACCIO = 'final_matricula';
-    
-  	if($request->hasParameter('OK')):
-  		$this->MISSATGE = "OK";
-  	else: 
-  		$this->MISSATGE = "KO";
-  	endif; 
-  }
-  
+      
   private function guardaMatricula( $DADES_MATRICULA , $IDMATRICULA = 0 , $idS )
   {
   	

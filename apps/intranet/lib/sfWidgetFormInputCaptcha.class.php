@@ -49,7 +49,8 @@ class sfWidgetFormInputCaptcha extends sfWidgetForm
    */
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
-  	$val1 = $attributes['value'][1]; $val2 = $attributes['value'][2];
+    $val1 = (date('H',time()) % 10)+1;
+    $val2 = (date('d',time()) % 10)+1;  	
   	$input = '<input type="text" name="'.$name.'" value="'.$value.'" id="resultat_validacio">';
   	
   	$RET  = '<span id="validacio">Per verificar que vostè és una persona,<br /> si us plau escrigui el resultat de sumar:<br /></span>';

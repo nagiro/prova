@@ -50,4 +50,44 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
         return $RET;        
     }
 
+    static public function getCriteriaActiu( $C )
+    {
+      $C->add(self::ACTIU,true);      
+      return $C;
+    }    
+
+  	static public function initialize( $idU , $idS , $new = false )
+	{	   
+	   
+		$OO = UsuarisSitesPeer::retrieveByPK($idU,$idS);            
+		if(!($OO instanceof UsuarisSites)):            			
+			$OO = new UsuarisSites();
+            $OO->setUsuariId($idU);
+            $OO->setSiteId($idS);
+            $OO->setActiu(true);
+            $OO->setNivellId(NivellsPeer::CAP);			     						
+		endif; 
+        
+        return new UsuarisSitesForm($OO,array('IDS'=>$idS,'NEW'=>$new));
+                
+	}        
+
+    static public function getSites($idU , $all = false)
+    {
+        $RET = array();
+        $C = new Criteria();                
+        $C = self::getCriteriaActiu($C);
+
+        if(!$all):        
+            $C->addJoin(SitesPeer::SITE_ID, self::SITE_ID);
+            $C = SitesPeer::getCriteriaActiu($C);            
+        endif;
+        
+        foreach(SitesPeer::doSelect($C) as $OS):
+            $RET[$OS->getSiteId()] = $OS->getNom();
+        endforeach;
+        
+        return $RET;        
+    }
+
 } // UsuarisSitesPeer
