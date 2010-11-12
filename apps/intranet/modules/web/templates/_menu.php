@@ -37,7 +37,7 @@ function showElement(theClass) {
 	  	   
 <?php	   else: ?>
 			
-			<TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'web/login')?></TD></TR></TABLE>				
+			<TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'gestio/uLogin/idU/1')?></TD></TR></TABLE>				
 
 <?php	   endif; ?>
 
