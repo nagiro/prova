@@ -53,6 +53,15 @@
 								<TD width="20%">'.$F['USUARIA'].'</TD>
 							  </TR>';						
                 	endforeach;
+
+                    foreach($INCIDENCIES as $I):						
+						$SPAN = '<SPAN>'.$I->getDescripcio().'</SPAN>';
+						echo '<TR>
+								<TD width="20%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">Incidència</TD>																								
+                                <TD><a href="#" class="tt2">'.$I->getTitol().$SPAN.'</TD>                                
+								<TD width="20%">'.UsuarisPeer::getNom($I->getQuiinforma()).'</TD>
+							  </TR>';						
+                	endforeach;                    
                                                    
 					foreach($FEINES as $F):						
 						$SPAN = '<SPAN>'.$F['TEXT'].'</SPAN>';
@@ -62,6 +71,7 @@
 								<TD width="20%">'.$F['USUARI'].'</TD>
 							  </TR>';						
                 	endforeach;
+                                        
                 ?>                                                       
       	</TABLE>      
       </DIV>

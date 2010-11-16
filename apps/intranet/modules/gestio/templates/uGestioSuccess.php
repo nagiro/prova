@@ -362,6 +362,36 @@ function landing_page(){
     function LlistaDades($FDADES)
     {
     
+        $OU = $FDADES->getObject();
+        $Nom = $OU->getNomComplet();
+        $Adreca = $OU->getAdreca();
+        $Ciutat = $OU->getCodipostal(). ' - '.$OU->getPoblacioString();
+        $Telefon = $OU->getTelefonString();
+        $Email = $OU->getEmail();
+    
+        $RET = '
+        <form name="gDades" action="'.url_for('gestio/uGestio').'" method="post">
+               	       	   
+    		   <TABLE class="FORMULARI">
+    		   <tr><td width="100px"></td><td><td></tr>               
+               <tr><td class="TITOL">Nom: </td><td>'.$Nom.'</td>		      
+               <tr><td class="TITOL">Correu: </td><td>'.$Email.'</td>
+               <tr><td class="TITOL">Telèfon: </td><td>'.$Telefon.'</td>
+               <tr><td class="TITOL">Adreça: </td><td>'.$Adreca.'</td>
+               <tr><td class="TITOL">Població: </td><td>'.$Ciutat.'</td>    		         		                         
+    		   </TABLE>
+               
+                <div style="text-align:right">
+                    <button type="submit" name="BGESTIONAUSUARI" class="BOTO_ACTIVITAT">
+                        '.image_tag('template/disk.png').' Editeu les dades
+                    </button>
+                </div>
+
+    	</form>';
+        
+        return $RET;	 
+    
+/*    
         $RET = '
             <form id="FOPTIONS" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
                 <table class="FORMULARI">                    
@@ -375,7 +405,7 @@ function landing_page(){
             </form>';
                      
         return $RET;
-            
+*/            
     }
 
     function LlistaMatricules($MATRICULES)

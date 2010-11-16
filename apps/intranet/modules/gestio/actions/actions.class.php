@@ -480,9 +480,9 @@ class gestioActions extends sfActions
     
     $idU = $this->getUser()->getSessionPar('idU');    
     
-    //Carreguem quantes incidÃ¨ncies noves hi ha
+    //Carreguem quantes incidències noves hi ha
     $this->NINCIDENCIES = IncidenciesPeer::QuantesAvui($this->IDS); 
-    //Carreguem quantes matrÃ­cules noves hi ha
+    //Carreguem quantes matrícules noves hi ha
     $this->NMATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
     //Carreguem quant material nou hi ha
     $this->NMATERIAL    = 0;
@@ -500,6 +500,7 @@ class gestioActions extends sfActions
         
     $this->FEINES = PersonalPeer::getFeines( $idU , time() , $this->IDS );
     $this->NOTIFICACIONS = PersonalPeer::getNotificacions( $idU , time() , $this->IDS );
+    $this->INCIDENCIES = IncidenciesPeer::getIncidenciesUsuari($idU , $this->IDS);
     
     //Carreguem les activitats d'avui :D
     $this->ACTIVITATS = HorarisPeer::getActivitats(time() , null , null , null , null, $this->IDS );
