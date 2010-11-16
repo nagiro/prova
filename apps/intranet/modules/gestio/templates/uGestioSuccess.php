@@ -162,8 +162,10 @@
         $RET = "";
         
          //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant     
-        if($DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TARGETA || $DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TELEFON ):         	 
-            $RET .= '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+        if($DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TARGETA || $DADES_MATRICULA['MODALITAT'] == MatriculesPeer::PAGAMENT_TELEFON ):
+            $URL = OptionsPeer::getString('TPV_URL',$IDS);
+            $RET .= '<FORM name="COMPRA" action="'.$URL.'" method="POST" target="TPV">';         	 
+            //$RET .= '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
             //$RET .= '<form name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';             
             foreach($TPV as $K => $T) $RET .= input_hidden_tag($K,$T);             
         else:         
