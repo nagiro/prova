@@ -79,13 +79,15 @@ class EspaisPeer extends BaseEspaisPeer
     $RET = array();
     $C = new Criteria();
     $C = self::getCriteriaActiu($C,$idS);
-    
+    $C->add(EspaisPeer::ISLLOGABLE, true);
     $C->addAscendingOrderByColumn(self::ORDRE);
     foreach(self::doSelect($C) as $E):
     
-        if($E->getEspaiid() >= 1 && $E->getEspaiid() < 6) $RET[$E->getEspaiid()] = $E->getNom();
-        if($E->getEspaiid() >= 9 && $E->getEspaiid() < 16) $RET[$E->getEspaiid()] = $E->getNom();
-        if($E->getEspaiid() == 19) $RET[$E->getEspaiid()] = $E->getNom();          
+        $RET[$E->getEspaiid()] = $E->getNom();
+    
+//        if($E->getEspaiid() >= 1 && $E->getEspaiid() < 6) $RET[$E->getEspaiid()] = $E->getNom();
+//        if($E->getEspaiid() >= 9 && $E->getEspaiid() < 16) $RET[$E->getEspaiid()] = $E->getNom();
+//        if($E->getEspaiid() == 19) $RET[$E->getEspaiid()] = $E->getNom();          
     
     endforeach;
     return $RET;

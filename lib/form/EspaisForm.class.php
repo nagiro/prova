@@ -14,12 +14,15 @@ class EspaisForm extends BaseEspaisForm
   public function setup()
   {
     
+    $Sino = array(0=>'No',1=>'Sí');
+    
     $this->setWidgets(array(
-      'EspaiID' => new sfWidgetFormChoice(array('choices'=>EspaisPeer::select($this->getOption('IDS'))),array()),
-      'Nom'     => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
-      'Ordre'   => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
-      'site_id' => new sfWidgetFormInputHidden(),
-      'actiu'   => new sfWidgetFormInputHidden(),
+      'EspaiID'     => new sfWidgetFormChoice(array('choices'=>EspaisPeer::select($this->getOption('IDS'))),array()),
+      'Nom'         => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
+      'Ordre'       => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
+      'site_id'     => new sfWidgetFormInputHidden(),
+      'actiu'       => new sfWidgetFormInputHidden(),
+      'isLlogable'  => new sfWidgetFormChoice(array('choices'=>$Sino)), 
     ));
 
     $this->setValidators(array(
@@ -28,6 +31,7 @@ class EspaisForm extends BaseEspaisForm
       'Ordre'   => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'site_id' => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'isLlogable'=> new sfValidatorPass(array(),array()),
     ));
 
     $this->widgetSchema->setNameFormat('espais[%s]');
@@ -38,6 +42,7 @@ class EspaisForm extends BaseEspaisForm
       'EspaiID' => 'Espai ',
       'Nom'     => 'Nom ',
       'Ordre'   => 'Ordre ',      
+      'isLlogable' => 'Es lloga?',
     ));
     
   }
