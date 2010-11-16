@@ -9,7 +9,7 @@
 </script>
 
 <style>
-    LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:14px;  }  
+    LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:12px;  }  
 
 	.DH { display:block; float:left; padding-top:5px; }
 
@@ -22,6 +22,7 @@
    <TD colspan="3" class="CONTINGUT_ADMIN">
 
 	<?php include_partial('breadcumb',array('text'=>'ZONA PRIVADA')); ?>		
+   	<?php include_partial('espaiActual',array('IDS'=>$IDS)); ?>
 
     <?php if($DEFAULT): ?>
 		                   	                   	
@@ -29,14 +30,17 @@
             <div id="tabs">
             	<ul>
                     <li><a href="#tabs-0">Benvinguda</a></li>
+                    <li><a href="#tabs-4">Entitats</a></li>
             		<li><a href="#tabs-1">Dades</a></li>
             		<li><a href="#tabs-2">Matrícules</a></li>
                     <li><a href="#tabs-3">Reserves</a></li>                            		
             	</ul>                        
                 <div id="tabs-0"> <?php echo landing_page(); ?> </div>
+                <div id="tabs-4"> <?php echo FormulariEntitats($LENTITATS); ?> </div>
                 <div id="tabs-1"> <?php echo LlistaDades($FDADES); ?> </div>
             	<div id="tabs-2"> <?php echo LlistaMatricules($LMATRICULES); ?> </div>
             	<div id="tabs-3"> <?php echo LlistaReserves($LRESERVES); ?> </div>              	
+                
             </div>
         
         </div>
@@ -48,8 +52,8 @@
               if(isset($TPV)) echo VerificaMatricula($TPV,$DADES_MATRICULA,$ISPLE);                              
               if(isset($FRESERVA)) echo EditaReserva($FRESERVA,$MISSATGE);
               if(isset($MISS_MAT)) echo MissatgeWeb($TITOL,$MISS);
-                                                      
-              
+              if(isset($FENTITATS)) echo EditaEntitats($FENTITATS);
+                                                                    
             endif;                                       
          
       ?>
@@ -79,7 +83,48 @@
 	}
 
 
+    function FormulariEntitats($FENTITATS)
+    {
+    
+        $RET = '
+        <form name="gDades" action="'.url_for('gestio/uGestio').'" method="post">
+           
+                <table class="FORMULARI">                    
+                '.$FENTITATS.'
+                </table>
+                <div style="text-align:right">
+                    <button type="submit" name="BGUARDACANVIENTITAT" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                        '.image_tag('template/house.png').' Canvia de lloc
+                    </button>
+                </div>                                                              
+        </form>';
+                     
+        return $RET;
 
+    }
+
+    function EditaEntitats($FENTITATS)
+    {
+    
+        $RET = '
+        <form name="gDades" action="'.url_for('gestio/uGestio').'" method="post">
+           
+    	   <FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Dades personals</LEGEND>
+    	                               	 	                                    
+                <table class="FORMULARI">                    
+                '.$FENTITATS.'
+                </table>
+                <div style="text-align:right">
+                    <button type="submit" name="BGUARDACANVIENTITAT" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                        '.image_tag('template/house.png').' Canvia de lloc
+                    </button>
+                </div>
+            </FIELDSET>                                                                                                            
+        </form>';
+                     
+        return $RET;
+
+    }
 
     function EditaUsuari($FUSUARI,$MISSATGE = "")
     {
@@ -336,36 +381,39 @@ function landing_page(){
     function LlistaMatricules($MATRICULES)
     {
                 
-        $RET = '<TABLE class="DADES">';
+        $RET  = '<form action='.url_for('gestio/uGestio').'>';        
         if(sizeof($MATRICULES)==0):
-            $RET .= '<TR><TD>No tenim constància informàtica que hagueu realitzat un curs a la Casa de Cultura. <br />Si no és així, si us plau notifiqueu-nos-ho. </TD></TR>';
+            $RET .= 'No tenim constància informàtica que hagueu realitzat un curs a aquesta entitat. <br />Si no és així, si us plau notifiqueu-nos-ho.';
         else:
+            $RET .= '<TABLE class="DADES">';
             $RET .= '<TR><TD class="titol">CODI</TD>
                          <TD class="titol">NOM</TD>
                          <TD class="titol">ESTAT</TD>
                          <TD class="titol">DATA MATRÍCULA</TD>
                          <TD class="titol">DESCOMPTE</TD></TR>';                                   
-        endif;
 
-        foreach($MATRICULES as $M):
-            $CURSOS = $M->getCursos();                           
-		   	$RET .= '<TR>
-		   			    <TD>
-    						<a href="#TB_inline?height=480&width=640&inlineId=hidden'.$CURSOS->getIdcursos().'&modal=false" class="thickbox">'.$CURSOS->getCodi().'</a>
-          					<div style="display:none" id="hidden'.$CURSOS->getIdcursos().'">'.$CURSOS->getDescripcio().'</div>
-				        </TD>		   				   			
-                        <TD>'.$CURSOS->getTitolCurs().'</TD>
-                        <TD>'.MatriculesPeer::getEstatText( $M->getEstat() ).'</TD>
-                        <TD>'.$M->getDataInscripcio('d/m/Y H:i').'</TD>
-                        <TD>'.MatriculesPeer::textDescomptes($M->getTReduccio()).'</TD>                                                                                             
-			     </TR>';                                   
-        endforeach;                              		
-        $RET .= '</TABLE>';
+
+            foreach($MATRICULES as $M):
+                $CURSOS = $M->getCursos();                           
+    		   	$RET .= '<TR>
+    		   			    <TD>
+        						<a href="#TB_inline?height=480&width=640&inlineId=hidden'.$CURSOS->getIdcursos().'&modal=false" class="thickbox">'.$CURSOS->getCodi().'</a>
+              					<div style="display:none" id="hidden'.$CURSOS->getIdcursos().'">'.$CURSOS->getDescripcio().'</div>
+    				        </TD>		   				   			
+                            <TD>'.$CURSOS->getTitolCurs().'</TD>
+                            <TD>'.MatriculesPeer::getEstatText( $M->getEstat() ).'</TD>
+                            <TD>'.$M->getDataInscripcio('d/m/Y H:i').'</TD>
+                            <TD>'.MatriculesPeer::textDescomptes($M->getTReduccio()).'</TD>                                                                                             
+    			     </TR>';                                   
+            endforeach;                              		
+            $RET .= '</TABLE>';
+        endif;
+        
         $RET .= '<br /><div style="text-align:right">
-                    <button type="submit" name="BGESTIONAMATRICULES" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                    <button type="submit" name="BGESTIONAMATRICULES" class="BOTO_ACTIVITAT">
                         '.image_tag('template/new.png').' Nova matrícula
                     </button>
-                 </div>';                                                                                                                    
+                 </div></form>';                                                                                                                            
 
         return $RET;           
            
@@ -373,21 +421,27 @@ function landing_page(){
     
     function LlistaReserves($RESERVES)
     {
+                     	     	
+	    if(empty($RESERVES)):
         
-        $RET  = '<TABLE class="DADES">';
-     	$RET .= '<TR><TD class="TITOL">Codi reserva</TD><TD class="TITOL">Nom activitat</TD><TD class="TITOL">Data sol·licitud</TD><TD class="TITOL">Estat</TD></TR>';
-     	
-	    if(empty($RESERVES)) $RET .= '<TR><TD colspan="3">No s\'han trobat prereserves anteriors</TD></TR>';	    
-     
-     	foreach($RESERVES as $R):     			
-            $RET .= '   <TR>
-                            <TD>'.link_to($R->getCodi(),'gestio/uGestio?accio=GESTIONA_RESERVES&idR='.$R->getReservaespaiid()).'</TD>                            
-                            <TD>'.$R->getNom().'</TD>
-                            <TD>'.$R->getDataalta('d/m/Y').'</TD>
-                            <TD>'.$R->getEstatText().'</TD>                                                        
-                        </TR>'; 
-		endforeach;
-        $RET .= '</TABLE>';     
+            $RET = 'No s\'han trobat prereserves anteriors en aquesta entitat.';
+            
+        else:
+        
+            $RET  = '<TABLE class="DADES">';
+            $RET .= '<TR><TD class="TITOL">Codi reserva</TD><TD class="TITOL">Nom activitat</TD><TD class="TITOL">Data sol·licitud</TD><TD class="TITOL">Estat</TD></TR>';
+         
+         	foreach($RESERVES as $R):     			
+                $RET .= '   <TR>
+                                <TD>'.link_to($R->getCodi(),'gestio/uGestio?accio=GESTIONA_RESERVES&idR='.$R->getReservaespaiid()).'</TD>                            
+                                <TD>'.$R->getNom().'</TD>
+                                <TD>'.$R->getDataalta('d/m/Y').'</TD>
+                                <TD>'.$R->getEstatText().'</TD>                                                        
+                            </TR>'; 
+    		endforeach;
+            $RET .= '</TABLE>';     
+
+        endif;
 
         $RET .= '<br /><div style="text-align:right">
                     <button type="submit" name="BGESTIONARESERVES" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
@@ -402,77 +456,85 @@ function landing_page(){
     
     function LlistaCursos($LCURSOS,$DATA_INICI)
     {
-                
+        
         $RET  = '<form method="post" action="'.url_for('gestio/uGestio').'" id="FORM_CURSOS">';
-        $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles </LEGEND>';
-        $RET .= '           
-				<TABLE class="DADES">
-                <tr>
-				    <td class="TITOL" colspan="2">CODI</td>						   	
-					<td class="TITOL">NOM</td>
-					<td class="TITOL">PREU</td>
-					<td class="TITOL" width="70px">INICI</td>
-					<td class="TITOL">PLACES</td>
-				</tr>';
+        $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles </LEGEND>';        
+                                
+        if(sizeof($LCURSOS) == 0):
         
-		$CAT_ANT = "";   
-		foreach($LCURSOS as $C):
-            if($C->getVisibleweb() == 1):                      
-                if($CAT_ANT <> $C->getCategoria()) $RET .= '<TR><TD colspan="6" class="TITOL_CATEGORIA">'.$C->getCategoriaText().'</TD></TR>';                
-                $PLACES = $C->getPlacesArray(); 
-                $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FFCCCC;\"":"";
-                $jple = ($PLACES['OCUPADES'] == $PLACES['TOTAL']);                                                                                 					                       	
-		   		$RET .= '<TR>
-					       <TD '.$ple.'>'.radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto('.$jple.');','class'=>'class_cursos ')).'</TD>';					      		
-				$RET .= '  <TD '.$ple.'>';
-                $RET .= '       <a href="#TB_inline?height=480&width=640&inlineId=hidden'.$C->getIdcursos().'&modal=false" class="thickbox">
-					      				'.$C->getCodi().'
-                                </a>
-				                <div style="display: none;" id="hidden'.$C->getIdcursos().'">
-                                        <div id="TEXT_WEB">
-			      						 '.$C->getDescripcio().'
-                                        </div>
-      							</div>
-  		                    </TD>';
-                $RET .= '<TD '.$ple.'>'.$C->getTitolcurs().' ( '.$C->getHoraris().' ) </TD>';
-                $RET .= '<TD '.$ple.'>'.$C->getPreu().' €</TD>';      							
-  		        $RET .= '<TD '.$ple.'>'.$C->getDatainici('d-m-Y').'</TD>';
-  		        $RET .= '<TD '.$ple.'>'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>';
-   	            $RET .= '</TR>';                		                 										
-                $CAT_ANT = $C->getCategoria();
-            endif;			   
-		endforeach;        					                         
-		$RET .= '</TABLE><br />';
-                
-        $avui = time();                                                                                    
-        if($DATA_INICI >= $avui):
-            $BOT = "<div class=\"text\" style=\"font-weight:bold; \">El període de matrícules comença el dia ".date('d/m/Y',$DATA_INICI).'.<br /> Encara no es pot matricular.</div>';
+            $RET .= 'Actualment no hi ha cap curs disponible.</fieldset></form>';
+                            
         else: 
-            $BOT = "";
-            //$BOT = "<div>".submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')).'</div>';
-        endif;                
-                
-        $RET .= '   <TABLE class="FORMULARI" width="100%">					   		
-                        <TR><TD width="100px;" style="font-size:10px;"><b>DESCOMPTE</b></TD><td>'.select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptesWeb(),MatriculesPeer::REDUCCIO_CAP)).'</TD></TR>
-					   	<TR><TD width="100px"></TD>
-                            <TD>'.$BOT.'<br />                                                                                                                                                                                                  
-                            </TD>
-                        </TR>
-                    </TABLE>';        
-        
-        
-        if(empty($BOT)):
-            $RET .= '<div style="text-align:right">
-                        <button type="submit" name="BMATRICULA" class="BOTO_ACTIVITAT">
-                            '.image_tag('template/bookmark_document.png').' Matricular-me
-                        </button>
-                    </div>';
-        endif; 
-                
-        $RET .= '
-                </fieldset>                                                                
-             </form>                                            
-            ';
+                            
+            $RET .= '           
+    				<TABLE class="DADES">
+                    <tr>
+    				    <td class="TITOL" colspan="2">CODI</td>						   	
+    					<td class="TITOL">NOM</td>
+    					<td class="TITOL">PREU</td>
+    					<td class="TITOL" width="70px">INICI</td>
+    					<td class="TITOL">PLACES</td>
+    				</tr>';
+            
+    		$CAT_ANT = "";   
+    		foreach($LCURSOS as $C):
+                if($C->getVisibleweb() == 1):                      
+                    if($CAT_ANT <> $C->getCategoria()) $RET .= '<TR><TD colspan="6" class="TITOL_CATEGORIA">'.$C->getCategoriaText().'</TD></TR>';                
+                    $PLACES = $C->getPlacesArray(); 
+                    $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FFCCCC;\"":"";
+                    $jple = ($PLACES['OCUPADES'] == $PLACES['TOTAL']);                                                                                 					                       	
+    		   		$RET .= '<TR>
+    					       <TD '.$ple.'>'.radiobutton_tag('D[CURS]',$C->getIdcursos(),false,array('onClick'=>'ActivaBoto('.$jple.');','class'=>'class_cursos ')).'</TD>';					      		
+    				$RET .= '  <TD '.$ple.'>';
+                    $RET .= '       <a href="#TB_inline?height=480&width=640&inlineId=hidden'.$C->getIdcursos().'&modal=false" class="thickbox">
+    					      				'.$C->getCodi().'
+                                    </a>
+    				                <div style="display: none;" id="hidden'.$C->getIdcursos().'">
+                                            <div id="TEXT_WEB">
+    			      						 '.$C->getDescripcio().'
+                                            </div>
+          							</div>
+      		                    </TD>';
+                    $RET .= '<TD '.$ple.'>'.$C->getTitolcurs().' ( '.$C->getHoraris().' ) </TD>';
+                    $RET .= '<TD '.$ple.'>'.$C->getPreu().' €</TD>';      							
+      		        $RET .= '<TD '.$ple.'>'.$C->getDatainici('d-m-Y').'</TD>';
+      		        $RET .= '<TD '.$ple.'>'.$PLACES['OCUPADES'].'/'.$PLACES['TOTAL'].'</TD>';
+       	            $RET .= '</TR>';                		                 										
+                    $CAT_ANT = $C->getCategoria();
+                endif;			   
+    		endforeach;        					                         
+    		$RET .= '</TABLE><br />';
+                    
+            $avui = time();                                                                                    
+            if($DATA_INICI >= $avui):
+                $BOT = "<div class=\"text\" style=\"font-weight:bold; \">El període de matrícules comença el dia ".date('d/m/Y',$DATA_INICI).'.<br /> Encara no es pot matricular.</div>';
+            else: 
+                $BOT = "";
+                //$BOT = "<div>".submit_tag('Matriculeu-me',array('name'=>'BMATRICULA' , 'class'=>'BOTO_ACTIVITAT' , 'style'=>'width:100px')).'</div>';
+            endif;                
+                    
+            $RET .= '   <TABLE class="FORMULARI" width="100%">					   		
+                            <TR><TD width="100px;" style="font-size:10px;"><b>DESCOMPTE</b></TD><td>'.select_tag('D[DESCOMPTE]',options_for_select( MatriculesPeer::selectDescomptesWeb(),MatriculesPeer::REDUCCIO_CAP)).'</TD></TR>
+    					   	<TR><TD width="100px"></TD>
+                                <TD>'.$BOT.'<br />                                                                                                                                                                                                  
+                                </TD>
+                            </TR>
+                        </TABLE>';        
+            
+            
+            if(empty($BOT)):
+                $RET .= '<div style="text-align:right">
+                            <button type="submit" name="BMATRICULA" class="BOTO_ACTIVITAT">
+                                '.image_tag('template/bookmark_document.png').' Matricular-me
+                            </button>
+                        </div>';
+            endif; 
+                    
+            $RET .= '
+                    </fieldset>                                                                
+                 </form>                                            
+                ';
+        endif;      
                      
         return $RET;           
         

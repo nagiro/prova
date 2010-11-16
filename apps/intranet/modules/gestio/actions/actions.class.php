@@ -12,12 +12,13 @@
 class gestioActions extends sfActions
 {
     
-
    public function executeUFormularis(sfWebRequest $request)
    {           
     
         $this->setLayout('gestio');
         $this->DEFAULT = false;
+        $this->IDU = $this->getUser()->getSessionPar('idU');
+        $this->IDS = $this->getUser()->getSessionPar('idS');
     
         //Entren crides i es mostra una reposta en web si ha anat bé o no.        
         $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
@@ -33,18 +34,20 @@ class gestioActions extends sfActions
                         $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span>';
                     else:
                         $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error tècnic en l\'acceptació.<br />Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
-                    endif;                                                                 
+                    endif;                                                             
+                    UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );    
                 break;
                 
             //Des del mail la persona no accepta i rebutja les condicions. 
             case 'Reserva_Espais_Mail_Rebutja_Condicions':
                     $this->TITOL = "Reserva d'espais";
-                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);                    
                     if($OR instanceof Reservaespais && $OR->setRebutjada()):                        
                         $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span">';
                     else:
                         $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error en l\'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
-                    endif;                                                                 
+                    endif;
+                    UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );
                 break;                
             default:                
             break;
@@ -101,6 +104,7 @@ class gestioActions extends sfActions
     $this->FDADES      = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
     $this->LRESERVES   = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );
     $this->LMATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );
+    $this->LENTITATS   = new SitesSelectForm(null,array('idU'=>$this->IDU));
         
     if($request->hasParameter('BGESTIONAUSUARI')) $this->accio = 'GESTIONA_USUARI';
     if($request->hasParameter('BGUARDAUSUARI')) $this->accio = 'GUARDA_USUARI';
@@ -110,6 +114,7 @@ class gestioActions extends sfActions
     if($request->hasParameter('BGUARDARESERVA')) $this->accio = 'GUARDA_RESERVA';
     if($request->hasParameter('BACCEPTACONDICIONSRESERVA')) $this->accio = 'ACCEPTA_CONDICIONS_RESERVA';
     if($request->hasParameter('BANULACONDICIONSRESERVA')) $this->accio = 'ANULA_CONDICIONS_RESERVA';
+    if($request->hasParameter('BGUARDACANVIENTITAT')) $this->accio = 'GUARDA_CANVI_ENTITAT';
             
     switch($this->accio)
     {
@@ -125,6 +130,9 @@ class gestioActions extends sfActions
                 $this->FUSUARI->bind($RP);
                 if($this->FUSUARI->isValid()):                    
                     $this->FUSUARI->save();
+                    $OU = $this->FUSUARI->getObject();
+                    UsuarisPeer::addSite( $this->IDU , $this->IDS );
+                    $this->FUSUARI->addSite();
                     $this->MISSATGE = array('Usuari guardat correctament.');
                 else: 
                     $this->MISSATGE = array('Hi ha algun error al formulari.<br />Revisa els camps, si us plau.');                    
@@ -160,7 +168,10 @@ class gestioActions extends sfActions
             $this->ISPLE = CursosPeer::isPle($D['CURS'],$this->IDS);
                           
             //Retorna id de matrícula            
-            $matricules = $this->guardaMatricula($this->DADES_MATRICULA,0,$this->IDS); 
+            $matricules = $this->guardaMatricula($this->DADES_MATRICULA,0,$this->IDS);
+            
+            //Vinculem l'usuari per a què puguin veure què ha fet
+            UsuarisPeer::addSite( $this->IDU , $this->IDS ); 
               
             //Carreguem el TPV
             $this->TPV = MatriculesPeer::getTPV($this->DADES_MATRICULA['PREU'] , $this->DADES_MATRICULA['NOM'] , $matricules , $this->IDS );        
@@ -168,10 +179,11 @@ class gestioActions extends sfActions
 
         //Pas 3: Acabem la matrícula i guardem els canvis
         case 'FI_MATRICULA':
+                //Hem vinculat l'usuari al pas anterior quan guardem la matrícula'
                 $this->MISS = "";
                 $this->TITOL = "Matrícules";
                 if($request->getParameter('OK')):
-                    $this->MISS = "Matrícula realitzada correctament.";
+                    $this->MISS = "Matrícula realitzada correctament.";                    
                 else:
                     $this->MISS = "Hi ha hagut algun problema realitzant la matrícula.";
                 endif;                
@@ -199,7 +211,27 @@ class gestioActions extends sfActions
                     $this->sendMail($FROM , 'informatica@casadecultura.org','HOSPICI :: ERROR AL FORMULARI RESERVA D\'ESPAIS',print_r($this->FRESERVA));
                     $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
     			endif;			
+                
+                //Vinculem l'usuari que ha intentat fer una reserva
+                UsuarisPeer::addSite( $this->IDU , $this->IDS );
                                     
+            break;
+
+        case 'GESTIONA_CANVI_ENTITAT':
+                $this->FENTITATS = new SitesSelectForm(null,array('idU'=>$this->IDU));                
+            break;
+            
+        case 'GUARDA_CANVI_ENTITAT':
+        
+    	   		$PR = $request->getParameter('sites');
+                if($PR['site_id_my'] > 0):
+                    $this->getUser()->setSessionPar('idS',$PR['site_id_my']);
+                    $this->redirect('gestio/uGestio?accio=');
+                elseif($PR['site_id'] > 0):
+                    $this->getUser()->setSessionPar('idS',$PR['site_id']);
+                    $this->redirect('gestio/uGestio?accio=');
+                endif;                                 
+                                                    
             break;
             
         case 'ACCEPTA_CONDICIONS_RESERVA':
@@ -289,7 +321,6 @@ class gestioActions extends sfActions
      
   }
 
-
   
 /**
  * Executem el login del modul administrador
@@ -300,39 +331,38 @@ class gestioActions extends sfActions
      
      $this->setLayout('gestio');     
      $this->FLogin = new LoginForm(array('nick'=>"",'password'=>''));
-     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     
+     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona. 
      $this->ERROR = "";
-               
+     $this->accio = $request->getParameter('accio','');
+                              
      if($request->hasParameter('BLOGIN')) $this->accio = "LOGIN";
      if($request->hasParameter('BNEWUSER')) $this->accio = "NEW_USER";
+     if($request->hasParameter('BSAVENEWUSER')) $this->accio = "SAVE_NEW_USER";
      if($request->hasParameter('BREMEMBER')) $this->accio = "REMEMBER";
+          
     
      switch($this->accio){
+        
+        case 'LOGOUT':                
+                $this->getUser()->setSessionPar('idU',0);
+                $this->getUser()->setSessionPar('idS',0);
+                $this->getUser()->setSessionPar('idN',NivellsPeer::CAP);
+                $this->getUser()->setAuthenticated(false);
+                $this->getUser()->clearCredentials();
+                $this->redirect('gestio/uLogin');
+            break;
         
         //Fem un LOGIN
         case 'LOGIN':           
             $L = $request->getParameter('login');             
             $this->FLogin->bind($L);
  	        if($this->FLogin->isValid()):
-                //Consultem l'usuari. Per fer una entrada genèrica, 'IDS haurà de ser null.
-                $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],$this->IDS);     		 
-       		    if($USUARI instanceof Usuaris):
-      		 	  $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
-                  $this->getUser()->setSessionPar('idN',$USUARI->getNivellsIdnivells());
-                  $this->getUser()->setAuthenticated(true);
-                  $this->getUser()->addLogAction('login','login',$L);
-                  $idN = $USUARI->getNivellSite($this->IDS);
-                  
-                  if( $idN == 1 ):
-                    $this->getUser()->addCredential('admin');
-                    $this->redirect( 'gestio/main' );
-                  elseif( $idN == 2 ):
-                    $this->getUser()->addCredential('user');
-                    $this->redirect( 'gestio/uGestio' );
-                  else:
-               	 	$this->getUser()->addLogAction('error','login',$L);     		 
-                 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
-                  endif;
+                //Consultem l'usuari. Només miraré els permisos si és un "administrador" 
+                $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],null);     		 
+       		    if($USUARI instanceof Usuaris):                                    
+
+                    $this->makeLogin($USUARI);
+                
                 else:
                     $this->getUser()->addLogAction('error','login',$L);     		 
                  	$this->ERROR = "L'usuari o la contrasenya són incorrectes";
@@ -345,10 +375,30 @@ class gestioActions extends sfActions
             break;
             
         //Creem un nou usuari
-        case 'NEW_USER':
-                $this->getUser()->setSessionPar('idU',0);
-                $this->getUser()->addCredential('user');
-                $this->redirect('gestio/uGestio?accio=NEW');
+        case 'NEW_USER':  
+                      
+                $this->FUSUARI = UsuarisPeer::initialize(0,$this->IDS,false,true);
+                                                
+            break;
+        
+        case 'SAVE_NEW_USER':   
+            
+                $PR = $request->getParameter('usuaris');                
+                $this->FUSUARI = UsuarisPeer::initialize(0,$this->IDS,false,true);                							
+    			$this->FUSUARI->bind($PR);				
+                if($this->FUSUARI->isValid()):                            
+                                     
+    				$this->FUSUARI->save();
+                    $OU = $this->FUSUARI->getObject();                                                            
+                    UsuarisPeer::addSite( $OU->getUsuariId() , $this->IDS );                    
+                    $this->makeLogin($OU);
+                                                                                                      			                	                                    				
+    			else:
+                
+                    $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
+                    
+    			endif;			       
+            
             break;
             
         //Si fem um remember de contrassenya
@@ -359,6 +409,32 @@ class gestioActions extends sfActions
      }
 		   
   }  
+
+  private function makeLogin($USUARI)
+  {
+      //Consulto el nivell que té l'usuari pel site. Si té nivell == 2 o no té nivell, és usuari normal. 
+      //Si té nivell 1 serà administrador.
+      $idN = $USUARI->getSiteNivell($this->IDS);
+ 	  $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
+      $this->getUser()->setSessionPar('idN',$idN);
+      $this->getUser()->setAuthenticated(true);
+      $this->getUser()->addLogAction('login','login',null);                              
+
+      if( $idN == NivellsPeer::ADMIN ):
+        $this->getUser()->setSessionPar('idS',$this->IDS);
+        $this->getUser()->addCredential('admin');
+        $this->redirect( 'gestio/main' );
+      elseif( $idN == NivellsPeer::REGISTRAT ):
+        $this->getUser()->addCredential('user');
+        $this->redirect( 'gestio/uGestio' );
+      else:   	 	
+     	$this->ERROR = "El DNI o la contrasenya són incorrectes";
+      endif;
+    
+  }
+
+
+
 
 /**
  * Executem l'opció de canviar de site si en tenim més d'un. 

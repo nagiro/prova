@@ -47,11 +47,11 @@ all:
     # timeout:                84600
     
   .actions:
-    login_module: web
-    login_action: login
+    login_module: gestio
+    login_action: uLogin
     
     error_404_module: web
     error_404_action: notfound
     
     secure_module: gestio
-    secure_action: login
+    secure_action: uLogin

@@ -47,28 +47,27 @@ class ClientUsuarisForm extends sfFormPropel
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required'=>false)),      
       'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => false)),
-      'Nom'               => new sfValidatorString(array('required' => false)),
-      'Cog1'              => new sfValidatorString(array('required' => false)),
-      'Cog2'              => new sfValidatorString(array('required' => false)),
-      'Email'             => new sfValidatorString(array('required' => false)),
-      'Adreca'            => new sfValidatorString(array('required' => false)),
-      'CodiPostal'        => new sfValidatorInteger(array('required' => false)),
-      'Poblacio'          => new sfValidatorPass(array('required'=>false)),
+      'Nom'               => new sfValidatorString(array('required' => true)),
+      'Cog1'              => new sfValidatorString(array('required' => true)),
+      'Cog2'              => new sfValidatorString(array('required' => true)),
+      'Email'             => new sfValidatorString(array('required' => true)),
+      'Adreca'            => new sfValidatorString(array('required' => true)),
+      'CodiPostal'        => new sfValidatorInteger(array('required' => true)),
+      'Poblacio'          => new sfValidatorPass(array('required'=> false)),
       'Poblaciotext'      => new sfValidatorString(array('required' => false)),
       'Telefon'           => new sfValidatorString(array('required' => false)),
       'Mobil'             => new sfValidatorString(array('required' => false)),
       'Entitat'           => new sfValidatorString(array('required' => false)),
       'Habilitat'         => new sfValidatorBoolean(array('required' => false)),
 	  'captcha2'		  => new sfValidatorNumber(array('min'=>$sol,'max'=>$sol),array('invalid'=>$inv,'max'=>$inv,'min'=>$inv)),
-      'DNI'               => new sfValidatorCallback(   array(  'callback'  =>'ClientUsuarisForm::validaDNI', 'arguments' => array('idU'=>$this->getObject()->getUsuariId()))),
+      'DNI'               => new sfValidatorCallback(array(  'callback'  =>'ClientUsuarisForm::validaDNI', 'arguments' => array('idS'=>$this->getObject()->getSiteId(),'idU'=>$this->getObject()->getUsuariId()))),
       'site_id'           => new sfValidatorPass(),
       'actiu'             => new sfValidatorPass(),                
     ));
 
     $DNIV = $this->getValidator('DNI');        
     $DNIV->addMessage('duplicat','El DNI ja existeix.');    
-    $DNIV->addMessage('incorrecte','El DNI entrat no és correcte.');
-    
+    $DNIV->addMessage('incorrecte','El DNI entrat no és correcte.');       
     
     $this->widgetSchema->setLabels(array(                
       'DNI'               => 'DNI: ',
@@ -112,17 +111,19 @@ class ClientUsuarisForm extends sfFormPropel
   {
     
     //Comprovem que el DNI ja no existeixi a no ser que sigui el mateix usuari.
-    $C = new Criteria();
+    $C = new Criteria();            
+    $C = UsuarisPeer::getCriteriaActiu($C,null);
+    
     $value = strtoupper($value);
     $C->add(UsuarisPeer::USUARIID, $arguments['idU'], CRITERIA::NOT_EQUAL);
     $C->add(UsuarisPeer::DNI, $value);
     if(UsuarisPeer::doCount($C) > 0):
-        throw new sfValidatorError($validator, 'duplicat');
+        throw new sfValidatorError($validator, 'duplicat');    
     endif; 
      
     if(self::valida_nif_cif_nie($value) <= 0):
         throw new sfValidatorError($validator, 'incorrecte');
-    endif;    
+    endif;           
        
     return $value;
   }

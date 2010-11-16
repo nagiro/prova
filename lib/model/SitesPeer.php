@@ -38,16 +38,46 @@ class SitesPeer extends BaseSitesPeer {
        	return new SitesForm($OO,array('IDS'=>$idS));
     }
 
-    static public function getSelect()
+    static public function getSelect($has_new = true)
     {
         $RET = array();
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);
-        $RET[''] = 'Nou site...';
+        if($has_new) $RET[''] = 'Nou site...';
+        else $RET['0'] = 'Escull una entitat... ';
         foreach(self::doSelect($C) as $OS):
             $RET[$OS->getSiteId()] = $OS->getNom();
         endforeach;
         return $RET;
+    }
+
+    static public function getSelectUser($idU = 0)
+    {
+        $RET = array();
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C);        
+        $C = UsuarisPeer::getCriteriaActiu($idU);
+        $C = UsuarisSitesPeer::getCriteriaActiu($C);
+        $C->addJoin(self::SITE_ID, UsuarisSitesPeer::SITE_ID);
+        $C->addJoin(UsuarisSitesPeer::USUARI_ID, UsuarisPeer::USUARIID);
+        $C->add(UsuarisPeer::USUARIID,$idU);
+        
+        $RET['0'] = 'Escull una entitat...';
+        foreach(self::doSelect($C) as $OS):
+            $RET[$OS->getSiteId()] = $OS->getNom();
+        endforeach;
+        return $RET;
+    }
+
+    
+    static public function getNom($idS)
+    {
+        $OS = self::retrieveByPK($idS);
+        if($OS instanceof Sites):
+            return $OS->getNom();
+        else: 
+            return "n/d";
+        endif; 
     }
     
 } // SitesPeer

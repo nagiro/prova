@@ -9,9 +9,9 @@ uRemember:
   is_secure: false
   
 uGestio:
-  is_secure: false
-  credentials: [user,admin]
+  is_secure: true
+  credentials: [] 
 
 uFormularis:
-  is_secure: false
-  credentials: [user,admin]
+  is_secure: true
+  credentials: []  

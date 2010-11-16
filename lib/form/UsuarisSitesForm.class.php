@@ -15,7 +15,7 @@ class UsuarisSitesForm extends BaseUsuarisSitesForm
             
     $Users = UsuarisPeer::selectAllUsers();
     $idU = $this->getObject()->getUsuariid();
-        
+                    
     $this->setWidgets(array(      
       'usuari_id' => new sfWidgetFormChoice( array('choices'=> $Users ) , array() ),
       'site_id'   => new sfWidgetFormChoice( array('choices' => UsuarisSitesPeer::getSites( $idU , $this->getOption('NEW')) )),      

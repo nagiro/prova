@@ -120,5 +120,30 @@ class Usuaris extends BaseUsuaris
                 
         return $D; 
     }
+    
+    public function getSiteNivell($idS)
+    {
+        
+        $C = new Criteria();
+        $C = UsuarisPeer::getCriteriaActiu($C,$idS);
+        $C = UsuarisSitesPeer::getCriteriaActiu($C);
+        $C->add(UsuarisSitesPeer::SITE_ID, $idS);
+        $C->add(UsuarisSitesPeer::USUARI_ID,$this->getUsuariid());        
+        
+        $OU = UsuarisSitesPeer::doSelectOne($C);                
+    
+        //Si existeix un vincle entre el site i l'usuari, mirem si quin nivell té.
+        //Si no existeix cap vincle, per defecte és registrat.
+        if($OU instanceof UsuarisSites):                                    
+            if($OU->getNivellId() == NivellsPeer::ADMIN):
+                return NivellsPeer::ADMIN;
+            else:
+                return NivellsPeer::REGISTRAT;
+            endif; 
+        else: 
+            return NivellsPeer::REGISTRAT;        
+        endif;        
+        
+    }   
 
 }

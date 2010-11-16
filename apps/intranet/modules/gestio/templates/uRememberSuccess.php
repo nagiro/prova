@@ -15,7 +15,12 @@
 					    	   <?php echo $FREMEMBER; ?>					    	   
 					           <tr>
                                 <td width="100px"></td>
-                                <td><button type="submit" class="BOTO_ACTIVITAT" name="BREMEMBER">Envia'm la contrassenya</button></td></tr>
+                                <td>
+                                    <button type="submit" class="BOTO_ACTIVITAT" name="BREMEMBER">
+                                        <?php echo image_tag('template/email.png').' Envia\'m la contrasenya' ?>                                        
+                                    </button>                                                                                                                
+                                                                        
+                                </td></tr>
 					           
 			    	<?php else: ?>
 			    	
@@ -23,6 +28,7 @@
 			    				    	
 			    	<?php endif; ?>  
 		       </table>
+               <?php echo link_to(image_tag('template/arrow_left.png').' Tornar','gestio/uLogin') ?>
 		    </DIV>
 	    </form>   
             

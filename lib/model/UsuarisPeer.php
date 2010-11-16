@@ -37,6 +37,7 @@ class UsuarisPeer extends BaseUsuarisPeer
   //Comprovem que l'usuari pertanyi a un SITE
   static public function getCriteriaActiu( $C , $idS = null )
   {    
+    $C = new Criteria();
     $C->add(self::ACTIU, true);
     if(!is_null($idS)):
         $C->addJoin(UsuarisSitesPeer::USUARI_ID, self::USUARIID);
@@ -48,14 +49,14 @@ class UsuarisPeer extends BaseUsuarisPeer
      
   static function cercaDNI($DNI)
   {
-    $C = new Criteria();
+    $C = new Criteria();                 
     $C->add(self::DNI, $DNI, Criteria::EQUAL);
     return self::doSelectOne($C);
   }
   
   static function hasDNI($DNI)
   {
-    $C = new Criteria();
+    $C = new Criteria();    
     $C->add( self::DNI , $DNI , Criteria::EQUAL );
     return ( self::doCount($C) > 0 ); 
   }
@@ -232,5 +233,10 @@ class UsuarisPeer extends BaseUsuarisPeer
   	$usuaris = array(1,2,4,6,9,11,24);
   	return (in_array($idU,$usuaris)); 
   }        
+    
+  static public function addSite($idU,$idS)
+  {
+    UsuarisSitesPeer::initialize($idU,$idS,false)->getObject()->save();    
+  }
     
 }

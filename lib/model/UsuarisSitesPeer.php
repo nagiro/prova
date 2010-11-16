@@ -64,6 +64,7 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
 			$OO = new UsuarisSites();
             $OO->setUsuariId($idU);
             $OO->setSiteId($idS);
+            $OO->setNivellId(NivellsPeer::REGISTRAT);
             $OO->setActiu(true);
             $OO->setNivellId(NivellsPeer::CAP);			     						
 		endif; 

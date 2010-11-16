@@ -21,7 +21,9 @@
 
    <TD colspan="3" class="CONTINGUT_ADMIN">
 
-	<?php include_partial('breadcumb',array('text'=>'ZONA PRIVADA')); ?>		
+	<?php include_partial('breadcumb',array('text'=>'ZONA PRIVADA')); ?>
+    <br />
+   	<?php include_partial('espaiActual',array('IDS'=>$IDS)); ?>    		
 
     <?php if($DEFAULT): ?>
 		                   	                   	
