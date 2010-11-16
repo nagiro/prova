@@ -45,7 +45,7 @@ class EspaisPeer extends BaseEspaisPeer
     return $RET;    
       
   }
-/*  
+  
   static public function selectJavascript( $idS , $sel = -1 )
   {
 
@@ -69,7 +69,7 @@ class EspaisPeer extends BaseEspaisPeer
     return $RET;    
   	
   }
-*/
+
 
   /**
    * Usat al formulari ClientReservesPeer

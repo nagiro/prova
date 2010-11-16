@@ -1342,19 +1342,20 @@ class gestioActions extends sfActions
 
    	//Netegem cerca
   	if($request->getParameter('accio') == 'C'):      		
-        $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		
+        $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);  			      
-        $this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());	           			       
+        $this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());        	           			       
     endif;    
         
     $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));    
     
-    $this->PAGINA 			= $request->getParameter('PAGINA',1);
-    $this->DATAI            = $this->getUser()->ParReqSesForm($request,'DATAI',time());                
+    $T = time();
+    
+    $this->PAGINA 			= $request->getParameter('PAGINA',1);    
+    $this->DATAI            = $this->getUser()->ParReqSesForm($request,'DATAI',$T);                          
     $this->DIA    			= $request->getParameter('DIA',time());    
     $this->IDA    			= $request->getParameter('IDA',0);
     $this->accio 			= $request->getParameter('accio','C');            
-    
     $this->ACTIVITAT_NOVA 	= false;        
 
     //Inicialitzem el formulari de cerca
@@ -1404,7 +1405,7 @@ class gestioActions extends sfActions
                	else $this->ACTIVITATS = array();                                                                 
                 $this->CALENDARI = $HORARIS['CALENDARI'];                
                 $this->MODE['CONSULTA'] = true;
-                $this->MODE['LLISTAT'] = true;                                                              
+                $this->MODE['LLISTAT'] = true;                                                                              
                 break;
     		break;
 

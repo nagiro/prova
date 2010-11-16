@@ -45,8 +45,6 @@
 		      hora = parseInt($("#horaris_HoraFi_hour").val());
               $("#horaris_HoraPost_hour").val(hora);
             });
-         
-         
 
 	 });
 
@@ -115,12 +113,8 @@
 	function esborraLiniaE(id) { $("#rowE\\["+id+"\\]").remove(); }
 	
 	</script>
-
-
   
 <TD colspan="3" class="CONTINGUT_ADMIN">	
-
-	<?php // echo phpinfo(); ?>
 
 	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>		
 		                   	                   
