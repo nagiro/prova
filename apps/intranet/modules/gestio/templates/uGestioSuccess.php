@@ -49,7 +49,7 @@
       
               if(isset($FUSUARI)) echo EditaUsuari($FUSUARI,$MISSATGE);                 
               if(isset($LCURSOS)) echo LlistaCursos($LCURSOS,$DATA_INICI);
-              if(isset($TPV)) echo VerificaMatricula($TPV,$DADES_MATRICULA,$ISPLE);                              
+              if(isset($TPV)) echo VerificaMatricula($TPV,$DADES_MATRICULA,$ISPLE,$IDS);                              
               if(isset($FRESERVA)) echo EditaReserva($FRESERVA,$MISSATGE);
               if(isset($MISS_MAT)) echo MissatgeWeb($TITOL,$MISS);
               if(isset($FENTITATS)) echo EditaEntitats($FENTITATS);
@@ -156,7 +156,7 @@
     }
 
 
-    function VerificaMatricula($TPV,$DADES_MATRICULA,$ISPLE)
+    function VerificaMatricula($TPV,$DADES_MATRICULA,$ISPLE,$IDS)
     {
         
         $RET = "";
