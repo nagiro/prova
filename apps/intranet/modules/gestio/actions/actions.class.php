@@ -262,7 +262,12 @@ class gestioActions extends sfActions
   		$idM = $request->getParameter('Ds_MerchantData');
   		$OM = MatriculesPeer::retrieveByPK($idM);
   		if($OM instanceof Matricules):
-            if(MatriculesPeer::setMatriculaPagada($idM)):              			  			
+            if(MatriculesPeer::setMatriculaPagada($idM)):
+    
+                $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
+                $OM->setTpvOrder($request->getParameter('Ds_Order'));
+                $OM->save();
+                        
       			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
       							$OM->getUsuaris()->getEmail(),
       							'Matrícula realitzada correctament',

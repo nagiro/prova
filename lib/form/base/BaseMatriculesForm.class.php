@@ -25,6 +25,8 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'tPagament'        => new sfWidgetFormInputText(),
       'site_id'          => new sfWidgetFormInputText(),
       'actiu'            => new sfWidgetFormInputText(),
+      'tpv_operacio'     => new sfWidgetFormInputText(),
+      'tpv_order'        => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -39,6 +41,8 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'tPagament'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'tpv_operacio'     => new sfValidatorString(array('max_length' => 20)),
+      'tpv_order'        => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
     ));
 
     $this->widgetSchema->setNameFormat('matricules[%s]');
