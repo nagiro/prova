@@ -118,9 +118,6 @@ class gestioActions extends sfActions
             
     switch($this->accio)
     {
-        case 'NEW':
-            
-            break;
         case 'GESTIONA_USUARI':
                 $this->FUSUARI = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
             break;

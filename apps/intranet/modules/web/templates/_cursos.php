@@ -58,7 +58,7 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
 		<form method="post" action="<?php echo url_for('web/matriculat') ?>">
             <div>
                Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.<br /> 		   			
-               Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">"aquí</a>.            
+               Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">aquí</a>.            
             </div>
 		</form>
    </FIELDSET>

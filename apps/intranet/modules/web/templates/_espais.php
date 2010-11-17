@@ -19,7 +19,7 @@
 	<div style="padding-right:40px; text-align:left;">
 
 		<h2> Espais de la Casa de Cultura de Girona</h2>	
-		<P> La Fundació Casa de Cultura de Girona, a més de la seva oferta d’activitats, ofereix un servei de cessió d’espais a persones i entitats que ho requereixin. Per demanar la utilització dels espais del Centre podeu consultar la disponibilitat de sales i equips així com les condicions de cessió a la Secretaria o en aquesta mateixa pàgina web. Cal formalitzar la sol•licitud omplint un formulari que es pot presentar a la Casa de Cultura (Plaça Hospital, 6. Girona) o tramitar en línia. Podeu accedir al formulari clicant als enllaços que trobareu a la descripció de cadascun dels espais o sol•licitar-lo a la mateixa Casa de Cultura. </P>
+		<p> La Fundació Casa de Cultura de Girona, a més de la seva oferta d’activitats, ofereix un servei de cessió d’espais a persones i entitats que ho requereixin. Per demanar la utilització dels espais del Centre podeu consultar la disponibilitat de sales i equips així com les condicions de cessió a la Secretaria o en aquesta mateixa pàgina web. Cal formalitzar la sol•licitud omplint un formulari que es pot presentar a la Casa de Cultura (Plaça Hospital, 6. Girona) o tramitar en línia. Podeu accedir al formulari clicant als enllaços que trobareu a la descripció de cadascun dels espais o sol•licitar-lo a la mateixa Casa de Cultura. </p>
 	    
 	    <br />
 		<br />
@@ -30,7 +30,7 @@
 	    <div class="col1">Escenari: </div>		<div class="col2">Òval de 36 metres quadrats</div>	    
 	    <div class="col1">Equipament: </div>	<div class="col2"><ul><li/>Piano Steinway and sons de gran cua<li/>Megafonia<li/>Taula de so digital de 16 canals<li/>Aire condicionat</ul></div>
 	    <div class="col1">Fotografies: </div>	<div class="col2"><?php echo generaImatge('Auditori.jpg','Auditori. Vista general'); ?></div>
-		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </div>
+		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES') ?> </div>
 		<div class="fi">&nbsp;</div>	  				
 		
 
@@ -40,7 +40,7 @@
 	    <div class="col1">Escenari: </div>		<div class="col2">Rectangular de 15 metres quadrats</div>	    
 	    <div class="col1">Equipament: </div>	<div class="col2"><ul><li/>Piano Grotian-Steinweg de gran cua<li />Megafonia<li />Taula de so de 6 canals<li />Pantalla de cinema i projector<li />Aire condicionat<li />Opcional: 	Portàtil, Projector, DVD, Internet</ul></div>
 	    <div class="col1">Fotografies: </div>	<div class="col2"><?php echo generaImatge('AulaMagna.jpg','Aula Magna. Vista general'); ?></div>
-		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </div>
+		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES') ?> </div>
 		<div class="fi">&nbsp;</div>	  				
 
 	    <h3>Aula B</h3>
@@ -49,7 +49,7 @@
 	    <div class="col1">Escenari: </div>		<div class="col2">Rectangular de 15 metres quadrats</div>	    
 	    <div class="col1">Equipament: </div>	<div class="col2"><ul><li/>Megafonia<li />Taula de so de 8 canals<li />Opcional: 	Portàtil, Projector, DVD, Internet</ul></div>	    
 		<div class="col1">Fotografies: </div>	<div class="col2"><?php echo generaImatge('AulaB.jpg','Aula B. Vista general'); ?></div>
-		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </div>	    
+		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES') ?> </div>	    
 		<div class="fi">&nbsp;</div>
 
 	    <h3>Aula C</h3>
@@ -58,7 +58,7 @@
 	    <div class="col1">Escenari: </div>		<div class="col2">Rectangular de 15 metres quadrats</div>	    
 	    <div class="col1">Equipament: </div>	<div class="col2">Opcional: Portàtil, Projector, DVD, Internet</div>	    
 		<div class="col1">Fotografies: </div>	<div class="col2"><?php echo generaImatge('AulaC.jpg','Aula C. Vista general'); ?></div>
-		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </div>	    
+		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES') ?> </div>	    
 		<div class="fi">&nbsp;</div>
 
 	    <h3>Aules 1,2,3,4,5,6 i 7</h3>
@@ -66,7 +66,7 @@
 	    <div class="col1">Aforament: </div>		<div class="col2">Entre 20 i 50 persones</div>	    	    
 	    <div class="col1">Equipament: </div>	<div class="col2"><ul><li/>Portàtil<li />Projector<li />DVD<li />Internet (Aula 2)</ul></div>	    
 		<div class="col1">Fotografies: </div>	<div class="col2"><?php echo generaImatge('Aula1.jpg','Aula 1. Vista general'); ?><?php echo generaImatge('Aula2.jpg','Aula 2. Vista general'); ?><?php echo generaImatge('Aula3.jpg','Aula 3. Vista general'); ?><?php echo generaImatge('Aula4.jpg','Aula 4. Vista general'); ?><?php echo generaImatge('Aula5.jpg','Aula 5. Vista general'); ?><?php echo generaImatge('Aula6.jpg','Aula 6. Vista general'); ?><?php echo generaImatge('Aula7.jpg','Aula 7. Vista general'); ?></div>
-		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'web/gestio?accio=gr') ?> </div>	    
+		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES') ?> </div>	    
 		<div class="fi">&nbsp;</div>
 	  	 
         <a name="condicions"></a>	
