@@ -22,22 +22,23 @@ function showElement(theClass) {
         <?php echo llistaMenu($MENU,$OBERT)?>
         
 <?php    if($TIPUS_MENU == 'ADMIN'): ?>	  	   	  	   		     
-		  	   <TR><TD class="SUBMENU_1"><?php echo link_to(image_tag('intranet/Submenu1.png', array('align'=>'ABSMIDDLE')).' Zona privada' , 'web/index', array( 'anchor' => true ))?></TD></TR>
+<!--		  	   <TR><TD class="SUBMENU_1"><?php echo link_to(image_tag('intranet/Submenu1.png', array('align'=>'ABSMIDDLE')).' Zona privada' , 'web/index', array( 'anchor' => true ))?></TD></TR>
 		  	   <TR><TD>
 		  	   		<TABLE>
 		  	   			<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Gestiona dades' , 'web/gestio?accio=gd')?></TD></TR>
 				    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Cursos i matrícules' , 'web/gestio?accio=gc')?></TD></TR>
 		  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Reserves d\'espais' , 'web/gestio?accio=gr')?></TD></TR>
-		 <!--  	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Llistes' , 'web/gestio?accio=gl')?></TD></TR> -->
+		   	   	    	<TR><TD class="SUBMENU_2"><?php echo link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;Llistes' , 'web/gestio?accio=gl')?></TD></TR>
 		  	   	    	<?php echo AltresApps($USUARI,$IDS); ?>
 		  	   	  	</TABLE>
 		  	   	</TD></TR>
-		  	    <TR><TD id="REGISTRAT"><?php echo link_to("TANCA SESSIÓ" , 'web/logout')?></TD></TR>		  	   	
+-->
+		  	    <TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'gestio/uLogin?idS=1')?></TD></TR>		  	   	
 		  	  </TABLE>			
 	  	   
 <?php	   else: ?>
 			
-			<TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'gestio/uLogin/idU/1')?></TD></TR></TABLE>				
+			<TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'gestio/uLogin?idS=1')?></TD></TR></TABLE>				
 
 <?php	   endif; ?>
 
