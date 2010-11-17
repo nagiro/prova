@@ -256,11 +256,11 @@ class gestioActions extends sfActions
   	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.       
   	if($request->getParameter('Ds_Response') == '0000')
     {
-  		$idM = $request->getParameter('Ds_MerchantData');
+  		$idM = $request->getParameter('Ds_MerchantData');        
   		$OM = MatriculesPeer::retrieveByPK($idM);
   		if($OM instanceof Matricules)
         {
-            if(MatriculesPeer::setMatriculaPagada($idM))
+            if(MatriculesPeer::setMatriculaPagada($OM))
             {
     
                 $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
