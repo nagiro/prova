@@ -2501,7 +2501,7 @@ class gestioActions extends sfActions
     		break;
             
     	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
-    	case 'OK':
+    	case 'OK':                        
     		 if($request->hasParameter('OK')):                 
                  $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                                                   
               else:			            
