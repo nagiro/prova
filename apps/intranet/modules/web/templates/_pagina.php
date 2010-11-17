@@ -42,7 +42,7 @@
                         echo '</li>';                    
                     endif;
                     
-                    if($NODE->getCategories() == 'cap'): 
+                    if($N->getCategories() == 'cap'): 
                         echo '<li><a class="enllac_taula_continguts" href="'.url_for('web/index?accio=mc&node='.$N->getIdnodes()).'">'.$N->getTitolmenu().'</a>';
                     else: 
                         echo '<li><a class="enllac_taula_continguts" href="'.url_for('web/index?accio=ac&node='.$N->getIdnodes()).'">'.$N->getTitolmenu().'</a>';
