@@ -178,10 +178,10 @@ class gestioActions extends sfActions
                 //Hem vinculat l'usuari al pas anterior quan guardem la matrícula'
                 $this->MISS = "";
                 $this->TITOL = "Matrícules";
-                if($request->getParameter('OK')):
+                if($request->hasParameter('OK')):
                     $this->MISS = "Matrícula realitzada correctament.";                    
                 else:
-                    $this->MISS = "Hi ha hagut algun problema realitzant la matrícula.";
+                    $this->MISS = "Hi ha hagut algun problema realitzant la matrícula. <br />Si us plau posi's en contacte amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13.";
                 endif;                
             break;
         
