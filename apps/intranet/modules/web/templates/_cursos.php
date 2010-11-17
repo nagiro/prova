@@ -57,14 +57,9 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
 	<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Matricula't</LEGEND>
 		<form method="post" action="<?php echo url_for('web/matriculat') ?>">
             <div>
-               Per matricular-se, vostè ha de ser usuari registrat del web de la Casa de Cultura.<br /> 		   			
-               Si necessita més informació sobre el nou sistema de matrícules, si us plau, cliqui <a href="<?php echo url_for('web/index?accio=mc&node=35'); ?>">aquí</a>.            
+               Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.<br /> 		   			
+               Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">"aquí</a>.            
             </div>
-            <div style="margin-top:20px;">         
-    		   	<?php $missatge = "Segueixi si vostè estar segur que: \\n 1.- No ha estat alumne de la Casa de Cultura. \\n 2.- Vostè no té cap usuari creat. \\n Si no n\'està segur, si us plau, cliqui cancel·lar i contacti amb la Casa de Cultura trucant al telèfon 972.20.20.13 o bé enviant un correu a informatica@casadecultura.org."; ?>
-    		   	<button type="submit" onClick="return confirm('<?php echo $missatge ?>')" name="BNOUALUMNE" class="BOTO_ACTIVITAT">Sóc un nou alumne</button>
-    		   	<button type="submit" name="BREGISTRAT" class="BOTO_ACTIVITAT">Sóc antic alumne o usuari registrat</button>		   			
-            </div>       
 		</form>
    </FIELDSET>
    
