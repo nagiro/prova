@@ -2775,7 +2775,7 @@ class gestioActions extends sfActions
 		        break;    	         	 
 	}
 		    
-	$this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS );
+	$this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS , true );
   
   }  
     

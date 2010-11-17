@@ -46,13 +46,14 @@ class IncidenciesPeer extends BaseIncidenciesPeer
      return self::doCount($C);
   }
    
-  static public function getIncidencies($CERCA = "" , $PAGINA = 1 , $idS )
+  static public function getIncidencies($CERCA = "" , $PAGINA = 1 , $idS , $onlyInProcess = false )
   {
       $C = new Criteria();
       $C = self::getCriteriaActivu( $C , $idS );      
       $C1 = $C->getNewCriterion(self::TITOL , '%'.$CERCA.'%' , Criteria::LIKE);
       $C2 = $C->getNewCriterion(self::DESCRIPCIO , '%'.$CERCA.'%' , Criteria::LIKE);
-      $C1->addOr($C2); $C->add($C1);
+      $C1->addOr($C2); $C->add($C1);      
+      if($onlyInProcess) $C->add(self::ESTAT , self::ESTAT_RESOLT , Criteria::NOT_EQUAL );
       $C->addDescendingOrderByColumn(self::ESTAT);    
    
       $pager = new sfPropelPager('Incidencies', 10);
