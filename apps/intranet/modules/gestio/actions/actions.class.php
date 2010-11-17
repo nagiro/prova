@@ -408,6 +408,9 @@ class gestioActions extends sfActions
                 $this->redirect('gestio/uRemember');            
             break;
         
+        default:
+            if($this->getUser()->isAuthenticated()) $this->redirect('gestio/uGestio');
+        
      }
 		   
   }  
