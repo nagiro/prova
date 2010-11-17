@@ -668,7 +668,7 @@ class gestioActions extends sfActions
         	$this->MODE['GESTIO_APLICACIONS'] = true;
         	break;
     }
-
+    
     $this->PAGER_USUARIS = UsuarisPeer::cercaTotsCamps( $this->CERCA['text'] , $this->PAGINA , $this->IDS );
                     
   }  

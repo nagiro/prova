@@ -36,8 +36,7 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   //Comprovem que l'usuari pertanyi a un SITE
   static public function getCriteriaActiu( $C , $idS = null )
-  {    
-    $C = new Criteria();
+  {        
     $C->add(self::ACTIU, true);
     if(!is_null($idS)):
         $C->addJoin(UsuarisSitesPeer::USUARI_ID, self::USUARIID);
@@ -64,8 +63,8 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   static function cercaTotsCamps( $text , $PAGINA = 1 , $idS )
   {
-    
-    $C = self::CriteriaCerca($text,new Criteria());
+    $C = new Criteria();
+    $C = self::CriteriaCerca($text,$C);
     $C = self::getCriteriaActiu( $C , $idS );
             
     $pager = new sfPropelPager('Usuaris', 10);
@@ -97,7 +96,7 @@ class UsuarisPeer extends BaseUsuarisPeer
   static function CriteriaCerca($text,$C)
   {
   	
-  	foreach(explode(' ',$text) as $PARAULA):        
+  	foreach(explode(' ',$text) as $PARAULA):                
 	    $C1  = $C->getNewCriterion(self::DNI, '%'.$PARAULA.'%', Criteria::LIKE);
 	    $C2  = $C->getNewCriterion(self::NOM, '%'.$PARAULA.'%', Criteria::LIKE);
 	    $C3  = $C->getNewCriterion(self::COG1, '%'.$PARAULA.'%', Criteria::LIKE);
@@ -110,8 +109,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 	    $C10 = $C->getNewCriterion(self::ENTITAT, '%'.$PARAULA.'%', Criteria::LIKE);    
 	    $C1->addOr($C2);  $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5);
 	    $C1->addOr($C6);  $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9);
-	    $C1->addOr($C10); $C->addAnd($C1);
-        $C->add(self::HABILITAT, 1);
+	    $C1->addOr($C10); $C->addAnd($C1);        
     endforeach;
 
     return $C;
