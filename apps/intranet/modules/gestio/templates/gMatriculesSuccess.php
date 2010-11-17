@@ -223,18 +223,19 @@
 
   <?php ELSEIF( $MODE == 'VALIDACIO_CURS' ):  ?>  
   <?php 
-	
-		if($MATRICULA->getPagat() > 0 && ( $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TARGETA || $MATRICULA->getTPagament() == MatriculesPeer::PAGAMENT_TELEFON ) ):
-//           echo '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-         echo '<FORM name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';
-                  
-           foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);
-         
-		else:
-		
-			echo "<form action=\"".url_for('gestio/gMatricules')."\" method=\"POST\">";
-            echo input_hidden_tag('IDM',$IDM);
-		endif; 
+
+         //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant     
+        if($MATRICULA->getPagat() > 0 && ( $MATRICULA->getTpagament() == MatriculesPeer::PAGAMENT_TARGETA || $MATRICULA->getTpagament() == MatriculesPeer::PAGAMENT_TELEFON ) ):
+            $URL = OptionsPeer::getString('TPV_URL',$IDS);
+            $RET .= '<FORM name="COMPRA" action="'.$URL.'" method="POST" target="TPV">';         	 
+            //$RET .= '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
+            //$RET .= '<form name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';             
+            foreach($TPV as $K => $T) $RET .= input_hidden_tag($K,$T);             
+        else:         
+            $RET .= '<form method="post" action="'.url_for('gestio/gMatricules').'">';
+            echo input_hidden_tag('IDM',$IDM);          	                  
+        endif;
+
 	?>  
   
  	
