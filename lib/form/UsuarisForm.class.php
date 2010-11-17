@@ -14,7 +14,7 @@ class UsuarisForm extends sfFormPropel
   {
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
-      'Nivells_idNivells' => new sfWidgetFormChoice(array('choices' => NivellsPeer::getSelect())),
+      'Nivells_idNivells' => new sfWidgetFormInputHidden(),
       'DNI'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Passwd'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Nom'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
@@ -93,10 +93,7 @@ class UsuarisForm extends sfFormPropel
   {
     $this->updateObject();
     $OU = $this->getObject();
-    $OU->setActualitzacio(date('Y-m-d',time()));
-    
-    //Quan guardem un usuari, li posem el nivell que ha dit també a l'apartat de Sites
-    UsuarisSitesPeer::initialize($OU->getUsuariid(),$OU->getSiteId(),false)->save();
+    $OU->setActualitzacio(date('Y-m-d',time()));        
     
     $this->getObject()->save();
   }
