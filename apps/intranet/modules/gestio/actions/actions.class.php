@@ -192,19 +192,19 @@ class gestioActions extends sfActions
             
         case 'GUARDA_RESERVA':
 
-    	   		$PR = $request->getParameter('reservaespais');
-                $this->FRESERVA = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true );							
-    			$this->FRESERVA->bind($PR);				
-                if($this->FRESERVA->isValid()):                
-    				$this->FRESERVA->save();
-                    $OO = $this->FRESERVA->getObject();
+    	   		$PR = $request->getParameter('reservaespais');                                
+                $this->FRESERVA = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true );                
+    			$this->FRESERVA->bind($PR);                				                
+                if($this->FRESERVA->isValid()):                                             
+    				$this->FRESERVA->save();                							
+                    $OO = $this->FRESERVA->getObject();                    
                     $FROM = OptionsPeer::getString('MAIL_FROM',$this->IDS);
                     $SEC  = OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS);
                     $this->sendMail($FROM ,'informatica@casadecultura.org','HOSPICI :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
                     $this->sendMail($FROM , $SEC,'HOSPICI :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                      			                	                
                     $this->MISSATGE = array('Sol·licitud enviada correctament.');				
     			else:
-                    $this->sendMail($FROM , 'informatica@casadecultura.org','HOSPICI :: ERROR AL FORMULARI RESERVA D\'ESPAIS',print_r($this->FRESERVA));
+//                    $this->sendMail($FROM , 'informatica@casadecultura.org','HOSPICI :: ERROR AL FORMULARI RESERVA D\'ESPAIS',print_r($this->FRESERVA));
                     $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
     			endif;			
                 

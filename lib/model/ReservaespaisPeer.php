@@ -208,7 +208,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    
    static public function sendMailNovaReserva($OR)
    {
-    
+
     $Nom = $OR->getUsuaris()->getNomComplet();
     $DNI = $OR->getUsuaris()->getDni();
     $CODI = $OR->getCodi();

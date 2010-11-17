@@ -68,6 +68,20 @@
 
 <?php 
 
+
+	function missatge_div($MISSATGE)
+	{	   
+	   $RET = "";
+		if(!empty($MISSATGE))
+		{
+			$RET .= '<div class="MISSAT_OK">';		   	
+		   	foreach($MISSATGE as $M): $RET .= $M."<BR>";  endforeach;    				
+		   	$RET .= '</DIV>';			
+		}		
+           
+        return $RET;
+	}
+
 	function missatge($MISSATGE)
 	{
 	   $RET = "";
@@ -215,77 +229,77 @@
     function EditaReserva($FRESERVA,$MISSATGE ="" )
     {
 
-
 	$RET = '<form name="fReserves" id="fReserves" method="post" action="'.url_for('gestio/uGestio').'">';    
-    $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Reserva d\'espais</LEGEND>';   	              	           	
-    $RET .= missatge($MISSATGE);
+    $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Reserva d\'espais</LEGEND>';
+       	              	           	
+    $RET .= '<div class="FORMULARI">'.missatge_div($MISSATGE).'</div>';     
 
     $RET .= $FRESERVA['ReservaEspaiID']->render();
-        
+            
     $RET .= 
         '<div style="clear:both" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Nom de l\'activitat</b></span>
-	    	<span class="DH">'.$FRESERVA['Nom']->render().'</span>
+	    	<span class="DH">'.$FRESERVA['Nom']->renderError().$FRESERVA['Nom']->render().'</span>
 	    </div>
 	    	    
 	    <div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Proposta de data</b></span>
-	    	<span class="DH">'.$FRESERVA['DataActivitat']->render().'</span>
+	    	<span class="DH">'.$FRESERVA['DataActivitat']->renderError().$FRESERVA['DataActivitat']->render().'</span>
 	    </div>
 	    
 	    <div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Proposta d\'hores</b></span>
-	    	<span class="DH">'.$FRESERVA['HorariActivitat']->render().'</span>
+	    	<span class="DH">'.$FRESERVA['HorariActivitat']->renderError().$FRESERVA['HorariActivitat']->render().'</span>
 	    </div>
 	    
 	    <div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Espais</b> (<a class="blue" href="'.url_for('web/espais').'" target="_NEW">veure\'ls</a>)</span>
-	    	<span class="DH checkbox_list" style="width:450px">'.$FRESERVA['EspaisSolicitats']->render().'</span>
+	    	<span class="DH checkbox_list" style="width:450px">'.$FRESERVA['EspaisSolicitats']->renderError().$FRESERVA['EspaisSolicitats']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Material</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['MaterialSolicitat']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['MaterialSolicitat']->renderError().$FRESERVA['MaterialSolicitat']->render().'</span>
 	    </div>
 		
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Tipus d\'acte</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['TipusActe']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['TipusActe']->renderError().$FRESERVA['TipusActe']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Representant a</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['Representacio']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['Representacio']->renderError().$FRESERVA['Representacio']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Responsable</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['Responsable']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['Responsable']->renderError().$FRESERVA['Responsable']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Organitzadors</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['Organitzadors']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['Organitzadors']->renderError().$FRESERVA['Organitzadors']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Personal autoritzat</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['PersonalAutoritzat']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['PersonalAutoritzat']->renderError().$FRESERVA['PersonalAutoritzat']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Previsio d\'assistents</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['PrevisioAssistents']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['PrevisioAssistents']->renderError().$FRESERVA['PrevisioAssistents']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>Enregistrable?</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['isEnregistrable']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['isEnregistrable']->renderError().$FRESERVA['isEnregistrable']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
 	    	<span class="DH" style="width:150px;"><b>És un cicle?</b></span>
-	    	<span class="DH checkbox_list">'.$FRESERVA['EsCicle']->render().'</span>
+	    	<span class="DH checkbox_list">'.$FRESERVA['EsCicle']->renderError().$FRESERVA['EsCicle']->render().'</span>
 	    </div>
 
 		<div style="clear: both;" class="FORMULARI">
