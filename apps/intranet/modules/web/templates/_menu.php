@@ -33,12 +33,12 @@ function showElement(theClass) {
 		  	   	  	</TABLE>
 		  	   	</TD></TR>
 -->
-		  	    <TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'gestio/uLogin?idS=1')?></TD></TR>		  	   	
+		  	    <TR><TD id="REGISTRAT"><a href="<?php echo url_for('gestio/uLogin?idS=1')?>" target="_new">ZONA USUARIS</a></TD></TR>		  	   	
 		  	  </TABLE>			
 	  	   
 <?php	   else: ?>
 			
-			<TR><TD id="REGISTRAT"><?php echo link_to("ZONA USUARIS" , 'gestio/uLogin?idS=1')?></TD></TR></TABLE>				
+			<TR><TD id="REGISTRAT"><a href="<?php echo url_for('gestio/uLogin?idS=1')?>" target="_new">ZONA USUARIS</a></TD></TR></TABLE>				
 
 <?php	   endif; ?>
 
