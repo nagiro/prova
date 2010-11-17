@@ -101,10 +101,10 @@ class gestioActions extends sfActions
     
     
     //Consultem tota la info de l'usuari.
-    $this->FDADES      = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
-    $this->LRESERVES   = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );
-    $this->LMATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );
-    $this->LENTITATS   = new SitesSelectForm(null,array('idU'=>$this->IDU));
+    $this->FDADES      = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);    
+    $this->LRESERVES   = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );    
+    $this->LMATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );    
+    $this->LENTITATS   = new SitesSelectForm(null,array('idU'=>$this->IDU));    
         
     if($request->hasParameter('BGESTIONAUSUARI')) $this->accio = 'GESTIONA_USUARI';
     if($request->hasParameter('BGUARDAUSUARI')) $this->accio = 'GUARDA_USUARI';

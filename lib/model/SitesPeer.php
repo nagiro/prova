@@ -56,7 +56,7 @@ class SitesPeer extends BaseSitesPeer {
         $RET = array();
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);        
-        $C = UsuarisPeer::getCriteriaActiu($idU);
+        $C = UsuarisPeer::getCriteriaActiu($C,null);
         $C = UsuarisSitesPeer::getCriteriaActiu($C);
         $C->addJoin(self::SITE_ID, UsuarisSitesPeer::SITE_ID);
         $C->addJoin(UsuarisSitesPeer::USUARI_ID, UsuarisPeer::USUARIID);
