@@ -92,7 +92,12 @@ class UsuarisForm extends sfFormPropel
   public function save($conn = null)
   {
     $this->updateObject();
-    $this->getObject()->setActualitzacio(date('Y-m-d',time()));
+    $OU = $this->getObject();
+    $OU->setActualitzacio(date('Y-m-d',time()));
+    
+    //Quan guardem un usuari, li posem el nivell que ha dit també a l'apartat de Sites
+    UsuarisSitesPeer::initialize($OU->getUsuariid(),$OU->getSiteId(),false)->save();
+    
     $this->getObject()->save();
   }
 	
