@@ -2487,7 +2487,7 @@ class gestioActions extends sfActions
                 $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos(),$this->IDS); //Passem si el curs es ple
     		    $MATRICULA = $this->MATRICULA->getIdmatricules();
                     		        		        			
-    			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA,$this->IDS);    			    			
+    			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA,$this->IDS,false);    			    			
     			$this->MODE = 'VALIDACIO_CURS';
     		break;
     		    		
