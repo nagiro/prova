@@ -12,9 +12,16 @@ class UsuarisForm extends sfFormPropel
 {
   public function setup()
   {
+    
+    //Carrego el nivell de l'usuari a la taula,. Si l'estic veient per força n'he de tenir.
+    $OUS = UsuarisSitesPeer::initialize($this->getObject()->getUsuariId(),$this->getObject()->getSiteId(),false)->getObject();
+    if($OUS->isNew()): $NIVELL = NivellsPeer::REGISTRAT;
+    else: $NIVELL = $OUS->getNivellId();
+    endif;     
+    
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
-      'Nivells_idNivells' => new sfWidgetFormInputHidden(),
+      'level'             => new sfWidgetFormChoice( array( 'choices'=> NivellsPeer::getSelect() ) , array() ),
       'DNI'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Passwd'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Nom'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
@@ -32,13 +39,15 @@ class UsuarisForm extends sfFormPropel
       'Actualitzacio'     => new sfWidgetFormInputHidden(array(),array()),
       'site_id'           => new sfWidgetFormInputHidden(array(),array()),
     ));
-
+    
+    $this->setDefault('level',$NIVELL);
+    
     $C = new Criteria();
     $C->addAscendingOrderByColumn(PoblacionsPeer::NOM);
     
     $this->setValidators(array(
       'UsuariID'          => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
-      'Nivells_idNivells' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
+      'level'             => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
       'DNI'               => new sfValidatorString(array('max_length' => 12, 'required' => true)),
       'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => true)),
       'Nom'               => new sfValidatorString(array('required' => true)),
@@ -59,7 +68,7 @@ class UsuarisForm extends sfFormPropel
 
     
     $this->widgetSchema->setLabels(array(          
-      'Nivells_idNivells' => 'Nivell: ',
+      'level'             => 'Nivell: ',
       'DNI'               => 'DNI: ',
       'Passwd'            => 'Contrasenya: ',
       'Nom'               => 'Nom: ',
@@ -94,6 +103,10 @@ class UsuarisForm extends sfFormPropel
     $this->updateObject();
     $OU = $this->getObject();
     $OU->setActualitzacio(date('Y-m-d',time()));        
+    
+    $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();
+    $OUS->setNivellid($this->getValue('level'));
+    $OUS->save();
     
     $this->getObject()->save();
   }
