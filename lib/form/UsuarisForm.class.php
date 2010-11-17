@@ -23,7 +23,7 @@ class UsuarisForm extends sfFormPropel
       'UsuariID'          => new sfWidgetFormInputHidden(),
       'level'             => new sfWidgetFormChoice( array( 'choices'=> NivellsPeer::getSelect() ) , array() ),
       'DNI'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
-      'Passwd'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
+      'Passwd'            => new sfWidgetFormInputPassword(array(),array('style'=>'width:200px')),
       'Nom'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Cog1'              => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Cog2'              => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
