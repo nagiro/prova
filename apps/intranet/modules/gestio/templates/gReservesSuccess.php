@@ -112,7 +112,7 @@ function IteratorReserves($RESERVES,$ESTAT)
 {
     $RET = "";
     foreach($RESERVES as $R):
-        if($R->getEstat() == $ESTAT):	                                    							
+        if($R->getEstat() == $ESTAT):            	                                    							
           	$RET .= '<TR><TD>'.link_to($R->getCodi(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid()).'</td>
                       <TD>'.$R->getNom().'</TD>
           	    	  <TD><a href="#" class="tt2"><span>'.$R->getUsuaris()->getDades().'</span>'.$R->getUsuaris()->getNomComplet().'</a></TD>
