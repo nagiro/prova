@@ -2498,12 +2498,8 @@ class gestioActions extends sfActions
             
     	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
     	case 'OK':
-    		 if($this->getRequestParameter('Ds_Response') == '0000'):
-                 $this->IDM = $this->getRequestParameter('Ds_MerchantData');                 
-                 $this->OM = MatriculesPeer::setMatriculaPagada( MatriculesPeer::retrieveByPK( $this->IDM ) );
-                 $this->getUser()->addLogAction($accio,'gMatricules',$this->OM);                 
-                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";
-                 $this->SendMailMatricula($this->OM);                                  
+    		 if($request->hasParameter('OK')):                 
+                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                                                   
               else:			            
                  $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
               endif;

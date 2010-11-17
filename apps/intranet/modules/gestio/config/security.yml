@@ -14,4 +14,7 @@ uGestio:
 
 uFormularis:
   is_secure: true
-  credentials: []  
+  credentials: []
+  
+GetTPV:
+  is_secure: false  

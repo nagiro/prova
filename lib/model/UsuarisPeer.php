@@ -20,7 +20,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 		$OU = new Usuaris();
         $OU->setSiteId($idS);        
         $OU->setActiu(true);
-		$OU->setNivellsIdnivells(2);
+		$OU->setNivellsIdnivells(NivellsPeer::REGISTRAT);
     	$OU->setHabilitat(true);     
 	endif; 
 
