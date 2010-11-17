@@ -253,12 +253,15 @@ class gestioActions extends sfActions
 
   public function executeGetTPV(sfWebRequest $request)
   {
-  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.   
-  	if($request->getParameter('Ds_Response') == '0000'):
+  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.       
+  	if($request->getParameter('Ds_Response') == '0000')
+    {
   		$idM = $request->getParameter('Ds_MerchantData');
   		$OM = MatriculesPeer::retrieveByPK($idM);
-  		if($OM instanceof Matricules):
-            if(MatriculesPeer::setMatriculaPagada($idM)):
+  		if($OM instanceof Matricules)
+        {
+            if(MatriculesPeer::setMatriculaPagada($idM))
+            {
     
                 $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
                 $OM->setTpvOrder($request->getParameter('Ds_Order'));
@@ -271,23 +274,24 @@ class gestioActions extends sfActions
     			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
       							'informatica@casadecultura.org',
       							'Matrícula realitzada correctament',
-      							MatriculesPeer::MailMatricula($OM,$OM->getSiteId()));  							
-             else: 
+      							MatriculesPeer::MailMatricula($OM,$OM->getSiteId()));
+             }  							
+             else
+             {
     			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
       							'informatica@casadecultura.org',
       							'Matrícula errònia',
       							MatriculesPeer::MailMatriculaFAIL($OM,$OM->getSiteId()));                          
-             endif; 
-  		else:
+             }
+        }
+  		else
+        {
 	  		$this->sendMail('informatica@casadecultura.org',
 	  						'informatica@casadecultura.org',
 	  						'Matrícula cobrada i Error en objecte',
 	  						'Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');   			  			  			
-  		endif; 
-  	else: 
-  		$OM->setEstat(MatriculesPeer::ERROR); //Si arriba aquí és que no ha pagat correctament
-  		$OM->save();
-  	endif;
+  		}   	   		
+  	}
   	 
   	return sfView::NONE;
   }
