@@ -128,8 +128,7 @@ class gestioActions extends sfActions
                 if($this->FUSUARI->isValid()):                    
                     $this->FUSUARI->save();
                     $OU = $this->FUSUARI->getObject();
-                    UsuarisPeer::addSite( $this->IDU , $this->IDS );
-                    $this->FUSUARI->addSite();
+                    UsuarisPeer::addSite( $this->IDU , $this->IDS );                    
                     $this->MISSATGE = array('Usuari guardat correctament.');
                 else: 
                     $this->MISSATGE = array('Hi ha algun error al formulari.<br />Revisa els camps, si us plau.');                    
