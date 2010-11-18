@@ -10,14 +10,22 @@
 class MaterialgenericPeer extends BaseMaterialgenericPeer
 {
 	
+  static public function getCriteriaActiu( $C , $IDS )
+  {
+    $C->add( self::ACTIU , true );
+    $C->add( self::SITE_ID , $IDS );
+    return $C;
+  }
+    
   static public function selectFormulariUsuaris()
   {
   	return array(1=>'Portàtil',2=>'Projector',3=>'DVD',4=>'Microfonia');
   }
 	
-  static public function select()
+  static public function select( $IDS )
   {
     $C = new Criteria();
+    $C = self::getCriteriaActiu( $C , $IDS );
     $C->addAscendingOrderByColumn(self::NOM);
     $MG = self::doSelect($C);
     $RET = array();
@@ -30,9 +38,10 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
       
   }
   
-  static public function selectAjax($seleccionat = "")
+  static public function selectAjax( $IDS , $seleccionat = "" )
   {
     $C = new Criteria();
+    $C = self::getCriteriaActiu( $C , $IDS );
     $C->addAscendingOrderByColumn(self::NOM);
     $MG = self::doSelect($C);
     $RET = '<option value="-1">Escull...</option>';

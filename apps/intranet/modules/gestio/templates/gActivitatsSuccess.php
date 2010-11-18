@@ -87,7 +87,7 @@
 		id = (parseInt(id) + parseInt(1));
 		$("#idV").val(id);				                        
         				
-        var options = '<?php echo MaterialgenericPeer::selectAjax() ?>';        
+        var options = '<?php echo MaterialgenericPeer::selectAjax($IDS) ?>';        
 		$("#divTxt").append(
                         '<span id="row['+id+']">'+
                         '<select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select>'+
@@ -104,7 +104,7 @@
 		id = (parseInt(id) + parseInt(1));
 		$("#idE").val(id);
 		
-		var options = '<?php echo EspaisPeer::selectJavascript(); ?>';
+		var options = '<?php echo EspaisPeer::selectJavascript($IDS); ?>';
 		$("#divTxtE").append('<span id="rowE['+id+']"><select name="espais['+id+']" id="espais['+id+']">'+ options +'</select><input type="button" onClick="esborraLiniaE('+id+');" id="mesespais" value="-"></input><br /></span>');
 
 	}
