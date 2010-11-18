@@ -29,8 +29,8 @@
         $WEBURL = OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/';
         $SYSURL = OptionsPeer::getString('SF_WEBSYSROOT',1).'images/noticies/';
         
-        $IMG_EXIST = (file_exists($SYSURL.$imatge));
-        $PDF_EXIST = (file_exists($SYSURL.$pdf));
+        $IMG_EXIST = (file_exists($SYSURL.$imatge) && !empty($imatge) );
+        $PDF_EXIST = (file_exists($SYSURL.$pdf)  && !empty($pdf) );
      	
 		if(!empty($titol)):
 		?>
@@ -84,8 +84,8 @@
                 $WEBURL = OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/';
                 $SYSURL = OptionsPeer::getString('SF_WEBSYSROOT',1).'images/noticies/';
                 
-                $IMG_EXIST = (file_exists($SYSURL.$imatge));
-                $PDF_EXIST = (file_exists($SYSURL.$pdf));
+                $IMG_EXIST = (file_exists($SYSURL.$imatge) && !empty($imatge) );
+                $PDF_EXIST = (file_exists($SYSURL.$pdf)  && !empty($pdf) );
                                 
 			?>
 				<div style="border-bottom:2px solid #CADF86;">
