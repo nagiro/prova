@@ -81,7 +81,7 @@
 
             foreach($LOH as $OH):    		
         		$LOHE = $OH->getHorarisespaiss();
-                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('m')] = $OH->getDia('d');        		    		        		                    		
+                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('d')] = $OH->getDia('d');        		    		        		                    		
         	endforeach;                       
             
             foreach($ESP as $Espai => $D1):                                            
