@@ -293,13 +293,13 @@
 	             <tr>
 	             	<td>Espais: </td><td>
 	             	
-	             	<?php 
+	             	<?php                         
 						$id = 1;  $VAL = "";
 						if(!isset($ESPAISOUT)): $ESPAISOUT = array(); endif;            	
 	             		foreach($ESPAISOUT AS $E=>$idE):
 	
 	             		$VAL .= '<span id="rowE['.$id.']">
-	             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($idE).'</select>
+	             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($IDS,$idE).'</select>
 	             					<input type="button" onClick="esborraLiniaE('.$id.');" id="mesespais" value="-"></input>
 	             					<br />
 	             			  	 </span>
@@ -325,7 +325,7 @@
 	
 	             		$VAL .= '
 	  	 	  	        		<span id="row['.$id.']">
-	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
+	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select($IDS),$idM['generic']).'</select>
 	  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic'],$IDS,$idM['material']),$idM['material']).'</select>	
 	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
 	  	 	  	        			<br />
