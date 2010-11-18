@@ -24,7 +24,7 @@ class ReservaespaisForm extends sfFormPropel
       'Nom'                => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'DataActivitat'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'HorariActivitat'    => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
-      'EspaisSolicitats'   => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>EspaisPeer::selectFormReserva() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')),
+      'EspaisSolicitats'   => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>EspaisPeer::selectFormReserva($this->getOption('IDS')) , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')),
       'MaterialSolicitat'  => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>MaterialgenericPeer::selectFormulariUsuaris(), 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_material')),
       'TipusActe'          => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
       'Representacio'      => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
