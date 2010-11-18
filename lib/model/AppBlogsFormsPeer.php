@@ -46,33 +46,29 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	static public function save( $form_id , $dades , $arxius , $idS )
 	{
 		
-		try{
-			
-            $OO = self::initialize($form_id,$idS)->getObject();
-			            
-			$OO2 = AppBlogsFormsEntriesPeer::initialize( 0 , $idS )->getObject();	  		
-	  		$OO2->setDate(date('Y-m-d H:i:s',time()));
-	  		$OO2->setFormId($OO->getId());
-	  		$OO2->save();
+		try{			
+            //Creem una nova entrada al formulari
+			$OO2 = AppBlogsFormsEntriesPeer::initialize( 0 , $idS , $form_id )->getObject();
+            $OO2->save();	  			  			  		
 	  	  		
-	  		$RET = array();
-	  		foreach($dades as $K=>$V):
-	  			$RET[$K] = $V;
-	  		endforeach;
+	  		//Passem totes les dades a un array
+            $RET = array();
+	  		foreach($dades as $K=>$V) $RET[$K] = $V;
 	  		
+            //Si hi ha arxius, els guardem.
 	  		if(isset($arxius['arxius'])):
-	  		foreach($arxius['arxius'] as $K=>$V):  		
-	  			if($V['error'] == 0):
-	  				$file_ext = substr($V['name'], strripos($V['name'], '.'));
-	  				$file_name = $OO2->getId().'-'.$K.$file_ext;
-	  				$url = OptionsPeer::getString('SF_WEBSYSROOT',$idS).'uploads/formularis/'.$file_name;
-	  				move_uploaded_file($V['tmp_name'], $url);	  				 
-	  				$RET['file'][] = $file_name;
-	  			endif; 
-	  		
-	  		endforeach;
+    	  		foreach($arxius['arxius'] as $K=>$V):  		
+    	  			if($V['error'] == 0):
+    	  				$file_ext = substr($V['name'], strripos($V['name'], '.'));
+    	  				$file_name = $OO2->getId().'-'.$K.$file_ext;
+    	  				$url = OptionsPeer::getString('SF_WEBSYSROOT',$idS).'uploads/formularis/'.$file_name;
+    	  				move_uploaded_file($V['tmp_name'], $url);	  				 
+    	  				$RET['file'][] = $file_name;
+    	  			endif;     	  		
+    	  		endforeach;
 	  		endif;
 	  		
+            //Guardem els camps del formulari en el format de formulari
 	  		$SOL = "@@@";
 	  		foreach($RET as $K=>$V):
 				
@@ -88,7 +84,7 @@ class AppBlogsFormsPeer extends BaseAppBlogsFormsPeer
 	  		$OO2->setDades($SOL);
 	  		$OO2->save();
 	  		
-		} catch(Exception $e){ echo $e->getMessage(); return false; }
+		} catch(Exception $e){ mail('informatica@casadecultura.org','Error Formulari Noticies culturals',$form_id.$e->getMessage().serialize($SOL)); return false; }
 				
 		return true;		
 	}

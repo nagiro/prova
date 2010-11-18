@@ -16,16 +16,18 @@ class AppBlogsFormsEntriesPeer extends BaseAppBlogsFormsEntriesPeer
         return $C;
     }
         
-  	static public function initialize( $idFE , $idS )
+  	static public function initialize( $idFE , $idS , $idF = 0 )
 	{	   
 		$OO = AppBlogsFormsEntriesPeer::retrieveByPK($idFE);            
 		if(!($OO instanceof AppBlogsFormsEntries)):            			
-			$OO = new AppBlogsFormsEntries();			
+			$OO = new AppBlogsFormsEntries();                  
+            $OO->setDate(date('Y-m-d H:i:s',time()));
+	  		$OO->setFormId($idF);      
             $OO->setSiteId($idS);        
             $OO->setActiu(true);        						
 		endif; 
         
-        return new AppBlogsFormsEntries($OO,array('IDS'=>$idS));
+        return new AppBlogsFormsEntriesForm($OO,array('IDS'=>$idS));
                 
 	}        
         

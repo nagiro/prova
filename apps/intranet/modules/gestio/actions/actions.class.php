@@ -3322,8 +3322,8 @@ class gestioActions extends sfActions
     		
     	case 'AJAX_ESTAT_FORM':
     			$APP_FORM_ENTRY = $request->getParameter('APP_FORM_ENTRY');
-    			$ESTAT    = $request->getParameter('ESTAT');
-    			$OO = AppBlogsFormsEntriesPeer::initialize( $APP_FORM_ENTRY , $this->IDS );
+    			$ESTAT = $request->getParameter('ESTAT');
+    			$OO = AppBlogsFormsEntriesPeer::initialize( $APP_FORM_ENTRY , $this->IDS )->getObject();                
     			$OO->setEstat($ESTAT);
     			$OO->save();
     			return $this->renderText('Canvi fet correctament');
