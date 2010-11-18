@@ -81,13 +81,13 @@
 
             foreach($LOH as $OH):    		
         		$LOHE = $OH->getHorarisespaiss();
-                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('d')] = $OH->getDia('d');        		    		        		                    		
+                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('m')] = $OH->getDia('d');        		    		        		                    		
         	endforeach;                       
             
             foreach($ESP as $Espai => $D1):                                            
                 foreach($D1 as $Hi => $D2):                    
                     foreach($D2 as $m => $D3):
-                        $RET[] = implode(', ',$D3).generaMes($m).' a les '.$Hi.' a '.$Espai;
+                        $RET[] = $Espai.' a les '.$Hi.' els dies '.implode(', ',$D3).generaMes($m);
                     endforeach;
                 endforeach;
             endforeach;
