@@ -39,8 +39,7 @@ class blogsActions extends sfActions
 	    $item->setTitle($post->getTitle());
 	    $item->setLink($WEBROOTURL.'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
 	    $item->setAuthorName('Giroscopi');
-	    $item->setAuthorEmail('giroscopi@casadecultura.org');
-	    $item->setUniqueId($post->getId());
+	    $item->setAuthorEmail('giroscopi@casadecultura.org');	    
 	    $IMG = $post->getImages();
 	    if(!$IMG):
 	    	$url = "";	    	
@@ -49,6 +48,7 @@ class blogsActions extends sfActions
 	    endif; 
 	    
 	    $url_web = $WEBROOTURL.'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
+        $item->setUniqueId($url_web);
 	    
 	    $TEXT = "	
 	    		 <table border=\"0\"><tr><td>$url</td><td>	    		 
