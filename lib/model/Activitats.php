@@ -97,7 +97,8 @@ class Activitats extends BaseActivitats
    public function getHorarisActius($idS)
    {    
      $C = new Criteria();
-     $C = HorarisPeer::getCriteriaActiu($C,$idS);     
+     $C = HorarisPeer::getCriteriaActiu($C,$idS);
+     $C->addAscendingOrderByColumn(HorarisPeer::DIA);     
      return $this->getHorariss($C);    
    }
    
