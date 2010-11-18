@@ -2342,7 +2342,10 @@ class gestioActions extends sfActions
                                     OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),
                                     'Nova reserva d\'espai',
                                     ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
-                                         
+                //Hem intentat guardar però hi ha algun error al formulari
+                else: 
+                    $this->FReserva = ReservaespaisPeer::initialize( $request->getParameter('IDR') , $this->IDS );                				
+			        $this->MODE['EDICIO'] = true;                                                                         
                 endif; 
                 break;        	 
     }
