@@ -2344,7 +2344,8 @@ class gestioActions extends sfActions
                                     ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
                 //Hem intentat guardar però hi ha algun error al formulari
                 else: 
-                    $this->FReserva = ReservaespaisPeer::initialize( $request->getParameter('IDR') , $this->IDS );                				
+                    $RP = $request->getParameter('reservaespais');
+                    $this->FReserva = ReservaespaisPeer::initialize($RP['ReservaEspaiID'],$this->IDS);                                    				
 			        $this->MODE['EDICIO'] = true;                                                                         
                 endif; 
                 break;        	 
