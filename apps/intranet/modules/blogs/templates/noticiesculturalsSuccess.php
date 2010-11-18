@@ -1,6 +1,6 @@
-<?php use_javascript('fonts/cufon-yui.js')?>
-<?php use_javascript('fonts/myriad/Myriad_Pro_400.font.js')?>
-<?php use_javascript('fonts/bauhaus/Bauhaus_93_400.font')?>
+<?php echo use_javascript('fonts/cufon-yui.js')?>
+<?php echo use_javascript('fonts/myriad/Myriad_Pro_400.font.js')?>
+<?php echo use_javascript('fonts/bauhaus/Bauhaus_93_400.font')?>
 
 
 <script type="text/javascript">
