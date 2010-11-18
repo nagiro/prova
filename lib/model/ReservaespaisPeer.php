@@ -34,9 +34,9 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
         $OR->setUsuarisUsuariid($idU);
         $OR->setEstat(ReservaEspaisPeer::EN_ESPERA);                    
         $OR->setSiteId($idS);        
-        $OR->setActiu(true);        		            			    			    			
-        if($OR->getCondicionsccg() == "") $OR->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric($OR,$idS));					
+        $OR->setActiu(true);        		            			    			    			        					
 	endif; 
+    if($OR->getCondicionsccg() == ""){ $OR->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric($OR,$idS)); }
     if($client) return new ClientReservesForm($OR,array('IDS'=>$idS));
     else return new ReservaespaisForm($OR,array('IDS'=>$idS));
     
