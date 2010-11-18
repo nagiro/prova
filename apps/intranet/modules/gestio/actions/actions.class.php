@@ -22,7 +22,7 @@ class gestioActions extends sfActions
     
         //Entren crides i es mostra una reposta en web si ha anat bé o no.        
         $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
-        $PAR = unserialize($PARAMETRES);                        
+        $PAR = unserialize($PARAMETRES);
         switch($PAR['formulari']){
         
             //Paràmetres [id = IDReservaEspais]
@@ -239,7 +239,7 @@ class gestioActions extends sfActions
             $this->redirect('gestio/uFormularis?PAR='.$PARA);                                                                   
             break;
             
-        case 'BANULACONDICIONSRESERVA':
+        case 'ANULA_CONDICIONS_RESERVA':
             $PR = $request->getParameter('reservaespais');
             $OR = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true )->getObject();
             $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
