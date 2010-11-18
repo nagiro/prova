@@ -68,9 +68,7 @@ class blogsActions extends sfActions
 	  $this->feed = $feed;
 	  $this->setLayout('blank');
 	  $this->setTemplate('RSS');
-	}
-	
-	
+	}		
 	
  /**
   * Executes index action
@@ -235,7 +233,7 @@ class blogsActions extends sfActions
 			$OO->setEstat(AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT);
 			$OO->save();
 			
-	  		} catch (Excepcion $e){ echo $e->getCode(); echo $e->getMessage(); }
+	  		} catch (Excepcion $e){ mail('informatica@casadecultura.org','Problema actualitzant notícies culturals',$e->getMessage().$e->getCode()); }
 			
   		endforeach;  		
   		  		
