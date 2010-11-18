@@ -240,6 +240,8 @@ class gestioActions extends sfActions
             break;
             
         case 'BANULACONDICIONSRESERVA':
+            $PR = $request->getParameter('reservaespais');
+            $OR = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true )->getObject();
             $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
                                                          'id' => $OR->getReservaespaiid())));
             $this->redirect('gestio/uFormularis?PAR='.$PARR);
