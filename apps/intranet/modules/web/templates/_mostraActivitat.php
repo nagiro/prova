@@ -72,7 +72,7 @@
             
             foreach($ESP as $Espai => $D1):                                            
                 foreach($D1 as $Hi => $D2):                    
-                    $RET[] = implode(',',$D2).' a les '.$Hi.' a '.$Espai;
+                    $RET[] = implode(', ',$D2).' a les '.$Hi.' a '.$Espai;
                 endforeach;
             endforeach;
             
