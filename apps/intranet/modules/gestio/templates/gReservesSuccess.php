@@ -61,10 +61,13 @@
 	 			
                 <div class="" style="text-align:right; padding-top:40px;">
                 <?php if($FReserva->getObject()->getEstat() == ReservaespaisPeer::EN_ESPERA): ?>
-                    <button type="submit" name="SEND_RESOLUTION" class="BOTO_ACTIVITAT">Envia mail condicions</button>
+                    <button type="submit" name="SEND_RESOLUTION" class="BOTO_ACTIVITAT">
+                        <?php echo image_tag('template/email.png'); ?> Envia mail condicions
+                    </button>
                 <?php endif; ?>	 			
                     <button type="submit" name="BSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
-    				<img src="/intranet/images/template/disk.png" /> Guardar i sortir </button>
+    				    <?php echo image_tag('template/disk.png'); ?> Guardar i sortir 
+                    </button>
                     
                 </div>		
 	 		</div>
