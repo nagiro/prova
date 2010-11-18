@@ -1,7 +1,7 @@
-<?php echo use_javascript('fonts/cufon-yui.js')?>
-<?php echo use_javascript('fonts/myriad/Myriad_Pro_400.font.js')?>
-<?php echo use_javascript('fonts/bauhaus/Bauhaus_93_400.font')?>
-
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
+<script type="text/javascript" src="<?php echo $BASE.'js/fonts/cufon-yui.js'; ?>"></script>
+<script type="text/javascript" src="<?php echo $BASE.'js/fonts/myriad/Myriad_Pro_400.font.js'; ?>"></script>
+<script type="text/javascript" src="<?php echo $BASE.'js/fonts/bauhaus/Bauhaus_93_400.font.js'; ?>"></script>
 
 <script type="text/javascript">
 
