@@ -2329,8 +2329,8 @@ class gestioActions extends sfActions
                         $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
                         if($OU instanceof Usuaris) $email = $OU->getEmail();
                         else $email = 'informatica@casadecultura.org';                            
-                    }
-                    
+                    }                                                            
+                                        
                     //Enviem el correu a la persona. 
                     $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
                                     $email,
