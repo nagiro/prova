@@ -3,9 +3,25 @@
 <script>
 
 	$(document).ready(function() {
-		$( "#tabs" ).tabs({ cookie: { expires: 1 } });        
+		$( "#tabs" ).tabs({ cookie: { expires: 1 } });
+        $( "#FRESERVES").submit(validaReserves);                
 	});
 	
+    function validaReserves()
+    {        
+        var espais = true;
+		$(".ul_espais:checked").each(function (a){ espais = false; } );
+        if($("#reservaespais_Nom").val().length == 0) { alert('Has d\'escriure un nom'); return false; }
+        if($("#reservaespais_DataActivitat").val().length == 0) { alert('Has d\'escriure una data per l\'activitat'); return false; }
+        if($("#reservaespais_HorariActivitat").val().length == 0) { alert('Has d\'escriure un horari orientatiu per l\'activitat'); return false; }
+        if(espais) { alert("Has d'escollir com a mínim un espai on realitzar l'acte"); return false; }
+        if($("#reservaespais_TipusActe").val().length == 0) { alert('Has d\'escriure quin tipus d\'acte és'); return false; }
+        if($("#reservaespais_Representacio").val().length == 0) { alert('Has d\'escriure a qui representa'); return false; }
+        if($("#reservaespais_Responsable").val().length == 0) { alert('Has d\'escriure un responsable de l\'activitat'); return false; }
+        if($("#reservaespais_Organitzadors").val().length == 0) { alert('Has d\'escriure qui són els organitzadors'); return false; }
+        if($("#reservaespais_PersonalAutoritzat").val().length == 0) { alert('Has d\'escriure el personal autoritzat que paritipcarà a l\'activitat'); return false; }                                                      
+    }
+    
 </script>
 
 <style>
@@ -229,7 +245,7 @@
     function EditaReserva($FRESERVA,$MISSATGE ="" )
     {
 
-	$RET = '<form name="fReserves" id="fReserves" method="post" action="'.url_for('gestio/uGestio').'">';    
+	$RET = '<form name="fReserves" id="FRESERVES" method="post" action="'.url_for('gestio/uGestio').'">';    
     $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Reserva d\'espais</LEGEND>';
        	              	           	
     $RET .= '<div class="FORMULARI">'.missatge_div($MISSATGE).'</div>';     
