@@ -23,8 +23,14 @@
     
 	function mostraNoticia( $NOTICIA , $PAGINA )
     {
-    	     							       											
+            	     							       											
      	$titol = '<b>'.$NOTICIA->getTitolnoticia().'</b>'; $imatge = $NOTICIA->getImatge(); $pdf = $NOTICIA->getAdjunt(); $descripcio = $NOTICIA->getTextnoticia();
+        
+        $WEBURL = OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/';
+        $SYSURL = OptionsPeer::getString('SF_WEBSYSROOT',1).'images/noticies/';
+        
+        $IMG_EXIST = (file_exists($SYSURL.$imatge));
+        $PDF_EXIST = (file_exists($SYSURL.$pdf));
      	
 		if(!empty($titol)):
 		?>
@@ -32,9 +38,15 @@
 			<div class="titol_noticia"><?php echo $titol ?></div>									 
 			<div style="margin-top:10px;">														
 				<div class="text_noticia"><?php echo $descripcio ?></div>
-				<div class="imatge_noticia"><?php if($imatge > 0): ?> 
-					<img src="<?php echo OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/'.$imatge ?>" style="vertical-align:middle"> <?php endif; ?>					
-					<div style="padding-top:10px; " class="pdf_noticia"><?php if($pdf > 0): ?><a href="<?php echo OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/'.$pdf ?>">Descarrega't el pdf</a><?php endif; ?></div>
+				<div class="imatge_noticia">
+                    <?php if($IMG_EXIST): ?> 
+    					<img src="<?php echo $WEBURL.$imatge ?>" style="vertical-align:middle"> 
+                    <?php endif; ?>					
+				    <div style="padding-top:10px;" class="pdf_noticia">
+                    <?php if($PDF_EXIST): ?>
+                        <a href="<?php echo $WEBURL.$pdf ?>">Descarrega't el pdf</a>
+                    <?php endif; ?>
+                </div>
 				</div>
 			</div>
 			<div style="clear:both; padding-top:10px;">
@@ -68,6 +80,13 @@
 				$pdf = $ON->getAdjunt();		
 				$text = closetags($ON->getTextnoticia());	
 				$nom_noticia = '<b>'.$ON->getTitolnoticia().'</b>';
+
+                $WEBURL = OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/';
+                $SYSURL = OptionsPeer::getString('SF_WEBSYSROOT',1).'images/noticies/';
+                
+                $IMG_EXIST = (file_exists($SYSURL.$imatge));
+                $PDF_EXIST = (file_exists($SYSURL.$pdf));
+                                
 			?>
 				<div style="border-bottom:2px solid #CADF86;">
 																
@@ -75,8 +94,14 @@
 					<div style="margin-top:10px;">														
 						<div class="text_noticia"><?php echo substr($text,0,400) ?>...</div>
 						<div class="imatge_noticia">
-							<?php if($imatge > 0): ?> <img src="<?php echo OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/'.$imatge ?>" style="vertical-align:middle"> <?php endif; ?>
-							<div style="padding-top:10px; " class="pdf_noticia"><?php if($pdf > 0): ?><a href="<?php echo OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/'.$pdf ?>">Descarrega't el pdf</a><?php endif; ?></div>
+                            <?php if($IMG_EXIST): ?> 
+                                <img src="<?php echo $WEBURL.$imatge ?>" style="vertical-align:middle"> 
+                            <?php endif; ?>
+							<div style="padding-top:10px;" class="pdf_noticia">
+                                <?php if($PDF_EXIST): ?>
+                                    <a href="<?php echo $WEBURL.$pdf ?>">Descarrega't el pdf</a>
+                                <?php endif; ?>
+                            </div>
 						</div>
 					</div>
 					<div style="clear:both; padding-top:10px;">
