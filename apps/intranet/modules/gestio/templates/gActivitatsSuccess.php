@@ -296,8 +296,7 @@
 	             	<?php                         
 						$id = 1;  $VAL = "";
 						if(!isset($ESPAISOUT)): $ESPAISOUT = array(); endif;            	
-	             		foreach($ESPAISOUT AS $E=>$idE):
-	
+	             		foreach($ESPAISOUT AS $idE=>$nom):	
 	             		$VAL .= '<span id="rowE['.$id.']">
 	             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($IDS,$idE).'</select>
 	             					<input type="button" onClick="esborraLiniaE('.$id.');" id="mesespais" value="-"></input>
@@ -320,7 +319,7 @@
 	
 	             	<?php 
 						$id = 1;  $VAL = "";
-						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;                                	
+						if(!isset($MATERIALOUT)): $MATERIALOUT = array(); endif;                                                        	
 	             		foreach($MATERIALOUT AS $M=>$idM):
 	
 	             		$VAL .= '

@@ -2336,13 +2336,13 @@ class gestioActions extends sfActions
                 //Enviem el correu a la persona. 
                 $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
                                 $email,
-                                'Nova reserva d\'espai',
+                                'Hospici :: Nova reserva d\'espai',
                                 ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
                                 
                 //També una còpia a informàtica
                 $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
                                 OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),
-                                'Nova reserva d\'espai',
+                                'Hospici :: Nova reserva d\'espai',
                                 ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
             
     	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);	    	                                        
