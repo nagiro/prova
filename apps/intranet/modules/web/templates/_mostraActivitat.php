@@ -62,13 +62,33 @@
     function generaHoraris($LOH)
     {
     	$RET = array();
-    	foreach($LOH as $OH):    		
-    		$LOHE = $OH->getHorarisespaiss();
-    		$Espai = $LOHE[0]->getEspais()->getNom();    		
-    		$RET[$OH->getHorarisid()] = generaData($OH->getDia('Y-m-d')).' a '.$Espai.' a les '.$OH->getHorainici('H:i').' h.';    		
-    	endforeach;
+        $ESP = array();
+        if(sizeof($LOH) > 4):
+
+            foreach($LOH as $OH):    		
+        		$LOHE = $OH->getHorarisespaiss();
+                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('d/m')] = $OH->getDia('d/m');        		    		        		                    		
+        	endforeach;                       
+            
+            foreach($ESP as $Espai => $D1):                                            
+                foreach($D1 as $Hi => $D2):                    
+                    $RET[] = implode(',',$D2).' a les '.$Hi.' a '.$Espai;
+                endforeach;
+            endforeach;
+            
+            return implode('<br />',$RET);
+            
+        else: 
+         
+        	foreach($LOH as $OH):    		
+        		$LOHE = $OH->getHorarisespaiss();
+        		$Espai = $LOHE[0]->getEspais()->getNom();    		
+        		$RET[$OH->getHorarisid()] = generaData($OH->getDia('Y-m-d')).' a '.$Espai.' a les '.$OH->getHorainici('H:i').' h.';    		
+        	endforeach;
     	
-    	return implode('<br />',$RET);    	
+    	    return implode('<br />',$RET);
+           
+        endif;     	
     }
     
 
