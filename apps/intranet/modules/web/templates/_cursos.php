@@ -29,7 +29,7 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
    <?php    if($CAT_ANT <> $C->getCategoria()): ?>   
 			<TR><TD colspan="5" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></TD></TR>
    <?php    endif; ?>
-    <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos()); ?>                       	
+    <?php       $PLACES = CursosPeer::getPlaces($C->getIdcursos(),$IDS); ?>                       	
    		<TR>
       		<TD class="LINIA">
                 <div style="clear:both;">
