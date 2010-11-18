@@ -223,7 +223,7 @@ class blogsActions extends sfActions
 						$OM->setUrl($RET['file']);												
 						$OM->save();
 													
-						$OME = new AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->save();						
+						$OME = AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->save();						
 						
     				} catch(Exception $e){ echo $e->getCode(); echo $e->getMessage(); }
     				

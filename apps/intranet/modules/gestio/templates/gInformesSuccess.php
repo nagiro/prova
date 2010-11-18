@@ -8,7 +8,8 @@
       		<tr><th>Nom</th><th>Descripció</th><th>Enllaç</th><th>Parametres</th></tr>
       		<?php if($POTVEURE[1]): ?>
       			<tr><td>Comptabilitat</td><td>Resum de conceptes i factures</td><td><a target="_NEW" href="http://192.168.0.3/comptabilitat/informe_conceptes.php">Anar-hi</a></td><td>Cap</td></tr>
-      			<tr>
+      		<?php endif; ?>
+       			<tr>
       				<td>Comptabilitat</td>
       				<td>Resum de matrícules per dia i mitjà pagament</td>
       				<td>---</td>
@@ -18,9 +19,7 @@
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TELEFON) ?>"> Tf </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TRANSFERENCIA) ?>"> Tr </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament=0') ?>"> All </a>
-      				</td></tr>      			
-      		<?php endif; ?>
-      			
+   				</td></tr>      			      			                      			
       	</TABLE>      
       </DIV>
 
