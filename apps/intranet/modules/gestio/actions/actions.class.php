@@ -2311,44 +2311,47 @@ class gestioActions extends sfActions
         //Envio un correu amb les condicions. 
         case 'SR':
         
-                //Primer guardem i el marquem pendent de confirmació 
-                if($this->saveReservaEspais($request,$accio)):
-                    
-                    $RP = $request->getParameter('reservaespais');
-                    $OR = ReservaespaisPeer::initialize($RP['ReservaEspaiID'],$this->IDS)->getObject();                                                            
-                    $OR->setEstat(ReservaespaisPeer::PENDENT_CONFIRMACIO);
-                    $OR->save();                    
-                    
-                    $PARA  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Accepta_Condicions', 
-                                                                'id' => $OR->getReservaespaiid())));
-                    $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
-                                                                'id' => $OR->getReservaespaiid())));                                                            
-                                
-                    //Si no podem carregar un usuari, enviem el correu a informatica@casadecultura.org                                    
-                    if($OR instanceof Reservaespais){                                        
-                        $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
-                        if($OU instanceof Usuaris) $email = $OU->getEmail();
-                        else $email = 'informatica@casadecultura.org';                            
-                    }                                                            
-                                        
-                    //Enviem el correu a la persona. 
-                    $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-                                    $email,
-                                    'Nova reserva d\'espai',
-                                    ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
+            $RP = $request->getParameter('reservaespais');
+            $this->FReserva = ReservaespaisPeer::initialize($RP['ReservaEspaiID'],$this->IDS);        	    		        		  	    
+    	    $this->FReserva->bind($RP);    		    
+    	    if($this->FReserva->isValid())
+            {
+                $this->FReserva->save();
+                $OR = $this->FReserva->getObject();                                                            
+                $OR->setEstat(ReservaespaisPeer::PENDENT_CONFIRMACIO);
+                $OR->save();                    
+                
+                $PARA  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Accepta_Condicions', 
+                                                            'id' => $OR->getReservaespaiid())));
+                $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
+                                                            'id' => $OR->getReservaespaiid())));                                                            
+                            
+                //Si no podem carregar un usuari, enviem el correu a informatica@casadecultura.org                                    
+                if($OR instanceof Reservaespais){                                        
+                    $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
+                    if($OU instanceof Usuaris) $email = $OU->getEmail();
+                    else $email = 'informatica@casadecultura.org';                            
+                }                                                            
                                     
-                    //També una còpia a informàtica
-                    $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-                                    OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),
-                                    'Nova reserva d\'espai',
-                                    ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
-                //Hem intentat guardar però hi ha algun error al formulari
-                else: 
-                    $RP = $request->getParameter('reservaespais');
-                    $this->FReserva = ReservaespaisPeer::initialize($RP['ReservaEspaiID'],$this->IDS);                                    				
-			        $this->MODE['EDICIO'] = true;                                                                         
-                endif; 
-                break;        	 
+                //Enviem el correu a la persona. 
+                $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
+                                $email,
+                                'Nova reserva d\'espai',
+                                ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
+                                
+                //També una còpia a informàtica
+                $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
+                                OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),
+                                'Nova reserva d\'espai',
+                                ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
+            
+    	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);	    	                                        
+             }
+             else 
+             {
+                $this->MODE['EDICIO'] = true;
+             }
+            break;        	 
     }
         
     $this->RESERVES = ReservaespaisPeer::getReservesSelect( $this->CERCA['text'] , $this->PAGINA , $this->IDS );    
