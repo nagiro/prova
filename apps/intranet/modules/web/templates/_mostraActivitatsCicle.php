@@ -52,6 +52,27 @@
 
     <?php 
     
+    function generaMes($M)
+    {
+        $ret = "";
+        switch($M){
+			case '01': $ret .= " de gener"; break;
+			case '02': $ret .= " de febrer"; break;
+			case '03': $ret .= " de març"; break;
+			case '04': $ret .= " d'abril"; break;
+			case '05': $ret .= " de maig"; break;
+			case '06': $ret .= " de juny"; break;
+			case '07': $ret .= " de juliol"; break;
+			case '08': $ret .= " d'agost"; break;
+			case '09': $ret .= " de setembre"; break;
+			case '10': $ret .= " d'octubre"; break;
+			case '11': $ret .= " de novembre"; break;
+			case '12': $ret .= " de desembre"; break;
+		}
+        return $ret;
+    }
+    
+    
     function generaHoraris($LOH)
     {
     	$RET = array();
@@ -60,12 +81,14 @@
 
             foreach($LOH as $OH):    		
         		$LOHE = $OH->getHorarisespaiss();
-                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('d/m')] = $OH->getDia('d/m');        		    		        		                    		
+                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('m')] = $OH->getDia('d');        		    		        		                    		
         	endforeach;                       
             
             foreach($ESP as $Espai => $D1):                                            
                 foreach($D1 as $Hi => $D2):                    
-                    $RET[] = implode(', ',$D2).' a les '.$Hi.' a '.$Espai;
+                    foreach($D2 as $m => $D3):
+                        $RET[] = implode(', ',$D3).generaMes($m).'a les '.$Hi.' a '.$Espai;
+                    endforeach;
                 endforeach;
             endforeach;
             
@@ -83,6 +106,7 @@
            
         endif;     	
     }
+
 
 /*
     function generaHoraris($LOH)
