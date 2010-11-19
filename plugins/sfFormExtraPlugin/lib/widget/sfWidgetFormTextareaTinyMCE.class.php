@@ -68,7 +68,8 @@ class sfWidgetFormTextareaTinyMCE extends sfWidgetFormTextarea
     language:                          "ca",
     %s
     %s
-    paste_strip_class_attributes:      "none",
+    paste_auto_cleanup_on_paste:       true,
+    paste_strip_class_attributes:      "all",
     theme_advanced_toolbar_location:   "top",
     theme_advanced_toolbar_align:      "left",
     theme_advanced_statusbar_location: "bottom",
