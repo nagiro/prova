@@ -60,7 +60,65 @@
     
 
     <?php 
+
+
+    function generaMes($M)
+    {
+        $ret = "";
+        switch($M){
+			case '01': $ret .= " de gener"; break;
+			case '02': $ret .= " de febrer"; break;
+			case '03': $ret .= " de març"; break;
+			case '04': $ret .= " d'abril"; break;
+			case '05': $ret .= " de maig"; break;
+			case '06': $ret .= " de juny"; break;
+			case '07': $ret .= " de juliol"; break;
+			case '08': $ret .= " d'agost"; break;
+			case '09': $ret .= " de setembre"; break;
+			case '10': $ret .= " d'octubre"; break;
+			case '11': $ret .= " de novembre"; break;
+			case '12': $ret .= " de desembre"; break;
+		}
+        return $ret;
+    }
     
+    
+    function generaHoraris($LOH)
+    {
+    	$RET = array();
+        $ESP = array();
+        if(sizeof($LOH) > 4):
+
+            foreach($LOH as $OH):    		
+        		$LOHE = $OH->getHorarisespaiss();
+                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('d')] = $OH->getDia('d');        		    		        		                    		
+        	endforeach;                       
+            
+            foreach($ESP as $Espai => $D1):                                            
+                foreach($D1 as $Hi => $D2):                    
+                    foreach($D2 as $m => $D3):
+                        $RET[] = $Espai.' a les '.$Hi.' els dies '.implode(', ',$D3).generaMes($m);
+                    endforeach;
+                endforeach;
+            endforeach;
+            
+            return implode('<br />',$RET);
+            
+        else: 
+         
+        	foreach($LOH as $OH):    		
+        		$LOHE = $OH->getHorarisespaiss();
+        		$Espai = $LOHE[0]->getEspais()->getNom();    		
+        		$RET[$OH->getHorarisid()] = generaData($OH->getDia('Y-m-d')).' a '.$Espai.' a les '.$OH->getHorainici('H:i').' h.';    		
+        	endforeach;
+    	
+    	    return implode('<br />',$RET);
+           
+        endif;     	
+    }
+
+
+/*    
     function generaHoraris($LOH)
     {
     	$RET = array();
@@ -72,7 +130,7 @@
     	
     	return implode('<br />',$RET);    	
     }
-    
+*/    
 	function generaData($DIA)
 	{
 
