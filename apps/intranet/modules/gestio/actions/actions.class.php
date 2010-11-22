@@ -2339,11 +2339,18 @@ class gestioActions extends sfActions
                                 'Hospici :: Nova reserva d\'espai',
                                 ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
                                 
-                //També una còpia a informàtica
+                //També una còpia a secretaria
                 $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
                                 OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),
                                 'Hospici :: Nova reserva d\'espai',
                                 ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
+
+                //També una còpia a informàtica
+                $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
+                                OptionsPeer::getString('MAIL_ADMIN',$this->IDS),
+                                'Hospici :: Nova reserva d\'espai - '.$email,
+                                ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
+
             
     	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);	    	                                        
              }
