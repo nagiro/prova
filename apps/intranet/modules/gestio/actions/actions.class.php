@@ -1818,7 +1818,7 @@ class gestioActions extends sfActions
   public function executeGAgenda($request)  
   {  		  	
   	$this->setLayout('gestio');
-    $this->IDS = $this->getUser()->getSessionPar('IDS');    
+    $this->IDS = $this->getUser()->getSessionPar('idS');    
   	
   	//Netegem cerca
   	if($request->getParameter('accio') == 'C'):      		
@@ -1916,6 +1916,8 @@ class gestioActions extends sfActions
   {
   	   	
     $this->setLayout('gestio');
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->IDU = $this->getUser()->getSessionPar('idU');
     
     //Netegem cerca
   	if($request->getParameter('accio') == 'I'):      		
@@ -1949,14 +1951,14 @@ class gestioActions extends sfActions
     
       //Entrem per primer cop a aquest apartat
       case 'I':      	            		
-      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false , $this->getUser()->getSessionPar('idS') );
+      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false , $this->IDS );
       			$this->getUser()->addLogAction('inside','gMissatges');      			      			
       			break;
       
       case 'N':
       	
                 $this->MODE['NOU'] = true;
-                $this->FMissatge = MissatgesPeer::inicialitza(0,$this->getUser()->getSessionPar('idU') , $this->getUser()->getSessionPar('idS'));                
+                $this->FMissatge = MissatgesPeer::inicialitza(0 , $this->IDU , $this->IDS );                
                 $this->getUser()->setSessionPar('IDM',0);           
                 $this->IDU = $this->getUser()->getSessionPar('idU');   	                                                
                 break;
@@ -1966,14 +1968,14 @@ class gestioActions extends sfActions
                 $this->MODE['EDICIO'] = true;                
                 $IDM = $request->getParameter('IDM');
                 $this->getUser()->setSessionPar('IDM',$IDM);
-                $this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getSessionPar('idU') , $this->getUser()->getSessionPar('idS'));                
+                $this->FMissatge = MissatgesPeer::inicialitza( $IDM , $this->IDU , $this->IDS );                
                 $this->IDU = $this->getUser()->getSessionPar('idU');                      
                 break;
                 
       case 'S':
       			      			
       			$IDM = $this->getUser()->getSessionPar('IDM');
-      			$this->FMissatge = MissatgesPeer::inicialitza($IDM,$this->getUser()->getSessionPar('idU') , $this->getUser()->getSessionPar('idS'));                
+      			$this->FMissatge = MissatgesPeer::inicialitza($IDM , $this->IDU , $this->IDS );                
                 $this->FMissatge->bind($request->getParameter('missatges'));                
                 if ($this->FMissatge->isValid()) { 
                 	$this->FMissatge->save();
@@ -1989,12 +1991,12 @@ class gestioActions extends sfActions
                 $this->redirect('gestio/gMissatges?accio=I');                
                 break;
       case 'SF':
-      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , true , $this->getUser()->getSessionPar('idS') );      			
+      			$this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , true , $this->IDS );      			
       			break;
       default: 
                 $this->MISSATGE = new Missatges();
                 $this->getUser()->setSessionPar('IDM',0);
-                $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false , $this->getUser()->getSessionPar('idS') );
+                $this->MISSATGES = MissatgesPeer::doSearch( $this->CERCA['text'] , $this->PAGINA , false , $this->IDS );
                 break;
     
     }

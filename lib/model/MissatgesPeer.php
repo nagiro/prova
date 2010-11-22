@@ -10,6 +10,13 @@
 class MissatgesPeer extends BaseMissatgesPeer
 {
 
+  static function getCriteriaActiu($C,$idS)
+  {
+    $C->add(self::ACTIU,true);
+    $C->add(self::SITE_ID,$idS);
+    return $C;
+  }
+
   static function inicialitza( $id , $idU , $idS )
   {
   	
@@ -29,8 +36,8 @@ class MissatgesPeer extends BaseMissatgesPeer
   static function QuantsAvui( $idU , $idS = 1 )
   {
      $C = new Criteria();
-     $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
-     $C->add(self::SITE_ID , $idS );
+     $C = self::getCriteriaActiu($C,$idS);
+     $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));     
      $C->add(self::DATE , $time , Criteria::GREATER_EQUAL );
      $C->add(self::USUARIS_USUARIID , $idU);
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
@@ -41,6 +48,8 @@ class MissatgesPeer extends BaseMissatgesPeer
   {
     
      $C = new Criteria();
+     var_dump($idS);
+     $C = self::getCriteriaActiu($C,$idS);
      $PARAULES = explode(" ",$TEXT); $PAR2 = array();
      foreach( $PARAULES as $P ) if( strlen( $P ) > 2 ): $PAR2[] = trim($P); endif;                      
      
@@ -51,8 +60,6 @@ class MissatgesPeer extends BaseMissatgesPeer
       $text1Criterion->addOr($text2Criterion);  $C->add($text1Criterion);          
      endforeach;
      
-     $C->add( self::SITE_ID , $idS );
-     $C->add( self::ACTIU , 1 );
      $C->addGroupByColumn( MissatgesPeer::MISSATGEID );     
      $C->addDescendingOrderByColumn(self::PUBLICACIO);
      $C->addDescendingOrderByColumn(self::MISSATGEID);
@@ -75,9 +82,9 @@ class MissatgesPeer extends BaseMissatgesPeer
   static function getMissatgesAvui($idS = 1)
   {
       $C = new Criteria();
+      $C = self::getCriteriaActiu($C,$idS);
       $avui = date('Y-m-d',time()); 
-      $C->add( self::PUBLICACIO , $avui );
-      $C->add( self::SITE_ID , $idS );
+      $C->add( self::PUBLICACIO , $avui );      
       $C->addDescendingOrderByColumn(self::PUBLICACIO);
       $C->addDescendingOrderByColumn(self::MISSATGEID);      
       return MissatgesPeer::doSelect($C);

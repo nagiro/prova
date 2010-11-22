@@ -59,7 +59,7 @@
   	<DIV class="TITOL">Llistat de missatges (<a href="<?php echo url_for('gestio/gMissatges?accio=SF'); ?>">Veure missatges futurs</a>)</DIV>
   		<table class="DADES">
                 <?php  
-                    if( $MISSATGES->getNbResults() == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(new Criteria()).' disponibles.</TD></TR>';
+                    if( $MISSATGES->getNbResults() == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(MissatgesPeer::getCriteriaActiu(new Criteria(),$IDS)).' disponibles.</TD></TR>';
                     else { 
                        $dif = "";
                       	foreach($MISSATGES->getResults() as $M) {
