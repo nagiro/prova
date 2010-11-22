@@ -16,7 +16,7 @@
 //	    	$P = $NODE->getHtml();    	
 //	    	if(!empty($P) && file_exists($WEB)) include($WEB); 
 //	    	else echo "Encara no hi ha continguts...";
-            include($WEB);
+            echo $WEB;
 	    else: 
             //Carregar els nodes que depenen de mi 
             //I dibuixar estructura d'arbre
