@@ -20,4 +20,43 @@ require 'lib/model/om/BaseUsuarisMenusPeer.php';
  */
 class UsuarisMenusPeer extends BaseUsuarisMenusPeer {
 
+    static public function getCriteriaActiu( $C )
+    {
+      $C->add(self::ACTIU,true);
+      return $C;
+    }    
+
+  	static public function initialize( $idU , $idM , $idS )
+	{	   
+	   
+		$OO = UsuarisMenusPeer::retrieveByPK($idU,$idM,$idS);           
+		if(!($OO instanceof UsuarisMenus)):            			
+			$OO = new UsuarisMenus();
+            $OO->setUsuariId($idU);
+            $OO->setMenuId($idM);
+            $OO->setSiteId($idS);
+            $OO->setNivellId(NivellsPeer::REGISTRAT);                        
+            $OO->setActiu(true);            						
+		endif; 
+        
+        return new UsuarisMenusForm($OO,array('IDS'=>$idS));
+                
+	}                
+    
+    static public function doUpdateMy($idU,$idS,$LVALORS)
+    {
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C);
+        $C->add(self::USUARI_ID,$idU);
+        $C->add(self::SITE_ID, $idS);
+        foreach(self::doSelect($C) as $OMU):
+            $OMU->setActiu(false)->save();
+        endforeach;
+        
+        foreach($LVALORS as $idM):
+            self::initialize($idU,$idM,$idS)->getObject()->setActiu(true)->save();
+        endforeach;
+    }
+    
+
 } // UsuarisMenusPeer

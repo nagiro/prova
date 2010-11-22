@@ -47,6 +47,8 @@ class CiclesPeer extends BaseCiclesPeer
   
   static public function getList($PAGE = 1 , $CERCA = "" , $idS )
   {
+    
+    $RET = array();
 
 	if($PAGE == 1){  $limit_inf = 0; $limit_sup = 9; }
     elseif($PAGE > 1) { $limit_inf = (($PAGE-1)*10); $limit_sup = (($PAGE)*10)-1; }
@@ -55,7 +57,7 @@ class CiclesPeer extends BaseCiclesPeer
     //Agafo els 10 primers cicles ordenats per ordre d'entrada.
     $C = new Criteria();
     $C = self::getCriteriaActiu( $C , $idS );    
-    if(!empty($CERCA)) $C->add(self::NOM,$CERCA,CRITERIA::LIKE);
+    if(!empty($CERCA)) $C->add(self::NOM,'%'.$CERCA.'%',CRITERIA::LIKE);
     $C->addDescendingOrderByColumn(self::CICLEID);
     
     $i = 0;

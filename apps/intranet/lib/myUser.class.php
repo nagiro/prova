@@ -58,6 +58,6 @@ class myUser extends sfBasicSecurityUser
   	$O->setData($time);
   	$O->save();
   	
-  }
+  }  
   
 }

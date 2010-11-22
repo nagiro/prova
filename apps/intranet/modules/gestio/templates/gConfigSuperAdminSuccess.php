@@ -21,7 +21,7 @@
         $('#sites_site_id').change(function(){ $('#FSITES').submit(); });                        
 	});
 
-    //Funció que captura de quin genèric parlem i busca els disponibles. 
+    //FunciÃ³ que captura de quin genÃ¨ric parlem i busca els disponibles. 
 	function ajaxOptions()
 	{
 		$("#options_valor").val('Carregant...');										
@@ -39,7 +39,7 @@
   
 <TD colspan="3" class="CONTINGUT_ADMIN">	
 
-	<?php include_partial('breadcumb',array('text'=>'CONFIGURACIÓ')); ?>		
+	<?php include_partial('breadcumb',array('text'=>'CONFIGURACIÃ“')); ?>		
 		                   	                   	
 
     <div class="demo" style=" padding:20px; width:700px; ">    
@@ -47,11 +47,11 @@
         	<ul>        		        		        		
                 <li><a href="#tabs-1">Entitats</a></li>
                 <li><a href="#tabs-2">Permisos</a></li>                                                
-                <li><a href="#tabs-3">Menús Gestió</a></li>
+                <li><a href="#tabs-3">MenÃºs GestiÃ³</a></li>
         	</ul>                        
         	<div id="tabs-1"> <?php echo EntitatsTab($FSITES); ?> </div>
-        	<div id="tabs-2"> <?php echo PermisosTab($FUSERSITES); ?> </div>              	
-            <div id="tabs-3"> <?php /*MenusgestioTab($FMENUS);*/ ?> </div>
+        	<div id="tabs-2"> <?php echo PermisosTab($DNI, $USUARI , $LUSERSITES); ?> </div>              	
+            <div id="tabs-3"> <?php echo MenusgestioTab($DNI , $USUARI , $SITE , $LMENUSUSUARI); ?> </div>
         </div>
     
     </div>
@@ -93,26 +93,30 @@
     /**
      * Permisos Tab
      * */
-    function PermisosTab($FUSERSITES = "")
+    function PermisosTab( $DNI , $USUARI , $LUSERSITES = "" )
     {
-        
+   
         $RET = '
-            <form id="FESPAIS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">         	 	                                    
-                <table class="FORMULARI">                    
-                '.$FUSERSITES.'                    
-                </table>
+            <form id="FESPAIS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
+                DNI : '.input_tag('DNI',$DNI);
+        $RET .= '<br /><br /><table>';
+        $RET .= '<tr><td class="titol">Site</td><td class="titol">Nivell</td><td class="titol"></td></tr>';  
+        foreach($LUSERSITES as $OUS):            
+            $RET .= '<tr><td>'.select_tag('dades['.$OUS->getSiteId().'][site]',options_for_select(SitesPeer::getSelect(false),$OUS->getSiteId())).'</td>';
+            $RET .= '<td>'.select_tag('dades['.$OUS->getSiteId().'][nivell]',options_for_select(NivellsPeer::getSelect(),$OUS->getNivellId())).'</td>';                        
+            $RET .= '<td>'.link_to('esborra' , 'gestio/gConfigSuperAdmin?accio=DELETE_USER_SITE&USUARI='.$USUARI.'&SITE='.$OUS->getSiteId().'&DNI='.$DNI).'</td></tr>';
+        endforeach;        
+        $RET .= '<tr><td>'.select_tag('dades[0][site]',options_for_select(SitesPeer::getSelect(true),0)).'</td>';
+        $RET .= '<td>'.select_tag('dades[0][nivell]',options_for_select(NivellsPeer::getSelect(),0)).'</td></tr>';                        
+        $RET .= '</table>';
+                        
+        $RET .='         	 	                                                    
                 <div style="text-align:right">
-                    <button style="margin-top:10px;" name="EDIT" class="BOTO_ACTIVITAT">
+                    <button style="margin-top:10px;" name="BSEARCHUSERSITES" class="BOTO_ACTIVITAT">
                         '.image_tag('template/find.png').' Consulta
-                    </BUTTON>   
-                    <button style="margin-top:10px;" name="BADDUSERSITE" class="BOTO_ACTIVITAT">
-                        '.image_tag('template/new.png').' Nou
-                    </BUTTON>
+                    </BUTTON>                       
                     <button type="submit" name="BSAVEUSERSITE" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
                         '.image_tag('template/disk.png').' Guardar i sortir
-                    </button>
-    	            <button type="submit" name="BDELETEUSERSITE" class="BOTO_PERILL" onClick="return confirm(\'Segur que vols esborrar-lo?\')">
-                        '.image_tag('tango/16x16/status/user-trash-full.png').' Eliminar
                     </button>
                 </div>                                                                                            
             </form>';
@@ -122,26 +126,27 @@
     }
 
     /**
-     * Menus Gestió Tab
+     * Menus GestiÃ³ Tab
      * */
-    function MenusgestioTab($FESPAIS = "")
+    function MenusgestioTab($DNI , $USUARI , $SITE , $LMENUS = "")
     {
-        
         $RET = '
-            <form id="FESPAIS" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
-                <table class="FORMULARI">                    
-                '.$FESPAIS.'                    
-                </table>
+            <form id="FESPAIS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
+                DNI : '.input_tag('DNI',$DNI).'<br />Site: '.select_tag('SITE',options_for_select(SitesPeer::getSelect(),$SITE));
+        $RET .= '<br /><br /><table>';        
+        
+        $RET .= '<tr><td class="titol">Menu</td><td class="titol"></td></tr>';                      
+        $RET .= '<tr><td>'.select_tag('dades',options_for_select(GestioMenusPeer::getSelect(),$LMENUS),array('multiple'=>true)).'</td>';                                                
+        $RET .= '</table>';
+                        
+        $RET .='         	 	                                                    
                 <div style="text-align:right">
-                    <button style="margin-top:10px;" name="EDIT" class="BOTO_ACTIVITAT">
+                    <button style="margin-top:10px;" name="BSEARCHUSERSITES" class="BOTO_ACTIVITAT">
                         '.image_tag('template/find.png').' Consulta
-                    </BUTTON>   
-                    <button type="submit" name="BSAVEESPAI" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                    </BUTTON>                       
+                    <button type="submit" name="BSAVEUSERMENU" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
                         '.image_tag('template/disk.png').' Guardar i sortir
-                    </button>
-    	            <button type="submit" name="BDELETEESPAI" class="BOTO_PERILL" onClick="return confirm(\'Segur que vols esborrar-lo?\')">
-                        '.image_tag('tango/16x16/status/user-trash-full.png').' Eliminar
-                    </button>
+                    </button>    	            
                 </div>                                                                                            
             </form>';
                      

@@ -29,9 +29,9 @@ LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:12px
 			    	<?php $missatge = "Segueixi si vostè estar segur que: \\n 1.- No ha estat alumne de la Casa de Cultura. \\n 2.- Vostè no té cap usuari creat. \\n Si no n\'està segur, si us plau, cliqui cancel·lar i contacti amb la Casa de Cultura trucant al telèfon 972.20.20.13 o bé enviant un correu a informatica@casadecultura.org."; ?>
 			    	
 			    	<div style="clear:both; padding-top:20px;">
-	            		<button type="submit" style="width: 120px;" name="BLOGIN" class="BOTO_ACTIVITAT">Cliqueu per accedir</button>	            			            		
-                        <button type="submit" style="width: 120px;" name="BNEWUSER" class="BOTO_ACTIVITAT">Nou usuari</button>
-	            		<button style="width: 120px;" type="submit" name="BREMEMBER" class="BOTO_ACTIVITAT">Recordar contrasenya</button>		            					    	
+	            		<button type="submit" style="width: 120px;" name="BLOGIN" class="BOTO_ACTIVITAT" value="Cliqueu per accedir" />Cliqueu per accedir </button>	            			            		
+                        <button type="submit" style="width: 120px;" name="BNEWUSER" class="BOTO_ACTIVITAT" value="Nou usuari" />Nou usuari</button>
+	            		<button type="submit" style="width: 120px;" name="BREMEMBER" class="BOTO_ACTIVITAT" value="Recordar contrasenya" />Recordar contrasenya</button>		            					    	
 			    	</div>
 			    	
 			    </div>

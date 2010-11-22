@@ -35,6 +35,14 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
                 
     }
 
+    static public function getUserSites($idU)
+    {
+        $C = new Criteria();
+        $C->add(self::USUARI_ID, $idU);
+        $C->add(self::ACTIU , 1);
+        return self::doSelect($C);             
+    }
+
     static public function getSitesArray($idU)
     {        
         $C = new Criteria();
@@ -89,6 +97,22 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
         endforeach;
         
         return $RET;        
+    }
+
+    static public function searchDNI($DNI)
+    {
+        $RET = array();
+        $OU = UsuarisPeer::cercaDNI($DNI);
+        if($OU instanceof Usuaris):
+            $C = new Criteria();
+            $C = self::getCriteriaActiu($C);
+            $C->add(self::USUARI_ID , $OU->getUsuariid());
+            foreach(self::doSelect($C) as $OUS):                                
+                $RET[$OUS->getSiteId()] = $OUS->getNivellId();                
+            endforeach;                        
+            return $RET;
+        endif; 
+        return array();        
     }
 
 } // UsuarisSitesPeer

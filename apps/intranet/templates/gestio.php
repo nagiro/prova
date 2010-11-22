@@ -19,6 +19,13 @@
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>          
+    
+    <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>    
+    
+<!--[if lt IE 7]>
+    <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>
+    <script>alert('El seu navegador és antic. Si us plau instal·lis qualsevol navegador que no sigui Internet Explorer');</script>
+<![endif]-->
       
   <link rel="shortcut icon" href="/favicon.ico" />
   

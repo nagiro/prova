@@ -18,6 +18,7 @@ abstract class BaseUsuarisMenusForm extends BaseFormPropel
       'menu_id'   => new sfWidgetFormInputHidden(),
       'site_id'   => new sfWidgetFormInputHidden(),
       'nivell_id' => new sfWidgetFormPropelChoice(array('model' => 'Nivells', 'add_empty' => false)),
+      'actiu'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseUsuarisMenusForm extends BaseFormPropel
       'menu_id'   => new sfValidatorPropelChoice(array('model' => 'GestioMenus', 'column' => 'menu_id', 'required' => false)),
       'site_id'   => new sfValidatorChoice(array('choices' => array($this->getObject()->getSiteId()), 'empty_value' => $this->getObject()->getSiteId(), 'required' => false)),
       'nivell_id' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
+      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('usuaris_menus[%s]');

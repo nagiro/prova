@@ -23,12 +23,24 @@ class GestioMenusPeer extends BaseGestioMenusPeer {
     const MENUS_ADMIN = 1;
     const MENUS_USER  = 2;
 
+    static public function getMenusUsuariArray($idU,$idS)
+    {
+        $RET = array();
+        $LOM = self::getMenusUsuari($idU,$idS,true);                                        
+        foreach($LOM as $OM):
+            $RET[$OM->getMenuId()] = $OM->getMenuId();
+        endforeach;
+        return $RET;
+    }
+
     static public function getMenusUsuari($idU,$idS,$admin = 1)
     {
         $C = new Criteria();
         
+        
         if($admin == 1):
             //Només mostrem els que toquen per l'usuari. '
+            $C = UsuarisMenusPeer::getCriteriaActiu($C);
             $C->addJoin(UsuarisMenusPeer::MENU_ID,self::MENU_ID);
             $C->add(UsuarisMenusPeer::USUARI_ID, $idU);
             $C->add(UsuarisMenusPeer::SITE_ID, $idS);                                    
@@ -45,4 +57,18 @@ class GestioMenusPeer extends BaseGestioMenusPeer {
         return $LOM;                
     }
 
+    static public function getSelect()
+    {
+        $RET = array();
+        $C = new Criteria();        
+        foreach(self::doSelect($C) as $OM):
+            if($OM->getTipus() == GestioMenusPeer::MENUS_ADMIN):
+                $RET[$OM->getMenuId()] = '(A) '.$OM->getTitol();
+            else:
+                $RET[$OM->getMenuId()] = '(R) '.$OM->getTitol();
+            endif;
+        endforeach;
+        return $RET;
+    }
+    
 } // GestioMenusPeer

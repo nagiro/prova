@@ -3750,20 +3750,29 @@ class gestioActions extends sfActions
     
     $RSITES = $request->getParameter('sites',array('site_id'=>1));
     $this->FSITES = SitesPeer::initialize($RSITES['site_id']);
-           
-    $RUSERSITES = $request->getParameter('usuaris_sites',array('usuari_id' => 0 , 'site_id' => 0));
-    if(!isset($RUSERSITES['usuari_id'])) $RUSERSITES['usuari_id'] = 0;
-    $this->FUSERSITES = UsuarisSitesPeer::initialize($RUSERSITES['usuari_id'] , $RUSERSITES['site_id']);
-
-    
+               
+    $this->DNI = $request->getParameter('DNI','');
+    $this->SITE = $request->getParameter('SITE','');              
+    $OU = UsuarisPeer::cercaDNI($this->DNI);                    
+    if($OU instanceof Usuaris):
+        $this->USUARI = $OU->getUsuariid(); 
+        $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);                                                                  
+        $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);
+    else:
+        $this->USUARI = 0; 
+        $this->LUSERSITES = array();                                                          
+        $this->LMENUSUSUARI = array();
+    endif; 
+               
     if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
-    if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';
-    if($request->hasParameter('BADDUSERSITE')) $this->accio = 'ADD_USER_SITE';
+    if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';    
     if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
     if($request->hasParameter('BDELETEUSERSITE')) $this->accio = 'DELETE_USER_SITE';
-
+    if($request->hasParameter('BSEARCHUSERSITES')) $this->accio = 'SEARCH_USER_SITES';
+    if($request->hasParameter('BSAVEUSERMENU')) $this->accio = 'SAVE_USER_MENU';
     
     switch($this->accio){
+        
         case 'SAVE_SITE':
             $this->FSITES->bind($RSITES);
             if($this->FSITES->isValid()):
@@ -3772,33 +3781,45 @@ class gestioActions extends sfActions
                 $this->FSITES  = SitesPeer::initialize($this->FSITES->getObject()->getSiteId());                
             endif;
             break;
+            
         case 'DELETE_SITE':                        
             $this->FSITES->getObject()->setActiu(false)->save();            
             $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
             $this->FESPAIS  = SitesPeer::initialize(0,$this->IDS);                        
             break;
-            
-        case 'ADD_USER_SITE':
-            $OUS = $this->FUSERSITES->getObject();
-            $this->FUSERSITES  = UsuarisSitesPeer::initialize($OUS->getUsuariId(),0,true);                
+                        
+        case 'SAVE_USER_SITE':
+            $RP = $request->getParameter('dades');                        
+            if($OU instanceof Usuaris):
+                foreach($RP as $id=>$RS):
+                    if($id >0 || ( $id == 0 && $RS['site'] <> 0 ) ):                    
+                        $OUS = UsuarisSitesPeer::initialize( $this->USUARI , $RS['site'] , false )->getObject();
+                        $OUS->setNivellId($RS['nivell']);
+                        $OUS->setActiu(true);
+                        $OUS->save();
+                    endif;                                                            
+                endforeach;
+                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
+            endif;                         
             break;
             
-        case 'SAVE_USER_SITE':
-            $this->FUSERSITES->bind($RUSERSITES);
-            if($this->FUSERSITES->isValid()):
-                $this->FUSERSITES->save();                
-                $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FUSERSITES->getObject());
-                $OUS = $this->FUSERSITES->getObject();
-                $this->FUSERSITES  = UsuarisSitesPeer::initialize($OUS->getUsuariId(),$OUS->getSiteId());                
+        case 'DELETE_USER_SITE': 
+            $USUARI = $request->getParameter('USUARI');                               
+            $SITE = $request->getParameter('SITE');            
+            $OUS = UsuarisSitesPeer::initialize( $USUARI , $SITE )->getObject();
+            if(!$OUS->isNew()):
+                $OUS->setActiu(false);
+                $OUS->save();
+                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
             endif;
             break;
-        case 'DELETE_USER_SITE':                        
-            $this->FUSERSITES->getObject()->setActiu(false)->save();            
-            $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
-            $OUS = $this->FUSERSITES->getObject();
-            $this->FUSERSITES  = UsuarisSitesPeer::initialize($OUS->getUsuariId(),0,false);                                    
+                  
+        case 'SAVE_USER_MENU':
+            $LMENUS_NOVA = $request->getParameter('dades');
+            if(!empty($LMENUS_NOVA)) UsuarisMenusPeer::doUpdateMy( $this->USUARI , $this->SITE , $LMENUS_NOVA );                        
+            $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);
             break;
-            
+                                        
     }
       
   }
