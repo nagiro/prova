@@ -47,8 +47,7 @@ class MissatgesPeer extends BaseMissatgesPeer
   static function doSearch( $TEXT , $PAGE , $ACCIO , $idS )
   {
     
-     $C = new Criteria();
-     var_dump($idS);
+     $C = new Criteria();     
      $C = self::getCriteriaActiu($C,$idS);
      $PARAULES = explode(" ",$TEXT); $PAR2 = array();
      foreach( $PARAULES as $P ) if( strlen( $P ) > 2 ): $PAR2[] = trim($P); endif;                      
