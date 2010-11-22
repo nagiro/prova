@@ -13,4 +13,11 @@ class Agendatelefonicadades extends BaseAgendatelefonicadades
 	{
 		return AgendatelefonicadadesPeer::getTipus($this->tipus);		
 	}
+    
+    public function getAgendatelefonicadadess()
+    {
+        $C = new Criteria();
+        $C = AgendatelefonicadadesPeer::getCriteriaActiu($C,$this->getSiteId());
+        $parent->getAgendatelefonicadadess($C);        
+    }
 }

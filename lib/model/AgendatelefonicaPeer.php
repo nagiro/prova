@@ -10,9 +10,17 @@
 class AgendatelefonicaPeer extends BaseAgendatelefonicaPeer
 {
    
-  static function getLinies()
+  static public function getCriteriaActiu($C,$IDS)
+  {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID,$IDS);
+    return $C;
+  }
+   
+  static function getLinies($idS)
   {
      $C = new Criteria();
+     $C = self::getCriteriaActiu($C,$idS);
      
      return self::doCount($C);
   }

@@ -135,7 +135,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
         <DIV class="TITOL">Llistat contactes</DIV>
       	<TABLE id="LLISTAT_DADES" class="DADES" style="border-collapse: collapse;" >
       		<?php           			 			
-				include_partial('listAgenda', array('AGENDES' => $AGENDES));								      		      		
+				include_partial('listAgenda', array('AGENDES' => $AGENDES, 'IDS' => $IDS));								      		      		
       		?>
 			<!-- Aquí hi apareix el llistat que surt de la funció AJAX gestio/SearchAjaxAgenda i Partial( _listAgenda ) -->      	
       	</TABLE>      

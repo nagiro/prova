@@ -1817,7 +1817,8 @@ class gestioActions extends sfActions
   
   public function executeGAgenda($request)  
   {  		  	
-  	$this->setLayout('gestio');    
+  	$this->setLayout('gestio');
+    $this->IDS = $this->getUser()->getSessionPar('IDS');    
   	
   	//Netegem cerca
   	if($request->getParameter('accio') == 'C'):      		

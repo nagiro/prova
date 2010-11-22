@@ -1,7 +1,7 @@
 <?php
 
 	if( empty( $AGENDES ) ):
-				echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap resultat d\'entre '.AgendatelefonicaPeer::getLinies().' disponibles.</TD></TR>';
+				echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap resultat d\'entre '.AgendatelefonicaPeer::getLinies($IDS).' disponibles.</TD></TR>';
 	else: 
 		$i = 0;
 		foreach($AGENDES as $A):

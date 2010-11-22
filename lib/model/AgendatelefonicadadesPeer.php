@@ -10,10 +10,19 @@
 class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
 {    
    
+  static public function getCriteriaActiu($C,$idS)
+  {
+    $C->add(self::ACTIU, true);
+    $C->add(self::SITE_ID , $idS);
+    return $C;
+  }
+   
   static function doSearch( $TEXT , $idS = 1 )
   {
     
-     $C = new Criteria();
+     $C = new Criteria();     
+     $C = AgendatelefonicaPeer::getCriteriaActiu($C,$idS);
+     
      $PARAULES = explode(" ",$TEXT); $PAR2 = array();
      foreach( $PARAULES as $P ) if( strlen( $P ) > 2 ): $PAR2[] = trim($P); endif;                      
      
