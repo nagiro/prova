@@ -368,7 +368,7 @@ class gestioActions extends sfActions
                 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],null);     		 
        		    if($USUARI instanceof Usuaris):                                    
 
-                    $this->makeLogin($USUARI);
+                    $this->makeLogin( $USUARI , $this->IDS );
                 
                 else:
                     $this->getUser()->addLogAction('error','login',$L);     		 
@@ -420,18 +420,18 @@ class gestioActions extends sfActions
 		   
   }  
 
-  private function makeLogin($USUARI)
+  private function makeLogin( $USUARI , $IDS )
   {
       //Consulto el nivell que té l'usuari pel site. Si té nivell == 2 o no té nivell, és usuari normal. 
       //Si té nivell 1 serà administrador.
-      $idN = $USUARI->getSiteNivell($this->IDS);
+      $idN = $USUARI->getSiteNivell($IDS);
  	  $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
       $this->getUser()->setSessionPar('idN',$idN);
       $this->getUser()->setAuthenticated(true);
       $this->getUser()->addLogAction('login','login',null);                              
 
       if( $idN == NivellsPeer::ADMIN ):
-        $this->getUser()->setSessionPar('idS',$this->IDS);
+        $this->getUser()->setSessionPar('idS',$IDS);
         $this->getUser()->addCredential('admin');
         $this->redirect( 'gestio/main' );
       elseif( $idN == NivellsPeer::REGISTRAT ):
@@ -457,10 +457,13 @@ class gestioActions extends sfActions
      //Carreguem els sites que té l'usuari 
      $this->SITES = UsuarisSitesPeer::getSitesArray($this->getUser()->getSessionPar('idU'));
      $this->IDS   = $this->getUser()->getSessionPar('idS');
+     $this->IDU   = $this->getUser()->getSessionPar('idU');
         
      if($request->hasParameter('BSAVE')):
-           $this->getUser()->setSessionPar('idS',$request->getParameter('IDS'));
-           $this->redirect('gestio/main');
+           $this->IDS = $request->getParameter('IDS');
+           $this->getUser()->setSessionPar('idS',$this->IDS);           
+           $OU = UsuarisPeer::initialize($this->IDU,$this->IDS,false,false)->getObject();
+           $this->makeLogin( $OU , $this->IDS );                                             
      endif;  
                     
   }
