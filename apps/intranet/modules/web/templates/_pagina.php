@@ -11,10 +11,12 @@
     <?php 
 		
 	    if(!$NODE->getIscategoria()):
-	    	$WEB = sfConfig::get('sf_web_dir').$NODE->getHtml();
-	    	$P = $NODE->getHtml();    	
-	    	if(!empty($P) && file_exists($WEB)) include($WEB); 
-	    	else echo "Encara no hi ha continguts...";
+            $WEB = $NODE->getHtml();
+//	    	$WEB = sfConfig::get('sf_web_dir').$NODE->getHtml();
+//	    	$P = $NODE->getHtml();    	
+//	    	if(!empty($P) && file_exists($WEB)) include($WEB); 
+//	    	else echo "Encara no hi ha continguts...";
+            include($WEB);
 	    else: 
             //Carregar els nodes que depenen de mi 
             //I dibuixar estructura d'arbre
