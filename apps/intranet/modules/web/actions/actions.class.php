@@ -15,11 +15,9 @@ class webActions extends sfActions
 
   public function executeNotfound(sfWebRequest $request)
   {
-
      $this->LoadWeb($request);
      $this->setTemplate('index');
-     $this->ACCIO = 'notfound';    
-     
+     $this->ACCIO = 'notfound';         
   }
 
   public function gestionaNodes($NO)
