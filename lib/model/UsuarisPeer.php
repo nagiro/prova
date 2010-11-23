@@ -119,13 +119,11 @@ class UsuarisPeer extends BaseUsuarisPeer
   static function selectTreballadors($idS)
   {
     $C = new Criteria();
-    $C = self::getCriteriaActiu($C,$idS);
-    
-    $C->add(UsuarisPeer::NIVELLS_IDNIVELLS,UsuarisPeer::ADMIN);
+    $C = self::getCriteriaActiu($C,$idS);            
+    $C->add( UsuarisSitesPeer::NIVELL_ID , NivellsPeer::ADMIN );    
     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
     $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
-    $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
-    $C->add(UsuarisPeer::HABILITAT , true);
+    $C->addAscendingOrderByColumn(UsuarisPeer::NOM);    
     $TREB = self::doSelect($C);
     $RET = array();
 

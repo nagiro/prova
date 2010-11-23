@@ -48,9 +48,10 @@ class CessioPeer extends BaseCessioPeer
   }
 
 	
-   static public function getCessions($PAGINA,$cedit,$text)
+   static public function getCessions($PAGINA,$cedit,$text,$idS)
    {
     $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
     $C->add(CessioPeer::RETORNAT,!$cedit);
     $C->addDescendingOrderByColumn(CessioPeer::RETORNAT);
     $C->addDescendingOrderByColumn(CessioPeer::DATA_RETORN);

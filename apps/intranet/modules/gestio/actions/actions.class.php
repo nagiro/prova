@@ -2951,7 +2951,7 @@ class gestioActions extends sfActions
     		    	    	         	     	         	 
     }        
                             
-    $this->CESSIONS = CessioPeer::getCessions($this->PAGINA,$this->CERCA['select'],$this->CERCA['text']);
+    $this->CESSIONS = CessioPeer::getCessions($this->PAGINA,$this->CERCA['select'],$this->CERCA['text'],$this->IDS);
   
   }
 
