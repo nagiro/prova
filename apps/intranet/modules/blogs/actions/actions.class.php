@@ -203,7 +203,7 @@ class blogsActions extends sfActions
 			//Guardem les imatges
 			if(isset($RET['file'])):
                 
-                $WEBSYSROOT = OptionsPeer::getString('SF_WEBSYSROOT');
+                $WEBSYSROOT = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS);
                 
 				//Mirem l'extensió de l'arxiu
     			$path_info = pathinfo($WEBSYSROOT.'uploads/formularis/'.$RET['file']);    			    			    			    		
@@ -217,14 +217,14 @@ class blogsActions extends sfActions
 						$img->resize(200,null);				
 						$img->saveAs($WEBSYSROOT.'images/blogs/'.$RET['file']);
 							
-						$OM = AppBlogsMultimediaPeer::initialize(0,$this->IDS)->getObject();                        
+						$OM = AppBlogsMultimediaPeer::initialize(0,$this->IDS)->getObject();
 						$OM->setName($RET['file']);
 						$OM->setUrl($RET['file']);												
 						$OM->save();
 													
-						$OME = AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->save();						
+						$OME = AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->getObject()->save();						
 						
-    				} catch(Exception $e){ echo $e->getCode(); echo $e->getMessage(); }
+    				} catch(Exception $e){ mail('informatica@casadecultura.org','Problema amb multimèdia a notícies culturals',$e->getMessage().$e->getCode()); }
     				
 				endif;
 								
