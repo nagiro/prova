@@ -45,10 +45,10 @@
 	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
    	   case 'llistat_activitats_cerca': $calendar = true; include_partial('llistatActivitatsCerca',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
 	   case 'llistatCiclesCategoria': $calendar = true; include_partial('llistatCiclesCategoria',array( 'LLISTAT_CICLES' => $LLISTAT_CICLES , 'TITOL' => $TITOL , 'CAT' => $CAT , 'NODE' => $NODE )); break;
-	   case 'llistatActivitatsCicleCategoria': $calendar = true; include_partial('llistatActivitatsCicleCategoria',array( 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'NODE' => $NODE , 'CAT' => $CAT , 'IDC' => $IDC , 'TITOL' => $TITOL )); break;
+	   case 'llistatActivitatsCicleCategoria': $calendar = true; include_partial('llistatActivitatsCicleCategoria',array( 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'NODE' => $NODE , 'CAT' => $CAT , 'IDC' => $IDC , 'TITOL' => $TITOL , 'IDS' => $IDS )); break;
 
 	   
-	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array( 'DESCRIPCIO' => $DESCRIPCIO , 'TITOL' => $TITOL )); break;
+	   case 'showActivitatCategoria': $calendar = true; include_partial('showActivitatCategoria',array( 'DESCRIPCIO' => $DESCRIPCIO , 'TITOL' => $TITOL , 'IDS' => $IDS )); break;
 	   case 'mostra_estructura'   	: $calendar = true; include_partial('mostraEstructura',array('TITOL'=>$TITOL,'PAGINA'=>$PAGINA,'NODES'=>$NODES)); break;
 	   case 'final_matricula': $calendar = true; include_partial('matricula',array('MISSATGE'=>$MISSATGE)); break;
        

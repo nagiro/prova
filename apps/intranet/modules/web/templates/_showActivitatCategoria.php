@@ -20,8 +20,8 @@
 				echo '	<DIV class="DATA">';
 
 					$RET = array(); 
-					foreach($DESCRIPCIO->getHorariss() as $H):
-						$OE = $H->getHorarisespaiss();						
+					foreach($DESCRIPCIO->getHorarisActius($IDS) as $H):
+						$OE = $H->getHorarisespaiss(HorarisespaisPeer::getCriteriaActiu(new Criteria(),$IDS));
 						$noms = array();
 						foreach($OE as $E):
 							$noms[] = $E->getEspais()->getNom();

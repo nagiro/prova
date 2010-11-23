@@ -14,9 +14,9 @@
 	
 		$C = CiclesPeer::retrieveByPK($IDC);
 		if($C instanceof Cicles) $nom_cicle = '<b>'.$C->getTMig().'</b>'; else $nom_cicle = "";
-		$NA = CiclesPeer::getActivitatsCicle($C->getCicleID());						
-		$PA = CiclesPeer::getDataPrimeraActivitat($C->getCicleID());
-		$PF = CiclesPeer::getDataUltimaActivitat($C->getCicleID());		
+		$NA = CiclesPeer::getActivitatsCicle( $C->getCicleID() , $IDS );						
+		$PA = CiclesPeer::getDataPrimeraActivitat( $C->getCicleID() , $IDS );
+		$PF = CiclesPeer::getDataUltimaActivitat( $C->getCicleID(), $IDS );		
 		$imatge = $C->getImatge();
 		$pdf = $C->getPdf();
 		$enllac = url_for('web/index?accio=ac&node='.$NODE);
@@ -40,7 +40,7 @@
 						<div style="padding-left:10px; font-size:11px;">							
 							<?php foreach($LLISTAT_ACTIVITATS->getResults() as $OA): ?>								
 									<b><a href="<?php echo url_for('web/index?accio=caa&idA='.$OA->getActivitatid().'&node='.$NODE) ?>"><?php echo $OA->getTMig(); ?></a></b><br />
-									<?php echo generaHoraris($OA->getHorariss()); ?><br /><br />
+									<?php echo generaHoraris($OA->getHorarisActius($IDS)); ?><br /><br />
 							<?php endforeach; ?>
 																			
 						</div>
