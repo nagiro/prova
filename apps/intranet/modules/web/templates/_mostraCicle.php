@@ -6,9 +6,9 @@
     <?php 
 						
         $nom_cicle = $CICLE->getTMig();
-        $NA = CiclesPeer::getActivitatsCicle($CICLE->getCicleID());						
-        $PA = CiclesPeer::getDataPrimeraActivitat($CICLE->getCicleID());
-        $PF = CiclesPeer::getDataUltimaActivitat($CICLE->getCicleID());
+        $NA = CiclesPeer::getActivitatsCicle( $CICLE->getCicleID() , $IDS );						
+        $PA = CiclesPeer::getDataPrimeraActivitat( $CICLE->getCicleID() , $IDS );
+        $PF = CiclesPeer::getDataUltimaActivitat( $CICLE->getCicleID() , $IDS );
         $imatge = $CICLE->getImatge();
         $pdf = $CICLE->getPdf();                 
         $desc = $CICLE->getDMig();
