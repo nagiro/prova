@@ -336,9 +336,9 @@ class gestioActions extends sfActions
   public function executeULogin(sfWebRequest $request)
   {        
      
-     $this->setLayout('gestio');     
-     $this->FLogin = new LoginForm(array('nick'=>"",'password'=>''));
-     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona. 
+     $this->setLayout('gestio');
+     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.     
+     $this->FLogin = new LoginForm(array('site'=>$this->IDS,'nick'=>"",'password'=>''));      
      $this->ERROR = "";
      $this->accio = $request->getParameter('accio','');
                               
@@ -365,11 +365,11 @@ class gestioActions extends sfActions
             $this->FLogin->bind($L);
  	        if($this->FLogin->isValid()):
                 //Consultem l'usuari. Només miraré els permisos si és un "administrador" 
-                $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],null);     		 
+                $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],null);                     		 
        		    if($USUARI instanceof Usuaris):                                    
-
+                    $this->IDS = $L['site'];
                     $this->makeLogin( $USUARI , $this->IDS );
-                
+                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );                                                         
                 else:
                     $this->getUser()->addLogAction('error','login',$L);     		 
                  	$this->ERROR = "L'usuari o la contrasenya són incorrectes";

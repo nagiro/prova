@@ -38,13 +38,15 @@ class SitesPeer extends BaseSitesPeer {
        	return new SitesForm($OO,array('IDS'=>$idS));
     }
 
-    static public function getSelect($has_new = true)
+    static public function getSelect( $has_new = true , $no_labels = false )
     {
         $RET = array();
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);
-        if($has_new) $RET[''] = 'Nou site...';
-        else $RET['0'] = 'Escull una entitat... ';
+        if(!$no_labels):
+            if($has_new) $RET[''] = 'Nou site...';
+            else $RET['0'] = 'Escull una entitat... ';
+        endif;
         foreach(self::doSelect($C) as $OS):
             $RET[$OS->getSiteId()] = $OS->getNom();
         endforeach;

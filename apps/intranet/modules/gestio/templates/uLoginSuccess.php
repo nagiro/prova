@@ -25,6 +25,10 @@ LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:12px
 			    			<span class="T1"><b>Contrasenya: </b></span>
 			    			<span><?php echo $FLogin['password']->render(); ?></span>
 			    	</div>
+                    <div style="clear:both; margin-top:10px;">	
+			    			<span class="T1"><b>Entitat: </b></span>
+			    			<span><?php echo $FLogin['site']->render(); ?></span>
+			    	</div>
 			    	
 			    	<?php $missatge = "Segueixi si vostè estar segur que: \\n 1.- No ha estat alumne de la Casa de Cultura. \\n 2.- Vostè no té cap usuari creat. \\n Si no n\'està segur, si us plau, cliqui cancel·lar i contacti amb la Casa de Cultura trucant al telèfon 972.20.20.13 o bé enviant un correu a informatica@casadecultura.org."; ?>
 			    	
