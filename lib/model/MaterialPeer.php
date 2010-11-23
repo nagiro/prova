@@ -95,17 +95,6 @@ class MaterialPeer extends BaseMaterialPeer
   static public function getCriteriaSolapament($C,$di,$df,$vi,$vf,$inclos = true){
     
     if($inclos){
-        $C1 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_EQUAL );
-        $C2 = $C->getNewCriterion( $vi , $df , Criteria::LESS_EQUAL );
-        $C3 = $C->getNewCriterion( $vf , $di , Criteria::GREATER_EQUAL );
-        $C4 = $C->getNewCriterion( $vf , $df , Criteria::LESS_EQUAL );
-        $C5 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_EQUAL );
-        $C6 = $C->getNewCriterion( $vf , $df , Criteria::LESS_EQUAL );
-        $C7 = $C->getNewCriterion( $vi , $di , Criteria::LESS_EQUAL );
-        $C8 = $C->getNewCriterion( $vf , $df , Criteria::GREATER_EQUAL );
-        $C1->addAnd($C2); $C3->addAnd($C4); $C5->addAnd($C6); $C7->addAnd($C8); 
-        $C1->addOr($C3); $C1->addOr($C5); $C1->addOr($C7);
-    } else {
         $C1 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_THAN );
         $C2 = $C->getNewCriterion( $vi , $df , Criteria::LESS_THAN );
         $C3 = $C->getNewCriterion( $vf , $di , Criteria::GREATER_THAN );
@@ -114,6 +103,17 @@ class MaterialPeer extends BaseMaterialPeer
         $C6 = $C->getNewCriterion( $vf , $df , Criteria::LESS_THAN );
         $C7 = $C->getNewCriterion( $vi , $di , Criteria::LESS_THAN );
         $C8 = $C->getNewCriterion( $vf , $df , Criteria::GREATER_THAN );
+        $C1->addAnd($C2); $C3->addAnd($C4); $C5->addAnd($C6); $C7->addAnd($C8); 
+        $C1->addOr($C3); $C1->addOr($C5); $C1->addOr($C7); 
+    } else {
+        $C1 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_EQUAL );
+        $C2 = $C->getNewCriterion( $vi , $df , Criteria::LESS_EQUAL );
+        $C3 = $C->getNewCriterion( $vf , $di , Criteria::GREATER_EQUAL );
+        $C4 = $C->getNewCriterion( $vf , $df , Criteria::LESS_EQUAL );
+        $C5 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_EQUAL );
+        $C6 = $C->getNewCriterion( $vf , $df , Criteria::LESS_EQUAL );
+        $C7 = $C->getNewCriterion( $vi , $di , Criteria::LESS_EQUAL );
+        $C8 = $C->getNewCriterion( $vf , $df , Criteria::GREATER_EQUAL );
         $C1->addAnd($C2); $C3->addAnd($C4); $C5->addAnd($C6); $C7->addAnd($C8); 
         $C1->addOr($C3); $C1->addOr($C5); $C1->addOr($C7);        
     }
