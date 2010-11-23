@@ -38,7 +38,7 @@
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
 
-	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE )); break;
+	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE , 'IDS' => $IDS )); break;
        case 'mostra_cicle':       $calendar = true; include_partial('mostraCicle',array( 'CICLE' => $CICLE , 'TITOL' => $TITOL )); break;
        case 'mostra_activitats_cicle': $calendar = true; include_partial('mostraActivitatsCicle',array( 'IDC' => $IDC , 'TITOL' => $TITOL , 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'IDS' => $IDS )); break;
        

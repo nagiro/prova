@@ -83,6 +83,7 @@ class Activitats extends BaseActivitats
    public function getHorarisOrdenats($camp)
    {
         $C = new Criteria();
+        $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
         $C->addAscendingOrderByColumn($camp);
         return $this->getHorariss($C);
    }
