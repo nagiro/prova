@@ -1711,10 +1711,15 @@ class gestioActions extends sfActions
 			else
 			{			     
 	    		//Mirem si encaixa amb alguna altra activitat solta
-		    	if( HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] , $idS ) > 0 )                
+                $LOH = HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] , $idS );
+		    	if(sizeof($LOH) > 0)
 		    	{
 		    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
-			    	$ERRORS[] = "El dia $D coincideix a l'espai $Espai amb una altra activitat";
+                    foreach($LOH as $OH):                    
+                        $OA = $OH->getActivitatss();
+                        $nomActivitat = $OA->getNom();                        
+			    	    $ERRORS[] = "El dia $D coincideix a l'espai $Espai amb l'activitat '".$nomActivitat."'";
+                    endforeach;
 		    	}
 			    //Comprovem que no hi hagi un problema amb un dia bloquejat
 			    elseif( HorarisPeer::validaDiaBloqueig( $D , $horaris['HorarisID'] , $this->IDS ) )

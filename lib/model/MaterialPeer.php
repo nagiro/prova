@@ -99,10 +99,10 @@ class MaterialPeer extends BaseMaterialPeer
         $C2 = $C->getNewCriterion( $vi , $df , Criteria::LESS_THAN );
         $C3 = $C->getNewCriterion( $vf , $di , Criteria::GREATER_THAN );
         $C4 = $C->getNewCriterion( $vf , $df , Criteria::LESS_THAN );
-        $C5 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_THAN );
-        $C6 = $C->getNewCriterion( $vf , $df , Criteria::LESS_THAN );
-        $C7 = $C->getNewCriterion( $vi , $di , Criteria::LESS_THAN );
-        $C8 = $C->getNewCriterion( $vf , $df , Criteria::GREATER_THAN );
+        $C5 = $C->getNewCriterion( $vi , $di , Criteria::GREATER_EQUAL );
+        $C6 = $C->getNewCriterion( $vf , $df , Criteria::LESS_EQUAL );
+        $C7 = $C->getNewCriterion( $vi , $di , Criteria::LESS_EQUAL );
+        $C8 = $C->getNewCriterion( $vf , $df , Criteria::GREATER_EQUAL );
         $C1->addAnd($C2); $C3->addAnd($C4); $C5->addAnd($C6); $C7->addAnd($C8); 
         $C1->addOr($C3); $C1->addOr($C5); $C1->addOr($C7); 
     } else {

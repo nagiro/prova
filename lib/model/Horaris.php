@@ -73,5 +73,18 @@ class Horaris extends BaseHoraris
         endforeach;        
         return $RET;        
     } 
-    
+
+    public function getActivitatss()
+    {
+        $C = new Criteria();
+        $C = ActivitatsPeer::getCriteriaActiu($C,$this->getSiteId());
+        $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
+        
+        $C->add(HorarisPeer::HORARISID, $this->getHorarisid());
+        $C->addJoin(HorarisPeer::ACTIVITATS_ACTIVITATID, ActivitatsPeer::ACTIVITATID);
+        $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
+        
+        return ActivitatsPeer::doSelectOne($C);        
+    }
+   
 }

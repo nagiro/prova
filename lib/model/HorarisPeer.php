@@ -357,7 +357,7 @@ class HorarisPeer extends BaseHorarisPeer
         
     if($idH > 0) $C->add(HorarisespaisPeer::HORARIS_HORARISID, $idH , Criteria::NOT_EQUAL);
             
- 	return self::doCount($C);  	  	    		  	
+ 	return self::doSelect($C);  	  	    		  	
   
   }
       
