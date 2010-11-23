@@ -75,7 +75,7 @@
   	<DIV class="TITOL">Llistat de cicles (<a href="<?php echo url_for('gestio/gCicles?accio=NOU'); ?>">Afegir nou cicle</a>)</DIV>
   		<table class="DADES">
                 <?php  
-                    if( sizeof($CICLES) == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.CiclesPeer::doCount(new Criteria()).' disponibles.</TD></TR>';
+                    if( sizeof($CICLES) == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.CiclesPeer::doCount(CiclesPeer::getCriteriaActiu(new Criteria(),$IDS)).' disponibles.</TD></TR>';
                     else {                
                     	echo '<tr><th>Títol</th><th># Act</th><th>Data</th><th>Estat</th></tr>';
                       	foreach($CICLES as $id => $C) {                                                            		     	                          	
