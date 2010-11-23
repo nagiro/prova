@@ -17,7 +17,7 @@ class EspaisForm extends BaseEspaisForm
     $Sino = array(0=>'No',1=>'Sí');
     
     $this->setWidgets(array(
-      'EspaiID'     => new sfWidgetFormChoice(array('choices'=>EspaisPeer::select($this->getOption('IDS'))),array()),
+      'EspaiID'     => new sfWidgetFormChoice(array('choices'=>EspaisPeer::select($this->getOption('IDS'),true)),array()),
       'Nom'         => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Ordre'       => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
       'site_id'     => new sfWidgetFormInputHidden(),
@@ -26,7 +26,7 @@ class EspaisForm extends BaseEspaisForm
     ));
 
     $this->setValidators(array(
-      'EspaiID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getEspaiid()), 'empty_value' => $this->getObject()->getEspaiid(), 'required' => false)),
+      'EspaiID' => new sfValidatorPass(),
       'Nom'     => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'Ordre'   => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'site_id' => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),

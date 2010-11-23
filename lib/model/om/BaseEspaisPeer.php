@@ -497,7 +497,7 @@ abstract class BaseEspaisPeer {
 		} else {
 			$criteria = $values->buildCriteria(); // build Criteria from Espais object
 		}
-
+        
 		if ($criteria->containsKey(EspaisPeer::ESPAIID) && $criteria->keyContainsValue(EspaisPeer::ESPAIID) ) {
 			throw new PropelException('Cannot insert a value for auto-increment primary key ('.EspaisPeer::ESPAIID.')');
 		}

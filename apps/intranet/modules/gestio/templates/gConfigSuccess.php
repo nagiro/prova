@@ -98,7 +98,7 @@
         $RET = '
             <form id="FESPAIS" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
                 <table class="FORMULARI">                    
-                '.$FESPAIS.'                    
+                '.$FESPAIS.'
                 </table>
                 <div style="text-align:right">
                     <button style="margin-top:10px;" name="EDIT" class="BOTO_ACTIVITAT">

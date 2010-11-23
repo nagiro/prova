@@ -9,4 +9,8 @@
  */ 
 class Espais extends BaseEspais
 {
+    public function __toString()
+    {
+        return $this->getNom();
+    }
 }

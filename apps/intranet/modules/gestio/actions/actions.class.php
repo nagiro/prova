@@ -3716,7 +3716,7 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS');
     $this->accio = $request->getParameter('accio','C');
     $ROPTIONS = $request->getParameter('options',array('option_id'=>''));
-    $RESPAIS = $request->getParameter('espais',array('EspaiID'=>0));    
+    $RESPAIS = $request->getParameter('espais',array('EspaiID'=>'0'));
     
     $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
     $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);
@@ -3742,6 +3742,8 @@ class gestioActions extends sfActions
             endif;                
             break;
         case 'SAVE_ESPAI':
+            //Si entrem un espai que és 0, llavors vol dir que fem un nou espai
+            if($RESPAIS['EspaiID'] == 0) unset($RESPAIS['EspaiID']);                              
             $this->FESPAIS->bind($RESPAIS);
             if($this->FESPAIS->isValid()):
                 $this->FESPAIS->save();                

@@ -14,7 +14,7 @@ class OptionsForm extends BaseOptionsForm
   {
     
     $IDS = $this->getOption('IDS');
-    $OPTIONS = OptionsPeer::getOptionsArray($IDS);
+    $OPTIONS = OptionsPeer::getOptionsArray($IDS,true);
     
     if($this->getOption('NEW')) $this->setWidget('option_id',new sfWidgetFormInput(array(),array('style'=>'width:400px;')));
     else $this->setWidget('option_id',new sfWidgetFormChoice( array('choices'=>$OPTIONS) , array() ));

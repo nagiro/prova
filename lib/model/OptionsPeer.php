@@ -38,12 +38,13 @@ class OptionsPeer extends BaseOptionsPeer {
         
     }
     
-    static public function getOptionsArray($IDS)
+    static public function getOptionsArray( $IDS , $totes_les_opcions_de_ccg_generals = false )
     {
         $RET = array();
         
         $C = new Criteria();
-        $C = self::getCriteriaActiu($C,$IDS);
+        if($totes_les_opcions_de_ccg_generals) $C = self::getCriteriaActiu($C,1);
+        else $C = self::getCriteriaActiu($C,$IDS);
                 
         foreach(self::doSelect($C) as $OO):
             $RET[$OO->getOptionid()] = $OO->getOptionId();

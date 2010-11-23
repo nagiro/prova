@@ -20,7 +20,7 @@ class EspaisPeer extends BaseEspaisPeer
   static public function initialize( $idE , $idS )
   {
     $OE = self::retrieveByPK($idE);            
-	if(!($OE instanceof Espais)):                                    		
+	if(!($OE instanceof Espais)):
 		$OE = new Espais();   		                    
         $OE->setSiteId($idS);        
         $OE->setActiu(true);        		            			    			    			        					
@@ -29,7 +29,7 @@ class EspaisPeer extends BaseEspaisPeer
     return new EspaisForm($OE,array('IDS'=>$idS)); 
   }
 
-  static public function select($idS)
+  static public function select( $idS , $with_new = false )
   {
   	$C = new Criteria();
     $C = self::getCriteriaActiu($C,$idS);
@@ -38,6 +38,7 @@ class EspaisPeer extends BaseEspaisPeer
   	
     $Espais = self::doSelect($C);
     $RET = array();
+    $RET['0'] = 'Nou espai...';
     foreach($Espais as $E):
       $RET[$E->getEspaiid()] = $E->getNom();    
     endforeach;
