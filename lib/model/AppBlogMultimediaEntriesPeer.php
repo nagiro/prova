@@ -15,6 +15,8 @@ class AppBlogMultimediaEntriesPeer extends BaseAppBlogMultimediaEntriesPeer
 		$OO = AppBlogMultimediaEntriesPeer::retrieveByPK( $idEntry , $idMultimedia );            
 		if(!($OO instanceof AppBlogMultimediaEntries)):            			
 			$OO = new AppBlogMultimediaEntries();
+            $OO->setEntriesId($idEntry);
+            $OO->setMultimediaId($idMultimedia);
             $OO->setSiteId($idS);        
             $OO->setActiu(true);        						
 		endif; 

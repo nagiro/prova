@@ -197,8 +197,7 @@ class blogsActions extends sfActions
 					$ON->setPageId($this->PAGE_ID_QUE_PASSARA);
 				endif; 			
 		  		
-				$ON->save(); //Guardem la notícia
-					  		
+				$ON->save(); //Guardem la notícia                					  		
 			
 			//Guardem les imatges
 			if(isset($RET['file'])):
@@ -221,10 +220,11 @@ class blogsActions extends sfActions
 						$OM->setName($RET['file']);
 						$OM->setUrl($RET['file']);												
 						$OM->save();
-													
-						$OME = AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->getObject()->save();						
+                        
+                        echo 'ONID:'.$ON->getId();                        
+						$OME = AppBlogMultimediaEntriesPeer::initialize($ON->getId(),$OM->getId(),$this->IDS)->getObject()->save();                        						
 						
-    				} catch(Exception $e){ mail('informatica@casadecultura.org','Problema amb multimèdia a notícies culturals',$e->getMessage().$e->getCode()); }
+    				} catch(Exception $e){ echo 'hail'; echo $e->getMessage(); echo $e->getCode(); }
     				
 				endif;
 								
@@ -233,7 +233,7 @@ class blogsActions extends sfActions
 			$OO->setEstat(AppBlogsFormsEntriesPeer::ESTAT_TRACTAT_MIGRAT);
 			$OO->save();
 			
-	  		} catch (Excepcion $e){ mail('informatica@casadecultura.org','Problema actualitzant notícies culturals',$e->getMessage().$e->getCode()); }
+	  		} catch(Exception $e){ echo 'fiodaf'; echo $e->getMessage(); echo $e->getCode(); }
 			
   		endforeach;  		
   		  		
