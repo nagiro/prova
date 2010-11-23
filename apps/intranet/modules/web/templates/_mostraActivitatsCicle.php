@@ -6,7 +6,7 @@
 
     if(sizeof($LLISTAT_ACTIVITATS) == 0): 
 
-		echo '<DIV>No s\'ha trobat cap activitat pública disponible per aquest cicle.<DIV>';
+		echo '<DIV>No s\'ha trobat cap activitat pÃºblica disponible per aquest cicle.<DIV>';
 
 	else: 			    
 	
@@ -58,7 +58,7 @@
         switch($M){
 			case '01': $ret .= " de gener"; break;
 			case '02': $ret .= " de febrer"; break;
-			case '03': $ret .= " de març"; break;
+			case '03': $ret .= " de marÃ§"; break;
 			case '04': $ret .= " d'abril"; break;
 			case '05': $ret .= " de maig"; break;
 			case '06': $ret .= " de juny"; break;
@@ -139,7 +139,7 @@
 		switch(date('m',$DATE)){
 			case '01': $ret .= " de gener"; break;
 			case '02': $ret .= " de febrer"; break;
-			case '03': $ret .= " de març"; break;
+			case '03': $ret .= " de marÃ§"; break;
 			case '04': $ret .= " d'abril"; break;
 			case '05': $ret .= " de maig"; break;
 			case '06': $ret .= " de juny"; break;
