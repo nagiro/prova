@@ -195,10 +195,14 @@ class HorarisPeer extends BaseHorarisPeer
     
       if( strlen($PARAULA) > 2 ) {
         $text1Criterion = $C->getNewCriterion(ActivitatsPeer::NOM, '%'.$TEXT.'%', CRITERIA::LIKE);
-        $text2Criterion = $C->getNewCriterion(ActivitatsPeer::TCOMPLET , '%'.$TEXT.'%' , CRITERIA::LIKE );
-        $text3Criterion = $C->getNewCriterion(ActivitatsPeer::DCOMPLET , '%'.$TEXT.'%' , CRITERIA::LIKE );
+        $text2Criterion = $C->getNewCriterion(ActivitatsPeer::TMIG , '%'.$TEXT.'%' , CRITERIA::LIKE );
+        $text3Criterion = $C->getNewCriterion(ActivitatsPeer::DMIG , '%'.$TEXT.'%' , CRITERIA::LIKE );
+        $text4Criterion = $C->getNewCriterion(ActivitatsPeer::TCOMPLET , '%'.$TEXT.'%' , CRITERIA::LIKE );
+        $text5Criterion = $C->getNewCriterion(ActivitatsPeer::DCOMPLET , '%'.$TEXT.'%' , CRITERIA::LIKE );
         $text1Criterion->addOr($text2Criterion);
         $text1Criterion->addOr($text3Criterion);
+        $text1Criterion->addOr($text4Criterion);
+        $text1Criterion->addOr($text5Criterion);
         $C->add($text1Criterion);
       }
     endforeach;

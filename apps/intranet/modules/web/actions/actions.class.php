@@ -134,14 +134,14 @@ class webActions extends sfActions
   			break;
   			
   		//Cerca  			
-  		case 'c':
+  		case 'c':            
             if($this->CERCA == 'mensual'):
                 $this->CERCA = '';
                 $this->TITOL = 'ACTIVITATS DEL MES';                
             else: 
                 $this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';            
             endif;   			  			
-  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA , $this->IDS );                                        						
+  			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA , $this->IDS );                                                                  						
 	    	$this->ACCIO = 'llistat_activitats_cerca';	    	
 	    	$this->MODE  = 'CERCA';                     		
   			break;
