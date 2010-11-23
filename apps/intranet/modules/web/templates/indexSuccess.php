@@ -40,7 +40,7 @@
 
 	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE )); break;
        case 'mostra_cicle':       $calendar = true; include_partial('mostraCicle',array( 'CICLE' => $CICLE , 'TITOL' => $TITOL )); break;
-       case 'mostra_activitats_cicle': $calendar = true; include_partial('mostraActivitatsCicle',array( 'IDC' => $IDC , 'TITOL' => $TITOL , 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS )); break;
+       case 'mostra_activitats_cicle': $calendar = true; include_partial('mostraActivitatsCicle',array( 'IDC' => $IDC , 'TITOL' => $TITOL , 'LLISTAT_ACTIVITATS' => $LLISTAT_ACTIVITATS , 'IDS' => $IDS )); break;
        
 	   case 'llistat_activitats'	: $calendar = true; include_partial('llistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
    	   case 'llistat_activitats_cerca': $calendar = true; include_partial('llistatActivitatsCerca',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL , 'MODE'=>$MODE , 'PAGINA'=>$PAGINA )); break;
