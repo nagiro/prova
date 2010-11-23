@@ -75,9 +75,12 @@ class CiclesPeer extends BaseCiclesPeer
     return $RET;
   }
   
-  static public function getDataPrimeraActivitat($idC)
+  static public function getDataPrimeraActivitat( $idC , $idS )
   {
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    $C = ActivitatsPeer::getCriteriaActiu($C,$idS);
+    
   	$C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
   	$C->addAscendingOrderByColumn(HorarisPeer::DIA);
@@ -89,9 +92,12 @@ class CiclesPeer extends BaseCiclesPeer
   	
   }
   
-  static public function getDataUltimaActivitat($idC)
+  static public function getDataUltimaActivitat( $idC , $idS )
   {
   	$C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    $C = ActivitatsPeer::getCriteriaActiu($C,$idS);
+    
   	$C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
   	$C->addDescendingOrderByColumn(HorarisPeer::DIA);
@@ -103,9 +109,10 @@ class CiclesPeer extends BaseCiclesPeer
   	
   }
 
-  static public function getActivitatsCicle($idC)
+  static public function getActivitatsCicle($idC,$idS)
   {
   	$C = new Criteria();  	
+    $C = self::getCriteriaActiu($C,$idS);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
   	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
   	
@@ -116,7 +123,7 @@ class CiclesPeer extends BaseCiclesPeer
   static public function getActivitatsCicleList($idC,$idS)
   {
   	$C = new Criteria();  	
-    ActivitatsPeer::getCriteriaActiu($C,$idS);
+    $C = ActivitatsPeer::getCriteriaActiu($C,$idS);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
   	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
   	

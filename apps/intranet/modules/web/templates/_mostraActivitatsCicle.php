@@ -11,9 +11,9 @@
 	else: 			    
 	
 		$C = CiclesPeer::retrieveByPK($IDC);
-		$NA = CiclesPeer::getActivitatsCicle($C->getCicleID());						
-		$PA = CiclesPeer::getDataPrimeraActivitat($C->getCicleID());
-		$PF = CiclesPeer::getDataUltimaActivitat($C->getCicleID());		
+		$NA = CiclesPeer::getActivitatsCicle( $C->getCicleID() , $IDS );						
+		$PA = CiclesPeer::getDataPrimeraActivitat( $C->getCicleID() , $IDS );
+		$PF = CiclesPeer::getDataUltimaActivitat( $C->getCicleID() , $IDS );		
 		$imatge = $C->getImatge();
 		$pdf = $C->getPdf();		
 		
