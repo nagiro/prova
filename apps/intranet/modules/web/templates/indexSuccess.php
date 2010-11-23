@@ -32,7 +32,7 @@
 	   case 'noticies'   : $calendar = true;  include_partial('noticies',  array( 'NOTICIES' => $NOTICIES , 'NOTICIA' => $NOTICIA , 'PAGINA' => $PAGINA )); break;
 	   case 'verifica'   : $calendar = false; include_partial('gestio'  ,  array( 'MODUL' => $MODUL , 'DADES_MATRICULA' => $DADES_MATRICULA , 'TPV' => $TPV , 'ISPLE' => $ISPLE )); break;
 	   case 'registrat'  : $calendar = true;  include_partial('registrats'); break;
-	   case 'cursos'	 : $calendar = false; include_partial('cursos' , array('IDS'=>$IDS)); break;
+	   case 'cursos'	 : $calendar = false; include_partial('cursos' , array('CURSOS'=>$CURSOS,'IDS'=>$IDS)); break;
 	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT , 'FConsulta'=>$FConsulta)); break;
 	   case 'registre'   : $calendar = false; include_partial('registre' , array('FUSUARI'=>$FUSUARI, 'ESTAT' => $ESTAT)); break;
 	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;

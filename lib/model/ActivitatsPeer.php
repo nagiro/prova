@@ -35,10 +35,13 @@ class ActivitatsPeer extends BaseActivitatsPeer
    }
 
    
-   static function getActivitatsDia($dia,$page = 1)
+   static function getActivitatsDia( $idS , $dia , $page = 1 )
    {
 
       $C = new Criteria();
+      $C = self::getCriteriaActiu($C,$idS);
+      $C = HorarisPeer::getCriteriaActiu($C,$idS);
+      
       $C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
       $C->add(HorarisPeer::DIA, $dia);
       $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
@@ -156,7 +159,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		endif; 
 	}
 	
-	static public function getActivitatsCicles($idC , $idS , $pager = false, $pagina = 1, $publicaweb = true)
+	static public function getActivitatsCicles( $idC , $idS , $pager = false, $pagina = 1, $publicaweb = true)
 	{
 		$C = new Criteria();
         $C = self::getCriteriaActiu($C,$idS);
@@ -270,10 +273,14 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	 * @param unknown_type $idC
 	 */	
 	
-	static public function selectCicleCategoriaActivitat($cat,$idC = 0)
+	static public function selectCicleCategoriaActivitat( $idS , $cat , $idC = 0 )
 	{
 		
 		$C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        $C = HorarisPeer::getCriteriaActiu($C,$idS);
+        $C = CiclesPeer::getCriteriaActiu($C,$idS);
+        
 		
 		list($nom,$mode) = explode("-",$cat);
 		
@@ -299,10 +306,10 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		
 	}
 	
-	static public function getCiclesCategoria($cat,$page = 1)
+	static public function getCiclesCategoria( $idS , $cat , $page = 1 )
 	{		
 		
-		$C = self::selectCicleCategoriaActivitat($cat,0);
+		$C = self::selectCicleCategoriaActivitat( $idS , $cat , 0 );
         $C->add(self::CICLES_CICLEID, 1, CRITERIA::GREATER_THAN);
 				
 		$pager = new sfPropelPager('Cicles', 20);

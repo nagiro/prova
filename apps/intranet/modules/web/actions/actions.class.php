@@ -92,7 +92,7 @@ class webActions extends sfActions
   			$this->NODE = NodesPeer::selectPagina($idN);
   			if(!$this->NODE->isNew()):
   				$cat = $this->NODE->getCategories();
-				$this->LLISTAT_CICLES = ActivitatsPeer::getCiclesCategoria($cat);
+				$this->LLISTAT_CICLES = ActivitatsPeer::getCiclesCategoria( $this->IDS , $cat );
 	     		$this->ACCIO = 'llistatCiclesCategoria';
 	     		$ACT = ActivitatsPeer::selectCategories($this->IDS, true);
 	     		$this->TITOL = "Cicles i activitats a \"".$ACT[$cat].'"';
@@ -111,7 +111,7 @@ class webActions extends sfActions
 		 		$OC = CiclesPeer::retrieveByPK($this->IDC);
 		 		$this->TITOL = 'Llistat d\'activitats del cicle '.$OC->getNom();
 		 				 		
-		 		$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,true,$this->PAGINA);
+		 		$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCicles( $this->IDC , $this->IDS , true , $this->PAGINA );
   				$this->ACCIO = 'llistatActivitatsCicleCategoria';	     			     			     			
 	     		   			  			
   			break;
@@ -127,7 +127,7 @@ class webActions extends sfActions
          case 'ccact':  			  			  		
             $this->IDC = $request->getParameter('idC');     
             $this->CICLE = CiclesPeer::retrieveByPK($this->IDC);       
-            $this->LLISTAT_ACTIVITATS = CiclesPeer::getActivitatsCicleList($this->IDC);
+            $this->LLISTAT_ACTIVITATS = CiclesPeer::getActivitatsCicleList( $this->IDC , $this->IDS );
             $this->ACCIO = 'mostra_activitats_cicle';	     	
 	     	$this->TITOL = "Activitats del cicle ".$this->CICLE->getNom();             
                         	     			     		   			  			
@@ -148,7 +148,7 @@ class webActions extends sfActions
   			
   		//Cerca un dia
 		case 'ca':						
-			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia(date('Y-m-d',$this->DATACAL),$this->PAGINA);			
+			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsDia( $this->IDS , date('Y-m-d',$this->DATACAL) , $this->PAGINA );			
 	    	$this->ACCIO = 'llistat_activitats';
 	    	$this->TITOL = 'ACTIVITATS EL DIA '.date('d/m/Y',$this->DATACAL);
 	    	$this->MODE  = 'DIA';                        			
@@ -194,6 +194,7 @@ class webActions extends sfActions
      $this->LoadWeb($request);
      $this->setTemplate('index');
      $this->ACCIO = 'cursos';
+     $this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU,1,'',$this->IDS);
      
   }
 
@@ -211,8 +212,7 @@ class webActions extends sfActions
              " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('Email')}".
              " vol fer el següent comentari : {$FConsulta->getValue('Missatge')} "; 
           
-	  $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org',' CCG :: Formulari contacte Web ',$BODY);
-               
+	  $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org',' CCG :: Formulari contacte Web ',$BODY);               
   }
   
   public function executeContacte(sfWebRequest $request)
@@ -230,7 +230,7 @@ class webActions extends sfActions
 	 $this->getUser()->setSessionPar('idU',NULL);
 	 $this->redirect('web/index');
   }
-  
+/*  
   public function executeRegistre(sfWebRequest $request)
   {
 
@@ -242,7 +242,8 @@ class webActions extends sfActions
 	 $this->FUSUARI = new ClientUsuarisForm(new Usuaris(),array('rand'=>$rand));
      $this->ESTAT = '---'; 
   }
-  
+*/
+/*  
   public function executeRegistrat(sfWebRequest $request)
   {
   	$this->LoadWEB($request);
@@ -267,8 +268,8 @@ class webActions extends sfActions
      $this->ACCIO = 'registre';           
      
   }
-  
-  
+*/  
+/*  
   public function executeRemember(sfWebRequest $request)
   {
   	
@@ -314,7 +315,8 @@ class webActions extends sfActions
 	 endif;
          
   }
-  
+*/
+/*  
   public function executeLogin(sfWebRequest $request)
   {
      $this->LoadWEB($request);
@@ -367,7 +369,7 @@ class webActions extends sfActions
      endif;
                
   }
-  
+*/  
   
   public function executeIndex(sfWebRequest $request)
   {      
@@ -390,7 +392,7 @@ class webActions extends sfActions
    * Funció on anem a parar si premem un boto de l'apartat de "cursos"
    * 
    */
-  
+/*  
   public function executeMatriculat(sfWebRequest $request)  
   {
      
@@ -475,13 +477,13 @@ class webActions extends sfActions
                    	                    	             	        
 	   case 'sl':
 
-/*            $RP = $request->getParameter( 'LLISTA' );       
+            $RP = $request->getParameter( 'LLISTA' );       
 	        UsuarisllistesPeer::saveUsuarisLlistes( $RP , $this->IDU );
 	        
             $this->MODUL = 'gestiona_llistes'; $this->ACCIO = 'gestio';
 		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari( $this->IDU , $this->IDS );
 		    $this->MISSATGE[] = "Dades modificades correctament";
-*/            
+            
 	        break;
             
 	   case 'sr':
@@ -619,7 +621,7 @@ class webActions extends sfActions
      return $M->getIdmatricules();
      
   }
-        
+*/        
   private function getFotos()
   {
   	$FOTOS = array();
@@ -668,21 +670,21 @@ class webActions extends sfActions
 	return $BANNERS;
   }
   
-   public function executeEspais(sfWebRequest $request)
-   {
+  public function executeEspais(sfWebRequest $request)
+  {
       $this->LoadWEB($request);            
       $this->setTemplate('index');
       $this->ACCIO = 'espais';
-   }
+  }
    
-  
+/*  
    public function executeFuncionament(sfWebRequest $request)
    {
       $this->LoadWEB($request);
       $this->setTemplate('index');
       $this->ACCIO = 'funcionament';      
    }
-
+*/
    private function sendMail($from,$to,$subject,$body = "",$files = array())
    {
    	
@@ -697,7 +699,7 @@ class webActions extends sfActions
 		return $this->getMailer()->send($swift_message);
 		
    }
-   
+/*   
    public function executeFormularis(sfWebRequest $request)
    {
     
@@ -736,5 +738,5 @@ class webActions extends sfActions
                 break;
         }    
    }
-   
+ */  
 }

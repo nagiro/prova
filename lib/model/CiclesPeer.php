@@ -113,9 +113,10 @@ class CiclesPeer extends BaseCiclesPeer
   	
   }  
 
-  static public function getActivitatsCicleList($idC)
+  static public function getActivitatsCicleList($idC,$idS)
   {
   	$C = new Criteria();  	
+    ActivitatsPeer::getCriteriaActiu($C,$idS);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
   	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
   	
