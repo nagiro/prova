@@ -748,7 +748,7 @@ class gestioActions extends sfActions
   public function executeGEstructura(sfWebRequest $request) 
   {
     $this->setLayout('gestio');
-    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->IDS = $this->getUser()->getSessionPar('idS');    
     
     $this->IDN = $request->getParameter('idN',0);
     
@@ -803,8 +803,8 @@ class gestioActions extends sfActions
             $this->HTML = true;                        
             break;       
     }    
-    
-    $this->NODES = NodesPeer::retornaMenu(true,$this->IDS);
+        
+    $this->NODES = NodesPeer::retornaMenu($this->IDS,true);
     
   }  
       
