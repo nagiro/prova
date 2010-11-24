@@ -30,7 +30,7 @@ class CursosForm extends sfFormPropel
       'DataFiMatricula' => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
       'DataInici'       => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
       'site_id'         => new sfWidgetFormInputHidden(),
-      'actiu'           => new sfWidgetFormInputHidden(),        
+      'actiu'           => new sfWidgetFormInputHidden(),
     ));
 
     $this->setValidators(array(

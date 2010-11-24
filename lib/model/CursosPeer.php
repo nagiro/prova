@@ -10,20 +10,18 @@
 class CursosPeer extends BaseCursosPeer
 {
 
-   const ACTIU = 1;
+   const CURSACTIU = 1;
    const PASSAT = 0;   
 
     static public function initialize( $idC , $idS )
     {
         $OC = CursosPeer::retrieveByPK($idC);            
-        if($OC instanceof Cursos):            
-        	return new CursosForm($OC);
-        else:
+        if(!($OC instanceof Cursos)):                    	
         	$OC = new Cursos();
             $OC->setSiteId($idS);          
-            $OC->setActiu(true);                              
-        	return new CursosForm($OC);			
+            $OC->setActiu(true);                                      	
         endif; 
+        return new CursosForm($OC,array('IDS'=>$idS));
     }
 
    

@@ -16,20 +16,35 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
     $C->add( self::SITE_ID , $IDS );
     return $C;
   }
+
+  static public function initialize( $idMG , $idS )
+  {
+    $OM = self::retrieveByPK($idMG);            
+	if(!($OM instanceof Materialgeneric)):
+		$OM = new Materialgeneric();
+        $OM->setNom('Nom');   		                    
+        $OM->setSiteId($idS);        
+        $OM->setActiu(true);        		            			    			    			        					
+	endif;    
+    
+    return new MaterialgenericForm($OM,array('IDS'=>$idS)); 
+  }
+
     
   static public function selectFormulariUsuaris()
   {
   	return array(1=>'Portàtil',2=>'Projector',3=>'DVD',4=>'Microfonia');
   }
 	
-  static public function select( $IDS )
+  static public function select( $IDS , $new = false )
   {
     $C = new Criteria();
     $C = self::getCriteriaActiu( $C , $IDS );
     $C->addAscendingOrderByColumn(self::NOM);
     $MG = self::doSelect($C);
     $RET = array();
-    $RET[0] = 'Tots els materials';
+    if($new) $RET[0] = 'Nou conjunt de material...';
+    else $RET[0] = 'Tots els materials';
     foreach($MG as $M):
       $RET[$M->getIdmaterialgeneric()] = $M->getNom();    
     endforeach;

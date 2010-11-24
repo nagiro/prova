@@ -19,7 +19,8 @@
 	$(document).ready(function() {
 		$( "#tabs" ).tabs({ cookie: { expires: 1 } });        
         $('#options_option_id').change(ajaxOptions);
-        $('#espais_EspaiID').change(function(){ $('#FESPAIS').submit(); });                        
+        $('#espais_EspaiID').change(function(){ $('#FESPAIS').submit(); });
+        $('#materialgeneric_idMaterialGeneric').change(function(){ $('#FMATERIAL').submit(); });                                
 	});
 
     //Funció que captura de quin genèric parlem i busca els disponibles. 
@@ -48,9 +49,11 @@
         	<ul>
         		<li><a href="#tabs-1">Opcions</a></li>
         		<li><a href="#tabs-2">Espais</a></li>        		
+                <li><a href="#tabs-3">Material genèric</a></li>
         	</ul>                        
         	<div id="tabs-1"> <?php echo OptionsTab($FOPTIONS); ?> </div>
         	<div id="tabs-2"> <?php echo EspaisTab($FESPAIS); ?> </div>              	
+            <div id="tabs-3"> <?php echo MaterialTab($FMATERIAL); ?> </div>
         </div>
     
     </div>
@@ -116,6 +119,35 @@
         return $RET;
              
     }
+
+    /**
+     * Material Tab
+     * */
+    function MaterialTab($FMATERIAL = "")
+    {
+        
+        $RET = '
+            <form id="FMATERIAL" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
+                <table class="FORMULARI">                    
+                '.$FMATERIAL.'
+                </table>
+                <div style="text-align:right">
+                    <button style="margin-top:10px;" name="EDIT" class="BOTO_ACTIVITAT">
+                        '.image_tag('template/find.png').' Consulta
+                    </BUTTON>   
+                    <button type="submit" name="BSAVEMATERIAL" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                        '.image_tag('template/disk.png').' Guardar i sortir
+                    </button>
+    	            <button type="submit" name="BDELETEMATERIAL" class="BOTO_PERILL" onClick="return confirm(\'Segur que vols esborrar-lo?\')">
+                        '.image_tag('tango/16x16/status/user-trash-full.png').' Eliminar
+                    </button>
+                </div>                                                                                            
+            </form>';
+                     
+        return $RET;
+             
+    }
+
 
 
 

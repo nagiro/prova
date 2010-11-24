@@ -13,7 +13,7 @@ class gestioActions extends sfActions
 {
     
    public function executeUFormularis(sfWebRequest $request)
-   {           
+   {               
     
         $this->setLayout('gestio');
         $this->DEFAULT = false;
@@ -137,7 +137,7 @@ class gestioActions extends sfActions
             
         //Pas 1: Mostrem els cursos als que es pot matricular
         case 'GESTIONA_MATRICULES':
-                $this->LCURSOS = CursosPeer::getCursos(CursosPeer::ACTIU,1,"",$this->IDS);
+                $this->LCURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,"",$this->IDS);
                 //Retorna la data d'inici de matrícula segons si és antic alumne o no. '
                 $this->DATA_INICI = UsuarisPeer::initialize($this->IDU,$this->IDS,false,false)->getObject()->getDataIniciMatricula();
             break;
@@ -2104,7 +2104,7 @@ class gestioActions extends sfActions
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaChoiceForm();
-    $this->FCerca->setChoice(MaterialgenericPeer::select());    
+    $this->FCerca->setChoice(MaterialgenericPeer::select($this->IDS));    
 	$this->FCerca->bind(array('text'=>$this->TIPUS));	
 	
 	//Inicialitzem variables
@@ -2171,13 +2171,12 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS');
 
 	//Netegem cerca
-  	if($request->getParameter('accio') == 'C'):      		
-        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>1));    		      			      	      		
+  	if($request->getParameter('accio') == 'C'):
+        $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>1));
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
-      	$this->redirect('gestio/gCursos?accio=CA');      			       
+        $this->redirect('gestio/gCursos?accio=CA');      			       
     endif;    
-	
-	
+		
     $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->getUser()->ParReqSesForm($request,'accio','CA');    
@@ -2229,8 +2228,8 @@ class gestioActions extends sfActions
     	//Guarda el contingut del curs
     	case 'SCC':
                 $RP = $request->getParameter('cursos');
-                $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );                                                                                        
-    		    $this->FCurs->bind($RP);
+                $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );                                                                           
+    		    $this->FCurs->bind($RP);                
     		    if($this->FCurs->isValid()):                    
     		    	$this->FCurs->save();
     		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());    		    	     		    
@@ -2250,7 +2249,7 @@ class gestioActions extends sfActions
 				$this->MODE = 'CI';				 
 			break;		
 		case 'CA' :				
-				$this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU , $this->PAGINA , $this->CERCA['text'] , $this->IDS );				
+				$this->CURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU , $this->PAGINA , $this->CERCA['text'] , $this->IDS );				
 				$this->MODE = 'CA';
 			break;					
 		case 'L': 
@@ -2798,10 +2797,14 @@ class gestioActions extends sfActions
                 $this->FIncidencia = IncidenciesPeer::initialize( $RP['idIncidencia'] , $this->IDU , $this->IDS );
                 $this->FIncidencia->getObject()->setActiu(false)->save();		        
 		        $this->getUser()->addLogAction($accio,'gNoticies',$this->FIncidencia->getObject());		            	        
-		        break;    	         	 
+		        break;        
+        
+            $this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS , true );    	         	 
 	}
-		    
-	$this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS , true );
+		
+    if($accio == 'RESOLTES'): $this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS , false );
+    else: $this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS , true );
+    endif; 
   
   }  
     
@@ -3715,16 +3718,20 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
     $this->IDS = $this->getUser()->getSessionPar('idS');
     $this->accio = $request->getParameter('accio','C');
-    $ROPTIONS = $request->getParameter('options',array('option_id'=>''));
+    $ROPTIONS = $request->getParameter('options',array('option_id'=>'0'));
     $RESPAIS = $request->getParameter('espais',array('EspaiID'=>'0'));
+    $RMATERIAL = $request->getParameter('materialgeneric',array('idMaterialGeneric'=>''));
     
     $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
     $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);
+    $this->FMATERIAL = MaterialgenericPeer::initialize($RMATERIAL['idMaterialGeneric'],$this->IDS);
     
     if($request->hasParameter('BNEWOPTION')) $this->accio = 'NEW_OPTION';
     if($request->hasParameter('BSAVEOPTION')) $this->accio = 'SAVE_OPTION';
     if($request->hasParameter('BSAVEESPAI')) $this->accio = 'SAVE_ESPAI';    
     if($request->hasParameter('BDELETEESPAI')) $this->accio = 'DELETE_ESPAI';
+    if($request->hasParameter('BSAVEMATERIAL')) $this->accio = 'SAVE_MATERIAL';    
+    if($request->hasParameter('BDELETEMATERIAL')) $this->accio = 'DELETE_MATERIAL';
     
     switch($this->accio){
         case 'AJAX_OPCIO':
@@ -3756,10 +3763,24 @@ class gestioActions extends sfActions
             $this->getUser()->addLogAction($this->accio,'gConfig',$this->FESPAIS->getObject());
             $this->FESPAIS  = EspaisPeer::initialize(0,$this->IDS);                        
             break;
-    }
-       
+            
+        case 'SAVE_MATERIAL':
+            //Si entrem un espai que és 0, llavors vol dir que fem un nou espai
+            if($RMATERIAL['idMaterialGeneric'] == 0) unset($RMATERIAL['idMaterialGeneric']);                              
+            $this->FMATERIAL->bind($RMATERIAL);
+            if($this->FMATERIAL->isValid()):
+                $this->FMATERIAL->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfig',$this->FMATERIAL->getObject());
+                $this->FMATERIAL  = MaterialgenericPeer::initialize($this->FMATERIAL->getObject()->getIdmaterialgeneric(),$this->IDS);                
+            endif;
+            break;
+        case 'DELETE_MATERIAL':                        
+            $this->FMATERIAL->getObject()->setInactiu();                        
+            $this->getUser()->addLogAction($this->accio,'gConfig',$this->FMATERIAL->getObject());
+            $this->FMATERIAL  = MaterialgenericPeer::initialize( 0 , $this->IDS );
+            break;            
+    }       
   }   
-  
   
   public function executeGConfigSuperAdmin(sfWebRequest $request)
   {

@@ -13,4 +13,10 @@ class Material extends BaseMaterial
     {
         return $this->getIdentificador().' - '.$this->getNom();
     }
+    
+    public function setInactiu()
+    {
+        $this->setActiu(false);
+        $this->save();
+    }
 }

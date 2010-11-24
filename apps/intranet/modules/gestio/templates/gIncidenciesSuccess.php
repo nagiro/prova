@@ -48,7 +48,7 @@
   <?php ELSE: ?>
   
         <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistat d'incidencies </DIV>
+        <DIV class="TITOL">Llistat d'incidencies (<a href="<?php echo url_for('gestio/gIncidencies?accio=RESOLTES'); ?>">Veure les resoltes</a>)</DIV>
       	<TABLE class="DADES">
  			<?php 
 				if( $INCIDENCIES->getNbResults() == 0 ):
