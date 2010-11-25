@@ -120,7 +120,7 @@ class webActions extends sfActions
          case 'cc':  			  			  				
             $this->CICLE = CiclesPeer::retrieveByPK($request->getParameter('idC'));
             $this->ACCIO = 'mostra_cicle';	     	
-	     	$this->TITOL = "Cicle ".$this->CICLE->getNom();                                     	     			     		   			  			
+	     	$this->TITOL = $this->CICLE->getNom();                                     	     			     		   			  			
   			break;
 
         //Llistat activitats de cicle
@@ -129,7 +129,7 @@ class webActions extends sfActions
             $this->CICLE = CiclesPeer::retrieveByPK($this->IDC);       
             $this->LLISTAT_ACTIVITATS = CiclesPeer::getActivitatsCicleList( $this->IDC , $this->IDS , true );
             $this->ACCIO = 'mostra_activitats_cicle';	     	
-	     	$this->TITOL = "Activitats del cicle ".$this->CICLE->getNom();             
+	     	$this->TITOL = "Activitats || ".$this->CICLE->getNom();             
                         	     			     		   			  			
   			break;
   			
