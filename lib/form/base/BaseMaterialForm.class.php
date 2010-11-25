@@ -39,6 +39,7 @@ abstract class BaseMaterialForm extends BaseFormPropel
       'isAdministratiu'                   => new sfWidgetFormInputText(),
       'site_id'                           => new sfWidgetFormInputText(),
       'actiu'                             => new sfWidgetFormInputText(),
+      'unitats'                           => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -67,6 +68,7 @@ abstract class BaseMaterialForm extends BaseFormPropel
       'isAdministratiu'                   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'site_id'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'                             => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'unitats'                           => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
     ));
 
     $this->widgetSchema->setNameFormat('material[%s]');

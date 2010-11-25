@@ -22,15 +22,15 @@ class MaterialPeer extends BaseMaterialPeer
   	
   	$OM = self::retrieveByPK($id);
     
-  	if($OM instanceof Material):
-  		return new MaterialForm($OM);
-  	else:
+  	if(!($OM instanceof Material)):
   		$OM = new Material();
-  		$OM->setMaterialgenericIdmaterialgeneric($idMG);  		
+  		$OM->setMaterialgenericIdmaterialgeneric($idMG);
+        $OM->setUnitats(1);  		
         $OM->setSiteId($idS);
-        $OM->setActiu(true);                  
-  		return new MaterialForm($OM);  		
+        $OM->setActiu(true);                   		
   	endif;
+    
+    return new MaterialForm($OM,array('IDS'=>$idS));
   	  	
   }
 

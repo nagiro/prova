@@ -17,11 +17,11 @@ class MaterialForm extends sfFormPropel
   	
     $this->setWidgets(array(
       'idMaterial'                        => new sfWidgetFormInputHidden(),
-      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormChoice(array('choices'=>MaterialgenericPeer::select())),
+      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormChoice(array('choices'=>MaterialgenericPeer::select($this->getOption('IDS'),true))),
       'Identificador'                     => new sfWidgetFormInputText(),
       'Nom'                               => new sfWidgetFormInputText(),
 	  'Ubicacio'                          => new sfWidgetFormInputText(),
-      'Responsable'                       => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors())),
+      'Responsable'                       => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors($this->getOption('IDS')))),
       'Disponible'                        => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Descripcio'                        => new sfWidgetFormTextarea(array(),array('cols'=>'60','rows'=>'10')),
       'NumSerie'                          => new sfWidgetFormInputText(),      
@@ -39,6 +39,7 @@ class MaterialForm extends sfFormPropel
       'NotesManteniment'                  => new sfWidgetFormTextarea(array(),array('cols'=>'60','rows'=>'5')),
       'isTransferible'                    => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'isAdministratiu'                   => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
+      'unitats'                           => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
       'site_id'                           => new sfWidgetFormInputHidden(array(),array()),
       'actiu'                             => new sfWidgetFormInputHidden(array(),array()),
     ));
@@ -69,7 +70,8 @@ class MaterialForm extends sfFormPropel
       'isTransferible'                    => new sfValidatorChoice(array('choices'=>array(1,0))),
       'isAdministratiu'                   => new sfValidatorChoice(array('choices'=>array(0,1))),
       'site_id'                           => new sfValidatorPass(array('required'=>false),array()),
-      'actiu'                             => new sfValidatorPass(array('required'=>false),array()),          
+      'actiu'                             => new sfValidatorPass(array('required'=>false),array()),
+      'unitats'                           => new sfValidatorInteger(array('required'=>false),array()),          
     ));
 
     $this->widgetSchema->setLabels(array(
@@ -90,12 +92,14 @@ class MaterialForm extends sfFormPropel
       'NotesManteniment'                  => 'Notes: ',
       'isTransferible'					  => 'Es pot moure?',
       'isAdministratiu'					  => 'És per oficina?',
+      'unitats'                           => 'Unitats: ',
     ));
     
     $this->widgetSchema->setDefaults(array(            
 	  'Ubicacio'                          => 'Magatzem',      
       'Disponible'                        => 1,
-      'DataCompra'                        => date('d-m-Y',time()),                        
+      'DataCompra'                        => date('d-m-Y',time()),
+      'unitats'                           => 1,                        
     ));
     
     

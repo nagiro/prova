@@ -114,6 +114,7 @@ class CiclesPeer extends BaseCiclesPeer
   	$C = new Criteria();  	
     $C = self::getCriteriaActiu($C,$idS);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
+    $C->add(ActivitatsPeer::PUBLICAWEB, true);
   	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
   	
   	return ActivitatsPeer::doCount($C);
@@ -125,6 +126,7 @@ class CiclesPeer extends BaseCiclesPeer
   	$C = new Criteria();  	
     $C = ActivitatsPeer::getCriteriaActiu($C,$idS);
   	$C->add(ActivitatsPeer::CICLES_CICLEID,$idC);
+    $C->add(ActivitatsPeer::PUBLICAWEB, true);    
   	$C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
   	
   	return ActivitatsPeer::doSelect($C);
