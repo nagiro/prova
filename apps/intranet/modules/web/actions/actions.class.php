@@ -127,7 +127,7 @@ class webActions extends sfActions
          case 'ccact':  			  			  		
             $this->IDC = $request->getParameter('idC');     
             $this->CICLE = CiclesPeer::retrieveByPK($this->IDC);       
-            $this->LLISTAT_ACTIVITATS = CiclesPeer::getActivitatsCicleList( $this->IDC , $this->IDS );
+            $this->LLISTAT_ACTIVITATS = CiclesPeer::getActivitatsCicleList( $this->IDC , $this->IDS , true );
             $this->ACCIO = 'mostra_activitats_cicle';	     	
 	     	$this->TITOL = "Activitats del cicle ".$this->CICLE->getNom();             
                         	     			     		   			  			
