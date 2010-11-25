@@ -36,6 +36,7 @@
       			<th>DNI</th>
       			<th>Nom</th>
       			<th>Curs</th>
+                <th># Caixa</th>
       		</tr>
       		<?php $DATA = ""; $DATA_ANT = -2; $TOTAL = 0; ?>
       		<?php foreach($DADES as $D): ?>
@@ -55,6 +56,7 @@
       			<td><?php echo $D['DNI'] ?></td>
       			<td><?php echo $D['NOM'] ?></td>
       			<td><?php echo $D['CURS'] ?></td>
+                <td><?php echo $D['ORDER'] ?></td>                                
       		</tr>
       		      		      		      		
       		<?php $DATA_ANT = $DATA; $TOTAL += $D['IMPORT']; ?>

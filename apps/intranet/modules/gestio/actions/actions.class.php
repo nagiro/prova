@@ -3530,11 +3530,11 @@ class gestioActions extends sfActions
 					$this->DADES[$OM->getIdmatricules()]['DNI'] = $OU->getDni();
 					$this->DADES[$OM->getIdmatricules()]['NOM'] = $OU->getNomComplet();
 					$this->DADES[$OM->getIdmatricules()]['CURS'] = $OC->getCodi();
-                    $this->DADES[$OM->getIdmatricules()]['HORA'] = $OM->getDatainscripcio('H:i');                                                           
+                    $this->DADES[$OM->getIdmatricules()]['HORA'] = $OM->getDatainscripcio('H:i');
+                    $this->DADES[$OM->getIdmatricules()]['ORDER'] = $OM->getTpvOrder();                                                            
 				endforeach;				 
 			break;
-	}
-	
+	}	
 	
   }  
   
