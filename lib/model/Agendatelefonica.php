@@ -10,12 +10,20 @@
 class Agendatelefonica extends BaseAgendatelefonica
 {
     
-    public function getAgendatelefonicadadess($criteria = null, PropelPDO $con = null)
+    public function getAgendatelefonicadadesActiu()
     {
         $C = new Criteria();
-        $C->add(AgendatelefonicadadesPeer::ACTIU, 1);
-        $C->add(AgendatelefonicadadesPeer::AGENDATELEFONICA_AGENDATELEFONICAID, $this->getAgendatelefonicaid());
-        return AgendatelefonicadadesPeer::doSelect($C);        
+        $C = AgendatelefonicadadesPeer::getCriteriaActiu($C,$this->getSiteId());
+        return $this->getAgendatelefonicadadess($C);        
     }
     
+    public function setInactiu()
+    {
+        $this->setActiu(false);
+        foreach($this->getAgendatelefonicadadesActiu() as $ATD):
+            $ATD->setInactiu();
+        endforeach;
+        $this->save();
+    }
+            
 }

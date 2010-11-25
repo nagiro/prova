@@ -122,7 +122,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 	 				<input type="button" value="+" id="mesdades" class="clear fb"></input>		 			
 	 			</div>
 	 		
-	 		<?php include_partial('botoneraDiv',array('element'=>'TOTA l\'agenda')); ?>		
+	 		<?php include_partial('botoneraDiv',array('element'=>"TOTA l\'agenda")); ?>		
 	 		</div>
 	 			 	 	
       	</div>

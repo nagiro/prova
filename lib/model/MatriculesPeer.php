@@ -38,6 +38,7 @@ class MatriculesPeer extends BaseMatriculesPeer
         	return new MatriculesForm($OM);
         else:
         	$OM = new Matricules();
+            $OM->setDatainscripcio(date('Y-m-d H:i',time()));
             $OM->setSiteId($idS);        
             $OM->setActiu(true);        
             if($selUsuari):

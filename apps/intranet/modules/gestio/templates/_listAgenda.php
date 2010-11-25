@@ -6,7 +6,7 @@
 		$i = 0;
 		foreach($AGENDES as $A):
 			$SPAN = '<SPAN>';                      	
-		    foreach($A->getAgendatelefonicadadess() as $ATD): $SPAN  .= AgendatelefonicadadesPeer::getTipus($ATD->getTipus()).': '.$ATD->getDada().' - '.$ATD->getNotes().'<BR />'; endforeach;
+		    foreach($A->getAgendatelefonicadadesActiu() as $ATD): $SPAN  .= AgendatelefonicadadesPeer::getTipus($ATD->getTipus()).': '.$ATD->getDada().' - '.$ATD->getNotes().'<BR />'; endforeach;
 		    	$SPAN .= '</SPAN>';
 		        $PAR = ParImpar($i++);	                      	
 		        echo   	'<TR>

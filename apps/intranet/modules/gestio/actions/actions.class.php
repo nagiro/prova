@@ -156,7 +156,7 @@ class gestioActions extends sfActions
             $this->DADES_MATRICULA['IDU'] = $USUARI->getUsuariid();
             $this->DADES_MATRICULA['MODALITAT'] = MatriculesPeer::PAGAMENT_TARGETA;
             $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
-            $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
+            $this->DADES_MATRICULA['DATA'] = date('Y-m-d H:i',time());
             $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
             //Apliquem els descomptes i gratuït si ja està el grup ple
             $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE'],$this->IDS);
@@ -485,7 +485,7 @@ class gestioActions extends sfActions
    */        
   public function executeMain()
   { 
-  	              	  	
+  	              	  	                                                   
   	$this->getUser()->addLogAction('inside','Main');
   	
     $this->setLayout('gestio');
@@ -1852,35 +1852,30 @@ class gestioActions extends sfActions
     	
       case 'C':
     			$this->getUser()->addLogAction('inside','gAgenda');                
-    			$this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->getUser()->getSessionPar('idS') );
+    			$this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->IDS );
     			break;
     	
       case 'N':
                 $this->MODE = 'NOU';         
-                $this->FAgenda = AgendatelefonicaPeer::initialize(0,$this->getUser()->getSessionPar('idS'));                                       
+                $this->FAgenda = AgendatelefonicaPeer::initialize( 0 , $this->IDS );                                       
                 break;                
       case 'E':
                 $this->MODE = 'EDICIO';
-                $AID = $request->getParameter('AID');                                                                
-                $this->FAgenda = AgendatelefonicaPeer::initialize($AID,$this->getUser()->getSessionPar('idS'));
-                $OAT = $this->FAgenda->getObject();                
-                if($OAT->isNew()):
-                    $this->DADES = array();                	
-                else:
-                	$this->DADES = $OAT->getAgendatelefonicadadess();
-                endif;
-                                                
+                $AID = $request->getParameter('AID');                                                                                
+                $this->FAgenda = AgendatelefonicaPeer::initialize( $AID , $this->IDS );
+                $OAT = $this->FAgenda->getObject();                                                
+                $this->DADES = $OAT->getAgendatelefonicadadesActiu();                                                                                
                 break;
       case 'S':      			
                 $RA = $request->getParameter('agendatelefonica');                
       			$AID = $RA['AgendaTelefonicaID'];
-                $this->FAgenda = AgendatelefonicaPeer::initialize($AID,$this->getUser()->getSessionPar('idS'));      			
+                $this->FAgenda = AgendatelefonicaPeer::initialize( $AID , $this->IDS );      			
       			$this->FAgenda->bind($RA);
       			if($this->FAgenda->isValid()):
 					$this->FAgenda->save();
 					$this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
                     $this->AID = $this->FAgenda->getObject()->getAgendatelefonicaid();													
-					AgendatelefonicadadesPeer::update($request->getParameter('Dades'),$this->AID,$this->getUser()->getSessionPar('idS')); //Actualitzem tambÃ© les dades relacionades
+					AgendatelefonicadadesPeer::update( $request->getParameter('Dades') , $this->AID , $this->IDS ); //Actualitzem tambÃ© les dades relacionades
 					$this->MISSATGE = "El registre s'ha modificat correctament.";
 					$this->redirect('gestio/gAgenda?accio=L');
 				else: 
@@ -1892,10 +1887,9 @@ class gestioActions extends sfActions
       case 'D': 
                 $RA = $request->getParameter('agendatelefonica');                                                
       			$this->AID = $RA['AgendaTelefonicaID'];          
-                $this->FAgenda = AgendatelefonicaPeer::initialize($AID,$this->getUser()->getSessionPar('idS'));      
+                $this->FAgenda = AgendatelefonicaPeer::initialize( $this->AID , $this->IDS );      
                 if(!$this->FAgenda->isNew()):
-                    $this->FAgenda->getObject()->setActiu(false);
-                    $this->FAgenda->getObject()->save();                    
+                    $this->FAgenda->getObject()->setInactiu();                                                   
                     $this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
                 endif;  
                 break;       
@@ -2493,7 +2487,7 @@ class gestioActions extends sfActions
                                 		
                 $OMatricula = $this->FMatricula->getObject();    			    			
     			$OMatricula->setCursosIdcursos($this->IDC);
-    			$OMatricula->setDatainscripcio(date('Y-m-d H:m',time()));
+    			$OMatricula->setDatainscripcio(date('Y-m-d H:i',time()));
     			$Preu = CursosPeer::CalculaPreu($OMatricula->getCursosIdcursos(),$OMatricula->getTreduccio(), $this->IDS );
     			$OMatricula->setEstat(MatriculesPeer::EN_PROCES);
     			$OMatricula->setPagat($Preu);    			

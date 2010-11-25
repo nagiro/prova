@@ -20,7 +20,7 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
   static function doSearch( $TEXT , $idS = 1 )
   {
     
-     $C = new Criteria();     
+     $C = new Criteria();
      $C = AgendatelefonicaPeer::getCriteriaActiu($C,$idS);
      
      $PARAULES = explode(" ",$TEXT); $PAR2 = array();

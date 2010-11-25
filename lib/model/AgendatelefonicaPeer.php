@@ -27,20 +27,16 @@ class AgendatelefonicaPeer extends BaseAgendatelefonicaPeer
   
   static function initialize( $id = 0 , $idS = 1)
   {
-    $C = new Criteria();
-    $C->add(self::AGENDATELEFONICAID, $id);
-    $C->add(self::SITE_ID, $idS);
     
-    $OA = self::doSelectOne($C);
+    $OA = self::retrieveByPK($id);        
     
-    if($OA instanceof Agendatelefonica):
-        return new AgendatelefonicaForm($OA);
-    else: 
+    if(!($OA instanceof Agendatelefonica)):         
         $OA = new Agendatelefonica();
         $OA->setSiteId($idS);
         $OA->setActiu(true);
-        return new AgendatelefonicaForm($OA);
     endif; 
+    
+    return new AgendatelefonicaForm($OA);
     
   }
    
