@@ -3521,8 +3521,9 @@ class gestioActions extends sfActions
 	
 	switch($this->accio){
 		case 'MAT_DIA_PAG':
+                $this->MODE = $request->getParameter('mode_pagament');
 				$this->DADES = array();				
-				foreach(MatriculesPeer::getMatriculesPagadesDia($request->getParameter('mode_pagament'),$this->IDS) as $OM):
+				foreach(MatriculesPeer::getMatriculesPagadesDia( $this->MODE , $this->IDS ) as $OM):
 					$OU = $OM->getUsuaris();
 					$OC = $OM->getCursos();
 					$this->DADES[$OM->getIdmatricules()]['DATA'] = $OM->getDatainscripcio('d/m/Y');

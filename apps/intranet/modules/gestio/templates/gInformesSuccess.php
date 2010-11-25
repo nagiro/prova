@@ -36,7 +36,9 @@
       			<th>DNI</th>
       			<th>Nom</th>
       			<th>Curs</th>
-                <th># Caixa</th>
+<?php   if($MODE == MatriculesPeer::PAGAMENT_TARGETA || $MODE == MatriculesPeer::PAGAMENT_TELEFON):                
+                echo '<th># Caixa</th>';
+        endif; ?>
       		</tr>
       		<?php $DATA = ""; $DATA_ANT = -2; $TOTAL = 0; ?>
       		<?php foreach($DADES as $D): ?>
@@ -46,7 +48,7 @@
       		<?php if($DATA <> $DATA_ANT): ?>
 			<tr>
       			<td style="font-weight:bold; background:#F2EAEA;"><?php echo $DATA_ANT; ?></td>
-      			<td colspan="4" style="font-weight:bold; background:#F2EAEA;"><?php echo $TOTAL ?></td>      			      			
+      			<td colspan="6" style="font-weight:bold; background:#F2EAEA;"><?php echo $TOTAL ?></td>      			      			
       		</tr>				      		
       		<?php endif; ?>      		      			      			
       		<tr>
@@ -56,7 +58,9 @@
       			<td><?php echo $D['DNI'] ?></td>
       			<td><?php echo $D['NOM'] ?></td>
       			<td><?php echo $D['CURS'] ?></td>
-                <td><?php echo $D['ORDER'] ?></td>                                
+<?php   if($MODE == MatriculesPeer::PAGAMENT_TARGETA || $MODE == MatriculesPeer::PAGAMENT_TELEFON):                
+                echo '<td>'.$D['ORDER'].'</td>';
+        endif; ?>                                               
       		</tr>
       		      		      		      		
       		<?php $DATA_ANT = $DATA; $TOTAL += $D['IMPORT']; ?>
