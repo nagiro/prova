@@ -27,7 +27,7 @@ class CursosPeer extends BaseCursosPeer
    
   static public function getCriteriaActiu( $C , $idS )
   {    
-    $C->add(self::ACTIU, true);
+    $C->add(self::CURSACTIU, true);
     $C->add(self::SITE_ID, $idS);
     return $C;
   }
@@ -102,11 +102,11 @@ class CursosPeer extends BaseCursosPeer
   	
   }
   
-  static function getCursos($mode = self::ACTIU , $PAGINA = 1, $CERCA = "" , $idS )
+  static function getCursos($mode = self::CURSACTIU , $PAGINA = 1, $CERCA = "" , $idS )
   {
   	$C = new Criteria();  	
     $C = self::getCriteriaActiu($C,$idS);
-  	if($mode == self::ACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;        	
+  	if($mode == self::CURSACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;        	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
   	//$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
   	$C->addAscendingOrderByColumn( self::CODI );

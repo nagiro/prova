@@ -24,7 +24,7 @@
 					           
 			    	<?php else: ?>
 			    	
-								<tr><td colspan="2">La seva contrasenya li ha estat enviada al correu electrònic que vostè ens va indicar o va donar d'alta.</td></tr>					    	   
+								<tr><td colspan="2">La seva contrasenya li ha estat enviada al correu electrÃ²nic que vostÃ¨ ens va indicar o va donar d'alta.</td></tr>					    	   
 			    				    	
 			    	<?php endif; ?>  
 		       </table>
