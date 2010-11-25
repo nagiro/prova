@@ -14,10 +14,19 @@ class MaterialForm extends sfFormPropel
   public function setup()
   {
   	$Fdata = array('format'=>'%day%/%month%/%year%');
+
+    $OPTIONS = array(
+                    'renderer_class'=>'sfWidgetFormSelectNew',
+                    'renderer_options'=>array(
+                                            'url'=>'#',
+                                            'text'=>'Afegir grup',
+                                            'id'=>'sel',
+                                            ) , 
+                    'choices'=>MaterialgenericPeer::select($this->getOption('IDS'),true));
   	
     $this->setWidgets(array(
       'idMaterial'                        => new sfWidgetFormInputHidden(),
-      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormChoice(array('choices'=>MaterialgenericPeer::select($this->getOption('IDS'),true))),
+      'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormChoice($OPTIONS),
       'Identificador'                     => new sfWidgetFormInputText(),
       'Nom'                               => new sfWidgetFormInputText(),
 	  'Ubicacio'                          => new sfWidgetFormInputText(),
@@ -41,13 +50,13 @@ class MaterialForm extends sfFormPropel
       'isAdministratiu'                   => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
       'unitats'                           => new sfWidgetFormInput(array(),array('style'=>'width:50px')),
       'site_id'                           => new sfWidgetFormInputHidden(array(),array()),
-      'actiu'                             => new sfWidgetFormInputHidden(array(),array()),
+      'actiu'                             => new sfWidgetFormInputHidden(array(),array()),      
     ));
 
     
     $this->setValidators(array(
       'idMaterial'                        => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial', 'required' => false)),
-      'MaterialGeneric_idMaterialGeneric' => new sfValidatorPropelChoice(array('model' => 'Materialgeneric', 'column' => 'idMaterialGeneric')),
+      'MaterialGeneric_idMaterialGeneric' => new sfValidatorPropelChoice(array('model' => 'Materialgeneric', 'column' => 'idMaterialGeneric')),      
       'Nom'                               => new sfValidatorString(array('required' => false)),
       'Descripcio'                        => new sfValidatorString(array('required' => false)),
       'Responsable'                       => new sfValidatorString(array('required' => false)),
@@ -71,7 +80,7 @@ class MaterialForm extends sfFormPropel
       'isAdministratiu'                   => new sfValidatorChoice(array('choices'=>array(0,1))),
       'site_id'                           => new sfValidatorPass(array('required'=>false),array()),
       'actiu'                             => new sfValidatorPass(array('required'=>false),array()),
-      'unitats'                           => new sfValidatorInteger(array('required'=>false),array()),          
+      'unitats'                           => new sfValidatorInteger(array('required'=>false),array()),                
     ));
 
     $this->widgetSchema->setLabels(array(
@@ -92,7 +101,7 @@ class MaterialForm extends sfFormPropel
       'NotesManteniment'                  => 'Notes: ',
       'isTransferible'					  => 'Es pot moure?',
       'isAdministratiu'					  => 'És per oficina?',
-      'unitats'                           => 'Unitats: ',
+      'unitats'                           => 'Unitats: ',      
     ));
     
     $this->widgetSchema->setDefaults(array(            

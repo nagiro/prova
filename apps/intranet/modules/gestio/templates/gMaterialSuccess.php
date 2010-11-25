@@ -18,7 +18,11 @@
 		$('#cerca_text').change( function() { 
 			$('#FCERCA').submit(); 
 		});
-		$('#FORMSUBMIT').submit(ValidaFormulari);
+		$('#FORMSUBMIT').submit(ValidaFormulari);             
+        
+        $('#sel').click(function(){ 
+            $("#dialog").dialog({ buttons: { "Ok": function() { alert($(this).val()); $('#F2').submit(); $(this).dialog("close"); } } }); 
+        });        
 	});
 
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}
@@ -49,7 +53,7 @@
     <TD colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'MATERIAL')); ?>
-      
+                
     <form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FCERCA">
     
     	<?php include_partial('cerca',array(
@@ -73,10 +77,16 @@
       
 	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FORMSUBMIT">
  	
+    <div id="dialog" style="display:none;">        
+        <form action="<?php echo url_for('gestio/gMaterial2') ?>" method="POST" id="F2">
+            <input type="text" value="" />            
+        </form>
+    </div>
+    
 	 	<div class="REQUADRE fb">
 		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gMaterial?accio=L')) ?>
 						 	 		
-		 		<div class="FORMULARI fb">
+		 		<div class="FORMULARI fb">                    
 		 			<?php echo $FMaterial ?>		 		
 		 			<?php include_partial('botoneraDiv',array('element'=>'el material')); ?>		
 		 		</div>

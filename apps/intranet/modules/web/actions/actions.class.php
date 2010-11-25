@@ -194,7 +194,7 @@ class webActions extends sfActions
      $this->LoadWeb($request);
      $this->setTemplate('index');
      $this->ACCIO = 'cursos';
-     $this->CURSOS = CursosPeer::getCursos(CursosPeer::ACTIU,1,'',$this->IDS);
+     $this->CURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,'',$this->IDS);
      
   }
 
