@@ -69,8 +69,8 @@ class gestioActions extends sfActions
         $this->FREMEMBER->bind($RP);         
         $OUsuari = UsuarisPeer::cercaDNI($this->FREMEMBER->getValue('DNI'));
         if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()):
-  	        $BODY = OptionsPeer::getString('MISSATGE_REMEMBER',$this->IDS);
-            $BODY = str_replace('{{CONTRASSENYA}}',$OUsuari->getPasswd(),$BODY);
+  	        $BODY = OptionsPeer::getString('MAIL_REMEMBER',$this->IDS);
+            $BODY = str_replace('{{PASSWORD}}',$OUsuari->getPasswd(),$BODY);
             $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$OUsuari->getEmail(),' Hospici :: Recordatori de contrasenya ',$BODY);
             $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),'informatica@casadecultura.org', '[Hospici :: RECORDATORI]',$BODY);
             if(!$this->ENVIAT):
