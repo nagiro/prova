@@ -36,7 +36,7 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
   	return array(1=>'Portàtil',2=>'Projector',3=>'DVD',4=>'Microfonia');
   }
 	
-  static public function select( $IDS , $new = false )
+  static public function select( $IDS , $new = false , $all = true )
   {
     $C = new Criteria();
     $C = self::getCriteriaActiu( $C , $IDS );
@@ -44,7 +44,7 @@ class MaterialgenericPeer extends BaseMaterialgenericPeer
     $MG = self::doSelect($C);
     $RET = array();
     if($new) $RET[0] = 'Nou conjunt de material...';
-    else $RET[0] = 'Tots els materials';
+    elseif($all) $RET[0] = 'Tots els materials';
     foreach($MG as $M):
       $RET[$M->getIdmaterialgeneric()] = $M->getNom();    
     endforeach;

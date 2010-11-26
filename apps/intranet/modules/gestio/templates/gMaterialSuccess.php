@@ -19,9 +19,23 @@
 			$('#FCERCA').submit(); 
 		});
 		$('#FORMSUBMIT').submit(ValidaFormulari);             
-        
+                
         $('#sel').click(function(){ 
-            $("#dialog").dialog({ buttons: { "Ok": function() { alert($(this).val()); $('#F2').submit(); $(this).dialog("close"); } } }); 
+            $("#dialog").dialog({ 
+                    buttons: {                         
+                                "Cancel·lar": function(){ $(this).dialog("close"); },
+                                "Guardar": function() { 
+                                            $.post(
+                                                "<?php echo url_for('gestio/gMaterial?accio=AJAX_NEW_GRUP') ?>",
+                                                $("#F2").serialize(),
+                                                function(data)
+                                                { 
+                                                    setTimeout("location.reload()", 500);                                                    
+                                                }                                           
+                                            );                                             
+                                            }                                
+                            }                                                                               
+            }); 
         });        
 	});
 
@@ -48,9 +62,18 @@
 		return true;				 
 	}
 
-</script>
+</script>   
    
     <TD colspan="3" class="CONTINGUT_ADMIN">
+    
+    <!-- Trosset pel grup -->
+    <div id="dialog" style="display:none">        
+        <form id="F2">
+            Entra el nou grup: 
+            <input type="text" name="GRUP" value="" />            
+        </form>
+    </div>
+    
     
     <?php include_partial('breadcumb',array('text'=>'MATERIAL')); ?>
                 
@@ -76,13 +99,7 @@
 <?php IF( $NOU || $EDICIO ): ?>
       
 	<form action="<?php echo url_for('gestio/gMaterial') ?>" method="POST" id="FORMSUBMIT">
- 	
-    <div id="dialog" style="display:none;">        
-        <form action="<?php echo url_for('gestio/gMaterial2') ?>" method="POST" id="F2">
-            <input type="text" value="" />            
-        </form>
-    </div>
-    
+ 	    
 	 	<div class="REQUADRE fb">
 		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gMaterial?accio=L')) ?>
 						 	 		

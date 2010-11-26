@@ -2148,7 +2148,14 @@ class gestioActions extends sfActions
                     $OM->save(); 
                     $this->getUser()->addLogAction($accio,'gMaterial',$OM);
                 endif;                     	                            	            	          	        
-    	        break;    	         	 
+    	        break;    	
+        case 'AJAX_NEW_GRUP':
+                $PM = $request->getParameter('GRUP');
+                $OMG = MaterialgenericPeer::initialize(0,$this->IDS)->getObject();
+                $OMG->setNom($PM);
+                $OMG->save();
+                return $this->renderText('Tot ok. ');                
+            break;         	 
     }
         
     $this->MATERIALS = MaterialPeer::getMaterial($this->TIPUS, $this->PAGINA , $this->IDS );

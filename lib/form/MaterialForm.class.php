@@ -22,7 +22,7 @@ class MaterialForm extends sfFormPropel
                                             'text'=>'Afegir grup',
                                             'id'=>'sel',
                                             ) , 
-                    'choices'=>MaterialgenericPeer::select($this->getOption('IDS'),true));
+                    'choices'=>MaterialgenericPeer::select($this->getOption('IDS'),false,false));
   	
     $this->setWidgets(array(
       'idMaterial'                        => new sfWidgetFormInputHidden(),
