@@ -2477,7 +2477,7 @@ class gestioActions extends sfActions
     		break;            
             
         case 'AJAX_USUARIS':    
-                $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'));                                          
+                $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),$this->IDS);                                          
                 return $this->renderText(json_encode($RET));                
             break;
     		

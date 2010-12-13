@@ -77,12 +77,13 @@ class UsuarisPeer extends BaseUsuarisPeer
   }
   
   
-  static function cercaTotsCampsSelect($text,$limit)
+  static function cercaTotsCampsSelect($text,$limit,$idS)
   {
         
     $RET = array(); 
-    
-    $C = self::CriteriaCerca($text,new Criteria());    
+    $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    $C = self::CriteriaCerca($text,$C);        
     $C->setLimit($limit);
 
     foreach(self::doSelect($C) as $U):
