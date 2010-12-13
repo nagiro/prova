@@ -64,7 +64,7 @@ class sfWidgetFormJQueryAutocompleter extends sfWidgetFormInput
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
     $visibleValue = $this->getOption('value_callback') ? call_user_func($this->getOption('value_callback'), $value) : $value;
-
+    
     return $this->renderTag('input', array('type' => 'hidden', 'name' => $name, 'value' => $value)).
            parent::render('autocomplete_'.$name, $visibleValue, $attributes, $errors).
            sprintf(<<<EOF
@@ -81,15 +81,17 @@ class sfWidgetFormJQueryAutocompleter extends sfWidgetFormInput
         return parsed;
       }
     }, %s))
-    .result(function(event, data) { jQuery("#%s").val(data[1]);  });
-  });
+    .result(function(event, data) { jQuery("#%s").val(data[1]); jQuery("#%s").val(data[0]); });
+  });    
+  
 </script>
 EOF
       ,
       $this->generateId('autocomplete_'.$name),
       $this->getOption('url'),
       $this->getOption('config'),
-      $this->generateId($name)
+      $this->generateId($name),
+      $this->generateId('autocomplete_'.$name)
     );
   }
 

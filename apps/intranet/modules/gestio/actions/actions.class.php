@@ -2470,11 +2470,16 @@ class gestioActions extends sfActions
     		break;
     	
     	// Nova matrícula
-    	case 'NU':            						
+    	case 'NU':                            						
                 $this->IDM = $request->getParameter('IDM',null);
                 $this->FMatricula = MatriculesPeer::initialize($this->IDM,$this->IDS,true);            				    			    			    			
     			$this->MODE = 'MAT_USUARI';  	
-    		break;
+    		break;            
+            
+        case 'AJAX_USUARIS':    
+                $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'));                                          
+                return $this->renderText(json_encode($RET));                
+            break;
     		
     	//Comprovem les dades que hem entrat de l'usuari
     	case 'SNU':

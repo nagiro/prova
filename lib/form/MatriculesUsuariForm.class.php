@@ -12,11 +12,13 @@ class MatriculesUsuariForm extends sfFormPropel
 {
 	
   public function setup()
-  {  	
-  	
+  {
+    
+    $BASE = OptionsPeer::getString('SF_WEBROOT',$this->getOption('IDS'));    
+          	
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
-  	  'Usuaris_UsuariID' => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectUsuaris($this->getOption('IDS'))),array()),  	    	    	  
+  	  'Usuaris_UsuariID' => new sfWidgetFormJQueryAutocompleter(array('url'=>$BASE.'intranet_dev.php/gestio/gMatricules?accio=AJAX_USUARIS'),array('style'=>'width:400px')),  	    	    	  
   	  'Cursos_idCursos'  => new sfWidgetFormInputHidden(),  	  
       'Estat'            => new sfWidgetFormInputHidden(),
       'Comentari'        => new sfWidgetFormInputHidden(),

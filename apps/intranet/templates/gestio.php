@@ -5,7 +5,7 @@
   <meta name="generator" content="PSPad editor, www.pspad.com"> 
 
   <?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
-
+    
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/gestio.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" />

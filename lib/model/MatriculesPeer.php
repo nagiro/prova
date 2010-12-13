@@ -31,7 +31,7 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TRANSFERENCIA   = '24';
    
    
-    static public function initialize( $idM , $idS , $selUsuari = false)
+    static public function initialize( $idM , $idS , $selUsuari = false, $URL_AJAX_USER = null )
     {
         $OM = MatriculesPeer::retrieveByPK($idM);            
         if($OM instanceof Matricules):            

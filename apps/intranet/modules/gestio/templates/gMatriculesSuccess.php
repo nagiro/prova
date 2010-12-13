@@ -1,9 +1,10 @@
 <?php use_helper('Form')?>
-<?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
-<?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',$IDS); ?>
+<script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script>
 
-<STYLE>
-
+<style type="text/css" >
+    
+    @import url('<?php echo $BASE.'css/jquery.autocompleter.css'; ?>');
 	.cent { width:100%; }
 	.noranta { width:90%; }
 	.vuitanta  { width:80%; }
@@ -13,7 +14,9 @@
 	.espai { padding-left:5px; padding-right:5px; }
     .MATRICULES th { font-size:12px; font-weight:bold; }
 
-</STYLE>
+ </style>
+
+
 
 <script type="text/javascript">
 
