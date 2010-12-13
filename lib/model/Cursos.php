@@ -57,4 +57,24 @@ class Cursos extends BaseCursos
   {
     return CursosPeer::CalculaPreu($this->getIdcursos(), $DESCOMPTE, $this->getSiteId());
   }
+    
+  public function getActivitatVinculada()
+  {
+    $IDA = $this->getActivitatid();    
+    $OA = ActivitatsPeer::initialize($IDA,0,$this->getSiteId())->getObject();    
+    if($OA->isNew()):
+        $OA->setNom($this->getTitolcurs());
+        $OA->setCiclesCicleid(null);
+        $OA->setTipusactivitatIdtipusactivitat(TipusactivitatPeer::T_CURS);        
+        $OA->setPreu($this->getPreu());
+        $OA->setPreureduit($this->getPreur());
+        $OA->setPublicable(true);
+        $OA->setEstat(ActivitatsPeer::ESTAT_ACTIVITAT_ACCEPTADA);        
+        $OA->save();
+        $this->setActivitatid($OA->getActivitatid());
+        $this->save();
+    endif;         
+    return $OA;
+  }
+    
 }

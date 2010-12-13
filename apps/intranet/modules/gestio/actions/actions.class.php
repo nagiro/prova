@@ -397,8 +397,8 @@ class gestioActions extends sfActions
                                      
     				$this->FUSUARI->save();
                     $OU = $this->FUSUARI->getObject();                                                            
-                    UsuarisPeer::addSite( $OU->getUsuariId() , $this->IDS );                    
-                    $this->makeLogin($OU);
+                    UsuarisPeer::addSite( $OU->getUsuariId() , $this->IDS );                                        
+                    $this->makeLogin($OU,$this->IDS);
                                                                                                       			                	                                    				
     			else:
                 
@@ -429,13 +429,13 @@ class gestioActions extends sfActions
       $this->getUser()->setSessionPar('idN',$idN);
       $this->getUser()->setAuthenticated(true);
       $this->getUser()->addLogAction('login','login',null);                              
-
+        
       if( $idN == NivellsPeer::ADMIN ):
         $this->getUser()->setSessionPar('idS',$IDS);
-        $this->getUser()->addCredential('admin');
+        $this->getUser()->addCredential('admin');        
         $this->redirect( 'gestio/main' );
       elseif( $idN == NivellsPeer::REGISTRAT ):
-        $this->getUser()->addCredential('user');
+        $this->getUser()->addCredential('user');        
         $this->redirect( 'gestio/uGestio' );
       else:   	 	
      	$this->ERROR = "El DNI o la contrasenya són incorrectes";
@@ -573,9 +573,7 @@ class gestioActions extends sfActions
     if($request->hasParameter('BSAVE'))     			{ $accio = "S"; }
   	if($request->hasParameter('BDELETE'))     			{ $accio = "D"; }    
     if($request->hasParameter('BACTUALITZA_PERMISOS')) 	{ $accio = "SGA"; }
-    
-    
-    
+            
     $this->getUser()->setSessionPar('accio',$accio);
     $this->getUser()->setSessionPar('pagina',$this->PAGINA);        
     
@@ -1454,7 +1452,7 @@ class gestioActions extends sfActions
 	    		$this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC, $this->IDS);	    		
 	    		$this->FActivitat->bind($request->getParameter('activitats'));
 	    		if($this->FActivitat->isValid()):
-	    			$nova = $this->FActivitat->isNew();
+	    			$nova = $this->FActivitat->isNew();                    
 	    			$this->FActivitat->save();	    			
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
 	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();
@@ -1464,15 +1462,7 @@ class gestioActions extends sfActions
 	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);
 	    			endif; 	    			
 	    		else: 
-	    			if($this->getUser()->getSessionPar('isCicle')):
-	    				$this->MODE['ACTIVITAT_CICLE'] = true;
-    					$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,$this->IDS);
-    					$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();
-					else:
-						$this->MODE['ACTIVITAT_ALONE'] = true;
-	    				$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
-	    				$this->CICLE = 'No pertany a cap cicle';
-	    			endif;
+                    $this->CarregaActivitats($request,$request->getParameter('form',true));
 	    		endif; 
     			
     		break;
@@ -2191,11 +2181,13 @@ class gestioActions extends sfActions
 	$this->MODE = '';
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { 			$accio = ( $this->CERCA['select'] == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    	$accio = 'NC';
-	    elseif($request->hasParameter('BSAVECODICURS')) $accio = 'SC';
-	    elseif($request->hasParameter('BSAVE'))     	$accio = 'SCC';	    
-	    elseif($request->hasParameter('BDELETE'))     	$accio = 'D';
+	    if($request->hasParameter('BCERCA')) { 			    $accio = ( $this->CERCA['select'] == 1 )?'CA':'CI'; $this->PAGINA = 1; }   
+	    elseif($request->hasParameter('BNOU')) 	    	    $accio = 'NC';
+	    elseif($request->hasParameter('BSAVECODICURS'))     $accio = 'SC';
+	    elseif($request->hasParameter('BSAVE'))     	    $accio = 'SCC';	    
+	    elseif($request->hasParameter('BDELETE'))     	    $accio = 'D';
+        elseif($request->hasParameter('BGENERAACTIVITAT'))  $accio = 'GA';
+        
     }                
     
     //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
@@ -2260,11 +2252,27 @@ class gestioActions extends sfActions
 		case 'C':
 				$this->getUser()->addLogAction('inside','gCursos');
 			break;
+            
+        //Edita una activitat relacionada amb un curs. Si no en té cap l'afegeix. '
+        case 'GA' :
+                //Mirem si ja té activitat. Si la té la recupera i sinó la crea. 
+                $RP = $request->getParameter('cursos');
+                $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );
+                if($this->FCurs->isNew()){ //Si el curs és nou, vol dir que l'hem de guardar.
+        		    $this->FCurs->bind($RP);                
+        		    if($this->FCurs->isValid()):                    
+        		    	$this->FCurs->save();
+        		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());
+        		    endif;    		        		            			
+                }
+                
+                //Un cop guardat el curs, recupero l'activitat relacionada amb el curs                
+                $OA = $this->FCurs->getObject()->getActivitatVinculada();
+                $this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$OA->getActivitatid());                                				
+			break;
     }           
   }
-	 
-	
-  
+	 	  
   public function executeGReserves(sfWebRequest $request)
   {
   	
@@ -3525,6 +3533,7 @@ class gestioActions extends sfActions
 	//$this->POTVEURE = array(1=>UsuarisPeer::canSeeComptabilitat($this->getUser()->getSessionPar('idU')));
 	$this->accio = $request->getParameter('accio');
 	$this->getUser()->addLogAction('inside','gInformes');
+    if($request->hasParameter('BGENERADOC')) $this->accio = 'RESUM_ACTIVITATS';
 	
 	switch($this->accio){
 		case 'MAT_DIA_PAG':
@@ -3542,9 +3551,36 @@ class gestioActions extends sfActions
                     $this->DADES[$OM->getIdmatricules()]['ORDER'] = $OM->getTpvOperacio();                                                            
 				endforeach;				 
 			break;
+		case 'RESUM_ACTIVITATS':
+                $RP = $request->getParameter('informe_activitats');
+                $this->FACTIVITATS   = new InformeActivitatsForm(null,array('IDS'=>$this->IDS));
+                $this->FACTIVITATS->bind($RP);
+                if($request->hasParameter('BGENERADOC')):                    
+                    $LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS);
+                    $RET = array();
+                    foreach($LOA as $OA):
+                        $RET[$OA->getActivitatid()]['titol'] = html_entity_decode($OA->getTmig());
+                        $RET[$OA->getActivitatid()]['descripcio'] = html_entity_decode($OA->getDmig(),ENT_QUOTES, 'UTF-8');                        
+                        $RET[$OA->getActivitatid()]['horaris'] = $OA->getHorarisActius($this->IDS);                                                                     
+                        self::generaWord($RET,$this->IDS);
+                    endforeach;
+                endif;    									 
+			break;                                                    
 	}	
 	
   }  
+  
+  private function generaWord($DADES,$IDS)
+  {
+      $doc = new sfTinyDoc();
+      $doc->createFrom(OptionsPeer::getString('SF_WEBSYSROOT',$IDS).'formularis/lactivitats.odt');
+      $doc->loadXml('content.xml');
+      $doc->mergeXmlBlock('dades', $DADES );                    
+      $doc->saveXml();
+      $doc->close();
+      $doc->sendResponse();
+      $doc->remove();          
+  }
   
   
   //**************************************************************************************************************************************************

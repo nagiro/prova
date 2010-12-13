@@ -9,6 +9,9 @@
  */ 
 class ActivitatsPeer extends BaseActivitatsPeer
 {
+
+   const ESTAT_ACTIVITAT_ACCEPTADA = 1;
+   const ESTAT_ACTIVITAT_PRERESERVA = 2; 
     
    static public function getCriteriaActiu($C,$idS)
    {
@@ -110,7 +113,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
    
    static function getSelectEstats()
    {
-   		return array(1=>'Acceptada',2=>'PreReserva');
+   		return array(  self::ESTAT_ACTIVITAT_ACCEPTADA=>'Acceptada',
+                       self::ESTAT_ACTIVITAT_PRERESERVA=>'PreReserva');
    }
    
 	static public function getTipusEnviaments()
@@ -144,9 +148,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	static public function initialize($idA , $cicle = 0, $idS )
 	{
 		$OA = ActivitatsPeer::retrieveByPK($idA);            
-		if($OA instanceof Activitats):            
-			return new ActivitatsForm($OA,array('IDS' => $idS));
-		else:
+		if(!($OA instanceof Activitats)):            			
 			$OA = new Activitats();
             $OA->setSiteId($idS);        
             $OA->setActiu(true);        
@@ -154,9 +156,10 @@ class ActivitatsPeer extends BaseActivitatsPeer
 				$OA->setCiclesCicleid($cicle);
 			else:
 				$OA->setCiclesCicleid(null);
-			endif;
-			return new ActivitatsForm($OA,array('IDS'=>$idS));			
+			endif;						
 		endif; 
+                
+        return new ActivitatsForm($OA,array('IDS'=>$idS));
 	}
 	
 	static public function getActivitatsCicles( $idC , $idS , $pager = false, $pagina = 1, $publicaweb = true)
@@ -370,5 +373,17 @@ class ActivitatsPeer extends BaseActivitatsPeer
         
         return $RET;
     }
+    
+    static public function getLlistatWord( InformeActivitatsForm $IAF , $IDS )
+    {                
+        $C = new Criteria();
+        $C = ActivitatsPeer::getCriteriaActiu($C,$IDS);
+        $C = HorarisPeer::getCriteriaActiu($C,$IDS);
+        if(!is_null($IAF->getValue('idCicle'))) $C->add(ActivitatsPeer::CICLES_CICLEID, $IAF->getValue('idCicle'));
+        if(!is_null($IAF->getValue('DataInici'))) $C->add(HorarisPeer::DIA, $IAF->getValue('DataInici'),CRITERIA::GREATER_EQUAL);
+        if(!is_null($IAF->getValue('DataFi'))) $C->add(HorarisPeer::DIA, $IAF->getValue('DataFi'),CRITERIA::LESS_EQUAL);
+        $C->add(ActivitatsPeer::TMIG , "" , CRITERIA::NOT_EQUAL );
+        return ActivitatsPeer::doSelect($C);
+    }    
 
 }

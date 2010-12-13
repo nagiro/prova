@@ -52,7 +52,7 @@ class UsuarisForm extends sfFormPropel
       'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => true)),
       'Nom'               => new sfValidatorString(array('required' => true)),
       'Cog1'              => new sfValidatorString(array('required' => true)),
-      'Cog2'              => new sfValidatorString(array('required' => true)),
+      'Cog2'              => new sfValidatorString(array('required' => false)),
       'Email'             => new sfValidatorEmail(array('required' => true)),
       'Adreca'            => new sfValidatorString(array('required' => false)),
       'CodiPostal'        => new sfValidatorInteger(array('required' => false)),
@@ -95,20 +95,26 @@ class UsuarisForm extends sfFormPropel
 
   public function getModelName()
   {
+    
     return 'Usuaris';
+    
   }
 
   public function save($conn = null)
   {
+    
+    //Les dades de l'usuari que es mantenen són sempre les noves. Guardem la data d'actualització i avall.'
     $this->updateObject();
     $OU = $this->getObject();
-    $OU->setActualitzacio(date('Y-m-d',time()));        
+    $OU->setActualitzacio(date('Y-m-d',time())); //Guardem la data d'actualització.'        
     
+    //Mirem si l'usuari està relacionat amb el SITE
     $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();
     $OUS->setNivellid($this->getValue('level'));
     $OUS->save();
     
-    $this->getObject()->save();
+    $OU->save();
+    
   }
 	
 }

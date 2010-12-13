@@ -1,3 +1,30 @@
+<script type="text/javascript">
+
+	 $(document).ready(function() {
+
+         $('#new_user').validate({            
+                rules:{
+                    "usuaris[DNI]": { required: true, rangelength: [9, 9] },
+                    "usuaris[Passwd]": { required: true },
+                    "usuaris[Nom]": { required: true },
+                    "usuaris[Cog1]": { required: true },
+                    "usuaris[Cog2]": { required: false },
+                    "usuaris[Email]": { required: true , email: true },
+                    "usuaris[Adreca]": { required: true },
+                    "usuaris[CodiPostal]": { required: true , number: true },
+                    "usuaris[Poblacio]": { required: false },
+                    "usuaris[Poblaciotext]": { required: function(){ return ($('#usuaris_Poblacio option:selected').val() == ''); } },
+                    "usuaris[Telefon]": { required: false },
+                    "usuaris[Mobil]": { required: function(){ return ($('#usuaris_Telefon').val().length == 0); }},                                        
+                },
+                messages: {
+                    "usuaris[DNI]": { rangelength: "<br />Format: 00000000A o X0000000A." }
+                }
+         });
+    });
+                                     
+</script>
+
 <?php use_helper('Form') ?>
 
     <TD colspan="3" class="CONTINGUT_ADMIN">
@@ -44,7 +71,7 @@
   
   <?php IF( isset($MODE['NOU']) && $MODE['NOU'] || isset($MODE['EDICIO']) && $MODE['EDICIO'] ): ?>
       
-	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post" enctype="multipart/form-data">  	               
+	<form id="new_user" action="<?php echo url_for('gestio/gUsuaris') ?>" method="post" enctype="multipart/form-data">  	               
 	 	<DIV class="REQUADRE">
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	 	
 	    	<table class="FORMULARI" width="500px">
@@ -52,7 +79,7 @@
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-						<?php include_partial('botonera',array('element'=>'l\'usuari')); ?>	            	
+						<?php include_partial('botonera',array('element'=>'l\\\'usuari')); ?>	            	
 					</td>
 	            </tr>                	 
       		</TABLE>
@@ -167,8 +194,7 @@
                 			  </tr>';
                 	endforeach;
                 	
-                	echo '<TR><TD colspan="2"><button name="BACTUALITZA_PERMISOS" class="BOTO_ACTIVITAT">ACTUALITZA</TD></TR>';
-                                         
+                	echo '<TR><TD colspan="2"><button name="BACTUALITZA_PERMISOS" class="BOTO_ACTIVITAT">ACTUALITZA</TD></TR>';                                         
                 ?>
       	</TABLE>      
       </DIV>

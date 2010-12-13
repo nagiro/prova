@@ -49,7 +49,7 @@ class ClientUsuarisForm extends sfFormPropel
       'Passwd'            => new sfValidatorString(array('max_length' => 20, 'required' => false)),
       'Nom'               => new sfValidatorString(array('required' => true)),
       'Cog1'              => new sfValidatorString(array('required' => true)),
-      'Cog2'              => new sfValidatorString(array('required' => true)),
+      'Cog2'              => new sfValidatorString(array('required' => false)),
       'Email'             => new sfValidatorString(array('required' => true)),
       'Adreca'            => new sfValidatorString(array('required' => true)),
       'CodiPostal'        => new sfValidatorInteger(array('required' => true)),

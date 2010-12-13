@@ -4,7 +4,7 @@
 <?php //Exemple: include_partial('botonera',array('element'=>'TOTA l\'agenda','tipus'=>'Guardar','nom'=>'SaveHTML')); ?>
 
 <br>
-<button type="submit" name="<?php echo "BSAVE".(isset($nom)?"_$nom":"") ?>" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+<button type="submit" name="<?php echo "BSAVE".(isset($nom)?"_$nom":"") ?>" class="BOTO_ACTIVITAT" >
 	<?php echo image_tag('template/disk.png').' Guardar i sortir' ?>
 </button>
 <button type="submit" name="<?php echo "BDELETE".(isset($nom)?"_$nom":"") ?>" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar <?php echo $element ?>? No ho podràs recuperar! ')">
@@ -15,7 +15,7 @@
 <?php //Exemple: include_partial('botonera',array('element'=>'TOTA l\'agenda','tipus'=>'Guardar','nom'=>'SaveHTML')); ?>
 
 	<?php if($tipus == 'Guardar'): ?>
-			<button type="submit" name="<?php echo (empty($nom))?'BSAVE':$nom; ?>" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+			<button type="submit" name="<?php echo (empty($nom))?'BSAVE':$nom; ?>" class="BOTO_ACTIVITAT" >
 				<?php echo image_tag('template/disk.png').' Guardar i sortir' ?>
 			</button>
 	<?php elseif($tipus == 'Esborrar'): ?>

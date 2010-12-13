@@ -42,8 +42,7 @@ $(document).ready(function() {
 
     //Funció que captura de quin genèric parlem i busca els disponibles. 
 	function ajax(d, iCtrl)
-	{
-
+	{     
         <?php 
             if( isset($FCessio) && $FCessio->getObject() instanceof Cessio ):
                 $diai = $FCessio->getObject()->getDatacessio('Y-m-d');
@@ -64,8 +63,9 @@ $(document).ready(function() {
                 function(data) { $("select#material\\["+iCtrl+"\\]").html(data); }
             );                                                
                                                 
-    }
+    }    
     
+   
     //Generem el desplegable de material genèric
 	function creaFormMaterial()
 	{
@@ -74,7 +74,7 @@ $(document).ready(function() {
 		id = (parseInt(id) + parseInt(1));
 		$("#idV").val(id);				                        
         				
-        var options = '<?php echo MaterialgenericPeer::selectAjax() ?>';                
+        var options = '<?php echo MaterialgenericPeer::selectAjax($IDS) ?>';                
 		$("#divTxt").append(
                         '<span id="row['+id+']">'+
                         '<select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select>'+
@@ -150,7 +150,7 @@ $(document).ready(function() {
 	
 	             		$VAL .= '
 	  	 	  	        		<span id="row['.$id.']">
-	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select(),$idM['generic']).'</select>
+	  	 	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select($IDS),$idM['generic']).'</select>
 	  	 	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic'],$IDS,$idM['material']),$idM['material']).'</select>	
 	  	 	  	        			<input type="button" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
 	  	 	  	        			<br />

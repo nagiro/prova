@@ -22,6 +22,13 @@
 		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1								
 		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
 		 $("#mesespais").click( function () { creaFormEspais(); });
+                                                                                                      
+         $('#activitats_form_new').validate({            
+                rules:{
+                    "activitats[Preu]": { number: true },
+                    "activitats[PreuReduit]": { number: true }
+                }                                                             
+         });                            
 		 
 		 $("#activitats_cicle").change(function (){ Cicle(this.value); });
 		 
@@ -115,6 +122,35 @@
 	</script>
   
 <TD colspan="3" class="CONTINGUT_ADMIN">	
+
+
+ <form class="cmxform" id="commentForm" method="get" action="">
+ <fieldset>
+   <legend>A simple comment form with submit validation and default messages</legend>
+   <p>
+     <label for="cname">Name</label>
+     <em>*</em><input id="cname" name="name" size="25" minlength="2" />
+   </p>
+   <p>
+     <label for="cemail">E-Mail</label>
+     <em>*</em><input id="cemail" name="email" size="25"  class="required email" />
+   </p>
+   <p>
+     <label for="curl">URL</label>
+     <em>  </em><input id="curl" name="url" size="25"  class="url" value="" />
+   </p>
+   <p>
+     <label for="ccomment">Your comment</label>
+     <em>*</em><textarea id="ccomment" name="comment" cols="22"  class="required"></textarea>
+   </p>
+   <p>
+     <input class="submit" type="submit" value="Submit"/>
+   </p>
+ </fieldset>
+ </form>
+
+
+
 
 	<?php include_partial('breadcumb',array('text'=>'ACTIVITATS')); ?>		
 		                   	                   
@@ -223,7 +259,7 @@
 		
 	<?php if(isset($FActivitat) && !isset($MODE['DESCRIPCIO'])): ?>
     
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
+     <form id="activitats_form_new" action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
  	 		
 	 	<div class="REQUADRE fb">	 	
 		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT&form=0&IDA='.$IDA)) ?>
@@ -234,10 +270,10 @@
 	 		
 	 			<?php echo $FActivitat ?>
 	 			<div style="text-align:right; padding-top:40px;">
-				<button type="submit" name="BACTIVITATSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+				<button type="submit" name="BACTIVITATSAVE" class="BOTO_ACTIVITAT">
 					<?php echo image_tag('template/disk.png').' Guarda ' ?>
 				</button>
-				<button type="submit" name="<?php echo "BACTIVITATDELETE".(isset($nom)?"_$nom":"") ?>" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar <?php echo $element ?>? No ho podràs recuperar! ')">
+				<button type="submit" name="BACTIVITATDELETE" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar-ho? No ho podràs recuperar! ')">
 					<?php echo image_tag('tango/16x16/status/user-trash-full.png').' Eliminar' ?>
 				</button>	 				 				 				 				 				 				 			
 	 			</div>	

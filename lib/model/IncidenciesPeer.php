@@ -24,16 +24,14 @@ class IncidenciesPeer extends BaseIncidenciesPeer
     static public function initialize( $idI , $idU , $idS )
     {
     	$OI = self::retrieveByPK($idI);            
-    	if($OI instanceof Incidencies):            
-    		return new IncidenciesForm($OI);
-    	else:
+    	if(!($OI instanceof Incidencies)):            
     		$OI = new Incidencies();
     		$OI->setDataalta(time());
     		$OI->setQuiinforma($idU);       
             $OI->setActiu(true);
-            $OI->setSiteId($idS);     
-    		return new IncidenciesForm($OI,array('IDS'=>$idS));			
-    	endif; 
+            $OI->setSiteId($idS);         					
+    	endif;
+        return new IncidenciesForm($OI,array('IDS'=>$idS)); 
     }
    
    

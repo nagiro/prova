@@ -25,6 +25,7 @@ class CiclesPeer extends BaseCiclesPeer
     $C = self::getCriteriaActiu($C,$idS);
         
     $ret = array();    
+    $ret[null] = 'No pertany a cap cicle'; 
     foreach(self::doSelect($C) as $C) $ret[$C->getCicleid()] = $C->getNom();
     
     return $ret;

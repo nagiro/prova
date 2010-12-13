@@ -1,3 +1,17 @@
+<STYLE>
+.cent { width:100%; }
+.vuitanta { width:80%; }
+.cinquanta { width:50%; }
+.HTEXT { height:100px; }
+
+	.row { width:500px; } 
+	.row_field { width:80%; } 
+	.row_title { width:20%; }
+	.row_field input { width:100%; } 
+
+</STYLE>
+
+
    <TD colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'INFORMES')); ?>
@@ -19,60 +33,89 @@
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TELEFON) ?>"> Tf </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TRANSFERENCIA) ?>"> Tr </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament=0') ?>"> All </a>
-   				</td></tr>      			      			                      			
-      	</TABLE>      
-      </DIV>
-
-<!-- Comença el bloc de matrícules per dia -->      
-<?php if($accio == 'MAT_DIA_PAG'): ?>
-
-      <DIV class="REQUADRE">
-        <DIV class="TITOL">Matrícules pagades per dia</DIV>
-      	<TABLE class="DADES">
-      		<tr>
-      			<th>Data</th>
-                <th>Hora</th>
-      			<th>Import</th>
-      			<th>DNI</th>
-      			<th>Nom</th>
-      			<th>Curs</th>
-<?php   if($MODE == MatriculesPeer::PAGAMENT_TARGETA || $MODE == MatriculesPeer::PAGAMENT_TELEFON):                
-                echo '<th># Caixa</th>';
-        endif; ?>
-      		</tr>
-      		<?php $DATA = ""; $DATA_ANT = -2; $TOTAL = 0; ?>
-      		<?php foreach($DADES as $D): ?>
-      		
-      		<?php $DATA = $D['DATA']; ?>
-			<?php $DATA_ANT = ($DATA_ANT == -2)?$D['DATA']:$DATA_ANT; ?>      		      		
-      		<?php if($DATA <> $DATA_ANT): ?>
-			<tr>
-      			<td style="font-weight:bold; background:#F2EAEA;"><?php echo $DATA_ANT; ?></td>
-      			<td colspan="6" style="font-weight:bold; background:#F2EAEA;"><?php echo $TOTAL ?></td>      			      			
-      		</tr>				      		
-      		<?php endif; ?>      		      			      			
-      		<tr>
-      			<td><?php echo $D['DATA'] ?></td>
-                <td><?php echo $D['HORA'] ?></td>
-      			<td><?php echo $D['IMPORT'] ?></td>
-      			<td><?php echo $D['DNI'] ?></td>
-      			<td><?php echo $D['NOM'] ?></td>
-      			<td><?php echo $D['CURS'] ?></td>
-<?php   if($MODE == MatriculesPeer::PAGAMENT_TARGETA || $MODE == MatriculesPeer::PAGAMENT_TELEFON):                
-                echo '<td>'.$D['ORDER'].'</td>';
-        endif; ?>                                               
-      		</tr>
-      		      		      		      		
-      		<?php $DATA_ANT = $DATA; $TOTAL += $D['IMPORT']; ?>
-      		
-      		<?php endforeach; ?>        	      					
+   				</td></tr>
+                <tr><td>Programació</td><td>Document Word amb les activitats</td><td><a href="<?php echo url_for('gestio/gInformes?accio=RESUM_ACTIVITATS') ?>">Anar-hi</a></td><td>Cap</td></tr>                         			      			                      			
       	</TABLE>      
       </DIV>
       
-<?php endif; ?>      
       
+      <?php if(isset($FACTIVITATS)) echo FLlistatWord($FACTIVITATS); ?>
+      
+      <?php if(isset($DADES)) echo LlistatMatriculats($DADES,$MODE,$accio); ?>      
+      <?php if(isset($ACTIVITATS)) echo LlistatWord($ACTIVITATS); ?>
       
       <DIV STYLE="height:40px;"></DIV>
                 
-    </TD>    
+    </TD>          
+      
+
+<!-- Comença el bloc de matrícules per dia -->
+<?php 
+
+    function FLlistatWord($FACTIVITATS)
+    {        
+    	echo ' <form action="'.url_for('gestio/gInformes').'" method="POST">     	    
+                    <div class="REQUADRE fb">';            
+        echo '          <div class="FORMULARI fb">                    
+                            '.$FACTIVITATS.'
+                            <div class="cl" style="text-align:right; padding-top:40px;">	 	
+                                <button type="submit" name="BGENERADOC" class="BOTO_ACTIVITAT">
+    				                '.image_tag('template/disk.png').' Genera el document
+                                </button>  
+                            </div>                                       	
+                        </div>                                                  		 		        			 	 	
+                    </div>     		
+                </form>';
+                               
+    }
+
+
+    function LlistatMatriculats($DADES,$MODE,$accio)
+    {
+        $RET = "";
+        $TARGETA = ($MODE == MatriculesPeer::PAGAMENT_TARGETA || $MODE == MatriculesPeer::PAGAMENT_TELEFON);
+              
+        if($accio == 'MAT_DIA_PAG'):
+    
+        $RET .= '<DIV class="REQUADRE">
+                    <DIV class="TITOL">Matrícules pagades per dia</DIV>
+          	         <TABLE class="DADES">
+          		        <tr>
+              			<th>Data</th>
+                        <th>Hora</th>
+              			<th>Import</th>
+              			<th>DNI</th>
+              			<th>Nom</th>
+              			<th>Curs</th>';
+        if($TARGETA) $RET .= '<th># Caixa</th>';            
+        $RET .= '</tr>';
+  		$DATA = ""; $DATA_ANT = -2; $TOTAL = 0;
+  		foreach($DADES as $D):
+          		
+  		    $DATA = $D['DATA'];
+ 			$DATA_ANT = ($DATA_ANT == -2)?$D['DATA']:$DATA_ANT;      		      		
+  		    if($DATA <> $DATA_ANT):
+    			$RET .= '<tr>';
+    			$RET .= '<td style="font-weight:bold; background:#F2EAEA;">'.$DATA_ANT.'</td>';
+    			$RET .= '<td colspan="6" style="font-weight:bold; background:#F2EAEA;">'.$TOTAL.'</td>';      			      			
+          		$RET .= '</tr>';				      		
+          	endif;      		      			      			
+            $RET .= '<tr>
+              			<td>'.$D['DATA'].'</td>
+                        <td>'.$D['HORA'].'</td>
+              			<td>'.$D['IMPORT'].'</td>
+              			<td>'.$D['DNI'].'</td>
+              			<td>'.$D['NOM'].'</td>
+              			<td>'.$D['CURS'].'</td>';
+            if($TARGETA) $RET .= '<td>'.$D['ORDER'].'</td>';
+            $RET .= '</tr>';          		      		      		      		
+      		$DATA_ANT = $DATA; $TOTAL += $D['IMPORT'];
+  		endforeach;    					
+        $RET .= '  </TABLE>';      
+        $RET .= '</DIV>';
+      
+        endif;      
+        
+        return $RET;
+    }
  

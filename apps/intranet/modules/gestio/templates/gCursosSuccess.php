@@ -132,8 +132,20 @@
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCursos?accio=CA')) ?>
 					 	 		
 	 		<div class="FORMULARI fb">
-	 			<?php echo $FCurs ?>	 		
-	 			<?php include_partial('botoneraDiv',array('element'=>'el curs')); ?>		
+	 			<?php echo $FCurs ?>
+                
+                
+                <div class="clear" style="text-align:right; padding-top:40px;">                
+                    <button type="submit" name="BGENERAACTIVITAT" class="BOTO_ACTIVITAT" >
+                        <?php echo image_tag('template/application_form.png').' Edita activitat' ?>
+        			</button>                                    
+                	<button type="submit" name="BSAVE" class="BOTO_ACTIVITAT" onClick="return confirm('Segur que vols guardar els canvis?')">
+                		<?php echo image_tag('template/disk.png').' Guardar i sortir' ?>
+                	</button>
+                	<button type="submit" name="BDELETE" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar-ho? No ho podràs recuperar! ')">
+                		<?php echo image_tag('tango/16x16/status/user-trash-full.png').' Eliminar' ?>
+                	</button>                    		                 	 		
+                </div>
 	 		</div>
 	 			 	 	
       	</div>

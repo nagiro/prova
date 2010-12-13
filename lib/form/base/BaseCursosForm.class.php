@@ -32,6 +32,7 @@ abstract class BaseCursosForm extends BaseFormPropel
       'VisibleWEB'      => new sfWidgetFormInputText(),
       'site_id'         => new sfWidgetFormInputText(),
       'actiu'           => new sfWidgetFormInputText(),
+      'activitat_id'    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -53,6 +54,7 @@ abstract class BaseCursosForm extends BaseFormPropel
       'VisibleWEB'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'activitat_id'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cursos[%s]');

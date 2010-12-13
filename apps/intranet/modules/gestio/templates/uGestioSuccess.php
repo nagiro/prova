@@ -45,14 +45,12 @@
         <div style=" padding:20px; width:700px; ">    
             <div id="tabs">
             	<ul>
-                    <li><a href="#tabs-0">Benvinguda</a></li>
-                    <li><a href="#tabs-4">Entitats</a></li>
+                    <li><a href="#tabs-0">Benvinguda</a></li>                    
             		<li><a href="#tabs-1">Dades</a></li>
             		<li><a href="#tabs-2">Matrícules</a></li>
                     <li><a href="#tabs-3">Reserves</a></li>                            		
             	</ul>                        
-                <div id="tabs-0"> <?php echo landing_page(); ?> </div>
-                <div id="tabs-4"> <?php echo FormulariEntitats($LENTITATS); ?> </div>
+                <div id="tabs-0"> <?php echo landing_page(); ?> </div>                
                 <div id="tabs-1"> <?php echo LlistaDades($FDADES); ?> </div>
             	<div id="tabs-2"> <?php echo LlistaMatricules($LMATRICULES); ?> </div>
             	<div id="tabs-3"> <?php echo LlistaReserves($LRESERVES); ?> </div>              	

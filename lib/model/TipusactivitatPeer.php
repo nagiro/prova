@@ -10,6 +10,8 @@
 class TipusactivitatPeer extends BaseTipusactivitatPeer
 {
 
+  const T_CURS = 119;
+
   static public function getSelect()
     {
       $TA = self::doSelect(new Criteria());
