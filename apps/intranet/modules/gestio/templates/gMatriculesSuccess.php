@@ -266,7 +266,7 @@
  	
  	<DIV class="REQUADRE">	    
     <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
-		<h3>La matrícula s'ha realitzat correctament.<br /> Prem <?php echo link_to('aquí','gestio/gMatricules?accio=P&IDP='.$MATRICULA->getIdmatricules()); ?> per veure el reguard.</h3>			
+		<h3>La matrícula s'ha realitzat correctament.<br /> Prem <?php echo link_to('aquí','gestio/gMatricules?accio=P&IDP='.$OM->getIdmatricules()); ?> per veure el reguard.</h3>			
     </DIV>
  	 	  
   <?php ELSEIF( $MODE == 'EDICIO' ): ?>
