@@ -27,7 +27,7 @@ class CursosPeer extends BaseCursosPeer
    
   static public function getCriteriaActiu( $C , $idS )
   {    
-    $C->add(self::CURSACTIU, true);
+    $C->add(self::ACTIU, true);
     $C->add(self::SITE_ID, $idS);
     return $C;
   }
