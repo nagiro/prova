@@ -2,6 +2,8 @@
 
 	 $(document).ready(function() {
 
+	   $( "#tabs" ).tabs({ cookie: { expires: 1 } });
+
          $('#new_user').validate({            
                 rules:{
                     "usuaris[DNI]": { required: true, rangelength: [9, 9] },
@@ -80,7 +82,7 @@ LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:12px
 		                		    			    	
         	   <FIELDSET class="REQUADRE" style="width:500px;">
                 <LEGEND class="LLEGENDA">Nou usuari</LEGEND>
-        	                               	 	                                    
+        	      
                     <table class="FORMULARI">                    
                         <?php echo $FUSUARI ?>
                     </table>
@@ -91,6 +93,7 @@ LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:12px
                         
                     </div>
                     <?php echo link_to(image_tag('template/arrow_left.png').' Tornar','gestio/uLogin') ?>
+                
                 </FIELDSET>                                                                                                            
 		    			    	
 	    </form>   

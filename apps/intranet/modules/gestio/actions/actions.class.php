@@ -631,7 +631,7 @@ class gestioActions extends sfActions
        case 'S':       
             $RP = $request->getParameter('usuaris');
             $this->IDU = $RP['UsuariID']; 
-            $this->FUsuari = UsuarisPeer::initialize( $this->IDU , $this->IDS , false );	       		       		                                       		  
+            $this->FUsuari = UsuarisPeer::initialize( $this->IDU , $this->IDS , false );             		                                       		  
             $this->FUsuari->bind($RP);             
 		    if($this->FUsuari->isValid())
 		    { 		     	
