@@ -98,18 +98,24 @@
     			$RET .= '<tr>';
     			$RET .= '<td style="font-weight:bold; background:#F2EAEA;">'.$DATA_ANT.'</td>';
     			$RET .= '<td colspan="6" style="font-weight:bold; background:#F2EAEA;">'.$TOTAL.'</td>';      			      			
-          		$RET .= '</tr>';				      		
-          	endif;      		      			      			
+          		$RET .= '</tr>';                  				      		
+          	endif;      		
+                    			      			
             $RET .= '<tr>
               			<td>'.$D['DATA'].'</td>
-                        <td>'.$D['HORA'].'</td>
-              			<td>'.$D['IMPORT'].'</td>
-              			<td>'.$D['DNI'].'</td>
+                        <td>'.$D['HORA'].'</td>';
+            
+            if($D['ESTAT'] == MatriculesPeer::DEVOLUCIO) $RET .= ' <td>-'.$D['IMPORT'].'</td>';
+            else { $RET .= ' <td>'.$D['IMPORT'].'</td>'; $TOTAL += $D['IMPORT']; }
+            
+            $RET .= '   <td>'.$D['DNI'].'</td>
               			<td>'.$D['NOM'].'</td>
               			<td>'.$D['CURS'].'</td>';
+                        
             if($TARGETA) $RET .= '<td>'.$D['ORDER'].'</td>';
             $RET .= '</tr>';          		      		      		      		
-      		$DATA_ANT = $DATA; $TOTAL += $D['IMPORT'];
+      		$DATA_ANT = $DATA; 
+        
   		endforeach;    					
         $RET .= '  </TABLE>';      
         $RET .= '</DIV>';

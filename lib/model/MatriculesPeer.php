@@ -383,7 +383,9 @@ class MatriculesPeer extends BaseMatriculesPeer
   {
   	$C = new Criteria();
     self::getCriteriaActiu( $C , $idS );
-  	$C->add(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
+    $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
+    $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
+  	$C1->addOr($C2); $C->add($C1);    
   	$C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);    
   	$C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
   	$C->addJoin(MatriculesPeer::CURSOS_IDCURSOS, CursosPeer::IDCURSOS);
