@@ -23,9 +23,11 @@ class CiclesPeer extends BaseCiclesPeer
   {
     $C = new Criteria();
     $C = self::getCriteriaActiu($C,$idS);
+    $C->addAscendingOrderByColumn(self::EXTINGIT);
+    $C->addAscendingOrderByColumn(self::NOM);
         
     $ret = array();    
-    $ret[null] = 'No pertany a cap cicle'; 
+    $ret['0'] = 'No pertany a cap cicle'; 
     foreach(self::doSelect($C) as $C) $ret[$C->getCicleid()] = $C->getNom();
     
     return $ret;
@@ -45,35 +47,27 @@ class CiclesPeer extends BaseCiclesPeer
   	endif; 
   	
   }
-  
+
+/**
+ * Use: [ executeGCicles ]
+ * Return: Pager
+ * Parameters: PAGE(Page), $CERCA(Search), $IDS (IdSite)
+ * */  
   static public function getList($PAGE = 1 , $CERCA = "" , $idS )
   {
-    
-    $RET = array();
-
-	if($PAGE == 1){  $limit_inf = 0; $limit_sup = 9; }
-    elseif($PAGE > 1) { $limit_inf = (($PAGE-1)*10); $limit_sup = (($PAGE)*10)-1; }
-    else { $limit_inf = 0; $limit_sup = 9; }
-    
-    //Agafo els 10 primers cicles ordenats per ordre d'entrada.
+           
     $C = new Criteria();
     $C = self::getCriteriaActiu( $C , $idS );    
     if(!empty($CERCA)) $C->add(self::NOM,'%'.$CERCA.'%',CRITERIA::LIKE);
-    $C->addDescendingOrderByColumn(self::CICLEID);
-    
-    $i = 0;
-	foreach(self::doSelect($C) as $C){
+    $C->addAscendingOrderByColumn(self::EXTINGIT);
+    $C->addAscendingOrderByColumn(self::NOM);
+       
+    $pager = new sfPropelPager('Cicles', 2);
+    $pager->setCriteria($C);
+    $pager->setPage($PAGE);
+    $pager->init();
+    return $pager;
 
-        if($limit_inf <= $i || $limit_sup > $i++):              			    		
-       		$RET[$C->getCicleid()]['EXTINGIT'] = $C->getExtingit();
-       		$RET[$C->getCicleid()]['TITOL'] = $C->getNom();                           		
-            $RET[$C->getCicleid()]['ACTIVITATS'] = $C->getNumActivitats();
-            $RET[$C->getCicleid()]['DIA'] = $C->getPrimerDia();
-        endif; 
-    	
-	}
-    
-    return $RET;
   }
   
   static public function getDataPrimeraActivitat( $idC , $idS )

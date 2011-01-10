@@ -379,10 +379,17 @@ class ActivitatsPeer extends BaseActivitatsPeer
         $C = new Criteria();
         $C = ActivitatsPeer::getCriteriaActiu($C,$IDS);
         $C = HorarisPeer::getCriteriaActiu($C,$IDS);
-        if(!is_null($IAF->getValue('idCicle'))) $C->add(ActivitatsPeer::CICLES_CICLEID, $IAF->getValue('idCicle'));
-        if(!is_null($IAF->getValue('DataInici'))) $C->add(HorarisPeer::DIA, $IAF->getValue('DataInici'),CRITERIA::GREATER_EQUAL);
-        if(!is_null($IAF->getValue('DataFi'))) $C->add(HorarisPeer::DIA, $IAF->getValue('DataFi'),CRITERIA::LESS_EQUAL);
+        
+        $C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);                        
+        if($IAF->getValue('idCicle') > 0) $C->add(ActivitatsPeer::CICLES_CICLEID, $IAF->getValue('idCicle'));
+        
+        $C1 = $C->getNewCriterion(HorarisPeer::DIA,$IAF->getValue('DataInici'),CRITERIA::GREATER_EQUAL);
+        $C2 = $C->getNewCriterion(HorarisPeer::DIA,$IAF->getValue('DataFi'),CRITERIA::LESS_EQUAL);                
+        if(!is_null($IAF->getValue('DataInici'))) $C->addAnd($C1);
+        if(!is_null($IAF->getValue('DataFi'))) $C->addAnd($C2);
         $C->add(ActivitatsPeer::TMIG , "" , CRITERIA::NOT_EQUAL );
+        $C->addAscendingOrderByColumn(HorarisPeer::DIA);
+        $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
         return ActivitatsPeer::doSelect($C);
     }    
 

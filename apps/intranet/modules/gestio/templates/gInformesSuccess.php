@@ -1,3 +1,5 @@
+<?php use_helper('Presentation'); ?>
+
 <STYLE>
 .cent { width:100%; }
 .vuitanta { width:80%; }
@@ -41,8 +43,9 @@
       
       <?php if(isset($FACTIVITATS)) echo FLlistatWord($FACTIVITATS); ?>
       
-      <?php if(isset($DADES)) echo LlistatMatriculats($DADES,$MODE,$accio); ?>      
-      <?php if(isset($ACTIVITATS)) echo LlistatWord($ACTIVITATS); ?>
+      <?php if(isset($DADES)) echo LlistatMatriculats($DADES,$MODE,$accio); ?>
+            
+      <?php if(isset($LOA,$IDS)) echo LlistatWord($LOA,$IDS); ?>
       
       <DIV STYLE="height:40px;"></DIV>
                 
@@ -55,12 +58,12 @@
     function FLlistatWord($FACTIVITATS)
     {        
     	echo ' <form action="'.url_for('gestio/gInformes').'" method="POST">     	    
-                    <div class="REQUADRE fb">';            
-        echo '          <div class="FORMULARI fb">                    
+                    <div class="REQUADRE">';            
+        echo '          <div class="FORMULARI">                    
                             '.$FACTIVITATS.'
                             <div class="cl" style="text-align:right; padding-top:40px;">	 	
                                 <button type="submit" name="BGENERADOC" class="BOTO_ACTIVITAT">
-    				                '.image_tag('template/disk.png').' Genera el document
+    				                '.image_tag('template/disk.png').' Genera el llistat
                                 </button>  
                             </div>                                       	
                         </div>                                                  		 		        			 	 	
@@ -124,4 +127,32 @@
         
         return $RET;
     }
+    
+
+    function LlistatWord($LOA,$IDS)
+    {
+        $RET = "";
+        $URLWEB = OptionsPeer::getString('SF_WEBROOTURL',$IDS);
+        
+        foreach($LOA as $OA):
+            $img = image_tag('activitats/'.$OA->getImatge());
+            $title = $OA->getTmig();
+            $body = $OA->getDmig();
+            $horaris = generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
+            
+            $RET .= "<div>                                                
+                        <div class=\"title\"><span>{$title}</span></div>
+                        <div><i>{$horaris}</i></div>                        
+                        <div>{$img}{$body}</div>                                                
+                    </div>                        
+                        ";
+                        
+        endforeach;
+        
+        $RETF = '<DIV class="REQUADRE">
+                    <DIV class="TITOL">Llistat d\'activitats</DIV>
+                        <div>'.$RET.'</div></div>';                              
+        return $RETF;
+    }    
+ 
  

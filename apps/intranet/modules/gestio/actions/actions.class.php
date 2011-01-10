@@ -3560,34 +3560,14 @@ class gestioActions extends sfActions
 		case 'RESUM_ACTIVITATS':
                 $RP = $request->getParameter('informe_activitats');
                 $this->FACTIVITATS   = new InformeActivitatsForm(null,array('IDS'=>$this->IDS));
-                $this->FACTIVITATS->bind($RP);
+                $this->FACTIVITATS->bind($RP);                                
                 if($request->hasParameter('BGENERADOC')):                    
-                    $LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS);
-                    $RET = array();
-                    foreach($LOA as $OA):
-                        $RET[$OA->getActivitatid()]['titol'] = html_entity_decode($OA->getTmig());
-                        $RET[$OA->getActivitatid()]['descripcio'] = html_entity_decode($OA->getDmig(),ENT_QUOTES, 'UTF-8');                        
-                        $RET[$OA->getActivitatid()]['horaris'] = $OA->getHorarisActius($this->IDS);                                                                     
-                        self::generaWord($RET,$this->IDS);
-                    endforeach;
+                    $this->LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS);                                                                                                    
                 endif;    									 
 			break;                                                    
 	}	
 	
-  }  
-  
-  private function generaWord($DADES,$IDS)
-  {
-      $doc = new sfTinyDoc();
-      $doc->createFrom(OptionsPeer::getString('SF_WEBSYSROOT',$IDS).'formularis/lactivitats.odt');
-      $doc->loadXml('content.xml');
-      $doc->mergeXmlBlock('dades', $DADES );                    
-      $doc->saveXml();
-      $doc->close();
-      $doc->sendResponse();
-      $doc->remove();          
-  }
-  
+  }    
   
   //**************************************************************************************************************************************************
   // Control de personal i feines
@@ -3718,7 +3698,7 @@ class gestioActions extends sfActions
     			$this->FCICLES = CiclesPeer::initialize($PC['CicleID'],$this->IDS);    			
     			$this->FCICLES->bind($PC,$request->getFiles('cicles'));
     			if($this->FCICLES->isValid()):
-    				$this->FCICLES->save();    				
+    				$this->FCICLES->save();                        				
     				$this->getUser()->addLogAction($accio,'gCicles',$this->FCICLES->getObject());
     			else: 
     				$this->MODE = 'EDITA';

@@ -74,28 +74,37 @@
   	<DIV class="REQUADRE">
   	<DIV class="TITOL">Llistat de cicles (<a href="<?php echo url_for('gestio/gCicles?accio=NOU'); ?>">Afegir nou cicle</a>)</DIV>
   		<table class="DADES">
-                <?php  
-                    if( sizeof($CICLES) == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.CiclesPeer::doCount(CiclesPeer::getCriteriaActiu(new Criteria(),$IDS)).' disponibles.</TD></TR>';
+                <?php
+                    if($CICLES->getNbResults() == 0) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat.</TD></TR>';
                     else {                
                     	echo '<tr><th>Títol</th><th># Act</th><th>Data</th><th>Estat</th></tr>';
-                      	foreach($CICLES as $id => $C) {                                                            		     	                          	
+                      	foreach($CICLES->getResults() as $C) {
+                 	        $NACT = $C->getNumActivitats();
+                            $idC = $C->getCicleid();
                       		echo "<TR>                      				
-                      				<TD class='LINIA'>".link_to(image_tag('intranet/Submenu2.png').' '.$C['TITOL'],'gestio/gCicles?accio=EDITA&IDC='.$id )."</TD>
-                      				<TD class='LINIA'>".$C['ACTIVITATS']."</TD>
-                      				<TD class='LINIA'>".$C['DIA']."</TD>
-									<TD class='LINIA'>".(($C['EXTINGIT'])?'Inactiu':'Actiu')."</TD>";
-                                    if($C['ACTIVITATS'] > 0) echo "<TD class='LINIA'>".link_to(image_tag('template/text_list_bullets.png').'<span>Llistat d\'activitats pertanyents al cicle</span>','gestio/gCicles?accio=LLISTA&IDC='.$id,array('class'=>'tt2'))."</TD>";
+                      				<TD class='LINIA'>".link_to(image_tag('intranet/Submenu2.png').' '.$C->getNom(),'gestio/gCicles?accio=EDITA&IDC='.$idC )."</TD>
+                      				<TD class='LINIA'>".$NACT."</TD>
+                      				<TD class='LINIA'>".$C->getPrimerDia()."</TD>
+									<TD class='LINIA'>".(($C->getExtingit())?'Inactiu':'Actiu')."</TD>";
+                                    if($NACT > 0) echo "<TD class='LINIA'>".link_to(image_tag('template/text_list_bullets.png').'<span>Llistat d\'activitats pertanyents al cicle</span>','gestio/gCicles?accio=LLISTA&IDC='.$idC,array('class'=>'tt2'))."</TD>";                                         
+                                    else echo "<TD class='LINIA'></TD>";
+                                    
                             echo "</TR>";                      		
                       	}                    	
                     }
                 ?>     			
         <tr><td colspan="5" style="text-align:center">
-         
-        <?php        	
-            if($PAGINA > 1) echo link_to('<-- Veure cicles anteriors', 'gestio/gCicles?PAGINA='.($PAGINA-1));
-      		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
-      		echo link_to('Veure cicles següents -->', 'gestio/gCicles?PAGINA='.($PAGINA+1));          	 
-		?>
+                 
+        <?php if ($CICLES->haveToPaginate()): ?>
+          <?php echo link_to('&laquo;', 'gestio/gCicles?PAGINA='.$CICLES->getFirstPage()) ?>
+          <?php echo link_to('&lt;', 'gestio/gCicles?PAGINA='.$CICLES->getPreviousPage()) ?>
+          <?php $links = $CICLES->getLinks(); foreach ($links as $page): ?>
+            <?php echo ($page == $CICLES->getPage()) ? $page : link_to($page, 'gestio/gCicles?PAGINA='.$page) ?>
+            <?php if ($page != $CICLES->getCurrentMaxLink()): ?> - <?php endif ?>
+          <?php endforeach ?>
+          <?php echo link_to('&gt;', 'gestio/gCicles?PAGINA='.$CICLES->getNextPage()) ?>
+          <?php echo link_to('&raquo;', 'gestio/gCicles?PAGINA='.$CICLES->getLastPage()) ?>
+        <?php endif ?>        	
         
         </td></tr>
   		</table>
