@@ -140,11 +140,11 @@
             $body = $OA->getDmig();
             $horaris = generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
             
-            $RET .= "<div>                                                
-                        <div class=\"title\"><span>{$title}</span></div>
+            $RET .= "<div style=\"margin-bottom:20px\">                                                
+                        <div class=\"title\"><b>{$title}</b></div>
                         <div><i>{$horaris}</i></div>                        
                         <div>{$img}{$body}</div>                                                
-                    </div>                        
+                    </div>                                            
                         ";
                         
         endforeach;
