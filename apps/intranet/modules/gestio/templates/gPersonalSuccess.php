@@ -19,68 +19,13 @@
 
 	<?php include_partial('breadcumb',array('text'=>'HORARI PERSONAL')); ?>
 	
-	<DIV class="REQUADRE">
-		<DIV class="TITOL">Horaris laborals<SPAN id="MESOS"> <?php echo getSelData($DATAI); ?></SPAN></DIV>
-		<table style="border-collapse: collapse;" id="CALENDARI_ACTIVITATS">          
-		<?php echo llistaCalendariH($DATAI,$CALENDARI); ?>
-		</table>
-	</DIV>                  
-	
-	<?php if(isset($DADES_DIA_USUARI)): ?>
-     <DIV class="REQUADRE">          
-        <DIV class="TITOL">Llistat del dia <?php echo date('Y-m-d',$DIA) ?> (<a href="<?php echo url_for('gestio/gPersonal?accio=NEW_CHANGE&DATE='.$DATE.'&IDU='.$IDU) ?>">Nova instrucció</a>)</DIV>
-      	<TABLE class="DADES">
-      		<TR>				
-				<TD class="LINIA"><b>TIPUS</b></TD>
-				<TD class="LINIA"><b>TEXT</b></TD>
-                <TD class="LINIA"><b>CREAT</b></TD>							
-				<TD class="LINIA"><b>REVISIÓ</b></TD>                								
-			</TR>
- 			<?php if( sizeof($DADES_DIA_USUARI) == 0 ): echo '<TR><TD colspan="4" class="LINIA">No hi ha cap notificació aquest dia. </TD></TR>'; endif; ?>  
-			<?php foreach($DADES_DIA_USUARI as $D): ?>						
-				<TR>				
-					<TD class="LINIA">
-                        <a href="<?php echo url_for('gestio/gPersonal?accio=EDIT_CHANGE&DATE='.$DATE.'&IDU='.$D->getIdusuari().'&IDPERSONAL='.$D->getIdpersonal()) ?>">
-                            <?php echo $D->getTipusString(); ?></a></TD>
-					<TD class="LINIA"><?php echo $D->getText(); ?></TD>
-                    <TD class="LINIA"><?php echo $D->getUsuarisRelatedByUsuariupdateid()->getNomComplet(); ?></TD>							
-					<TD class="LINIA"><?php echo $D->getDataRevisio(); ?></TD>
-				</TR>
-			<?php endforeach; ?>                        	
-      	</TABLE>      
-      </DIV>
-     
-     <?php endif; ?>
-	
-	
-	<?php if(isset($FPERSONAL)): ?>
-   	
-      	<form action="<?php echo url_for('gestio/gPersonal') ?>" method="POST">            
-	 	<DIV class="REQUADRE">
-	    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gPersonal'); ?></div>
-	    	<table class="FORMULARI" width="550px">
-	    	<?php $nom  = UsuarisPeer::retrieveByPK($IDU)->getNomComplet(); ?>
-	    	<?php $data = date('d-m-Y',$DATE); ?>
-	    	<tr><td colspan="2" class="TITOL" width="600px">Fitxa laboral per a <?php echo $nom ?> el dia <?php echo $data ?></td></tr>
-	    	
-	    	<?php if(!empty($ERROR)){ ?> 
-	    				<tr><td class="missat_ko" colspan="2"><?php foreach($ERROR as $E): echo $E.'<br />'; endforeach; ?></td></tr>	    	
-	    	<?php }; ?>	    		    	
-	    	<tr><td width="100px"></td><td width="500px"></td></tr>	    	
-                <?php echo $FPERSONAL ?>                								
-                <tr>
-                	<td></td>
-	            	<td colspan="2" class="dreta">
-						<?php include_partial('botonera',array('element'=>'la fitxa laboral'))?>
-	            	</td>
-	            </tr>                	 
-      		</TABLE>
-      	</DIV>
-     </form>         
-			   	                         
-     
-     <?php endif; ?>
-     
+    
+    <?php if(isset($FPERSONAL)) echo showForm($FPERSONAL,$ERROR); ?>
+    
+    <?php if(isset($DADES_DIA_USUARI)) echo showList($DADES_DIA_USUARI,$DIA); ?>
+    
+    <?php echo showCalendari($DATAI,$CALENDARI); ?>
+              	 
      
 </TD>
                 
@@ -224,13 +169,7 @@ function menu($seleccionat = 1,$nova = false)
       
   }
 
-//		$this->CALENDARI[1]['TREBALLADOR'] = 'Albert Johé';
-//  	$this->CALENDARI[1]['DIES'][time()]['FEINES'][1] = 'Acabar de fer allò que s\'havia pro.';
-//  	$this->CALENDARI[1]['DIES'][time()]['FEINES'][2] = 'Acabar de fer allò que s\'havia pro.';
-//  	$this->CALENDARI[1]['DIES'][time()]['HORARIS'][] = '8:00 - 12:00';
-//  	$this->CALENDARI[1]['DIES'][time()]['HORARIS'][] = '4:00 - 10:00';  
-  
-  
+    
   function getSelData($DATAI = NULL)
   {
 
@@ -302,3 +241,83 @@ function menu($seleccionat = 1,$nova = false)
   }
 
   ?>
+  
+<?php 
+
+    /**
+     * Funció que dibuixa el calendari
+     * */
+    function showCalendari($DATAI, $CALENDARI){
+        $RET = '<DIV class="REQUADRE">
+            		<DIV class="TITOL">Horaris laborals<SPAN id="MESOS">'.getSelData($DATAI).'</SPAN></DIV>
+            		<table style="border-collapse: collapse;" id="CALENDARI_ACTIVITATS">          
+            		'.llistaCalendariH($DATAI,$CALENDARI).'
+            		</table>
+            	</DIV>';
+                
+        return $RET;
+    }
+    
+    function showList($DADES_DIA_USUARI,$DIA){
+     
+        $RET = '<DIV class="REQUADRE">          
+                    <DIV class="TITOL">Llistat del dia '.date('Y-m-d',$DIA).' (<a href="'.url_for('gestio/gPersonal?accio=NEW_CHANGE&DATE='.$DATE.'&IDU='.$IDU).'">Nova instrucció</a>)</DIV>
+                    <TABLE class="DADES">
+                    	<TR>				
+                    		<TD class="LINIA"><b>TIPUS</b></TD>
+                    		<TD class="LINIA"><b>TEXT</b></TD>
+                            <TD class="LINIA"><b>CREAT</b></TD>							
+                    		<TD class="LINIA"><b>REVISIÓ</b></TD>                								
+                    	</TR>';
+         
+       	 if( sizeof($DADES_DIA_USUARI) == 0 ): $RET .= '<TR><TD colspan="4" class="LINIA">No hi ha cap notificació aquest dia. </TD></TR>'; endif;  
+       	 foreach($DADES_DIA_USUARI as $D): 						
+         $RET .= ' 		<TR>				
+                			<TD class="LINIA">
+                                <a href="'.url_for('gestio/gPersonal?accio=EDIT_CHANGE&DATE='.$DATE.'&IDU='.$D->getIdusuari().'&IDPERSONAL='.$D->getIdpersonal()).'">
+                                    '.$D->getTipusString().'</a></TD>
+                			<TD class="LINIA">'.$D->getText().'</TD>
+                            <TD class="LINIA">'.$D->getUsuarisRelatedByUsuariupdateid()->getNomComplet().'</TD>							
+                			<TD class="LINIA">'.$D->getDataRevisio().'</TD>
+                 		</TR>';
+       	 endforeach;                        	
+         $RET .= '  </TABLE>      
+                </DIV>';
+                    
+        return $RET;                                        
+    }
+    
+    function showForm($FPERSONAL,$ERROR)
+    {
+        
+        $nom  = UsuarisPeer::retrieveByPK($IDU)->getNomComplet();
+        $data = date('d-m-Y',$DATE);
+        if(!empty($ERROR)){ $ER = '<tr><td class="missat_ko" colspan="2">'; foreach($ERROR as $E): $ER .= $E.'<br />'; endforeach; $ER .= '</td></tr>'; }
+        else $ER = '';          	    		    		    
+        
+        $RET = '   	
+              	<form action="'.url_for('gestio/gPersonal').'" method="POST">
+        	 	<DIV class="REQUADRE">
+        	    <div class="OPCIO_FINESTRA">'.link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gPersonal').'</div>
+        	    	<table class="FORMULARI" width="550px">
+   	    
+                        <tr>
+                            <td colspan="2" class="TITOL" width="600px">Fitxa laboral per a '.$nom.' el dia '.$data.'</td></tr>        	    	
+        	    	        '.$ERROR.'	
+ 	                    <tr><td width="100px"></td><td width="500px"></td></tr>	    	
+                        '.$FPERSONAL.'                								
+                        <tr>
+                        	<td></td>
+        	            	<td colspan="2" class="dreta">';
+        						include_partial('botonera',array('element'=>'la fitxa laboral'));
+       $RET .= '           	</td>
+        	            </tr>                	 
+              		</TABLE>
+              	</DIV>
+             </form>';         
+
+      return $RET;			   	                                   
+    }
+
+?>
+  

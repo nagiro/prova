@@ -1455,13 +1455,13 @@ class gestioActions extends sfActions
 	    			$nova = $this->FActivitat->isNew();                    
 	    			$this->FActivitat->save();	    			
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
-	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();
-	    			if($nova):	    				
+	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();                    
+	    			if($nova):	    				                        
 	    				$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA.'&nou='.$this->IDA);
-	    			else: 
+	    			else:                         
 	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);
 	    			endif; 	    			
-	    		else: 
+	    		else:                                         
                     $this->CarregaActivitats($request,$request->getParameter('form',true));
 	    		endif; 
     			
@@ -3577,31 +3577,36 @@ class gestioActions extends sfActions
   {
   	
   	$this->setLayout('gestio');
-    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->IDS = $this->getUser()->getSessionPar('idS');    
     
   	$this->CALENDARI = array();
+    $this->ERROR = array();
   	$this->USUARI = $this->getUser()->getSessionPar('idU');
-    
-    //Usuari a qui se li aplica
-  	$this->IDU = $request->getParameter('IDU');
+        
     //Identificador de línia 
   	$this->IDP = $request->getParameter('IDPERSONAL');
-    //Data a la que s'ha fet.
-  	$this->DATE = $request->getParameter('DATE');
-  	
-  	if($request->hasParameter('DATAI')) $this->DATAI = $request->getParameter('DATAI');
-  	else $this->DATAI = time();
-  	
+    
+    //Data i usuari a qui se li aplica l'assignació
+  	$this->DATE  = $this->getUser()->ParReqSesForm($request,'DATE',time());
+    $this->IDU   = $this->getUser()->ParReqSesForm($request,'IDU',time());
+    
+    //Data del calendari
+  	$this->DATAI = $this->getUser()->ParReqSesForm($request,'DATAI',time());
+  	        	
   	$accio = $request->getParameter('accio');
   	
-  	if($request->hasParameter('BSAVE')):  $accio = "SAVE_CHANGE";  endif; 
+  	if($request->hasParameter('BSAVE')):    $accio = "SAVE_CHANGE";  endif; 
     if($request->hasParameter('BDELETE')):  $accio = "DELETE_CHANGE";  endif;
   	
-  	$this->CALENDARI = PersonalPeer::getHoraris( $this->DATAI , $this->IDS );
+  	$this->CALENDARI = PersonalPeer::getHoraris( $this->DATAI , $this->IDS );        
+
+    //Sempre carreguem el calendari
+        //Cliquem un dia i apareix el llistat
+            //Veiem la descripció
   	
   	switch($accio){
   		case 'CC':
-			$this->getUser()->addLogAction('inside','gPersonal');
+                $this->getUser()->addLogAction('inside','gPersonal');
   			break;
   		case 'EDIT_DATE':
   				//Editem un dia, i podem esborrar un canvi o bé afegir-ne un de nou.
@@ -3649,6 +3654,7 @@ class gestioActions extends sfActions
   	}
   	
   }
+  
   
   public function executeGCicles(sfWebRequest $request)
   {
