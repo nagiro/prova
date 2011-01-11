@@ -154,8 +154,8 @@
 	    	<table class="FORMULARI" width="100%">                            
 	 			<?php echo $FMatricula; ?>	 		
                 <tr>
-	 			<td colspan="2" class="dreta"><br>
-	 				<?php echo submit_tag('Crea nou usuari',array('name'=>'BADDUSER','class'=>'BOTO_ACTIVITAT')) ?>	            		
+	 			<td colspan="2" class="dreta"><br />
+	 				<?php echo link_to('Crea nou usuari','gestio/gMatricules?accio=ADD_USER'); ?> o 	            		
 	            	<?php echo submit_tag('Segueix matriculant...',array('name'=>'BSELCURS','class'=>'BOTO_ACTIVITAT')) ?>
 	            </td>
                 </tr>

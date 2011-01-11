@@ -2433,8 +2433,7 @@ class gestioActions extends sfActions
 
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { 			 $accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    	 $accio = 'NU';
-	    elseif($request->hasParameter('BADDUSER')) 		 $accio = 'ADD_USER';
+	    elseif($request->hasParameter('BNOU')) 	    	 $accio = 'NU';	    
 	    elseif($request->hasParameter('BSAVENEWUSER')) 	 $accio = 'SAVE_NEW_USER';	    
 	    elseif($request->hasParameter('BSELCURS')) 		 $accio = 'SNU';
 	    elseif($request->hasParameter('BSAVECURS')) 	 $accio = 'SAVE_CURS';
@@ -2452,14 +2451,14 @@ class gestioActions extends sfActions
 
     	//Crea un usuari nou per poder seguir fent la matrícula
     	case 'ADD_USER':    		
-                $this->FUsuari = UsuarisPeer::initialize(0,$this->IDS,true);    			    		    			     							    	    		
+                $this->FUsuari = UsuarisPeer::initialize(0,$this->IDS,true,false);    			    		    			     							    	    		
     			$this->MODE = 'MAT_NOU_USUARI';    			  	
     		break;
     		
     	//Guarda el nou usuari
     	case 'SAVE_NEW_USER':    			    			    			
                 $RU = $request->getParameter('usuaris');
-    			$this->FUsuari = UsuarisPeer::initialize(0,$this->IDS,true);  			
+    			$this->FUsuari = UsuarisPeer::initialize(0,$this->IDS,true,false);  			
     			$this->FUsuari->bind($RU);
     			if($this->FUsuari->isValid()):
     				$this->FUsuari->save();

@@ -44,30 +44,6 @@
 	        </table>
 	     </DIV>
      </form>  
-
-	<?php IF( isset($MODE['CONSULTA']) && $MODE['CONSULTA'] ): ?>
-
-     <DIV class="REQUADRE">     	
-        <DIV class="TITOL">Llistat d'usuaris (<?php echo $PAGER_USUARIS->getNbResults()?>)</DIV>
-      	<TABLE class="DADES">
-      			<?php 
-                	if($PAGER_USUARIS->getNbResults() == 0):
-                  		echo '<TR><TD class="LINIA" colspan="4">No s\'ha trobat cap usuari.</TD></TR>';
-                 	else:                 
-	                 	foreach($PAGER_USUARIS->getResults() as $U):
-		                 	echo '	<TR><TD class="LINIA">'.link_to($U->getDni(),'gestio/gUsuaris'.getPar($PAGINA,$U->getusuariid(),'E')).'</TD>
-		                        		<TD class="LINIA">'.$U->getNomComplet().'</TD>
-		                        		<TD class="LINIA">'.$U->getTelefon().'</TD> 
-		                        		<TD class="OPCIONS">'.creaOpcions($PAGINA, $U->getusuariid(), NULL).'</TD>
-		                    		</TR>';                                   
-	                	endforeach;                    
-	                	echo '<TR><TD>'.gestorPaginesUsuaris( $PAGER_USUARIS ).'</TD></TR>';
-	            	endif;
-	            ?> 
-      	</TABLE>      
-      </DIV>
-
-  <?php ENDIF; ?>
   
   <?php IF( isset($MODE['NOU']) && $MODE['NOU'] || isset($MODE['EDICIO']) && $MODE['EDICIO'] ): ?>
       
@@ -201,6 +177,31 @@
      </form>
 
   <?php ENDIF; ?>
+
+	<?php IF( isset($MODE['CONSULTA']) && $MODE['CONSULTA'] ): ?>
+
+     <DIV class="REQUADRE">     	
+        <DIV class="TITOL">Llistat d'usuaris (<?php echo $PAGER_USUARIS->getNbResults()?>)</DIV>
+      	<TABLE class="DADES">
+      			<?php 
+                	if($PAGER_USUARIS->getNbResults() == 0):
+                  		echo '<TR><TD class="LINIA" colspan="4">No s\'ha trobat cap usuari.</TD></TR>';
+                 	else:                 
+	                 	foreach($PAGER_USUARIS->getResults() as $U):
+		                 	echo '	<TR><TD class="LINIA">'.link_to($U->getDni(),'gestio/gUsuaris'.getPar($PAGINA,$U->getusuariid(),'E')).'</TD>
+		                        		<TD class="LINIA">'.$U->getNomComplet().'</TD>
+		                        		<TD class="LINIA">'.$U->getTelefon().'</TD> 
+		                        		<TD class="OPCIONS">'.creaOpcions($PAGINA, $U->getusuariid(), NULL).'</TD>
+		                    		</TR>';                                   
+	                	endforeach;                    
+	                	echo '<TR><TD>'.gestorPaginesUsuaris( $PAGER_USUARIS ).'</TD></TR>';
+	            	endif;
+	            ?> 
+      	</TABLE>      
+      </DIV>
+
+  <?php ENDIF; ?>
+
   
     
       <DIV STYLE="height:40px;"></DIV>
