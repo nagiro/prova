@@ -20,7 +20,7 @@
 	<?php include_partial('breadcumb',array('text'=>'HORARI PERSONAL')); ?>
 	
     
-    <?php if(isset($FPERSONAL)) echo showForm($FPERSONAL,$ERROR); ?>
+    <?php if(isset($FPERSONAL)) echo showForm($FPERSONAL,$ERROR,$IDU,$DATE); ?>
     
     <?php if(isset($DADES_DIA_USUARI)) echo showList($DADES_DIA_USUARI,$DIA); ?>
     
@@ -75,8 +75,6 @@ function menu($seleccionat = 1,$nova = false)
   		$RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD>";
   	endfor;
 	$RET .= "</TR>";
-
-//	print_r($CALENDARI);
 	
 	foreach($CALENDARI as $idU => $DADES):
 	
@@ -261,7 +259,7 @@ function menu($seleccionat = 1,$nova = false)
     function showList($DADES_DIA_USUARI,$DIA){
      
         $RET = '<DIV class="REQUADRE">          
-                    <DIV class="TITOL">Llistat del dia '.date('Y-m-d',$DIA).' (<a href="'.url_for('gestio/gPersonal?accio=NEW_CHANGE&DATE='.$DATE.'&IDU='.$IDU).'">Nova instrucció</a>)</DIV>
+                    <DIV class="TITOL">Llistat del dia '.date('Y-m-d',$DIA).' (<a href="'.url_for('gestio/gPersonal?accio=NEW_CHANGE').'">Nova instrucció</a>)</DIV>
                     <TABLE class="DADES">
                     	<TR>				
                     		<TD class="LINIA"><b>TIPUS</b></TD>
@@ -274,7 +272,7 @@ function menu($seleccionat = 1,$nova = false)
        	 foreach($DADES_DIA_USUARI as $D): 						
          $RET .= ' 		<TR>				
                 			<TD class="LINIA">
-                                <a href="'.url_for('gestio/gPersonal?accio=EDIT_CHANGE&DATE='.$DATE.'&IDU='.$D->getIdusuari().'&IDPERSONAL='.$D->getIdpersonal()).'">
+                                <a href="'.url_for('gestio/gPersonal?accio=EDIT_CHANGE&IDPERSONAL='.$D->getIdpersonal()).'">
                                     '.$D->getTipusString().'</a></TD>
                 			<TD class="LINIA">'.$D->getText().'</TD>
                             <TD class="LINIA">'.$D->getUsuarisRelatedByUsuariupdateid()->getNomComplet().'</TD>							
@@ -287,7 +285,7 @@ function menu($seleccionat = 1,$nova = false)
         return $RET;                                        
     }
     
-    function showForm($FPERSONAL,$ERROR)
+    function showForm($FPERSONAL,$ERROR,$IDU,$DATE)
     {
         
         $nom  = UsuarisPeer::retrieveByPK($IDU)->getNomComplet();
@@ -299,18 +297,23 @@ function menu($seleccionat = 1,$nova = false)
               	<form action="'.url_for('gestio/gPersonal').'" method="POST">
         	 	<DIV class="REQUADRE">
         	    <div class="OPCIO_FINESTRA">'.link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gPersonal').'</div>
-        	    	<table class="FORMULARI" width="550px">
-   	    
+        	    	<table class="FORMULARI" width="550px">   	    
                         <tr>
                             <td colspan="2" class="TITOL" width="600px">Fitxa laboral per a '.$nom.' el dia '.$data.'</td></tr>        	    	
-        	    	        '.$ERROR.'	
+        	    	        '.$ER.'	
  	                    <tr><td width="100px"></td><td width="500px"></td></tr>	    	
                         '.$FPERSONAL.'                								
                         <tr>
                         	<td></td>
-        	            	<td colspan="2" class="dreta">';
-        						include_partial('botonera',array('element'=>'la fitxa laboral'));
-       $RET .= '           	</td>
+        	            	<td colspan="2" class="dreta">
+				                <button type="submit" name="BSAVE" class="BOTO_ACTIVITAT">
+		                          '.image_tag('template/disk.png').' Guardar i sortir
+                                </button>
+	                            <button type="submit" name="BDELETE" class="BOTO_PERILL">
+		                          '.image_tag('tango/16x16/status/user-trash-full.png').' Eliminar
+	                            </button>
+
+                       	    </td>
         	            </tr>                	 
               		</TABLE>
               	</DIV>

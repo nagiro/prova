@@ -3597,8 +3597,8 @@ class gestioActions extends sfActions
   	if($request->hasParameter('BSAVE')):    $accio = "SAVE_CHANGE";  endif; 
     if($request->hasParameter('BDELETE')):  $accio = "DELETE_CHANGE";  endif;
   	
-  	$this->CALENDARI = PersonalPeer::getHoraris( $this->DATAI , $this->IDS );        
-
+  	$this->CALENDARI = PersonalPeer::getHoraris( $this->DATAI , $this->IDS );                  				  
+    
     //Sempre carreguem el calendari
         //Cliquem un dia i apareix el llistat
             //Veiem la descripció
@@ -3608,14 +3608,14 @@ class gestioActions extends sfActions
                 $this->getUser()->addLogAction('inside','gPersonal');
   			break;
   		case 'EDIT_DATE':
-  				//Editem un dia, i podem esborrar un canvi o bé afegir-ne un de nou.
-  				$this->DADES_DIA_USUARI = PersonalPeer::getDadesUpdates($this->DATE, $this->IDU , $this->IDS );
-                $this->DIA = $this->DATE;  				  
+                $this->GPersonal_LoadDadesDia();
   			break;  			
   		case 'NEW_CHANGE':
+                $this->GPersonal_LoadDadesDia();
   				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE, $this->IDU , null , $this->IDS );  				
   			break;
   		case 'EDIT_CHANGE':
+                $this->GPersonal_LoadDadesDia();
   				$this->FPERSONAL = PersonalPeer::initialize($this->USUARI , $this->DATE , $this->IDU , $this->IDP , $this->IDS );
   			break;  			
   		case 'SAVE_CHANGE':  				
@@ -3637,6 +3637,7 @@ class gestioActions extends sfActions
   				else: 
   					$this->ERROR[] = "Hi ha algun problema amb el formulari.";
   				endif; 
+                $this->GPersonal_LoadDadesDia();
   			break;
   		case 'DELETE_CHANGE':            
                 $RP = $request->getParameter('personal');
@@ -3653,6 +3654,13 @@ class gestioActions extends sfActions
   	}
   	
   }
+
+  private function GPersonal_LoadDadesDia()
+  {
+    //Editem un dia, i podem esborrar un canvi o bé afegir-ne un de nou.
+    $this->DADES_DIA_USUARI = PersonalPeer::getDadesUpdates($this->DATE, $this->IDU , $this->IDS );
+    $this->DIA = $this->DATE;  
+  } 
   
   
   public function executeGCicles(sfWebRequest $request)
