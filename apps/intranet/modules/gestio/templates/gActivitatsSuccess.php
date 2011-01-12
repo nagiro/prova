@@ -209,8 +209,9 @@
 			<?php 	foreach($ACTIVITATS as $A):
 						$NH = ($A->countHorarisActius($IDS) == 0)?'Afegeix l\'horari':'Edita horaris';
 						$DESC = ($A->getDMig()=="")?'Afegeix descripció':'Edita descripció';
+                        $PrimerDia = $A->getPrimeraData();
 						echo '<TR>
-								<TD class="" width="">'.link_to($A->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A->getActivitatid()).'</TD>
+								<TD class="" width="">'.link_to($A->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A->getActivitatid()).' ('.$PrimerDia.')</TD>
 								<TD class="" width="100px">'.link_to($NH,'gestio/gActivitats?accio=HORARI&IDA='.$A->getActivitatid()).'</TD>
 								<TD class="" width="100px">'.link_to($DESC,'gestio/gActivitats?accio=DESCRIPCIO&IDA='.$A->getActivitatid()).'</TD>								 
 							  </TR>';
