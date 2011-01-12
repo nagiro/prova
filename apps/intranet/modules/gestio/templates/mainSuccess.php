@@ -1,3 +1,6 @@
+<style>
+.small { font-size:8px; color:gray;  }
+</style>
 <TD colspan="3" class="CONTINGUT_ADMIN">
      
 	<DIV class="REQUADRE">
@@ -64,13 +67,23 @@
                 	endforeach;                    
                                                    
 					foreach($FEINES as $F):						
-						$SPAN = '<SPAN>'.$F['TEXT'].'</SPAN>';
+						$SPAN = '<SPAN>'.$F['TEXT'].'</SPAN>';                        
+                                                                        
+                        $DATA = date('d-m-Y',$F['DATA']);                              
+                        $SetMana = mktime(0,0,0,date('m',time()),date('d',time())-7,date('Y',time()));                                                
+                                                
+                        if($DATA == date('d-m-Y',time())) $DATA = 'Avui';
+                        elseif(strtotime($DATA) > $SetMana) $DATA = 'Menys de 7 dies ('.$DATA.')';
+                        elseif(strtotime($DATA) <= $SetMana) $DATA = 'Fa més d\'una setmana ('.$DATA.')';                        
+
+                        $PAR = url_for('gestio/gPersonal?accio=EDIT_CHANGE&IDU='.$F['IDU'].'&IDPERSONAL='.$F['IDP'].'&DATE='.$F['DATA']);
+                        
 						echo '<TR>
-								<TD width="20%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">Feina</TD>																								
-                                <TD><a href="#" class="tt2">'.$F['SUBTEXT'].$SPAN.'</TD>                                
+								<TD width="20%">'.image_tag('intranet/fletxeta.png',array('align'=>'ABSMIDDLE')).' <a href="#" class="tt2">Feina</TD>
+                                <TD><a href="'.$PAR.'" class="tt2">'.$F['SUBTEXT'].$SPAN.'</a> <span class="small"> | '.$DATA.'</span></TD>                                
 								<TD width="20%">'.$F['USUARI'].'</TD>
 							  </TR>';						
-                	endforeach;
+                	endforeach;                                    
                                         
                 ?>                                                       
       	</TABLE>      

@@ -56,20 +56,21 @@ class PersonalPeer extends BasePersonalPeer {
 		$C->add(PersonalPeer::IDPERSONAL, $idPersonal);			
 		$OP = self::doSelectOne($C);
 		
-		if($OP instanceof Personal):			
-			$OP->setUsuariUpdateId($idUsuari);
-			return new PersonalForm($OP);
-		else: 
+		if(!($OP instanceof Personal)):										
 			$OP = new Personal();
 			$OP->setDataAlta(date('Y-m-d',time()));
 			$OP->setIddata(date('Y-m-d',$data));
 			$OP->setIdusuari($idu);	
 			$OP->setUsuariUpdateId($idUsuari);	
             $OP->setSiteId($idS);
-            $OP->setActiu(true);            											
-			return new PersonalForm($OP);
+            $OP->setActiu(true);     
+            $OP->setDatafinalitzada(null);
+            $OP->setDataRevisio(null);       			            											
+        else: 
+            $OP->setUsuariUpdateId($idUsuari);
 		endif; 
-		
+		                                         
+        return new PersonalForm($OP);
 		
 	}
 
@@ -152,11 +153,15 @@ class PersonalPeer extends BasePersonalPeer {
     {
         $C = new Criteria();
         $C = self::getCriteriaActiu( $C , $idS );
-        $C->add(self::IDDATA, date('Y-m-d',$date));
+        $C1 = $C->getNewCriterion(self::IDDATA, date('Y-m-d',$date), CRITERIA::LESS_EQUAL);        
+        $C2 = $C->getNewCriterion(self::DATA_FINALITZADA, NULL);
+        $C1->addAnd($C2); $C->add($C1);
+        
         $C->add(self::IDUSUARI, $idU);
         $C->add(self::TIPUS, self::FEINA);
                 
         $C->addJoin(self::USUARIUPDATEID, UsuarisPeer::USUARIID);
+        $C->addDescendingOrderByColumn(self::IDDATA);
         $RET = array();
         
         foreach(self::doSelect($C) as $OP):
@@ -170,7 +175,11 @@ class PersonalPeer extends BasePersonalPeer {
             $RET[] = array(
                         'TEXT'      => $TEXT,
                         'SUBTEXT'   => $SUBTEXT,
-                        'USUARI'    => $U->getNom().' '.$U->getCog1());                                                            
+                        'USUARI'    => $U->getNom().' '.$U->getCog1(),
+                        'DATA'      => $OP->getIdData('U'),
+                        'IDU'       => $OP->getIdusuari(),
+                        'IDP'       => $OP->getIdpersonal(),                                                
+                        );                                                            
         endforeach;
                 
         return $RET;                
