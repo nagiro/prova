@@ -63,7 +63,7 @@ class CiclesPeer extends BaseCiclesPeer
     $C->addAscendingOrderByColumn(self::EXTINGIT);
     $C->addAscendingOrderByColumn(self::NOM);
        
-    $pager = new sfPropelPager('Cicles', 2);
+    $pager = new sfPropelPager('Cicles', 20);
     $pager->setCriteria($C);
     $pager->setPage($PAGE);
     $pager->init();
