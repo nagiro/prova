@@ -23,6 +23,7 @@ class CiclesPeer extends BaseCiclesPeer
   {
     $C = new Criteria();
     $C = self::getCriteriaActiu($C,$idS);
+    $C->add(self::EXTINGIT, false);
     $C->addAscendingOrderByColumn(self::EXTINGIT);
     $C->addAscendingOrderByColumn(self::NOM);
         

@@ -381,7 +381,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
         $C = HorarisPeer::getCriteriaActiu($C,$IDS);
         
         $C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);                        
-        if($IAF->getValue('idCicle') > 0) $C->add(ActivitatsPeer::CICLES_CICLEID, $IAF->getValue('idCicle'));
+        if($IAF->getValue('idCicle') > 0) $C->add(ActivitatsPeer::CICLES_CICLEID, $IAF->getValue('idCicle'));        
         
         $C1 = $C->getNewCriterion(HorarisPeer::DIA,$IAF->getValue('DataInici'),CRITERIA::GREATER_EQUAL);
         $C2 = $C->getNewCriterion(HorarisPeer::DIA,$IAF->getValue('DataFi'),CRITERIA::LESS_EQUAL);                

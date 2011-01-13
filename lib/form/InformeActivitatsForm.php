@@ -15,7 +15,9 @@ class InformeActivitatsForm extends sfForm
   {
   	$choices = array();
     $choices[''] = "No cercar cap cicle";
-    $choices = array_merge($choices,CiclesPeer::getSelect($this->getOption('IDS')));    
+    $choices2 = CiclesPeer::getSelect($this->getOption('IDS'));    
+    foreach($choices2 as $K=>$V) $choices[$K] = $V;
+    unset($choices2);    
      
     
     $this->setWidgets(array(

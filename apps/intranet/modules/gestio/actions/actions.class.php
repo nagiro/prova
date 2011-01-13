@@ -3559,7 +3559,7 @@ class gestioActions extends sfActions
 		case 'RESUM_ACTIVITATS':
                 $RP = $request->getParameter('informe_activitats');
                 $this->FACTIVITATS   = new InformeActivitatsForm(null,array('IDS'=>$this->IDS));
-                $this->FACTIVITATS->bind($RP);                                
+                $this->FACTIVITATS->bind($RP);                
                 if($request->hasParameter('BGENERADOC')):                    
                     $this->LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS);                                                                                                    
                 endif;    									 
@@ -3720,7 +3720,7 @@ class gestioActions extends sfActions
     
     	case 'DELETE':                
     			$PC = $request->getParameter('cicles');
-    			$FC = EntradesPeer::initialize($PC['CicleID'],$this->IDS);
+    			$FC = CiclesPeer::initialize($PC['CicleID'],$this->IDS);
     			$this->getUser()->addLogAction($accio,'gCicles',$FC);
     			$FC->getObject()->setActiu(false);
                 $FC->getObject()->save();
@@ -3901,5 +3901,83 @@ class gestioActions extends sfActions
     }
       
   }
+  
+  public function executeGTrac(sfWebRequest $request)
+  {
+    
+    $this->setLayout('gestio');
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->IDU = $this->getUser()->getSessionPar('idU');
+    $this->accio = $request->getParameter('accio','C');
+
+    //Primer carreguem el formulari per poder cercar en les actualitzacions
+    //Després podem afegir una possible millora o bé afegir un error.
+    
+    //També sortirà un llistat per mostrar el que he corregit i la versió    
+
+    $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG);
+    $this->FUPGRADES = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_UPGRADE);
+               
+/*    if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
+    if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';    
+    if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
+    if($request->hasParameter('BDELETEUSERSITE')) $this->accio = 'DELETE_USER_SITE';
+    if($request->hasParameter('BSEARCHUSERSITES')) $this->accio = 'SEARCH_USER_SITES';
+    if($request->hasParameter('BSAVEUSERMENU')) $this->accio = 'SAVE_USER_MENU';
+    
+    switch($this->accio){
+        
+        case 'SAVE_SITE':
+            $this->FSITES->bind($RSITES);
+            if($this->FSITES->isValid()):
+                $this->FSITES->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
+                $this->FSITES  = SitesPeer::initialize($this->FSITES->getObject()->getSiteId());                
+            endif;
+            break;
+            
+        case 'DELETE_SITE':                        
+            $this->FSITES->getObject()->setActiu(false)->save();            
+            $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
+            $this->FESPAIS  = SitesPeer::initialize(0,$this->IDS);                        
+            break;
+                        
+        case 'SAVE_USER_SITE':
+            $RP = $request->getParameter('dades');                        
+            if($OU instanceof Usuaris):
+                foreach($RP as $id=>$RS):
+                    if($id >0 || ( $id == 0 && $RS['site'] <> 0 ) ):                    
+                        $OUS = UsuarisSitesPeer::initialize( $this->USUARI , $RS['site'] , false )->getObject();
+                        $OUS->setNivellId($RS['nivell']);
+                        $OUS->setActiu(true);
+                        $OUS->save();
+                    endif;                                                            
+                endforeach;
+                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
+            endif;                         
+            break;
+            
+        case 'DELETE_USER_SITE': 
+            $USUARI = $request->getParameter('USUARI');                               
+            $SITE = $request->getParameter('SITE');            
+            $OUS = UsuarisSitesPeer::initialize( $USUARI , $SITE )->getObject();
+            if(!$OUS->isNew()):
+                $OUS->setActiu(false);
+                $OUS->save();
+                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
+            endif;
+            break;
+                  
+        case 'SAVE_USER_MENU':
+            $LMENUS_NOVA = $request->getParameter('dades');
+            if(!empty($LMENUS_NOVA)) UsuarisMenusPeer::doUpdateMy( $this->USUARI , $this->SITE , $LMENUS_NOVA );                        
+            $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);
+            break;
+                                        
+    }
+ */     
+  }  
+  
+  
     
 }
