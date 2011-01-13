@@ -13,9 +13,13 @@ class InformeActivitatsForm extends sfForm
 	
   public function setup()
   {
-  	
+  	$choices = array();
+    $choices[''] = "No cercar cap cicle";
+    $choices = array_merge($choices,CiclesPeer::getSelect($this->getOption('IDS')));    
+     
+    
     $this->setWidgets(array(
-      'idCicle'     => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect($this->getOption('IDS')))),                  
+      'idCicle'     => new sfWidgetFormChoice(array('choices'=>$choices)),                  
       'DataInici'   => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'DataFi'      => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),      
     ));

@@ -1,5 +1,5 @@
 <style>
-.small { font-size:8px; color:gray;  }
+  .small { font-size:9px; color:gray;  }
 </style>
 <TD colspan="3" class="CONTINGUT_ADMIN">
      

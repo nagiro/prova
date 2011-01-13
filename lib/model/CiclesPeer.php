@@ -27,7 +27,7 @@ class CiclesPeer extends BaseCiclesPeer
     $C->addAscendingOrderByColumn(self::NOM);
         
     $ret = array();    
-    $ret[''] = 'No pertany a cap cicle'; 
+    //$ret[''] = 'No pertany a cap cicle'; 
     foreach(self::doSelect($C) as $C) $ret[$C->getCicleid()] = $C->getNom();
     
     return $ret;
