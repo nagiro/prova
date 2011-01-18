@@ -136,12 +136,14 @@
         
         foreach($LOA as $OA):
             $img = image_tag('activitats/'.$OA->getImatge());
+            $OC = $OA->getCicles(); if($OC instanceof Cicles) $cicle = "Cicle: ".$OC->getTmig();
             $title = $OA->getTmig();
             $body = $OA->getDmig();
             $horaris = generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
             
             $RET .= "<div style=\"margin-bottom:20px\">                                                
                         <div class=\"title\"><b>{$title}</b></div>
+                        <div><i>{$cicle}</i></div>
                         <div><i>{$horaris}</i></div>                        
                         <div>{$img}{$body}</div>                                                
                     </div>                                            

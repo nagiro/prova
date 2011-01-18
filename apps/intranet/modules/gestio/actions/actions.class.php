@@ -3908,17 +3908,21 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
     $this->IDS = $this->getUser()->getSessionPar('idS');
     $this->IDU = $this->getUser()->getSessionPar('idU');
+    $this->IDT = $request->getParameter('idT','0');
     $this->accio = $request->getParameter('accio','C');
+    $PB = $this->getUser()->getSessionPar('PB');
+    $PU = $this->getUser()->getSessionPar('PU');
+    $PI = $this->getUser()->getSessionPar('PI');
 
     //Primer carreguem el formulari per poder cercar en les actualitzacions
     //Després podem afegir una possible millora o bé afegir un error.
     
-    //També sortirà un llistat per mostrar el que he corregit i la versió    
-
-    $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG);
-    $this->FUPGRADES = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_UPGRADE);
+    //També sortirà un llistat per mostrar el que he corregit i la versió            
+    $this->LBUGS = TracPeer::getBugsList($PB);
+    $this->LUPGRADES = TracPeer::getUpgradesList($PU);
+    $this->LIMPROVEMENTS = TracPeer::getImprovementsList($PI);
                
-/*    if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
+    if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
     if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';    
     if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
     if($request->hasParameter('BDELETEUSERSITE')) $this->accio = 'DELETE_USER_SITE';
@@ -3927,55 +3931,47 @@ class gestioActions extends sfActions
     
     switch($this->accio){
         
-        case 'SAVE_SITE':
-            $this->FSITES->bind($RSITES);
-            if($this->FSITES->isValid()):
-                $this->FSITES->save();                
-                $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
-                $this->FSITES  = SitesPeer::initialize($this->FSITES->getObject()->getSiteId());                
-            endif;
+        case 'EDIT_UPGRADE':
+            $this->FUPGRADES = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_UPGRADE , $this->IDT );            
             break;
             
-        case 'DELETE_SITE':                        
-            $this->FSITES->getObject()->setActiu(false)->save();            
-            $this->getUser()->addLogAction($this->accio,'gConfigSuperAdmin',$this->FSITES->getObject());
-            $this->FESPAIS  = SitesPeer::initialize(0,$this->IDS);                        
+        case 'EDIT_BUG':                        
+            $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG  , $this->IDT);                        
             break;
                         
-        case 'SAVE_USER_SITE':
-            $RP = $request->getParameter('dades');                        
-            if($OU instanceof Usuaris):
-                foreach($RP as $id=>$RS):
-                    if($id >0 || ( $id == 0 && $RS['site'] <> 0 ) ):                    
-                        $OUS = UsuarisSitesPeer::initialize( $this->USUARI , $RS['site'] , false )->getObject();
-                        $OUS->setNivellId($RS['nivell']);
-                        $OUS->setActiu(true);
-                        $OUS->save();
-                    endif;                                                            
-                endforeach;
-                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
-            endif;                         
+        case 'EDIT_IMPROVEMENT':
+            $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG  , $this->IDT);                         
             break;
             
-        case 'DELETE_USER_SITE': 
-            $USUARI = $request->getParameter('USUARI');                               
-            $SITE = $request->getParameter('SITE');            
-            $OUS = UsuarisSitesPeer::initialize( $USUARI , $SITE )->getObject();
-            if(!$OUS->isNew()):
-                $OUS->setActiu(false);
-                $OUS->save();
-                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
-            endif;
+        case 'SAVE_BUG': 
+            $RP = $request->getParameter('trac');
+            $FOT = TracPeer::initialize($this->IDS, $this->IDU, $RP['type'] , $RP['idTrac'] );
+            $FOT->bind($RP);
+            if($FOT->isValid()):
+                $FOT->save();
+            else: 
+                $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG , $this->IDT);            
+            endif;                                                 
             break;
-                  
-        case 'SAVE_USER_MENU':
-            $LMENUS_NOVA = $request->getParameter('dades');
-            if(!empty($LMENUS_NOVA)) UsuarisMenusPeer::doUpdateMy( $this->USUARI , $this->SITE , $LMENUS_NOVA );                        
-            $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);
+
+        case 'SAVE_UPGRADE': 
+            $RP = $request->getParameter('trac');
+            $FOT = TracPeer::initialize($this->IDS, $this->IDU, $RP['type'] , $RP['idTrac'] );
+            $FOT->bind($RP);
+            if($FOT->isValid()):
+                $FOT->save();
+            else: 
+                $this->FUPGRADES = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_UPGRADE);            
+            endif;                                                 
             break;
-                                        
-    }
- */     
+
+        case 'DELETE': 
+            $RP = $request->getParameter('trac');
+            $FOT = TracPeer::initialize($this->IDS, $this->IDU, $RP['type'] , $RP['idTrac'] );
+            $FOT->getObject()->setInactiu()->save();                                               
+            break;
+                                   
+    }     
   }  
   
   
