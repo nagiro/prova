@@ -12,11 +12,15 @@ class CessioForm extends BaseCessioForm
 {
  public function setup()
   {
+    
+    $BASE = OptionsPeer::getString('SF_WEBROOT',$this->getOption('IDS'));        
+    
     $this->setWidgets(array(
       'cessio_id'      => new sfWidgetFormInputHidden(),
-      'usuari_id'      => new sfWidgetFormInputHidden(),
-      'dni'            => new sfWidgetFormInputText(array(),array()),
-      'nom'            => new sfWidgetFormInputText(array(),array()),
+      'usuari_id'      => new sfWidgetFormJQueryAutocompleter(array(
+                                                                        'url'=>$BASE.'index.php/gestio/ajaxUsuaris',
+                                                                        'value_callback'   =>  array('UsuarisPeer', 'getNomAjax')),                                                                           
+                                                                        array('style'=>'width:400px')),      
       'representant'   => new sfWidgetFormInputText(array(),array()),
       'data_cessio'    => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'data_retorn'    => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
@@ -31,10 +35,7 @@ class CessioForm extends BaseCessioForm
 
     $this->setValidators(array(
       'cessio_id'      => new sfValidatorPropelChoice(array('model' => 'Cessio', 'column' => 'cessio_id', 'required' => false)),
-/*      'usuari_id'      => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID')), */
-      'usuari_id'      => new sfValidatorPass(),
-      'dni'            => new sfValidatorString(array('required'=>true),array()),
-      'nom'            => new sfValidatorString(array('required'=>true),array()),      
+      'usuari_id'      => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required'=> true )),      
       'representant'   => new sfValidatorString(array('required'=>true),array()),
       'motiu'		   => new sfValidatorString(array('required'=>true),array()),
       'condicions'	   => new sfValidatorString(array('required'=>false),array()),
@@ -48,9 +49,7 @@ class CessioForm extends BaseCessioForm
     ));
 
     $this->widgetSchema->setLabels(array(      
-/*      'usuari_id'      => 'Cedit a', */
-      'dni'            => 'DNI ',
-      'nom'            => 'Nom i cognoms ',
+      'usuari_id'      => 'Cedit a',
       'representant'   => 'Representant a ',
       'motiu'          => 'Motiu ',
       'condicions'	   => 'Condicions ',

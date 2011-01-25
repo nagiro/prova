@@ -1,18 +1,19 @@
 <?php use_helper('Form')?>
-<?php use_javascript('/sfFormExtraPlugin/js/jquery.autocompleter.js') ?>
-<?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',$IDS); ?>
+<script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script>
+
 
 <STYLE>
-.cent { width:100%; }
-.vuitanta { width:80%; }
-.cinquanta { width:50%; }
-.HTEXT { height:100px; }
 
+    @import url('<?php echo $BASE.'css/jquery.autocompleter.css'; ?>');
+    .cent { width:100%; }
+    .vuitanta { width:80%; }
+    .cinquanta { width:50%; }
+    .HTEXT { height:100px; }
 	.row { width:500px; } 
 	.row_field { width:75%; } 
 	.row_title { width:25%; }
 	.row_field input { width:100%; } 
-
 
 </STYLE>
 
@@ -226,7 +227,7 @@ $(document).ready(function() {
                       	$DRet = $C->getDataretornat('d/m/Y');
                       	$DRetT = (is_null($DRet))?"No s'ha retornat.":$DRet;                      	                      	
                       	echo "<TR>                      			                      			
-                      			<TD class=\"$PAR\">".$C->getNom()."</TD>
+                      			<TD class=\"$PAR\">".$C->getNomUsuari()."</TD>
                       			<TD class=\"dreta $PAR\">".$C->getDataCessio('d/m/Y')."</TD>
                       			<TD class=\"dreta $PAR\">".$C->getDataRetorn('d/m/Y')."</TD>								                      			
                       			<TD class=\"dreta $PAR\">".$DRetT."</TD>

@@ -22,8 +22,8 @@ class CessiomaterialRetornForm extends sfFormPropel
       'data_retorn'    => new sfWidgetFormInputHidden(),
       'estat'          => new sfWidgetFormInputHidden(),
       'retornat'       => new sfWidgetFormInputHidden(),
-      'data_retornat'  => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%')),
-      'estat_retornat' => new sfWidgetFormTextarea(),
+      'data_retornat'  => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),      
+      'estat_retornat' => new sfWidgetFormTextareaTinyMCE(),
       
     ));
 

@@ -18,7 +18,7 @@ class MatriculesUsuariForm extends sfFormPropel
           	
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
-  	  'Usuaris_UsuariID' => new sfWidgetFormJQueryAutocompleter(array('url'=>$BASE.'intranet_dev.php/gestio/gMatricules?accio=AJAX_USUARIS'),array('style'=>'width:400px')),  	    	    	  
+  	  'Usuaris_UsuariID' => new sfWidgetFormJQueryAutocompleter(array('url'=>$BASE.'index.php/gestio/ajaxUsuaris'),array('style'=>'width:400px')),  	    	    	  
   	  'Cursos_idCursos'  => new sfWidgetFormInputHidden(),  	  
       'Estat'            => new sfWidgetFormInputHidden(),
       'Comentari'        => new sfWidgetFormInputHidden(),

@@ -235,5 +235,14 @@ class UsuarisPeer extends BaseUsuarisPeer
   {
     UsuarisSitesPeer::initialize($idU,$idS,false)->getObject()->save();    
   }
+  
+  static public function getNomAjax($idU)
+  {    
+    $C = new Criteria();
+    $C->add(self::USUARIID, $idU);
+    $OU = self::doSelectOne($C);
+    if($OU instanceof Usuaris) return $OU->getDni().' - '.$OU->getNomComplet();
+    else return 'n/d';
+  }
     
 }

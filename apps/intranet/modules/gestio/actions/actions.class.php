@@ -2643,6 +2643,15 @@ class gestioActions extends sfActions
     }  	      
   }
   
+
+  public function executeAjaxUsuaris(sfWebRequest $request)
+  {
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),$this->IDS);                                          
+    return $this->renderText(json_encode($RET));                
+  }
+  
+  
   //Envia el correu d'una matrícula
   public function SendMailMatricula($OM,$idS){
     if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):
@@ -3922,13 +3931,11 @@ class gestioActions extends sfActions
     $this->LUPGRADES = TracPeer::getUpgradesList($PU);
     $this->LIMPROVEMENTS = TracPeer::getImprovementsList($PI);
                
-    if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
-    if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';    
-    if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
-    if($request->hasParameter('BDELETEUSERSITE')) $this->accio = 'DELETE_USER_SITE';
-    if($request->hasParameter('BSEARCHUSERSITES')) $this->accio = 'SEARCH_USER_SITES';
-    if($request->hasParameter('BSAVEUSERMENU')) $this->accio = 'SAVE_USER_MENU';
-    
+    if($request->hasParameter('BSAVEUPGRADE')) $this->accio = 'SAVE_UPGRADE';
+    if($request->hasParameter('BDELETEUPGRADE')) $this->accio = 'DELETE_UPGRADE';
+    if($request->hasParameter('BSAVEBUG')) $this->accio = 'SAVE_BUG';
+    if($request->hasParameter('BDELETEBUG')) $this->accio = 'DELETE_BUG';    
+        
     switch($this->accio){
         
         case 'EDIT_UPGRADE':
@@ -3940,7 +3947,7 @@ class gestioActions extends sfActions
             break;
                         
         case 'EDIT_IMPROVEMENT':
-            $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG  , $this->IDT);                         
+            $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_IMPROVEMENT  , $this->IDT);                         
             break;
             
         case 'SAVE_BUG': 
@@ -3949,27 +3956,40 @@ class gestioActions extends sfActions
             $FOT->bind($RP);
             if($FOT->isValid()):
                 $FOT->save();
+                $this->redirect('gestio/gTrac');
             else: 
-                $this->FBUGS = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_BUG , $this->IDT);            
+                $this->FBUGS = $FOT;            
             endif;                                                 
             break;
 
-        case 'SAVE_UPGRADE': 
+        case 'DELETE_BUG': 
             $RP = $request->getParameter('trac');
+            $FOT = TracPeer::initialize($this->IDS, $this->IDU, $RP['type'] , $RP['idTrac'] );
+            $OT = $FOT->getObject();
+            $OT->setInactiu()->save();
+            $this->redirect('gestio/gTrac');                                                           
+            break;           
+
+        case 'SAVE_UPGRADE': 
+            $RP = $request->getParameter('trac');            
             $FOT = TracPeer::initialize($this->IDS, $this->IDU, $RP['type'] , $RP['idTrac'] );
             $FOT->bind($RP);
             if($FOT->isValid()):
                 $FOT->save();
+                //$this->redirect('gestio/gTrac');
             else: 
-                $this->FUPGRADES = TracPeer::initialize($this->IDS,$this->IDU,TracPeer::TYPE_UPGRADE);            
+                $this->FUPGRADES = $FOT;            
             endif;                                                 
             break;
-
-        case 'DELETE': 
+            
+        case 'DELETE_UPGRADE': 
             $RP = $request->getParameter('trac');
             $FOT = TracPeer::initialize($this->IDS, $this->IDU, $RP['type'] , $RP['idTrac'] );
-            $FOT->getObject()->setInactiu()->save();                                               
-            break;
+            $OT = $FOT->getObject();
+            $OT->setInactiu()->save();          
+            $this->redirect('gestio/gTrac');                                                 
+            break;           
+
                                    
     }     
   }  

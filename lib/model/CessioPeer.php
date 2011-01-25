@@ -19,9 +19,9 @@ class CessioPeer extends BaseCessioPeer
         if($retorn):            
             $OC->setEstatRetornat("");
     		$OC->setDataretornat(date('Y-m-d',time()));
-            return new CessiomaterialRetornForm($OC);
+            return new CessiomaterialRetornForm($OC,array('IDS'=>$idS));
         else:
-            return new CessioForm($OC);
+            return new CessioForm($OC,array('IDS'=>$idS));
         endif;
   	else:
   		$OC = new Cessio();
@@ -39,9 +39,9 @@ class CessioPeer extends BaseCessioPeer
             $OC->setRetornat(true);
             $OC->setEstatRetornat("");
     		$OC->setDataretornat(date('Y-m-d',time()));
-            return new CessiomaterialRetornForm($OC);
+            return new CessiomaterialRetornForm($OC,array('IDS'=>$idS));
         else:
-            return new CessioForm($OC);
+            return new CessioForm($OC,array('IDS'=>$idS));
         endif;  		
   	endif;
   	  	
