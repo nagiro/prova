@@ -42,7 +42,7 @@
 				</a>
 			</div>
             <div class="PESTANYA_SUPERIOR">
-				<a target="_NEW" href="<?php echo url_for('web/web?accio=mc&node=43'); ?>">
+				<a target="_NEW" href="<?php echo url_for('web/index?accio=mc&node=43'); ?>">
 					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_09.png'); ?>" /> 
 				</a>
 			</div>
