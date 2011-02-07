@@ -22,6 +22,7 @@ class PromocionsPeer extends BasePromocionsPeer
     	$OP = PromocionsPeer::retrieveByPK($idP);            
     	if(!($OP instanceof Promocions)):                		    	
     		$OP = new Promocions();
+            $OP->setOrdre(0);
             $OP->setSiteId($idS);        
             $OP->setActiu(true);        			
     	endif; 
@@ -39,12 +40,18 @@ class PromocionsPeer extends BasePromocionsPeer
 
   static function selectOrdre( $idS , $NOU = false )
   {     
-     $RET = array();
-     $C = new Criteria();
-     $C = self::getCriteriaActiu( $C , $idS );
-     $TOP = self::doCount($C);
+     $RET = array();   
+     $LOP = self::getAllByOrdre($idS);  
      
-     for($i = 1; $i <= $TOP+1; $i++) $RET[$i] = $i;
+     $last = 1;
+     $i = 1;
+     foreach($LOP as $OP){
+       $RET[$OP->getOrdre()] = $i++;
+       $last = $OP->getOrdre()+1;         
+     }          
+     
+     //Si és nou hi afegim un número més.
+     if($NOU) { $RET[$last] = $last; }
      
      return $RET;            
   }
@@ -74,17 +81,14 @@ class PromocionsPeer extends BasePromocionsPeer
    
     $rs->next();
     return $rs->getInt('max');
-  }
+  }  
   
   static function gestionaOrdre( $desti , $actual , $idS )
-  {    
-     foreach(self::getAllByOrdre($idS) as $P):
-        $Ordre = $P->getOrdre();     
-	    if($actual == 0){ if($Ordre >= $desti) $P->setOrdre($Ordre+1); }            
-	    elseif($actual < $desti) { if($Ordre > $actual && $Ordre <= $desti) $P->setOrdre($Ordre-1); } 
-	    elseif($actual > $desti) { if($Ordre >= $desti && $Ordre < $actual) $P->setOrdre($Ordre+1); }	    
-	    $P->save();     
-     endforeach;
+  {
+    
+    $NODES = self::getAllByOrdre($idS);    
+    myUser::gestionaOrdre($desti,$actual,$idS,$NODES);
+    
   }
   
   

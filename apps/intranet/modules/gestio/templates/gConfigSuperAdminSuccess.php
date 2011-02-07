@@ -1,7 +1,10 @@
 <?php use_helper('Form') ?>
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',$IDS); ?>
+<script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script>
 
 <style>
-	
+
+    @import url('<?php echo $BASE.'css/jquery.autocompleter.css'; ?>');	
 	.row { width:500px; } 
 	.row_field { width:70%; } 
 	.row_title { width:30%; }
@@ -17,21 +20,8 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		$( "#tabs" ).tabs({ cookie: { expires: 1 } });                
-        $('#sites_site_id').change(function(){ $('#FSITES').submit(); });                        
+		$( "#tabs" ).tabs({ cookie: { expires: 1 } });  
 	});
-
-    //Funció que captura de quin genèric parlem i busca els disponibles. 
-	function ajaxOptions()
-	{
-		$("#options_valor").val('Carregant...');										
-        $.post(
-                '<?php echo url_for('gestio/gConfig?accio=AJAX_OPCIO') ?>',  
-                { IDO: $('#options_option_id').val() } , 
-                function(data) { $("#options_valor").val(data); }
-            );                                                
-                                                
-    }
     	
 	</script>
 
@@ -50,8 +40,8 @@
                 <li><a href="#tabs-3">Menús Gestió</a></li>
         	</ul>                        
         	<div id="tabs-1"> <?php echo EntitatsTab($FSITES); ?> </div>
-        	<div id="tabs-2"> <?php echo PermisosTab($DNI, $USUARI , $LUSERSITES); ?> </div>              	
-            <div id="tabs-3"> <?php echo MenusgestioTab($DNI , $USUARI , $SITE , $LMENUSUSUARI); ?> </div>
+        	<div id="tabs-2"> <?php echo PermisosTab($SITE, $LUSERSITES); ?> </div>              	
+            <div id="tabs-3"> <?php echo MenusgestioTab($LMENUSUSUARI, $FMENUUSUARI); ?> </div>
         </div>
     
     </div>
@@ -93,21 +83,22 @@
     /**
      * Permisos Tab
      * */
-    function PermisosTab( $DNI , $USUARI , $LUSERSITES = "" )
+    function PermisosTab( $SITE , $LUSERSITES = "" )
     {
    
         $RET = '
             <form id="FESPAIS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
-                DNI : '.input_tag('DNI',$DNI);
+                Site : '.select_tag('SITE',options_for_select(SitesPeer::getSelect(),$SITE));
         $RET .= '<br /><br /><table>';
-        $RET .= '<tr><td class="titol">Site</td><td class="titol">Nivell</td><td class="titol"></td></tr>';  
-        foreach($LUSERSITES as $OUS):            
-            $RET .= '<tr><td>'.select_tag('dades['.$OUS->getSiteId().'][site]',options_for_select(SitesPeer::getSelect(false),$OUS->getSiteId())).'</td>';
-            $RET .= '<td>'.select_tag('dades['.$OUS->getSiteId().'][nivell]',options_for_select(NivellsPeer::getSelect(),$OUS->getNivellId())).'</td>';                        
-            $RET .= '<td>'.link_to('esborra' , 'gestio/gConfigSuperAdmin?accio=DELETE_USER_SITE&USUARI='.$USUARI.'&SITE='.$OUS->getSiteId().'&DNI='.$DNI).'</td></tr>';
+        $RET .= '<tr><td class="titol">User</td><td class="titol">Nivell</td><td class="titol"></td></tr>';  
+        foreach( $LUSERSITES as $OUS ):
+            $USUARI = $OUS->getUsuariId();            
+            $RET .= '<tr><td>'.select_tag('dades['.$USUARI.'][IDU]',options_for_select(UsuarisPeer::selectAllUsers(),$USUARI)).'</td>';
+            $RET .= '<td>'.select_tag('dades['.$USUARI.'][IDN]',options_for_select(NivellsPeer::getSelect(),$OUS->getNivellId())).'</td>';                        
+            $RET .= '<td>'.link_to('esborra' , 'gestio/gConfigSuperAdmin?accio=DELETE_USER_SITE&USUARI='.$USUARI.'&SITE='.$SITE).'</td></tr>';
         endforeach;        
-        $RET .= '<tr><td>'.select_tag('dades[0][site]',options_for_select(SitesPeer::getSelect(true),0)).'</td>';
-        $RET .= '<td>'.select_tag('dades[0][nivell]',options_for_select(NivellsPeer::getSelect(),0)).'</td></tr>';                        
+        $RET .= '<tr><td>'.select_tag('dades[0][IDU]',options_for_select(UsuarisPeer::selectAllUsers(),0)).'</td>';
+        $RET .= '<td>'.select_tag('dades[0][IDN]',options_for_select(NivellsPeer::getSelect(),0)).'</td></tr>';                        
         $RET .= '</table>';
                         
         $RET .='         	 	                                                    
@@ -128,11 +119,12 @@
     /**
      * Menus Gestió Tab
      * */
-    function MenusgestioTab($DNI , $USUARI , $SITE , $LMENUS = "")
-    {
+    function MenusgestioTab($LMENUS = "", $FMENUUSUARI)
+    {        
+        
         $RET = '
-            <form id="FESPAIS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
-                DNI : '.input_tag('DNI',$DNI).'<br />Site: '.select_tag('SITE',options_for_select(SitesPeer::getSelect(),$SITE));
+            <form id="FMENUS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
+            <table>'.$FMENUUSUARI.'</table>';                
         $RET .= '<br /><br /><table>';        
         
         $RET .= '<tr><td class="titol">Menu</td><td class="titol"></td></tr>';                      

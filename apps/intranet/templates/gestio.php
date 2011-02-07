@@ -12,6 +12,10 @@
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/thickbox.css'; ?>" />    
 
+  <!--[if lte IE 7]>
+    <link type="text/css" rel="stylesheet" media="all" href="css/screen_ie.css" />
+  <![endif]-->
+
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-1.4.2.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/tiny_mce/tiny_mce.js'; ?>"></script>        
   <script type="text/javascript" src="<?php echo $BASE.'js/thickgox-compressed.js'; ?>"></script>    
@@ -21,6 +25,7 @@
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/jquery.validate.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js'; ?>"></script>
+
     
     <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>    
     
@@ -36,7 +41,7 @@
   </head>
   
   <body class="CCG">
-  <center>
+  <center>          
     <TABLE class="TAULA">
 <!--  <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>  -->
     <TR><TD colspan="4" class="CAPCALERA"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'gestio/ULogin'); ?></TD></TR>

@@ -115,4 +115,34 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
         return array();        
     }
 
+    static public function getSitesUsersSelect($idS, $nivell)
+    {
+        $RET = array();
+        $LOUS = self::getSitesUsers($idS,$nivell);
+        foreach($LOUS as $OUS):
+            $RET[$OUS->getUsuariId()] = UsuarisPeer::getNomComplet($OUS->getUsuariId());
+        endforeach;
+        
+        return $RET;
+    }
+
+    static public function getSitesUsers($idS,$nivell = NivellsPeer::ADMIN)
+    {
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C);
+        $C = UsuarisPeer::getCriteriaActiu($C,$idS);
+        $C->addJoin(self::USUARI_ID, UsuarisPeer::USUARIID);
+        $C->add(UsuarisSitesPeer::NIVELL_ID, $nivell);
+        $C->add(self::SITE_ID, $idS);        
+        return self::doSelect($C);
+    }
+
+    static public function getFirsSiteUser($idS)
+    {
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C);
+        $C->add(self::SITE_ID,$idS);
+        return self::doSelectOne();
+    }
+
 } // UsuarisSitesPeer

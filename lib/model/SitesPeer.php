@@ -82,4 +82,36 @@ class SitesPeer extends BaseSitesPeer {
         endif; 
     }
     
+    static public function cercaTotsCampsSelect($q, $lim, $idS)
+    {
+        $RET = array();         
+        $C = self::getCriteriaActiu(new Criteria());
+        $C->add(self::NOM, '%'.$q.'%',CRITERIA::LIKE);        
+        $C->setLimit($lim);        
+    
+        foreach(self::doSelect($C) as $U):
+      		$RET[$U->getSiteid()] = array('clau'=>$U->getSiteid(),'text'=>$U->getNom());  		
+      	endforeach;      
+        
+        return $RET;
+    }
+    
+    static public function getSiteUsersCercaUser($q, $lim, $IDS)
+    {        
+        $C = self::getCriteriaActiu(new Criteria());
+        $C = UsuarisPeer::CriteriaCerca($q,$C);
+        if($IDS > 0):
+            $C->addJoin(UsuarisPeer::USUARIID, UsuarisSitesPeer::USUARI_ID);
+            $C->add(UsuarisSitesPeer::SITE_ID, $IDS);            
+        endif; 
+        $C->setLimit($lim);        
+        
+        foreach(UsuarisPeer::doSelect($C) as $U):
+      		$RET[$U->getUsuariId()] = array('clau'=>$U->getUsuariId(),'text'=>$U->getNomComplet());  		
+      	endforeach;      
+        
+        return $RET;                
+    }
+    
+    
 } // SitesPeer

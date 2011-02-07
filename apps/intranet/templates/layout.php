@@ -29,7 +29,7 @@
     <!-- <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>  -->   
     <TR>
     	<TD class="CAPCALERA" style="width: 256px"><?php echo link_to(image_tag('intranet/logoCCG.png', array('id'=>'logo')),'web/index?accio=no'); ?></TD>    	
-    	<TD class="CAPCALERA" style="padding-left:200px;" colspan="3" >
+    	<TD class="CAPCALERA" style="padding-left:120px;" colspan="3" >
 		<div style="vertical-align:bottom; position:relative; width:768px;">
 			<div class="PESTANYA_SUPERIOR">
 				<a target="_NEW" href="http://www.casadecultura.org/giroscopi">
@@ -39,6 +39,11 @@
 			<div class="PESTANYA_SUPERIOR">
 				<a target="_NEW" href="#">
 					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_04.png'); ?>" /> 
+				</a>
+			</div>
+            <div class="PESTANYA_SUPERIOR">
+				<a target="_NEW" href="<?php echo url_for('web/web?accio=mc&node=43'); ?>">
+					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_09.png'); ?>" /> 
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">

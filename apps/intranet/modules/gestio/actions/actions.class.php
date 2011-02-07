@@ -356,6 +356,7 @@ class gestioActions extends sfActions
                 $this->getUser()->setSessionPar('idN',NivellsPeer::CAP);
                 $this->getUser()->setAuthenticated(false);
                 $this->getUser()->clearCredentials();
+                unset($_SESSION[$USUARI->getNomComplet()]);
                 $this->redirect('gestio/uLogin');
             break;
         
@@ -368,8 +369,10 @@ class gestioActions extends sfActions
                 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],null);                     		 
        		    if($USUARI instanceof Usuaris):                                    
                     $this->IDS = $L['site'];
-                    $this->makeLogin( $USUARI , $this->IDS );
-                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );                                                         
+                    $_SESSION[$USUARI->getNomComplet()] = $USUARI->getNomComplet();                                        
+                    $this->makeLogin( $USUARI , $this->IDS );                    
+                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );
+                                                                             
                 else:
                     $this->getUser()->addLogAction('error','login',$L);     		 
                  	$this->ERROR = "L'usuari o la contrasenya són incorrectes";
@@ -2651,6 +2654,21 @@ class gestioActions extends sfActions
     return $this->renderText(json_encode($RET));                
   }
   
+  public function executeAjaxSites(sfWebRequest $request)
+  {    
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $RET = SitesPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),$this->IDS);                                                      
+    return $this->renderText(json_encode($RET));                
+  }
+
+  public function executeAjaxUsuarisSite(sfWebRequest $request)
+  {
+    $this->IDS = $request->getParameter('IDS',0);
+    $RET = SitesPeer::getSiteUsersCercaUser($request->getParameter('q'),$request->getParameter('lim'),$this->IDS);                                              
+    return $this->renderText(json_encode($RET));                
+  }
+
+
   
   //Envia el correu d'una matrícula
   public function SendMailMatricula($OM,$idS){
@@ -3836,28 +3854,33 @@ class gestioActions extends sfActions
     $this->accio = $request->getParameter('accio','C');
     
     $RSITES = $request->getParameter('sites',array('site_id'=>1));
-    $this->FSITES = SitesPeer::initialize($RSITES['site_id']);
-               
-    $this->DNI = $request->getParameter('DNI','');
-    $this->SITE = $request->getParameter('SITE','');              
-    $OU = UsuarisPeer::cercaDNI($this->DNI);                    
-    if($OU instanceof Usuaris):
-        $this->USUARI = $OU->getUsuariid(); 
-        $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);                                                                  
-        $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);
-    else:
+    $this->FSITES = SitesPeer::initialize($RSITES['site_id']);                   
+    $this->SITE = $request->getParameter('SITE','');
+    
+    //Cerquem per SITE, que és més fàcil
+    //Mirem quins usuaris hi ha a un SITE relacionats com a adminstradors
+    //Mirem quins menús tenen els usuaris d'un SITE en general (els menús del primer usuari)
+
+    $OS = SitesPeer::retrieveByPK($this->SITE);
+    if($OS instanceof Sites):         
+        $this->LUSERSITES = UsuarisSitesPeer::getSitesUsers($this->SITE,true);              
+        $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);                
+    else: 
         $this->USUARI = 0; 
         $this->LUSERSITES = array();                                                          
         $this->LMENUSUSUARI = array();
     endif; 
-               
+    
+    $this->FMENUUSUARI = new ConfigSuperAdminMenusForm(null,array('IDS'=>$this->IDS));
+    $this->FMENUUSUARI->bind($request->getParameter('super_admin_menus'));        
+                   
     if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
     if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';    
     if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
     if($request->hasParameter('BDELETEUSERSITE')) $this->accio = 'DELETE_USER_SITE';
     if($request->hasParameter('BSEARCHUSERSITES')) $this->accio = 'SEARCH_USER_SITES';
     if($request->hasParameter('BSAVEUSERMENU')) $this->accio = 'SAVE_USER_MENU';
-    
+        
     switch($this->accio){
         
         case 'SAVE_SITE':
@@ -3876,18 +3899,16 @@ class gestioActions extends sfActions
             break;
                         
         case 'SAVE_USER_SITE':
-            $RP = $request->getParameter('dades');                        
-            if($OU instanceof Usuaris):
-                foreach($RP as $id=>$RS):
-                    if($id >0 || ( $id == 0 && $RS['site'] <> 0 ) ):                    
-                        $OUS = UsuarisSitesPeer::initialize( $this->USUARI , $RS['site'] , false )->getObject();
-                        $OUS->setNivellId($RS['nivell']);
-                        $OUS->setActiu(true);
-                        $OUS->save();
-                    endif;                                                            
-                endforeach;
-                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
-            endif;                         
+            $RP = $request->getParameter('dades');  
+            foreach($RP as $RS):                
+                if($RS['IDU'] > 0 && $RS['IDN'] > 0 && $this->SITE > 0 ):                    
+                    $OUS = UsuarisSitesPeer::initialize( $RS['IDU'] , $this->SITE , false )->getObject();                                                                
+                    $OUS->setNivellId($RS['IDN']);
+                    $OUS->setActiu(true);
+                    $OUS->save();
+                endif;                                                                            
+            endforeach;
+            $this->LUSERSITES = UsuarisSitesPeer::getSitesUsers($this->SITE,true);                        
             break;
             
         case 'DELETE_USER_SITE': 
@@ -3897,14 +3918,25 @@ class gestioActions extends sfActions
             if(!$OUS->isNew()):
                 $OUS->setActiu(false);
                 $OUS->save();
-                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->USUARI);
+                $this->LUSERSITES = UsuarisSitesPeer::getUserSites($this->SITE);
             endif;
             break;
                   
         case 'SAVE_USER_MENU':
             $LMENUS_NOVA = $request->getParameter('dades');
-            if(!empty($LMENUS_NOVA)) UsuarisMenusPeer::doUpdateMy( $this->USUARI , $this->SITE , $LMENUS_NOVA );                        
-            $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);
+            $LDADES = $request->getParameter('super_admin_menus');            
+            if(!empty($LMENUS_NOVA)) UsuarisMenusPeer::doUpdateMy( $LDADES['IDU'] , $LDADES['IDS'] , $LMENUS_NOVA );                        
+            $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($LDADES['IDU'],$LDADES['IDS']);            
+            $this->FMENUUSUARI->setWidgetUsers();            
+            break;
+        
+        case 'SEARCH_USER_SITES':            
+            $IDS = $this->FMENUUSUARI->getValue('IDS');            
+            $IDU = $this->FMENUUSUARI->getValue('IDU');
+            if(!empty($IDS)){
+                $this->FMENUUSUARI->setWidgetUsers();
+                if(!empty($IDU)) $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($IDU,$IDS);
+            }           
             break;
                                         
     }
@@ -3976,7 +4008,7 @@ class gestioActions extends sfActions
             $FOT->bind($RP);
             if($FOT->isValid()):
                 $FOT->save();
-                //$this->redirect('gestio/gTrac');
+                $this->redirect('gestio/gTrac');
             else: 
                 $this->FUPGRADES = $FOT;            
             endif;                                                 

@@ -68,14 +68,11 @@ class NodesPeer extends BaseNodesPeer
   }
   
   static function gestionaOrdre( $desti , $actual , $idS )
-  {   
-     foreach(self::getNodes($idS) as $N):
-        $Ordre = $N->getOrdre();     
-	    if($actual == 0){ if($Ordre >= $desti) $N->setOrdre($Ordre+1); }            
-	    elseif($actual < $desti) { if($Ordre > $actual && $Ordre <= $desti) $N->setOrdre($Ordre-1); } 
-	    elseif($actual > $desti) { if($Ordre >= $desti && $Ordre < $actual) $N->setOrdre($Ordre+1); }	    
-	    $N->save();     
-     endforeach;
+  {
+    
+     $NODES = self::getNodes($idS);
+     myUser::gestionaOrdre($desti,$actual,$idS,$NODES);
+            
   }
   
   static function getIsCategoria($IDN)

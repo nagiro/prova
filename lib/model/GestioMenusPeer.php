@@ -33,13 +33,19 @@ class GestioMenusPeer extends BaseGestioMenusPeer {
         return $RET;
     }
 
+    static public function getMenusSiteUsersArray($idS,$admin)
+    {
+        //Busco els menús del primer usuari i el passo com a mostra.
+        $OUS = UsuarisSitesPeer::getFirstSiteUser($idS);
+        return self::getMenusUsuari($OUS->getUsuariId(),$idS,$admin);                          
+    }
+
     static public function getMenusUsuari($idU,$idS,$admin = 1)
     {
-        $C = new Criteria();
-        
+        $C = new Criteria();        
         
         if($admin == 1):
-            //Nom�s mostrem els que toquen per l'usuari. '
+            //Només mostrem els que toquen per l'usuari. '
             $C = UsuarisMenusPeer::getCriteriaActiu($C);
             $C->addJoin(UsuarisMenusPeer::MENU_ID,self::MENU_ID);
             $C->add(UsuarisMenusPeer::USUARI_ID, $idU);

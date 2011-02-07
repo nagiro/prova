@@ -59,5 +59,26 @@ class myUser extends sfBasicSecurityUser
   	$O->save();
   	
   }  
+
+  static public function gestionaOrdre( $desti , $actual , $idS , $LO )
+  {   
+     //Si el destí i actual són iguals, llavors no fem res. '
+     if($desti == $actual) return null;
+                                                                                  
+     //Canvia l'ordre segons els intermitjos.
+     foreach($LO as $O):
+     
+        $Ordre = $O->getOrdre();
+                
+        if($Ordre == $actual) $O->setOrdre($desti);                
+        elseif($Ordre < $actual && $Ordre >= $desti && $actual > 0 ) $O->setOrdre($Ordre+1);
+        elseif($Ordre <= $desti  && $Ordre >= $actual && $actual > 0 ) $O->setOrdre($Ordre-1);
+        elseif($actual == 0 && $Ordre >= $desti) $O->setOrdre($Ordre+1); //És un nou node.        
+        
+	    $O->save();
+     
+     endforeach;
+  }
+
   
 }

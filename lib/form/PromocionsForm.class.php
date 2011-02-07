@@ -60,7 +60,7 @@ class PromocionsForm extends sfFormPropel
   public function save($conn = null)
   {
  	
-  	$OPromocions = $this->getObject();  	
+  	$OPromocions = $this->getObject();             	
   	PromocionsPeer::gestionaOrdre($this->getValue('Ordre'),$OPromocions->getOrdre(),$this->getOption('IDS'));
     
     parent::save();
