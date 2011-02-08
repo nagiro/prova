@@ -2700,10 +2700,10 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS');
         
     //Inicialitzem el formulari de cerca    
-    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>0));
     if(!isset($this->CERCA['select']))
     {
-        $this->CERCA = array('text'=>'','select'=>1);
+        $this->CERCA = array('text'=>'','select'=>0);
         $this->getUser()->setSessionPar('cerca',$this->CERCA);
     } 
     
@@ -2729,7 +2729,7 @@ class gestioActions extends sfActions
 		
 		case 'CC':
 			$this->getUser()->addLogAction('inside','gNoticies');			
-            $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));			
+            $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>0));			
 			break;
 			
 		case 'N':
@@ -2763,9 +2763,16 @@ class gestioActions extends sfActions
             $this->IDN = $RS['idNoticia'];
             $this->FORMULARI = NoticiesPeer::initialize($this->IDN,$this->IDS);			        						
 			$this->FORMULARI->getObject()->setActiu(false)->save();
-            $this->getUser()->addLogAction($accio,'gNoticies',$this->FORMULARI->getObject());				
+            $this->getUser()->addLogAction($this->accio,'gNoticies',$this->FORMULARI->getObject());				
 			break;
-						
+            
+        //Order Down. Movem la fila un lloc avall.
+        case 'O':
+            $IDN = $request->getParameter('idN');
+            $UP  = $request->getParameter('UP',0);
+            NoticiesPeer::setNewOrder($IDN,$UP,$this->IDS);            
+			break;
+        
 	}
 	        
     $this->NOTICIES = NoticiesPeer::getNoticies($this->CERCA['text'],$this->PAGINA, false, $this->CERCA['select'] , $this->IDS);

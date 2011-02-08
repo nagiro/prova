@@ -61,10 +61,8 @@ class NodesPeer extends BaseNodesPeer
   
   static function selectOrdre( $idS , $NOU = false )
   {
-     $RET = array();     
-     foreach(self::getNodes($idS) as $N) $RET[$N->getOrdre()] = $N->getOrdre();     
-     if($NOU): $RET[sizeof($RET)+1] = sizeof($RET)+1; endif;
-     return $RET;
+     $LOP = self::getNodes($idS,true);
+     return myUser::selectOrdre($idS,$LOP,$NOU);     
   }
   
   static function gestionaOrdre( $desti , $actual , $idS )

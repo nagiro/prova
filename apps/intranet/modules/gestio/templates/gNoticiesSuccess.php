@@ -70,13 +70,15 @@
                 if(sizeof($NOTICIES) == 0 ) { echo '<TR><TD class="LINIA">No hi ha cap notícia activa.</TD></TR>'; }
                 else { echo '<tr><td class="TITOL">Títol</td><td class="TITOL">Data publicació</td><td class="TITOL">Data desaparició</td><td class="TITOL">Activa?</td><td class="TITOL">Ordre</td><tr>'; }
                  								                           
-                foreach($NOTICIES->getResults() as $N):                                                          
+                foreach($NOTICIES->getResults() as $N):
+                    $Ordre = link_to(image_tag('tango/16x16/actions/go-down.png'),'gestio/gNoticies?accio=O&DOWN=1&idN='.$N->getIdnoticia());
+                    $Ordre .= ' '.link_to(image_tag('tango/16x16/actions/go-up.png'),'gestio/gNoticies?accio=O&UP=1&idN='.$N->getIdnoticia());                                                          
 					echo '<TR>							
 							<TD class="LINIA">'.link_to($N->getTitolnoticia(),'gestio/gNoticies?accio=E&idn='.$N->getIdnoticia()).'</TD>
 							<TD class="LINIA">'.$N->getDatapublicacio().'</TD>							
 							<TD class="LINIA">'.$N->getDatadesaparicio().'</TD>
 							<TD class="LINIA">'.(($N->getActiva())?'Sí':'No').'</TD>							
-                            <TD class="LINIA">'.$N->getOrdre().'</TD>
+                            <TD class="LINIA">'.$Ordre.'</TD>
 						  </TR>';                		                 															
 				endforeach;				
                 ?>         

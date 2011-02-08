@@ -17,20 +17,18 @@ class NoticiesPeer extends BaseNoticiesPeer
 			$ON = new Noticies();
             $ON->setDatapublicacio(date('Y-m-d',time()));
 			$ON->setDatadesaparicio(date('Y-m-d',time()));
-            $ON->setSiteId($idS);        
+            $ON->setSiteId($idS);   
+            $ON->setOrdre(1);     
             $ON->setActiu(true);        						
 		endif; 
         
         return new NoticiesForm($ON,array('IDS'=>$idS));
 	}
-
     
-	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false, $totes = false , $idS )
-	{
-		
-		//Agafem totes les notícies de notícies i les activitats que hem posat que es publiquen com a notícies		
-		$C = new Criteria();
-        $C = self::getCriteriaActiu( $C , $idS );
+    static public function getNoticiesCriteria($C,$TEXT,$FILTRE_WEB, $TOTES, $IDS)
+    {
+		//Agafem totes les notícies de notícies i les activitats que hem posat que es publiquen com a notícies				
+        $C = self::getCriteriaActiu( $C , $IDS );
 						
 		//Només les notícies amb el text oportú.
 		if(!empty($TEXT)): 
@@ -39,28 +37,36 @@ class NoticiesPeer extends BaseNoticiesPeer
 			$C1->addOr($C2); $C->add($C1);			
 		endif;
 
-        if(!$totes):
+        if(!$TOTES):
 			$C->add( self::DATAPUBLICACIO  , date('Y-m-d',time()) , CRITERIA::LESS_EQUAL );
             $C->add( self::DATADESAPARICIO , date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );
 		endif;
         
-       	if($filtreWEB && !$totes):
+       	if($FILTRE_WEB && !$TOTES):
 			$C->add(self::ACTIVA, true);
 		endif; 				        
 
-        if(!$totes):
+        if(!$TOTES):
             $C->addAscendingOrderByColumn(self::ORDRE);
             $C->addAscendingOrderByColumn(self::DATAPUBLICACIO);
         else: 
             $C->addDescendingOrderByColumn(self::DATAPUBLICACIO);
         endif;                  			        
+        
+        return $C;
+        
+    }
+    
+	static public function getNoticies($TEXT = "", $PAGINA = 1, $filtreWEB = false, $totes = false , $idS )
+	{
+		$C = new Criteria();
+        $C = self::getNoticiesCriteria($C, $TEXT,$filtreWEB,$totes,$idS);
             
 		$pager = new sfPropelPager('Noticies', 20);
 	 	$pager->setCriteria($C);
 	 	$pager->setPage($PAGINA);
 	 	$pager->init();
-	 	return $pager;
-		
+	 	return $pager;		
 	}
 	
 	static public function getNoticia( $idN , $idS )
@@ -100,18 +106,48 @@ class NoticiesPeer extends BaseNoticiesPeer
 		return $ON;		         
 	}	
     
-    static public function selectOrdre($idS)
+    static public function setNewOrder($idN,$UP,$idS)
     {
-        //Només podem ordenar aquells que la data de fi de publicació és superior a la actual.  
-        $RET = array();
+        
         $C = new Criteria();
-        $C = self::getCriteriaActiu( $C , $idS );        
-        $C->add(self::DATADESAPARICIO, date('Y-m-d',time()) , CRITERIA::GREATER_EQUAL );        
-        $TOP = self::doCount($C);
+        $C = self::getNoticiesCriteria($C,'',false,false,$idS);
+                                                        
+        $LOP = self::doSelect($C);
+        $i = 1; $pos_element = 0;
         
-        for($i = 1; $i <= $TOP+1; $i++) $RET[$i] = $i;
         
-        return $RET;            
+        //Primer fem una passada per identificar quin és el que volem canviar.
+        $RET = array(); 
+        foreach($LOP as $OP):
+            if($OP->getIdnoticia() == $idN) $pos_element = $i;
+            $RET[$i] = $OP;
+            $OP->setOrdre($i)->save();
+            $i = $i + 1;
+        endforeach;
+        
+        if($UP){
+            if(isset($RET[$pos_element-1])){
+                $RET[$pos_element]->setOrdre($pos_element-1)->save();
+                $RET[$pos_element-1]->setOrdre($pos_element)->save();
+            }
+        }else {
+            if(isset($RET[$pos_element+1])){
+                $RET[$pos_element]->setOrdre($pos_element+1)->save();
+                $RET[$pos_element+1]->setOrdre($pos_element)->save();
+            }
+        }                        
+                                
     }
+/*    
+    static public function selectOrdre($idS,$NOU = false)
+    {
+        $C = new Criteria();
+        $C = self::getNoticiesCriteria($C,"",false,false,$idS);                
+        $C->addAscendingOrderByColumn(self::ORDRE);        
     
+        $LOP = self::doSelect($C);
+        return myUser::selectOrdre($idS,$LOP,$NOU);
+          
+    }
+*/    
 }

@@ -39,21 +39,9 @@ class PromocionsPeer extends BasePromocionsPeer
     }
 
   static function selectOrdre( $idS , $NOU = false )
-  {     
-     $RET = array();   
-     $LOP = self::getAllByOrdre($idS);  
-     
-     $last = 1;
-     $i = 1;
-     foreach($LOP as $OP){
-       $RET[$OP->getOrdre()] = $i++;
-       $last = $OP->getOrdre()+1;         
-     }          
-     
-     //Si és nou hi afegim un número més.
-     if($NOU) { $RET[$last] = $last; }
-     
-     return $RET;            
+  {          
+     $LOP = self::getAllByOrdre($idS);
+     return myUser::selectOrdre($idS,$LOP,$NOU);
   }
 	
   static function retrieveByOrdre($idS , $ordre = 1)

@@ -80,5 +80,23 @@ class myUser extends sfBasicSecurityUser
      endforeach;
   }
 
+  static function selectOrdre( $idS , $LOP  , $NOU = false )
+  {     
+     $RET = array();          
+     
+     $last = 1; $i = 1;
+     
+     foreach($LOP as $OP){
+       $RET[$OP->getOrdre()] = $i++;
+       $last = $OP->getOrdre()+1;         
+     }          
+     
+     //Si és nou hi afegim un número més.
+     if($NOU) { $RET[$last] = $last; }
+     
+     return $RET;            
+  }
+
+
   
 }

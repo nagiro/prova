@@ -68,7 +68,7 @@ function creaOpcions($IDN)
 
 function llistaNodes( $NODES )
 {     
-  
+  $Ordre = 1;
   foreach($NODES as $N):
     $Nivell = "";  
     if($N->getNivell() == 1) $imatge = image_tag('tango/32x32/status/folder-open.png', array('align'=>'ABSMIDDLE','size'=>'16x16','alt'=>'Edita o visualitza les dades'));
@@ -76,7 +76,8 @@ function llistaNodes( $NODES )
     for($i = $N->getNivell(); $i > 0; $i--) $Nivell .= "&nbsp;&nbsp;&nbsp;&nbsp;";
 	$text = $Nivell.$imatge.link_to('&nbsp;&nbsp;'.$N->getTitolmenu(),'gestio/gEstructura?idN='.$N->getIdnodes().'&accio=E');    
     if(!$N->getIsactiva()) $text = '<strike>'.$text.'</strike>';       
-    echo '<TR><TD class="LINIA">'.$N->getOrdre().'</TD><TD class="LINIA">'.$text.'</TD><TD class="OPCIONS">'.creaOpcions($N->getIdnodes()).'</TD></TR>';       
+    echo '<TR><TD class="LINIA">'.$Ordre.'</TD><TD class="LINIA">'.$text.'</TD><TD class="OPCIONS">'.creaOpcions($N->getIdnodes()).'</TD></TR>';
+    $Ordre++;           
   endforeach;
   
 
