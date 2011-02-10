@@ -54,11 +54,6 @@
 	function ValidaFormulari(){
 		if($('#material_Identificador').val().length == 0) { alert('L\'identificador no pot estar buit.'); return false; }
 		if($('#material_Nom').val().length == 0) { alert('El nom no pot estar buit.'); return false; }
-		if($('#material_Ubicacio').val().length == 0) { alert('L\'ubicació no pot estar buida.'); return false; }
-		if($('#material_NumSerie').val().length == 0) { alert('El número de sèrie no pot estar buit.'); return false; }		
-		if($('#material_DataCompra_day').val().length == 0 ) { alert('La data compra no pot estar buida.'); return false; } 
-		if($('#material_DataGarantia_day').val().length == 0 ) { alert('La data de garantia no pot estar buida.'); return false; }
-		if($('#material_DataRevisio_day').val().length == 0 ) { alert('La data de propera revisió no pot estar buida.'); return false; }								
 		return true;				 
 	}
 

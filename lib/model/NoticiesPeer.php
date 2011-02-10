@@ -114,8 +114,7 @@ class NoticiesPeer extends BaseNoticiesPeer
                                                         
         $LOP = self::doSelect($C);
         $i = 1; $pos_element = 0;
-        
-        
+                
         //Primer fem una passada per identificar quin és el que volem canviar.
         $RET = array(); 
         foreach($LOP as $OP):
