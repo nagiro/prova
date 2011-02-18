@@ -98,5 +98,18 @@ class myUser extends sfBasicSecurityUser
   }
 
 
+  static public function resizeImage($x,$y,$BASE,$imatge_actual,$new_name,$borrar)
+  {	    
+	if(!empty($imatge_actual) && file_exists($BASE.$imatge_actual)):          				
+	  	$img = new sfImage($BASE.$imatge_actual,'image/jpg');  	
+	    $img->resize($x,$y);
+	    $nomf = $new_name.'.jpg';
+	    $img->saveAs($BASE.$nomf);
+	    if( $imatge_actual <> $new_name && $borrar ) unlink( $BASE.$imatge_actual );
+        return $nomf;
+    endif;
+    return false;
+  }
+
   
 }

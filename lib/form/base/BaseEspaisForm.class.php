@@ -20,6 +20,7 @@ abstract class BaseEspaisForm extends BaseFormPropel
       'site_id'    => new sfWidgetFormInputText(),
       'actiu'      => new sfWidgetFormInputText(),
       'isLlogable' => new sfWidgetFormInputText(),
+      'descripcio' => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
@@ -29,6 +30,7 @@ abstract class BaseEspaisForm extends BaseFormPropel
       'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'isLlogable' => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'descripcio' => new sfValidatorString(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('espais[%s]');

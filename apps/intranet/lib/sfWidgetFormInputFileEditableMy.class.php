@@ -56,7 +56,7 @@ class sfWidgetFormInputFileEditableMy extends sfWidgetFormInputFile
     $this->addOption('is_image', false);
     $this->addOption('edit_mode', true);
     $this->addOption('with_delete', false);
-    $this->addOption('delete_label', 'remove the current file');
+    $this->addOption('delete_label', 'esborra');
     $this->addOption('template', '%file%<br />%input%<br />%delete% %delete_label%');    
   }
 
@@ -83,8 +83,9 @@ class sfWidgetFormInputFileEditableMy extends sfWidgetFormInputFile
     {
       $deleteName = ']' == substr($name, -1) ? substr($name, 0, -1).'_delete]' : $name.'_delete';
 
-      $delete = $this->renderTag('input', array_merge(array('type' => 'checkbox', 'name' => $deleteName), $attributes));
-      $deleteLabel = $this->renderContentTag('label', $this->getOption('delete_label'), array_merge(array('for' => $this->generateId($deleteName))));
+      $delete = $this->renderTag('input', array_merge(array('type' => 'checkbox', 'name' => $deleteName), array('style="width:10px"')));
+//      $deleteLabel = $this->renderContentTag('label', $this->getOption('delete_label'), array_merge(array('for' => $this->generateId($deleteName))));
+      $deleteLabel = "";
     }
     else
     {

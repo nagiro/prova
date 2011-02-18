@@ -24,6 +24,7 @@ class MatriculesPeer extends BaseMatriculesPeer
    const REDUCCIO_JUBILAT         = '17';
    const REDUCCIO_ATURAT          = '19';
    const REDUCCIO_GRATUIT         = '24';
+   const REDUCCIO_ESPECIAL        = '28';
    
    const PAGAMENT_METALIC         = '21';
    const PAGAMENT_TARGETA         = '20';
@@ -72,6 +73,7 @@ class MatriculesPeer extends BaseMatriculesPeer
               self::REDUCCIO_MENOR_25_ANYS => 'Estudiant menor de 25 anys',
               self::REDUCCIO_JUBILAT => 'Jubilat',
               self::REDUCCIO_ATURAT => 'Aturat',
+              self::REDUCCIO_ESPECIAL => 'Reducció especial',
               self::REDUCCIO_GRATUIT => 'Gratuït'
             );
   }
@@ -82,7 +84,8 @@ class MatriculesPeer extends BaseMatriculesPeer
               self::REDUCCIO_CAP => 'Cap',
               self::REDUCCIO_MENOR_25_ANYS => 'Estudiant menor de 25 anys',
               self::REDUCCIO_JUBILAT => 'Jubilat',
-              self::REDUCCIO_ATURAT => 'Aturat',              
+              self::REDUCCIO_ATURAT => 'Aturat',             
+              self::REDUCCIO_ESPECIAL => 'Reducció especial', 
             );
   }
   
@@ -94,6 +97,7 @@ class MatriculesPeer extends BaseMatriculesPeer
          case self::REDUCCIO_MENOR_25_ANYS : return 'Estudiant menor de 25 anys';
          case self::REDUCCIO_JUBILAT : return 'Jubilat';
          case self::REDUCCIO_ATURAT : return 'Aturat';
+         case self::REDUCCIO_ESPECIAL : return 'Reducció especial';
          default: return 'Desconegut'; 
       }
   }

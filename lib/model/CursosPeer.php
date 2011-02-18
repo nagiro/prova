@@ -185,7 +185,8 @@ class CursosPeer extends BaseCursosPeer
          case MatriculesPeer::REDUCCIO_ATURAT : return $CURS->getPreur();
          case MatriculesPeer::REDUCCIO_JUBILAT : return $CURS->getPreur();
          case MatriculesPeer::REDUCCIO_MENOR_25_ANYS : return $CURS->getPreur();
-         case MatriculesPeer::REDUCCIO_GRATUIT   : return 0;           
+         case MatriculesPeer::REDUCCIO_GRATUIT   : return 0;
+         case MatriculesPeer::REDUCCIO_ESPECIAL : return $CURS->getPreur();           
       }                  
   }
   

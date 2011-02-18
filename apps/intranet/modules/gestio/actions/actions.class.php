@@ -3822,7 +3822,7 @@ class gestioActions extends sfActions
         case 'SAVE_ESPAI':
             //Si entrem un espai que és 0, llavors vol dir que fem un nou espai
             if($RESPAIS['EspaiID'] == 0) unset($RESPAIS['EspaiID']);                              
-            $this->FESPAIS->bind($RESPAIS);
+            $this->FESPAIS->bind($RESPAIS,$request->getFiles('espais'));
             if($this->FESPAIS->isValid()):
                 $this->FESPAIS->save();                
                 $this->getUser()->addLogAction($this->accio,'gConfig',$this->FESPAIS->getObject());

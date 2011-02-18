@@ -3,27 +3,32 @@
 /**
  * Multimedia form base class.
  *
+ * @method Multimedia getObject() Returns the current form's model object
+ *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
- * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
-class BaseMultimediaForm extends BaseFormPropel
+abstract class BaseMultimediaForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
-      'idMultimedia'     => new sfWidgetFormInputHidden(),
-      'Cluber_idClubber' => new sfWidgetFormPropelChoice(array('model' => 'Cluber', 'add_empty' => false)),
-      'NomAlbum'         => new sfWidgetFormTextarea(),
-      'DescripcioAlbum'  => new sfWidgetFormTextarea(),
+      'multimedia_id' => new sfWidgetFormInputHidden(),
+      'taula'         => new sfWidgetFormInputText(),
+      'url'           => new sfWidgetFormTextarea(),
+      'site_id'       => new sfWidgetFormInputText(),
+      'actiu'         => new sfWidgetFormInputText(),
+      'id_extern'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'idMultimedia'     => new sfValidatorPropelChoice(array('model' => 'Multimedia', 'column' => 'idMultimedia', 'required' => false)),
-      'Cluber_idClubber' => new sfValidatorPropelChoice(array('model' => 'Cluber', 'column' => 'idClubber')),
-      'NomAlbum'         => new sfValidatorString(array('required' => false)),
-      'DescripcioAlbum'  => new sfValidatorString(array('required' => false)),
+      'multimedia_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getMultimediaId()), 'empty_value' => $this->getObject()->getMultimediaId(), 'required' => false)),
+      'taula'         => new sfValidatorString(array('max_length' => 20)),
+      'url'           => new sfValidatorString(),
+      'site_id'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'id_extern'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
     ));
 
     $this->widgetSchema->setNameFormat('multimedia[%s]');

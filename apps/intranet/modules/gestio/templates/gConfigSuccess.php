@@ -17,7 +17,7 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		$( "#tabs" ).tabs({ cookie: { expires: 1 } });        
+		$('#tabs').tabs({ cookie: { expires: 1 } });        
         $('#options_option_id').change(ajaxOptions);
         $('#espais_EspaiID').change(function(){ $('#FESPAIS').submit(); });
         $('#materialgeneric_idMaterialGeneric').change(function(){ $('#FMATERIAL').submit(); });                                
@@ -101,7 +101,7 @@
         $RET = '
             <form id="FESPAIS" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
                 <table class="FORMULARI">                    
-                '.$FESPAIS.'
+                '.$FESPAIS.'                
                 </table>
                 <div style="text-align:right">
                     <button style="margin-top:10px;" name="EDIT" class="BOTO_ACTIVITAT">

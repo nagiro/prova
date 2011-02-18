@@ -13,4 +13,10 @@ class Espais extends BaseEspais
     {
         return $this->getNom();
     }
+    
+    public function getFotos()
+    {
+        return MultimediaPeer::getFotosEspais($this->getEspaiid(), $this->getSiteId());        
+    }
+    
 }

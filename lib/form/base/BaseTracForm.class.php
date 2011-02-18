@@ -23,7 +23,7 @@ abstract class BaseTracForm extends BaseFormPropel
       'usuari_id'      => new sfWidgetFormInputText(),
       'site_id'        => new sfWidgetFormInputText(),
       'actiu'          => new sfWidgetFormInputText(),
-      'date'           => new sfWidgetFormDate(),
+      'date'           => new sfWidgetFormDateTime(),
     ));
 
     $this->setValidators(array(

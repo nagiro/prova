@@ -19,8 +19,8 @@
 class sfWidgetFormSchemaFormatterHorizontal extends sfWidgetFormSchemaFormatter
 {
   protected
-    $rowFormat       = "<td>%error%%field%%help%%hidden_fields%</td>\n",
-    $errorRowFormat  = "<tr><td>%errors%</td></tr>",
+    $rowFormat       = '<div style="float:left; margin-top:3px; margin-left:3px;">%error%%field%%help%%hidden_fields%</div>',
+    $errorRowFormat  = "%errors%",
     $helpFormat      = '<br />%help%',
-    $decoratorFormat = "<table>%content%</table>";
+    $decoratorFormat = '<div>%content%</div>';
 }
