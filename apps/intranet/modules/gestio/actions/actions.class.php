@@ -356,7 +356,7 @@ class gestioActions extends sfActions
                 $this->getUser()->setSessionPar('idN',NivellsPeer::CAP);
                 $this->getUser()->setAuthenticated(false);
                 $this->getUser()->clearCredentials();
-                unset($_SESSION[$this->getUser()->getNomComplet()]);
+//                unset($_SESSION[$this->getUser()->getNomComplet()]);
                 $this->redirect('gestio/uLogin');
             break;
         
