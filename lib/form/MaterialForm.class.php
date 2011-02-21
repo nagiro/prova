@@ -70,7 +70,7 @@ class MaterialForm extends sfFormPropel
       'DataCessio'                        => new sfValidatorDate(array('required' => false)),
       'DataRetorn'                        => new sfValidatorDate(array('required' => false)),
       'NumFactura'                        => new sfValidatorString(array('required' => false)),
-      'Preu'                              => new sfValidatorInteger(array('required' => false)),
+      'Preu'                              => new sfValidatorNumber(array('required' => false)),
       'NotesManteniment'                  => new sfValidatorString(array('required' => false)),
       'DataBaixa'                         => new sfValidatorDate(array('required' => false)),
       'DataReparacio'                     => new sfValidatorDate(array('required' => false)),
