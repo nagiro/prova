@@ -46,9 +46,11 @@ class MultimediaForm extends BaseMultimediaForm
     
   public function deleteEmbed($conn = null)
   {        
+    
     $OM = $this->getObject();            
     unlink(sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE.$OM->getUrl());
-    $OM->delete();        
+    $OM->delete();
+            
   }
     
   public function saveEmbed($conn = null)
