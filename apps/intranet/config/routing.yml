@@ -7,7 +7,7 @@ homepage:
   param: { module: default, action: index }
 
 hospici_detall_activitat:
-  url:  /:module/:action/:idA/:titol
+  url:  /hospici/index/:idA/:titol
   param: { module:hospici, action:index  }
 
 # generic rules
