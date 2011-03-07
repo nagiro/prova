@@ -674,17 +674,10 @@ class webActions extends sfActions
   {
       $this->LoadWEB($request);            
       $this->setTemplate('index');
+      $this->LLISTAT_ESPAIS = EspaisPeer::getEspaisSite($this->IDS);
       $this->ACCIO = 'espais';
   }
    
-/*  
-   public function executeFuncionament(sfWebRequest $request)
-   {
-      $this->LoadWEB($request);
-      $this->setTemplate('index');
-      $this->ACCIO = 'funcionament';      
-   }
-*/
    private function sendMail($from,$to,$subject,$body = "",$files = array())
    {
    	

@@ -43,7 +43,7 @@ class HorarisForm extends sfFormPropel
       'Avis'                   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Responsable'			   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Espectadors'            => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
-      'Places'                 => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
+      'Places'                 => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),      
     ));
 
     $this->setValidators(array(
@@ -57,7 +57,7 @@ class HorarisForm extends sfFormPropel
       'Avis'                   => new sfValidatorString(array('required'=>false)),
       'Responsable'            => new sfValidatorString(array('required'=>false)),
       'Espectadors'            => new sfValidatorInteger(array('required'=>false)),
-      'Places'                 => new sfValidatorInteger(array('required'=>false)),
+      'Places'                 => new sfValidatorInteger(array('required'=>false)),      
     ));
 
     
@@ -77,6 +77,8 @@ class HorarisForm extends sfFormPropel
     $this->widgetSchema->setNameFormat('horaris[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);      
+
+    $this->widgetSchema->setFormFormatterName('Span');
 
   }
   

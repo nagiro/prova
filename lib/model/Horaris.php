@@ -17,7 +17,7 @@ class Horaris extends BaseHoraris
         $C = HorarisespaisPeer::getCriteriaActiu($C,$this->getSiteid());
         
         foreach($this->getHorarisespaiss($C) as $OHE):            
-            $OHE->setActiu(false)->save();
+            $OHE->setInactiu();
         endforeach;        
         
         $this->save();                
@@ -47,12 +47,14 @@ class Horaris extends BaseHoraris
     {
         $RET = array();
         $C = new Criteria();
-        $C->add( HorarisespaisPeer::HORARIS_HORARISID , $this->getHorarisid() );        
-        $C->add( HorarisespaisPeer::ACTIU , true );
-        $C->add( HorarisespaisPeer::SITE_ID , $this->getSiteId() );
-        $C->addGroupByColumn( HorarisespaisPeer::ESPAIS_ESPAIID );
-        foreach(HorarisespaisPeer::doSelect($C) as $HE):
-            $RET[$HE->getEspaisEspaiid()] = $HE->getEspais()->getNom();
+        $C = HorarisespaisPeer::getCriteriaActiu($C,$this->getSiteId());        
+        //Seleccionem els horaris interns només    
+//        $C->add( HorarisespaisPeer::IDESPAIEXTERN, null );
+        $C->addGroupByColumn( HorarisespaisPeer::ESPAIS_ESPAIID );        
+        $LHE = $this->getHorarisespaiss($C);     
+        //Ho posem en format que quedi igual que després de l'HTML                   
+        foreach($LHE as $HE):                                                
+            $RET[$HE->getEspaisEspaiid()] = $HE->getNomEspai();
         endforeach;        
         return $RET;                
     }
@@ -61,11 +63,11 @@ class Horaris extends BaseHoraris
     {
         $RET = array();
         $C = new Criteria();
-        $C->add( HorarisespaisPeer::HORARIS_HORARISID , $this->getHorarisid() );
-        $C->add( HorarisespaisPeer::ACTIU , true );
-        $C->add( HorarisespaisPeer::SITE_ID , $this->getSiteId() );
-        $C->addGroupByColumn( HorarisespaisPeer::MATERIAL_IDMATERIAL );
-        foreach(HorarisespaisPeer::doSelect($C) as $HE):            
+        $C = HorarisespaisPeer::getCriteriaActiu($C,$this->getSiteId());            
+  //      $C->add( HorarisespaisPeer::IDESPAIEXTERN, null);
+        $C->addGroupByColumn( HorarisespaisPeer::MATERIAL_IDMATERIAL );        
+        $LHE = $this->getHorarisespaiss($C);                
+        foreach($LHE as $HE):
             $OM = MaterialPeer::retrieveByPK($HE->getMaterialIdmaterial());
             if($OM instanceof Material):
                 $RET[$OM->getIdmaterial()] = array('material'=>$OM->getIdmaterial(),'nom'=>$OM->toString(),'generic'=>$OM->getMaterialgenericIdmaterialgeneric());
@@ -73,6 +75,24 @@ class Horaris extends BaseHoraris
         endforeach;        
         return $RET;        
     } 
+
+    public function hasEspaiExtern()
+    {
+        $LEE = EspaisExternsPeer::criteriaHorari_EspaiExtern( $this->getHorarisid() , new Criteria() , $this->getSiteId() );        
+        if(sizeof($LEE)>0) return true;
+        else return false;                 
+    }
+
+    public function getEspaiExternForm()
+    {        
+        if($this->hasEspaiExtern()){            
+            $LEE = EspaisExternsPeer::criteriaHorari_EspaiExtern( $this->getHorarisid() , new Criteria() , $this->getSiteId() );
+            return EspaisExternsPeer::initialize($LEE[0]->getIdespaiextern());
+        }  
+        else{
+            return EspaisExternsPeer::initialize(null);
+        }
+    }
 
     public function getActivitatss()
     {
@@ -85,6 +105,13 @@ class Horaris extends BaseHoraris
         $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
         
         return ActivitatsPeer::doSelectOne($C);        
+    }
+    
+    public function getPoblacioString()
+    {
+        $OP = PoblacionsPeer::retrieveByPK($this->getPoblacio());
+        if($OP instanceof Poblacions) return $OP->getNom();
+        else return "n/d";        
     }
    
 }

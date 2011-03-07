@@ -53,7 +53,7 @@
     										url_for( $URL , true ), 
     									array('target' => '_NEW' )).
     					'</TD></TR>';
-                    } catch (Exception $e){echo $URL.'Caught exception: ',  $e->getMessage(), "\n";}
+                    } catch (Exception $e){echo 'Caught exception: '.$URL,  $e->getMessage(), "\n";}
 			endforeach;
 	
 		?>

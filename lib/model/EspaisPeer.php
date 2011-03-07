@@ -94,4 +94,12 @@ class EspaisPeer extends BaseEspaisPeer
     return $RET;
   }
 
+  static public function getEspaisSite($idS)
+  {
+    $C = new Criteria();
+    $C = self::getCriteriaActiu($C,$idS);
+    $C->addAscendingOrderByColumn(self::ORDRE);
+    return self::doSelect($C);
+  }
+
 }

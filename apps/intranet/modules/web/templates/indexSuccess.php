@@ -1,5 +1,5 @@
 
-<TR>
+<tr>
 <td colspan="4" style="padding:0px; border:0px;">
     <div class="TIRA_FOTOS">    
     	<?php 	  
@@ -12,9 +12,9 @@
     	?>
     </div>
 </td>
-</TR>
+</tr>
 
-<TR>
+<tr>
 <!-- MENU -->
 	
     <?php include_partial('menu', array( 'TIPUS_MENU' => $TIPUS_MENU , 'MENU' => $MENU , 'OBERT' => $OBERT , 'USUARI' => $USUARI , 'IDS' => $IDS ) ); ?>
@@ -35,7 +35,7 @@
 	   case 'cursos'	 : $calendar = false; include_partial('cursos' , array('CURSOS'=>$CURSOS,'IDS'=>$IDS)); break;
 	   case 'contacte'   : $calendar = false; include_partial('contacte' , array('ENVIAT'=>$ENVIAT , 'FConsulta'=>$FConsulta)); break;
 	   case 'registre'   : $calendar = false; include_partial('registre' , array('FUSUARI'=>$FUSUARI, 'ESTAT' => $ESTAT)); break;
-	   case 'espais'	 : $calendar = false;  include_partial('espais',array('')); break;
+	   case 'espais'	 : $calendar = false;  include_partial('espais',array('LLISTAT_ESPAIS'=>$LLISTAT_ESPAIS)); break;
 	   case 'missatge'   : $calendar = false; include_partial('missatge',array('MISSATGE'=>$MISSATGE)); break;
 
 	   case 'mostra_activitat'	: $calendar = true; include_partial('mostraActivitat',array( 'LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS , 'TITOL'=>$TITOL ,'NODE' => $NODE , 'IDS' => $IDS )); break;
@@ -76,4 +76,4 @@
        ?>
     	
 <!-- FI CALENDARI -->
-</TR>
+</tr>

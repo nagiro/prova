@@ -9,6 +9,16 @@
  */ 
 class Activitats extends BaseActivitats
 {
+
+    public function getNomTipusActivitat()
+    {
+        $OTA = $this->getTipusactivitat();
+        $NOM = "n/d";
+        
+        if($OTA instanceof Tipusactivitat) $NOM = $OTA->getNom();    
+        
+        return $NOM;
+    }
     
     public function setInactiu()
     {
@@ -66,7 +76,7 @@ class Activitats extends BaseActivitats
    {
    	
    		$H = $this->getHorariss();
-   		if($H[0] instanceof Horaris):
+   		if(isset($H[0]) && $H[0] instanceof Horaris):
    		
    			list($any,$mes,$dia) = explode("-",$H[0]->getDia());
    			$time = mktime(0,0,0,$mes,$dia,$any);
@@ -74,7 +84,7 @@ class Activitats extends BaseActivitats
    			
    		else:
    		
-   			return date('Y-m-d',time());
+   			return date('-----',time());
    		
    		endif;
    	

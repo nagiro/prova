@@ -17,6 +17,7 @@ abstract class BaseSitesForm extends BaseFormPropel
       'site_id'            => new sfWidgetFormInputHidden(),
       'nom'                => new sfWidgetFormTextarea(),
       'actiu'              => new sfWidgetFormInputText(),
+      'poble'              => new sfWidgetFormInputText(),
       'usuaris_sites_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
@@ -24,6 +25,7 @@ abstract class BaseSitesForm extends BaseFormPropel
       'site_id'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getSiteId()), 'empty_value' => $this->getObject()->getSiteId(), 'required' => false)),
       'nom'                => new sfValidatorString(),
       'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'poble'              => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'usuaris_sites_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

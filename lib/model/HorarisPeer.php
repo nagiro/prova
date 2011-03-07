@@ -11,14 +11,14 @@ class HorarisPeer extends BaseHorarisPeer
 {
 
   const DESCRIPCIO_WEB = "WEB";
-  
+
   static public function getCriteriaActiu( $C , $idS )
   {
     $C->add(self::ACTIU,true);
     $C->add(self::SITE_ID,$idS);
     return $C;
   }
-   	
+   	    
 /*
   static public function getCercaWeb($DIA, $TEXT, $DATAI,$DATAF, $page = 1)
   {
@@ -132,7 +132,7 @@ class HorarisPeer extends BaseHorarisPeer
 	      $RET[$H->getHorarisid()]['HORA_POST'] = $H->getHorapost('H:i');   //Guardem les activitats	      
 	      $RET[$H->getHorarisid()]['AVIS'] = $H->getAvis();   //Carreguem l'avís per si de cas      
 	      foreach($H->getHorarisespaiss() as $HE):          
-	      	$RET[$H->getHorarisid()]['ESPAIS'][] = (is_null($HE->getEspais()))?"":$HE->getEspais()->getNom();   //Guardem les activitats      	
+	      	$RET[$H->getHorarisid()]['ESPAIS'][$HE->getNomEspai()] = $HE->getNomEspai();   //Guardem les activitats      	
 	      	$RET[$H->getHorarisid()]['MATERIAL'][] = (is_null($HE->getMaterial()))?"":$HE->getMaterial()->getNom();      	
 	      endforeach;
 	   endforeach;	   
@@ -155,12 +155,12 @@ class HorarisPeer extends BaseHorarisPeer
          endif;             
          if(!empty($titol)):              
             $dia = mktime(0,0,0,$H->getDia('m'),$H->getDia('d'),$H->getDia('Y'));
-            $ESPAIS = "";
+            $ESPAIS = array();
                         
-            foreach($H->getHorarisespaiss() as $E) $ESPAIS .= $E->getEspais()->getNom(); 
+            foreach($H->getHorarisespaiss() as $HE) $ESPAIS[$HE->getNomEspai()] = $HE->getNomEspai(); 
             
             $RET[$dia][$H->getActivitatsActivitatid()]['ORGANITZADOR']  = $H->getActivitats()->getOrganitzador(); 
-		    $RET[$dia][$H->getActivitatsActivitatid()]['ESPAIS']  = $ESPAIS; //Guardem l'hora que acaba            
+		    $RET[$dia][$H->getActivitatsActivitatid()]['ESPAIS']  = implode(' ',$ESPAIS); //Guardem l'hora que acaba            
 	        $RET[$dia][$H->getActivitatsActivitatid()]['TITOL'] =  $titol; //Guardem el dia que es fa l'activitat      
 		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAI']  = $H->getHorainici('H:i'); //Guardem el dia que es fa l'activitat
 		    $RET[$dia][$H->getActivitatsActivitatid()]['HORAF']  = $H->getHorafi('H:i'); //Guardem l'hora que acaba
@@ -365,27 +365,26 @@ class HorarisPeer extends BaseHorarisPeer
   
   }
       
-  static public function save( $HORARIS, $DBDD , $MATERIAL , $ESPAIS , $idS )
+  static public function save( $HORARIS, $DBDD , $EXTRES , $idS )
   {
-	
-  	//Marquem tots els horaris com a inactius i els guardarem com a històric          	
+        
+  	//Carreguem l'horari que estem tractant i guardarem els espais que usa.    
+    $A_H = array(); $A_HE = array();
 	if($HORARIS['HorarisID'] > 0)
 	{ 		
-		$OH = HorarisPeer::retrieveByPK($HORARIS['HorarisID']);		
+		$OH = HorarisPeer::retrieveByPK($HORARIS['HorarisID']);                
+        if($OH instanceof Horaris) $A_H = array($HORARIS['HorarisID']);                        	
 		foreach($OH->getHorarisespaiss() as $HE):
-			$HE->setActiu(false);
-            $HE->save();
+            $A_HE[] = $HE->getIdhorarisespais();
 		endforeach;
-		$OH->setActiu(false);
-        $OH->save();		
 	}	 	
-  	
+  	    
   	//Per cada un dels dies que ha entrat, creem un horari
   	foreach($DBDD['DIES'] as $D):  		
-  		  			  
-	  	$OH = new Horaris();
-	  	$OH->setNew(true);
-	  	$NOU = true;	            	  	
+          
+        //Carreguem algun dels horaris que estem editant i el sobreescriurem sinó li donem un número nou
+        $idH = array_pop($A_H);
+        $OH = (!is_null($idH))?HorarisPeer::retrieveByPK($idH):new Horaris();                        	  	
 	  	$OH->setActivitatsActivitatid($HORARIS['Activitats_ActivitatID']);
 	  	$OH->setHorainici($DBDD['HoraIn']);
 	  	$OH->setHorapre($DBDD['HoraPre']);
@@ -396,49 +395,75 @@ class HorarisPeer extends BaseHorarisPeer
 	  	$OH->setPlaces($HORARIS['Places']);
 		$OH->setDia($D);
         $OH->setActiu(true);
-        $OH->setSiteid($idS);
-		$OH->save();  //Guardem				
-		                
-  		foreach($ESPAIS as $K=>$idE):  			
-  			foreach($MATERIAL as $K=>$idM):
-  				$OHE = new Horarisespais();				//Creem  un registre per espai i per material de l'horari del dia
-  				$OHE->setNew(true);  			
+        $OH->setSiteid($idS);  
+                
+		$OH->save();  //Guardem				                        
+                
+        //Si no hi ha espais, vol dir que és un espai extern. Llavors només guardarem el material. 
+        if(empty($EXTRES['ESPAISOUT'])){
+            $idEE = $EXTRES['ESPAIEXTERN']->getObject()->getIdespaiextern();
+            foreach($EXTRES['MATERIALOUT'] as $K=>$idM):
+                $idHE = array_pop($A_HE);
+                $OHE = (!is_null($idHE))?HorarisespaisPeer::retrieveByPK($idHE):new Horarisespais();
   				$OHE->setMaterialIdmaterial($idM['material']);
-  				$OHE->setEspaisEspaiid($idE);
+  				$OHE->setEspaisEspaiid(null);
   				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+                $OHE->setIdespaiextern($idEE);
                 $OHE->setActiu(true);
                 $OHE->setSiteid($idS);
-  				$OHE->save();
+  				$OHE->save();                
   			endforeach;
-  			if(empty($MATERIAL)):
-  				$OHE = new Horarisespais();				//Creem  un registre per espai i per material de l'horari del dia
-  				$OHE->setNew(true);  			
-  				$OHE->setMaterialIdmaterial(NULL);
-  				$OHE->setEspaisEspaiid($idE);
+            if(empty($EXTRES['MATERIALOUT'])):
+                $idHE = array_pop($A_HE);
+                $OHE = (!is_null($idHE))?HorarisespaisPeer::retrieveByPK($idHE):new Horarisespais();
+  				$OHE->setMaterialIdmaterial(null);
+  				$OHE->setEspaisEspaiid(null);
   				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+                $OHE->setIdespaiextern($idEE);
                 $OHE->setActiu(true);
                 $OHE->setSiteid($idS);
-  				$OHE->save();
-  			endif;
-  		endforeach;
+  				$OHE->save();                            
+            endif;                        
+
+        //Han entrat espais i guardem amb el material corresponent                        
+        }else{
+            
+      		foreach($EXTRES['ESPAISOUT'] as $K=>$idE):
+      			foreach($EXTRES['MATERIALOUT'] as $K=>$idM):
+                    $idHE = array_pop($A_HE);
+                    $OHE = (!is_null($idHE))?HorarisespaisPeer::retrieveByPK($idHE):new Horarisespais();                                
+      				$OHE->setMaterialIdmaterial($idM['material']);
+      				$OHE->setEspaisEspaiid($idE);
+      				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+                    $OHE->setIdespaiextern(null);
+                    $OHE->setActiu(true);
+                    $OHE->setSiteid($idS);
+      				$OHE->save();                
+      			endforeach;
+      			if(empty($EXTRES['MATERIALOUT'])):
+                    $idHE = array_pop($A_HE);
+                    $OHE = (!is_null($idHE))?HorarisespaisPeer::retrieveByPK($idHE):new Horarisespais();
+                    $OHE->setMaterialIdmaterial(null);
+      				$OHE->setEspaisEspaiid($idE);
+      				$OHE->setHorarisHorarisid($OH->getHorarisid());   //Amb l'identificador de l'horari que hem creat
+                    $OHE->setIdespaiextern(null);
+                    $OHE->setActiu(true);
+                    $OHE->setSiteid($idS);
+      				$OHE->save();
+      			endif;                
+      		endforeach;
+            
+        }
   			
   	endforeach;
-  	
+    
+   
+    //Acabem d'eliminar els que sobrin    
+    if(!empty($A_H)) { foreach($A_H as $idH) { HorarisPeer::retrieveByPK($idH)->setInactiu(); }}
+    if(!empty($A_HE)) { foreach($A_HE as $idHE) { HorarisespaisPeer::retrieveByPK($idHE)->setInactiu(); }}        
+        
   }
-/*
-Passat a materialPeer  
-  	static function isMaterialEnUs($idM,$di,$df,$idS)
-	{		
-		$C = new Criteria();
-		$C->add(HorarisespaisPeer::MATERIAL_IDMATERIAL, $idM);
-		$C->addJoin(HorarisespaisPeer::HORARIS_HORARISID, HorarisPeer::HORARISID);
-		$C->add(HorarisPeer::DIA, $di , CRITERIA::GREATER_EQUAL);
-		$C->add(HorarisPeer::DIA, $df , CRITERIA::LESS_EQUAL);
-        $C->add(HorarisPeer::SITE_ID, $idS);
-        $C->add(HorarisPeer::ACTIU, true);
-		return (HorarisespaisPeer::doCount($C) > 0);
-	}
-*/  
+  
 	static public function getActivitatsDia($D,$idS)
 	{
 		$C = new Criteria();

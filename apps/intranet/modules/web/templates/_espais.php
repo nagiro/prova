@@ -24,11 +24,32 @@
 	    <br />
 		<br />
 		
+        <?php 
+            foreach($LLISTAT_ESPAIS as $OE):
+                if($OE->getIsllogable()){
+                    echo '<h3>'.$OE->getNom().'</h3>';
+    	            echo $OE->getDescripcio();    
+    	            echo '<div class="col1">Fotografies: </div>';
+                    echo '<div class="col2">';
+                    foreach($OE->getFotos() as $OM):
+                        $URL = sfConfig::get('sf_webroot').'images/multimedia/'.$OM->getUrl();
+                        $URL_L = str_replace('.jpg','-L.jpg',$URL);                                        
+                        echo '<a class="thickbox" title="'.$OE->getNom().'" href="'.$URL_L.'">
+                              <img class="fotoEspai" src="'.$URL.'" /></a>';       
+                    endforeach;                
+                    echo '</div>';
+                    echo '<div class="col3">'.link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES').'</div>';
+            		echo '<div class="fi">&nbsp;</div>';	  		                    
+              }
+            endforeach;
+        
+        ?>
+         
 	    <h3>Auditori Josep Viader</h3>
 	    <div class="col1">Situació: </div>		<div class="col2">Planta baixa</div>    
 	    <div class="col1">Aforament: </div>		<div class="col2">110 persones</div>
 	    <div class="col1">Escenari: </div>		<div class="col2">Òval de 36 metres quadrats</div>	    
-	    <div class="col1">Equipament: </div>	<div class="col2"><ul><li/>Piano Steinway and sons de gran cua<li/>Megafonia<li/>Taula de so digital de 16 canals<li/>Aire condicionat</ul></div>
+	    <div class="col1">Equipament: </div>	<div class="col2"><ul><li>Piano Steinway and sons de gran cua</li><li>Megafonia</li><li>Taula de so digital de 16 canals</li><li>Aire condicionat</li></ul></div>
 	    <div class="col1">Fotografies: </div>	<div class="col2"><?php echo generaImatge('Auditori.jpg','Auditori. Vista general'); ?></div>
 		<div class="col3"><?php echo link_to("Sol·licitar cessió d'espais",'gestio/uGestio?accio=GESTIONA_RESERVES') ?> </div>
 		<div class="fi">&nbsp;</div>	  				

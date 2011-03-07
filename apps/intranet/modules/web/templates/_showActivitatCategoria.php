@@ -21,10 +21,10 @@
 
 					$RET = array(); 
 					foreach($DESCRIPCIO->getHorarisActius($IDS) as $H):
-						$OE = $H->getHorarisespaiss(HorarisespaisPeer::getCriteriaActiu(new Criteria(),$IDS));
+						$LOHE = $H->getHorarisespaiss(HorarisespaisPeer::getCriteriaActiu(new Criteria(),$IDS));
 						$noms = array();
-						foreach($OE as $E):
-							$noms[] = $E->getEspais()->getNom();
+						foreach($LOHE as $OHE):
+							$noms[] = $OHE->getNomEspai();
 						endforeach;	
 						$RET[generaData($H->getDia('Y-m-d')).' a les '.$H->getHoraInici('H:i')] = implode(',',$noms);
 						 

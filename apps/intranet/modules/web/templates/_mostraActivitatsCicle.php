@@ -1,3 +1,5 @@
+<?php use_helper('Presentation'); ?>
+
 <TD colspan="2" class="CONTINGUT">
 
     <?php include_partial('breadcumb',array('text'=>$TITOL)); ?>
@@ -51,7 +53,7 @@
     
 
     <?php 
-    
+/*    
     function generaMes($M)
     {
         $ret = "";
@@ -81,7 +83,7 @@
 
             foreach($LOH as $OH):    		
         		$LOHE = $OH->getHorarisespaiss();
-                $ESP[$LOHE[0]->getEspais()->getNom()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('d')] = $OH->getDia('d');        		    		        		                    		
+                $ESP[$LOHE[0]->getNomEspai()][$OH->getHorainici('H:i')][$OH->getDia('m')][$OH->getDia('d')] = $OH->getDia('d');        		    		        		                    		
         	endforeach;                       
             
             foreach($ESP as $Espai => $D1):                                            
@@ -98,7 +100,7 @@
          
         	foreach($LOH as $OH):    		
         		$LOHE = $OH->getHorarisespaiss();
-        		$Espai = $LOHE[0]->getEspais()->getNom();    		
+        		$Espai = $LOHE[0]->getNomEspai();    		
         		$RET[$OH->getHorarisid()] = generaData($OH->getDia('Y-m-d')).' a '.$Espai.' a les '.$OH->getHorainici('H:i').' h.';    		
         	endforeach;
     	
@@ -106,21 +108,8 @@
            
         endif;     	
     }
+    
 
-
-/*
-    function generaHoraris($LOH)
-    {
-    	$RET = array();
-    	foreach($LOH as $OH):    		
-    		$LOHE = $OH->getHorarisespaiss();
-    		$Espai = $LOHE[0]->getEspais()->getNom();    		
-    		$RET[$OH->getHorarisid()] = generaData($OH->getDia('Y-m-d')).' a '.$Espai.' a les '.$OH->getHorainici('H:i').' h.';    		
-    	endforeach;
-    	
-    	return implode('<br />',$RET);    	
-    }
-*/    
 	function generaData($DIA)
 	{
 
@@ -156,6 +145,6 @@
 		return $ret;
 		
 	}
-
+*/
 
 ?>

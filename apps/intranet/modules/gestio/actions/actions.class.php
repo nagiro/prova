@@ -1442,9 +1442,16 @@ class gestioActions extends sfActions
     	case 'ACTIVITAT':
 
     		$this->CarregaActivitats($request,$request->getParameter('form',true));
+            $this->MODE['ACTIVITAT_EDIT'] = true;
     		     			
     		break;
     		
+    	case 'ACTIVITAT_NO_EDIT':
+
+    		$this->CarregaActivitats($request,$request->getParameter('form',true));            
+    		     			
+    		break;      
+            
     	//Guardem l'activitat
     	case 'ACTIVITAT_SAVE':
 
@@ -1500,8 +1507,8 @@ class gestioActions extends sfActions
     			$OHorari = new Horaris();
     			$OHorari->setActivitatsActivitatid($this->IDA);    			    			
     			if($request->hasParameter('nou')) $this->FHorari = new HorarisForm($OHorari);     			
-    			$this->HORARI = $OHorari;    			   
-				$this->ESPAISOUT = array(); $this->MATERIALOUT = array();				    			 	
+    			$this->HORARI = $OHorari;
+                $this->EXTRES = array('ESPAISOUT'=>array(),'MATERIALOUT'=>array(),'ESPAIEXTERN' => EspaisExternsPeer::initialize(null));    			   				    			 	
     			$this->getUser()->setSessionPar('IDH',0);
     			    			
     			if($request->hasParameter('IDH')):
@@ -1509,8 +1516,9 @@ class gestioActions extends sfActions
     				$this->getUser()->setSessionPar('IDH',$request->getParameter('IDH'));    				
     				$this->FHorari = new HorarisForm($H);
     				$this->HORARI  = $H;                    
-                    $this->ESPAISOUT = $H->getArrayHorarisEspaisActiusAgrupats();
-                    $this->MATERIALOUT = $H->getArrayHorarisEspaisMaterial();                     
+                    $this->EXTRES['ESPAISOUT'] = $H->getArrayHorarisEspaisActiusAgrupats();                    
+                    $this->EXTRES['MATERIALOUT'] = $H->getArrayHorarisEspaisMaterial();                                        
+                    $this->EXTRES['ESPAIEXTERN'] = $H->getEspaiExternForm();                                                                                                                   
     			endif;    		    
     					    			
  				 $this->MODE['HORARI'] = true;
@@ -1521,34 +1529,49 @@ class gestioActions extends sfActions
     			$RP = $request->getParameter('horaris');
     			$this->IDA = $RP['Activitats_ActivitatID'];
     			$this->IDH = $RP['HorarisID'];
-    		
-	    		$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);
+    			    		
+                $OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);                
 	    		$this->NOMACTIVITAT = $OActivitat->getNom();
 	    		$this->HORARIS = $OActivitat->getHorarisActius($this->IDS);
 	    		
 	    		$OHorari = HorarisPeer::retrieveByPK($this->IDH);
 	    		if($this->IDH == 0) 	$this->FHorari = new HorarisForm();
 	    		else					$this->FHorari = new HorarisForm($OHorari);
-	    		                
-	    		$this->MATERIALOUT = array();
-	    		$material = $request->getParameter('material');
-	    		if(!is_array($material)) $material = array();
-	    		foreach($material as $M=>$idM):
-	    			if($idM > 0):
-	    				$OMaterial = MaterialPeer::retrieveByPK($idM);
-	    				$this->MATERIALOUT[] = array('material'=>$idM,'generic'=>$OMaterial->getMaterialgenericIdmaterialgeneric());
-	    			endif;
+                //Fem un bind de les dades generals per si hi ha un error
+                $this->FHorari->bind($RP);
+	    		
+                //Creem la variable EXTRES
+                $this->EXTRES = array('ESPAISOUT'=>array(),'MATERIALOUT'=>array());
+                                
+	    		//Guardem a extres el material que volem reservar.                	    		
+	    		foreach($request->getParameter('material',array()) as $M=>$idM):
+	    			$OM = MaterialPeer::retrieveByPK($idM);
+                    if($OM instanceof Material){
+                        $this->EXTRES['MATERIALOUT'][] = array('material'=>$idM,'generic'=>$OM->getMaterialgenericIdmaterialgeneric());
+                    }	    			    	    			
 	    		endforeach;
 	    		
-	    		$espais = $request->getParameter('espais');
- 	    		if(!is_array($espais)) $espais = array();
-	    		$this->ESPAISOUT = $espais;
-	    		
-	    		$this->FHorari->bind($request->getParameter('horaris'));
-	    		$RET = $this->GuardaHorari($request->getParameter('horaris'),$this->MATERIALOUT,$this->ESPAISOUT, $this->IDS);
+                //Guardem a extres els espais que volem reservar de la nostra entitat
+	    		$this->EXTRES['ESPAISOUT'] =  $request->getParameter('espais',array());
+                                
+                //Tractem els espais externs, si n'hi ha algun.                
+                $RPEE = $request->getParameter('espais_externs',null);
+                $this->EXTRES['ESPAIEXTERN'] = EspaisExternsPeer::initialize($RPEE['idEspaiextern']);
+                if($RPEE['Poble'] > 0):                                     
+                    $this->EXTRES['ESPAIEXTERN']->bind($RPEE);
+                    $RET = array();
+                    if(!$this->EXTRES['ESPAIEXTERN']->isValid()):
+                        $RET = array('Hi ha algun error a la localització externa.');                    
+                    else:
+                        $this->EXTRES['ESPAIEXTERN']->save();
+                    endif;
+                endif;
+                                                                                                
+                if(empty($RET)) $RET = $this->GuardaHorari( $request->getParameter('horaris') , $this->EXTRES , $this->IDS , $this->MISSATGE );
+                                		
 	    		if(empty($RET)):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FHorari->getObject());
-	    			$this->MISSATGE = array(1=>'Horari guardat correctament');
+	    			$this->MISSATGE = array(1=>'Horari guardat correctament');                    
 	    			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA);
 	    		else:
 	    			$this->MISSATGE = $RET;
@@ -1591,7 +1614,7 @@ class gestioActions extends sfActions
     			if($this->FActivitat->isValid()): 
     				$this->FActivitat->save();
     				$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
-    				$this->redirect('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$this->IDA);
+    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$this->IDA);
     			endif; 
     			
     			$THIS->MODE['DESCRIPCIO'] = true;
@@ -1655,7 +1678,7 @@ class gestioActions extends sfActions
   	  	
   }
   
-  public function GuardaHorari($horaris, $material, $espais , $idS )
+  public function GuardaHorari($horaris , $EXTRES , $idS )
   {
   	
   	$ERRORS = array();  	
@@ -1688,13 +1711,16 @@ class gestioActions extends sfActions
   	$DBDD['HoraIn']   = $horaris['HoraInici']['hour'].':'.$horaris['HoraInici']['minute'];
   	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
   	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
-      	
-    if(empty($espais)) $ERRORS[] = "Has d'entrar algun espai";
+      	    
+    //Hem d'entrar algun espai ja sigui intern o extern i no podem entrar espais interns i a més externs       
+    if(  empty($EXTRES['ESPAISOUT']) && !$EXTRES['ESPAIEXTERN']->isBound() ) $ERRORS[] = "Has d'entrar algun espai intern o extern";
+    if( !empty($EXTRES['ESPAISOUT']) && $EXTRES['ESPAIEXTERN']->isBound() ) $ERRORS[] = "No pots entrar espais interns i externs a la vegada";
 
     //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
     foreach($DBDD['DIES'] as $D):
-        	    
-    	foreach($espais as $E=>$idE):    		
+
+        //Per tots els espais interns       	    
+    	foreach($EXTRES['ESPAISOUT'] as $E=>$idE):    		
     		//Si l'usuari bloqueja un espai hem de mirar que no hi hagi cap activitat aquell dia. 
     		if($idE == 22)
     		{
@@ -1721,8 +1747,9 @@ class gestioActions extends sfActions
 			    }                	    			    	                                 
     		}    	            
     	endforeach;
-                        
-        foreach($material as $M=>$idM):
+
+        //Comprovem l'ocupació del material                        
+        foreach($EXTRES['MATERIALOUT'] as $M=>$idM):
             
             if(!MaterialPeer::isLliure( $idM['material'] , $this->IDS , $D , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'])):
                 $OM = MaterialPeer::retrieveByPK($idM['material']);
@@ -1734,10 +1761,10 @@ class gestioActions extends sfActions
         	    	
     endforeach;
        
-    //Si no hem trobat cap error, guardem els registres d'ocupaciÃ³.    
+    //Si no hem trobat cap error, guardem els registres d'ocupació.    
     if(empty($ERRORS)):
 
- 		HorarisPeer::save( $horaris , $DBDD , $material , $espais , $idS );
+ 		HorarisPeer::save( $horaris , $DBDD , $EXTRES , $idS );
        
     endif;
   
