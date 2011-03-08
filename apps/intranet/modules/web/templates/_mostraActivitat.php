@@ -29,7 +29,7 @@
 										
 				<div class="df" style="width:150px;">
 					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
-						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn($A,$NODE); ?></div>
+						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
 						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
 				</div>
 				<div class="df" style="width:330px;">
