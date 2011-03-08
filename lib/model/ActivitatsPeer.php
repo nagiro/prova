@@ -587,6 +587,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 
     $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
     $C->addAscendingOrderByColumn(ActivitatsPeer::TIPUSACTIVITAT_IDTIPUSACTIVITAT);
+    $C->addAscendingOrderByColumn(HorarisPeer::DIA);
 
     $C1 = clone $C;        
     $C2 = clone $C;        

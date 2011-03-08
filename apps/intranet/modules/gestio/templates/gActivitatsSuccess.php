@@ -235,7 +235,7 @@
       	<table class="DADES">
  			<?php if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap activitat definida.</TD></TR>'; endif; ?>  
 			<?php 	foreach($ACTIVITATS as $A):
-						$NH = ($A->countHorarisActius($IDS) == 0)?'Afegeix l\'horari':'Edita horaris';
+						$NH = ($A->countHorarisActius($IDS) == 0)?'Afegeix l\'horari':'Inf. pràctica';
 						$DESC = ($A->getDMig()=="")?'Afegeix descripció':'Edita descripció';
                         $PrimerDia = $A->getPrimeraData();
 						echo '<TR>

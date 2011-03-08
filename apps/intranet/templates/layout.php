@@ -1,9 +1,20 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  
+  <?php $metas = $sf_response->getMetas();        
+        if(!empty($metas)):
+            echo html_entity_decode(implode(' ',$metas));                    
+        endif;        
+   ?>  
+   
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   
   <?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
+  <!-- Facebook & Twitter -->
+    <script src="http://connect.facebook.net/ca_ES/all.js#xfbml=1"></script>
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+  <!-- Facebook & Twitter -->
 
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/gestio.css'; ?>" />

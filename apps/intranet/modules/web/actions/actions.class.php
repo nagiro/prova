@@ -171,10 +171,18 @@ class webActions extends sfActions
 			
 			$this->IDN = $request->getParameter('idn',0);
 			$this->PAGINA = $request->getParameter('p',1);
-			
+			                                                                 
 	   		if($this->IDN > 0):	   			
 	   			$this->NOTICIA = NoticiesPeer::getNoticia($this->IDN,$this->IDS);
-	   			$this->NOTICIES = null;
+
+                $this->getResponse()->addMeta(1,'<meta property="og:title" content="'.$this->NOTICIA->getTitolnoticia().'" />');
+                $this->getResponse()->addMeta(2,'<meta property="og:type" content="activity" />');
+                $this->getResponse()->addMeta(3,'<meta property="og:url" content="'.sfConfig::get('sf_webrooturl').'web/index?idn='.$this->NOTICIA->getIdnoticia().'&p='.$this->PAGINA.'" />');
+                $this->getResponse()->addMeta(4,'<meta property="og:image" content="'.sfConfig::get('sf_webrooturl').'images/noticies/'.$this->NOTICIA->getIdnoticia().'.jpg" />');
+                $this->getResponse()->addMeta(5,'<meta property="og:site_name" content="Casa de Cultura de Girona" />');
+                $this->getResponse()->addMeta(6,'<meta property="fb:admins" content="1763108168308" />');
+                
+	   			$this->NOTICIES = null;                                                
 	   		else: 	   			 
 	   			$this->NOTICIA = null;
 	   			$this->NOTICIES = NoticiesPeer::getNoticies('%',$this->PAGINA,true,FALSE,$this->IDS);

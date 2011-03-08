@@ -39,7 +39,7 @@
         if($first_day == $last_day):
             return date('d',$first_day).'/'.generaMes(date('m',$first_day),true);
         else: 
-            return date('d',$first_day).'/'.generaMes(date('m',$first_day),true).' a '.date('d',$last_day).'/'.generaMes(date('m',$last_day),true); 
+            return date('d',$first_day).'/'.generaMes(date('m',$first_day),true).' - '.date('d',$last_day).'/'.generaMes(date('m',$last_day),true); 
         endif;
                                                      	        
     }

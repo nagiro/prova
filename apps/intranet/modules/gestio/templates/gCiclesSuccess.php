@@ -1,5 +1,17 @@
 <?php use_helper('Form'); ?>
 
+<script>
+
+    $(document).ready(function(){
+        $('#cerca_select').change(function(){
+            $('#CERCA').submit();    
+        });    
+    });
+    
+    
+    
+</script>
+
 <STYLE>
 .cent { width:100%; }
 .noranta { width:90%; }
@@ -19,18 +31,21 @@
       
     <?php include_partial('breadcumb',array('text'=>'CICLES')); ?>                      
 
-	<form action="<?php echo url_for('gestio/gCicles') ?>" method="POST">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <?php echo $FCerca ?>
-	            <tr>
-	            	<td colspan="2">
+	<form id="CERCA" action="<?php echo url_for('gestio/gCicles') ?>" method="POST">        
+	    <div class="REQUADRE">
+            <div class="FORMULARI fb">
+                <div style="margin-bottom:4px;">	    	          
+	               <?php echo $FCerca ?>       
+                   <div style="clear:both;"></div>    
+                </div>                     
+	            <div>	            	
 	            		<input type="submit" name="BCERCA" value="Prem per buscar" />
-	            		<input type="submit" name="BNOU" value="Nou cicle" />
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
+	            		<input type="submit" name="BNOU" value="Nou cicle" />	            	
+	            </div>
+                <div style="clear:both;"></div>                
+	        </div>            
+            <div style="clear:both;"></div>
+	     </div>
      </form>  
 
 
@@ -115,4 +130,3 @@
       <DIV STYLE="height:40px;"></DIV>
                 
     </TD>    
-    

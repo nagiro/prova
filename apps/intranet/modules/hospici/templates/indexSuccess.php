@@ -164,7 +164,7 @@
 
             <div class="h_middle_col">
                 <div class="h_subtitle_gray c1">
-                    CERCADOR
+                    CERCADOR D'ACTIVITATS
                 </div>
 
                 <form action="<?php url_for('hospici/index')?>" method="POST">
@@ -279,15 +279,16 @@
                             echo '<div style="margin-top:10px; clear:both;"></div>';                                                                                                                                                                    
                         else:
                             foreach($LLISTAT_ACTIVITATS as $OA):
-                                echo '<div>';                                    
+                                echo '<div style="margin-top:10px;">';                                                
                                     if($cat_ant <> $OA->getTipusactivitatIdtipusactivitat()):
                                         echo '<div class="h_llistat_activitat_tipus_titol">'.$OA->getNomTipusActivitat().'</div>';                                                                        
                                     endif;
                                     echo '<div class="h_llistat_activitat_titol"><a href="'.url_for('hospici/index?idA='.$OA->getActivitatid().'&titol='.$OA->getTmig()).'">'.$OA->getTMig().'</a></div>';
-                                    echo '<div class="h_llistat_activitat_horari">del '.generaHorarisCompactat($OA->getHorariss($C)).'</div>';
-                                    echo '<div class="h_llistat_activitat_organitzador">|&nbsp;&nbsp; '.$OA->getNom().'</div>';
+                                    echo '<div class="h_llistat_activitat_horari">'.generaHorarisCompactat($OA->getHorariss($C)).'</div>';
+                                    echo '<div class="h_llistat_activitat_organitzador">|&nbsp;&nbsp; '.$OA->getNomSite().'</div>';
                                 echo '</div>';
-                                echo '<div style="margin-top:10px; clear:both;"></div>';                                                                                                                                            
+                                echo '<div style="height:1px; background-color:#CCCCCC; clear:both;"></div>';
+                                $cat_ant = $OA->getTipusactivitatIdtipusactivitat();                                                                                               
                             endforeach; 
                         endif;
                     ?>

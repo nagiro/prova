@@ -284,6 +284,7 @@ li.ul_material{
  
 /* Notícies */
 .titol_noticia { color:#646466; font-size:12pt;  width:480px; }
+.titol_noticia a { color:inherit;  }
 .text_noticia { font-size:11px; width:380px; float:left; }
 .imatge_noticia { width:100px; float:right; }
 .llegir_mes { font-size:11px; width:380px; float:left; text-align:right; }

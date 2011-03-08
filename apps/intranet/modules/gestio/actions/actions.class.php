@@ -337,17 +337,16 @@ class gestioActions extends sfActions
   {        
      
      $this->setLayout('gestio');
+     $this->accio = $request->getParameter('accio','');
      $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.     
      $this->FLogin = new LoginForm(array('site'=>$this->IDS,'nick'=>"",'password'=>''));      
-     $this->ERROR = "";
-     $this->accio = $request->getParameter('accio','');
+     $this->ERROR = "";     
                               
      if($request->hasParameter('BLOGIN')) $this->accio = "LOGIN";
      if($request->hasParameter('BNEWUSER')) $this->accio = "NEW_USER";
      if($request->hasParameter('BSAVENEWUSER')) $this->accio = "SAVE_NEW_USER";
      if($request->hasParameter('BREMEMBER')) $this->accio = "REMEMBER";
-          
-    
+              
      switch($this->accio){
         
         case 'LOGOUT':                
@@ -355,8 +354,7 @@ class gestioActions extends sfActions
                 $this->getUser()->setSessionPar('idS',0);
                 $this->getUser()->setSessionPar('idN',NivellsPeer::CAP);
                 $this->getUser()->setAuthenticated(false);
-                $this->getUser()->clearCredentials();
-//                unset($_SESSION[$this->getUser()->getNomComplet()]);
+                $this->getUser()->clearCredentials();                 
                 $this->redirect('gestio/uLogin');
             break;
         
@@ -3736,9 +3734,10 @@ class gestioActions extends sfActions
     $this->PAGINA = $request->getParameter('PAGINA');
     
     //Inicialitzem el formulari de cerca
-    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));
-    $this->FCerca = new CercaForm();            
-	$this->FCerca->bind(array('text'=>$this->CERCA['text']));
+    $this->CERCA = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>1));
+    $this->FCerca = new CercaTextChoiceForm();       
+    $this->FCerca->setChoice(array(1=>'Actiu',0=>'Inactiu')); 
+	$this->FCerca->bind($this->CERCA);	
     
     $accio = $request->getParameter('accio');
     if($request->hasParameter('BSAVE')) $accio = 'SAVE';
@@ -3749,7 +3748,8 @@ class gestioActions extends sfActions
     switch($accio)
     {    
     	case 'C':			
-            $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>''));    		      			      	      		            
+            $this->CERCA  = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>1));
+           	$this->FCerca->bind($this->CERCA);    		      			      	      		            
             $this->getUser()->addLogAction('inside','gCicles');  			   
     		break;
     	case 'NOU': 
@@ -3788,8 +3788,8 @@ class gestioActions extends sfActions
     		break;
     		    		    
     }        
-    
-    $this->CICLES = CiclesPeer::getList($this->PAGINA , $this->CERCA['text'] , $this->IDS);
+                
+    $this->CICLES = CiclesPeer::getList($this->PAGINA , $this->CERCA , $this->IDS);    
   	
   }
   

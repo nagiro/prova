@@ -59,9 +59,10 @@ class CiclesPeer extends BaseCiclesPeer
            
     $C = new Criteria();
     $C = self::getCriteriaActiu( $C , $idS );    
-    if(!empty($CERCA)) $C->add(self::NOM,'%'.$CERCA.'%',CRITERIA::LIKE);
-    $C->addAscendingOrderByColumn(self::EXTINGIT);
-    $C->addAscendingOrderByColumn(self::NOM);
+    if(!empty($CERCA)) $C->add(self::NOM,'%'.$CERCA['text'].'%',CRITERIA::LIKE);
+    if($CERCA['select'] == 1) $C->add(self::EXTINGIT,false);
+    else $C->add(self::EXTINGIT, true);    
+    $C->addAscendingOrderByColumn(self::NOM);           
        
     $pager = new sfPropelPager('Cicles', 20);
     $pager->setCriteria($C);

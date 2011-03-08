@@ -72,9 +72,17 @@ class Activitats extends BaseActivitats
    	
    }
    
-   public function getPrimeraData()
+   public function getHorariss($criteria = null, PropelPDO $con = null)
    {
-   	
+        $C = new Criteria();
+        $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
+        return parent::getHorariss($C,null);
+   }
+   
+   
+   public function getPrimeraData()
+   {   	                    
+    
    		$H = $this->getHorariss();
    		if(isset($H[0]) && $H[0] instanceof Horaris):
    		
@@ -111,6 +119,11 @@ class Activitats extends BaseActivitats
      $C = HorarisPeer::getCriteriaActiu($C,$idS);
      $C->addAscendingOrderByColumn(HorarisPeer::DIA);     
      return $this->getHorariss($C);    
+   }
+
+   public function getNomSite()
+   {    
+     return SitesPeer::getNom($this->getSiteId());
    }
    
 }

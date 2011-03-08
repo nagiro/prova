@@ -33,8 +33,7 @@
         $PDF_EXIST = (file_exists($SYSURL.$pdf)  && !empty($pdf) );
      	
 		if(!empty($titol)):
-		?>
-																		
+		?>                    																		
 			<div class="titol_noticia"><?php echo $titol ?></div>									 
 			<div style="margin-top:10px;">														
 				<div class="text_noticia"><?php echo $descripcio ?></div>
@@ -50,13 +49,25 @@
 				</div>
 			</div>
 			<div style="clear:both; padding-top:10px;">
-				<div class="llegir_mes"><div style="padding-right:30px;"><a href="<?php echo url_for('web/index?p='.$PAGINA) ?>">Tornar a llistat de notícies</a></div></div>				
+				<div class="llegir_mes">
+                    <div>
+                        <!-- AddThis Button BEGIN -->
+                        <div class="addthis_toolbox addthis_default_style ">
+                            <a class="addthis_button_facebook"></a>
+                            <a class="addthis_button_twitter"></a>
+                            <a class="addthis_button_myspace"></a>
+                            <a class="addthis_button_email"></a>                                                                        
+                            <a class="addthis_button_compact"></a>
+                        </div>
+                        <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
+                        <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d7614b11400555d"></script>
+                        <!-- AddThis Button END -->                            
+                    </div>                				
 			</div>					
 			
 			<div style="clear:both;">&nbsp;</div>																						
-			
-			<div style="clear:both; height:20px;"></div>
-				
+						
+            				
 	    <?php
  		endif;
 
@@ -90,25 +101,26 @@
 			?>
 				<div style="border-bottom:2px solid #CADF86;">
 																
-					<div class="titol_noticia"><?php echo $nom_noticia ?></div>									 
+					<div class="titol_noticia">
+                        <a href="<?php echo url_for('web/index?idn='.$ON->getIdnoticia().'&p='.$PAGINA) ?>"><?php echo $nom_noticia ?></a>                                                
+                    </div>									 
 					<div style="margin-top:10px;">														
-						<div class="text_noticia"><?php echo substr($text,0,400) ?>...</div>
+						<div class="text_noticia">                            
+                            <?php echo substr($text,0,400) ?>...                                                    
+                        </div>
 						<div class="imatge_noticia">
                             <?php if($IMG_EXIST): ?> 
-                                <img src="<?php echo $WEBURL.$imatge ?>" style="vertical-align:middle"> 
-                            <?php endif; ?>
+                                <img src="<?php echo $WEBURL.$imatge ?>" style="vertical-align:middle" /> 
+                            <?php endif; ?>                            
 							<div style="padding-top:10px;" class="pdf_noticia">
                                 <?php if($PDF_EXIST): ?>
                                     <a href="<?php echo $WEBURL.$pdf ?>">Descarrega't el pdf</a>
                                 <?php endif; ?>
-                            </div>
+                            </div>                            
 						</div>
 					</div>
 					<div style="clear:both; padding-top:10px;">
-						<div class="llegir_mes">
-                            <div style="padding-right:30px;">
-                                <a href="<?php echo url_for('web/index?idn='.$ON->getIdnoticia().'&p='.$PAGINA) ?>">Ampliar notícia</a>
-                            </div>
+						<div class="llegir_mes">                                                                    
                         </div>
 					</div>					
 					

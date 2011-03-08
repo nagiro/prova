@@ -18,15 +18,16 @@ class hospiciActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {
     $this->setLayout('blank');
-    $this->CERCA = array( 'POBLE' => -1 , 'CATEGORIA' => -1 , 'DATA' => -1 , 'DATA_R' => array('DI'=>time(),'DF'=>time()), 'P' => 1  );            
+    $this->CERCA = array( 'POBLE' => array( 0=> -1 ) , 'CATEGORIA' => -1 , 'DATA' => -1 , 'DATA_R' => array('DI'=>time(),'DF'=>time()), 'P' => 1  );                
     $RS = $this->getUser()->ParReqSesForm($request,'cerca',$this->CERCA);
     $this->CERCA = $RS;
-    $this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsHospici($RS['POBLE'][0],$RS['CATEGORIA'][0],$RS['DATA'],$RS['DATA_R'],$RS['P']);
+    $this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsHospici($this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'],$this->CERCA['DATA_R'],$this->CERCA['P']);
     $this->MODE = 'INICIAL';
     
     if($request->getMethod() == 'POST' && !empty($RS)) { $this->MODE = 'CERCA'; }    
-
-    if($request->getMethod() == 'GET' && $request->hasParameter('idA')):        
+    
+    if($request->getMethod() == 'GET' && $request->hasParameter('idA')):
+        
         $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
         $this->MODE = 'DETALL';
     endif;
