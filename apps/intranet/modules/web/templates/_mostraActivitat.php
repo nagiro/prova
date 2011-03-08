@@ -59,10 +59,10 @@
     
 
 <?php 
-    
+/*    
     function getRetorn($A,$NODE)
     {                
         return '<a href="javascript:history.back()">Torna al llistat d\'activitats</a>';                     
     } 
-
+*/
 ?>
