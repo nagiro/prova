@@ -30,7 +30,22 @@
 				<div class="df" style="width:150px;">
 					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
 						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
-						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
+						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>
+
+                    <div style="margin-top: 20px;">
+                        <!-- AddThis Button BEGIN -->
+                        <div class="addthis_toolbox addthis_default_style ">
+                            <a class="addthis_button_facebook"></a>
+                            <a class="addthis_button_twitter"></a>
+                            <a class="addthis_button_myspace"></a>
+                            <a class="addthis_button_email"></a>                                                                        
+                            <a class="addthis_button_compact"></a>
+                        </div>
+                        <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
+                        <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d7614b11400555d"></script>
+                        <!-- AddThis Button END -->                            
+                    </div>
+                                                            				                        						
 				</div>
 				<div class="df" style="width:330px;">
 					<div style="padding-left:10px; font-size:10px;">

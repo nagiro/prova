@@ -159,7 +159,17 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
 			$this->NODE = $request->getParameter('node',0);
   			$this->ACCIO = 'mostra_activitat';
-  			$this->TITOL = 'Informació de l\'activitat';                        	     			     			     		
+  			$this->TITOL = 'Informació de l\'activitat';
+
+            $OA = $this->LLISTAT_ACTIVITATS[0];              
+            $this->getResponse()->addMeta(1,'<meta property="og:title" content="'.addslashes($OA->getTmig()).'" />');
+            $this->getResponse()->addMeta(2,'<meta property="og:type" content="activity" />');
+            $this->getResponse()->addMeta(3,'<meta property="og:url" content="'.sfConfig::get('sf_webrooturl').'web/index?accio=caa&idA='.$OA->getActivitatId().'" />');
+            $this->getResponse()->addMeta(4,'<meta property="og:image" content="'.sfConfig::get('sf_webrooturl').'images/activitats/'.$OA->getActivitatId().'.jpg" />');
+            $this->getResponse()->addMeta(5,'<meta property="og:site_name" content="Casa de Cultura de Girona" />');
+            $this->getResponse()->addMeta(6,'<meta property="fb:admins" content="1763108168308" />');
+              
+                                      	     			     			     		
 			break;		
 			
   		//Canvi data del calendari
