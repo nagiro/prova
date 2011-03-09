@@ -35,17 +35,18 @@ all:
     use_database:           true    
     
 
-    webroot:                /intranet/
-    websysroot:             C:\Documents and Settings\casacultura\Escritorio\htdocs\trunk\intranet\web\
+    #webroot:                /intranet/
+    #websysroot:             C:\Documents and Settings\casacultura\Escritorio\htdocs\trunk\intranet\web\
+    #webappdocuments:        appsupload/documents/
+    #webrooturl:             http://localhost/intranet/
+    #timeout:                86400
+    #webdomain:              http://servidor.casadecultura.org
+    webroot:                /web_beta/
+    websysroot:             /home/informatica/www/intranet/beta/web/
     webappdocuments:        appsupload/documents/
-    webrooturl:             http://localhost/intranet/
-    timeout:                86400
-    webdomain:              http://servidor.casadecultura.org
-    # webroot:                /web_beta/
-    # websysroot:             /home/informatica/www/intranet/beta/web/
-    # webappdocuments:        appsupload/documents/
-    # webrooturl:             http://servidor.casadecultura.org/web_beta/
-    # timeout:                84600
+    webrooturl:             http://servidor.casadecultura.org/web_beta/
+    timeout:                84600
+    webdomain:            http://servidor.casadecultura.org
     
   .actions:
     login_module: gestio
