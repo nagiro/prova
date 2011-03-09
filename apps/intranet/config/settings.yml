@@ -40,6 +40,7 @@ all:
     webappdocuments:        appsupload/documents/
     webrooturl:             http://localhost/intranet/
     timeout:                86400
+    webdomain:              http://servidor.casadecultura.org
     # webroot:                /web_beta/
     # websysroot:             /home/informatica/www/intranet/beta/web/
     # webappdocuments:        appsupload/documents/
