@@ -15,4 +15,11 @@ class Nodes extends BaseNodes
     $E = array();
     return $E;
   }
+  
+  public function getNomForUrl()
+  {
+    $nom = $this->getTitolmenu();
+    return myUser::text2url($nom);
+  }
+  
 }

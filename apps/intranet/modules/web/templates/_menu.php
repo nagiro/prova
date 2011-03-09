@@ -83,26 +83,27 @@ function showElement(theClass) {
   {
   	$imatge = ($OBERT)?'':'T';
   	$id_nivell = $NODE->getNivell();  	
-  	$URL = $NODE->getUrl();
+  	$URL_MAN = '@web_contingut_man?node='.$NODE->getIdnodes().'&titol='.$NODE->getNomForUrl();
+    $URL_AUT = '@web_contingut_auto?node='.$NODE->getIdnodes().'&titol='.$NODE->getNomForUrl();
     $RET = "";
 
 	if($id_nivell == 1):                
 	  	if(!empty($URL)): 						$RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
 	  	else:
-	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
-	  		else 								$RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $URL_MAN ).'</TD></TR>';
+	  		else 								$RET = '<TR><TD class="SUBMENU_1">'.link_to(image_tag('intranet/Submenu1'.$imatge.'.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $URL_AUT ).'</TD></TR>'; 		
 		endif;		        
 	elseif($id_nivell == 2):
 	  	if(!empty($URL)): 						$RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
 	  	else:
-	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
-	  		else 								$RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $URL_MAN ).'</TD></TR>';
+	  		else 								$RET = '<TR><TD class="SUBMENU_2">'.link_to(image_tag('intranet/Submenu2.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $URL_AUT ).'</TD></TR>'; 		
 		endif;				
 	elseif($id_nivell == 3):
 	  	if(!empty($URL)): 						$RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $NODE->getUrl(),array('target'=>'_NEW','absolute'=>true)).'</TD></TR>';	  		  
 	  	else:
-	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=mc&node='.$NODE->getIdnodes()).'</TD></TR>';
-	  		else 								$RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), 'web/index?accio=ac&node='.$NODE->getIdnodes()).'</TD></TR>'; 		
+	  		if($NODE->getCategories() == 'cap') $RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $URL_MAN ).'</TD></TR>';
+	  		else 								$RET = '<TR><TD class="SUBMENU_3">'.link_to(image_tag('intranet/Submenu3.png', array('align'=>'ABSMIDDLE')).'&nbsp;&nbsp;'.$NODE->getTitolMenu(), $URL_AUT ).'</TD></TR>'; 		
 		endif;					
 	endif; 
   	   			 

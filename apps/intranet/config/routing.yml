@@ -10,6 +10,22 @@ hospici_detall_activitat:
   url:  /hospici/index/:idA/:titol
   param: { module:hospici, action:index  }
 
+web_contingut_auto:
+  url: /web/cicles/:node/:titol
+  param: { module:web, action:index, accio:ac }
+
+web_contingut_man:
+  url: /web/contingut/:node/:titol
+  param: { module:web, action:index, accio:mc }
+  
+web_noticia:
+  url: /web/noticies/:idN/:p/:titol
+  param: { module:web, action:index }
+
+web_activitat:
+  url: /web/activitat/:idA/:titol
+  param: { module:web, action:index, accio:caa }
+
 # generic rules
 # please, remove them by adding more specific rules
 default_index:

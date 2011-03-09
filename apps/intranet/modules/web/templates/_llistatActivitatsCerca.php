@@ -20,25 +20,21 @@
     				<th style="text-align:left">Primer dia</th>    				
     		  </tr>';
 	
-		foreach($LLISTAT_ACTIVITATS->getResults() as $A):								
-		
-			$OA 		= $A->getActivitats();
+		foreach($LLISTAT_ACTIVITATS->getResults() as $OA):								
+					
 			$OC 		= $OA->getCicles();			
-			$nom_act    = $OA->getTMig();
+			$nom_act    = $OA->getTmig();
             $nom_cicle  = $OC->getTmig();			
-			
+                        			
 			if(!empty($nom_act)):
-		    	echo '<tr>';
-		    	
-		    	echo '<td>';
-		    	echo 	link_to($nom_act,'web/index?accio=caa&idA='.$OA->getActivitatid());
-		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.link_to($nom_cicle,'web/index?accio=cc&idC='.$OC->getCicleid());		    			
-		    	echo   '</td>';
-		    	echo '<td>';
-		    		echo GiraData($OA->getPrimeraData());
-		    	echo '</td>';
-		    			    	
-		    	echo '</tr>';
+		    	echo '<tr>		    	
+		    	         <td>
+		    	             <a href="'.url_for('@web_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()).'">'.$nom_act.'</a>';
+    			if($OC->getCicleid() > 1) 
+                echo ' || Cicle: '.link_to($nom_cicle,'web/index?accio=cc&idC='.$OC->getCicleid());		    			
+		    	echo   '</td><td>'.GiraData($OA->getPrimeraData()).'
+		    	         </td>
+                    </tr>';
 		    endif; 
 	    			 		 	    				                  
 		endforeach;

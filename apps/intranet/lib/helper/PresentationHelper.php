@@ -1,5 +1,29 @@
 <?php
 
+     /**
+      * ph_getAddThisDiv()
+      * 
+      * Retorna el div amb el format de botons d'addThis per fer social un site.
+      *  
+      * @return
+      */
+     function ph_getAddThisDiv()
+     {
+        $RET = "";
+        $RET .= ' <div class="addthis_toolbox addthis_default_style ">
+                    <a class="addthis_button_facebook"></a>
+                    <a class="addthis_button_twitter"></a>
+                    <a class="addthis_button_myspace"></a>
+                    <a class="addthis_button_email"></a>                                                                        
+                    <a class="addthis_button_compact"></a>
+                  </div>
+                  <script type="text/javascript">var addthis_config = {"data_track_clickback":true};</script>
+                  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d7614b11400555d"></script>
+                  ';
+                  
+        return $RET;                                    
+     }
+
 
     /**
      * getRetorn()
@@ -8,9 +32,9 @@
      *       
      * @return string
      */
-    function getRetorn($atributs = "")
+    function getRetorn($atributs = "", $nom = "Torna al llistat d'activitats")
     {                
-        return '<a '.$atributs.' href="javascript:history.back()">Torna al llistat d\'activitats</a>';                     
+        return '<a '.$atributs.' href="javascript:history.back()">'.$nom.'</a>';                     
     } 
 
 

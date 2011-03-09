@@ -70,7 +70,7 @@ class webActions extends sfActions
       	
   	$this->accio = $request->getParameter('accio');  	  	
   	
-  	if($request->hasParameter('BCERCA_x') || $request->hasParameter('CERCA')):    	 
+  	if($request->hasParameter('BCERCA_x') || $request->hasParameter('CERCA') || $this->accio=='c' ):    	 
     	$this->CERCA = $this->getUser()->ParReqSesForm($request,'CERCA',"");
     	$this->accio = 'c';
     else: 
@@ -140,7 +140,8 @@ class webActions extends sfActions
                 $this->TITOL = 'ACTIVITATS DEL MES';                
             else: 
                 $this->TITOL = 'ACTIVITATS TROBADES AMB LA CERCA "'.$this->CERCA.'"';            
-            endif;   			  			
+            endif;
+               			  			
   			$this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsCerca( $this->CERCA , $this->DATACAL  , $this->PAGINA , $this->IDS );                                                                  						
 	    	$this->ACCIO = 'llistat_activitats_cerca';	    	
 	    	$this->MODE  = 'CERCA';                     		
@@ -162,14 +163,14 @@ class webActions extends sfActions
   			$this->TITOL = 'Informació de l\'activitat';
 
             $OA = $this->LLISTAT_ACTIVITATS[0];              
-            $this->getResponse()->addMeta(1,'<meta property="og:title" content="'.addslashes($OA->getTmig()).'" />');
-            $this->getResponse()->addMeta(2,'<meta property="og:type" content="activity" />');
-            $this->getResponse()->addMeta(3,'<meta property="og:url" content="'.sfConfig::get('sf_webrooturl').'web/index?accio=caa&idA='.$OA->getActivitatId().'" />');
-            $this->getResponse()->addMeta(4,'<meta property="og:image" content="'.sfConfig::get('sf_webrooturl').'images/activitats/'.$OA->getActivitatId().'.jpg" />');
-            $this->getResponse()->addMeta(5,'<meta property="og:site_name" content="Casa de Cultura de Girona" />');
-            $this->getResponse()->addMeta(6,'<meta property="fb:admins" content="1763108168308" />');
-              
-                                      	     			     			     		
+            $this->getResponse()->addMeta('facebook',
+                                    myUser::getFacebookHeaders( $OA->getTmig() , 
+                                                                sfConfig::get('sf_webrooturl').'web/index?accio=caa&idA='.$OA->getActivitatId(),
+                                                                sfConfig::get('sf_webrooturl').'images/activitats/'.$OA->getActivitatId().'.jpg',
+                                                                'Casa de Cultura de Girona',
+                                                                '1763108168308'
+                                                                )
+                                        );                                                                	     			     			     		
 			break;		
 			
   		//Canvi data del calendari
@@ -185,13 +186,14 @@ class webActions extends sfActions
 	   		if($this->IDN > 0):	   			
 	   			$this->NOTICIA = NoticiesPeer::getNoticia($this->IDN,$this->IDS);
 
-                $this->getResponse()->addMeta(1,'<meta property="og:title" content="'.$this->NOTICIA->getTitolnoticia().'" />');
-                $this->getResponse()->addMeta(2,'<meta property="og:type" content="activity" />');
-                $this->getResponse()->addMeta(3,'<meta property="og:url" content="'.sfConfig::get('sf_webrooturl').'web/index?idn='.$this->NOTICIA->getIdnoticia().'&p='.$this->PAGINA.'" />');
-                $this->getResponse()->addMeta(4,'<meta property="og:image" content="'.sfConfig::get('sf_webrooturl').'images/noticies/'.$this->NOTICIA->getIdnoticia().'.jpg" />');
-                $this->getResponse()->addMeta(5,'<meta property="og:site_name" content="Casa de Cultura de Girona" />');
-                $this->getResponse()->addMeta(6,'<meta property="fb:admins" content="1763108168308" />');
-                
+                $this->getResponse()->addMeta('facebook',
+                    myUser::getFacebookHeaders(
+                        $this->NOTICIA->getTitolnoticia(),
+                        sfConfig::get('sf_webrooturl').'web/index?idn='.$this->NOTICIA->getIdnoticia().'&p='.$this->PAGINA,
+                        sfConfig::get('sf_webrooturl').'images/noticies/'.$this->NOTICIA->getIdnoticia().'.jpg',
+                        'Casa de Cultura de Girona',
+                        '1763108168308'));
+                                        
 	   			$this->NOTICIES = null;                                                
 	   		else: 	   			 
 	   			$this->NOTICIA = null;

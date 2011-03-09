@@ -32,7 +32,7 @@
 		    	echo '<tr>';
 		    	
 		    	echo '<td>';
-		    	echo 	link_to($nom_act,'web/index?accio=caa&idA='.$OA->getActivitatid());
+		    	echo 	'<a href="'.url_for('@web_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()).'">'.$OA->getTmig().'</a>';
 		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.link_to($nom_cicle,'web/index?accio=cc&idC='.$OC->getCicleid());		    			
 		    	echo   '</td>';
 		    			    	

@@ -68,9 +68,9 @@ class ActivitatsPeer extends BaseActivitatsPeer
       $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
       $C->add(self::PUBLICAWEB,1);      
       $C->addDescendingOrderByColumn(HorarisPeer::DIA);
-      $C->addGroupByColumn(self::ACTIVITATID);      
+      $C->addGroupByColumn(self::ACTIVITATID);
                 
-      $pager = new sfPropelPager('Horaris', 20);
+      $pager = new sfPropelPager('Activitats', 20);
 	  $pager->setCriteria($C);
       $pager->setPage($page);
       $pager->init();    	

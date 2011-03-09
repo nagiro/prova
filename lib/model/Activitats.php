@@ -125,5 +125,11 @@ class Activitats extends BaseActivitats
    {    
      return SitesPeer::getNom($this->getSiteId());
    }
+
+   public function getNomForUrl()
+   {
+        $nom = $this->getTmig();
+        return myUser::text2url($nom);        
+   }
    
 }
