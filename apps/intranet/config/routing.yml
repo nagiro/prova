@@ -6,9 +6,17 @@ homepage:
   url:   /
   param: { module: default, action: index }
 
+######################################################
+# HOSPICI
+######################################################
+
 hospici_detall_activitat:
   url:  /hospici/index/:idA/:titol
   param: { module:hospici, action:index  }
+
+######################################################
+# WEB CCG
+######################################################
 
 web_contingut_auto:
   url: /web/cicles/:node/:titol
@@ -26,8 +34,11 @@ web_activitat:
   url: /web/activitat/:idA/:titol
   param: { module:web, action:index, accio:caa }
 
-# generic rules
+######################################################
+# GENERIQUES
 # please, remove them by adding more specific rules
+######################################################
+
 default_index:
   url:   /:module
   param: { action: index }

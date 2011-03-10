@@ -14,6 +14,20 @@ dev:
     no_script_name:         false
     etag:                   false
 
+dev_loc:
+  .settings:
+    error_reporting:        <?php echo (E_ALL | E_STRICT)."\n" ?>
+    web_debug:              true
+    cache:                  false
+    no_script_name:         false
+    etag:                   false
+    webroot:                /intranet/
+    websysroot:             C:\Documents and Settings\casacultura\Escritorio\htdocs\trunk\intranet\web\
+    webappdocuments:        appsupload/documents/
+    webrooturl:             http://localhost/intranet/
+    timeout:                86400
+    webdomain:              http://servidor.casadecultura.org
+
 test:
   .settings:
     error_reporting:        <?php echo ((E_ALL | E_STRICT) ^ E_NOTICE)."\n" ?>
@@ -34,19 +48,12 @@ all:
     # Enable the database manager
     use_database:           true    
     
-
-    #webroot:                /intranet/
-    #websysroot:             C:\Documents and Settings\casacultura\Escritorio\htdocs\trunk\intranet\web\
-    #webappdocuments:        appsupload/documents/
-    #webrooturl:             http://localhost/intranet/
-    #timeout:                86400
-    #webdomain:              http://servidor.casadecultura.org
     webroot:                /web_beta/
     websysroot:             /home/informatica/www/intranet/beta/web/
     webappdocuments:        appsupload/documents/
     webrooturl:             http://servidor.casadecultura.org/web_beta/
     timeout:                84600
-    webdomain:            http://servidor.casadecultura.org
+    webdomain:              http://servidor.casadecultura.org
     
   .actions:
     login_module: gestio

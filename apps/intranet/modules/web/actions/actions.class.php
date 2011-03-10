@@ -78,8 +78,8 @@ class webActions extends sfActions
     endif;
     
     //Carreguem els dies en els que hi ha alguna activitat.     
-    $this->ACTIVITATS_CALENDARI = ActivitatsPeer::getDiesAmbActivitatsMes( $this->DATACAL , $this->IDS );  	
-  	  	
+    $this->ACTIVITATS_CALENDARI = ActivitatsPeer::getDiesAmbActivitatsMes( $this->DATACAL , $this->IDS );  	  	  	    
+        
   	switch($this->accio){  		  		  		
   		//Contingut manual
   		case 'mc':
@@ -180,7 +180,7 @@ class webActions extends sfActions
   		//Mostrem notícies		  	
 		default:
 			
-			$this->IDN = $request->getParameter('idn',0);
+			$this->IDN = $request->getParameter('idN',0);
 			$this->PAGINA = $request->getParameter('p',1);
 			                                                                 
 	   		if($this->IDN > 0):	   			

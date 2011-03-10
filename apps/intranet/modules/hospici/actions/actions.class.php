@@ -17,9 +17,9 @@ class hospiciActions extends sfActions
   */
   public function executeIndex(sfWebRequest $request)
   {
-    $this->setLayout('blank');
+    $this->setLayout('hospici');
     $this->CERCA = array( 'POBLE' => array( 0=> -1 ) , 'CATEGORIA' => -1 , 'DATA' => -1 , 'DATA_R' => array('DI'=>time(),'DF'=>time()), 'P' => 1  );                
-    $RS = $this->getUser()->ParReqSesForm($request,'cerca',$this->CERCA);
+    $RS = $this->getUser()->ParReqSesForm($request,'cerca',$this->CERCA);    
     $this->CERCA = $RS;
     $this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsHospici($this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'],$this->CERCA['DATA_R'],$this->CERCA['P']);
     $this->MODE = 'INICIAL';
@@ -33,6 +33,28 @@ class hospiciActions extends sfActions
     endif;
     
   }
+    
+  public function executeEntitats(sfWebRequest $request)
+  {
+    
+  }
+    
+  public function executeCursos(sfWebRequest $request)
+  {
+    
+  }
+  
+  public function executeCalendari(sfWebRequest $request)
+  {
+    
+  }
+  
+  public function executeHospici(sfWebRequest $request)
+  {
+    
+  }
+  
+  
     
   public function executeAjaxON(sfWebRequest $request)
   {
