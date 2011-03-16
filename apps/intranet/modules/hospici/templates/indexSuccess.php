@@ -4,11 +4,8 @@
  
 
 <?php include_partial('hospici/showCercadorActivitats',array('CERCA'=>$CERCA,'VISIBLE'=>($MODE <> 'DETALL'))); ?>
-
-<?php if(!$MODE == 'INICIAL') include_partial('hospici/showDestacats'); ?>
-                
+<?php if(!$MODE == 'INICIAL') include_partial('hospici/showDestacats'); ?>                
 <?php if($MODE == 'DETALL') include_partial('hospici/showDetallActivitat',array('ACTIVITAT'=>$ACTIVITAT)); ?>                
-
 <?php if($MODE == 'CERCA') include_partial('hospici/showLlistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS)); ?>    
 
 

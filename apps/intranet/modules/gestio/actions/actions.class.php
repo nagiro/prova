@@ -48,8 +48,8 @@ class gestioActions extends sfActions
                         $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error en l\'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
                     endif;
                     UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );
-                break;                
-            default:                
+                break;
+            default:
             break;
         }    
    }

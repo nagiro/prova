@@ -133,7 +133,7 @@ class HorarisPeer extends BaseHorarisPeer
 	      $RET[$H->getHorarisid()]['AVIS'] = $H->getAvis();   //Carreguem l'avís per si de cas      
 	      foreach($H->getHorarisespaiss() as $HE):          
 	      	$RET[$H->getHorarisid()]['ESPAIS'][$HE->getNomEspai()] = $HE->getNomEspai();   //Guardem les activitats      	
-	      	$RET[$H->getHorarisid()]['MATERIAL'][] = (is_null($HE->getMaterial()))?"":$HE->getMaterial()->getNom();      	
+	      	$RET[$H->getHorarisid()]['MATERIAL'][] = (is_null($HE->getMaterial()))?"":$HE->getMaterial()->getIdentificador().' - '.$HE->getMaterial()->getNom();      	
 	      endforeach;
 	   endforeach;	   
 	   return $RET;

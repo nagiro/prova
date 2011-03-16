@@ -6,7 +6,10 @@
     <div>
         
     <?php if($ACTIVITAT instanceof Activitats):
-            $imatge = $ACTIVITAT->getImatge();
+            $i = $ACTIVITAT->getImatge();
+            $imatge = sfConfig::get('sf_webrooturl').'images/activitats/'.$i;
+            if(empty($i)) $imatge = sfConfig::get('sf_webrooturl').'images/hospici/logo_hospici.png'; 
+            
             $pdf = $ACTIVITAT->getPdf();                          
      ?>
 			<div style="border:0px solid #96BF0D; clear:both; padding:10px;">
@@ -14,16 +17,16 @@
 				<div style="font-size:10px"><?php echo generaHoraris($ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
 				<div style="height:30px;">&nbsp;</div>				
 										
-				<div class="df" style="width:150px;">
-					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
+				<div style="width:150px; float:left">
+					<div><img src="<?php echo $imatge ?>" style="vertical-align:middle" /></div>
 						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
 						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>
                     <div style="margin-top:20px;">
                         <?php echo ph_getAddThisDiv(); ?>
-                    </div>
-                        						
+                    </div>                        						
 				</div>
-				<div class="df" style="width:330px;">
+                
+				<div style="width:330px; float:left;">
 					<div style="padding-left:10px; font-size:10px;">
 						<?php echo $ACTIVITAT->getDmig() ?>
 					</div>					

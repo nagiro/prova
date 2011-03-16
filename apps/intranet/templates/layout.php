@@ -2,7 +2,7 @@
 <html>
   <head>
   
-  <?php $metas = $sf_response->getMetas();        
+  <?php $metas = $sf_response->getMetas();
         if(!empty($metas)):
             echo html_entity_decode(implode(' ',$metas));                    
         endif;        

@@ -82,7 +82,8 @@ function showElement(theClass) {
   function generaURL( $NODE , $OBERT = false )
   {
   	$imatge = ($OBERT)?'':'T';
-  	$id_nivell = $NODE->getNivell();  	
+  	$id_nivell = $NODE->getNivell();
+    $URL = $NODE->getUrl();  	
   	$URL_MAN = '@web_contingut_man?node='.$NODE->getIdnodes().'&titol='.$NODE->getNomForUrl();
     $URL_AUT = '@web_contingut_auto?node='.$NODE->getIdnodes().'&titol='.$NODE->getNomForUrl();
     $RET = "";

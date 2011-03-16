@@ -918,19 +918,30 @@ function _convert_include_custom_for_select($options, &$select_options)
   }
 }
 
-function setPager($pager,$url,$page){
+/**
+ * setPager()
+ * Imprimeix per pantalla la indexació de pàgines 
+ * @param mixed $pager
+ * @param mixed $url
+ * @param mixed $page
+ * @return
+ */
+function setPager( sfPager $pager , $url ){
 	
-	$RET = "<div style=\"font-size:12px;\">";
+    $e = '&p=';
+    if(!stripos($url,'?')) $e = '?p=';    
+    
+	$RET = '<div class="pager">';
 	if ($pager->haveToPaginate()):
-		$RET .= link_to('&laquo;', $url.'&p='.$pager->getFirstPage());
-		$RET .= '&nbsp;&nbsp;'.link_to('&lt;', $url.'&p='.$pager->getPreviousPage());
+		$RET .= link_to('&laquo;', $url.$e.$pager->getFirstPage());
+		$RET .= '&nbsp;&nbsp;'.link_to('&lt;', $url.$e.$pager->getPreviousPage());
 		$links = $pager->getLinks(); 
 		foreach ($links as $page):
-			$RET .= ($page == $pager->getPage()) ? $page : link_to($page, $url.'&p='.$page);
+			$RET .= ($page == $pager->getPage()) ? $page : link_to($page, $url.$e.$page);
 			if ($page != $pager->getCurrentMaxLink()): $RET .= '-'; endif;
 		endforeach;
-		$RET .= '&nbsp;&nbsp;'.link_to('&gt;', $url.'&p='.$pager->getNextPage());
-		$RET .= '&nbsp;&nbsp;'.link_to('&raquo;', $url.'&p='.$pager->getLastPage());
+		$RET .= '&nbsp;&nbsp;'.link_to('&gt;', $url.$e.$pager->getNextPage());
+		$RET .= '&nbsp;&nbsp;'.link_to('&raquo;', $url.$e.$pager->getLastPage());
 	endif;
 	$RET .= '</div>';
 	return $RET;
