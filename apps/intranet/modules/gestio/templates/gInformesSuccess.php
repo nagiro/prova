@@ -36,7 +36,8 @@
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TRANSFERENCIA) ?>"> Tr </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament=0') ?>"> All </a>
    				</td></tr>
-                <tr><td>Programació</td><td>Document Word amb les activitats</td><td><a href="<?php echo url_for('gestio/gInformes?accio=RESUM_ACTIVITATS') ?>">Anar-hi</a></td><td>Cap</td></tr>                         			      			                      			
+                <tr><td>Programació</td><td>Document Word amb les activitats</td><td><a href="<?php echo url_for('gestio/gInformes?accio=RESUM_ACTIVITATS') ?>">Anar-hi</a></td><td>Cap</td></tr>
+                <tr><td>Programació</td><td>Planificació d'ocupació d'espais i material</td><td><a href="<?php echo url_for('gestio/gEstadistiques?accio=CC') ?>">Anar-hi</a></td><td>Cap</td></tr>
       	</TABLE>      
       </DIV>
       

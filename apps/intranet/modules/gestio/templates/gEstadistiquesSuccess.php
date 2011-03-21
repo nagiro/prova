@@ -21,7 +21,7 @@
    
     <TD colspan="3" class="CONTINGUT_ADMIN">
 
-	<?php include_partial('breadcumb',array('text'=>'ESPAIS')); ?>
+	<?php include_partial('breadcumb',array('text'=>'OCUPACIÓ I ESTADÍSTIQUES')); ?>
 
     <div id="tabs">
         <ul>
