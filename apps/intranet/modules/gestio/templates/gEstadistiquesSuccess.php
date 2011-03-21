@@ -1,4 +1,12 @@
 <?php use_helper('Form') ?>
+<?php use_helper('Presentation') ?>
+
+ <script>
+  $(document).ready(function() {
+    $("#tabs").tabs({cookie: { expires: 1 }});
+    $("#cerca_MATERIAL_GENERIC").change(function(){ $("#FMATERIALS").submit(); });    
+  });
+  </script>
 
 <STYLE>
 
@@ -7,6 +15,7 @@
 #CALEN TD { font-size: 9px; }
 .COLOR { background-color:rgb(252,236,182); }
 #TITOL_TAULA { font-weight: bold; background-color: #EEEEEE; }
+#tabs { margin-top:30px; width:700px; margin-left:20px;  }
 
 </STYLE>
    
@@ -14,119 +23,22 @@
 
 	<?php include_partial('breadcumb',array('text'=>'ESPAIS')); ?>
 
-    <form action="<?php echo url_for('gestio/gEstadistiques') ?>" method="POST">
-	    <DIV class="REQUADRE">
-	    	<table class="FORMULARI">          
-	            <tr><td>                                                              
-                	<DIV class="TITOL">Cerca espais</DIV>                
-                	<DIV class="CERCA">
-	            		<?php echo select_tag('CERCA_ANY',options_for_select( selectAnys() , $CERCA_ANY ) , array('class'=>'cinquanta')); ?>                	
-                		<?php echo select_tag('CERCA_ESPAI',options_for_select( EspaisPeer::select() , $CERCA_ESPAI , array('include_custom'=>'Tots els espais') ) , array('class'=>'cinquanta')); ?>
-                		<?php echo select_tag('CERCA_MES',options_for_select( selectMesos() , $CERCA_MES , array('include_custom'=>'Tots els mesos')  ) , array('class'=>'cinquanta')); ?>                	                                                                 
-                	</DIV>
-              	</td></tr>
-	            <tr>
-	            	<td colspan="2">
-	            		<input type="submit" name="BCERCA" value="Prem per buscar" />	            		
-	            	</td>
-	            </tr>
-	        </table>
-	     </DIV>
-     </form>   
-    
-<?php if(isset($DADES_MESOS_DIES)): ?>
-
-      <DIV class="REQUADRE">
-        <DIV class="TITOL">Calendari d'activitats</DIV>
-      	<TABLE class="DADES">
-        		<?php
-        		
-        		//Linia d'espais
-        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">DIES/MESOS</TD>'; foreach($MESOS as $K=>$M) echo '<TD class="LINIA" id="TITOL_TAULA">'.$K.'</TD>'; echo '</TR>';
-        		
-        		//Iniciem la taula
-        		foreach($DIES as $KD=>$D):
-        		   echo '<TR><TD class="LINIA" id="TITOL_TAULA">'.$D.'</TD>';
-        		   foreach($MESOS as $KM=>$M){
-        		      if(isset($DADES_MESOS_DIES[$KM][$KD]))
-        		         echo '<TD class="LINIA">'.sizeof($DADES_MESOS_DIES[$KM][$KD]).'</TD>';
-        		      else
-        		         echo '<TD class="LINIA">-</TD>';
-        		   }
-        		   echo '</TR>';              		     		   
-        		endforeach;
-        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">TOTALS</TD>';
-                foreach($MESOS as $KM=>$M):
-                   $SOL = 0;        		   
-        		   foreach($DIES as $KD=>$D) if(isset($DADES_MESOS_DIES[$KM][$KD])) $SOL += sizeof($DADES_MESOS_DIES[$KM][$KD]);
-        		   echo '<TD class="LINIA">'.$SOL.'</TD>';                            		           		           		      		     		   
-        		endforeach;
-        		echo '</TR>';                   		
-        		?>
-      	</TABLE>      
-      </DIV>
-
-<?php elseif(isset($DADES_MESOS_ESPAIS)): ?>
-
-      <DIV class="REQUADRE">
-        <DIV class="TITOL">Calendari d'activitats</DIV>
-      	<TABLE class="DADES">
-        		<?php
-        		
-        		//Linia d'espais
-        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">ESPAIS/MESOS</TD>'; foreach($MESOS as $K=>$M) echo '<TD class="LINIA" id="TITOL_TAULA">'.$K.'</TD>'; echo '</TR>';
-        		
-        		//Iniciem la taula
-        		foreach($ESPAIS as $KE=>$E):
-        		   echo '<TR><TD class="LINIA" id="TITOL_TAULA">'.$E.'</TD>';
-        		   foreach($MESOS as $KM=>$M){
-        		      if(isset($DADES_MESOS_ESPAIS[$KM][$KE]))
-        		         echo '<TD class="LINIA">'.sizeof($DADES_MESOS_ESPAIS[$KM][$KE]).'</TD>';
-        		      else
-        		         echo '<TD class="LINIA">-</TD>';
-        		   }
-        		   echo '</TR>';              		     		   
-        		endforeach;
-        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">TOTALS</TD>';
-                foreach($MESOS as $KM=>$M):
-                   $SOL = 0;        		   
-        		   foreach($ESPAIS as $KE=>$E) if(isset($DADES_MESOS_ESPAIS[$KM][$KE])) $SOL += sizeof($DADES_MESOS_ESPAIS[$KM][$KE]);
-        		   echo '<TD class="LINIA">'.$SOL.'</TD>';                            		           		           		      		     		   
-        		endforeach;
-        		echo '</TR>';                   		
-        		?>
-      	</TABLE>      
-      </DIV>
-
-<?php elseif(isset($DADES_MESOS_HORES)): ?>
-
-      <DIV class="REQUADRE">
-        <DIV class="TITOL">Calendari d'activitats</DIV>
-      	<TABLE class="DADES">
-        		<?php        		
-        		//Linia d'hores
-        		echo '<TR><TD class="LINIA" id="TITOL_TAULA">DIES/HORES</TD>'; for($i = 8; $i < 24; $i++) echo '<TD class="LINIA" id="TITOL_TAULA">'.$i.'</TD>'; echo '</TR>';
-        		
-        		//Iniciem la taula        		
-        		foreach($DADES_MESOS_HORES as $T=>$HORES):
-        			if($T > 0):
-	        		   echo '<TR><TD class="LINIA" id="TITOL_TAULA">'.date('d',$T).'</TD>';
-	        		   for($i = 8; $i < 24; $i++):
-	        		      if(isset($DADES_MESOS_HORES[$T][$i]))
-	        		         echo '<TD class="LINIA">'.$DADES_MESOS_ESPAIS[$T][$i].'</TD>';
-	        		      else
-	        		         echo '<TD class="LINIA">-</TD>';
-	        		   endfor;
-	        		   echo '</TR>';              		     		   
-	        		 endif;
-        		endforeach;
-        		        		                   	
-        		?>
-      	</TABLE>      
-      </DIV>
+    <div id="tabs">
+        <ul>
+            <li><a href="#f1"><span>Ocupació espais</span></a></li>
+            <li><a href="#f2"><span>Ocupació material</span></a></li>            
+        </ul>
+        <div id="f1">
+            <?php echo formCercaEspais($CERCA,$IDS); ?>
+        </div>
+        <div id="f2">
+            <?php echo formCercaMaterials($CERCA,$IDS); ?>
+        </div>
+    </div>
 
 
-<?php endif; ?>    
+    <?php if(isset($OCUPACIO_ESPAIS)) echo llistatCercaEspais($OCUPACIO_ESPAIS); ?>
+    <?php if(isset($OCUPACIO_MATERIAL)) echo llistatCercaMaterial($OCUPACIO_MATERIAL); ?>    
   
       <DIV STYLE="height:40px;"></DIV>
                 
@@ -173,5 +85,139 @@
   
   }
   
+  function formCercaEspais( $CERCA ,$IDS ){
+    ?>
+    <form action="<?php echo url_for('gestio/gEstadistiques') ?>" id="FESPAIS" method="POST">
+	    
+	    	<table class="FORMULARI" width="100%">
+	            <tr><td>
+                	<div class="TITOL">Cerca espais</div>
+                	<div class="CERCA">
+                        <div style="margin-bottom:10px;">
+	            		<?php echo select_tag("cerca[ANY]",options_for_select( selectAnys() , $CERCA['ANY'] ) , array('class'=>'cinquanta')); ?>
+                        <?php echo select_tag('cerca[MES]',options_for_select( selectMesos() , $CERCA['MES'] , array()) , array('class'=>'cinquanta')); ?>
+                        </div>
+                        <?php foreach(EspaisPeer::select($IDS,false) as $K=>$V):
+                                echo '<div style="float:left; width:210px;">'.checkbox_tag('cerca[ESPAI]['.$K.']',$K,(isset($CERCA['ESPAI'][$K])),array()).' '.$V.'</div>';                            
+                              endforeach;
+                        ?>                                                               	
+                		                	                                                                 
+                	</div>
+              	</td></tr>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA_ESP" value="Prem per buscar" />	            		
+	            	</td>
+	            </tr>
+	        </table>
+	    
+     </form>                  
+     
+    <?php     
+  }
+  
+  function formCercaMaterials( $CERCA ,$IDS ){
+    ?>
+    <form action="<?php echo url_for('gestio/gEstadistiques') ?>" id="FMATERIALS" method="POST">
+	    	<table class="FORMULARI" width="100%">
+	            <tr><td>
+                	<div class="TITOL">Cerca materials</div>
+                	<div class="CERCA">
+                        <div style="margin-bottom:10px;">
+    	            		<?php echo select_tag('cerca[ANY]',options_for_select( selectAnys() , $CERCA['ANY'] ) , array('class'=>'cinquanta')); ?>
+                            <?php echo select_tag('cerca[MES]',options_for_select( selectMesos() , $CERCA['MES'] , array()) , array('class'=>'cinquanta')); ?>                	
+                    		<?php echo select_tag('cerca[MATERIAL_GENERIC]',options_for_select( MaterialgenericPeer::select($IDS,false,false) , $CERCA['MATERIAL_GENERIC'])); ?>                                        	                                                                 
+                        </div>
+                    <?php   foreach(MaterialPeer::selectGeneric($CERCA['MATERIAL_GENERIC'], $IDS) as $K=>$V):
+                                echo '<div style="float:left; width:210px;">'.
+                                        checkbox_tag('cerca[MATERIAL]['.$K.']',$K,(isset($CERCA['MATERIAL'][$K])),array()).' '.$V.'</div>';                            
+                            endforeach;
+                        ?>                                                               	
+                    </div>
+              	</td></tr>
+	            <tr>
+	            	<td colspan="2">
+	            		<input type="submit" name="BCERCA_MAT" value="Prem per buscar" />	            		
+	            	</td>
+	            </tr>
+	        </table>
+     </form>   
+    <?php     
+  }
+  
+
+  function llistatCercaEspais($RET)
+  {
+    ?>
+    <div class="REQUADRE">    
+    <div class="titol">Llistat d'espais</div>
+    <?php                 
+        echo '<div style="background-color:white; width:650px">';                
+        $d = 35;
+        foreach($RET as $D => $V1):
+            echo '<div style="background-color:#CCCCCC; font-weight:bold; clear:left; float:left; width:50px;">'.ph_generaDiaText($D).'</div><div>';
+            for($i = 8; $i < 24; $i++){ echo '<div style="background-color:#CCCCCC; float:left; width:'.$d.'px;">'.$i.'</div>';  }
+            foreach($V1 as $E => $V2):                   
+                echo '<div style="clear:both; float:left; width:50px; background-color:#FFFF99;">Esp: '.$E.'</div>';
+                $ult_hor = 0;
+                foreach($V2 as $Hi => $Hf):
+                    if($ult_hor == 0) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval(($Hi-8)*$d).'px;">&nbsp;</div>';
+                    if($ult_hor <> 0) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval(($Hi-$ult_hor)*$d).'px;">&nbsp;</div>';
+                    if($Hi <> $Hf)    echo '<div style="border-top:1px solid #CCCCCC; background-color:#FFD5D5; float:left; width:'.strval(($Hf-$Hi)*$d).'px;">'.$Hi.'-'.$Hf.'</div>';
+                    $ult_hor = $Hf;                    
+                endforeach;
+                if($ult_hor < 24) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval((24-$ult_hor)*$d).'px;">&nbsp;</div>';                                
+            endforeach;        
+            echo '</div>';
+        endforeach;                                         
+        echo '</div>';                        
+    ?>
+    
+    <div style="clear:both;"></div>  
+    </div>
+    
+    <?php     
+  }
+
+
+  function llistatCercaMaterial($RET)
+  {
+    ?>
+    <div class="REQUADRE">    
+    <div class="titol">Llistat de material</div>
+    <?php                 
+        echo '<div style="background-color:white; width:650px">';                
+        $d = 35;
+        foreach($RET as $D => $V1):
+            echo '<div style="background-color:#CCCCCC; font-weight:bold; clear:left; float:left; width:50px;">'.ph_generaDiaText($D).'</div><div>';
+            for($i = 8; $i < 24; $i++){ echo '<div style="background-color:#CCCCCC; float:left; width:'.$d.'px;">'.$i.'</div>';  }
+            foreach($V1 as $E => $V2):                   
+                echo '<div style="clear:both; float:left; width:50px; background-color:#FFFF99;">Mat: '.$E.'</div>';
+                $ult_hor = 0;
+                foreach($V2 as $Hi => $Hf):
+                    if($Hf == 'CESSIO'){
+                        echo '<div style="border-top:1px solid #CCCCCC; background-color:#FFD5D5; float:left; width:'.strval(16*$d).'px;">CEDIT</div>';                        
+                    }
+                    else{
+                        if($ult_hor == 0) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval(($Hi-8)*$d).'px;">&nbsp;</div>';
+                        if($ult_hor <> 0) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval(($Hi-$ult_hor)*$d).'px;">&nbsp;</div>';
+                        if($Hi <> $Hf)    echo '<div style="border-top:1px solid #CCCCCC; background-color:#FFD5D5; float:left; width:'.strval(($Hf-$Hi)*$d).'px;">'.$Hi.'-'.$Hf.'</div>';
+                        $ult_hor = $Hf;                        
+                    } 
+                                        
+                endforeach;
+                if($ult_hor < 24) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval((24-$ult_hor)*$d).'px;">&nbsp;</div>';                                
+            endforeach;        
+            echo '</div>';
+        endforeach;                                         
+        echo '</div>';                        
+    ?>
+    
+    <div style="clear:both;"></div>  
+    </div>
+    
+    <?php     
+  }
+
 
 ?>

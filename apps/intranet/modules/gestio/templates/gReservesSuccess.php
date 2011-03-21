@@ -10,7 +10,6 @@
 
 
 <?php use_helper('Form'); ?>
-<?php use_javascript('jquery.simpleMultiSelect.js')?>
 
 <script type="text/javascript">
 
@@ -21,9 +20,7 @@
 		if(vacio(D_DATAACTIVITAT.value)== false){ alert('La data d\'activitat no pot estar buit.'); return false; }
 		if(vacio(D_HORARIACTIVITAT.value)== false){ alert('L\'hora d\'activitat no pot estar buida.'); return false; }
 		if(D_ESPAIS.selectedIndex<0){ alert('Has d\'escollir com a mínim un espai on realitzar l\'acte'); return false; }		
-	}
-
-	$('select').simpleMultiSelect();
+	}	
 
 </script>
    
@@ -33,7 +30,7 @@
     
     <form action="<?php echo url_for('gestio/gReserves') ?>" method="POST">
     	<?php include_partial('cerca',array(
-    										'TIPUS'=>'Simple',
+    										'TIPUS'=>'Select',
     										'FCerca'=>$FCerca,
     										'BOTONS'=>array(
     														array(

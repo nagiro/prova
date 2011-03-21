@@ -43,8 +43,6 @@
 	}
 	
 	function validaCodi(q){
-//		var userPattern = new RegExp("^[A-Za-z]{3}[0-9]{3}\.[0-9]{2}$");		
-//		if (userPattern.exec(q) == null) return false; else return true;
         return true;
 	}
 
@@ -58,9 +56,6 @@
 		else 
 		{
             return true;
-//			var patt1=new RegExp('^[A-Z]{3}[0-9]{3}\.[0-9]{2,3}$');					
-//			if(!patt1.test($('#cursos_codi_Codi').val())) { alert('El codi te un format incorrecte'); return false; }
-//			else return true; 
 		}				
 	}
 	
@@ -77,9 +72,6 @@
 		if($('#cursos_DataDesaparicio_day').val().length == 0) { alert('DATA DESAPARICIÓ no pot estar en blanc.'); return false; }
 		if($('#cursos_DataFiMatricula_day').val().length == 0) { alert('DATA FI MATRÍCULA no pot estar en blanc.'); return false; }
 		if($('#cursos_DataInici_day').val().length == 0) { alert('DATA INICI no pot estar en blanc.'); return false; }
-
-		//var patt1=new RegExp('^[A-Z]{3}[0-9]{3}\.[0-9]{2,3}$');					
-//		if(!patt1.test($('#cursos_Codi').val())) { alert('El codi te un format incorrecte'); return false; }
 		 
 	}
 

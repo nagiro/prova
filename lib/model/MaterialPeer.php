@@ -59,12 +59,23 @@ class MaterialPeer extends BaseMaterialPeer
       
   } 
   
-  static public function selectGeneric($idG, $idS, $idM)
+  /**
+   * MaterialPeer::selectGeneric()
+   * 
+   * Retorna una select de material genèric
+   * 
+   * @param mixed $idG
+   * @param mixed $idS
+   * @param mixed $idM
+   * @return
+   */
+  static public function selectGeneric($idG, $idS, $idM = null)
   {    
     
 	$C = self::criteria($idS);  	    
     $C->add( self::MATERIALGENERIC_IDMATERIALGENERIC , $idG );
-    $C->add( self::IDMATERIAL , $idM );    
+    if(!is_null($idM)) $C->add( self::IDMATERIAL , $idM );
+    $C->addAscendingOrderByColumn(self::IDENTIFICADOR);    
     
     $RET = array();
   	foreach(self::doSelect($C) as $M):
@@ -132,6 +143,8 @@ class MaterialPeer extends BaseMaterialPeer
     $C = self::getCriteriaActiu($C,$idS);
     
     $C->add( MaterialPeer::MATERIALGENERIC_IDMATERIALGENERIC , $idG );
+    $C->addAscendingOrderByColumn(self::IDENTIFICADOR);
+    
     foreach(self::doSelect($C) as $OM):        
         if(!array_key_exists($OM->getIdmaterial(),$OCUPAT)):
             $RET[$OM->getIdmaterial()] = '<option value="'.$OM->getIdmaterial().'">'.addslashes($OM->toString()).'</option>';
@@ -251,5 +264,73 @@ class MaterialPeer extends BaseMaterialPeer
     $C->add(self::SITE_ID , $idS );
     return $C;
   }
+
+
+  static public function getEstadistiquesMaterial($materials = array(), $site, $month, $year)
+  {
+    
+    $RET= array();
+    if(!empty($materials)){
+        $SQL = "
+            SELECT H.Dia as d, HOUR(H.HoraPre) as hi, HOUR(H.HoraPost) as hf, M.idMaterial as idM, M.Identificador as m_nom
+              FROM material M, horarisespais HE, horaris H
+             WHERE H.HorarisID = HE.Horaris_HorarisID 
+               AND HE.Material_idMaterial = M.idMaterial
+               AND H.actiu = 1 AND M.actiu = 1 AND HE.actiu = 1
+               AND H.site_id = $site
+               AND MONTH(H.Dia) = '$month'
+               AND YEAR(H.Dia) = '$year'
+               AND HE.Material_idMaterial in (".implode(',',$materials).")
+             ORDER BY H.Dia Asc, idM, H.HoraPre Asc";
+                                                     
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($SQL);
+        $stmt->execute();         
+                 
+        while($rs = $stmt->fetch(PDO::FETCH_OBJ)){
+            $RET[$rs->d][$rs->idM][$rs->hi] = $rs->hf;    
+        } 	
+
+
+        $SQL_CESSIO = "
+            SELECT C.data_cessio as di, C.data_retorn as df, M.idMaterial as idM, M.Identificador as m_nom
+              FROM material M, cessio C, cessiomaterial CM
+             WHERE M.idMaterial = CM.Material_idMaterial
+               AND CM.cessio_id = C.cessio_id
+               AND (MONTH(C.data_cessio) = {$month} OR MONTH(C.data_retorn) = {$month})
+               AND (YEAR(C.data_cessio) = {$year} OR YEAR(C.data_retorn) = {$year})
+               AND M.idMaterial in (".implode(',',$materials).")
+               AND M.site_id = 1
+               AND M.actiu = 1 AND C.actiu = 1 AND CM.actiu = 1
+             ORDER BY C.data_cessio , C.data_retorn         
+        ";        
+
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($SQL_CESSIO);
+        $stmt->execute();                  
+        while($rs = $stmt->fetch(PDO::FETCH_OBJ)){
+            $di = strtotime($rs->di);
+            while($di < $df){
+                if(date('m',$di) == $month){
+                    $RET[$di][$rs->idM]['CESSIO'] = 'CESSIO';        
+                }
+                $di = strtotime(date('Y-m-d',$di).' + 1 day');
+            }            
+        } 	
+                
+        for($i = 1; $i < 31; $i++):
+            $data = date('Y-m-d',strtotime($year.'-'.$month.'-'.$i));        
+            foreach($materials as $idM):
+                if(!isset($RET[$data][$idM])) $RET[$data][$idM][8] = 8; 
+            endforeach;        
+            ksort($RET[$data]);
+        endfor;
+        ksort($RET);
+    }
+    
+    return $RET;
+    
+  }
+
   
 }

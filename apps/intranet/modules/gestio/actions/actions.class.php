@@ -1292,17 +1292,7 @@ class gestioActions extends sfActions
     return $this->renderText(json_encode($RESPOSTA));
       
   }
-/*
-  public function executeSelectCeditA(sfWebRequest $request)
-  {
-  	
-  	$C = new Criteria();
-  	$RESPOSTA = CessiomaterialPeer::getCeditAAjax($request->getParameter('q'), $request->getParameter('limit')); 	  	    
-    return $this->renderText(json_encode($RESPOSTA));
-      
-  }
-*/
-  
+
   public function executeAjaxSelectMaterial(sfWebRequest $request)
   {
       
@@ -1780,36 +1770,35 @@ class gestioActions extends sfActions
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
   
+  private function getCercaEstadistiquesComplet($C)
+  {    
+    if(!isset($C['ANY']))               $C['ANY'] = date('Y',time());
+    if(!isset($C['MES']))               $C['MES'] = date('m',time());
+    if(!isset($C['DIA']))               $C['DIA'] = date('d',time());
+    if(!isset($C['ESPAI']))             $C['ESPAI'] = array();
+    if(!isset($C['MATERIAL']))          $C['MATERIAL'] = array();    
+    if(!isset($C['MATERIAL_GENERIC']))  $C['MATERIAL_GENERIC'] = 0;
+    return $C;
+  }  
+  
   public function executeGEstadistiques(sfWebRequest $request)  
   {
     
     $this->setLayout('gestio');
-    $this->DIES = array(); $this->ESPAIS = array();  $this->MESOS = array(); $this->DADES = array();
+    $this->IDS = $this->getUser()->getSessionPar('idS');            
+    $this->CERCA = $request->getParameter('cerca',$this->CERCA);
+    $this->CERCA = $this->getCercaEstadistiquesComplet($this->CERCA);                       
 
-    if(!$this->hasRequestParameter('CERCA_ANY')) $this->CERCA_ANY = date('Y',time());
-    else $this->CERCA_ANY = $this->getRequestParameter('CERCA_ANY'); 
-    
-    $this->CERCA_MES = $this->getRequestParameter('CERCA_MES');
-    $this->CERCA_ESPAI = $this->getRequestParameter('CERCA_ESPAI');
-
-	//Consulta l'ocupació d'un espai segons dies i mesos
-	if(!empty($this->CERCA_ESPAI) && empty($this->CERCA_MES)):    
-	    for($i=0;$i<32;$i++) $this->DIES[$i] = $i;
-	    $this->MESOS = array('1'=>'Gener','2'=>'Febrer','3'=>'MarÃ§','4'=>'Abril','5'=>'Maig','6'=>'Juny','7'=>'Juliol','8'=>'Agost','9'=>'Setembre','10'=>'Octubre','11'=>'Novembre','12'=>'Desembre');
-	    $this->DADES_MESOS_DIES = HorarisPeer::getMesosDiesEspai($this->CERCA_ANY,$this->CERCA_ESPAI);	    
-    elseif(empty($this->CERCA_ESPAI) && !empty($this->CERCA_MES)):
-       //Consulta l'ocupació d'espais per mesos        
-	    $this->ESPAIS = EspaisPeer::select();
-	    $this->MESOS = array('1'=>'Gener','2'=>'Febrer','3'=>'MarÃ§','4'=>'Abril','5'=>'Maig','6'=>'Juny','7'=>'Juliol','8'=>'Agost','9'=>'Setembre','10'=>'Octubre','11'=>'Novembre','12'=>'Desembre');
-	    $this->DADES_MESOS_ESPAIS = HorarisPeer::getMesosEspais($this->CERCA_ANY);    
-	elseif(!empty($this->CERCA_MES) && !empty($this->CERCA_ESPAI)):
-		$this->DADES_MESOS_HORES = HorarisPeer::getMesosEspaisHores($this->CERCA_ANY,$this->CERCA_ESPAI,$this->CERCA_MES);
-		//Busquem per cada dia del mes, les hores ocupades
-	elseif($request->getParameter('accio') == 'CC'):
-		$this->getUser()->addLogAction('inside','gEspais');    	
-	endif;
-	
-      
+    if($request->hasParameter('BCERCA_ESP')):    
+        $dit = mktime(0,0,0,$this->CERCA['MES'],1,$this->CERCA['ANY']);
+        $month = date('m',$dit); $year = date('Y',$dit); $site = $this->IDS;                                         
+        $this->OCUPACIO_ESPAIS = EspaisPeer::getEstadistiquesEspais($this->CERCA['ESPAI'], $site, $month, $year);
+    elseif($request->hasParameter('BCERCA_MAT')):
+        $dit = mktime(0,0,0,$this->CERCA['MES'],1,$this->CERCA['ANY']);
+        $month = date('m',$dit); $year = date('Y',$dit); $site = $this->IDS;
+        $this->OCUPACIO_MATERIAL = MaterialPeer::getEstadistiquesMaterial($this->CERCA['MATERIAL'], $site, $month, $year);        
+    endif;
+          
   }
   
 
@@ -2308,16 +2297,19 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS');
         
   	//Netegem cerca
-  	if($request->getParameter('accio') == 'C'):      		
+  	if($request->getParameter('accio') == 'C'):              		
         $this->CERCA = $this->getUser()->setSessionPar('cerca',array('text'=>'','select'=>''));    		      			      	      		
       	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
     endif;    
         
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>''));    
+    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);    
+    $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>''));    
     
     //Inicialitzem el formulari de cerca
-    $this->FCerca = new CercaForm();        
+    $this->FCerca = new CercaTextChoiceForm();    
+    $RET = ReservaespaisPeer::selectEstat();  
+    $RET[-1] = 'Totes les reserves';          
+    $this->FCerca->setChoice($RET);
 	$this->FCerca->bind($request->getParameter('cerca'));
 	
 	//Inicialitzem variables
@@ -2408,7 +2400,7 @@ class gestioActions extends sfActions
             break;        	 
     }
         
-    $this->RESERVES = ReservaespaisPeer::getReservesSelect( $this->CERCA['text'] , $this->PAGINA , $this->IDS );    
+    $this->RESERVES = ReservaespaisPeer::getReservesSelect( $this->CERCA['text'] , $this->CERCA['select'] , $this->PAGINA , $this->IDS );    
   		
   }
 

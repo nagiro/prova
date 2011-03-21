@@ -151,12 +151,9 @@
         endif; 
         return $ret;
     }
-        
-    
-	function generaData($DIA)
-	{
 
-		$ret = ""; list($ANY,$MES,$DIA) = explode("-",$DIA);
+    function ph_generaDiaText($DIA){
+        $ret = ""; list($ANY,$MES,$DIA) = explode("-",$DIA);
 		$DATE = mktime(0,0,0,$MES,$DIA,$ANY);
 		switch(date('N',$DATE)){
 			case '1': $ret = "Dll, ".date('d',$DATE); break;  
@@ -167,6 +164,16 @@
 			case '6': $ret = "Ds, ".date('d',$DATE); break;
 			case '7': $ret = "Dg, ".date('d',$DATE); break;				
 		}
+        
+        return $ret;
+
+    }
+            
+    
+	function generaData($DIA)
+	{
+
+		$ret = ph_generaDiaText($DIA);        
 				
 		switch(date('m',$DATE)){
 			case '01': $ret .= " de gener"; break;

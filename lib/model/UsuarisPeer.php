@@ -35,9 +35,9 @@ class UsuarisPeer extends BaseUsuarisPeer
   }
   
   //Comprovem que l'usuari pertanyi a un SITE
-  static public function getCriteriaActiu( $C , $idS = null )
+  static public function getCriteriaActiu( $C , $idS = null , $nomes_actius = true )
   {        
-    $C->add(self::ACTIU, true);
+    if($nomes_actius) $C->add(self::ACTIU, true);
     if(!is_null($idS)):
         $C->addJoin(UsuarisSitesPeer::USUARI_ID, self::USUARIID);
         $C->add(UsuarisSitesPeer::SITE_ID, $idS);
@@ -162,10 +162,11 @@ class UsuarisPeer extends BaseUsuarisPeer
     
   }
 
-  static function selectUsuaris($idS)
+  static function selectUsuaris($idS,$nomes_actius = true)
   {
-    $C = new Criteria();    
-    $C = self::getCriteriaActiu($C,$idS);
+    $C = new Criteria();   
+     
+    $C = self::getCriteriaActiu($C,$idS,$nomes_actius);
     
     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
 //    $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
@@ -177,7 +178,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 
     foreach($TREB as $T):
       
-      $RET[$T->getUsuariid()] = strtoupper(self::uc_latin1($T->getNomComplet()));    
+      $RET[$T->getUsuariid()] = strtoupper(self::uc_latin1($T->getNomComplet())).' - '.$T->getDni();    
     
     endforeach;
   

@@ -29,7 +29,7 @@ $(document).ready(function() {
 		
 	   $("#fcessio").submit(function() {
          if($("#cessio_dni").val().length == 0){ alert("Has d'entrar un DNI."); return false; }	     
-	     if($("#autocomplete_cessiomaterial_Cedita").val().length == 0 ){ alert("Cal omplir el camp cedit a!"); return false; }
+	     if($("#autocomplete_cessiomaterial_Cedita").val().length == 0 ){ alert("Cal omplir el camp cedit a"); return false; }
 		 
 	 	 if(parseInt($("#cessiomaterial_DataRetorn_year").val()) > parseInt($("#cessiomaterial_DataCessio_year").val())) { return true; }
 	 	 else if(parseInt($("#cessiomaterial_DataRetorn_month").val()) > parseInt($("#cessiomaterial_DataCessio_month").val())) { return true; }

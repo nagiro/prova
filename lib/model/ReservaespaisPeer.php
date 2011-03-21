@@ -61,14 +61,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     * @param int $Pagina
     * @return Reservaespais
     */
-/*   static function getReservesPendents()
-   {
-      $C = new Criteria();
-      $C->add( ReservaespaisPeer::ESTAT , ReservaespaisPeer::EN_ESPERA , CRITERIA::EQUAL);
-      return ReservaespaisPeer::doSelect($C);
-   }
-*/   
-   static function getReservesSelect($CERCA = "" , $Pagina = 1 , $idS )
+   
+   static function getReservesSelect($CERCA = "", $SEL = 0 , $Pagina = 1 , $idS )
    {
       $C = new Criteria();
       if(!empty($CERCA)):
@@ -94,6 +88,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       
       $C->add( self::SITE_ID , $idS );            
       $C->add( self::ESTAT , self::ESBORRADA , CRITERIA::NOT_EQUAL );
+      if($SEL >= 0) $C->add(self::ESTAT, $SEL);
       $C->addDescendingOrderByColumn( self::DATAALTA );
       
                  
