@@ -1787,13 +1787,16 @@ class gestioActions extends sfActions
     $this->setLayout('gestio');
     $this->IDS = $this->getUser()->getSessionPar('idS');            
     $this->CERCA = $request->getParameter('cerca',$this->CERCA);
-    $this->CERCA = $this->getCercaEstadistiquesComplet($this->CERCA);                       
+    $this->CERCA = $this->getCercaEstadistiquesComplet($this->CERCA);
+            
 
     if($request->hasParameter('BCERCA_ESP')):    
+        $this->ESPAIS = EspaisPeer::select($this->IDS);
         $dit = mktime(0,0,0,$this->CERCA['MES'],1,$this->CERCA['ANY']);
         $month = date('m',$dit); $year = date('Y',$dit); $site = $this->IDS;                                         
         $this->OCUPACIO_ESPAIS = EspaisPeer::getEstadistiquesEspais($this->CERCA['ESPAI'], $site, $month, $year);
     elseif($request->hasParameter('BCERCA_MAT')):
+        $this->MATERIAL = MaterialPeer::selectGeneric($this->CERCA['MATERIAL_GENERIC'],$this->IDS,null);
         $dit = mktime(0,0,0,$this->CERCA['MES'],1,$this->CERCA['ANY']);
         $month = date('m',$dit); $year = date('Y',$dit); $site = $this->IDS;
         $this->OCUPACIO_MATERIAL = MaterialPeer::getEstadistiquesMaterial($this->CERCA['MATERIAL'], $site, $month, $year);        

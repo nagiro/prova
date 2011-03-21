@@ -37,8 +37,8 @@
     </div>
 
 
-    <?php if(isset($OCUPACIO_ESPAIS)) echo llistatCercaEspais($OCUPACIO_ESPAIS); ?>
-    <?php if(isset($OCUPACIO_MATERIAL)) echo llistatCercaMaterial($OCUPACIO_MATERIAL); ?>    
+    <?php if(isset($OCUPACIO_ESPAIS)) echo llistatCercaEspais($OCUPACIO_ESPAIS,$ESPAIS); ?>
+    <?php if(isset($OCUPACIO_MATERIAL)) echo llistatCercaMaterial($OCUPACIO_MATERIAL,$MATERIAL); ?>    
   
       <DIV STYLE="height:40px;"></DIV>
                 
@@ -98,7 +98,7 @@
                         <?php echo select_tag('cerca[MES]',options_for_select( selectMesos() , $CERCA['MES'] , array()) , array('class'=>'cinquanta')); ?>
                         </div>
                         <?php foreach(EspaisPeer::select($IDS,false) as $K=>$V):
-                                echo '<div style="float:left; width:210px;">'.checkbox_tag('cerca[ESPAI]['.$K.']',$K,(isset($CERCA['ESPAI'][$K])),array()).' '.$V.'</div>';                            
+                                echo '<div style="float:left; width:210px;">'.checkbox_tag('cerca[ESPAI]['.$K.']',$K,(isset($CERCA['ESPAI'][$K])),array()).$V.' (E'.$K.')</div>';                            
                               endforeach;
                         ?>                                                               	
                 		                	                                                                 
@@ -130,7 +130,7 @@
                         </div>
                     <?php   foreach(MaterialPeer::selectGeneric($CERCA['MATERIAL_GENERIC'], $IDS) as $K=>$V):
                                 echo '<div style="float:left; width:210px;">'.
-                                        checkbox_tag('cerca[MATERIAL]['.$K.']',$K,(isset($CERCA['MATERIAL'][$K])),array()).' '.$V.'</div>';                            
+                                        checkbox_tag('cerca[MATERIAL]['.$K.']',$K,(isset($CERCA['MATERIAL'][$K])),array()).' '.$V.' (M'.$K.')</div>';                            
                             endforeach;
                         ?>                                                               	
                     </div>
@@ -146,19 +146,20 @@
   }
   
 
-  function llistatCercaEspais($RET)
+  function llistatCercaEspais($RET,$ESPAIS)
   {
     ?>
     <div class="REQUADRE">    
     <div class="titol">Llistat d'espais</div>
-    <?php                 
+    <?php                         
         echo '<div style="background-color:white; width:650px">';                
         $d = 35;
         foreach($RET as $D => $V1):
             echo '<div style="background-color:#CCCCCC; font-weight:bold; clear:left; float:left; width:50px;">'.ph_generaDiaText($D).'</div><div>';
             for($i = 8; $i < 24; $i++){ echo '<div style="background-color:#CCCCCC; float:left; width:'.$d.'px;">'.$i.'</div>';  }
             foreach($V1 as $E => $V2):                   
-                echo '<div style="clear:both; float:left; width:50px; background-color:#FFFF99;">Esp: '.$E.'</div>';
+                echo '<div style="clear:both; float:left; width:50px; background-color:#FFFF99;">
+                        <a style="text-decoration:none; color:black;" href="#" class="tt2">E'.$E.'<span>'.$ESPAIS[$E].'</span></a></div>';
                 $ult_hor = 0;
                 foreach($V2 as $Hi => $Hf):
                     if($ult_hor == 0) echo '<div style="border-top:1px solid #CCCCCC; background-color:#DFF9E1; float:left; width:'.strval(($Hi-8)*$d).'px;">&nbsp;</div>';
@@ -180,7 +181,7 @@
   }
 
 
-  function llistatCercaMaterial($RET)
+  function llistatCercaMaterial($RET,$MATERIAL)
   {
     ?>
     <div class="REQUADRE">    
@@ -192,7 +193,8 @@
             echo '<div style="background-color:#CCCCCC; font-weight:bold; clear:left; float:left; width:50px;">'.ph_generaDiaText($D).'</div><div>';
             for($i = 8; $i < 24; $i++){ echo '<div style="background-color:#CCCCCC; float:left; width:'.$d.'px;">'.$i.'</div>';  }
             foreach($V1 as $E => $V2):                   
-                echo '<div style="clear:both; float:left; width:50px; background-color:#FFFF99;">Mat: '.$E.'</div>';
+                echo '<div style="clear:both; float:left; width:50px; background-color:#FFFF99;">
+                        <a style="text-decoration:none; color:black;" href="#" class="tt2">M'.$E.'<span>'.$MATERIAL[$E].'</span></a></div>';
                 $ult_hor = 0;
                 foreach($V2 as $Hi => $Hf):
                     if($Hf == 'CESSIO'){
