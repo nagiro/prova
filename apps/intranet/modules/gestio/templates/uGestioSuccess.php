@@ -245,8 +245,24 @@
 
 	$RET = '<form name="fReserves" id="FRESERVES" method="post" action="'.url_for('gestio/uGestio').'">';    
     $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Reserva d\'espais</LEGEND>';
-       	              	           	
-    $RET .= '<div class="FORMULARI">'.missatge_div($MISSATGE).'</div>';     
+           	              	           	
+    if(isset($MISSATGE[0]) && $MISSATGE[0] == '1'):
+    
+        $RET .= '   <div style="padding:10px; background-color: #FFFFE2; margin-bottom:20px;">                    
+                        <b>Sol·licitud enregistrada correctament.</b><br /><br />
+                        <span style="font-weight: bold; color:#FF6969; ">ATENCIÓ: Si és una nova sol·licitud, en els propers dies li enviarem un correu on haurà d\'acceptar les condicions o bé anul·lar la reserva. També podrà fer-ho des d\'aquest formulari.</span>                    
+                    </div>';
+                    
+    elseif(isset($MISSATGE[0]) && $MISSATGE[0] == '0'):
+
+        $RET .= '   <div style="padding:10px; background-color: #FFFFE2; margin-bottom:20px;">                    
+                        <b>Hi ha hagut algun problema enviant la sol·licitud.</b><br /><br />
+                        <span style="font-weight: bold; color:#FF6969; ">Li agrairem que es posi en contacte amb informatica@casadecultura.org. Moltes gràcies.</span>                    
+                    </div>';
+        
+    endif;
+        
+//    $RET .= '<div class="FORMULARI">'.missatge_div($MISSATGE).'</div>';     
 
     $RET .= $FRESERVA['ReservaEspaiID']->render();
             
@@ -399,9 +415,7 @@ function landing_page(){
         $Telefon = $OU->getTelefonString();
         $Email = $OU->getEmail();
     
-        $RET = '
-        <form name="gDades" action="'.url_for('gestio/uGestio').'" method="post">
-               	       	   
+        $RET = '                       	       	   
     		   <TABLE class="FORMULARI">
     		   <tr><td width="100px"></td><td><td></tr>               
                <tr><td class="TITOL">Nom: </td><td>'.$Nom.'</td>		      
@@ -412,36 +426,21 @@ function landing_page(){
     		   </TABLE>
                
                 <div style="text-align:right">
-                    <button type="submit" name="BGESTIONAUSUARI" class="BOTO_ACTIVITAT">
+                    <a href="'.url_for('gestio/uGestio?accio=GESTIONA_USUARI').'">                    
                         '.image_tag('template/disk.png').' Editeu les dades
-                    </button>
+                    </a>
                 </div>
 
-    	</form>';
+    	';
         
         return $RET;	 
-    
-/*    
-        $RET = '
-            <form id="FOPTIONS" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
-                <table class="FORMULARI">                    
-                '.$FDADES.'                    
-                </table>
-                <div style="text-align:right">
-                    <button type="submit" name="BGESTIONAUSUARI" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
-                        '.image_tag('template/disk.png').' Editeu les dades
-                    </button>
-                </div>                                                                                                            
-            </form>';
-                     
-        return $RET;
-*/            
+                
     }
 
     function LlistaMatricules($MATRICULES)
     {
                 
-        $RET  = '<form action='.url_for('gestio/uGestio').'>';        
+        $RET = "";
         if(sizeof($MATRICULES)==0):
             $RET .= 'No tenim constància informàtica que hagueu realitzat un curs a aquesta entitat. <br />Si no és així, si us plau notifiqueu-nos-ho.';
         else:
@@ -470,10 +469,10 @@ function landing_page(){
         endif;
         
         $RET .= '<br /><div style="text-align:right">
-                    <button type="submit" name="BGESTIONAMATRICULES" class="BOTO_ACTIVITAT">
+                    <a href="'.url_for('gestio/uGestio?accio=GESTIONA_MATRICULES').'">                    
                         '.image_tag('template/new.png').' Nova matrícula
-                    </button>
-                 </div></form>';                                                                                                                            
+                    </a>
+                 </div>';                                                                                                                            
 
         return $RET;           
            
@@ -504,9 +503,9 @@ function landing_page(){
         endif;
 
         $RET .= '<br /><div style="text-align:right">
-                    <button type="submit" name="BGESTIONARESERVES" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
-                        '.image_tag('template/new.png').' Nova reserva
-                    </button>
+                    <a href="'.url_for('gestio/uGestio?accio=GESTIONA_RESERVES').'">                    
+                        '.image_tag('template/new.png').' Crea una nova reserva                    
+                    </a>
                  </div>';                                                                                                                    
 
         
@@ -519,6 +518,7 @@ function landing_page(){
         
         $RET  = '<form method="post" action="'.url_for('gestio/uGestio').'" id="FORM_CURSOS">';
         $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Cursos disponibles </LEGEND>';        
+        $RET .= '<div style="margin-bottom:10px; padding:10p">Atenció: Si el curs es suspèn per motius interns o per falta d\'alumnes, l\'import cobrat serà retornat.</div>';
                                 
         if(sizeof($LCURSOS) == 0):
         

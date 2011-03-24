@@ -202,7 +202,7 @@ class gestioActions extends sfActions
                     $SEC  = OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS);
                     $this->sendMail($FROM ,'informatica@casadecultura.org','HOSPICI :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
                     $this->sendMail($FROM , $SEC,'HOSPICI :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                      			                	                
-                    $this->MISSATGE = array('Sol·licitud enviada correctament.');				
+                    $this->MISSATGE = array(1);				
     			else:
 //                    $this->sendMail($FROM , 'informatica@casadecultura.org','HOSPICI :: ERROR AL FORMULARI RESERVA D\'ESPAIS',print_r($this->FRESERVA));
                     $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
@@ -2363,6 +2363,7 @@ class gestioActions extends sfActions
                 $OR->setEstat(ReservaespaisPeer::PENDENT_CONFIRMACIO);
                 $OR->save();                    
                 
+                //Marquem quin formulari haurà d'executar i amb quina ID
                 $PARA  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Accepta_Condicions', 
                                                             'id' => $OR->getReservaespaiid())));
                 $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
@@ -2375,7 +2376,7 @@ class gestioActions extends sfActions
                     else $email = 'informatica@casadecultura.org';                            
                 }                                                            
                                     
-                //Enviem el correu a la persona. 
+                //Enviem el correu a la persona amb les condicions. 
                 $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
                                 $email,
                                 'Hospici :: Nova reserva d\'espai',
