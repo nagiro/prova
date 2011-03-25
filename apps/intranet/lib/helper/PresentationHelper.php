@@ -174,7 +174,10 @@
 	{
 
 		$ret = ph_generaDiaText($DIA);        
-				
+		
+        list($ANY,$MES,$DIA) = explode("-",$DIA);
+		$DATE = mktime(0,0,0,$MES,$DIA,$ANY);
+        
 		switch(date('m',$DATE)){
 			case '01': $ret .= " de gener"; break;
 			case '02': $ret .= " de febrer"; break;
