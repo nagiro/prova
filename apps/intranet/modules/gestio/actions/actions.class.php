@@ -368,9 +368,9 @@ class gestioActions extends sfActions
        		    if($USUARI instanceof Usuaris):                                    
                     $this->IDS = $L['site'];
                     if(is_numeric($this->IDS)):
-                        $_SESSION[$USUARI->getNomComplet()] = $USUARI->getNomComplet();                                        
-                        $this->makeLogin( $USUARI , $this->IDS );
-                         $this->getUser()->setSessionPar( 'idS' , $this->IDS );                                            
+                        $_SESSION[$USUARI->getNomComplet()] = $USUARI->getNomComplet();
+                        $this->getUser()->setSessionPar( 'idS' , $this->IDS );                                        
+                        $this->makeLogin( $USUARI , $this->IDS );                                                                    
                     else:
                         $this->getUser()->addLogAction('error','login',$L);     		 
                         $this->ERROR = "Hi ha hagut algun problema amb el SITE.<br />Contacti amb la Casa de Cultura si us plau.";                                                
