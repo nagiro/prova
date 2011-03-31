@@ -338,7 +338,7 @@ class gestioActions extends sfActions
      
      $this->setLayout('gestio');
      $this->accio = $request->getParameter('accio','');
-     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.     
+     $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.               
      $this->FLogin = new LoginForm(array('site'=>$this->IDS,'nick'=>"",'password'=>''));      
      $this->ERROR = "";     
                               
@@ -367,10 +367,14 @@ class gestioActions extends sfActions
                 $USUARI = UsuarisPeer::getUserLogin($L['nick'], $L['password'],null);                     		 
        		    if($USUARI instanceof Usuaris):                                    
                     $this->IDS = $L['site'];
-                    $_SESSION[$USUARI->getNomComplet()] = $USUARI->getNomComplet();                                        
-                    $this->makeLogin( $USUARI , $this->IDS );                    
-                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );
-                                                                             
+                    if(!is_numeric($this->IDS)):
+                        $_SESSION[$USUARI->getNomComplet()] = $USUARI->getNomComplet();                                        
+                        $this->makeLogin( $USUARI , $this->IDS );
+                         $this->getUser()->setSessionPar( 'idS' , $this->IDS );                                            
+                    else:
+                        $this->getUser()->addLogAction('error','login',$L);     		 
+                        $this->ERROR = "L'usuari o la contrasenya són incorrectes";                                                
+                    endif;                                          
                 else:
                     $this->getUser()->addLogAction('error','login',$L);     		 
                  	$this->ERROR = "L'usuari o la contrasenya són incorrectes";
