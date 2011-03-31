@@ -615,40 +615,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
     //Hem de buscar segons idCategoria.
     $categoria = (!is_null($idCategoria) && $idCategoria > 0)?' AND a.TipusActivitat_idTipusActivitat = '.$idCategoria:'';
     
-    //Hem de buscar segons data.    
-    switch($idData){
-        case "0": //El mateix dia 
-            $datai = date('Y-m-d',time());
-            $dataf = date('Y-m-d',time());            
-            break;
-        case "1": //El cap de setmana
-            $t = time();            
-            while(6 <> date('w',$t)) $t = strtotime(date("Y-m-d", $t) . "+1 day");
-            $datai = date('Y-m-d',$t);                        
-            while(0 <> date('w',$t)) $t = strtotime(date("Y-m-d", $t) . "+1 day");
-            $dataf = date('Y-m-d',$t);
-            break;
-        case "2": //Aquest mes
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time())));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+1 month"));            
-            break;
-        case "3": //El mes que ve
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+1 month"));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+2 month"));            
-            break;
-        case "4": //Dos mesos
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+2 month"));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+3 month"));            
-            break;
-        case "5": //Rang
-            $datai = preg_replace("/([0-9]{2})[\/|\-]([0-9]{2})[\/|\-]([0-9]{4})/","\$3-\$2-\$1",$aDates['DI']);
-            $dataf = preg_replace("/([0-9]{2})[\/|\-]([0-9]{2})[\/|\-]([0-9]{4})/","\$3-\$2-\$1",$aDates['DF']);
-            break;
-        default:
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time())));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+3 month"));
-            break;                                            
-    }    
+    $d = hospiciActions::getDatesCercadorHospici($idData,$aDates);
+    $datai = $d['datai']; $dataf = $d['dataf'];
 
     $data = " AND h.Dia >= '".$datai."' AND h.Dia <= '".$dataf."'";                        
 

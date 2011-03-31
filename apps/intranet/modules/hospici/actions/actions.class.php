@@ -163,7 +163,9 @@ class hospiciActions extends sfActions
                 $this->CERCA = $C2;
                 $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
                                                 
-                $this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsHospici($this->CERCA['TEXT'],$this->CERCA['SITE'],$this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'][0],$this->CERCA['DATAR'],$this->CERCA['P']);
+                $this->LLISTAT_CURSOS = CursosPeer::getCursosHospici($this->CERCA['TEXT'],$this->CERCA['SITE'],$this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'][0],$this->CERCA['DATAR'],$this->CERCA['P']);
+                print_r($this->LLISAT_CURSOS);
+                die;                
                 $this->MODE = 'CERCA';
                 
             break;
@@ -184,7 +186,46 @@ class hospiciActions extends sfActions
     }                                        
     
   }
+
+  public function getDatesCercadorHospici($idData,$aDates){
   
-  
+    //Hem de buscar segons data.    
+    switch($idData){
+        case "0": //El mateix dia 
+            $datai = date('Y-m-d',time());
+            $dataf = date('Y-m-d',time());            
+            break;
+        case "1": //El cap de setmana
+            $t = time();            
+            while(6 <> date('w',$t)) $t = strtotime(date("Y-m-d", $t) . "+1 day");
+            $datai = date('Y-m-d',$t);                        
+            while(0 <> date('w',$t)) $t = strtotime(date("Y-m-d", $t) . "+1 day");
+            $dataf = date('Y-m-d',$t);
+            break;
+        case "2": //Aquest mes
+            $datai = date('Y-m-d',strtotime(date("Y-m-d", time())));
+            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+1 month"));            
+            break;
+        case "3": //El mes que ve
+            $datai = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+1 month"));
+            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+2 month"));            
+            break;
+        case "4": //Dos mesos
+            $datai = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+2 month"));
+            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+3 month"));            
+            break;
+        case "5": //Rang
+            $datai = preg_replace("/([0-9]{2})[\/|\-]([0-9]{2})[\/|\-]([0-9]{4})/","\$3-\$2-\$1",$aDates['DI']);
+            $dataf = preg_replace("/([0-9]{2})[\/|\-]([0-9]{2})[\/|\-]([0-9]{4})/","\$3-\$2-\$1",$aDates['DF']);
+            break;
+        default:
+            $datai = date('Y-m-d',strtotime(date("Y-m-d", time())));
+            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+3 month"));
+            break;                                            
+    }    
+
+    return array('datai'=>$datai,'dataf'=>$dataf);
+
+  }
 
 }

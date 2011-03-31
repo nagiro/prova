@@ -17,7 +17,7 @@
                     "usuaris[Poblacio]": { required: false },
                     "usuaris[Poblaciotext]": { required: function(){ return ($('#usuaris_Poblacio option:selected').val() == 227); } },
                     "usuaris[Telefon]": { required: false },
-                    "usuaris[Mobil]": { required: function(){ return ($('#usuaris_Telefon').val().length == 0); }},                                        
+                    "usuaris[Mobil]": { required: function(){ return ($('#usuaris_Telefon').val().length == 0); }}                                        
                 },
                 messages: {
                     "usuaris[DNI]": { rangelength: "<br />Format: 00000000A o X0000000A." }

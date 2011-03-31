@@ -286,4 +286,62 @@ class CursosPeer extends BaseCursosPeer
   	return self::doSelectOne($C); 	
   }  
   
+  static public function getCursosHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates = null, $hasPobles = false)
+  {
+    //Segons text
+    $text = (!is_null($idText) && !empty($idText))?" AND (c.TitolCurs like '%{$idText}%' OR c.Descripcio like '%{$idText}%')":"";
+    
+    //Segons poble    
+    $poble = (!is_null($idPoble) && $idPoble > 0)?' AND p.idPoblacio = '.$idPoble:'';    
+    
+    //Hem de buscar segons idCategoria.
+    $categoria = (!is_null($idCategoria) && $idCategoria > 0)?' AND c.Categoria = '.$idCategoria:'';
+    
+    $d = hospiciActions::getDatesCercadorHospici($idData,$aDates);
+    $datai = $d['datai']; $dataf = $d['dataf'];
+
+//    DataAparicio
+//    DataDesaparicio
+//    DataFiMatricula
+//    DataInici
+
+    //Si busquem una data, ha de ser inferior a la data de desaparicio i d'inici de curs
+    $data = " AND c.DataAparicio <= {$dataf} AND c.DataDesaparicio >= {$datai} AND c.DataInici >= {$datai} ";
+
+    $connection = Propel::getConnection();        
+    $query = 
+            "
+                Select c.idCursos as idC, p.idPoblacio as idP, p.Nom as pobleNom
+                  from cursos c
+                  LEFT JOIN sites s ON (c.site_id = s.site_id)
+                  LEFT JOIN poblacions p ON (p.idPoblacio = s.poble)  
+                WHERE 
+                   c.actiu = 1 AND s.actiu = 1                    
+                   {$text}
+                   {$poble}
+                   {$categoria}
+                   {$data}                   
+                 GROUP BY idC,idP,pobleNom                     
+            ";           
+    echo $query;
+    die;        
+    $statement = $connection->prepare($query);        
+    $statement->execute();
+    $RET = array();
+    
+    //Guardo els elements resultats i els passo a un format Criteria    
+    while($result = $statement->fetch(PDO::FETCH_ASSOC)){
+        if($hasPobles):
+            $RET[$result['idP']][$result['idA']] = $result['idA'];
+        else:
+            $RET[$result['idA']] = $result['idA'];
+        endif;   
+    }
+
+    //Ja hem superat la data d'aparició i encara no 
+    $C->add(self::DATAAPARICIO, $datai, Criteria::LESS_THAN );
+    $C->add(self::DATADESAPARICIO, $datai, Criteria::GREATER_EQUAL);
+
+  }
+  
 }
