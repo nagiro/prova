@@ -22,7 +22,7 @@ class blogsActions extends sfActions
 	  $feed->setAuthorName('Giroscopi || Casa de Cultura de Girona');
 	
 	  $feedImage = new sfFeedImage();
-	  $feedImage->setFavicon('http://servidor.casadecultura.org/web_beta/images/blogs/Dissenys/noticies_culturals/blog_02.png');
+	  $feedImage->setFavicon('http://www.casadecultura.cat/images/blogs/Dissenys/noticies_culturals/blog_02.png');
 	  $feed->setImage($feedImage);
 	
 	  $C = new Criteria();
@@ -37,7 +37,7 @@ class blogsActions extends sfActions
 	  {
 	    $item = new sfFeedItem();
 	    $item->setTitle($post->getTitle());
-	    $item->setLink($WEBROOTURL.'/blogs/noticiesculturals/NOTICIA_ID/'.$post->getId());
+	    $item->setLink($WEBROOTURL.'noticiesculturals/NOTICIA_ID/'.$post->getId());
 	    $item->setAuthorName('Giroscopi');
 	    $item->setAuthorEmail('giroscopi@casadecultura.org');	    
 	    $IMG = $post->getImages();
@@ -47,7 +47,7 @@ class blogsActions extends sfActions
 	    	$url = '<img width="100px" src="'.$WEBROOTURL.'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
-	    $url_web = $WEBROOTURL.'blogs/noticiesculturals/NOTICIA_ID/'.$post->getId();
+	    $url_web = $WEBROOTURL.'noticiesculturals/NOTICIA_ID/'.$post->getId();
         $item->setUniqueId($url_web);
 	    
 	    $TEXT = "	
@@ -134,7 +134,7 @@ class blogsActions extends sfActions
   	
   	elseif( $this->MODE == 'ENVIA_FINALITZA' ):
   	
-		if(!$this->getUser()->hasAttribute('dades')) $this->redirect('blogs/noticiesculturals?MODE=FORM1');
+		if(!$this->getUser()->hasAttribute('dades')) $this->redirect('@noticies_culturals?MODE=FORM1');
 		
 		$this->getUser()->setAttribute('dades2',$request->getParameter('dades'));		
   		$this->DADES = $this->getUser()->getAttribute('dades');

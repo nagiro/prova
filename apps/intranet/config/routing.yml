@@ -7,6 +7,14 @@ homepage:
   param: { module: default, action: index }
 
 ######################################################
+# NOTICIES CULTURALS
+######################################################
+
+noticies_culturals:
+  url:  /noticiesculturals
+  param: { module:blogs, action:noticiesculturals }
+
+######################################################
 # HOSPICI
 ######################################################
 

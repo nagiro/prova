@@ -176,14 +176,14 @@
 <center>
 <table class="principal">
 <tr>
-	<td class="left-col main_title"><a href="<?php echo url_for('blogs/noticiesculturals?MODE=CONTINGUT') ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_02.png')?></a></td>
+	<td class="left-col main_title"><a href="<?php echo url_for('@noticies_culturals?MODE=CONTINGUT') ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_02.png')?></a></td>
 	<td class="right-col main_title"><?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_03.png')?></td>
 </tr>
 <tr>
 	<td class="left-col" style="vertical-align:top; padding-top:40px;">
-		<a href="<?php echo url_for('blogs/noticiesculturals?MODE=CONTINGUT&PAGE_ID='.$PAGE_ID_QUE_ESTA_PASSANT) ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/B1_A.png',array('class'=>'rollover','alt'=>'Què està passant?'))?></a><br />
-		<a href="<?php echo url_for('blogs/noticiesculturals?MODE=CONTINGUT&PAGE_ID='.$PAGE_ID_QUE_PASSARA) ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/B2_A.png',array('class'=>'rollover','alt'=>'Què passarà?'))?></a><br />
-		<a href="<?php echo url_for('blogs/noticiesculturals?MODE=CONTINGUT&PAGE_ID='.$PAGE_ID_QUE_HA_PASSAT) ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/B3_A.png',array('class'=>'rollover','alt'=>'Què ha passat?'))?></a><br />			
+		<a href="<?php echo url_for('@noticies_culturals?MODE=CONTINGUT&PAGE_ID='.$PAGE_ID_QUE_ESTA_PASSANT) ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/B1_A.png',array('class'=>'rollover','alt'=>'Què està passant?'))?></a><br />
+		<a href="<?php echo url_for('@noticies_culturals?MODE=CONTINGUT&PAGE_ID='.$PAGE_ID_QUE_PASSARA) ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/B2_A.png',array('class'=>'rollover','alt'=>'Què passarà?'))?></a><br />
+		<a href="<?php echo url_for('@noticies_culturals?MODE=CONTINGUT&PAGE_ID='.$PAGE_ID_QUE_HA_PASSAT) ?>"><?php echo image_tag('blogs/Dissenys/noticies_culturals/B3_A.png',array('class'=>'rollover','alt'=>'Què ha passat?'))?></a><br />			
 	</td>
 	<td class="right-col content">
 	<?php if($MODE == 'CONTINGUT'): ?>				
@@ -200,7 +200,7 @@
 <tr>
 	<td colspan="2" class="right-col">
 	<?php if($MODE == 'CONTINGUT'): ?>				
-		<a href="<?php echo url_for('blogs/noticiesculturals?MODE=FORM1') ?>"> <?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_12.png')?> </a></td>
+		<a href="<?php echo url_for('@noticies_culturals?MODE=FORM1') ?>"> <?php echo image_tag('blogs/Dissenys/noticies_culturals/blog_12.png')?> </a></td>
 	<?php elseif($MODE == 'FORM1'): ?>						
 		<?php echo image_tag('blogs/Dissenys/noticies_culturals/form_foot_1.png')?></td>		
 	<?php elseif($MODE == 'FORM2'): ?>
@@ -224,7 +224,7 @@
 	{
 				
 		?>
-		<form id="form1" method="POST" action="<?php echo url_for('blogs/noticiesculturals?MODE=FORM2'); ?>" enctype="multipart/form-data">
+		<form id="form1" method="POST" action="<?php echo url_for('@noticies_culturals?MODE=FORM2'); ?>" enctype="multipart/form-data">
 	
 		<div class="FORMULARI">
 		
@@ -294,7 +294,7 @@
 	function printForm2($FORMULARI)
 	{
 		?>		
-		<form id="form2" action="<?php echo url_for('blogs/noticiesculturals?MODE=ENVIA_FINALITZA') ?>" method="POST" enctype="multipart/form-data">
+		<form id="form2" action="<?php echo url_for('@noticies_culturals?MODE=ENVIA_FINALITZA') ?>" method="POST" enctype="multipart/form-data">
 		
 		
 		<div class="FORMULARI">
@@ -393,7 +393,7 @@
 		echo '<table><tr><td style="font-size:14px; text-align:justify; line-height:25px;">';	
 		echo $text;
 		echo '</td></tr>';
-		echo '<tr><td class="more right"><a href="'.url_for('blogs/noticiesculturals').'">Tornar</a></td></tr>';
+		echo '<tr><td class="more right"><a href="'.url_for('@noticies_culturals').'">Tornar</a></td></tr>';
 		echo '</table>';
 		
 	}
@@ -444,7 +444,7 @@
 		endfor;
 		if($PAGES->haveToPaginate() && $PAGES->getPage() != $PAGES->getLastPage()):								
 			echo '</tr><tr><td style="row_sep" colspan="5">&nbsp;</td>
-						<td class="more"><a href="'.url_for('blogs/noticiesculturals?PAGINA='.$PAGES->getNextPage()).'">veure\'n més</a></td>
+						<td class="more"><a href="'.url_for('@noticies_culturals?PAGINA='.$PAGES->getNextPage()).'">veure\'n més</a></td>
 						<td>&nbsp;</td>
 						</tr>';
 		endif;
@@ -466,7 +466,7 @@
 			$RET[0] .= '<div class="subtitle2">'.$OO->getSubtitle2().'</div>';						
 			$RET[0] .= '<div class="text">'.$text.'</div></td>';
 			
-			$RET[1]  = '<td class="col_footer"><div class="footer"><a href="'.url_for('blogs/noticiesculturals?NOTICIA_ID='.$OO->getId()).'">+ llegir tota la notícia</a></div>';
+			$RET[1]  = '<td class="col_footer"><div class="footer"><a href="'.url_for('@noticies_culturals?NOTICIA_ID='.$OO->getId()).'">+ llegir tota la notícia</a></div>';
 			$url = $OO->getUrl();			
 			if(strlen($url) > 9) $RET[1] .= '<div class="footer"><a target="_NEW" href="'.$url.'">entrar al web</a></div>';
 			$RET[1] .= '<div class="footer tags">'.$OO->getTags().'</div>';
