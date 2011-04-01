@@ -37,7 +37,7 @@ class blogsActions extends sfActions
 	  {
 	    $item = new sfFeedItem();
 	    $item->setTitle($post->getTitle());
-	    $item->setLink($WEBROOTURL.'noticiesculturals/NOTICIA_ID/'.$post->getId());
+	    $item->setLink($WEBROOTURL.'noticiesculturals?NOTICIA_ID='.$post->getId());
 	    $item->setAuthorName('Giroscopi');
 	    $item->setAuthorEmail('giroscopi@casadecultura.org');	    
 	    $IMG = $post->getImages();
@@ -47,7 +47,7 @@ class blogsActions extends sfActions
 	    	$url = '<img width="100px" src="'.$WEBROOTURL.'images/blogs/'.$IMG[0]->getUrl().'">';
 	    endif; 
 	    
-	    $url_web = $WEBROOTURL.'noticiesculturals/NOTICIA_ID/'.$post->getId();
+	    $url_web = $WEBROOTURL.'noticiesculturals?NOTICIA_ID='.$post->getId();
         $item->setUniqueId($url_web);
 	    
 	    $TEXT = "	
