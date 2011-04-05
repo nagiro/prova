@@ -34,8 +34,13 @@ class OptionsPeer extends BaseOptionsPeer {
         $C->add(self::SITE_ID, $idS);
         $OO = self::doSelectOne($C);
         if($OO instanceof Options) return $OO->getValor();
-        else return 'n/d';
-        
+        else{ 
+            $C->add(self::OPTION_ID, $cond);
+            $C->add(self::SITE_ID, 1);
+            $OO = self::doSelectOne($C);
+            if($OO instanceof Options) return $OO->getValor();
+            else return 'n/d';
+        }        
     }
     
     static public function getOptionsArray( $IDS , $totes_les_opcions_de_ccg_generals = false )

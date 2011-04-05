@@ -74,11 +74,13 @@ class EspaisForm extends BaseEspaisForm
       $photos = $this->getValue('Fotos');      
       $forms = $this->embeddedForms;
       if(empty($photos[0]['url'])) unset($forms['Fotos'][0]);
-      foreach ($this->embeddedForms['Fotos']->getEmbeddedForms() as $K=>$MultimediaForm)
-      {         
-        if($photos[$K]['delete']) $MultimediaForm->deleteEmbed();
-        else $MultimediaForm->saveEmbed();        
-      }        
+      if(isset($this->embeddedForms['Fotos'])):
+          foreach ($this->embeddedForms['Fotos']->getEmbeddedForms() as $K=>$MultimediaForm)
+          {         
+            if($photos[$K]['delete']) $MultimediaForm->deleteEmbed();
+            else $MultimediaForm->saveEmbed();        
+          }        
+      endif;
     }              
     return true;
   }
