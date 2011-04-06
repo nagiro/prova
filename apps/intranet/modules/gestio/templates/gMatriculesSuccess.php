@@ -255,21 +255,27 @@
 	    		<tr><th>Reducció: </th><td colspan="2"><?php echo $MATRICULA->getTreduccioString(); ?></td></tr>
 	    		<tr><th class="TITOL">CODI</th><th class="TITOL">NOM DEL CURS</th><th class="TITOL">PREU</th></tr>	    		
 	    		<tr><td><?php echo $CURS->getCodi(); ?></td><td><?php echo $CURS->getTitolcurs().$CURS_PLE_TEXT; ?></td><td><?php echo $MATRICULA->getPagat(); ?>€</td></tr>
-	    		<td colspan="3" class="dreta"><br>	                    	            		
+	    		<td colspan="3" class="dreta"><br />	                    	            		
 	            	<?php echo submit_tag('Segueix matriculant -->',array('name'=>'BPAGAMENT','class'=>'BOTO_ACTIVITAT')); ?>
 	            </td>	    		
 	        </table>
 	     </DIV>
      </form>  
 
- <?php ELSEIF( $MODE == 'PAGAMENT' ):  ?>  
+ <?php elseif( $MODE == 'PAGAMENT' ):  ?>  
  	
- 	<DIV class="REQUADRE">	    
-    <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
-		<h3>La matrícula s'ha realitzat correctament.<br /> Prem <?php echo link_to('aquí','gestio/gMatricules?accio=P&IDP='.$OM->getIdmatricules()); ?> per veure el reguard.</h3>			
-    </DIV>
+ 	<div class="REQUADRE">	    
+        <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
+            <?php   
+                if($MISSATGE == 'OK'):
+                    echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$idM)." per veure el reguard.";
+                else:
+                    echo "Hi ha hagut algun problema fent la matrícula. Si us plau, torna-ho a intentar.";            
+                endif;
+            ?>
+    </div>
  	 	  
-  <?php ELSEIF( $MODE == 'EDICIO' ): ?>
+  <?php elseif( $MODE == 'EDICIO' ): ?>
 
  	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
 	    <DIV class="REQUADRE">

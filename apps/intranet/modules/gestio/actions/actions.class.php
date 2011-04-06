@@ -2568,14 +2568,17 @@ class gestioActions extends sfActions
     		break;
             
     	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
-    	case 'OK':                        
-    		 if($request->hasParameter('OK')):                 
-                 $this->MISSATGE = "La matrícula s'ha realitzat correctament.";                                                   
+    	case 'OK':
+        
+              $this->idM = $request->getParameter('Ds_MerchantData',0);                                        
+    		  if($request->hasParameter('OK') && $this->idM > 0 ):                                                   
+                 $this->MISSATGE = "OK";                                                   
               else:			            
-                 $this->MISSATGE = "Hi ha hagut algun problema realitzant la matrícula. Si us plau torna-ho a intentar.";              
+                 $this->MISSATGE = "KO";              
               endif;
               $this->MODE = 'PAGAMENT';
               break;
+              
         //Esborra una matrícula    		    		
     	case 'D':
                 $RM = $request->getParameter('matricules');                  			    	 			    			    			    			    			
