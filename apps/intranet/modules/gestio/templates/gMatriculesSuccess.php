@@ -268,7 +268,7 @@
         <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
             <?php   
                 if($MISSATGE == 'OK'):
-                    echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$idM)." per veure el reguard.";
+                    echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard.";
                 else:
                     echo "Hi ha hagut algun problema fent la matrícula. Si us plau, torna-ho a intentar.";            
                 endif;
@@ -313,7 +313,7 @@
 									<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefonString().' | '.$M->getDatainscripcio().'<br />'.$U->getEmail().'</TD>
 									<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
 								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().' '.
-				            										'<a href="'.url_for('gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules()).'"><img src="'.OptionsPeer::getString('SF_WEBROOT',$IDS).'/images/template/printer.png'.'" /></a>
+				            										'<a href="'.url_for('gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules()).'"><img src="'.$BASE.'images/template/printer.png'.'" /></a>
 								                     		       </TD>							
 								  </TR>';                		                 															                		                 															
 	                   endforeach; 	                  

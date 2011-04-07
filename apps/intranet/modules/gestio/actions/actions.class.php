@@ -2560,9 +2560,11 @@ class gestioActions extends sfActions
     		    		
     	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
     	case 'PAGAMENT':        
-                $this->IDM = $request->getParameter('IDM');                                                  			    			
-    			$this->OM = MatriculesPeer::setMatriculaPagada( MatriculesPeer::retrieveByPK( $this->IDM ) );                    			
-    			$this->getUser()->addLogAction($accio,'gMatricules',$this->MATRICULA);    				
+                $this->IDM = $request->getParameter('IDM');
+    			$this->OM = MatriculesPeer::setMatriculaPagada( MatriculesPeer::retrieveByPK( $this->IDM ) );
+                if($this->OM instanceof Matricules && $this->IDM > 0) $this->MISSATGE = "OK";
+                else $this->MISSATGE = "KO";
+    			$this->getUser()->addLogAction($accio,'gMatricules',$this->MATRICULA);
     			$this->MODE = 'PAGAMENT';
                 $this->SendMailMatricula($this->OM,$this->IDS);       			  							
     		break;
@@ -2570,8 +2572,8 @@ class gestioActions extends sfActions
     	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
     	case 'OK':
         
-              $this->idM = $request->getParameter('Ds_MerchantData',0);                                        
-    		  if($request->hasParameter('OK') && $this->idM > 0 ):                                                   
+              $this->IDM = $request->getParameter('Ds_MerchantData',0);                                        
+    		  if($request->hasParameter('OK') && $this->IDM > 0 ):                                                   
                  $this->MISSATGE = "OK";                                                   
               else:			            
                  $this->MISSATGE = "KO";              

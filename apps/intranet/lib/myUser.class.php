@@ -86,19 +86,20 @@ class myUser extends sfBasicSecurityUser
    * @return void
    */
   public function addLogAction($accio,$model,$dadesBefore = null ,$dadesAfter = null)
-  {
-  	$idU = $this->getSessionPar('idU');
+  {    
+    
+    $idU = $this->getSessionPar('idU');
   	$time = date('Y-m-d H:i',time());
-  	
-  	$O = new Log();
-  	if($idU > 0) $O->setUsuariid($idU);
-  	else $O->setUsuariid(null);
-  	$O->setAccio($accio);
-  	$O->setModel($model);  	
-  	if(!is_null($dadesBefore)) $O->setDadesbefore(serialize($dadesBefore));
-  	if(!is_null($dadesAfter))  $O->setDadesafter(serialize($dadesAfter));  	
-  	$O->setData($time);
-  	$O->save();
+  
+    $REG = "\n";
+    $REG .= "<data>".$time."</data>";
+    $REG .= "<usuari>".$idU."</usuari>";
+    $REG .= "<accio>".$accio."</accio>";
+  	$REG .= "<model>".$model."</model>";
+    $REG .= "<before>".serialize($dadesBefore)."</before>";
+    $REG .= "<after>".serialize($dadesAfter)."</after>";
+          	  	  	  	  		  	
+    file_put_contents('log.txt', $REG, FILE_APPEND);
   	
   }  
 
