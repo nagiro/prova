@@ -340,12 +340,12 @@
 	    				endif;
 	    				
 	    			endforeach;
-	    			echo '<a onClick="Activa('.$F->getId().')"><img src="'.$WEBROOT.'/images/template/add.png'.'" /></a>';
+	    			echo '<a onClick="Activa('.$F->getId().')"><img src="'.$WEBROOT.'images/template/add.png'.'" /></a>';
 	    			$O = $F->getObjeccions();
-	    			if(!empty($O)) echo ' <a onClick="Activa('.$F->getId().')"><img src="'.$WEBROOT.'/images/template/buildings.png'.'" /></a>';
+	    			if(!empty($O)) echo ' <a onClick="Activa('.$F->getId().')"><img src="'.$WEBROOT.'images/template/buildings.png'.'" /></a>';
 	    			echo '</div>';
 	    			echo '<div class="hidden2" id="hidden2_'.$F->getId().'">';
-	    			echo '<a onClick="Desactiva('.$F->getId().')"><img src="'.$WEBROOT.'/images/template/add.png'.'" /></a><br />';
+	    			echo '<a onClick="Desactiva('.$F->getId().')"><img src="'.$WEBROOT.'images/template/add.png'.'" /></a><br />';
 	    			foreach($F->getArrayElements() as $K=>$V):
 	    				if($K == 'file'):
 	    					foreach($V as $V2):	    						
@@ -447,7 +447,7 @@
 		foreach($GALLERY as $OO):
 			$RET .= '<td>
 					<a href="#" onClick="esborraImatge('.$OO->getId().')">						
-						<img id="img'.$OO->getId().'" width="100px" src="'.sfConfig::get('sf_webroot').'/images/blogs/'.$OO->getUrl().'">
+						<img id="img'.$OO->getId().'" width="100px" src="'.sfConfig::get('sf_webroot').'images/blogs/'.$OO->getUrl().'">
 					</a>												
 					</td>';
 		endforeach;
