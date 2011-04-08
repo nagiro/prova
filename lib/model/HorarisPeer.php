@@ -130,8 +130,9 @@ class HorarisPeer extends BaseHorarisPeer
 	      $RET[$H->getHorarisid()]['HORA_FI'] = $H->getHorafi('H:i');   //Guardem les activitats
 	      $RET[$H->getHorarisid()]['HORA_PRE'] = $H->getHorapre('H:i');   //Guardem les activitats
 	      $RET[$H->getHorarisid()]['HORA_POST'] = $H->getHorapost('H:i');   //Guardem les activitats	      
-	      $RET[$H->getHorarisid()]['AVIS'] = $H->getAvis();   //Carreguem l'avís per si de cas      
-	      foreach($H->getHorarisespaiss() as $HE):          
+	      $RET[$H->getHorarisid()]['AVIS'] = $H->getAvis();   //Carreguem l'avís per si de cas          
+          $C = HorarisespaisPeer::getCriteriaActiu(new Criteria(),$H->getSiteId());      
+	      foreach($H->getHorarisespaiss($C) as $HE):          
 	      	$RET[$H->getHorarisid()]['ESPAIS'][$HE->getNomEspai()] = $HE->getNomEspai();   //Guardem les activitats      	
 	      	$RET[$H->getHorarisid()]['MATERIAL'][] = (is_null($HE->getMaterial()))?"":$HE->getMaterial()->getIdentificador().' - '.$HE->getMaterial()->getNom();      	
 	      endforeach;
