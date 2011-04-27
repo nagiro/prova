@@ -607,7 +607,9 @@ class ActivitatsPeer extends BaseActivitatsPeer
   {
                         
     //Segons text
+    $idText = addslashes($idText);
     $text = (!is_null($idText) && !empty($idText))?" AND (a.tMig like '%{$idText}%' OR a.dMig like '%{$idText}%')":"";
+        
     
     //Segons poble    
     $poble = (!is_null($idPoble) && $idPoble > 0)?' AND p.idPoblacio = '.$idPoble:'';    
@@ -656,7 +658,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
                    {$data}
               GROUP BY idA,idP,pobleNom
             ";           
-//    echo $query;
+//    echo $query;    
         
     $statement = $connection->prepare($query);        
     $statement->execute();

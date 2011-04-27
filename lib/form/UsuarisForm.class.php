@@ -108,7 +108,7 @@ class UsuarisForm extends sfFormPropel
     //Mirem si l'usuari està relacionat amb el SITE
     $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();    
     $OUS->setNivellid($this->getValue('Nivells_idNivells'));
-    $OUS->save();        
+    $OUS->save();
     
   }
 
@@ -120,7 +120,7 @@ class UsuarisForm extends sfFormPropel
   	if(self::valida_nif_cif_nie($DNI) <= 0) throw new sfValidatorError($A, "Error: El DNI és incorrecte.<br /> Recorda escriure'l amb el format 99999999A.");
   	
   	$OUsuari = UsuarisPeer::cercaDNI($DNI);    
-  	if($OUsuari instanceof Usuaris && $OUsuari->getUsuariid() != $arguments['idU']) throw new sfValidatorError($A, "Error: El DNI ja existeix.");
+  	if($OUsuari instanceof Usuaris && $OUsuari->getUsuariid() != $arguments['idU']) throw new sfValidatorError($A, "Error: El DNI ja existeix. Si us plau envii un missatge a informatica@casadecultura.org per a més informació. ");
   	return $valor;
   	  	
   } 

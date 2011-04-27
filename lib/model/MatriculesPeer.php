@@ -57,6 +57,12 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C->add(self::SITE_ID, $idS);
     return $C;
   }
+  
+  static public function h_getCriteriaActiu( $C )
+  {    
+    $C->add(self::ACTIU, true);    
+    return $C;
+  }
    
   static function QuantesAvui($idS)
   {
@@ -275,7 +281,25 @@ class MatriculesPeer extends BaseMatriculesPeer
   	);  
            
   }
-  
+
+ /**
+  * A diferència de getMatriculesUsuari, a l'Hospici s'agafen totes... no només les del SITE. 
+  * Bàsicament, no hi ha filtre per site.  
+  **/
+  static function h_getMatriculesUsuari( $idU ){
+
+    $C = new Criteria();    
+    $C = self::h_getCriteriaActiu( $C );
+    $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
+    $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
+    $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
+
+    return MatriculesPeer::doSelect($C);
+  }
+
+ /**
+  * Mostrem les notícies segons l'usuari i el site on està.   
+  **/  
   static function getMatriculesUsuari($idU,$idS){
 
     $C = new Criteria();    

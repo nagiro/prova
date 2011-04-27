@@ -31,7 +31,7 @@ class gestioActions extends sfActions
                     $this->TITOL = "Reserva d'espais";
                     $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
                     if($OR instanceof Reservaespais && $OR->setAcceptada()):
-                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span>';
+                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitgi podrà consultar les seves reserves accedint a la serva zona privada del web.</span>';
                     else:
                         $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error tècnic en l\'acceptació.<br />Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
                     endif;                                                             
@@ -43,7 +43,7 @@ class gestioActions extends sfActions
                     $this->TITOL = "Reserva d'espais";
                     $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);                    
                     if($OR instanceof Reservaespais && $OR->setRebutjada()):                        
-                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span">';
+                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitgi podrà consultar les seves reserves accedint a la serva zona privada del web.</span">';
                     else:
                         $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error en l\'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
                     endif;
@@ -255,7 +255,7 @@ class gestioActions extends sfActions
 
   public function executeGetTPV(sfWebRequest $request)
   {
-  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.       
+  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.
   	if($request->getParameter('Ds_Response') == '0000')
     {
   		$idM = $request->getParameter('Ds_MerchantData');        

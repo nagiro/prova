@@ -19,6 +19,8 @@ require 'lib/model/om/BaseSitesPeer.php';
  * @package    lib.model
  */
 class SitesPeer extends BaseSitesPeer {
+
+    const HOSPICI_ID = 0;
     
     static public function getCriteriaActiu( $C )
     {

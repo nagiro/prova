@@ -20,7 +20,10 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>     
   <script type="text/javascript" src="<?php echo $BASE.'js/thickbox-compressed.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>
-  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>      
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/jquery.validate.min.js' ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js' ?>"></script>
+        
   
      
 <!--[if lt IE 7]>
@@ -93,15 +96,45 @@
 .h_requadre_login_text { margin: 0 auto; color:white; width:150px; text-align:left;}
 .h_requadre_login_imatge {  }
 
+.h_requadre_login_logged { color:white; text-align:left; padding: 0px 15px;  }
+.h_requadre_login_logged li { list-style-type: square; list-style-position: inside;  }
+.h_requadre_login_logged a { color:#A9E886; text-decoration: none;  }
+.h_requadre_login_logged a:hover { text-decoration: underline;  }
+
 .h_llistat_activitat_tipus_titol { background-color:#CCCCCC; padding:5px; font-weight:bold; margin-bottom:10px;  }    
 .h_llistat_activitat_titol a { text-decoration:none; font-weight:bold; font-size:14px; color:black; }
 .h_llistat_activitat_titol a:hover { text-decoration:underline; }
 
 .h_llistat_activitat_horari { margin-left:20px; color:green; font-weight:bold; float:left;  }
 .h_llistat_activitat_organitzador { margin-left:10px; font-weight:bold; float:left;  }
+
+    .taula_dades { width:600px;  }
+    .taula_dades input { border:1px solid #DDDDDD; padding:3px; }
+    .taula_dades input:focus { background-color:#EEEEEE; }
+    .taula_dades select { border:1px solid #DDDDDD; width:200px; }
+    .taula_dades select:focus { background-color:#EEEEEE;  }
+    .taula_dades th { text-align:right; width:100px; padding-right:5px; }
+
+    .taula_llistat { width:600px; border-collapse:collapse;  }
+    .taula_llistat th { text-align:left; padding:3px;  }
+    .taula_llistat td { text-align:left; padding:3px; }
+    .taula_llistat tr:hover { background-color: #EEEEEE;  }    
+
+    .error_list { background-color:#FBFFD5;  color:#DD8275; list-style: none; padding:3px;  }
+
+    .error { color:#ED5C5C;  }
+    
+    .missatge { padding:10px; margin-top: 20px; background-color:#FBFFD5; }
      
 </style>
-      
+<script>
+    
+    $(document).ready(function(){
+        $("#LOGINSUBMIT").click(function(){ $("#FLOGIN").submit(); });
+    });
+
+</script>
+     
   </head>
   
   <body>
@@ -128,20 +161,30 @@
 
         <div class="h_content">
             <div class="h_left_col">
-                <div class="h_requadre_menu_left">             
-                    <ul class="h_menu_left">
-                        <li><a href="<?php echo url_for('@hospici_cercador_activitats') ?>">Cercador d'activitats</a></li>
-
-                        <li><a href="<?php echo url_for('@hospici_cercador_cursos_inici') ?>">Cercador de cursos</a></li>    
-    
-                        <li><a href="">Llistat d'entitats</a></li>
-    
-                        <li><a href="">Reserva d'espais per activitats culturals</a></li>    
-    
-                        <li><a href="">Calendari</a></li>
-    
-                        <li><a href="">Acc&eacute;s al teu espai de l&rsquo;Hospici</a> (modificar les teves dades, consultar on t&rsquo;has matriculat...)</li>
-                    </ul>
+                <div class="h_requadre_menu_left">
+                    <div style="padding: 0px 10px;">
+                
+                        <h1 style="margin-bottom: 5px;">L'Hospici, què vol fer avui?</h1>                        
+                                 
+                        <ul class="h_menu_left">
+                            <li>
+                                <a href="<?php echo url_for('@hospici_cercador_activitats') ?>">Trobar activitats</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo url_for('@hospici_cercador_cursos_inici') ?>">Trobar cursos</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo url_for('@hospici_cercador_espais') ?>">Trobar espais per reservar</a>
+                            </li>            
+                            <li>
+                                <a href="<?php echo url_for('@hospici_cercador_entitats') ?>">Conèixer entitats</a>
+                            </li>
+                            <li>
+                                <a href="<?php echo url_for('@hospici_usuaris_alta') ?>">Vull ser-ne membre</a>
+                            </li>                                                                                                                                                                                                                                                            
+                        </ul>
+                        
+                    </div>
                 </div>
             </div>
 
@@ -157,14 +200,25 @@
 
                 <div class="h_requadre_login">
                     <br />
-
-                    <div class="h_requadre_login_inputs">
-                        <input type="text" name="login" /> <input type="password" name="pass" />
-                    </div>
-
-                    <div class="h_requadre_login_button">
-                        <a href="">Entra &gt;&gt;&gt;</a>
-                    </div>
+                    <?php if(!$sf_user->isAuthenticated()): ?>
+                    
+                        <form id="FLOGIN" action="<?php echo url_for('@hospici_login') ?>" method="POST">
+                            <div class="h_requadre_login_inputs">
+                                <input type="text"     name="login" /> 
+                                <input type="password" name="pass"  />
+                            </div>                            
+                            <div class="h_requadre_login_button">
+                                <a href="#" id="LOGINSUBMIT">Entra &gt;&gt;&gt;</a>
+                            </div>
+                            <div class="h_requadre_login_button" >
+                                <a href="<?php echo url_for('@hospici_usuaris_alta') ?>" style="font-size: 10px;">Nou usuari &gt;&gt;&gt;</a>
+                            </div>
+                            <div class="h_requadre_login_button" >
+                                <a href="<?php echo url_for('@hospici_usuaris_remember'); ?>" style="font-size: 10px;">Recorda contrassenya &gt;&gt;&gt;</a>
+                            </div>
+                            
+                        </form>
+                                                                
                     <br />
 
                     <div class="h_requadre_login_text">
@@ -174,8 +228,28 @@
                         <br />
                         Consulta aqu&iacute; les condicions de registre de les teves dades.
                     </div>
+                    
+                    <?php else: ?>
+                    
+                        <div class="h_requadre_login_logged">
+                            Benvingut,<br /> 
+                            <?php echo $sf_user->getSessionPar('username'); ?>
+                            
+                            <br /><br />
+                            
+                            Què desitges fer? 
+                            <ul>
+                                <li><a href="<?php echo url_for('@hospici_usuaris') ?>">Veure les meves dades</a></li>
+                                <li><a href="<?php echo url_for('@hospici_cercador_activitats') ?>">Buscar activitats</a></li>
+                                <li><a href="<?php echo url_for('@hospici_cercador_cursos') ?>">Buscar cursos</a></li>
+                                <li><a href="<?php echo url_for('@hospici_cercador_espais') ?>">Reservar un espai</a></li>
+                                <li><a href="<?php echo url_for('@hospici_login') ?>">Sortir</a></li>
+                            </ul> 
+                            
+                        </div>
+                        
+                    <?php endif; ?>                    
                     <br />
-
                     <div class="h_requadre_login_imatge">
                         <img src="<?php echo $BASE_I.'/logo_hospici.png'; ?>">
                     </div>

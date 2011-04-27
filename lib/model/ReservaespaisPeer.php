@@ -17,6 +17,13 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
   const PENDENT_CONFIRMACIO = 4;
   const ESBORRADA = 5;  
 
+
+    static public function h_getCriteriaActiu( $C )
+    {
+        $C->add(self::ACTIU, true);        
+        return $C;
+    }
+
     static public function getCriteriaActiu($C,$idS)
     {
         $C->add(self::ACTIU, true);
@@ -100,26 +107,24 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       return $P;      
             
    }
-   
-   
+
    /**
-    * Funció que retorna un pager amb totes les reserves que s'han demanat ordenades per data d'entrada
+    * Funció que retorna les reserves que ha fet un usuari a qualsevol SITE perquè és per l'Hospici
     *
-    * @param int $Pagina
-    * @return sfPropelPager
+    * @param int $idU
+    * @return Reservaespais
     */
-/*   static function getReserves($Pagina = 0)
+   static function h_getReservesUsuaris( $idU )
    {
-        $C = new Criteria();           
-        $P = new sfPropelPager('Reservaespais', 10);
-        $P->setCriteria($C);
-        $P->setPage($Pagina);
-        $P->init();
-        return $P; 
+      $C = new Criteria();
+      $C = self::h_getCriteriaActiu( $C );
+      $C->add(ReservaespaisPeer::USUARIS_USUARIID , $idU);
+      return ReservaespaisPeer::doSelect($C);
    }
-*/   
+
+
    /**
-    * Funció que retorna les reserves que ha fet un usuari
+    * Funció que retorna les reserves que ha fet un usuari a un SITE determinat. 
     *
     * @param int $idU
     * @return Reservaespais

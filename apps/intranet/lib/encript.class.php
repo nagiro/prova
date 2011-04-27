@@ -39,5 +39,4 @@ class Encript
     return base64_decode($sBase64); 
   }  
 
-  
 }

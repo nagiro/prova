@@ -195,8 +195,7 @@ class UsuarisPeer extends BaseUsuarisPeer
 	$str = strtoupper(strtr($str, $LATIN1_LC_CHARS, $LATIN1_UC_CHARS));
 	return strtr($str, array("ß" => "SS"));
 	    
-  }
-  
+  }  
   
   static function getUserLogin($login,$password,$idS)
   {

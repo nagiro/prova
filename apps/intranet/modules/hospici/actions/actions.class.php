@@ -18,7 +18,8 @@ class hospiciActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {    
     $this->setLayout('hospici');
-    $this->accio = $request->getParameter('accio','index');        
+    $this->accio = $request->getParameter('accio','index');
+    $this->AUTENTIFICAT = $this->getUser()->getSessionPar('idU');        
     
     //Carrego la cerca
     $this->CERCA = $this->getUser()->getSessionPar('cerca');    
@@ -56,6 +57,9 @@ class hospiciActions extends sfActions
     
   }
    
+  /**
+   * Omple el quadre de cerca amb tots els valors per defecte. 
+   * */
   private function getCercaComplet($C)
   {    
     if(!isset($C['TEXT']))              $C['TEXT'] = "";
@@ -66,70 +70,163 @@ class hospiciActions extends sfActions
     if(!isset($C['DATAR']))             $C['DATAR'] = array('DI'=>time(), 'DF'=>time());
     if(!isset($C['P']))                 $C['P'] = 1;
     return $C;
-  }
-   
-   
-  public function executeEntitats(sfWebRequest $request)
-  {
-    
-  }
-      
-  public function executeCalendari(sfWebRequest $request)
-  {
-    
-  }
+  }  
   
-  public function executeHospici(sfWebRequest $request)
+  /**
+   * Realitza totes les consultes AJAX D'activitats
+   * */    
+  public function executeAjaxACT(sfWebRequest $request)
   {
+    $accio = $request->getParameter('ACCIO');
     
-  }
-  
-  
+    switch($accio){
+        case 'POB_ON':
+                $C = new Criteria();
+                $text = $request->getParameter('TEXT');
+                $idP = $request->getParameter('ON');    
+                $sel = $request->getParameter('SEL');
+                $R = ActivitatsPeer::selectCategoriesActivitats($idP[0],$text);
+            break;
+        case 'POB_QUAN':
+             	$C = new Criteria();
+                $idP = $request->getParameter('ON');
+                $idC = $request->getParameter('CAT');    
+                $sel = $request->getParameter('SEL');
+                $text = $request->getParameter('TEXT');
+                $R = ActivitatsPeer::selectDatesActivitats($idP[0],$idC[0],$text,null);
+            break;
+        case 'ENT_QUAN':
+             	$C = new Criteria();
+                $idE = $request->getParameter('ENT');        
+                $sel = $request->getParameter('SEL');
+                $text = $request->getParameter('TEXT');
+                $R = ActivitatsPeer::selectDatesActivitats(null,null,$text,$idE[0]);            
+            break;        
+    }
     
-  public function executeAjaxON(sfWebRequest $request)
-  {
- 	$C = new Criteria();
-    $text = $request->getParameter('TEXT');
-    $idP = $request->getParameter('ON');    
-    $sel = $request->getParameter('SEL');
-    $R = ActivitatsPeer::selectCategoriesActivitats($idP[0],$text);
     $RET = "";
     foreach($R as $K=>$E){
         $SELECTED = ($sel == $K)?"SELECTED":"";        
         $RET .= '<option '.$SELECTED.' value="'.$K.'">'.$E.'</option>';        
     }        
     return $this->renderText($RET);
+   
+  
+  }  
+
+  public function executeLogin(sfWebRequest $request)
+  {
+    $this->setLayout('hospici');    
+    $this->setTemplate('index');
+    
+    $OU = UsuarisPeer::getUserLogin($request->getParameter('login'),$request->getParameter('pass'),null);    
+    if($OU instanceof Usuaris):
+        $this->getUser()->setAuthenticated(true);        
+        $this->getUser()->setSessionPar('idU',$OU->getUsuariid());
+        $this->getUser()->setSessionPar('username',$OU->getNomComplet());
+        $this->getUser()->setSessionPar('compres',array());
+        $this->redirect('@hospici_usuaris');        
+    else: 
+        $this->getUser()->setAuthenticated(false);
+        $this->getUser()->setSessionPar('idU',0);
+        $this->getUser()->setSessionPar('username','');
+        $this->getUser()->setSessionPar('compres',array());
+        $this->redirect('@hospici_cercador_activitats');        
+    endif;
+            
+  }  
+
+  public function executeRemember(sfWebRequest $request)
+  {
+    
+    $this->setLayout('hospici');
+    
+    if($request->isMethod('POST')):        
+        //L'usuari he enviat el seu DNI i se li ha d'enviar la contrassenya
+        $RS = $request->getParameter('remember');        
+        $this->FREMEMBER = new RememberForm();
+        $this->FREMEMBER->bind($RS);
+        if($this->FREMEMBER->isValid()):
+            $OU = UsuarisPeer::cercaDNI($this->FREMEMBER->getValue('DNI'));
+            $BODY = OptionsPeer::getString('MAIL_REMEMBER',SitesPeer::HOSPICI_ID);
+            $BODY = str_replace('{{PASSWORD}}',$OU->getPasswd(),$BODY);
+            $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$OU->getEmail(),' Hospici :: Recordatori de contrasenya ',$BODY);
+            $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),'informatica@casadecultura.org', '[Hospici :: RECORDATORI '.$OU->getUsuariid().']',$BODY);
+            if(!$this->ENVIAT):
+                $this->SECCIO = "ERROR_ENVIAMENT";
+            else:
+                $this->SECCIO = 'ENVIADA';                         			            
+            endif;                   
+            
+        else: 
+            $this->SECCIO = 'ERROR_DNI_VALIDACIO';
+        endif;        
+            
+    else:     
+        $this->FREMEMBER = new RememberForm();    
+        $this->SECCIO = 'INICI';        
+    endif;
+    
   }
 
-  public function executeAjaxCAT(sfWebRequest $request)
+  public function executeAlta(sfWebRequest $request)
   {
- 	$C = new Criteria();
-    $idP = $request->getParameter('ON');
-    $idC = $request->getParameter('CAT');    
-    $sel = $request->getParameter('SEL');
-    $text = $request->getParameter('TEXT');
-    $R = ActivitatsPeer::selectDatesActivitats($idP[0],$idC[0],$text,null);
-    $RET = "";
-    foreach($R as $K=>$E){
-        $SELECTED = ($sel == $K)?"SELECTED":"";        
-        $RET .= '<option '.$SELECTED.' value="'.$K.'">'.$E.'</option>';        
-    }        
-    return $this->renderText($RET);
+    $this->setLayout('hospici');
+    
+    if($request->isMethod('POST')):        
+        //L'usuari, l'he de donar d'alta de l'Hospici com a mínim, que serà un SITE = 0.
+        //Primer mirarem si l'usuari ja existeix
+        $RS = $request->getParameter('usuaris');
+        $this->FUSUARI = UsuarisPeer::initialize(null,0,false,true);
+        $this->FUSUARI->bind($RS);
+        if($this->FUSUARI->isValid()):
+            $this->FUSUARI->save();
+            $this->SECCIO = 'GUARDAT';
+        else: 
+            $this->SECCIO = 'INICI';        
+        endif;                    
+    else:     
+        $this->FUSUARI = UsuarisPeer::initialize(null,0,false,true);
+        $this->SECCIO = 'INICI';    
+    endif;
+    
   }
-
-  public function executeAjaxDATENT(sfWebRequest $request)
+  
+  public function executeUsuaris(sfWebRequest $request)
   {
- 	$C = new Criteria();
-    $idE = $request->getParameter('ENT');        
-    $sel = $request->getParameter('SEL');
-    $text = $request->getParameter('TEXT');
-    $R = ActivitatsPeer::selectDatesActivitats(null,null,$text,$idE[0]);
-    $RET = "";
-    foreach($R as $K=>$E){
-        $SELECTED = ($sel == $K)?"SELECTED":"";        
-        $RET .= '<option '.$SELECTED.' value="'.$K.'">'.$E.'</option>';        
-    }        
-    return $this->renderText($RET);
+    $accio = $request->getParameter('accio','inici');
+    $this->IDU = $this->getUser()->getSessionPar('idU');
+    $this->IDS = SitesPeer::HOSPICI_ID;
+    
+    switch($accio){
+        
+        //Modificació de les dades de l'usuari.
+        case 'update':
+            $RS = $request->getParameter('usuaris');
+            if($RS['UsuariID'] == $this->IDU):
+                $FU = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
+                $FU->bind($RS);                
+                if($FU->isValid()):
+                    $FU->save();
+                    $this->MISSATGE = "OK";                             
+                endif;                                                       
+            endif;
+            
+        break;
+        
+    }
+    
+    $this->setLayout('hospici');
+    
+    //Si ja hi hem fet operacions... carreguem l'actual, sinó en fem un de nou.
+    if(isset($FU) && $FU instanceof UsuarisForm) $this->FUsuari = $FU;
+    else $this->FUsuari = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
+    
+    $this->LMatricules = MatriculesPeer::h_getMatriculesUsuari($this->IDU);
+    $this->LReserves = ReservaespaisPeer::h_getReservesUsuaris($this->IDU,$this->IDS);
+    // $this->LEntrades = EntradesPeer::getEntradesUsuari();
+    // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();    
+        
   }  
   
 
@@ -187,7 +284,7 @@ class hospiciActions extends sfActions
     
   }
 
-  public function getDatesCercadorHospici($idData,$aDates){
+  static public function getDatesCercadorHospici($idData,$aDates){
   
     //Hem de buscar segons data.    
     switch($idData){
@@ -227,5 +324,18 @@ class hospiciActions extends sfActions
     return array('datai'=>$datai,'dataf'=>$dataf);
 
   }
+
+  private function sendMail($from,$to,$subject,$body = "",$files = array())
+  {
+   	
+    $swift_message = $this->getMailer()->compose($from,$to,$subject,$body);    
+    foreach($files as $F):
+    	$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
+    endforeach;    
+    $swift_message->setBody($body,'text/html');    
+    return $this->getMailer()->send($swift_message);
+		
+  }
+
 
 }
