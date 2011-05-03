@@ -156,6 +156,10 @@ class CursosPeer extends BaseCursosPeer
   	return $Curs->getMatriculess($C);
   }
 
+  /**
+   * return array(OCUPADES, TOTAL);
+   * */
+
   static function getPlaces( $idC , $idS )
   {
      
@@ -169,15 +173,21 @@ class CursosPeer extends BaseCursosPeer
   
   static function isPle( $IDC , $idS )
   {          
+     //Si les places ocupades són més grans o igual que el total, el curs és ple
      $PLACES = CursosPeer::getPlaces( $IDC , $idS );
      return ($PLACES['OCUPADES'] >= $PLACES['TOTAL']);              
   }
         
   static function CalculaPreu($IDCURS , $DESCOMPTE , $idS )
-  {            
+  {   
+    
+     //Recuperem les places del curs
      $PLACES = CursosPeer::getPlaces( $IDCURS , $idS );
+     
+     //Si les places ocupades són iguals o més que el total, fem la matrícula gratuïta. 
      if($PLACES['OCUPADES'] >= $PLACES['TOTAL']) $DESCOMPTE = MatriculesPeer::REDUCCIO_GRATUIT;
 
+     //Carreguem el curs i retornem el preu reduit o normal segons el que hem entrat     
      $CURS = CursosPeer::retrieveByPK($IDCURS);
      
      switch($DESCOMPTE){
@@ -187,7 +197,8 @@ class CursosPeer extends BaseCursosPeer
          case MatriculesPeer::REDUCCIO_MENOR_25_ANYS : return $CURS->getPreur();
          case MatriculesPeer::REDUCCIO_GRATUIT   : return 0;
          case MatriculesPeer::REDUCCIO_ESPECIAL : return $CURS->getPreur();           
-      }                  
+      }
+               
   }
   
   

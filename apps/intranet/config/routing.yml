@@ -55,8 +55,12 @@ hospici_usuaris_modifica:
   param: { module:hospici, action:usuaris , accio: update }
 
 hospici_compra_entrada:
-  url:  /hospici/usuaris/:accio/:idA/:titol
-  param: { module:hospici, action:index, accio:compra_entrada  }
+  url:  /hospici/usuaris/compra_entrada
+  param: { module:hospici, action:usuaris, accio:compra_entrada  }
+
+hospici_anula_entrada:
+  url:  /hospici/usuaris/anula_entrada/:idER
+  param: { module:hospici, action:usuaris, accio:anula_entrada  }
 
 hospici_cercador_espais:
   url: /hospici/entitats

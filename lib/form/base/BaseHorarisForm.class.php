@@ -31,6 +31,7 @@ abstract class BaseHorarisForm extends BaseFormPropel
       'Responsable'            => new sfWidgetFormTextarea(),
       'site_id'                => new sfWidgetFormInputText(),
       'actiu'                  => new sfWidgetFormInputText(),
+      'isEntrada'              => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -51,6 +52,7 @@ abstract class BaseHorarisForm extends BaseFormPropel
       'Responsable'            => new sfValidatorString(),
       'site_id'                => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'actiu'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'isEntrada'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('horaris[%s]');

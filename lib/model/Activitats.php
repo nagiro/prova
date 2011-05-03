@@ -10,6 +10,20 @@
 class Activitats extends BaseActivitats
 {
 
+    public function getEntradesHoraris()
+    {
+        //Si de l'activitat actual se'n opden comprar entrades
+        if($this->getIsentrada() == true):                    
+            //Carreguem els horaris que tinguin isEntrada = 1
+            $C = new Criteria();
+            $C->add(HorarisPeer::ISENTRADA, true);
+            $LHO = $this->getHorariss($C);                        
+            return $LHO;        
+        else: 
+            return array();
+        endif; 
+    }
+
     public function getNomTipusActivitat()
     {
         $OTA = $this->getTipusactivitat();
@@ -74,7 +88,9 @@ class Activitats extends BaseActivitats
    
    public function getHorariss($criteria = null, PropelPDO $con = null)
    {
-        $C = new Criteria();
+        $C = $criteria;
+        if(is_null($criteria)) $C = new Criteria();
+        
         $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
         return parent::getHorariss($C,null);
    }

@@ -19,12 +19,13 @@ class ActivitatsForm extends sfFormPropel
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect($this->getOption('IDS')))),
       'Preu'                            => new sfWidgetFormInputText(),
       'PreuReduit'                      => new sfWidgetFormInputText(),
-      'Publicable'                      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
+      'isEntrada'                       => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
       'Organitzador'				    => new sfWidgetFormInputText(),
       'Responsable'		 			    => new sfWidgetFormInputText(),
       'site_id'                         => new sfWidgetFormInputHidden(array(),array()),
-      'actiu'                           => new sfWidgetFormInputHidden(array(),array()),      
+      'actiu'                           => new sfWidgetFormInputHidden(array(),array()),            
+      'Publicable'                      => new sfWidgetFormInputHidden(array(),array()),
     ));
 
     $this->setValidators(array(
@@ -40,6 +41,7 @@ class ActivitatsForm extends sfFormPropel
       'Responsable'					    => new sfValidatorString(array('required'=>false),array()),
       'site_id'                         => new sfValidatorPass(),
       'actiu'                           => new sfValidatorPass(),          
+      'isEntrada'                       => new sfValidatorBoolean(),
     ));
 
     $this->widgetSchema->setLabels(array(      
@@ -52,6 +54,7 @@ class ActivitatsForm extends sfFormPropel
       'Estat'                           => 'Estat actual: ',
       'Organitzador'				    => 'Organitzador',
       'Responsable'				    	=> 'Responsable',      
+      'isEntrada'                       => 'Vendre entrades?',
     ));
     
     

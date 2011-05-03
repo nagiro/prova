@@ -372,22 +372,22 @@ class MatriculesPeer extends BaseMatriculesPeer
   
   static public function setMatriculaPagada( $OM )
   {
-    
-    $RET = false;         
-    
-    $CURS_PLE = CursosPeer::isPle( $OM->getCursosIdcursos() , $OM->getSiteId() ); //Passem si el curs es ple 
+                
+    //Mirem si el curs és ple
+    $CURS_PLE = CursosPeer::isPle( $OM->getCursosIdcursos() , $OM->getSiteId() ); 
   	
-  	 //Mirem si el curs és ple. Si es ple i no hi ha cap import pagat, guardem com en espera.
+    //Si no és ple, posem a pagat.
      if(!$CURS_PLE){
      	$OM->setEstat(self::ACCEPTAT_PAGAT);
      } else {
+        //Si és ple i l'import és 0, posem en espera
         if($OM->getPagat() > 0){ $OM->setEstat(self::ACCEPTAT_PAGAT);  }
         else { $OM->setEstat(self::EN_ESPERA);   }     
      }
                
      $OM->save();
      
-     return $OM; 
+     return true; 
      
   }
   

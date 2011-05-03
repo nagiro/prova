@@ -113,7 +113,7 @@
     .taula_dades input:focus { background-color:#EEEEEE; }
     .taula_dades select { border:1px solid #DDDDDD; width:200px; }
     .taula_dades select:focus { background-color:#EEEEEE;  }
-    .taula_dades th { text-align:right; width:100px; padding-right:5px; }
+    .taula_dades th { text-align:right; width:100px; padding-right:5px; }    
 
     .taula_llistat { width:600px; border-collapse:collapse;  }
     .taula_llistat th { text-align:left; padding:3px;  }
@@ -123,7 +123,7 @@
     .error_list { background-color:#FBFFD5;  color:#DD8275; list-style: none; padding:3px;  }
 
     .error { color:#ED5C5C;  }
-    
+    .tatxat { text-decoration: line-through; }
     .missatge { padding:10px; margin-top: 20px; background-color:#FBFFD5; }
      
 </style>

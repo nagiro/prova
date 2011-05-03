@@ -15,7 +15,7 @@ class HorarisPeer extends BaseHorarisPeer
   static public function getCriteriaActiu( $C , $idS )
   {
     $C->add(self::ACTIU,true);
-    $C->add(self::SITE_ID,$idS);
+    if(!is_null($idS)) $C->add(self::SITE_ID,$idS);
     return $C;
   }
    	    
@@ -392,6 +392,7 @@ class HorarisPeer extends BaseHorarisPeer
 	  	$OH->setHorapost($DBDD['HoraPost']);
 	  	$OH->setHorafi($DBDD['HoraFi']);
 	  	$OH->setAvis($HORARIS['Avis']);
+        $OH->setIsentrada($HORARIS['isEntrada']);
 	  	$OH->setEspectadors($HORARIS['Espectadors']);
 	  	$OH->setPlaces($HORARIS['Places']);
 		$OH->setDia($D);

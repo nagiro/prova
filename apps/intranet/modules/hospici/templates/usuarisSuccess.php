@@ -4,8 +4,15 @@
  
 <script type="text/javascript">
 
+    <?php   $ext = ""; 
+            if($SECCIO == 'COMPRA_ENTRADA') $ext = ', selected: 4';
+            elseif($SECCIO == 'INICI') $ext = ', selected: 0'; 
+    
+    ?>
+    
+
     $(document).ready(function() {                                                   
-            $( "#tabs" ).tabs({ cookie: { expires: 30 } });                                         
+            $( "#tabs" ).tabs({ cookie: { expires: 30 } <?php echo $ext ?> });
         });
         
 </script>
@@ -114,21 +121,31 @@
     
         <table class="taula_llistat">
             <tr>
-                <th>Data</th>
-                <th>Codi</th>
-                <th>Espectacle</th>
-                <th>Entitat</th>
+                <th>Quan</th>
+                <th>Hora</th>
+                <th>Titol</th>
+                <th>On</th>
+                <th>Entrades</th>
+                <th>Estat</th>
             </tr>            
             <?php
-                if(empty($LReserves)): echo '<tr><td colspan="4">No s\'han trobat reserves d\'espais.</td></tr>';
+                if(empty($LEntrades)): echo '<tr><td colspan="4">No s\'ha trobat cap entrada comprada.</td></tr>';
                 else:                           
-                    foreach($LReserves as $OR):
-                        echo '<tr>
-                                <td>'.$OR->getCodi().'</td>
-                                <td>'.$OR->getNom().'</td>
-                                <td>'.$OR->getDataalta('d/m/Y').'</td>
-                                <td>'.$OR->getEstatText().'</td>
-                             </tr>';                                                            
+                    foreach($LEntrades as $OER):                        
+                        $OH = $OER->getHorari();
+                        $OA = $OH->getActivitatss();
+                        $OS = SitesPeer::retrieveByPK($OA->getSiteId());
+                        $class = "";
+                        if($OER->getEstat() == EntradesReservaPeer::ANULADA) $class="class=\"tatxat\"";                        
+                        echo "<tr>
+                                <td $class>{$OH->getDia('Y-m-d')}</td>
+                                <td $class>{$OH->getHorainici('H:m')}</td>
+                                <td $class>{$OA->getTmig()}</td>
+                                <td $class>{$OS->getNom()}</td>
+                                <td $class>{$OER->getQuantes()}</td>
+                                <td $class>{$OER->getEstatString()}</td>";
+                        if($OER->getEstat() != EntradesReservaPeer::ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getEntradesReservaId())."\">Anul·lar</a></td>";
+                        echo "</tr>";
                     endforeach;
                 endif;
             ?>                                    

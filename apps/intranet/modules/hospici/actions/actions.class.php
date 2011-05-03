@@ -41,8 +41,13 @@ class hospiciActions extends sfActions
                 $this->MODE = 'CERCA';
             break;
     
-        case 'detall_activitat':
-                $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
+        case 'detall_activitat':                
+                $this->CERCA = $this->getUser()->getSessionPar('cerca');
+                $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));                                            
+                //Sempre s'haurà de comprar una entrada per un horari.                          
+                if(!($this->ACTIVITAT instanceof Activitats)) $this->ACTIVITAT = new Activitats();
+                $this->LHO = $this->ACTIVITAT->getEntradesHoraris();                
+                
                 $this->MODE = 'DETALL';
             break;
         
@@ -197,8 +202,13 @@ class hospiciActions extends sfActions
     $accio = $request->getParameter('accio','inici');
     $this->IDU = $this->getUser()->getSessionPar('idU');
     $this->IDS = SitesPeer::HOSPICI_ID;
+    $this->SECCIO = "";
     
     switch($accio){
+        
+        case 'inici':
+            $this->SECCIO = 'INICI';
+            break;
         
         //Modificació de les dades de l'usuari.
         case 'update':
@@ -211,8 +221,39 @@ class hospiciActions extends sfActions
                     $this->MISSATGE = "OK";                             
                 endif;                                                       
             endif;
-            
+        case 'compra_entrada':
+            //Des de l'Hospici només es pot reservar una entrada. Més endavant s'haurà d'abonar l'import.
+            $RS = $request->getParameter('entrades');
+            $OER = EntradesReservaPeer::initialize()->getObject();
+            //Si no existeix una compra per aquest usuari, la fem, altrament, no fem res.
+            if(!EntradesReservaPeer::ExisteixenEntradesComprades($this->IDU,$RS['idH'])):
+                $OER->setUsuariid($this->IDU);
+                $OER->setHorarisid($RS['idH']);
+                $OER->setQuantes($RS['num']);
+                $OER->setData(date('Y-m-d H:i',time()));
+                $OER->setEstat(0);
+                $OER->setActiu(true);
+                $OER->save();
+            endif;
+                                    
+            $this->SECCIO = 'COMPRA_ENTRADA';
+                                                
         break;
+        
+        case 'anula_entrada':            
+            $RS = $request->getParameter('idER');
+            $OER = EntradesReservaPeer::retrieveByPK($RS);
+            $idu = $OER->getUsuariid();
+            $act = $OER->getActiu();
+            
+            if($idu == $this->IDU && $act):
+                $OER->setEstat(EntradesReservaPeer::ANULADA);
+                $OER->save();
+            endif;                        
+                                    
+            $this->SECCIO = 'COMPRA_ENTRADA';
+                                                
+        break;        
         
     }
     
@@ -224,7 +265,7 @@ class hospiciActions extends sfActions
     
     $this->LMatricules = MatriculesPeer::h_getMatriculesUsuari($this->IDU);
     $this->LReserves = ReservaespaisPeer::h_getReservesUsuaris($this->IDU,$this->IDS);
-    // $this->LEntrades = EntradesPeer::getEntradesUsuari();
+    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);
     // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();    
         
   }  

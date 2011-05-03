@@ -124,11 +124,12 @@ class gestioActions extends sfActions
         case 'GUARDA_USUARI':
                 $RP = $request->getParameter('usuaris');
                 $this->FUSUARI = UsuarisPeer::initialize($RP['UsuariID'],$RP['site_id'],false,true);                
-                $this->FUSUARI->bind($RP);
+                $this->FUSUARI->bind($RP);                
                 if($this->FUSUARI->isValid()):                    
+                    $this->getUser()->addLogAction($this->accio,'uGestio',$this->FUSUARI->getObject(),$RS);
                     $this->FUSUARI->save();
                     $OU = $this->FUSUARI->getObject();
-                    UsuarisPeer::addSite( $this->IDU , $this->IDS );                    
+                    UsuarisPeer::addSite( $this->IDU , $this->IDS );                                                            
                     $this->MISSATGE = array('Usuari guardat correctament.');
                 else: 
                     $this->MISSATGE = array('Hi ha algun error al formulari.<br />Revisa els camps, si us plau.');                    
@@ -137,36 +138,46 @@ class gestioActions extends sfActions
             
         //Pas 1: Mostrem els cursos als que es pot matricular
         case 'GESTIONA_MATRICULES':
+                $this->getUser()->addLogAction($this->accio,'uGestio');
                 $this->LCURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,"",$this->IDS);
                 //Retorna la data d'inici de matrícula segons si és antic alumne o no. '
                 $this->DATA_INICI = UsuarisPeer::initialize($this->IDU,$this->IDS,false,false)->getObject()->getDataIniciMatricula();
             break;
             
-        //Pas 2: Passem a validació amb TPV
+        //Pas 2: Hem escollit un curs i passem la validació a TPV
         case 'MATRICULA':
         
             //Agafem el curs que s'ha seleccionat
-            $D = $request->getParameter('D');                        
-                                                 
+            $D = $request->getParameter('D');    
+            
+            //Si no s'ha seleccionat cap curs, tornem a la mateixa pàgina de GESTIONA_MATRICULES            
+            if(!isset($D['CURS']) || empty($D['CURS'])) $this->redirect('gestio/uGestio?accio=GESTIONA_MATRICULES');
+            
+            //Passem els paràmetres a variables
+            $idC = $D['CURS'];
+            $idDescompte = $D['DESCOMPTE'];                                            
+                                               
+            //Carreguem les dades de l'usuari que està fent la matrícula  
             $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
             
+            //Carreguem els dades de la matrícula per guardar-la abans del pagament
             $this->DADES_MATRICULA = array();
             $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
             $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();
             $this->DADES_MATRICULA['IDU'] = $USUARI->getUsuariid();
             $this->DADES_MATRICULA['MODALITAT'] = MatriculesPeer::PAGAMENT_TARGETA;
-            $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
+            $this->DADES_MATRICULA['DESCOMPTE'] = $idDescompte;
             $this->DADES_MATRICULA['DATA'] = date('Y-m-d H:i',time());
             $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
             //Apliquem els descomptes i gratuït si ja està el grup ple
-            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE'],$this->IDS);
-            $this->DADES_MATRICULA['CURS'] = $D['CURS'];
-            $this->ISPLE = CursosPeer::isPle($D['CURS'],$this->IDS);
+            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu( $idC , $idDescompte , $this->IDS );
+            $this->DADES_MATRICULA['CURS'] = $idC;
+            $this->ISPLE = CursosPeer::isPle( $idC , $this->IDS );
                           
             //Retorna id de matrícula            
             $matricules = $this->guardaMatricula($this->DADES_MATRICULA,0,$this->IDS);
             
-            //Vinculem l'usuari per a què puguin veure què ha fet
+            //Si l'usuari no està vinculat, el vinculem amb el centre 
             UsuarisPeer::addSite( $this->IDU , $this->IDS ); 
               
             //Carreguem el TPV
@@ -175,7 +186,7 @@ class gestioActions extends sfActions
 
         //Pas 3: Acabem la matrícula i guardem els canvis
         case 'FI_MATRICULA':
-                //Hem vinculat l'usuari al pas anterior quan guardem la matrícula'
+                //Hem vinculat l'usuari al pas anterior quan guardem la matrícula
                 $this->MISS = "";
                 $this->TITOL = "Matrícules";
                 if($request->hasParameter('OK')):
@@ -258,17 +269,23 @@ class gestioActions extends sfActions
   	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.
   	if($request->getParameter('Ds_Response') == '0000')
     {
-  		$idM = $request->getParameter('Ds_MerchantData');        
+  		//Recuperem la matrícula que acaba de pagar
+        $idM = $request->getParameter('Ds_MerchantData');
   		$OM = MatriculesPeer::retrieveByPK($idM);
+        
+        //Si el codi de matrícula del missatge és correcte, seguim.
   		if($OM instanceof Matricules)
         {
             if(MatriculesPeer::setMatriculaPagada($OM))
             {
-    
+                //Guardem el codi d'operació
                 $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
+                //Guardem el codi d'ordre
                 $OM->setTpvOrder($request->getParameter('Ds_Order'));
+                //Guardem la matrícula
                 $OM->save();
-                        
+                
+                //Enviem els correus pertinents                        
       			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
       							$OM->getUsuaris()->getEmail(),
       							'Matrícula realitzada correctament',
@@ -307,7 +324,8 @@ class gestioActions extends sfActions
      // Si queden places, guardem en procès i quan hagi pagat se li guardarà.  
      
      $M = MatriculesPeer::initialize($IDMATRICULA,$idS,false)->getObject();
-                            
+    
+     //Si el curs és ple el posem en espera, altrament en procés                            
      if(CursosPeer::isPle($DADES_MATRICULA['CURS'],$this->IDS)):
 		$M->setEstat(MatriculesPeer::EN_ESPERA);
 	 else:  
@@ -315,10 +333,10 @@ class gestioActions extends sfActions
      endif;
      
      $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);
-     $M->setComentari("Pagament internet");
+     $M->setComentari($DADES_MATRICULA['COMENTARI']);
      $M->setDatainscripcio($DADES_MATRICULA['DATA']);     
      $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
-     $M->setTpagament(MatriculesPeer::PAGAMENT_TARGETA);
+     $M->setTpagament($DADES_MATRICULA['MODALITAT']);
      $M->setCursosIdcursos($DADES_MATRICULA['CURS']);
      $M->setPagat($DADES_MATRICULA['PREU']);
      $M->setSiteid($idS);     
@@ -1361,7 +1379,8 @@ class gestioActions extends sfActions
 
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
-	$this->FCerca->bind(array('text'=>$this->CERCA['text']));
+    if(isset($this->CERCA['text'])) $this->FCerca->bind(array('text'=>$this->CERCA['text']));
+    else $this->FCerca->bind(array('text'=>''));
 
 	//Inicialitzem variables
 	$this->MODE = array();
@@ -1520,18 +1539,19 @@ class gestioActions extends sfActions
     		
     			$RP = $request->getParameter('horaris');
     			$this->IDA = $RP['Activitats_ActivitatID'];
-    			$this->IDH = $RP['HorarisID'];
+    			$this->IDH = $RP['HorarisID'];                
     			    		
                 $OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);                
 	    		$this->NOMACTIVITAT = $OActivitat->getNom();
-	    		$this->HORARIS = $OActivitat->getHorarisActius($this->IDS);
-	    		
+	    		$this->HORARIS = $OActivitat->getHorarisActius($this->IDS);                
+                
 	    		$OHorari = HorarisPeer::retrieveByPK($this->IDH);
 	    		if($this->IDH == 0) 	$this->FHorari = new HorarisForm();
 	    		else					$this->FHorari = new HorarisForm($OHorari);
+                
                 //Fem un bind de les dades generals per si hi ha un error
-                $this->FHorari->bind($RP);
-	    		
+                $this->FHorari->bind($RP);	    		                
+                
                 //Creem la variable EXTRES
                 $this->EXTRES = array('ESPAISOUT'=>array(),'MATERIALOUT'=>array());
                                 

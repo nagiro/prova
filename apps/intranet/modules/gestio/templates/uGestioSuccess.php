@@ -4,9 +4,18 @@
 
 	$(document).ready(function() {
 		$( "#tabs" ).tabs({ cookie: { expires: 1 } });
-        $( "#FRESERVES").submit(validaReserves);                
+        $( "#FRESERVES").submit(validaReserves);
+        $( "#FORM_CURSOS").submit(validaSeleccio);                
 	});
 	
+    function validaSeleccio()
+    {                
+        var seleccionat = true;
+		$('[name="D[CURS]"]:checked').each(function (a){ seleccionat = false; } );        
+        if(seleccionat) { alert("Per poder-se matricular ha d'escollir el curs al que vol matricular-se."); return false; }
+        return true;                                                              
+    }
+
     function validaReserves()
     {        
         var espais = true;
@@ -61,7 +70,8 @@
         
       <?php else:
       
-              if(isset($FUSUARI)) echo EditaUsuari($FUSUARI,$MISSATGE);                 
+              if(isset($FUSUARI)) echo EditaUsuari($FUSUARI,$MISSATGE);
+              //Un cop sé que em vull matricular, em mostra els cursos                 
               if(isset($LCURSOS)) echo LlistaCursos($LCURSOS,$DATA_INICI);
               if(isset($TPV)) echo VerificaMatricula($TPV,$DADES_MATRICULA,$ISPLE,$IDS);                              
               if(isset($FRESERVA)) echo EditaReserva($FRESERVA,$MISSATGE);
