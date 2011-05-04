@@ -306,6 +306,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C = self::getCriteriaActiu( $C , $idS );
     $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
     $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
+    $C->add(MatriculesPeer::CURSOS_IDCURSOS, null, CRITERIA::NOT_EQUAL);
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
 
     return MatriculesPeer::doSelect($C);

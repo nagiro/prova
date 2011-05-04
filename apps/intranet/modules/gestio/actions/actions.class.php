@@ -2472,9 +2472,9 @@ class gestioActions extends sfActions
     $accio  = $this->getUser()->ParReqSesForm($request,'accio','CA');       
     
     //Inicialitzem el formulari de cerca
-    $this->FCerca = new CercaTextChoiceForm();       
+    $this->FCerca = new CercaTextChoiceForm();
     $this->FCerca->setChoice(array(1=>'Cursos',2=>'Alumnes')); 
-	$this->FCerca->bind($this->CERCA);	
+	$this->FCerca->bind($this->CERCA);
 	
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false, 'LMATRICULES'=>false , 'VERIFICA' => false);
@@ -2546,13 +2546,14 @@ class gestioActions extends sfActions
     		break;
     	
     	//Guardem la matrícula al curs que hem escollit
-    	case 'SAVE_CURS':    
+    	case 'SAVE_CURS':
+                                
                 $this->IDM = $request->getParameter('IDM'); //L'hem enviat ocult
                 $this->IDC = $request->getParameter('IDC');
                                                                 
                 $this->FMatricula = MatriculesPeer::initialize($this->IDM,$this->IDS,false);
                                 		
-                $OMatricula = $this->FMatricula->getObject();    			    			
+                $OMatricula = $this->FMatricula->getObject();
     			$OMatricula->setCursosIdcursos($this->IDC);
     			$OMatricula->setDatainscripcio(date('Y-m-d H:i',time()));
     			$Preu = CursosPeer::CalculaPreu($OMatricula->getCursosIdcursos(),$OMatricula->getTreduccio(), $this->IDS );
@@ -2561,6 +2562,7 @@ class gestioActions extends sfActions
     			$OMatricula->save();
     			$this->getUser()->addLogAction($accio,'gMatricules',$OMatricula);
     			$this->redirect('gestio/gMatricules?accio=FP&IDM='.$this->IDM);
+                
     		break;
 
     	//Mostra la prematrícula i carreguem les dades del pagament
@@ -2581,12 +2583,16 @@ class gestioActions extends sfActions
     	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
     	case 'PAGAMENT':        
                 $this->IDM = $request->getParameter('IDM');
-    			$this->OM = MatriculesPeer::setMatriculaPagada( MatriculesPeer::retrieveByPK( $this->IDM ) );
-                if($this->OM instanceof Matricules && $this->IDM > 0) $this->MISSATGE = "OK";
-                else $this->MISSATGE = "KO";
-    			$this->getUser()->addLogAction($accio,'gMatricules',$this->MATRICULA);
-    			$this->MODE = 'PAGAMENT';
-                $this->SendMailMatricula($this->OM,$this->IDS);       			  							
+                $this->OM = MatriculesPeer::retrieveByPK( $this->IDM );
+    			if(MatriculesPeer::setMatriculaPagada( $this->OM )){
+        			if($this->OM instanceof Matricules && $this->IDM > 0) 
+                            $this->MISSATGE = "OK";
+                    else    $this->MISSATGE = "KO";
+                    
+        			$this->getUser()->addLogAction($accio,'gMatricules',$this->MATRICULA);
+        			$this->MODE = 'PAGAMENT';
+                    $this->SendMailMatricula($this->OM,$this->IDS); 
+    			}                       			  							
     		break;
             
     	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 

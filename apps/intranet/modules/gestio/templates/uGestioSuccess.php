@@ -463,7 +463,7 @@ function landing_page(){
 
 
             foreach($MATRICULES as $M):
-                $CURSOS = $M->getCursos();                           
+                $CURSOS = $M->getCursos();
     		   	$RET .= '<TR>
     		   			    <TD>
         						<a href="#TB_inline?height=480&width=640&inlineId=hidden'.$CURSOS->getIdcursos().'&modal=false" class="thickbox">'.$CURSOS->getCodi().'</a>
