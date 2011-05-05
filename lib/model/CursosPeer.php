@@ -407,7 +407,7 @@ class CursosPeer extends BaseCursosPeer
     //Busquem les activitats futures amb tots els ets i uts que de moment és la població
     $RET = self::getCursosHospiciCerca($text,null,$idP,null,null,null,false);    
     
-    $where  = (sizeof($RET) > 0)?' c.idCursos in ('.implode(',',$RET).')':' a.idCursos = 0 ';
+    $where  = (sizeof($RET) > 0)?' c.idCursos in ('.implode(',',$RET).')':' c.idCursos = 0 ';
     $where .= " AND t.tipusNom = 'curs_cat' ";    
     
     $connection = Propel::getConnection();
