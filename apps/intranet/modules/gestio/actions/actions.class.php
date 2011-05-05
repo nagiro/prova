@@ -174,7 +174,7 @@ class gestioActions extends sfActions
             $this->DADES_MATRICULA['CURS'] = $idC;
             $this->ISPLE = CursosPeer::isPle( $idC , $this->IDS );
                           
-            //Retorna id de matrícula            
+            //Retorna id de matrícula
             $matricules = $this->guardaMatricula($this->DADES_MATRICULA,0,$this->IDS);
             
             //Si l'usuari no està vinculat, el vinculem amb el centre 

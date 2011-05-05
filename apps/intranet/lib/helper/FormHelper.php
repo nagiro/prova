@@ -968,3 +968,20 @@ function closetags ( $html )
 	return $html;
 }
 
+function FormHelper_SubstrCloseTags( $html , $size )
+{    
+    
+    $html = substr($html,0,$size); //Agafem el fragment que necessito.
+    
+    $ult_obrir = strripos($html,'<'); //Miro si algun codi ha quedat tallat
+    $ult_amp = strripos($html,'&');
+    $ult_pos = ($ult_obrir > $ult_amp)?$ult_obrir:$ult_amp;    
+         
+    //Trec el codi que ha quedat tallat
+    if(20 > ($size - $ult_pos)) $html = substr($html,0,($ult_pos - 1) );        
+    
+    $html = closetags($html);
+    
+    return $html;
+    
+}

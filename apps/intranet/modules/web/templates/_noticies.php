@@ -80,7 +80,7 @@
 															
 				$imatge = $ON->getImatge();
 				$pdf = $ON->getAdjunt();		
-				$text = closetags($ON->getTextnoticia());	
+				$text = FormHelper_SubstrCloseTags($ON->getTextnoticia(),400);	
 				$nom_noticia = '<b>'.$ON->getTitolnoticia().'</b>';
 
                 $WEBURL = OptionsPeer::getString('SF_WEBROOTURL',1).'images/noticies/';
@@ -97,7 +97,7 @@
                     </div>									 
 					<div style="margin-top:10px;">														
 						<div class="text_noticia">                            
-                            <?php echo substr($text,0,400) ?>...                                                    
+                            <?php echo $text; ?>...                                                    
                         </div>
 						<div class="imatge_noticia">
                             <?php if($IMG_EXIST): ?> 
