@@ -35,7 +35,7 @@ hospici_usuaris_remember:
   param: { module:hospici, action:remember }  
     
 hospici_cercador_cursos:
-  url:  /hospici/cercador_cursos/*
+  url:  /hospici/cercador_cursos
   param: { module:hospici, action:cursos, accio:cerca_cursos  }
 
 hospici_cercador_activitats:
@@ -45,6 +45,10 @@ hospici_cercador_activitats:
 hospici_detall_activitat:
   url:  /hospici/detall_activitat/:idA/:titol
   param: { module:hospici, action:index, accio:detall_activitat  }
+  
+hospici_detall_curs:
+  url:  /hospici/detall_curs/:idC/:titol
+  param: { module:hospici, action:cursos, accio:detall_curs }
 
 hospici_usuaris:
   url: /hospici/usuaris

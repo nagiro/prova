@@ -297,27 +297,48 @@ class CursosPeer extends BaseCursosPeer
   	return self::doSelectOne($C); 	
   }  
   
-  static public function getCursosHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates = null, $hasPobles = false)
+  static public function getWhereHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates = null)
   {
+
     //Segons text
-    $text = (!is_null($idText) && !empty($idText))?" AND (c.TitolCurs like '%{$idText}%' OR c.Descripcio like '%{$idText}%')":"";
+    $where = (!is_null($idText) && !empty($idText))?" AND (c.TitolCurs like '%{$idText}%' OR c.Descripcio like '%{$idText}%')":"";
     
     //Segons poble    
-    $poble = (!is_null($idPoble) && $idPoble > 0)?' AND p.idPoblacio = '.$idPoble:'';    
+    $where .= (!is_null($idPoble) && $idPoble > 0)?' AND p.idPoblacio = '.$idPoble:'';    
     
     //Hem de buscar segons idCategoria.
-    $categoria = (!is_null($idCategoria) && $idCategoria > 0)?' AND c.Categoria = '.$idCategoria:'';
+    $where .= (!is_null($idCategoria) && $idCategoria > 0)?' AND c.Categoria = '.$idCategoria:'';
     
     $d = hospiciActions::getDatesCercadorHospici($idData,$aDates);
     $datai = $d['datai']; $dataf = $d['dataf'];
 
-//    DataAparicio
-//    DataDesaparicio
-//    DataFiMatricula
-//    DataInici
-
     //Si busquem una data, ha de ser inferior a la data de desaparicio i d'inici de curs
-    $data = " AND c.DataAparicio <= {$dataf} AND c.DataDesaparicio >= {$datai} AND c.DataInici >= {$datai} ";
+    $where .= " AND c.DataAparicio >= '{$datai}' AND c.DataAparicio <= '{$dataf}' AND c.DataInici >= '{$datai}' ";
+
+    return $where;
+    
+  }
+  
+  static public function getCursosHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates, $p = 1 )
+  {
+    
+    $RET = self::getCursosHospiciCerca($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates, false);    
+        
+    $C = new Criteria();    
+    $C->add(self::IDCURSOS , $RET , CRITERIA::IN );
+    $pager = new sfPropelPager('Cursos', 20);
+    $pager->setCriteria($C);
+    $pager->setPage($p);
+    $pager->init();    	
+        
+    return $pager; 
+
+  }  
+  
+  static public function getCursosHospiciCerca($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates = null, $hasPobles = false)
+  {
+
+    $where = self::getWhereHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates);
 
     $connection = Propel::getConnection();        
     $query = 
@@ -328,14 +349,9 @@ class CursosPeer extends BaseCursosPeer
                   LEFT JOIN poblacions p ON (p.idPoblacio = s.poble)  
                 WHERE 
                    c.actiu = 1 AND s.actiu = 1                    
-                   {$text}
-                   {$poble}
-                   {$categoria}
-                   {$data}                   
-                 GROUP BY idC,idP,pobleNom                     
-            ";           
-    echo $query;
-    die;        
+                   {$where}                                      
+                 GROUP BY idC,idP,pobleNom
+            ";  
     $statement = $connection->prepare($query);        
     $statement->execute();
     $RET = array();
@@ -343,16 +359,194 @@ class CursosPeer extends BaseCursosPeer
     //Guardo els elements resultats i els passo a un format Criteria    
     while($result = $statement->fetch(PDO::FETCH_ASSOC)){
         if($hasPobles):
-            $RET[$result['idP']][$result['idA']] = $result['idA'];
+            $RET[$result['idP']][$result['idC']] = $result['idC'];                    
         else:
-            $RET[$result['idA']] = $result['idA'];
+            $RET[$result['idC']] = $result['idC'];
         endif;   
     }
 
-    //Ja hem superat la data d'aparició i encara no 
-    $C->add(self::DATAAPARICIO, $datai, Criteria::LESS_THAN );
-    $C->add(self::DATADESAPARICIO, $datai, Criteria::GREATER_EQUAL);
-
+    return $RET;
   }
-  
+
+  /**
+   * CursosPeer::selectPoblesCursos()
+   * 
+   * Omple el llistat de select del portal hospici.   
+   * 
+   * @return array
+   */
+  static public function selectPoblesCursos($text = null)
+  {
+    
+    //Busquem les activitats futures amb tots els ets i uts que de moment és la població
+    $RET = self::getCursosHospiciCerca($text,null,null,null,null,null,true);    
+    
+    $FIN[0] = ""; $count = 0;
+    foreach($RET as $idP => $aActs){
+        $nom = PoblacionsPeer::retrieveByPK($idP)->getNom();
+        $FIN[$idP] = $nom.' ('.sizeof($aActs).')';
+        $count += sizeof($aActs);                            
+    }    
+    $FIN[0] = "Qualsevol població (".$count.")";
+    
+    return $FIN;    
+             
+  }
+
+  /**
+   * CursosPeer::selectCategoriesCursos()
+   *
+   * Usat en el select de l'hospici que carrega els tipus d'activitats
+   *  
+   * @param mixed $idP
+   * @return
+   */
+  static public function selectCategoriesCursos( $idP , $text )
+  {
+    
+    //Busquem les activitats futures amb tots els ets i uts que de moment és la població
+    $RET = self::getCursosHospiciCerca($text,null,$idP,null,null,null,false);    
+    
+    $where  = (sizeof($RET) > 0)?' c.idCursos in ('.implode(',',$RET).')':' a.idCursos = 0 ';
+    $where .= " AND t.tipusNom = 'curs_cat' ";    
+    
+    $connection = Propel::getConnection();
+    $query = 
+            "
+                Select t.tipusDesc as nom, t.idTipus as ta, count(*) as num 
+                  from tipus t 
+                  LEFT JOIN cursos c ON (t.idTipus = c.Categoria)
+                 WHERE {$where}
+                 GROUP BY nom, ta
+                 ORDER BY num DESC                  
+            ";            
+    $statement = $connection->prepare($query);
+    $statement->execute();
+    $RET = array();
+    
+    //Guardo els elements resultats i els passo a un format Criteria
+    $FIN[0] = ""; $count = 0;
+    while($P = $statement->fetch(PDO::FETCH_ASSOC)){
+        $FIN[$P['ta']] = $P['nom'].' ('.$P['num'].')';
+        $count += $P['num'];        
+    }    
+    $FIN[0] = "Qualsevol categoria (".$count.")";
+    
+    return $FIN;    
+        
+  }
+
+  /**
+   * CursosPeer::selectDatesCursos()
+   * 
+   * Torna el select de dates amb el volum d'activitats tant per pobles com per entitats
+   * 
+   * @param mixed $idP
+   * @param mixed $idC
+   * @return
+   */
+  static public function selectDatesCursos($idP = null, $idC = null, $text = null, $idE = null)
+  {
+    
+    //Busquem les activitats futures amb tots els ets i uts que de moment és la població
+    $RET = self::getCursosHospiciCerca($text,null,$idP,$idC,null,null,false);    
+    
+    
+    $C = new Criteria();
+    $C->add(self::ACTIU, true);
+    $C->add(self::IDCURSOS, $RET, CRITERIA::IN);
+    $C->addGroupByColumn(self::IDCURSOS);
+    
+    //Tenim en compte si hem entrat una entitat o no
+    if($idE > 0) $C = self::getCriteriaActiu($C,$idE);
+    else $C->add(self::ACTIU, true);        
+    
+    //Definim els rangs
+    $avui = time();
+    $capSetmanaDis = $avui;
+    while(6 <> date('w',$capSetmanaDis)) $capSetmanaDis = strtotime(date("Y-m-d", $capSetmanaDis) . "+1 day");
+    $capSetmanaDiu = strtotime(date('Y-m-d',$capSetmanaDis).' +1 day');
+    $fiMes = strtotime(date('Y-m-d',$avui).' +1 month');
+    $fi2Mes = strtotime(date('Y-m-d',$avui).' +2 month');
+    $fi3Mes = strtotime(date('Y-m-d',$avui).' +3 month');
+    
+    //Avui
+    $C_avui = clone $C;
+    $C_avui->add(self::DATAAPARICIO, date('Y-m-d',$avui));        
+    $FIN[0] = 'Avui ('.self::doCount($C_avui).')';
+    
+    //Cap de setmana
+    $C_cset = clone $C;
+    $C1 = $C_cset->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$capSetmanaDis));
+    $C2 = $C_cset->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$capSetmanaDiu));
+    $C1->addOr($C2); $C_cset->add($C1);    
+    $FIN[1] = 'El cap de setmana ('.self::doCount($C_cset).')';
+
+    //Aquest mes
+    $C_mes = clone $C;
+    $C1 = $C_mes->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$fiMes), CRITERIA::LESS_THAN);
+    $C2 = $C_mes->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$avui) , CRITERIA::GREATER_EQUAL);
+    $C1->addAnd($C2); $C_mes->add($C1);    
+    $FIN[2] = 'Aquest mes ('.self::doCount($C_mes).')';
+    
+    //Dos mesos
+    $C_mes2 = clone $C;
+    $C1 = $C_mes2->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$fi2Mes), CRITERIA::LESS_THAN);
+    $C2 = $C_mes2->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$fiMes) , CRITERIA::GREATER_EQUAL);
+    $C1->addAnd($C2); $C_mes2->add($C1);    
+    $FIN[3] = 'El mes que ve ('.self::doCount($C_mes2).')';
+    
+    //Tres mesos
+    $C_mes3 = clone $C;
+    $C1 = $C_mes3->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$fi3Mes), CRITERIA::LESS_THAN);
+    $C2 = $C_mes3->getNewCriterion(self::DATAAPARICIO, date('Y-m-d',$fi2Mes) , CRITERIA::GREATER_EQUAL);
+    $C1->addAnd($C2); $C_mes3->add($C1);    
+    $FIN[4] = 'El mes que ve ('.self::doCount($C_mes3).')';
+                  
+    return $FIN;    
+        
+  }  
+
+  /**
+   * CursosPeer::selectSitesCursos()
+   * 
+   * Carrega les entitats que hi ha a l'hospici 
+   *  
+   * @return
+   */
+  static public function selectSitesCursos($text = null)
+  {
+    
+    $where = self::getWhereHospici($text, null, null, null, null, null);
+
+    $connection = Propel::getConnection();        
+    $query = 
+            "
+                Select c.idCursos as idC, s.site_id as idS, s.Nom as siteNom
+                  from cursos c
+                  LEFT JOIN sites s ON (c.site_id = s.site_id)                    
+                WHERE 
+                   c.actiu = 1 AND s.actiu = 1                    
+                   {$where}   
+                 GROUP BY idC,idS,siteNom
+            ";  
+    $statement = $connection->prepare($query);        
+    $statement->execute();
+    //Inicialitzem variables 
+    $RET = array(); $ACOUNT = array(); $count = 0;
+        
+    $RET[0] = "Qualsevol entitat (".$count.")";        
+    while($result = $statement->fetch(PDO::FETCH_ASSOC)){
+        $idS = $result['idS']; 
+        if(!isset($RET[$idS])) $ACOUNT[$idS] = 1; else $ACOUNT[$idS]++;        
+        $RET[$idS] = $result['siteNom'].' ('.$ACOUNT[$idS].')';                            
+        $count++;                   
+    }
+    
+    $RET[0] = "Qualsevol entitat (".$count.")";        
+       
+    return $RET;
+    
+  }
+        
 }

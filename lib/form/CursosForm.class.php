@@ -31,6 +31,7 @@ class CursosForm extends sfFormPropel
       'DataInici'       => new sfWidgetFormJQueryDateMy(array('format'=>'%day%/%month%/%year%'),array()),
       'site_id'         => new sfWidgetFormInputHidden(),
       'actiu'           => new sfWidgetFormInputHidden(),
+      'isEntrada'       => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),
     ));
 
     $this->setValidators(array(
@@ -51,7 +52,8 @@ class CursosForm extends sfFormPropel
       'DataInici'       => new sfValidatorDate(array('required' => false)),
       'VisibleWEB'      => new sfValidatorInteger(array('required' => true)),
       'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),       
+      'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'isEntrada'       => new sfValidatorBoolean(array('required'=>true),array()),
     ));
 
     
@@ -70,6 +72,7 @@ class CursosForm extends sfFormPropel
       'DataFiMatricula' => 'Data de fi de matriculació: ',
       'DataInici'       => 'Data d\'inici del curs: ',
       'VisibleWEB'      => 'Visible al web?',
+      'isEntrada'       => 'Reserva per internet?',
     ));
     
     

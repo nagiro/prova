@@ -27,8 +27,8 @@
         
     function CarregaCategories(){            
         $("#R_CAT").html('<option>Carregant...</option>');            
-        $.post( '<?php echo url_for('hospici/ajaxON') ?>', 
-                { TEXT: $("#R_TEXT").val(), ON: $("#R_ON").val(), SEL: '<?php echo $CERCA['CATEGORIA'][0]; ?>' }, 
+        $.post( '<?php echo url_for('hospici/ajaxCUR') ?>', 
+                { ACCIO: 'POB_ON', TEXT: $("#R_TEXT").val(), ON: $("#R_ON").val(), SEL: '<?php echo $CERCA['CATEGORIA'][0]; ?>' }, 
                 function(data){
                     /// Ponemos la respuesta de nuestro script en el DIV recargado                                                    
                     $("#R_CAT").html(data);
@@ -37,8 +37,8 @@
                     
     function CarregaDates(){            
         $("#R_DATA").html('<option>Carregant...</option>');            
-        $.post( '<?php echo url_for('hospici/ajaxCAT') ?>', 
-                { TEXT: $("#R_TEXT").val(), ON: $("#R_ON").val(), CAT: $("#R_CAT").val(), SEL: '<?php echo $CERCA['DATA'][0]; ?>' }, 
+        $.post( '<?php echo url_for('hospici/ajaxCUR') ?>', 
+                { ACCIO: 'POB_QUAN',TEXT: $("#R_TEXT").val(), ON: $("#R_ON").val(), CAT: $("#R_CAT").val(), SEL: '<?php echo $CERCA['DATA'][0]; ?>' }, 
                 function(data){
                     /// Ponemos la respuesta de nuestro script en el DIV recargado                                                    
                     $("#R_DATA").html(data);
@@ -47,8 +47,8 @@
 
     function CarregaDatesE(){            
         $("#R_DATA").html('<option>Carregant...</option>');            
-        $.post( '<?php echo url_for('hospici/ajaxDATENT') ?>', 
-                { TEXT: $("#R_TEXT").val(), ENT: $("#E_ON").val(), SEL: '<?php echo $CERCA['DATA'][0]; ?>' }, 
+        $.post( '<?php echo url_for('hospici/ajaxCUR') ?>', 
+                { ACCIO: 'ENT_QUAN', TEXT: $("#R_TEXT").val(), ENT: $("#E_ON").val(), SEL: '<?php echo $CERCA['DATA'][0]; ?>' }, 
                 function(data){
                     /// Ponemos la respuesta de nuestro script en el DIV recargado                                                    
                     $("#R_DATA").html(data);
@@ -68,23 +68,23 @@
 		<li><a href="#tabs-2">per entitat</a></li>			
 	</ul>
     
-	<div id="tabs-1">
+	<div class="taula_dades" id="tabs-1">
 
-    <form action="<?php echo url_for('@hospici_cercador_activitats')?>" method="POST">
+    <form action="<?php echo url_for('@hospici_cercador_cursos')?>" method="POST">
 
         <div style="float: left; width: 600px;">
             <div style="margin: 5px;">
-                <b>Nom de l'activitat</b><br /><input type="text" id="R_TEXT" name="cerca[TEXT]" value="<?php echo $CERCA['TEXT'] ?>" style="width: 500px;" />
+                <b>Nom del curs</b><br /><input type="text" id="R_TEXT" name="cerca[TEXT]" value="<?php echo $CERCA['TEXT'] ?>" style="width: 500px;" />
             </div>
         </div>                
         <div style="clear:both; float: left;">
-            <div style="margin: 5px;">            
-                <b>On?</b><br /><?php echo select_tag('cerca[POBLE]',options_for_select(ActivitatsPeer::selectPoblesActivitats($CERCA['TEXT']),$CERCA['POBLE'][0]),array('multiple'=>'multiple','style'=>'height:130px; width:180px;','id'=>'R_ON')); ?>
+            <div style="margin: 5px;">
+                <b>On?</b><br /><?php echo select_tag('cerca[POBLE]',options_for_select(CursosPeer::selectPoblesCursos($CERCA['TEXT']),$CERCA['POBLE'][0]),array('multiple'=>'multiple','style'=>'height:130px; width:180px;','id'=>'R_ON')); ?>
             </div>
         </div>
         <div style="float: left;">
             <div style="margin: 5px;">            
-                <b>Què?</b><br /><?php echo select_tag('cerca[CATEGORIA]',options_for_select(ActivitatsPeer::selectCategoriesActivitats($CERCA['POBLE'][0],$CERCA['TEXT']),$CERCA['CATEGORIA'][0]),array('multiple'=>'multiple','style'=>'height:130px; width:180px;','id'=>'R_CAT')); ?>
+                <b>Què?</b><br /><?php echo select_tag('cerca[CATEGORIA]',options_for_select(CursosPeer::selectCategoriesCursos($CERCA['POBLE'][0],$CERCA['TEXT']),$CERCA['CATEGORIA'][0]),array('multiple'=>'multiple','style'=>'height:130px; width:180px;','id'=>'R_CAT')); ?>
             </div>
         </div>
         <div style="float: left;">
@@ -112,9 +112,9 @@
 	</div>
     
     
-	<div id="tabs-2">
+	<div class="taula_dades" id="tabs-2">
     
-    <form action="<?php echo url_for('@hospici_cercador_activitats')?>" method="POST">
+    <form action="<?php echo url_for('@hospici_cercador_cursos')?>" method="POST">
     
         <div style="float: left; width: 600px;">
             <div style="margin: 5px;">
@@ -123,12 +123,12 @@
         </div>                
         <div style="clear:both; float: left;">
             <div style="margin: 5px;">            
-                <b>Qui?</b><br /><?php echo select_tag('cerca[SITE]',options_for_select(ActivitatsPeer::selectSitesActivitats($CERCA['TEXT']),$CERCA['SITE'][0]),array('multiple'=>'multiple','style'=>'height:130px; width:360px;','id'=>'E_ON')); ?>
+                <b>Qui?</b><br /><?php echo select_tag('cerca[SITE]',options_for_select(CursosPeer::selectSitesCursos($CERCA['TEXT']),$CERCA['SITE'][0]),array('multiple'=>'multiple','style'=>'height:130px; width:360px;','id'=>'E_ON')); ?>
             </div>
         </div>
         <div style="float: left;">
             <div style="margin: 5px;">            
-                <b>Quan?</b><br /><?php echo select_tag('cerca[DATA]',options_for_select(ActivitatsPeer::selectDatesActivitats(null,null,$CERCA['TEXT'],$CERCA['SITE'][0]),$CERCA['DATA'][0]), array('multiple'=>'multiple','style'=>'height:130px; width:180px;','id'=>'DATAE')); ?>
+                <b>Quan?</b><br /><?php echo select_tag('cerca[DATA]',options_for_select(CursosPeer::selectDatesCursos(null,null,$CERCA['TEXT'],$CERCA['SITE'][0]),$CERCA['DATA'][0]), array('multiple'=>'multiple','style'=>'height:130px; width:180px;','id'=>'DATAE')); ?>
             </div>
         </div>
         <div style="clear:both; float: left;">

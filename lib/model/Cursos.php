@@ -76,5 +76,16 @@ class Cursos extends BaseCursos
     endif;         
     return $OA;
   }
+ 
+  public function getNomSite()
+  {    
+    return SitesPeer::getNom($this->getSiteId());
+  } 
+ 
+  public function getNomForUrl()
+  {
+    $nom = $this->getTitolcurs();
+    return myUser::text2url($nom);        
+  } 
     
 }

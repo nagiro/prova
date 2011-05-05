@@ -119,6 +119,50 @@ class hospiciActions extends sfActions
   
   }  
 
+
+  /**
+   * Realitza totes les consultes AJAX D'activitats
+   * */    
+  public function executeAjaxCUR(sfWebRequest $request)
+  {
+    $accio = $request->getParameter('ACCIO');
+    
+    switch($accio){
+        case 'POB_ON':
+                $C = new Criteria();
+                $text = $request->getParameter('TEXT');
+                $idP = $request->getParameter('ON');    
+                $sel = $request->getParameter('SEL');
+                $R = CursosPeer::selectCategoriesCursos($idP[0],$text);
+            break;
+        case 'POB_QUAN':
+             	$C = new Criteria();
+                $idP = $request->getParameter('ON');
+                $idC = $request->getParameter('CAT');    
+                $sel = $request->getParameter('SEL');
+                $text = $request->getParameter('TEXT');
+                $R = CursosPeer::selectDatesCursos($idP[0],$idC[0],$text,null);
+            break;
+        case 'ENT_QUAN':
+             	$C = new Criteria();
+                $idE = $request->getParameter('ENT');        
+                $sel = $request->getParameter('SEL');
+                $text = $request->getParameter('TEXT');
+                $R = CursosPeer::selectDatesCursos(null,null,$text,$idE[0]);            
+            break;        
+    }
+    
+    $RET = "";
+    foreach($R as $K=>$E){
+        $SELECTED = ($sel == $K)?"SELECTED":"";        
+        $RET .= '<option '.$SELECTED.' value="'.$K.'">'.$E.'</option>';        
+    }        
+    return $this->renderText($RET);
+   
+  
+  }  
+
+
   public function executeLogin(sfWebRequest $request)
   {
     $this->setLayout('hospici');    
@@ -302,15 +346,14 @@ class hospiciActions extends sfActions
                 $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
                                                 
                 $this->LLISTAT_CURSOS = CursosPeer::getCursosHospici($this->CERCA['TEXT'],$this->CERCA['SITE'],$this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'][0],$this->CERCA['DATAR'],$this->CERCA['P']);
-                print_r($this->LLISAT_CURSOS);
-                die;                
+                
                 $this->MODE = 'CERCA';
                 
             break;
     
-        case 'detall_activitat':
+        case 'detall_curs':
         
-                $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
+                $this->CURS = CursosPeer::retrieveByPK($request->getParameter('idC'));
                 $this->MODE = 'DETALL';
                 
             break;
