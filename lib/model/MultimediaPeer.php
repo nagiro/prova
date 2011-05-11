@@ -29,7 +29,7 @@ class MultimediaPeer extends BaseMultimediaPeer {
         return $C;
     } 
 
-    static public function initialize( $idM , $idS , $taula , $idExtern )
+    static public function initialize( $idM , $idS , $taula , $idExtern , $i = 0 )
     {
         $OM = MultimediaPeer::retrieveByPK($idM);            
         if(!($OM instanceof Multimedia)):                    	        
@@ -40,7 +40,7 @@ class MultimediaPeer extends BaseMultimediaPeer {
             $OM->setActiu(true);                    
         endif;
         
-        return new MultimediaForm($OM,array('IDS'=>$idS)); 
+        return new MultimediaForm($OM,array('I'=>$i,'IDS'=>$idS)); 
     } 
 
     static public function getFotosEspais( $idE , $idS )

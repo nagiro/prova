@@ -3852,7 +3852,7 @@ class gestioActions extends sfActions
     $RMATERIAL = $request->getParameter('materialgeneric',array('idMaterialGeneric'=>''));
     
     $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
-    $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);
+    $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);        
     $this->FMATERIAL = MaterialgenericPeer::initialize($RMATERIAL['idMaterialGeneric'],$this->IDS);
     
     if($request->hasParameter('BNEWOPTION')) $this->accio = 'NEW_OPTION';
@@ -3877,15 +3877,31 @@ class gestioActions extends sfActions
                 $this->FOPTIONS = OptionsPeer::initialize($this->FOPTIONS->getObject()->getOptionId(),$this->IDS,false);                
             endif;                
             break;
-        case 'SAVE_ESPAI':
+        case 'SAVE_ESPAI':                    
             //Si entrem un espai que és 0, llavors vol dir que fem un nou espai
-            if($RESPAIS['EspaiID'] == 0) unset($RESPAIS['EspaiID']);                              
+            if($RESPAIS['EspaiID'] == 0) unset($RESPAIS['EspaiID']);                                          
             $this->FESPAIS->bind($RESPAIS,$request->getFiles('espais'));
             if($this->FESPAIS->isValid()):
-                $this->FESPAIS->save();                
+                $this->FESPAIS->save();
                 $this->getUser()->addLogAction($this->accio,'gConfig',$this->FESPAIS->getObject());
                 $this->FESPAIS  = EspaisPeer::initialize($this->FESPAIS->getObject()->getEspaiid(),$this->IDS);                
             endif;
+              
+            //Agafem els multimèdia dels paràmetres
+            $AMR = $request->getParameter('multimedia');
+            $FMR = $request->getFiles('multimedia');                        
+            foreach($AMR as $K => $MR):
+                
+                if($MR['accio'] == 1 || $MR['accio'] == 0): //És nou o una modificació
+                    $FM = MultimediaPeer::initialize($MR['multimedia_id'],$MR['site_id'],$MR['taula'],$MR['id_extern'],$K);
+                    $FM->bind($MR,$FMR[$K]);
+                    $FM->saveNewUpdate();
+                elseif($MR['accio'] == 2): //S'ha d'esborrar
+                    $FM = MultimediaPeer::initialize($MR['multimedia_id'],$MR['site_id'],$MR['taula'],$MR['id_extern'],$K);
+                    $FM->delete();                    
+                endif;   
+            endforeach;
+            
             break;
         case 'DELETE_ESPAI':                        
             $this->FESPAIS->getObject()->setActiu(false)->save();            

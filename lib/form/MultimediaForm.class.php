@@ -18,13 +18,15 @@ class MultimediaForm extends BaseMultimediaForm
     $this->setWidgets(array(
       'multimedia_id' => new sfWidgetFormInputHidden(),
       'taula'         => new sfWidgetFormInputHidden(),
-      'delete'        => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí'))),
-      'url'           => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').$this->WEB_IMATGE.$this->getObject()->getUrl() , 'is_image'=>true,'with_delete'=>false),array('style'=>'margin-left:20px; margin-right:20px; width:100px')),
+      'accio'         => new sfWidgetFormChoice(array('choices'=>array(0=>'Nou',1=>'Modificar',2=>'Esborrar',3=>'Cap'))),
+      'url'           => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webroot').$this->WEB_IMATGE.$this->getObject()->getUrl() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
       'site_id'       => new sfWidgetFormInputHidden(),
       'actiu'         => new sfWidgetFormInputHidden(),
       'id_extern'     => new sfWidgetFormInputHidden(),
             
     ));
+
+    $this->setDefault('accio',3);
 
     $this->setValidators(array(
       'multimedia_id' => new sfValidatorInteger(array('required' => false)),
@@ -33,38 +35,39 @@ class MultimediaForm extends BaseMultimediaForm
       'site_id'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'id_extern'     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
-      'delete'        => new sfValidatorBoolean(array(),array()),
+      'accio'         => new sfValidatorChoice(array('choices'=>array(0,1,2,3)),array()),
     ));    
 
-    $this->widgetSchema->setNameFormat('multimedia[%s]');
+    $this->widgetSchema->setNameFormat('multimedia['.$this->getOption('I').'][%s]');
     
-    $this->widgetSchema->setLabels(array('delete'=>'Esborrar?','url'=>'Foto:'));
+    $this->widgetSchema->setLabels(array('accio'=>'Acció:','url'=>'Foto:'));
+    
+    $this->widgetSchema->setFormFormatterName('SpanHorizontal');        
                 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
   }  
     
-  public function deleteEmbed($conn = null)
+  public function delete($conn = null)
   {        
-    
+    //Esborrem el normal i el -L.jpg que conté la imatge en gran. 
     $OM = $this->getObject();            
     unlink(sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE.$OM->getUrl());
+    list($base,$ext) = explode('.',$OM->getUrl());
+    unlink(sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE.$base.'-L.jpg');
     $OM->delete();
             
   }
-    
-  public function saveEmbed($conn = null)
-  {        
-    
+
+  public function saveNewUpdate($conn = null)
+  {            
+    $this->updateObject();
     $OM = $this->getObject();    
-    $OM->save();
-              	
+    $OM->save();                      	
     myUser::resizeImage(800,600,sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE,$OM->getUrl(),$OM->getMultimediaId().'-L',false);
-    $nom = myUser::resizeImage(150,150,sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE,$OM->getUrl(),$OM->getMultimediaId(),true);
-        
+    $nom = myUser::resizeImage(150,150,sfConfig::get('sf_web_dir').'/'.$this->WEB_IMATGE,$OM->getUrl(),$OM->getMultimediaId(),true);        
     $OM->setUrl($nom);
-  	$OM->save();    
-      	  	       
-  }
+    $OM->save();          	  	       
+  }    
     
 }

@@ -49,45 +49,24 @@ class EspaisForm extends BaseEspaisForm
       'isLlogable' => 'Es lloga?',
       'descripcio' => 'Descripció ',      
     ));
-      
-    if(!$this->getObject()->isNew()):
-        $subForm = new sfForm();
-        $subForm->widgetSchema->setFormFormatterName('Horizontal');
-        $OE = $this->getObject();
-        $count = 1;
-        
-        foreach($OE->getFotos() as $OM){                        
-            $form = new MultimediaForm($OM);            
-            $subForm->embedForm($count++, $form);            
-        }
-        $form = MultimediaPeer::initialize(NULL,$this->IDS,MultimediaPeer::CONST_ESPAI,$OE->getEspaiid());        
-        $subForm->embedForm(0, $form);
-        $this->embedForm('Fotos',$subForm);            
-    endif;
-        
-  }
-
-  public function saveEmbeddedForms($con = null, $forms = null)
-  {    
-    if (null === $forms)
-    {
-      $photos = $this->getValue('Fotos');      
-      $forms = $this->embeddedForms;
-      if(empty($photos[0]['url'])) unset($forms['Fotos'][0]);
-      if(isset($this->embeddedForms['Fotos'])):
-          foreach ($this->embeddedForms['Fotos']->getEmbeddedForms() as $K=>$MultimediaForm)
-          {         
-            if($photos[$K]['delete']) $MultimediaForm->deleteEmbed();
-            else $MultimediaForm->saveEmbed();        
-          }        
-      endif;
-    }              
-    return true;
+              
   }
 
   public function getModelName()
   {
     return 'Espais';
+  }
+
+  public function getFotosEspais()
+  {
+    $OE = $this->getObject();
+    $LOM = MultimediaPeer::getFotosEspais( $OE->getEspaiid(), $OE->getSiteId());
+    $RET = array();
+    $i = 0;
+    foreach($LOM as $OM):
+        $RET[] = MultimediaPeer::initialize($OM->getMultimediaId(),$OM->getSiteId(),EspaisPeer::TABLE_NAME,$OE->getEspaiid(),$i++);
+    endforeach;
+    return $RET;
   }
 
 }

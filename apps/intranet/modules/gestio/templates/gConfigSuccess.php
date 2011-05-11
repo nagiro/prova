@@ -2,15 +2,11 @@
 
 <style>
 	
-	.row { width:500px; } 
-	.row_field { width:70%; } 
-	.row_title { width:30%; }
-	.row_field input { width:100%; }
-	input.ul_cat { background-color:white; border:0px; width:20px; }
-	li.ul_cat { width:220px; }
-	#TD1 td { border: 0px solid #DB9296; padding:0px 2px; font-size:10px; }
-	#TD1 { border-collapse:collapse; }
-	.LIST2 { padding:10px;  } 
+	.row { width:100px; } 
+	.row_field { width:inherit; } 
+	.row_title { width:inherit; }
+	.row_field input { width:inherit; }
+    .fb { float:left; display:block;  }    
 		
 </style>
 
@@ -102,8 +98,19 @@
             <form id="FESPAIS" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
                 <table class="FORMULARI">                    
                 '.$FESPAIS.'                
-                </table>
-                <div style="text-align:right">
+                </table>';
+                                
+        $LFMultimedia = $FESPAIS->getFotosEspais();
+        $RET .= '<div style="margin-top:20px;">';
+        foreach($LFMultimedia as $FMultimedia):                
+            $RET .= '<div style="float:left; margin-left:100px;">'.$FMultimedia.'</div>';
+        endforeach;
+        $OE = $FESPAIS->getObject();
+        $RET .= '<div style="float:left; margin-left:100px;">'.MultimediaPeer::initialize(-1,$OE->getSiteId(),EspaisPeer::TABLE_NAME,$OE->getEspaiid(),sizeof($LFMultimedia)+1).'</div>';
+        $RET .= '</div><div style="clear:both;"></div>';
+                
+        $RET .='                                
+                <div style="text-align:right; margin-top:20px;">
                     <button style="margin-top:10px;" name="EDIT" class="BOTO_ACTIVITAT">
                         '.image_tag('template/find.png').' Consulta
                     </BUTTON>   
