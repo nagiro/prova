@@ -120,9 +120,16 @@
 		<h3>Tarifes de cessió d'espais</h3>        
         <p>En horari de dilluns a divendres, de 9 a 21 hores</p>
 		<p>
-            <table>                
-                <tr><th colspan="3">TARIFA CULTURAL</th></tr>
-                <tr><td></td><td>Fins a tres hores</td><td>Mitja jornada</td><td>Jornada completa</td></tr>
+            <style>
+                .taula_preus { border-collapse: collapse; width:700px; text-align:right; }
+                .taula_preus th { background-color:#CCCCCC; padding:5px; text-align:left;  }
+                .taula_preus .subtitol { background-color:#DDDDDD; padding:5px; font-weight:bold;   }
+                .taula_preus td { border-bottom:1px solid #EEEEEE;  }                
+            
+            </style>
+            <table class="taula_preus">                
+                <tr><th colspan="4">TARIFA CULTURAL</th></tr>
+                <tr><td class="subtitol"></td><td class="subtitol">Fins a tres hores</td><td class="subtitol">Mitja jornada</td><td class="subtitol">Jornada completa</td></tr>
                 <tr><td>Auditori Josep Viader</td>  <td>100€</td><td>150€</td><td>225€</td></tr>
                 <tr><td>Aula Magna</td>             <td> 75€</td><td>125€</td><td>175€</td></tr>
                 <tr><td>Aula B</td>                 <td> 60€</td><td> 90€</td><td>125€</td></tr>
@@ -131,10 +138,10 @@
                 <tr><td>Sala Domènech Fita</td>     <td> 60€</td><td> 90€</td><td>125€</td></tr>
                 <tr><td>Pati</td>                   <td> 75€</td><td>125€</td><td>175€</td></tr>                                                
             </table>
-            <br />
-            <table>
-                <tr><th colspan="3">TARIFA COMERCIAL</th></tr>
-                <tr><td></td><td>Fins a tres hores</td><td>Mitja jornada</td><td>Jornada completa</td></tr>
+            <br /><br />
+            <table class="taula_preus">
+                <tr><th colspan="4">TARIFA COMERCIAL</th></tr>
+                <tr><td class="subtitol"></td><td class="subtitol">Fins a tres hores</td><td class="subtitol">Mitja jornada</td><td class="subtitol">Jornada completa</td></tr>
                 <tr><td>Auditori Josep Viader</td>  <td>200€</td><td>300€</td><td>450€</td></tr>
                 <tr><td>Aula Magna</td>             <td>150€</td><td>225€</td><td>325€</td></tr>
                 <tr><td>Aula B</td>                 <td>100€</td><td>150€</td><td>200€</td></tr>
@@ -143,9 +150,10 @@
                 <tr><td>Sala Domènech Fita</td>     <td>100€</td><td>150€</td><td>200€</td></tr>
                 <tr><td>Pati</td>                   <td>120€</td><td>180€</td><td>325€</td></tr>
             </table>
-            <br />
-            <table>
-                <tr><th>APARELLS AUDIOVISUALS.</th><th>TARIFA CULTURAL</th><th>TARIFA COMERCIAL</th></tr>                
+            <br /><br />
+            <table class="taula_preus">
+                <tr><th colspan="3">LLOGUER DE MATERIAL</th></tr>
+                <tr><td class="subtitol">APARELLS AUDIOVISUALS.</td><td class="subtitol">TARIFA CULTURAL</td><td class="subtitol">TARIFA COMERCIAL</td></tr>                
                 <tr><td>Projector </td>                 <td>30€</td><td>60€</td></tr>
                 <tr><td>Aparell reproductor</td>        <td>15€</td><td>30€</td></tr>
                 <tr><td>Piano Auditori</td>             <td>50€</td><td>100€</td></tr>
@@ -160,18 +168,27 @@
         <a name="criteris"></a>	
 		<h3>Criteris</h3>
         <br />
-        <h4>Aplicació de tarifa comercial</h4>
-            <p>En principi, es considerarà activitat comercial tota aquella generada per una entitat privada amb afany de lucre. És possible, tanmateix, que les entitats o empreses privades sol·licitin espais o serveis per a una activitat d’interès general. En aquest cas, és possible autoritzar l’activitat amb exempció de despeses. La Casa de Cultura es reserva el dret d’autoritzar o denegar aquesta exempció.</p> 
-            <p>Es consideraran activitats comercials també aquelles que, provenint de l’àmbit públic o privat, no s’adrecin a la ciutadania en general i per a les quals calgui una matrícula, és a dir, que generin un ingressos. És el cas de jornades, congressos, cursos...</p>
-        <br /><br />
-        <h4>Aplicació de tarifa cultural</h4>
-            <p>S’aplica la tarifa cultural a aquelles cessions d’espai a entitats i activitats d’interès social, cultural i/o sense afany de lucre.</p> 
-            <p>Aquestes activitats poden demanar l’exempció de despeses, que la Fundació Casa de Cultura aprovarà o desestimarà d’acord amb els seus criteris de programació i objectius fundacionals.</p>
-        <br /><br />
-        <h4>Diputació de Girona i organismes vinculats</h4>
-            <p>Tots els organismes dependents –directament o indirecta- de la Diputació de Girona estan exempts del pagament de despeses però han de sol·licitar els espais o serveis de manera formalitzada.</p>            
-            <p>En cap cas, la dependència o vinculació amb la Diputació de Girona suposa un tracte preferencial en relació als compromisos ja adquirits o en relació a la pròpia activitat de la Fundació.</p>
-   
+        <p style="text-align: justify;">
+            <span style="font-weight: bold;">Aplicació de tarifa comercial</span><br />
+            En principi, es considerarà activitat comercial tota aquella generada per una entitat privada amb afany de lucre. És possible, tanmateix, que les entitats o empreses privades sol·licitin espais o serveis per a una activitat d’interès general. En aquest cas, és possible autoritzar l’activitat amb exempció de despeses. La Casa de Cultura es reserva el dret d’autoritzar o denegar aquesta exempció.
+            <br /><br /> 
+            Es consideraran activitats comercials també aquelles que, provenint de l’àmbit públic o privat, no s’adrecin a la ciutadania en general i per a les quals calgui una matrícula, és a dir, que generin un ingressos. És el cas de jornades, congressos, cursos...</p>
+        </p>            
+
+        <p style="text-align: justify;">
+            <span style="font-weight: bold;">Aplicació de tarifa cultural</span><br />
+            S’aplica la tarifa cultural a aquelles cessions d’espai a entitats i activitats d’interès social, cultural i/o sense afany de lucre.
+            <br /><br /> 
+            Aquestes activitats poden demanar l’exempció de despeses, que la Fundació Casa de Cultura aprovarà o desestimarà d’acord amb els seus criteris de programació i objectius fundacionals.
+        </p>
+
+        <p style="text-align: justify;">
+            <span style="font-weight: bold;">Diputació de Girona i organismes vinculats</span><br />
+            Tots els organismes dependents –directament o indirecta- de la Diputació de Girona estan exempts del pagament de despeses però han de sol·licitar els espais o serveis de manera formalitzada.
+            <br /><br />            
+            En cap cas, la dependència o vinculació amb la Diputació de Girona suposa un tracte preferencial en relació als compromisos ja adquirits o en relació a la pròpia activitat de la Fundació.
+        </p>
+        
    </div>
    
       <div style="height:80px;"></div>
