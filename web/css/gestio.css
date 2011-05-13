@@ -118,7 +118,7 @@ body.CCG { background-color: #680000; font-family: Verdana; font-size: 10px; }
 #MESOS .negreta { font-weight:bold;  }
 
 .PEU { height:25px; background-color:#1f1a17; color: white; text-align:center; font-size: 10px; vertical-align:middle; }    
-.DEGRADAT_INFERIOR { background-image: url(DifuminatInferior.png); background-repeat: repeat-x; }
+.DEGRADAT_INFERIOR { background-image: url('/images/intranet/DifuminatInferior.png'); background-repeat: repeat-x; }
 #ESPAI { width:256px; }
             
             
