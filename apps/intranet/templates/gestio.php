@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
   <head>
   <meta http-equiv="content-type" content="text/html; charset=windows-1250">
   <meta name="generator" content="PSPad editor, www.pspad.com"> 
@@ -17,8 +18,7 @@
   <![endif]-->
 
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-1.4.2.min.js'; ?>"></script>
-  <script type="text/javascript" src="<?php echo $BASE.'js/tiny_mce/tiny_mce.js'; ?>"></script>        
-  <script type="text/javascript" src="<?php echo $BASE.'js/thickgox-compressed.js'; ?>"></script>    
+  <script type="text/javascript" src="<?php echo $BASE.'js/tiny_mce/tiny_mce.js'; ?>"></script>            
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>
@@ -40,7 +40,7 @@
   
   </head>
   
-  <body class="CCG">
+  <body class="CCG">  
   <center>          
     <TABLE class="TAULA">
 <!--  <TR><TD colspan="4" class="DEGRADAT_SUPERIOR"><?php echo image_tag('intranet/DifuminatSuperior.png', array()); ?></TD></TR>  -->

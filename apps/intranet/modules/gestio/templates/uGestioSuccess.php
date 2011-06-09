@@ -58,11 +58,13 @@
             		<li><a href="#tabs-1">Dades</a></li>
             		<li><a href="#tabs-2">Matrícules</a></li>
                     <li><a href="#tabs-3">Reserves</a></li>                            		
+                    <li><a href="#tabs-4">Autentificació</a></li>
             	</ul>                        
                 <div id="tabs-0"> <?php echo landing_page(); ?> </div>                
                 <div id="tabs-1"> <?php echo LlistaDades($FDADES); ?> </div>
             	<div id="tabs-2"> <?php echo LlistaMatricules($LMATRICULES); ?> </div>
             	<div id="tabs-3"> <?php echo LlistaReserves($LRESERVES); ?> </div>              	
+                <div id="tabs-4"> <?php echo AutentificacioTab($PARS, $FBI, $ERROR); ?> </div>
                 
             </div>
         
@@ -91,6 +93,31 @@
     
 
 <?php 
+
+
+    /**
+     * Autentificacio Tab. Els canvis aquí també s'han d'aplicar a gConfig
+     * @param $PARS ( Paràmetres de la crida a fb_auth)
+     * @param $FBI  ( Identificador Facebook de l'usuari si en té, sinó és 0 )
+     * @param $ERROR ( Text amb l'error que hem produit ) 
+     * */
+    function AutentificacioTab($PARS,$FBI,$ERROR)
+    {
+                                    
+        $RET = "<p>Clicant l'enllaç que apareix més avall podràs vincular o desvincular el teu usuari de l'Hospici amb el teu usuari de Facebook. Si els vincules, el teu usuari de Facebook també serà el de l'Hospici i podràs accedir a aquest últim sense haver d'entrar ni l'usuari ni la contrassenya.</p><br />";
+         
+        if($FBI == 0):
+            if(!empty($ERROR)) $RET .= '<div class="error">'.$ERROR.'</div>';
+            else $RET .= '<a href="'.$PARS['logUrl'].'">No tens cap usuari vinculat al facebook. Clica per vincular l\'actual.</a>';        
+        else:                                             
+            $RET .= '<a href="'.url_for('@fb_user_unlink').'">Tens un usuari vinculat. Clica per desvincular-lo.</a>';
+            $RET .= '<img src="https://graph.facebook.com/'.$FBI.'/picture">';                                                            
+        endif;
+        
+        
+        return $RET;
+        
+    }
 
 
 	function missatge_div($MISSATGE)

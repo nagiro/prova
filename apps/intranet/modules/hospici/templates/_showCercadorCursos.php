@@ -14,7 +14,7 @@
             $("#DF").datepicker($.datepicker.regional['ca']);
             $("#DIE").datepicker($.datepicker.regional['ca']);
             $("#DFE").datepicker($.datepicker.regional['ca']);
-            $( "#tabs" ).tabs({ cookie: { expires: 30 } });                                         
+            $("#tabs").tabs({ cookie: { expires: 30 } });                                         
         });
 
     function RangDeDates(){
@@ -59,7 +59,7 @@
 </script>
 
 <div class="h_subtitle_gray">
-    CERCADOR D'ACTIVITATS
+    CERCADOR DE CURSOS
 </div>
 
 <div id="tabs">

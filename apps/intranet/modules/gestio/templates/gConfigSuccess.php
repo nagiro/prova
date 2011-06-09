@@ -46,10 +46,12 @@
         		<li><a href="#tabs-1">Opcions</a></li>
         		<li><a href="#tabs-2">Espais</a></li>        		
                 <li><a href="#tabs-3">Material genèric</a></li>
+                <li><a href="#tabs-4">Autentificacions</a></li>
         	</ul>                        
         	<div id="tabs-1"> <?php echo OptionsTab($FOPTIONS); ?> </div>
         	<div id="tabs-2"> <?php echo EspaisTab($FESPAIS); ?> </div>              	
             <div id="tabs-3"> <?php echo MaterialTab($FMATERIAL); ?> </div>
+            <div id="tabs-4"> <?php echo AutentificacioTab($PARS,$FBI,$ERROR); ?> </div>
         </div>
     
     </div>
@@ -58,6 +60,27 @@
 <DIV STYLE="height:40px;"></DIV>
 
 <?php 
+
+    /**
+     * Autentificacio Tab. Els canvis aquí també s'han d'aplicar a uGestio
+     * */
+    function AutentificacioTab($PARS,$FBI,$ERROR)
+    {
+                                    
+        $RET = "<p>Clicant l'enllaç que apareix més avall podràs vincular o desvincular el teu usuari de l'Hospici amb el teu usuari de Facebook. Si els vincules, el teu usuari de Facebook també serà el de l'Hospici i podràs accedir a aquest últim sense haver d'entrar ni l'usuari ni la contrassenya.</p><br />";
+         
+        if($FBI == 0):        
+            if(!empty($ERROR)) $RET .= '<div class="error">'.$ERROR.'</div>';
+            else $RET .= '<a href="'.$PARS['logUrl'].'">No tens cap usuari vinculat al facebook. Clica per vincular l\'actual.</a>';        
+        else:                                             
+            $RET .= '<a href="'.url_for('@fb_unlink').'">Tens un usuari vinculat. Clica per desvincular-lo.</a><br /><br />';
+            $RET .= '<img src="https://graph.facebook.com/'.$FBI.'/picture">';                                                                        
+        endif;
+        
+        
+        return $RET;
+        
+    }
 
     /**
      * Options Tab

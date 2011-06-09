@@ -251,4 +251,22 @@ class UsuarisPeer extends BaseUsuarisPeer
     if($OU instanceof Usuaris) return $OU->getNomComplet();
     else return 'n/d';
   }
+  
+  static public function getUserFromFacebook($fb_id){
+    $C = new Criteria();
+    $C->add(UsuarisPeer::FACEBOOK_ID, $fb_id);
+    return self::doSelectOne($C);
+  }
+  
+  /**
+   * Retorna el codi de facebook de l'usuari 
+   * */
+  static public function getUserFbCode($idU){
+    $OU = self::retrieveByPK($idU);
+    $FBi = $OU->getFacebookId();
+    if(!is_null($FBi) && is_numeric($FBi)) return $FBi;
+    else return 0;
+    
+  }
+  
 }

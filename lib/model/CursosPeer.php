@@ -109,12 +109,11 @@ class CursosPeer extends BaseCursosPeer
     
   	if($mode == self::CURSACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;
    
-    $C->add(self::VISIBLEWEB, $visibleWeb);
+    if($visibleWeb) $C->add(self::VISIBLEWEB, true); //Si ha de ser només per web, marquem com a només els visibles. 
               	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
   	//$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
   	$C->addAscendingOrderByColumn( self::CODI );
-  	
   	
   	if(!empty($CERCA)):
   		$C1 = $C->getNewCriterion(self::CODI, "%$CERCA%" , CRITERIA::LIKE);

@@ -98,13 +98,20 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS');
     $this->DEFAULT = false;
     $this->MISSATGE = ""; 
+    $this->ERROR = "";
     
     
     //Consultem tota la info de l'usuari.
     $this->FDADES      = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);    
     $this->LRESERVES   = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );    
     $this->LMATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );    
-    $this->LENTITATS   = new SitesSelectForm(null,array('idU'=>$this->IDU));    
+    $this->LENTITATS   = new SitesSelectForm(null,array('idU'=>$this->IDU));
+    
+    //Agafem el codi de facebook de l'usuari
+    $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
+    $this->PARS = array();    
+    $this->PARS = $this->f_FbAuth(false,$this->getController()->genUrl('@fb_user_link',true)); //Carreguem les dades del facebook.                
+    
         
     if($request->hasParameter('BGESTIONAUSUARI')) $this->accio = 'GESTIONA_USUARI';
     if($request->hasParameter('BGUARDAUSUARI')) $this->accio = 'GUARDA_USUARI';
@@ -257,6 +264,35 @@ class gestioActions extends sfActions
                                                          'id' => $OR->getReservaespaiid())));
             $this->redirect('gestio/uFormularis?PAR='.$PARR);
             break;
+
+        //Vincula l'usuari del facebook            
+        case 'FB_LINK':
+                $idU = $this->getUser()->getSessionPar('idU');
+                $OU = UsuarisPeer::retrieveByPK($idU);
+                                                
+                $FB_ID = $this->PARS['user']['id'];
+                
+                //Mirem si el número de facebook està associat a un altre usuari. Si és així, no fem res però emetem error.                 
+                $OUF = UsuarisPeer::getUserFromFacebook($FB_ID);
+                if($OUF instanceof Usuaris){ $this->ERROR = 'El compte de facebook actual està vinculat a un altre usuari. <br />Si us plau comuniqui-ho a informatica@casadecultura.org.';  }
+                elseif($OU instanceof Usuaris){ 
+                    $OU->setFacebookid($this->PARS['user']['id']); 
+                    $OU->save(); 
+                }                
+                $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));
+                $this->DEFAULT = true;
+            break;
+            
+        //Desvincula l'usuari del facebook
+        case 'FB_UNLINK':
+                $idU = $this->getUser()->getSessionPar('idU');
+                $OU = UsuarisPeer::retrieveByPK($idU);                                                
+                $OU->setFacebookid(NULL);
+                $OU->save();            
+                $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));
+                $this->DEFAULT = true;    
+            break;
+
             
         default:
             $this->DEFAULT = true;
@@ -346,6 +382,52 @@ class gestioActions extends sfActions
      
   }
 
+
+  /**
+   * Facebook Auth
+   * @return array('id' = 0,'logUrl')
+   * */  
+  
+  public function f_FbAuth($logout = false , $redirect_uri = null)
+  {            
+    
+    $RET = array( 'user' => 0 , 'logUrl' => '' );
+    
+    $facebook = new Facebook(array(
+      'appId'  => '150902508316992',
+      'secret' => '2006c7241ff70b494d405bd6fd641a49',
+      
+    ));
+    
+    $user = $facebook->getUser();
+            
+    if ($user) {
+      try {
+        // Proceed knowing you have a logged in user who's authenticated.
+        $user_profile = $facebook->api('/me');
+      } catch (FacebookApiException $e) {
+        error_log($e);
+        $user = null;
+      }
+    }
+    
+    //Si hem entrat una redirecció, doncs ho posem a l'adreça
+    $A = array();
+    if(!is_null($redirect_uri)) $A['redirect_uri'] = $redirect_uri;
+    
+    // Si tenim l'usuari autentificat, fem un logout. 
+    if ($user && $logout) {
+      $RET['logUrl'] = $facebook->getLogoutUrl($A);
+    } else {
+      $RET['logUrl'] = $facebook->getLoginUrl($A); //No ho utilitzarem mai    
+    }
+    
+    if(isset($user_profile)) $RET['user'] = $user_profile;             
+    
+    return $RET;   
+    
+  }
+  
   
 /**
  * Executem el login del modul administrador
@@ -358,12 +440,15 @@ class gestioActions extends sfActions
      $this->accio = $request->getParameter('accio','');
      $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.               
      $this->FLogin = new LoginForm(array('site'=>$this->IDS,'nick'=>"",'password'=>''));      
-     $this->ERROR = "";     
+     $this->ERROR = "";  
+     $this->FB = $this->f_FbAuth(false);
                               
      if($request->hasParameter('BLOGIN')) $this->accio = "LOGIN";
      if($request->hasParameter('BNEWUSER')) $this->accio = "NEW_USER";
      if($request->hasParameter('BSAVENEWUSER')) $this->accio = "SAVE_NEW_USER";
      if($request->hasParameter('BREMEMBER')) $this->accio = "REMEMBER";
+     if($request->hasParameter('code')) $this->accio = 'FB_LOGIN';
+     
               
      switch($this->accio){
         
@@ -374,6 +459,19 @@ class gestioActions extends sfActions
                 $this->getUser()->setAuthenticated(false);
                 $this->getUser()->clearCredentials();                 
                 $this->redirect('gestio/uLogin');
+            break;
+        
+        //Fem un login via facebook
+        case 'FB_LOGIN':
+                $FB = $this->f_FbAuth(false);
+                $USUARI = UsuarisPeer::getUserFromFacebook($FB['user']['id']);
+                if($USUARI instanceof Usuaris):        
+                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );
+                    $this->makeLogin($USUARI, $this->IDS);
+                else: 
+                    $this->getUser()->addLogAction('error','fb_login',$FB);     		 
+                    $this->ERROR = "No s'ha trobat cap usuari vinculat amb el seu compte de facebook.<br />Per vincular-lo ha d'accedir i fer-ho des del seu administrador o bé crear un compte nou.";                                         
+                endif;
             break;
         
         //Fem un LOGIN
@@ -3854,13 +3952,19 @@ class gestioActions extends sfActions
     $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
     $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);        
     $this->FMATERIAL = MaterialgenericPeer::initialize($RMATERIAL['idMaterialGeneric'],$this->IDS);
+
+    //Agafem el codi de facebook de l'usuari
+    $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
+    $this->PARS = array();    
+    $this->PARS = $this->f_FbAuth(false,$this->getController()->genUrl('@fb_link',true)); //Carreguem les dades del facebook.
+    $this->ERROR = "";                
     
     if($request->hasParameter('BNEWOPTION')) $this->accio = 'NEW_OPTION';
     if($request->hasParameter('BSAVEOPTION')) $this->accio = 'SAVE_OPTION';
     if($request->hasParameter('BSAVEESPAI')) $this->accio = 'SAVE_ESPAI';    
     if($request->hasParameter('BDELETEESPAI')) $this->accio = 'DELETE_ESPAI';
     if($request->hasParameter('BSAVEMATERIAL')) $this->accio = 'SAVE_MATERIAL';    
-    if($request->hasParameter('BDELETEMATERIAL')) $this->accio = 'DELETE_MATERIAL';
+    if($request->hasParameter('BDELETEMATERIAL')) $this->accio = 'DELETE_MATERIAL';    
     
     switch($this->accio){
         case 'AJAX_OPCIO':
@@ -3922,8 +4026,34 @@ class gestioActions extends sfActions
         case 'DELETE_MATERIAL':                        
             $this->FMATERIAL->getObject()->setInactiu();                        
             $this->getUser()->addLogAction($this->accio,'gConfig',$this->FMATERIAL->getObject());
-            $this->FMATERIAL  = MaterialgenericPeer::initialize( 0 , $this->IDS );
-            break;            
+            $this->FMATERIAL  = MaterialgenericPeer::initialize( 0 , $this->IDS );            
+            break;
+            
+        //Vincula l'usuari del facebook            
+        case 'FB_LINK':
+                $idU = $this->getUser()->getSessionPar('idU');
+                $OU = UsuarisPeer::retrieveByPK($idU);
+                                                
+                $FB_ID = $this->PARS['user']['id'];
+                
+                //Mirem si el número de facebook està associat a un altre usuari. Si és així, no fem res però emetem error.                 
+                $OUF = UsuarisPeer::getUserFromFacebook($FB_ID);
+                if($OUF instanceof Usuaris){ $this->ERROR = 'El compte de facebook actual està vinculat a un altre usuari. <br />Si us plau comuniqui-ho a informatica@casadecultura.org.';  }
+                elseif($OU instanceof Usuaris){ 
+                    $OU->setFacebookid($this->PARS['user']['id']); 
+                    $OU->save(); 
+                }                
+                $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));
+            break;
+            
+        //Desvincula l'usuari del facebook
+        case 'FB_UNLINK':
+                $idU = $this->getUser()->getSessionPar('idU');
+                $OU = UsuarisPeer::retrieveByPK($idU);                                                
+                $OU->setFacebookid(NULL);
+                $OU->save();            
+                $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
+            break;
     }       
   }   
   

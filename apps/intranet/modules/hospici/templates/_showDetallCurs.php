@@ -19,7 +19,7 @@
 										
 				<div style="width:150px; float:left">
 					<div><img src="<?php echo $imatge ?>" style="vertical-align:middle" /></div>
-						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
+						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn("","Torna al llistat de cursos"); ?></div>
 						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>
                     <div style="margin-top:20px;">
                         <?php echo ph_getAddThisDiv(); ?>
@@ -34,7 +34,7 @@
 				                
                 <!-- Requadre de compra o reserva d'entrades  -->
                 
-   				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">RESERVA D'ENTRADES</div> 
+   				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">RESERVA DE PLAÇA</div> 
 				<div style=" margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
 					<div style="padding:10px; font-size:10px;">
                     
@@ -50,7 +50,7 @@
                             <form action="<?php echo url_for('@hospici_compra_matricula') ?>">
                                 <div style="float:left; width: 60px;text-align:right;"><?php // echo $HO->getDia('d/m/Y') ?></div>    
                                 <div style="float:left; width: 60px;text-align:right;"><?php // echo $HO->getHorainici('H:i') ?></div>
-                                <div style="float:left; width: 60px;text-align:right;"><?php // echo $ACTIVITAT->getPreu() ?> �</div>
+                                <div style="float:left; width: 60px;text-align:right;"><?php // echo $ACTIVITAT->getPreu() ?> €</div>
                                 <div style="float:left; width: 60px;text-align:right;"><?php // echo select_tag('entrades[num]',options_for_select(array(1=>'1',2=>'2',3=>'3',4=>'4')),array('style'=>'width:50px')) ?></div>
                                 <div style="float:left; width: 60px;text-align:right;"><input type="submit" name="BRESERVA" value="Reserva" /></div>
                                 <div style="clear: both;"><input type="hidden" value="<?php // echo $HO->getHorarisid() ?>" name="entrades[idH]" /></div>
@@ -59,7 +59,7 @@
                         </div>
                     <?php else: ?>
                         <div>
-                            Per poder comprar o reservar entrades heu d'accedir al vostre usuari o crear-ne un de nou. 
+                            Per poder reservar plaça heu d'accedir al vostre usuari o crear-ne un de nou. 
                         </div>
                     <?php endif; ?>
 					</div>

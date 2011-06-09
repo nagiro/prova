@@ -314,7 +314,6 @@ class hospiciActions extends sfActions
         
   }  
   
-
   /**
    * hospiciActions::executeCursos()
    * 
@@ -360,6 +359,60 @@ class hospiciActions extends sfActions
         
         //Arribem per primer cop al web o no entrem per cap url interessant
         case 'inici':            
+            //Inicialitzem la cerca i la guardem a memòria
+            $this->CERCA = $this->getCercaComplet(null);
+            $this->getUser()->setSessionPar('cerca',$this->CERCA);
+            $this->MODE = 'INICIAL';
+    }                                        
+    
+  }
+
+  /**
+   * hospiciActions::executeEspais()
+   * 
+   * Part de mostra dels espais per reservar a l'hospici
+   * 
+   * @param mixed $request
+   * @return void
+   */
+  public function executeEspais(sfWebRequest $request)
+  {    
+  
+    $this->setLayout('hospici');
+    $this->setTemplate('indexReservaEspais');
+    $this->accio = $request->getParameter('accio','index');        
+    
+    //Carrego la cerca
+    $this->CERCA = $this->getUser()->getSessionPar('cerca');    
+
+    switch($this->accio){        
+        case 'cerca_cursos':
+               
+                //Agafo el paràmetre
+                $C = $request->getParameter('cerca',array());
+                                
+                //Normalitzo tots els camps                    
+                $C2 = $this->getCercaComplet($C);        
+                                                        
+                //Guardem a sessió la cerca "actual"        
+                $this->CERCA = $C2;
+                $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
+                                                
+                $this->LLISTAT_CURSOS = CursosPeer::getCursosHospici($this->CERCA['TEXT'],$this->CERCA['SITE'],$this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'][0],$this->CERCA['DATAR'],$this->CERCA['P']);
+                
+                $this->MODE = 'CERCA';
+                
+            break;
+    
+        case 'detall_curs':
+        
+                $this->CURS = CursosPeer::retrieveByPK($request->getParameter('idC'));
+                $this->MODE = 'DETALL';
+                
+            break;
+        
+        //Arribem per primer cop al web o no entrem per cap url interessant
+        default:            
             //Inicialitzem la cerca i la guardem a memòria
             $this->CERCA = $this->getCercaComplet(null);
             $this->getUser()->setSessionPar('cerca',$this->CERCA);

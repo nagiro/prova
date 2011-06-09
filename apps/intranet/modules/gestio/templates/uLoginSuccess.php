@@ -64,7 +64,12 @@ LEGEND { font-weight:bold; padding-left:10px; padding-right:10px; font-size:12px
 			    	<div style="clear:both; padding-top:20px;">
 	            		<button type="submit" style="width: 120px;" name="BLOGIN" class="BOTO_ACTIVITAT" value="Cliqueu per accedir" />Cliqueu per accedir </button>	            			            		
                         <button type="submit" style="width: 120px;" name="BNEWUSER" class="BOTO_ACTIVITAT" value="Nou usuari" />Nou usuari</button>
-	            		<button type="submit" style="width: 120px;" name="BREMEMBER" class="BOTO_ACTIVITAT" value="Recordar contrasenya" />Recordar contrasenya</button>		            					    	
+	            		<button type="submit" style="width: 120px;" name="BREMEMBER" class="BOTO_ACTIVITAT" value="Recordar contrasenya" />Recordar contrasenya</button>
+                        <div style=" float:right; padding-top: 0px;">                        
+                            <a href="<?php echo $FB['logUrl'] ?>">
+                                <?php echo image_tag('facebook_login_button.png'); ?>
+                            </a>
+                        </div>     					    			                               
 			    	</div>
 			    	
 			    </div>
