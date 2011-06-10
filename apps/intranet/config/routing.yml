@@ -13,7 +13,7 @@ homepage:
 
 gAdmin:
   url: /gestio/main
-  param: { module:gestio, action:Main  }
+  param: { module:gestio, action:main  }
   
 gUser:
   url: /gestio/uGestio
