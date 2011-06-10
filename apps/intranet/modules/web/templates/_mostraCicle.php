@@ -12,7 +12,7 @@
         $imatge = $CICLE->getImatge();
         $pdf = $CICLE->getPdf();                 
         $desc = $CICLE->getDMig();
-        $idC = $CICLE->getCicleID();
+        $idC = $CICLE->getCicleID();                
         
         ?>
         

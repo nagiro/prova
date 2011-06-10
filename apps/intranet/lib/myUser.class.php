@@ -222,6 +222,22 @@ class myUser extends sfBasicSecurityUser
 	$string = preg_replace( "`&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);`i","\\1", $string );
 	$string = preg_replace( array("`[^a-z0-9]`i","`[-]+`") , "-", $string);
 	return strtolower(trim($string, '-')); 
+  }  
+  
+  
+  /**
+   * Genera un objecte facebook per a l'aplicatiu de la CCG
+   * @return Object Facebook()
+   * */
+  static public function getFbObject()
+  {    
+    $facebook = new Facebook(array(
+      'appId'  => '150902508316992',
+      'secret' => '2006c7241ff70b494d405bd6fd641a49',
+      
+    ));
+    
+    return $facebook;
   }
   
 }

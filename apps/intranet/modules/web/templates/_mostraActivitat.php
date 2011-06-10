@@ -11,9 +11,19 @@
 	foreach($LLISTAT_ACTIVITATS as $A):
 			
 		$C = CiclesPeer::retrieveByPK($A->getCiclescicleid());
-		if($C instanceof Cicles && $C->getCicleID() > 1) $nom_cicle = '<b>'.$C->getTMig().'</b>'; else $nom_cicle = "";
+        
+		if($C instanceof Cicles && $C->getCicleID() > 1):
+            $nom_cicle = '<b>'.$C->getTMig().'</b>';
+            $idC = $C->getCicleID(); 
+        else:
+            $nom_cicle = "";
+            $idC = 0;
+        endif;
+        
+        $url_cicle = myUser::text2url($C->getTMig());
 		$imatge = $A->getImatge();
-		$pdf = $A->getPdf();                        
+		$pdf = $A->getPdf();         
+        $pdf_cicle = $C->getPdf();               
 						
         if(!empty($nom_cicle)):	
 		?>
@@ -30,7 +40,16 @@
 				<div class="df" style="width:150px;">
 					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
 						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
-						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>
+                        <?php if(!empty($nom_cicle)): ?>
+                            <div style="font-size:10px"><a href="<?php echo url_for('@web_cicle?idC='.$idC.'&titol='.$url_cicle) ?>">Veure activitats del cicle</a></div>
+                        <?php endif; ?>
+						<div class="pdf_cicle">
+                            <?php if($pdf > 0): ?> 
+                                    <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a>
+                            <?php elseif($pdf_cicle > 0): ?>
+                                    <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf_cicle ?>">Baixa't el pdf del cicle</a>
+                            <?php endif; ?>                            
+                        </div>
 
                     <div style="margin-top: 20px;">
                         <?php echo ph_getAddThisDiv(); ?>                        

@@ -2,11 +2,11 @@
 
 /**
  * 
- * gestio actions.
+ * Gestio actions.
  *
  * @package    intranet
  * @subpackage gestio
- * @author     Your name here
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: actions.class.php 2692 2006-11-15 21:03:55Z fabien $
  */
 class gestioActions extends sfActions
@@ -274,7 +274,7 @@ class gestioActions extends sfActions
                 
                 //Mirem si el número de facebook està associat a un altre usuari. Si és així, no fem res però emetem error.                 
                 $OUF = UsuarisPeer::getUserFromFacebook($FB_ID);
-                if($OUF instanceof Usuaris){ $this->ERROR = 'El compte de facebook actual està vinculat a un altre usuari. <br />Si us plau comuniqui-ho a informatica@casadecultura.org.';  }
+                if($OUF instanceof Usuaris){ $this->ERROR = 'El compte de facebook actual està vinculat a un altre usuari. <br />Si us plau comuniqui-ho a informatica@casadecultura.org o bé entri al seu usuari de facebook i torni-ho a provar.';  }
                 elseif($OU instanceof Usuaris){ 
                     $OU->setFacebookid($this->PARS['user']['id']); 
                     $OU->save(); 
@@ -391,14 +391,9 @@ class gestioActions extends sfActions
   public function f_FbAuth($logout = false , $redirect_uri = null)
   {            
     
-    $RET = array( 'user' => 0 , 'logUrl' => '' );
-    
-    $facebook = new Facebook(array(
-      'appId'  => '150902508316992',
-      'secret' => '2006c7241ff70b494d405bd6fd641a49',
-      
-    ));
-    
+    $RET = array( 'user' => 0 , 'logUrl' => '' );        
+    $facebook = myUser::getFbObject();
+        
     $user = $facebook->getUser();
             
     if ($user) {
@@ -441,15 +436,13 @@ class gestioActions extends sfActions
      $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.               
      $this->FLogin = new LoginForm(array('site'=>$this->IDS,'nick'=>"",'password'=>''));      
      $this->ERROR = "";  
-     $this->FB = $this->f_FbAuth(false);
+     $this->FB = $this->f_FbAuth(false,$this->getController()->genUrl('@fb_login',true)); //Retorna l'usuari que s'ha autentificat amb facebook
                               
      if($request->hasParameter('BLOGIN')) $this->accio = "LOGIN";
      if($request->hasParameter('BNEWUSER')) $this->accio = "NEW_USER";
      if($request->hasParameter('BSAVENEWUSER')) $this->accio = "SAVE_NEW_USER";
-     if($request->hasParameter('BREMEMBER')) $this->accio = "REMEMBER";
-     if($request->hasParameter('code')) $this->accio = 'FB_LOGIN';
-     
-              
+     if($request->hasParameter('BREMEMBER')) $this->accio = "REMEMBER";     
+
      switch($this->accio){
         
         case 'LOGOUT':                
@@ -466,8 +459,8 @@ class gestioActions extends sfActions
                 $FB = $this->f_FbAuth(false);
                 $USUARI = UsuarisPeer::getUserFromFacebook($FB['user']['id']);
                 if($USUARI instanceof Usuaris):        
-                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );
-                    $this->makeLogin($USUARI, $this->IDS);
+                    $this->getUser()->setSessionPar( 'idS' , $this->IDS );                    
+                    $this->makeLogin($USUARI, $this->IDS);                    
                 else: 
                     $this->getUser()->addLogAction('error','fb_login',$FB);     		 
                     $this->ERROR = "No s'ha trobat cap usuari vinculat amb el seu compte de facebook.<br />Per vincular-lo ha d'accedir i fer-ho des del seu administrador o bé crear un compte nou.";                                         
@@ -534,9 +527,9 @@ class gestioActions extends sfActions
                 $this->redirect('gestio/uRemember');            
             break;
         
-        default:
-            if($this->getUser()->isAuthenticated()) $this->redirect('gestio/uGestio');
-        
+/*        default:
+            if($this->getUser()->isAuthenticated()) $this->redirect('gestio/uLogin');
+*/        
      }
 		   
   }  
@@ -549,15 +542,14 @@ class gestioActions extends sfActions
  	  $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
       $this->getUser()->setSessionPar('idN',$idN);
       $this->getUser()->setAuthenticated(true);
-      $this->getUser()->addLogAction('login','login',null);                              
-        
+      $this->getUser()->addLogAction('login','login',null);                                      
       if( $idN == NivellsPeer::ADMIN ):
         $this->getUser()->setSessionPar('idS',$IDS);
         $this->getUser()->addCredential('admin');        
-        $this->redirect( 'gestio/main' );
+        $this->redirect( '@gAdmin' );
       elseif( $idN == NivellsPeer::REGISTRAT ):
         $this->getUser()->addCredential('user');        
-        $this->redirect( 'gestio/uGestio' );
+        $this->redirect( '@gUser' );
       else:   	 	
      	$this->ERROR = "El DNI o la contrasenya són incorrectes";
       endif;
@@ -4038,7 +4030,7 @@ class gestioActions extends sfActions
                 
                 //Mirem si el número de facebook està associat a un altre usuari. Si és així, no fem res però emetem error.                 
                 $OUF = UsuarisPeer::getUserFromFacebook($FB_ID);
-                if($OUF instanceof Usuaris){ $this->ERROR = 'El compte de facebook actual està vinculat a un altre usuari. <br />Si us plau comuniqui-ho a informatica@casadecultura.org.';  }
+                if($OUF instanceof Usuaris){ $this->ERROR = 'El compte de facebook actual està vinculat a un altre usuari. <br />Si us plau comuniqui-ho a informatica@casadecultura.org o bé entri al seu usuari de facebook i torni-ho a provar.';  }
                 elseif($OU instanceof Usuaris){ 
                     $OU->setFacebookid($this->PARS['user']['id']); 
                     $OU->save(); 

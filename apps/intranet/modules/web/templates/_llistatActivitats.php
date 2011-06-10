@@ -27,13 +27,14 @@
 			$OC 		= $OA->getCicles();			
 			$nom_act    = $OA->getTMig();
             $nom_cicle  = $OC->getTmig();
+            $link_cicle = link_to($nom_cicle,'@web_cicle?idC='.$OC->getCicleid().'&titol='.myUser::text2url($nom_cicle));            
 			
 			if(!empty($nom_act)):
 		    	echo '<tr>';
 		    	
 		    	echo '<td>';
 		    	echo 	'<a href="'.url_for('@web_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()).'">'.$OA->getTmig().'</a>';
-		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.link_to($nom_cicle,'web/index?accio=cc&idC='.$OC->getCicleid());		    			
+		    			if($OC->getCicleid() > 1) echo ' || Cicle: '.$link_cicle;		    			
 		    	echo   '</td>';
 		    			    	
 		    	echo '<td>'.generaData($A->getDia('Y-m-d')).'</td>';

@@ -24,14 +24,16 @@
 					
 			$OC 		= $OA->getCicles();			
 			$nom_act    = $OA->getTmig();
-            $nom_cicle  = $OC->getTmig();			
+            $nom_cicle  = $OC->getTmig();	
+            
+            $link_cicle = link_to($nom_cicle,'@web_cicle?idC='.$OC->getCicleid().'&titol='.myUser::text2url($nom_cicle));		
                         			
 			if(!empty($nom_act)):
 		    	echo '<tr>		    	
 		    	         <td>
 		    	             <a href="'.url_for('@web_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()).'">'.$nom_act.'</a>';
     			if($OC->getCicleid() > 1) 
-                echo ' || Cicle: '.link_to($nom_cicle,'web/index?accio=cc&idC='.$OC->getCicleid());		    			
+                echo ' || Cicle: '.$link_cicle;
 		    	echo   '</td><td>'.GiraData($OA->getPrimeraData()).'
 		    	         </td>
                     </tr>';

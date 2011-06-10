@@ -32,7 +32,7 @@
      *       
      * @return string
      */
-    function getRetorn($atributs = "", $nom = "Torna al llistat d'activitats")
+    function getRetorn($atributs = "", $nom = "Torna enrera")
     {                
         return '<a '.$atributs.' href="javascript:history.back()">'.$nom.'</a>';                     
     } 

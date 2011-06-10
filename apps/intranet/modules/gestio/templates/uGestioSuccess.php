@@ -109,9 +109,11 @@
         if($FBI == 0):
             if(!empty($ERROR)) $RET .= '<div class="error">'.$ERROR.'</div>';
             else $RET .= '<a href="'.$PARS['logUrl'].'">No tens cap usuari vinculat al facebook. Clica per vincular l\'actual.</a>';        
-        else:                                             
-            $RET .= '<a href="'.url_for('@fb_user_unlink').'">Tens un usuari vinculat. Clica per desvincular-lo.</a>';
-            $RET .= '<img src="https://graph.facebook.com/'.$FBI.'/picture">';                                                            
+        else:
+            $fb   = myUser::getFbObject();                                             
+            $FBD  = $fb->api($FBI);
+            $RET .= '<a href="'.url_for('@fb_user_unlink').'">Tens un usuari vinculat. Clica per desvincular-lo.</a><br /><br />';
+            $RET .= '<img align="middle" src="https://graph.facebook.com/'.$FBI.'/picture"> '.$FBD['name'];                                   
         endif;
         
         

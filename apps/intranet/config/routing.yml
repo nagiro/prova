@@ -6,13 +6,34 @@ homepage:
   url:   /
   param: { module: default, action: index }
 
+
+#####################################################
+# GESTIÓ                                            #
+#####################################################
+
+gAdmin:
+  url: /gestio/main
+  param: { module:gestio, action:Main  }
+  
+gUser:
+  url: /gestio/uGestio
+  param: { module:gestio, action:uGestio  }
+  
+uLogin:
+  url: /gestio/uLogin
+  param: { module:gestio, action:uLogin  }
+
 #####################################################
 # FACEBOOK                                          #
 #####################################################
-
+  
 gConfig:
   url: /gestio/gConfig
-  param: { module:gestio, ation:gConfig }
+  param: { module:gestio, action:gConfig }
+
+fb_login:
+  url: /gestio/fb_login
+  param: { module:gestio, action:uLogin, accio:FB_LOGIN }
 
 fb_link:
   url: /gestio/fb_link
@@ -118,6 +139,10 @@ web_noticia:
 web_activitat:
   url: /web/activitat/:idA/:titol
   param: { module:web, action:index, accio:caa }
+
+web_cicle:
+  url: /web/cicle/:idC/:titol
+  param: { module:web, action:index, accio:cc  }
 
 #####################################################
 # GENERIQUES                                        #
