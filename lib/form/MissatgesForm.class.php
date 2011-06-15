@@ -19,8 +19,9 @@ class MissatgesForm extends sfFormPropel
       'Text'             => new sfWidgetFormTextareaTinyMCE(array(),array('class'=>'text','style'=>'height:150px;')),
       'Date'             => new sfWidgetFormInputHidden(),
       'Publicacio'       => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
+      'isGlobal'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Tots els membres de l\'Hospici',0=>'Només la meva entitat'))),      
       'site_id'          => new sfWidgetFormInputHidden(array(),array()),           
-    ));
+    ));    
 
     $this->setValidators(array(
       'MissatgeID'       => new sfValidatorPropelChoice(array('model' => 'Missatges', 'column' => 'MissatgeID', 'required' => false)),
@@ -29,6 +30,7 @@ class MissatgesForm extends sfFormPropel
       'Text'             => new sfValidatorString(array('required' => false)),
       'Date'             => new sfValidatorDate(array('required' => false)),
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
+      'isGlobal'         => new sfValidatorChoice(array('choices'=>array(1,0))),
       'site_id'          => new sfValidatorPass(array('required' => false)),
     ));
         
@@ -40,7 +42,8 @@ class MissatgesForm extends sfFormPropel
     $this->widgetSchema->setLabels(array(
     	'Titol' 	=> 'Títol: ',
     	'Text' 		=> 'Text: ',
-    	'Publicacio'=> 'Data de publicació: ', 
+    	'Publicacio'=> 'Data de publicació: ',
+        'isGlobal'  => 'Visibilitat: ', 
     ));
     
     $this->widgetSchema->setAttribute('width','60px');
@@ -50,7 +53,8 @@ class MissatgesForm extends sfFormPropel
     	'Titol' 		=> '',
     	'Text'  		=> '',
     	'Date'			=> date('Y-m-d',time()),
-    	'Publicacio' 	=> date('Y-m-d',time()),    	    	
+    	'Publicacio' 	=> date('Y-m-d',time()),
+        'isGlobal'      => 0,    	    	
     ));
     
     $this->widgetSchema->setFormFormatterName('Span');

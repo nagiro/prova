@@ -2055,7 +2055,7 @@ class gestioActions extends sfActions
     $this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));  	  	
   	$this->PAGINA	= $this->getUser()->ParReqSesForm($request,'p',1);
   	$this->accio  	= $this->getUser()->ParReqSesForm($request,'accio',"");
-  	$this->MODE     = array();  	  	    
+  	$this->MODE     = array();
     
     if($request->isMethod('POST') || $request->isMethod('GET')):
     	

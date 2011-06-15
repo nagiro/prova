@@ -10,10 +10,18 @@
 class MissatgesPeer extends BaseMissatgesPeer
 {
 
+  /**
+   * Retorna els missatges locals i globals actius.
+   * @param Criteria $C
+   * @param Site_id  $idS 
+   * */
   static function getCriteriaActiu($C,$idS)
   {
     $C->add(self::ACTIU,true);
-    $C->add(self::SITE_ID,$idS);
+    $C->add(self::ACTIU, true);
+    $C1 = $C->getNewCriterion( self::ISGLOBAL , true );
+    $C2 = $C->getNewCriterion( self::SITE_ID  , $idS );
+    $C1->addOr($C2); $C->add($C1);    
     return $C;
   }
 
@@ -48,7 +56,9 @@ class MissatgesPeer extends BaseMissatgesPeer
   {
     
      $C = new Criteria();     
-     $C = self::getCriteriaActiu($C,$idS);
+
+     $C = self::getCriteriaActiu($C,$idS);          
+     
      $PARAULES = explode(" ",$TEXT); $PAR2 = array();
      foreach( $PARAULES as $P ) if( strlen( $P ) > 2 ): $PAR2[] = trim($P); endif;                      
      

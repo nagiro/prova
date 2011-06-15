@@ -22,6 +22,7 @@ abstract class BaseMissatgesForm extends BaseFormPropel
       'Publicacio'       => new sfWidgetFormDate(),
       'site_id'          => new sfWidgetFormInputText(),
       'actiu'            => new sfWidgetFormInputText(),
+      'isGlobal'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -33,6 +34,7 @@ abstract class BaseMissatgesForm extends BaseFormPropel
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
       'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'isGlobal'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('missatges[%s]');

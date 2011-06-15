@@ -1,6 +1,6 @@
 <?php use_helper('Form'); ?>
 
-<STYLE>
+<style>
 .cent { width:100%; }
 .noranta { width:90%; }
 .cinquanta { width:50%; }
@@ -13,9 +13,9 @@
 	.row_field input { width:100%; } 
 
 
-</STYLE>
+</style>
    
-    <TD colspan="3" class="CONTINGUT_ADMIN">
+    <td colspan="3" class="CONTINGUT_ADMIN">
       
     <?php include_partial('breadcumb',array('text'=>'TAULELL')); ?>
     
@@ -29,7 +29,7 @@
     																'text'=>'Prem per buscar'),
     														array(
     																'name'=>'BNOU',
-    																'text'=>'Nou missatge')    														
+    																'text'=>'Nou missatge')
     													)
     										)
     							); ?>
@@ -55,38 +55,57 @@
       
   <?php ELSE: ?>
   
-  	<DIV class="REQUADRE">
-  	<DIV class="TITOL">Llistat de missatges (<a href="<?php echo url_for('gestio/gMissatges?accio=SF'); ?>">Veure missatges futurs</a>)</DIV>
-  		<table class="DADES">
-                <?php  
-                    if( $MISSATGES->getNbResults() == 0 ) echo '<TR><TD colspan="3">No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(MissatgesPeer::getCriteriaActiu(new Criteria(),$IDS)).' disponibles.</TD></TR>';
-                    else { 
-                       $dif = "";
-                      	foreach($MISSATGES->getResults() as $M) {
-                      	    if($dif != $M->getPublicacio('d/m/Y')):
-                      	    	echo '<TR><TD class="LINIA" style="height:20px" colspan="3"></TD></TR>';
-                      	    	echo '<TR><TD class="gray" colspan="3"><b>'.diaSetmanaText($M->getPublicacio('Y-m-d')).' </b></TD></TR>';                      	    	
-                      	    endif; 
-                      		$SPAN  = '<span>'.$M->getText().'</span>';
-                      		echo "<TR>                      				
-                      				<TD>".link_to(image_tag('intranet/Submenu2.png').' '.$M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') )."</TD>
-                      				<TD class=\"LINIA\">".$M->getUsuaris()->getNom().' '.$M->getUsuaris()->getCog1()."</TD>
-                      			  </TR>";
-                      		$dif = $M->getPublicacio('d/m/Y');  
-                      	}                    	
-                    }
-                ?>     			
-        <tr><td colspan="2" style="text-align:center">
-        	<?php echo setPager($MISSATGES,'gestio/gMissatges?a=a',$PAGINA); ?>         
-        </td></tr>
-  		</table>
-  	</DIV>
+  	<div class="REQUADRE">
+  	<div class="TITOL">Llistat de missatges (<a href="<?php echo url_for('gestio/gMissatges?accio=SF'); ?>">Veure missatges futurs</a>)</div>
+        <div class="DADES" style="width:650px;">
+         <?php  
+            if( $MISSATGES->getNbResults() == 0 ) echo '<div>No s\'ha trobat cap resultat d\'entre '.MissatgesPeer::doCount(MissatgesPeer::getCriteriaActiu(new Criteria(),$IDS)).' disponibles.</div>';
+            else { 
+                    $dif = "";
+                    foreach($MISSATGES->getResults() as $M) {                        
+                  	    if($dif != $M->getPublicacio('d/m/Y')):
+                  	    	echo '<div style="height:20px; clear:both;"></div>';
+                  	    	echo '<div class="gray" style="padding:4px; border-bottom:1px solid #CCCCCC;"><b>'.diaSetmanaText($M->getPublicacio('Y-m-d')).' </b></div>';                      	    	
+                  	    endif; 
+                  		$SPAN  = '<span>'.$M->getText().'</span>';
+                        
+                        if($M->getIsglobal()):
+
+                      		echo '<div style="border-bottom:1px solid #CCCCCC; background-color:#E4F7D9;">                      				
+                      				<div style="float:left; width:500px;"><div style="padding:4px">'.link_to(image_tag('intranet/Submenu2.png').' '.$M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') ).'</div></div>
+                      				<div style="float:left; width:150px;">
+                                        <div style="padding:4px"><b>'.$M->getUsuaris()->getNom().' '.$M->getUsuaris()->getCog1().'</b> de 
+                                        '.$M->getSiteNom().'</div>
+                                    </div>
+                                    <div style="clear:both"></div>
+                      			  </div>';
+                        
+                        else: 
+                        
+                      		echo '<div style="border-bottom:1px solid #CCCCCC">                      				
+                      				<div style="float:left; width:500px;"><div style="padding:4px">'.link_to(image_tag('intranet/Submenu2.png').' '.$M->getTitol().$SPAN,'gestio/gMissatges'.getParam( 'E' , $M->getMissatgeid() , $CERCA ) , array('class'=>'tt2') ).'</div></div>
+                      				<div style="float:left; width:150px;"><div style="padding:4px">'.$M->getUsuaris()->getNom().' '.$M->getUsuaris()->getCog1().'</div></div>
+                                    <div style="clear:both"></div>
+                      			  </div>';
+                                  
+                        endif;
+                  		$dif = $M->getPublicacio('d/m/Y');  
+                  	}                    	
+                }
+                    ?>     			
+            <div style="text-align:center; padding:5px;">
+            	<?php echo setPager($MISSATGES,'gestio/gMissatges?a=a',$PAGINA); ?>         
+            </div>                
+        
+        </div>
+        
+  	</div>
   	  
   <?php ENDIF; ?>
   
-      <DIV STYLE="height:40px;"></DIV>
+      <div style="height:40px;"></div>
                 
-<!--    </TD> -->    
+<!--    </td> -->    
     
     
 

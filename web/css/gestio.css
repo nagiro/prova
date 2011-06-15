@@ -58,6 +58,12 @@ DIV.text { font-size:11px; }
 .FORMULARI .missat_ok { background-color:#FFF5C1; height:30px; text-align:left; padding:5px; }
 .FORMULARI .missat_ko { background-color:red; color:white; height:30px; text-align:left; }
 .DADES { width:100%; border-collapse: collapse; font-size:11px; }
+
+.DADES .LINIA { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
+.DADES A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
+.DADES .PAR { background-color:#EEEEEE; }
+.DADES .IPAR { background-color:White; }
+
 .DADES TD { border-bottom:1px solid #CCCCCC; padding-top:3px; padding-bottom:3px; vertical-align:middle; }
 .DADES TD A { font-size:10px; text-decoration:none; color:black; font-weight:bold; }
 .DADES TD.PAR { background-color:#EEEEEE; }
