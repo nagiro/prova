@@ -1105,7 +1105,7 @@ class gestioActions extends sfActions
     $this->MODE = "USUARIS";
     $this->MISSATGE = $MISSATGE;
   }
-  
+    
   private function sendProvaMissatge($idM,$mail,$idS)
   {    		
     $OM = MissatgesmailingPeer::retrieveByPK($idM);
@@ -2102,8 +2102,20 @@ class gestioActions extends sfActions
                 $this->FMissatge->bind($request->getParameter('missatges'));                
                 if ($this->FMissatge->isValid()) { 
                 	$this->FMissatge->save();
-                	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());   
+                	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());
+                    
+                    //Si el missatge és global, enviarem un mail a tothom. 
+                    if($this->FMissatge->getObject()->getIsglobal()):                        
+                        $ADMIN = OptionsPeer::getString('MAIL_ADMIN',$this->IDS); //Carreguem el correu de l'administrador                    
+                        $OM = $this->FMissatge->getObject(); //Carreguem el missatge que hem entrat                        
+                        $MAILS = UsuarisPeer::getAdminMails(); //Carreguem els mails dels administradors
+                        $BODY = "L'usuari ".$OM->getUsuaris()->getNomComplet()." de ".$OM->getSiteNom()." ha enviat un missatge global.<br />Per poder-lo consultar entreu a l'Hospici a http://www.casadecultura.org/.<br /><br />Cordialment, l'Hospici."; //Enviem un missatge que ens porti al web
+                        $SUBJECT = 'Hospici | Nou missatge global';
+                        self::sendMail($ADMIN,$MAILS,$SUBJECT,$BODY); //Enviem el missatge.                                                                                                                                                                                             
+                    endif;
+                    
                 	$this->redirect('gestio/gMissatges?accio=I'); 
+                    
                 }                              	                                                                                
                 $this->MODE['EDICIO'] = true;              
                 break;
@@ -3917,17 +3929,20 @@ class gestioActions extends sfActions
   
    private function sendMail($from,$to,$subject,$body = "",$files = array())
    {
-   	
-		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
+   	    try{
+    		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
+    		
+    		foreach($files as $F):
+    			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
+    		endforeach;
+    		
+    		$swift_message->setBody($body,'text/html');	    
+        	
+    		$OK = $this->getMailer()->send($swift_message);
+        
+        } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',null,$OM); }
 		
-		foreach($files as $F):
-			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
-		endforeach;
-		
-		$swift_message->setBody($body,'text/html');
-		
-		return $this->getMailer()->send($swift_message);
-		
+        return $OK;
    }
    
    

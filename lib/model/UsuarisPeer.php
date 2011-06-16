@@ -268,5 +268,27 @@ class UsuarisPeer extends BaseUsuarisPeer
     else return 0;
     
   }
+
+  /**
+   * Aquesta funció retorna un array amb els mails dels administradors i el seu nom
+   * @return Array('mail'=>nom)
+   * */
+  static public function getAdminMails()
+  {
+    
+    $RET = array();
+    $C = new Criteria();
+    $C = self::getCriteriaActiu($C,null,true);
+    $C = UsuarisSitesPeer::getCriteriaActiu($C);
+    $C->addJoin(UsuarisSitesPeer::USUARI_ID, self::USUARIID);
+    $C->add(UsuarisSitesPeer::NIVELL_ID, NivellsPeer::ADMIN);
+    $C->addGroupByColumn(UsuarisPeer::EMAIL);
+    foreach(self::doSelect($C) as $OU):
+        $RET[$OU->getEmail()] = $OU->getNomComplet();
+    endforeach;            
+    
+    return $RET;
+    
+  }
   
 }
