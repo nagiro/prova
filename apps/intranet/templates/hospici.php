@@ -9,7 +9,7 @@
    ?>  
   
   <?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
-  <?php $BASE_I = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
+  <?php $BASE_I = OptionsPeer::getString('SF_WEBROOTURL',1).'images/hospici'; ?>
   
   <!-- Facebook & Twitter -->
     <script src="http://connect.facebook.net/ca_ES/all.js#xfbml=1"></script>

@@ -32,7 +32,7 @@ all:
   mailer:
     param:
       transport:
-        class: Swift_SendmailTransport
+        class: Swift_MailTransport
 
   routing:
     class: sfPatternRouting
