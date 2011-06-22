@@ -2105,15 +2105,18 @@ class gestioActions extends sfActions
                 	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());
                     
                     //Si el missatge és global, enviarem un mail a tothom. 
-                    if($this->FMissatge->getObject()->getIsglobal()):                        
+                    if($this->FMissatge->getObject()->getIsglobal() && $this->FMissatge->isNew()):
                         $ADMIN = OptionsPeer::getString('MAIL_ADMIN',$this->IDS); //Carreguem el correu de l'administrador                    
                         $OM = $this->FMissatge->getObject(); //Carreguem el missatge que hem entrat                        
                         $MAILS = UsuarisPeer::getAdminMails(); //Carreguem els mails dels administradors
-                        $BODY = "L'usuari ".$OM->getUsuaris()->getNomComplet()." de ".$OM->getSiteNom()." ha enviat un missatge global.<br />Per poder-lo consultar entreu a l'Hospici a http://www.casadecultura.org/.<br /><br />Cordialment, l'Hospici."; //Enviem un missatge que ens porti al web
-                        $SUBJECT = 'Hospici | Nou missatge global';
-                        self::sendMail($ADMIN,$MAILS,$SUBJECT,$BODY); //Enviem el missatge.                                                                                                                                                                                             
+                        $BODY = OptionsPeer::getString('BODY_MAIL_MISSATGE_GLOBAL',$this->IDS);
+                        $BODY = str_replace('{NOM}',$OM->getUsuaris()->getNomComplet(),$BODY);
+                        $BODY = str_replace('{SITE}',$OM->getSiteNom(),$BODY);
+                        $BODY = str_replace('{ENLLAC}',$this->getController()->genUrl('gestio/gMissatges?accio=E&IDM='.$OM->getMissatgeid(),true),$BODY);
+                        $SUBJECT = 'Hospici : Nou missatge global';
+                        self::sendMail($ADMIN,$MAILS,$SUBJECT,$BODY); //Enviem el missatge.                        
                     endif;
-                    
+
                 	$this->redirect('gestio/gMissatges?accio=I'); 
                     
                 }                              	                                                                                
@@ -3940,7 +3943,7 @@ class gestioActions extends sfActions
         	
     		$OK = $this->getMailer()->send($swift_message);
         
-        } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',null,$OM); }
+        } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',null,null); }
 		
         return $OK;
    }

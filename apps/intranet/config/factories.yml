@@ -19,20 +19,20 @@ test:
     param:
       send_http_headers: false
 
-  mailer:
-    param:
-      delivery_strategy: none
+#  mailer:
+#    param:
+#      delivery_strategy: none
 
-dev:
-  mailer:
-    param:
-      delivery_strategy: none
+#dev:
+#  mailer:
+#    param:
+#      delivery_strategy: none
 
 all:
   mailer:
     param:
       transport:
-        class: Swift_MailTransport
+        class: Swift_SendmailTransport
 
   routing:
     class: sfPatternRouting
