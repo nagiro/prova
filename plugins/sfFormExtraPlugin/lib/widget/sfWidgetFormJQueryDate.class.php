@@ -37,8 +37,8 @@ class sfWidgetFormJQueryDate extends sfWidgetFormDate
   protected function configure($options = array(), $attributes = array())
   {
     $this->addOption('image', false);
-    $this->addOption('config', "{ firstDay:0, monthNames:['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'] , dayNamesMin:['Dll', 'Dm', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg'] }");
-    $this->addOption('culture', 'es');
+    $this->addOption('config', "{ firstDay:1, monthNames:['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'] , dayNamesMin:['Dg', 'Dll', 'Dm', 'Dc', 'Dj', 'Dv', 'Ds'] }");
+    $this->addOption('culture', 'ca');
 
     parent::configure($options, $attributes);
 

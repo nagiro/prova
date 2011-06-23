@@ -1,6 +1,6 @@
 <?php use_helper('Presentation'); ?>
 
-<STYLE>
+<style>
 .cent { width:100%; }
 .vuitanta { width:80%; }
 .cinquanta { width:50%; }
@@ -11,16 +11,16 @@
 	.row_title { width:20%; }
 	.row_field input { width:100%; } 
 
-</STYLE>
+</style>
 
 
-   <TD colspan="3" class="CONTINGUT_ADMIN">
+   <td colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'INFORMES')); ?>
       
-        <DIV class="REQUADRE">
-        <DIV class="TITOL">Informes disponibles</DIV>
-      	<TABLE class="DADES">
+        <div class="REQUADRE">
+        <div class="TITOL">Informes disponibles</div>
+      	<table class="DADES">
       		<tr><th>Nom</th><th>Descripció</th><th>Enllaç</th><th>Parametres</th></tr>
       		<?php if($POTVEURE[1]): ?>
       			<tr><td>Comptabilitat</td><td>Resum de conceptes i factures</td><td><a target="_NEW" href="http://192.168.0.3/comptabilitat/informe_conceptes.php">Anar-hi</a></td><td>Cap</td></tr>
@@ -38,8 +38,8 @@
    				</td></tr>
                 <tr><td>Programació</td><td>Document Word amb les activitats</td><td><a href="<?php echo url_for('gestio/gInformes?accio=RESUM_ACTIVITATS') ?>">Anar-hi</a></td><td>Cap</td></tr>
                 <tr><td>Programació</td><td>Planificació d'ocupació d'espais i material</td><td><a href="<?php echo url_for('gestio/gEstadistiques?accio=CC') ?>">Anar-hi</a></td><td>Cap</td></tr>
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
       
       
       <?php if(isset($FACTIVITATS)) echo FLlistatWord($FACTIVITATS); ?>
@@ -48,9 +48,9 @@
             
       <?php if(isset($LOA,$IDS)) echo LlistatWord($LOA,$IDS); ?>
       
-      <DIV STYLE="height:40px;"></DIV>
+      <div style="height:40px;"></div>
                 
-    </TD>          
+    </td>          
       
 
 <!-- Comença el bloc de matrícules per dia -->
@@ -141,9 +141,10 @@
             $title = $OA->getTmig();
             $body = $OA->getDmig();
             $horaris = generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
+            $link = url_for('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$OA->getActivitatid());
             
             $RET .= "<div style=\"margin-bottom:20px\">                                                
-                        <div class=\"title\"><b>{$title}</b></div>
+                        <div class=\"title\"><b>{$title}</b> (<a href=\"{$link}\">edita</a>)</div>
                         <div><i>{$cicle}</i></div>
                         <div><i>{$horaris}</i></div>                        
                         <div>{$img}{$body}</div>                                                

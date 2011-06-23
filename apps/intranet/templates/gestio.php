@@ -19,7 +19,7 @@
 
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-1.4.2.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/tiny_mce/tiny_mce.js'; ?>"></script>            
-  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>  
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
