@@ -2105,7 +2105,7 @@ class gestioActions extends sfActions
                 	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());
                     
                     //Si el missatge és global, enviarem un mail a tothom. 
-                    if($this->FMissatge->getObject()->getIsglobal() && $this->FMissatge->isNew()):
+                    if($this->FMissatge->getObject()->getIsglobal()):
                         $ADMIN = OptionsPeer::getString('MAIL_ADMIN',$this->IDS); //Carreguem el correu de l'administrador                    
                         $OM = $this->FMissatge->getObject(); //Carreguem el missatge que hem entrat                        
                         $MAILS = UsuarisPeer::getAdminMails(); //Carreguem els mails dels administradors
@@ -3943,7 +3943,7 @@ class gestioActions extends sfActions
         	
     		$OK = $this->getMailer()->send($swift_message);
         
-        } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',null,null); }
+        } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }
 		
         return $OK;
    }
