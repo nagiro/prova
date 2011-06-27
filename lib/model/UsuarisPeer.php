@@ -284,7 +284,7 @@ class UsuarisPeer extends BaseUsuarisPeer
     $C->add(UsuarisSitesPeer::NIVELL_ID, NivellsPeer::ADMIN);
     $C->addGroupByColumn(UsuarisPeer::EMAIL);
     foreach(self::doSelect($C) as $OU):
-        $RET[$OU->getEmail()] = $OU->getNomComplet();
+        $RET[$OU->getEmail()] = $OU->getEmail();
     endforeach;            
     
     return $RET;

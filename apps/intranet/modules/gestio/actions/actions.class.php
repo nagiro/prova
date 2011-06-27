@@ -3931,19 +3931,29 @@ class gestioActions extends sfActions
   
   
    private function sendMail($from,$to,$subject,$body = "",$files = array())
-   {
-   	    try{
-    		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
-    		
-    		foreach($files as $F):
-    			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
-    		endforeach;
-    		
-    		$swift_message->setBody($body,'text/html');	    
-        	
-    		$OK = $this->getMailer()->send($swift_message);
+   {    
+        //Si entrem un mail que no és en format array, l'inicialitzem
+        $mails = $to;
+        if(!is_array($to)) $mails = array($to);
         
-        } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }
+        //Enviem tots els correus 
+        foreach($mails as $to):
+        
+            //Comencem l'enviament de correus als que el tinguin correcte.
+       	    try{
+        		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
+        		
+        		foreach($files as $F):
+        			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
+        		endforeach;
+        		
+        		$swift_message->setBody($body,'text/html');	    
+            	
+        		$OK = $this->getMailer()->send($swift_message);
+            
+            } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }
+            
+        endforeach;
 		
         return $OK;
    }

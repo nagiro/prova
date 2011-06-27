@@ -77,7 +77,7 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::addLogAction()
    * 
-   * Afegeix un registre al log amb alguna acció.
+   * Afegeix un registre al log amb alguna acció. Versió no estàtica. .
    * 
    * @param mixed $accio
    * @param mixed $model
@@ -86,9 +86,24 @@ class myUser extends sfBasicSecurityUser
    * @return void
    */
   public function addLogAction($accio,$model,$dadesBefore = null ,$dadesAfter = null)
+  {        
+    return self::addLogActionStatic($this->getSessionPar('idU'),$accio,$model,$dadesBefore,$dadesAfter);      	
+  }  
+
+  /**
+   * myUser::addLogAction()
+   * 
+   * Afegeix un registre al log amb alguna acció.
+   * 
+   * @param mixed $accio
+   * @param mixed $model
+   * @param mixed $dadesBefore
+   * @param mixed $dadesAfter
+   * @return void
+   */
+  static public function addLogActionStatic($idU, $accio,$model,$dadesBefore = null ,$dadesAfter = null)
   {    
     
-    $idU = $this->getSessionPar('idU');
   	$time = date('Y-m-d H:i',time());
   
     $REG = "\n";
@@ -102,6 +117,7 @@ class myUser extends sfBasicSecurityUser
     file_put_contents('log.txt', $REG, FILE_APPEND);
   	
   }  
+
 
 
   /**
@@ -238,6 +254,6 @@ class myUser extends sfBasicSecurityUser
     ));
     
     return $facebook;
-  }
+  }  
   
 }
