@@ -456,7 +456,7 @@ class gestioActions extends sfActions
         
         //Fem un login via facebook
         case 'FB_LOGIN':
-                $FB = $this->f_FbAuth(false);
+                $FB = $this->f_FbAuth(false);                
                 $USUARI = UsuarisPeer::getUserFromFacebook($FB['user']['id']);                                                
                 if($USUARI instanceof Usuaris):        
                     $this->getUser()->setSessionPar( 'idS' , $this->IDS );                    

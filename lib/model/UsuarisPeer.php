@@ -254,8 +254,12 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   static public function getUserFromFacebook($fb_id){
     $C = new Criteria();
-    $C->add(UsuarisPeer::FACEBOOK_ID, $fb_id);
-    return self::doSelectOne($C);
+    if($fb_id > 0):
+        $C->add(UsuarisPeer::FACEBOOK_ID, $fb_id);
+        return self::doSelectOne($C);
+    else: 
+        return null;
+    endif;
   }
   
   /**
