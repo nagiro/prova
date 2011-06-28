@@ -248,9 +248,9 @@ class myUser extends sfBasicSecurityUser
   static public function getFbObject()
   {    
     $facebook = new Facebook(array(
-      'appId'  => '150902508316992',
-      'secret' => '2006c7241ff70b494d405bd6fd641a49',
-      
+      'appId' => '118293361522662',
+      'secret' => '186aca12e3c6d36c2a8f45c9acc8545b',
+      'cookie' => true,      
     ));
     
     return $facebook;
