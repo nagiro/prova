@@ -249,7 +249,8 @@ class myUser extends sfBasicSecurityUser
   {    
     $facebook = new Facebook(array(
       'appId' => '118293361522662',
-      'secret' => '186aca12e3c6d36c2a8f45c9acc8545b'            
+      'secret' => '186aca12e3c6d36c2a8f45c9acc8545b',
+      'cookie' => true
     ));
     
     return $facebook;
