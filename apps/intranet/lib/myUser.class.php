@@ -255,4 +255,36 @@ class myUser extends sfBasicSecurityUser
     return $facebook;
   }  
   
+
+  /**
+   * Facebook Auth
+   * @return array('id' = 0,'logUrl')
+   * */    
+  static public function f_FbAuth($logout = false , $redirect_uri = null)
+  {            
+    
+    $RET = array( 'user' => 0 , 'logUrl' => '' );
+    $A = array('redirect_uri'=>$redirect_uri);
+    
+    #Creem l'objecte facebook        
+    $facebook = myUser::getFbObject();       
+    
+    # Carreguem l'usuari que tenim en sessió (0 si no existeix)
+    $uid = $facebook->getUser();
+    
+    # Generem la url de login
+    $RET['logUrl'] = $facebook->getLoginUrl($A);
+
+    # Si l'usuari existeix en sessió, carreguem les seves dades
+    if($uid){
+        try {
+            #Provem a veure si l'usuari existeix
+            $RET['user'] = $facebook->api('/me');
+          } catch (FacebookApiException $e) {}
+    }     
+    
+    return $RET;
+  
+  }
+
 }

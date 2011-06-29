@@ -110,7 +110,7 @@ class gestioActions extends sfActions
     //Agafem el codi de facebook de l'usuari
     $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
     $this->PARS = array();    
-    $this->PARS = $this->f_FbAuth(false,$this->getController()->genUrl('@fb_user_link',true)); //Carreguem les dades del facebook.                
+    $this->PARS = myUser::f_FbAuth(false,$this->getController()->genUrl('@fb_user_link',true)); //Carreguem les dades del facebook.                    
     
         
     if($request->hasParameter('BGESTIONAUSUARI')) $this->accio = 'GESTIONA_USUARI';
@@ -382,47 +382,6 @@ class gestioActions extends sfActions
      
   }
 
-
-  /**
-   * Facebook Auth
-   * @return array('id' = 0,'logUrl')
-   * */  
-  
-  public function f_FbAuth($logout = false , $redirect_uri = null)
-  {            
-    
-    $RET = array( 'user' => 0 , 'logUrl' => '' );        
-    $facebook = myUser::getFbObject();
-        
-    $user = $facebook->getUser();
-            
-    if ($user) {
-      try {
-        // Proceed knowing you have a logged in user who's authenticated.
-        $user_profile = $facebook->api('/me');
-      } catch (FacebookApiException $e) {
-        error_log($e);
-        $user = null;
-      }
-    }
-    
-    //Si hem entrat una redirecció, doncs ho posem a l'adreça
-    $A = array();
-    if(!is_null($redirect_uri)) $A['redirect_uri'] = $redirect_uri;
-    
-    // Si tenim l'usuari autentificat, fem un logout. 
-    if ($user && $logout) {
-      $RET['logUrl'] = $facebook->getLogoutUrl($A);
-    } else {
-      $RET['logUrl'] = $facebook->getLoginUrl($A); //No ho utilitzarem mai    
-    }
-    
-    if(isset($user_profile)) $RET['user'] = $user_profile;             
-    
-    return $RET;   
-    
-  }
-  
   
 /**
  * Executem el login del modul administrador
@@ -436,7 +395,7 @@ class gestioActions extends sfActions
      $this->IDS = $this->getUser()->ParReqSesForm($request,'idS',1);     //Per defecte entro al IDS = 1 que és la Casa de Cultura de Girona.               
      $this->FLogin = new LoginForm(array('site'=>$this->IDS,'nick'=>"",'password'=>''));      
      $this->ERROR = "";  
-     $this->FB = $this->f_FbAuth(false,$this->getController()->genUrl('@fb_login',true)); //Retorna l'usuari que s'ha autentificat amb facebook
+     $this->FB = myUser::f_FbAuth(false,$this->getController()->genUrl('@fb_login',true)); //Retorna l'usuari que s'ha autentificat amb facebook
                               
      if($request->hasParameter('BLOGIN')) $this->accio = "LOGIN";
      if($request->hasParameter('BNEWUSER')) $this->accio = "NEW_USER";
@@ -456,7 +415,7 @@ class gestioActions extends sfActions
         
         //Fem un login via facebook
         case 'FB_LOGIN':
-                $FB = $this->f_FbAuth(false);                
+                $FB = myUser::f_FbAuth(false);                
                 $USUARI = UsuarisPeer::getUserFromFacebook($FB['user']['id']);                                                
                 if($USUARI instanceof Usuaris):        
                     $this->getUser()->setSessionPar( 'idS' , $this->IDS );                    
@@ -3976,7 +3935,7 @@ class gestioActions extends sfActions
     //Agafem el codi de facebook de l'usuari
     $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
     $this->PARS = array();    
-    $this->PARS = $this->f_FbAuth(false,$this->getController()->genUrl('@fb_link',true)); //Carreguem les dades del facebook.
+    $this->PARS = myUser::f_FbAuth(false,$this->getController()->genUrl('@fb_link',true)); //Carreguem les dades del facebook.
     $this->ERROR = "";                
     
     if($request->hasParameter('BNEWOPTION')) $this->accio = 'NEW_OPTION';
