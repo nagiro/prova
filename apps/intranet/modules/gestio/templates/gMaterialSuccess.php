@@ -1,5 +1,5 @@
 <?php use_helper('Form')?>
-<STYLE>
+<style>
 .cent { width:100%; }
 .vuitanta { width:80%; }
 .cinquanta { width:50%; }
@@ -10,7 +10,7 @@
 	.row_title { width:20%; }
 	.row_field input { width:100%; } 
 
-</STYLE>
+</style>
 
 <script type="text/javascript">
 
@@ -114,15 +114,18 @@
       	<TABLE class="DADES">
  			<?php 
 				if( empty( $MATERIALS ) ):
-					echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat material disponible.</TD></TR>';
+					echo '<tr><td class="LINIA" colspan="3">No s\'ha trobat material disponible.</td></tr>';
 				else: 
 					$i = 0;
+                    echo "<tr><td class=\"titol\">Id</td><td class=\"titol\">Nom</td><td class=\"titol\">Unit.</td></tr>";                                                                    
 					foreach($MATERIALS->getResults() as $M):
-                      	$PAR = ParImpar($i++);	                      	
-                      	echo "<TR>
-                      			<TD class=\"$PAR\">".link_to($M->getIdentificador(), 'gestio/gMaterial'.getParam('E',$M->getIdmaterial(),$TIPUS,$PAGINA))."</TD>
-                      			<TD class=\"$PAR\">{$M->getNom()}</TD>                      			
-                      		  </TR>";
+                      	$PAR = ParImpar($i++);
+                        $extres = (!$M->getDisponible())?'style="text-decoration: line-through;"':"";                        
+                      	echo "<tr>                            
+                      			<td class=\"$PAR\" $extres>".link_to($M->getIdentificador(), 'gestio/gMaterial'.getParam('E',$M->getIdmaterial(),$TIPUS,$PAGINA))."</td>
+                      			<td class=\"$PAR\" $extres>{$M->getNom()}</td>
+                                <td class=\"$PAR\" $extres>{$M->getUnitats()}</td>                      			
+                      		  </tr>";
                     endforeach;
                  endif;                     
              ?>      

@@ -93,7 +93,9 @@ class MaterialPeer extends BaseMaterialPeer
     $C = new Criteria();
     $C = self::getCriteriaActiu($C,$idS);
     
-    if($MATERIALGENERIC > 0) $C->add(self::MATERIALGENERIC_IDMATERIALGENERIC , $MATERIALGENERIC);    
+    if($MATERIALGENERIC > 0) $C->add(self::MATERIALGENERIC_IDMATERIALGENERIC , $MATERIALGENERIC);
+    $C->addDescendingOrderByColumn(self::DISPONIBLE);
+    $C->addAscendingOrderByColumn(self::IDENTIFICADOR);    
     
     $pager = new sfPropelPager('Material', 10);
 	$pager->setCriteria($C);

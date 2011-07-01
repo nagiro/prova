@@ -767,7 +767,7 @@ abstract class BaseFacebook
                      'using bundled information');
       curl_setopt($ch, CURLOPT_CAINFO,
                   dirname(__FILE__) . '/fb_ca_chain_bundle.crt');
-      $result = curl_exec($ch);
+      $result = curl_exec($ch);      
     }
 
     if ($result === false) {

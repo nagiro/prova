@@ -111,8 +111,7 @@ class gestioActions extends sfActions
     $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
     $this->PARS = array();    
     $this->PARS = myUser::f_FbAuth(false,$this->getController()->genUrl('@fb_user_link',true)); //Carreguem les dades del facebook.                    
-    
-        
+            
     if($request->hasParameter('BGESTIONAUSUARI')) $this->accio = 'GESTIONA_USUARI';
     if($request->hasParameter('BGUARDAUSUARI')) $this->accio = 'GUARDA_USUARI';
     if($request->hasParameter('BMATRICULA')) $this->accio = 'MATRICULA';
@@ -2191,7 +2190,7 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS'); 
         
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
-    $this->CERCA = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>1));    
+    $this->CERCA = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>1));        
     $this->TIPUS = $this->CERCA['text'];
     
     //Inicialitzem el formulari de cerca
