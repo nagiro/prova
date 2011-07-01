@@ -421,7 +421,7 @@
       	<table class="DADES">
  			<?php 	if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; 
  					$i = 0; $j=0; $Tall = 30; 					  			   			
-					foreach($ACTIVITATS as $A):			
+					foreach($ACTIVITATS as $idH => $A):			
 	                  	if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
 	                    
 		                  	$AVIS = ""; $ESP = ""; $MAT = "";                              	                                                        
@@ -430,9 +430,11 @@
 		                  	if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
 		                  	$j = 1;
 		                  	$PAR = ParImpar($j++);
-                                              	                            
+                            $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
+                            $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
+                            $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";                                                                           	                            
 	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
-		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px')).$AVIS.'</td></tr>';		                  	
+		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
 		                  	echo '	<TR>                      						               							                	
 		                  				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
 					               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>

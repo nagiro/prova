@@ -97,7 +97,7 @@ class MaterialPeer extends BaseMaterialPeer
     $C->addDescendingOrderByColumn(self::DISPONIBLE);
     $C->addAscendingOrderByColumn(self::IDENTIFICADOR);    
     
-    $pager = new sfPropelPager('Material', 10);
+    $pager = new sfPropelPager('Material', 40);
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);
 	$pager->init();  	
