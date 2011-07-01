@@ -150,7 +150,7 @@
         if( (isset($MODE['ACTIVITAT_CICLE']) || isset($MODE['ACTIVITAT_ALONE'])) ){            
             if( isset($FActivitat) && isset($MODE['ACTIVITAT_EDIT']) ){ formEditaActivitat($IDA,$FActivitat); }
             if( isset($FHorari)) { formEditaHoraris($IDA,$FHorari,$MISSATGE,$EXTRES,$IDS);  }
-            if( isset($MODE['HORARI']) ){ formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS);  }            
+            if( isset($MODE['HORARI']) ){ formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS,$FHorari);  }            
             if( isset($MODE['DESCRIPCIO']) ) { formEditaDescripcio($IDA,$FActivitat); }
             formLlistaActivitatsEdicio($CICLE,$ACTIVITATS,$IDS);                    
         }
@@ -261,7 +261,7 @@
 <?php } ?>
 
 	
-<?php function formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS){ ?>    
+<?php function formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS,$FHorari=null){ ?>    
     	    	            
 	<div class="REQUADRE">
 	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&form=0&IDA='.$IDA); ?></div>	
@@ -271,9 +271,10 @@
 		<div class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&nou=2',array('class'=>'blau')) ?> )</div>
       	<table class="DADES">
  			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
-			<?php 	foreach($HORARIS as $H): $M = $H->getArrayHorarisEspaisMaterial(); $HE = $H->getArrayHorarisEspaisActiusAgrupats();                    
-						echo '<TR>
-								<TD class="" width="">'.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&IDH='.$H->getHorarisid()).'</TD>
+			<?php 	foreach($HORARIS as $H): $M = $H->getArrayHorarisEspaisMaterial(); $HE = $H->getArrayHorarisEspaisActiusAgrupats();                        
+                        $sel = (!is_null($FHorari) && $H->getHorarisid() == $FHorari->getObject()->getHorarisId())?"&middot; ":"";                    
+						echo '<TR>                                
+								<TD class="" width="">'.$sel.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&IDH='.$H->getHorarisid()).'</TD>
 								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
 								<TD class="" width="">'.$H->getHorapre('H:i').'</TD>
 								<TD class="" width="">'.$H->getHorainici('H:i').'</TD>
