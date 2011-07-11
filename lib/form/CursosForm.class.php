@@ -5,13 +5,18 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Your name here
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
 class CursosForm extends sfFormPropel
 {
   public function setup()
   {
+    
+    $this->WEB_IMATGE = 'images/cursos/'; 
+  	$this->WEB_PDF    = 'images/cursos/';   
+    $this->BASE       = sfConfig::get('sf_websysroot'); 
+    
     $this->setWidgets(array(
       'idCursos'        => new sfWidgetFormInputHidden(),
       'Codi'            => new sfWidgetFormInputText(array(),array('style'=>'width:100px;')),
@@ -32,6 +37,7 @@ class CursosForm extends sfFormPropel
       'site_id'         => new sfWidgetFormInputHidden(),
       'actiu'           => new sfWidgetFormInputHidden(),
       'isEntrada'       => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),
+      'PDF'             => new sfWidgetFormInputFileEditableMy(array('file_src'=>'/'.$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
     ));
 
     $this->setValidators(array(
@@ -54,6 +60,7 @@ class CursosForm extends sfFormPropel
       'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'isEntrada'       => new sfValidatorBoolean(array('required'=>true),array()),
+      'PDF'             => new sfValidatorFile(array('path'=>$this->BASE.$this->WEB_PDF , 'required' => false)),
     ));
 
     
@@ -73,6 +80,7 @@ class CursosForm extends sfFormPropel
       'DataInici'       => 'Data d\'inici del curs: ',
       'VisibleWEB'      => 'Visible al web?',
       'isEntrada'       => 'Reserva per internet?',
+      'PDF'             => 'PDF: ',
     ));
     
     
@@ -87,6 +95,30 @@ class CursosForm extends sfFormPropel
   public function getModelName()
   {
     return 'Cursos';
+  }
+
+  public function save($conn = null)
+  {
+
+  	parent::save();
+  	
+  	$OC = $this->getObject();
+  	
+  	$BASE = $this->BASE.$this->WEB_PDF;    
+  	 	
+  	if($OC instanceof Cursos):
+  	  			    
+	    $P = $OC->getPdf();
+  		if(!empty($P) && file_exists($BASE.$P)):
+  			$nom = $OC->getIdcursos().'.pdf';
+		  	rename($BASE.$P,$BASE.$nom);
+		    if( $P <> $nom ) unlink($BASE.$P);
+		    $OC->setPdf($nom);
+	    endif;
+	endif;
+
+  	$OC->save();  	
+
   }
 
 }

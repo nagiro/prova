@@ -382,7 +382,7 @@
 		$OOM = $NOTICIA->getAppBlogMultimediaEntriessJoinAppBlogsMultimedia(new Criteria());						
 		if(isset($OOM[0])):
 			$OOM = $OOM[0]->getAppBlogsMultimedia();
-			$img = '<img class="image_gran" align="LEFT" src="'.sfConfig::get('sf_webroot').'images/blogs/'.$OOM->getUrl().'" alt="'.$OOM->getDesc().'" />';
+			$img = '<img class="image_gran" align="LEFT" src="'.$BASE.'images/blogs/'.$OOM->getUrl().'" alt="'.$OOM->getDesc().'" />';
 			$text2 = $NOTICIA->getBody();				
 			$text = $img.$text2;
 		else:
@@ -409,7 +409,7 @@
 			$OOM = $OO->getAppBlogMultimediaEntriessJoinAppBlogsMultimedia(new Criteria());						
 			if(isset($OOM[0])):
 				$OOM = $OOM[0]->getAppBlogsMultimedia();
-				$img = '<img class="image" align="LEFT" src="'.sfConfig::get('sf_webroot').'images/blogs/'.$OOM->getUrl().'" alt="'.$OOM->getDesc().'" />';
+				$img = '<img class="image" align="LEFT" src="'.$BASE.'images/blogs/'.$OOM->getUrl().'" alt="'.$OOM->getDesc().'" />';
 				$text2 = substr($OO->getBody(),0,150);				
 				$text = $img.$text2.'...';
 			else:

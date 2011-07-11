@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage apps
- * @author     Your name here
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: actions.class.php 12479 2008-10-31 10:54:40Z fabien $
  */
 class appsActions extends sfActions

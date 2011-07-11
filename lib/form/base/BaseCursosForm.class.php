@@ -34,6 +34,7 @@ abstract class BaseCursosForm extends BaseFormPropel
       'actiu'           => new sfWidgetFormInputText(),
       'activitat_id'    => new sfWidgetFormInputText(),
       'isEntrada'       => new sfWidgetFormInputText(),
+      'PDF'             => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
@@ -57,6 +58,7 @@ abstract class BaseCursosForm extends BaseFormPropel
       'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'activitat_id'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'isEntrada'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'PDF'             => new sfValidatorString(),
     ));
 
     $this->widgetSchema->setNameFormat('cursos[%s]');

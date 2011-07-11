@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Your name here
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormGeneratedTemplate.php 16976 2009-04-04 12:47:44Z fabien $
  */
 class BaseCluberForm extends BaseFormPropel

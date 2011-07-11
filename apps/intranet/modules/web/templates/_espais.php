@@ -32,8 +32,8 @@
     	            echo '<div class="col1">Fotografies: </div>';
                     echo '<div class="col2">';
                     foreach($OE->getFotos() as $OM):
-                        $URL = sfConfig::get('sf_webroot').'images/multimedia/'.$OM->getUrl();
-                        $URL_L = str_replace('.jpg','-L.jpg',$URL);                                        
+                        $URL = OptionsPeer::getString('SF_WEBROOT',1).'images/multimedia/'.$OM->getUrl();
+                        $URL_L = str_replace('.jpg','-L.jpg',$OE->getSiteid());                                        
                         echo '<a class="thickbox" title="'.$OE->getNom().'" href="'.$URL_L.'">
                               <img class="fotoEspai" src="'.$URL.'" /></a>';       
                     endforeach;                

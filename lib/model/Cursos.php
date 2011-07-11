@@ -26,8 +26,6 @@ class Cursos extends BaseCursos
   public function getMatriculats()
   {
      $C = new Criteria(); 
-//     $C->addOr(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_NO_PAGAT );
-//     $C->addOr(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_PAGAT );
      $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
      return self::getMatriculess($C);
   }
@@ -46,6 +44,13 @@ class Cursos extends BaseCursos
      $C1->addOr($C2); $C->add($C1);
      $C->add(MatriculesPeer::CURSOS_IDCURSOS, $this->getIdcursos());     
      return MatriculesPeer::doCount($C);
+  }
+ 
+  public function isPle()
+  {
+    $RS = $this->getPlacesArray();
+    if($RS['OCUPADES'] < $RS['TOTAL']) return true;
+    else return false;    
   }
  
   public function getPlacesArray()

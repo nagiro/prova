@@ -47,11 +47,13 @@
         		<li><a href="#tabs-2">Espais</a></li>        		
                 <li><a href="#tabs-3">Material genèric</a></li>
                 <li><a href="#tabs-4">Autentificacions</a></li>
+                <li><a href="#tabs-5">Entitat</a></li>
         	</ul>                        
         	<div id="tabs-1"> <?php echo OptionsTab($FOPTIONS); ?> </div>
         	<div id="tabs-2"> <?php echo EspaisTab($FESPAIS); ?> </div>              	
             <div id="tabs-3"> <?php echo MaterialTab($FMATERIAL); ?> </div>
             <div id="tabs-4"> <?php echo AutentificacioTab($PARS,$FBI,$ERROR); ?> </div>
+            <div id="tabs-5"> <?php echo EntitatTab($FENTITAT); ?> </div>
         </div>
     
     </div>
@@ -60,6 +62,28 @@
 <DIV STYLE="height:40px;"></DIV>
 
 <?php 
+
+    /**
+     * Modificació de les dades de l'entitat. Logo i URL del web. 
+     * */
+    function EntitatTab($FENTITAT)
+    {
+                
+        $RET = '
+            <form id="FENTITAT" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">         	 	                                    
+                <table class="FORMULARI">                    
+                '.$FENTITAT.'                    
+                </table>
+                <div style="text-align:right">
+                    <button type="submit" name="BSAVESITE" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                        '.image_tag('template/disk.png').' Guardar i sortir
+                    </button>
+                </div>                                                                                                            
+            </form>';
+                     
+        return $RET;
+        
+    }
 
     /**
      * Autentificacio Tab. Els canvis aquí també s'han d'aplicar a uGestio

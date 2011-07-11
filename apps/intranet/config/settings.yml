@@ -48,17 +48,18 @@ all:
     # Enable the database manager
     use_database:           true    
     
-    webroot:                /web_beta/
-    websysroot:             /home/informatica/www/intranet/beta/web/
+    webroot:                /
+    # websysroot:             /home/informatica/www/intranet/beta/web/
+    websysroot:             C:\Documents and Settings\casacultura\Escritorio\htdocs\trunk\intranet\web\
     webappdocuments:        appsupload/documents/
-    webrooturl:             http://servidor.casadecultura.org/web_beta/
+    webrooturl:             http://www.casadecultura.org/
     timeout:                84600
-    webdomain:              http://servidor.casadecultura.org
+    webdomain:              http://www.casadecultura.org
     
   .actions:
     login_module: gestio
     login_action: uLogin
-    
+        
     error_404_module: web
     error_404_action: notfound
     

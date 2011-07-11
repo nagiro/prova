@@ -617,7 +617,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     //Hem de buscar segons idCategoria.
     $categoria = (!is_null($idCategoria) && $idCategoria > 0)?' AND a.TipusActivitat_idTipusActivitat = '.$idCategoria:'';
     
-    $d = hospiciActions::getDatesCercadorHospici($idData,$aDates);
+    $d = webActions::getDatesCercadorHospici($idData,$aDates);
     $datai = $d['datai']; $dataf = $d['dataf'];
 
     $data = " AND h.Dia >= '".$datai."' AND h.Dia <= '".$dataf."'";                        

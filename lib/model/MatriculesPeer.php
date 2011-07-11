@@ -11,7 +11,7 @@ class MatriculesPeer extends BaseMatriculesPeer
 {
 
    const ACCEPTAT_PAGAT = "8";
-   const ACCEPTAT_NO_PAGAT = " ";
+   const ACCEPTAT_NO_PAGAT = "12";
    const EN_ESPERA = "14";   
    const ERROR = "10";
    const BAIXA = "9";
@@ -30,7 +30,74 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TARGETA         = '20';
    const PAGAMENT_TELEFON         = '23';
    const PAGAMENT_TRANSFERENCIA   = '24';
-   
+
+    static public function hasMatriculaUsuari($idU,$idC,$idS)
+    {
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        $C->add(MatriculesPeer::CURSOS_IDCURSOS, $idC);
+        $C->add(self::USUARIS_USUARIID, $idU);                                                        
+        return CursosPeer::doCount($C);         
+    }
+
+    /**
+     * Funció que carrega les dades i guarda una matrícula
+     * @param $idU Identificador d'usuari
+     * @param $idC Identificador de curs
+     * @param $idM Identificador de matrícula si volem reutilitzar-la
+     * @param $comment Comentari a guardar
+     * @return new Matricules() o $error ( Codi d'error ) 
+     * */
+    static public function saveNewMatricula($idU,$idC,$idM = 0,$comment = "")
+    {
+        
+        //Carreguem les dades de l'usuari
+        $OU = UsuarisPeer::retrieveByPK($idU);
+        $OC = CursosPeer::retrieveByPK($idC);
+                
+        //Si tenim un codi de matrícula, la carreguem.
+        $OM = self::retrieveByPK($idM);
+        if(!($OM instanceof Matricules)) $OM = new Matricules();         
+                                                        
+        //Si ho hem carregat tot correctament, seguim
+        if($OU instanceof Usuaris && $OC instanceof Cursos && $OM instanceof Matricules):
+
+            //Comprovem si la matrícula ja s'ha fet.            
+            if(self::hasMatriculaUsuari($idU,$idC,$OC->getSiteid()) > 0):
+                $OM = 1; //Retorna aquest error quan ja hi ha una matrícula del mateix curs per aquesta persona
+            else: 
+            
+                //Mirem si hi ha places i marquem l'estat 
+                $PLACES = $OC->getPlacesArray();
+                if($PLACES['OCUPADES'] < $PLACES['TOTAL']):
+                    $OM->setPagat(0);
+                    $OM->setEstat(self::ACCEPTAT_NO_PAGAT);
+                else: 
+                    $OM->setPagat(0);
+                    $OM->setEstat(self::EN_ESPERA);
+                endif;        
+    
+                $OM->setUsuarisUsuariid($OU->getUsuariid());
+                $OM->setCursosIdcursos($OC->getIdCursos());            
+                $OM->setComentari($comment);
+                $OM->setDatainscripcio(date('Y-m-d h:i',time()));            
+                $OM->setTreduccio(self::REDUCCIO_CAP);
+                $OM->setTpagament(self::PAGAMENT_METALIC);
+                $OM->setSiteId($OC->getSiteid());
+                $OM->setActiu(true);
+                $OM->save();   
+                              
+                //Un cop feta la matrícula, hem de donar visibilitat a l'usuari
+                UsuarisPeer::addSite($OU->getUsuariid(),$OC->getSiteid());
+                
+            endif;
+        else: 
+            $OM = 0; //Retorna aquest error quan hi ha alguna dada inicial malament o objecte que no existeix        
+        endif;
+                               
+        return $OM;
+                                
+    }   
    
     static public function initialize( $idM , $idS , $selUsuari = false, $URL_AJAX_USER = null )
     {
@@ -281,6 +348,16 @@ class MatriculesPeer extends BaseMatriculesPeer
   	);  
            
   }
+
+ static public function h_getMatriculesCursosUsuariArray($idU)
+ {
+    $AU = self::h_getMatriculesUsuari($idU);
+    $RET = array();
+    foreach($AU as $OM):
+        $RET[$OM->getCursosIdcursos()] = $OM->getIdmatricules();
+    endforeach;
+    return $RET;
+ }
 
  /**
   * A diferència de getMatriculesUsuari, a l'Hospici s'agafen totes... no només les del SITE. 

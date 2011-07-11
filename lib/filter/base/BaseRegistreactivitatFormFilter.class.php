@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage filter
- * @author     Your name here
+ * @author     Albert Johé i Martí
  */
 abstract class BaseRegistreactivitatFormFilter extends BaseFormFilterPropel
 {

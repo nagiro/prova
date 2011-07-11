@@ -12,8 +12,8 @@
 .espai { padding-left:5px; padding-right:5px; }
 #comentari { width:40%; }
 
-	.row { width:500px; } 
-	.row_field { width:80%; } 
+	.row { width:500px; }
+	.row_field { width:80%; }
 	.row_title { width:20%; }
 	.row_field input { width:100%; }
 
@@ -118,7 +118,7 @@
 
   <?php ELSEIF( $MODE == 'EDICIO_CONTINGUT' ): ?>
             
-   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST">
+   	<form onSubmit="return ValidaFormulari(this);" action="<?php echo url_for('gestio/gCursos'); ?>" method="POST"  enctype="multipart/form-data">
    	
 	 	<div class="REQUADRE fb">
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCursos?accio=CA')) ?>
@@ -150,8 +150,10 @@
         <DIV class="TITOL">Llistat d'alumnes </DIV>
       	<TABLE class="DADES">
  			<?php if( sizeof($MATRICULES) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>'; endif; ?>            
-            <TR><TD class="TITOL" colspan="3">ACCEPTATS</TD></TR> 
+            <TR><TD class="TITOL" colspan="3">ACCEPTATS I PAGAT</TD></TR> 
             <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_PAGAT); ?>
+            <TR><TD class="TITOL" colspan="3">ACCEPTATS I NO PAGAT</TD></TR>
+            <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_NO_PAGAT); ?>
             <TR><TD class="TITOL" colspan="3">EN ESPERA</TD></TR>
             <?php echo mostraCursos($MATRICULES,MatriculesPeer::EN_ESPERA); ?>                           			                        	
       	</TABLE>      

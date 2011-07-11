@@ -2329,9 +2329,10 @@ class gestioActions extends sfActions
     	case 'SCC':
                 $RP = $request->getParameter('cursos');
                 $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );                                                                           
-    		    $this->FCurs->bind($RP);                
+    		    $this->FCurs->bind($RP,$request->getFiles('cursos'));                
     		    if($this->FCurs->isValid()):                    
     		    	$this->FCurs->save();
+                    $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );
     		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());    		    	     		    
     		    endif;    		        		    
     			$this->MODE = 'EDICIO_CONTINGUT';
@@ -3925,11 +3926,12 @@ class gestioActions extends sfActions
     $this->accio = $request->getParameter('accio','C');
     $ROPTIONS = $request->getParameter('options',array('option_id'=>'0'));
     $RESPAIS = $request->getParameter('espais',array('EspaiID'=>'0'));
-    $RMATERIAL = $request->getParameter('materialgeneric',array('idMaterialGeneric'=>''));
+    $RMATERIAL = $request->getParameter('materialgeneric',array('idMaterialGeneric'=>''));    
     
     $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
     $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);        
     $this->FMATERIAL = MaterialgenericPeer::initialize($RMATERIAL['idMaterialGeneric'],$this->IDS);
+    $this->FENTITAT = SitesPeer::initialize($this->IDS);
 
     //Agafem el codi de facebook de l'usuari
     $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
@@ -3942,7 +3944,8 @@ class gestioActions extends sfActions
     if($request->hasParameter('BSAVEESPAI')) $this->accio = 'SAVE_ESPAI';    
     if($request->hasParameter('BDELETEESPAI')) $this->accio = 'DELETE_ESPAI';
     if($request->hasParameter('BSAVEMATERIAL')) $this->accio = 'SAVE_MATERIAL';    
-    if($request->hasParameter('BDELETEMATERIAL')) $this->accio = 'DELETE_MATERIAL';    
+    if($request->hasParameter('BDELETEMATERIAL')) $this->accio = 'DELETE_MATERIAL';
+    if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
     
     switch($this->accio){
         case 'AJAX_OPCIO':
@@ -4032,6 +4035,18 @@ class gestioActions extends sfActions
                 $OU->save();            
                 $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
             break;
+        
+        //Guardem els canvis a una entitat
+        case 'SAVE_SITE':            
+            $RS = $request->getParameter('sites');
+            $this->FENTITAT->bind($RS,$request->getFiles('sites'));                                                                  
+            if($this->FENTITAT->isValid()):
+                $this->FENTITAT->save();
+                $this->getUser()->addLogAction($this->accio,'gConfig',$this->FENTITAT->getObject());
+                $this->FENTITAT = SitesPeer::initialize($this->IDS);                
+            endif;
+            break;
+            
     }       
   }   
   

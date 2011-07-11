@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Your name here
+ * @author     Albert Johé i Martí
  */
 class PersonalForm extends sfFormPropel
 {

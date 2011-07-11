@@ -8,15 +8,25 @@ Options +FollowSymLinks +ExecCGI
   #RewriteBase /
 
   # we skip all files with .something
-  #RewriteCond %{REQUEST_URI} \..+$
-  #RewriteCond %{REQUEST_URI} !\.html$
-  #RewriteRule .* - [L]
+  RewriteCond %{REQUEST_URI} \..+$
+  RewriteCond %{REQUEST_URI} !\.html$
+  RewriteRule .* - [L]
 
   # we check if the .html version is here (caching)
   RewriteRule ^$ index.html [QSA]
   RewriteRule ^([^.]+)$ $1.html [QSA]
   RewriteCond %{REQUEST_FILENAME} !-f
+  
+  # Com saber quin valor té la variable
+  # RewriteCond %{QUERY_STRING} !vardump  
+  # RewriteRule (.*) http://www.hospici.cat/$1?vardump&thereq=%{THE_REQUEST}&reqhost=%{HTTP_HOST} [R=301,L,QSA]
+  
+  # Si entrem per hospici, fem això
+  RewriteCond %{HTTP_HOST} =www.hospici.cat
+  RewriteRule ^(.*)$ hospici.php [QSA,L]
 
-  # no, so we redirect to our front web controller
+  # si no entrem per hospici, fem això
+  RewriteCond %{HTTP_HOST} !=www.hospici.cat
   RewriteRule ^(.*)$ index.php [QSA,L]
+   
 </IfModule>
