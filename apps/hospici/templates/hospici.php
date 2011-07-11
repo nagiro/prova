@@ -65,7 +65,7 @@
 
 .h_content { margin-top:20px;  }        
 
-.h_subtitle_gray { font-size:15px; color:#B2B2B2; margin-bottom:10px; border-bottom:1px solid #CCCCCC;   }
+.h_subtitle_gray { font-size:15px; color:#96BC0D; margin-bottom:10px; border-bottom:1px solid #96BC0D;   }
 
 .h_requadre_cercador { /* background-color:#96BD0D; */ height:180px; width:600px; }         
 .h_input_requadre_cercador input { margin-top:5px; width:300px;  }

@@ -50,6 +50,7 @@
                             
                     //Si es pot reservar entrada per internet, es mostra. 
                     if($OC->getIsEntrada()):
+                        
                         if(!isset($CURSOS_MATRICULATS[$OC->getIdcursos()])):
                         echo '  <div style="float:right">
                                     <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
