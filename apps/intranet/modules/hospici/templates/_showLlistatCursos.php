@@ -7,7 +7,7 @@
 
     $(document).ready(function(){
         $('[name="link_compra"]').click(function(){
-            <?php if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0): ?>            
+            <?php if(isset($AUTH) && $AUTH > 0): ?>            
                 return true;
             <?php else: ?>
                 alert('Per poder comprar o reservar entrades heu d\'accedir al vostre usuari o crear-ne un de nou'); 
@@ -44,15 +44,23 @@
                     endif;
                     
                     echo '<div class="h_llistat_acivitat_titol">
-                            <div style="float:left">
-                                <a href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl()).'">'.$OC->getTitolcurs().'</a>
+                            <div style="float:left;">
+                                <a style="font-size:14px;" href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl()).'">'.$OC->getTitolcurs().'</a>
                             </div>';
                             
                     //Si es pot reservar entrada per internet, es mostra. 
                     if($OC->getIsEntrada()):
+                        if(!isset($CURSOS_MATRICULATS[$OC->getIdcursos()])):
                         echo '  <div style="float:right">
-                                    <a name="link_compra" style="text-decoration:underline; color:blue; font-size:10px;" href="'.url_for('@hospici_detall_curs?idC='.$OA->getIdCursos().'&titol='.$OC->getNomForUrl()).'">Reservar matrícula</a>
+                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                        <a name="link_compra" style="text-decoration:none;" href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdCursos().'&titol='.$OC->getNomForUrl()).'">Reservar matrícula</a>
+                                    </div>
                                 </div>';
+                        else: 
+                        echo '  <div style="float:right">
+                                    <div class="requadre_mini" style="color:white; background-color:#29A729;">Ja hi esteu matriculat</div>                                                                        
+                                </div>';
+                        endif; 
                     endif;
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';

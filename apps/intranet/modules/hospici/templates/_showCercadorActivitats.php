@@ -28,7 +28,7 @@
     /* Carrega les categories d'activitats per població */
     function CarregaCategories(){            
         $("#R_CAT").html('<option>Carregant...</option>');            
-        $.post( '<?php echo url_for('hospici/ajaxACT') ?>', 
+        $.post( '<?php echo url_for('web/ajaxACT') ?>', 
                 { ACCIO: 'POB_ON', TEXT: $("#R_TEXT").val(), ON: $("#R_ON").val(), SEL: '<?php echo $CERCA['CATEGORIA'][0]; ?>' }, 
                 function(data){
                     /// Ponemos la respuesta de nuestro script en el DIV recargado                                                    
@@ -39,7 +39,7 @@
     /* Carrega les dates segons s'ha escollit categoria de les activitats segons població */                    
     function CarregaDates(){            
         $("#R_DATA").html('<option>Carregant...</option>');            
-        $.post( '<?php echo url_for('hospici/ajaxACT') ?>', 
+        $.post( '<?php echo url_for('web/ajaxACT') ?>', 
                 { ACCIO: 'POB_QUAN', TEXT: $("#R_TEXT").val(), ON: $("#R_ON").val(), CAT: $("#R_CAT").val(), SEL: '<?php echo $CERCA['DATA'][0]; ?>' }, 
                 function(data){
                     /// Ponemos la respuesta de nuestro script en el DIV recargado                                                    
@@ -50,7 +50,7 @@
     /* Carrega les dates segons s'ha escollit categoria de les activitats segons entitat */
     function CarregaDatesE(){            
         $("#DATAE").html('<option>Carregant...</option>');            
-        $.post( '<?php echo url_for('hospici/ajaxACT') ?>', 
+        $.post( '<?php echo url_for('web/ajaxACT') ?>', 
                 { ACCIO: 'ENT_QUAN', TEXT: $("#R_TEXT").val(), ENT: $("#E_ON").val(), SEL: '<?php echo $CERCA['DATA'][0]; ?>' }, 
                 function(data){
                     /// Ponemos la respuesta de nuestro script en el DIV recargado                                                    

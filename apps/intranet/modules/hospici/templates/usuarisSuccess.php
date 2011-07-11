@@ -1,12 +1,13 @@
 <?php use_helper('Form') ?>
 <?php use_helper('Presentation') ?>
-<?php $BASE = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
+<?php $BASE = '/images/hospici'; ?>
  
 <script type="text/javascript">
 
     <?php   $ext = ""; 
             if($SECCIO == 'COMPRA_ENTRADA') $ext = ', selected: 4';
-            elseif($SECCIO == 'INICI') $ext = ', selected: 0'; 
+            elseif($SECCIO == 'INICI') $ext = ', selected: 0';
+            elseif($SECCIO == 'MATRICULA') $ext = ', selected: 2'; 
     
     ?>
     
@@ -69,13 +70,28 @@
             </table>
         </form>
     </div>
-    <div id="tabs-3">                 
+    <div id="tabs-3">
+        <?php if(isset($MISSATGE) && $MISSATGE == 'OK'): ?>
+                <div class="requadre_missatge">La matrícula s'ha efectuat correctament.<br /> Aviat ens posarem en contacte amb vostè per finalitzar-la.</div>
+                <br />
+        <?php elseif(isset($MISSATGE) && $MISSATGE == 'KO'): ?>
+                <div class="requadre_missatge">Hi ha hagut algun problema guardant la seva matrícula. <br />Torni-ho a provar o bé envii un missatge a informatica@casadecultura.org per informar de la incidència. <br /><br />Moltes gràcies i perdoni les molèsties.</div>
+                <br />
+        <?php elseif(isset($MISSATGE) && $MISSATGE == 'ESPERA'): ?>
+                <div class="requadre_missatge">El curs és ple i vostè ha estat afegit a la llista d'espera.<br /> Si s'alliberen places, ens posarem en contacte amb vostè per saber si encara hi està interessat. <br />Moltes gràcies i perdoni les molèsties.</div>
+                <br />                
+        <?php elseif(isset($MISSATGE) && $MISSATGE == 'JA_EXISTEIX'): ?>
+                <div class="requadre_missatge">A la nostra base de dades ja existeix una matrícula seva a aquest curs.<br /> Si us plau, posi's en contacte amb l'entitat per solventar-ho. <br />Moltes gràcies i perdoni les molèsties.</div>
+                <br />                
+        <?php endif; ?>
+                
         <table class="taula_llistat">
             <tr>
                 <th>Data</th>
                 <th>Codi</th>
                 <th>Curs</th>
                 <th>Entitat</th>
+                <th>Estat</th>
             </tr>            
             <?php               
                 if(empty($LMatricules)): echo '<tr><td colspan="4">No s\'han trobat matrícules.</td></tr>';
@@ -86,12 +102,17 @@
                                 <td>'.$OM->getCursos()->getCodi().'</td>
                                 <td>'.$OM->getCursos()->getTitolcurs().'</td>
                                 <td>'.SitesPeer::initialize($OM->getSiteId())->getObject()->getNom().'</td>
+                                <td>'.$OM->getEstatString().'</td>
                              </tr>';                                                            
                     endforeach;
                 endif;
             ?>                        
-        </table>
+        </table>                
+        
     </div>
+    
+    
+    
     <div id="tabs-4">
 
         <table class="taula_llistat">

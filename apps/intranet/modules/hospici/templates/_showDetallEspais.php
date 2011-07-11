@@ -8,7 +8,7 @@
     <?php if($ACTIVITAT instanceof Activitats):
             $i = $ACTIVITAT->getImatge();
             $imatge = sfConfig::get('sf_webrooturl').'images/activitats/'.$i;
-            if(empty($i)) $imatge = sfConfig::get('sf_webrooturl').'images/hospici/logo_hospici.png'; 
+            if(empty($i)) $imatge = sfConfig::get('sf_webrooturl').'images/web/logo_hospici.png'; 
             
             $pdf = $ACTIVITAT->getPdf();                          
      ?>

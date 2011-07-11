@@ -3,10 +3,10 @@
 <?php $BASE = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
  
 
-<?php include_partial('hospici/showCercadorActivitats',array('CERCA'=>$CERCA,'VISIBLE'=>($MODE <> 'DETALL'))); ?>
-<?php if(!$MODE == 'INICIAL') include_partial('hospici/showDestacats'); ?>                
-<?php if($MODE == 'DETALL') include_partial('hospici/showDetallActivitat',array('ACTIVITAT'=>$ACTIVITAT, 'LHO'=>$LHO, 'AUTENTIFICAT'=>$AUTENTIFICAT)); ?>                
-<?php if($MODE == 'CERCA') include_partial('hospici/showLlistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS, 'AUTENTIFICAT'=>$AUTENTIFICAT)); ?>    
+<?php include_partial('web/showCercadorActivitats',array('CERCA'=>$CERCA,'VISIBLE'=>($MODE <> 'DETALL'))); ?>
+<?php if(!$MODE == 'INICIAL') include_partial('web/showDestacats'); ?>                
+<?php if($MODE == 'DETALL') include_partial('web/showDetallActivitat',array('ACTIVITAT'=>$ACTIVITAT, 'LHO'=>$LHO, 'AUTENTIFICAT'=>$AUTENTIFICAT)); ?>                
+<?php if($MODE == 'CERCA') include_partial('web/showLlistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS, 'AUTENTIFICAT'=>$AUTENTIFICAT)); ?>    
 
 
 <?php 
