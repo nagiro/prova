@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage hospici
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
 class webActions extends sfActions
@@ -28,13 +28,13 @@ class webActions extends sfActions
     switch($this->accio){        
         case 'cerca_activitat':
         
-                //Agafo el paràmetre
+                //Agafo el parÃ metre
                 $C = $request->getParameter('cerca',array());
                                 
                 //Normalitzo tots els camps                    
                 $C2 = $this->getCercaComplet($C);        
                                                         
-                //Guardem a sessió la cerca "actual"        
+                //Guardem a sessiÃ³ la cerca "actual"        
                 $this->CERCA = $C2;
                 $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
                                                 
@@ -45,7 +45,7 @@ class webActions extends sfActions
         case 'detall_activitat':                
                 $this->CERCA = $this->getUser()->getSessionPar('cerca');
                 $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));                                            
-                //Sempre s'haurà de comprar una entrada per un horari.                          
+                //Sempre s'haurÃ  de comprar una entrada per un horari.                          
                 if(!($this->ACTIVITAT instanceof Activitats)) $this->ACTIVITAT = new Activitats();
                 $this->LHO = $this->ACTIVITAT->getEntradesHoraris();                
                 
@@ -55,7 +55,7 @@ class webActions extends sfActions
         //Arribem per primer cop al web o no entrem per cap url interessant
         default:
                                 
-            //Inicialitzem la cerca i la guardem a memòria
+            //Inicialitzem la cerca i la guardem a memÃ²ria
             $this->CERCA = $this->getCercaComplet(null);
             $this->getUser()->setSessionPar('cerca',$this->CERCA);
             $this->MODE = 'INICIAL';
@@ -239,7 +239,7 @@ class webActions extends sfActions
     $this->setLayout('hospici');
     
     if($request->isMethod('POST')):        
-        //L'usuari, l'he de donar d'alta de l'Hospici com a mínim, que serà un SITE = 0.
+        //L'usuari, l'he de donar d'alta de l'Hospici com a mÃ­nim, que serÃ  un SITE = 0.
         //Primer mirarem si l'usuari ja existeix
         $RS = $request->getParameter('usuaris');
         $this->FUSUARI = UsuarisPeer::initialize(null,0,false,true);
@@ -270,7 +270,7 @@ class webActions extends sfActions
             $this->SECCIO = 'INICI';
             break;
         
-        //Modificaci� de les dades de l'usuari.
+        //Modificació de les dades de l'usuari.
         case 'update':
             $RS = $request->getParameter('usuaris');
             if($RS['UsuariID'] == $this->IDU):
@@ -283,7 +283,7 @@ class webActions extends sfActions
             endif;
             
         case 'compra_entrada':
-            //Des de l'Hospici només es pot reservar una entrada. Més endavant s'haurà d'abonar l'import.
+            //Des de l'Hospici nomÃ©s es pot reservar una entrada. MÃ©s endavant s'haurÃ  d'abonar l'import.
             $RS = $request->getParameter('entrades');
             $OER = EntradesReservaPeer::initialize()->getObject();
             //Si no existeix una compra per aquest usuari, la fem, altrament, no fem res.
@@ -319,7 +319,7 @@ class webActions extends sfActions
         case 'nova_matricula':
             
             $idC = $request->getParameter('idC');            
-            $OM = MatriculesPeer::saveNewMatricula($this->getUser()->getSessionPar('idU'),$idC,0);
+            $OM = MatriculesPeer::saveNewMatricula($this->IDU,$idC,0);
             $this->SECCIO = 'MATRICULA';            
             if($OM instanceof Matricules):
                 $this->MISSATGE = "OK";
@@ -335,7 +335,7 @@ class webActions extends sfActions
     
     $this->setLayout('hospici');
     
-    //Si ja hi hem fet operacions... carreguem l'actual, sinó en fem un de nou.
+    //Si ja hi hem fet operacions... carreguem l'actual, sinÃ³ en fem un de nou.
     if(isset($FU) && $FU instanceof UsuarisForm) $this->FUsuari = $FU;
     else $this->FUsuari = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
     
@@ -364,16 +364,16 @@ class webActions extends sfActions
     $this->CERCA = $this->getUser()->getSessionPar('cerca',array());    
     $this->DESPLEGABLES = array();
     $this->AUTH = $this->getUser()->isAuthenticated();
-    $this->CURSOS_MATRICULATS = MatriculesPeer::h_getMatriculesCursosUsuariArray($this->getUser()->getSessionPar('idU'));    
+    $this->CURSOS_MATRICULATS = MatriculesPeer::h_getMatriculesCursosUsuariArray($this->getUser()->getSessionPar('idU'));  
     
     if($this->accio == 'cerca_cursos' || $this->accio == 'inici'):
         
-        //Agafo els par�metres
+        //Agafo els paràmetres
         $C = $request->getParameter('cerca',array());
         $C2 = $this->getCercaCursosComplet($C);
                                         
         //Faig la cerca dels cursos de l'Hospici i ho retorno amb valors
-        //La cerca hauria de tornar els cursos, segons els par�metres i a m�s els llistats amb els valors.    
+        //La cerca hauria de tornar els cursos, segons els paràmetres i a més els llistats amb els valors.    
         $RET = CursosPeer::getCursosCercaHospici($C2['TEXT'],$C2['SITE'],$C2['POBLE'],$C2['CATEGORIA'],$C2['DATA'],$C2['P']);        
         $this->LLISTAT_CURSOS = $RET['PAGER'];        
         $LCURSOS = $RET['LCURSOS'];
@@ -382,7 +382,7 @@ class webActions extends sfActions
         $this->DESPLEGABLES['SELECT_CATEGORIES'] = CursosPeer::getCategoriaCursosHospici($LCURSOS);
         $this->DESPLEGABLES['SELECT_DATES']      = CursosPeer::getDatesCursosHospici($LCURSOS);                
                                                                 
-        //Guardem a sessió la cerca "actual"        
+        //Guardem a sessiÃ³ la cerca "actual"        
         $this->CERCA = $C2;    
         $this->getUser()->setSessionPar('cerca',$this->CERCA);
                              
@@ -417,13 +417,13 @@ class webActions extends sfActions
     switch($this->accio){        
         case 'cerca_cursos':
                
-                //Agafo el paràmetre
+                //Agafo el parÃ metre
                 $C = $request->getParameter('cerca',array());
                                 
                 //Normalitzo tots els camps                    
                 $C2 = $this->getCercaComplet($C);        
                                                         
-                //Guardem a sessió la cerca "actual"        
+                //Guardem a sessiÃ³ la cerca "actual"        
                 $this->CERCA = $C2;
                 $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
                                                 
@@ -442,7 +442,7 @@ class webActions extends sfActions
         
         //Arribem per primer cop al web o no entrem per cap url interessant
         default:            
-            //Inicialitzem la cerca i la guardem a memòria
+            //Inicialitzem la cerca i la guardem a memÃ²ria
             $this->CERCA = $this->getCercaComplet(null);
             $this->getUser()->setSessionPar('cerca',$this->CERCA);
             $this->MODE = 'INICIAL';

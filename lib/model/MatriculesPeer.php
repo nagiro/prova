@@ -31,13 +31,25 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TELEFON         = '23';
    const PAGAMENT_TRANSFERENCIA   = '24';
 
+    static public function criteriaMatriculat($C)
+    {
+        $C1 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_PAGAT);
+        $C2 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_NO_PAGAT);
+        $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
+        $C1->addOr($C2); $C1->addOr($C3); $C->add($C1);
+        $C->add(self::ACTIU, true);
+        return $C;
+    } 
+
     static public function hasMatriculaUsuari($idU,$idC,$idS)
     {
         $C = new Criteria();
         $C = self::getCriteriaActiu($C,$idS);
-        $C->add(MatriculesPeer::CURSOS_IDCURSOS, $idC);
-        $C->add(self::USUARIS_USUARIID, $idU);                                                        
-        return CursosPeer::doCount($C);         
+        $C->add(self::CURSOS_IDCURSOS, $idC);
+        $C->add(self::USUARIS_USUARIID, $idU);
+        $C = self::criteriaMatriculat($C);
+                                       
+        return self::doCount($C);         
     }
 
     /**
@@ -49,15 +61,14 @@ class MatriculesPeer extends BaseMatriculesPeer
      * @return new Matricules() o $error ( Codi d'error ) 
      * */
     static public function saveNewMatricula($idU,$idC,$idM = 0,$comment = "")
-    {
-        
+    {        
         //Carreguem les dades de l'usuari
         $OU = UsuarisPeer::retrieveByPK($idU);
         $OC = CursosPeer::retrieveByPK($idC);
                 
         //Si tenim un codi de matrícula, la carreguem.
-        $OM = self::retrieveByPK($idM);
-        if(!($OM instanceof Matricules)) $OM = new Matricules();         
+        $OM = self::retrieveByPK($idM);                
+        if(!($OM instanceof Matricules)) $OM = new Matricules();                        
                                                         
         //Si ho hem carregat tot correctament, seguim
         if($OU instanceof Usuaris && $OC instanceof Cursos && $OM instanceof Matricules):
@@ -367,7 +378,9 @@ class MatriculesPeer extends BaseMatriculesPeer
 
     $C = new Criteria();    
     $C = self::h_getCriteriaActiu( $C );
-    $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
+    $C = self::criteriaMatriculat($C);
+    
+    $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);            
     $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
 

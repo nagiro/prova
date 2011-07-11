@@ -56,7 +56,7 @@
                             <?php else: ?>
                                 <div style="margin-top: 5px;">
                                     <div class="requadre_mini" style="background-color: #FF0000;">
-                                        <a href="images/cursos/<?php echo $pdf ?>">Matrícula tancada</a>
+                                        <a href="#">Matrícula web tancada</a>
                                     </div>
                                 </div>                            
                             <?php endif; ?>

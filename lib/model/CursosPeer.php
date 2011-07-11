@@ -674,9 +674,9 @@ class CursosPeer extends BaseCursosPeer
   static public function getCursosCercaHospici($idText, $idSite, $idPoble, $idCategoria, $idData,  $p)
   {
     
-    $WHERE = "";
+    $WHERE = "c.actiu = 1 AND s.actiu = 1 AND c.VisibleWEB = 1";
     
-    //Miro primer què he de filtrar    
+    //Miro primer què he de filtrar
     if(!empty($idText))  $WHERE .= " AND ( c.TitolCurs like '%$idText%' OR c.Descripcio like '%$idText%' OR c.Codi like '%$idText%' )";
     if(!empty($idSite))  $WHERE .= " AND ( c.site_id = $idSite ) ";
     if(!empty($idPoble)) $WHERE .= " AND ( c.site_id = s.site_id AND s.poble = $idPoble ) ";
@@ -685,7 +685,7 @@ class CursosPeer extends BaseCursosPeer
     if(empty($idData) || $idData == 0)
     {
         $idData = date('Y-m-d',time());   
-        $WHERE .= " AND c.DataInici > '$idData' ";
+        $WHERE .= " AND c.DataFiMatricula > '$idData' ";
     }
     else 
     { 
@@ -697,8 +697,7 @@ class CursosPeer extends BaseCursosPeer
         
         
     $SQL = "    SELECT c.idCursos as idC from cursos c, sites s
-                 WHERE c.actiu = 1 AND s.actiu = 1                    
-                   $WHERE     
+                 WHERE $WHERE     
     ";
     
     $connection = Propel::getConnection();
