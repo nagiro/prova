@@ -5,80 +5,132 @@
 
     <div>
         
-    <?php if($ACTIVITAT instanceof Activitats):
-            $i = $ACTIVITAT->getImatge();
-            $imatge = sfConfig::get('sf_webrooturl').'images/activitats/'.$i;
-            if(empty($i)) $imatge = sfConfig::get('sf_webrooturl').'images/web/logo_hospici.png'; 
-            
-            $pdf = $ACTIVITAT->getPdf();                          
+    <?php if($ESPAI instanceof Espais){
+            $M = $ESPAI->getFotos();
+            $imatge = "/images/hospici/hospici100_100.jpg";
+            if(isset($M[0]) && $M[0] instanceof Multimedia):
+                $imatge = '/images/multimedia/'.$M[0]->getUrl();                            
+            endif;  
+                                      
      ?>
 			<div style="border:0px solid #96BF0D; clear:both; padding:10px;">
-				<div style="font-size:11px"><b><?php echo $ACTIVITAT->getTMig() ?></b></div>
-				<div style="font-size:10px"><?php echo generaHoraris($ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
+				<div style="font-size:11px"><b><?php echo $ESPAI->getNom() ?></b></div>
+				<div style="font-size:10px"><?php // echo generaHoraris($ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
 				<div style="height:30px;">&nbsp;</div>				
 										
-				<div style="width:150px; float:left">
-					<div><img src="<?php echo $imatge ?>" style="vertical-align:middle" /></div>
-						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
-						<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>
+				<div style="width:150px; float:left">                    
+					<div><img width="150px" src="<?php echo $imatge ?>" style="vertical-align:middle" /></div>
+                        
+						<div style="margin-top:20px; font-size:10px">
+                            <div class="requadre_mini" style="background-color:#A2844A;">
+                                <a href="javascript:history.back()">< Torna al llistat de cursos</a>
+                            </div>
+                        </div>                                                
+
+                        <?php if( isset($AUTH) && $AUTH > 0 ): ?>                                                   
+                            <div style="margin-top: 5px;">
+                                <div class="requadre_mini" style="background-color: #FFCC00;">
+                                    <a href="<?php echo url_for('@hospici_nova_reserva_espai?idE='.$ESPAI->getEspaiid()); ?>">RESERVA L'ESPAI</a>
+                                </div>
+                            </div>                                                                                        
+                        <?php else: ?>
+                            <div style="margin-top: 5px">
+                                <div class="requadre_mini" style="background-color: #FFCC00;">
+                                    <a href="javascript:alert('Per poder fer una reserva, primer ha d\'entrar al seu compte d\'usuari i tornar a buscar aquest curs.');">Autentifica't i reserva</a>
+                                </div>
+                            </div>
+                        <?php endif; ?>                        
+                        
                     <div style="margin-top:20px;">
                         <?php echo ph_getAddThisDiv(); ?>
-                    </div>                        						
+                    </div>
 				</div>
-                
+                                
 				<div style="width:330px; float:left;">
 					<div style="padding-left:10px; font-size:10px;">
-						<?php echo $ACTIVITAT->getDmig() ?>
-					</div>					
-				</div>
-				
-                <!-- Requadre d'informaciÛ pr‡ctica  -->
-                <?php $ip = $ACTIVITAT->getInfopractica(); if(!empty($ip)): ?>
-				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">INFORMACI” PR¿CTICA</div> 
-				<div style=" margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
-					<div style="padding:10px; font-size:10px;">
-						<?php echo $ip; ?>
+                        <?php
+                            $desc = $ESPAI->getDescripcio();   
+                            if(empty($desc)){ echo "Aquest espai no t√© cap descripci√≥.";  }
+                            else echo $desc; 
+                        ?>
 					</div>
-				</div>
-                <?php endif; ?>
-				<div style="clear:both">&nbsp;</div>
                 
-                <!-- Fi Requadre d'informaciÛ pr‡ctica  -->
-                <!-- Requadre de compra o reserva d'entrades  -->
+        <!-- Inici de requadre d'ocupaci√≥ d'espais  -->		
                 
-   				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">RESERVA D'ENTRADES</div> 
-				<div style=" margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
+            <div style="margin-left:40px;">   				
+                <div style="padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">OCUPACI√ì DE L'ESPAI</div> 
+				<div style="width:330px; height:170px; clear:both; background-color:#DFECB6">					
 					<div style="padding:10px; font-size:10px;">
-                    
-                    <?php if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0): ?>                                        
-                        <div class="taula_dades">
-                            <div style="font-weight:bold; float:left; width: 60px;text-align:right;">Dia</div>    
-                            <div style="font-weight:bold; float:left; width: 60px;text-align:right;">Hora</div>
-                            <div style="font-weight:bold; float:left; width: 60px;text-align:right;">Preu</div>
-                            <div style="font-weight:bold; float:left; width: 60px;text-align:right;">Quantes</div>
-                            <div style="font-weight:bold; float:left; width: 60px;text-align:right;"></div>
-                            <div style="clear: both;"></div>
-                            <?php   foreach($LHO as $HO): ?>
-                            <form action="<?php echo url_for('@hospici_compra_entrada') ?>">
-                                <div style="float:left; width: 60px;text-align:right;"><?php echo $HO->getDia('d/m/Y') ?></div>    
-                                <div style="float:left; width: 60px;text-align:right;"><?php echo $HO->getHorainici('H:i') ?></div>
-                                <div style="float:left; width: 60px;text-align:right;"><?php echo $ACTIVITAT->getPreu() ?> Ä</div>
-                                <div style="float:left; width: 60px;text-align:right;"><?php echo select_tag('entrades[num]',options_for_select(array(1=>'1',2=>'2',3=>'3',4=>'4')),array('style'=>'width:50px')) ?></div>
-                                <div style="float:left; width: 60px;text-align:right;"><input type="submit" name="BRESERVA" value="Reserva" /></div>
-                                <div style="clear: both;"><input type="hidden" value="<?php echo $HO->getHorarisid() ?>" name="entrades[idH]" /></div>
-                            </form>
-                            <?php   endforeach; ?>                        
-                        </div>
-                    <?php else: ?>
-                        <div>
-                            Per poder comprar o reservar entrades heu d'accedir al vostre usuari o crear-ne un de nou. 
-                        </div>
-                    <?php endif; ?>
-					</div>
+                                                                    
+<?php
+                        //Si la data que arriba per par√†metre √©s 0, agafem el dia d'avui.
+                        if(!isset($DATA) || $DATA == 0) $DATA = time();
+                        $month = date('m',$DATA); $year  = date('Y',$DATA);
+                        $timeant = mktime(0,0,0,$month-1,1,$year); $timepost = mktime(0,0,0,$month+1,1,$year); 
+                        $urlAnt = url_for("@hospici_espai_detall_canvi_mes?idE={$ESPAI->getEspaiid()}&titol={$ESPAI->getNomForUrl()}&data=$timeant");
+                        $urlPost = url_for("@hospici_espai_detall_canvi_mes?idE={$ESPAI->getEspaiid()}&titol={$ESPAI->getNomForUrl()}&data=$timepost");;
+                                                
+                        echo '<div style="width:300px;">
+                                <a style="font-size:10px; color:gray; text-decoration:none; float:left;" href="'.$urlAnt.'">< Mes anterior</a><a style="float:right;font-size:10px; color:gray; text-decoration:none;" href="'.$urlPost.'">Mes seg√ºent ></a></div>';
+                        echo    '<div style="clear:both;float:left">'.this_calendari_mes($DATA,$OCUPACIO).'</div>';                                                        
+                        $data1 = mktime(0,0,0,date('m',$DATA)+1,1,date('Y',$DATA));                        
+                        echo    '<div style="float:left; margin-left:30px;">'.this_calendari_mes($data1,$OCUPACIO2).'</div>';
+                        
+?>                      
+                    <div style="padding-top:10px; clear:both; font-size:10px; color:gray;">* Les dades ofertes per aquest calendari s√≥n aproximades.</div>                  
+					</div>                    
 				</div>
-                
-                <!-- Fi Requadre de compra o reserva d'entrades  -->													
-			</div>
-    <?php endif; ?>					                                                                    
-    </div>
+            </div>
+                    					
+				</div>
+				                                                
+                <!-- Fi d'ocupaci√≥ d'espais  -->													
+			</div>					   
+    <?php } ?>                                                                 
+   </div>
 </div>
+
+
+
+<?php 
+
+
+    function this_calendari_mes($data,$OCUPACIO = array()){
+               
+        $RET = ""; 
+        $month = date('m',$data);
+        $year  = date('Y',$data);
+                
+        //Agafem el primer dia del mes                        
+        $data = mktime(0,0,0,$month,1,$year);
+        $blancs = date('w',$data)-1;
+        if($blancs == -1) $blancs = 6;
+        $RET = '<div style="width:140px; text-align:center; font-weight:bold; background-color:beige;">'.generaMes($month,true).'</div>';                        
+        while($blancs-- > 0) $RET .= '<div style="display:block; float:left; width: 20px; text-align:center; ">&nbsp;</div>';                         
+        
+        $span = "";                    
+        for($dia = 1; $dia <= date('t',$data); $dia++){
+            
+            $t = mktime(0,0,0,$month,$dia,$year);
+            $d = ($dia < 10)?'0'.$dia:$dia;                
+            $class = '';     
+            if(isset($OCUPACIO[$year.'-'.$month.'-'.$d])){
+                $span = '<span>Ocupat les seg√ºents hores:';
+                foreach($OCUPACIO[$year.'-'.$month.'-'.$d] as $e => $A_H):
+                    foreach($A_H as $hi => $hf):
+                        if($hf > $hi){ $span .= '<br />de '.$hi.' a '.$hf; $class = 'selec'; } 
+                    endforeach;
+                endforeach;
+                $span .= '</span>';
+            }
+            //Si el dia √©s dilluns, fem una nova l√≠nia                                              
+            if(date('w',$t) == 1) $RET .= '<div style="display:block; float:left; width: 20px; text-align:center; clear:both; "><a class="tt2" href="#"><div class="'.$class.'">'.$dia.'</div>'.$span.'</a></div>';
+            else $RET .= '<div style="display:block; float:left; width: 20px; text-align:center; "><a class="tt2" href="#"><div class="'.$class.'">'.$dia.'</div>'.$span.'</a></div>';
+        }
+        
+        return $RET;
+    }
+
+
+
+?>

@@ -287,5 +287,181 @@ class myUser extends sfBasicSecurityUser
     return $RET;
   
   }
+  
+  
+    
+  function llistaCalendariV($DATAI, $CALENDARI)
+  {
+    
+    //Inicialitzem variables i marquem els dies en blanc
+    $Q = 3; 
+    $mes  = date('m',$DATAI);
+    $year = date('Y',$DATAI);
+    $RET = "";
+              
+    $any = $year;
+    $mesI = $mes;
+    $mesF = $mes+$Q;      
+
+    //Omplim els mesos
+    $RET .= '<tr>'; $dies = array(); $IndexMes = 0;
+    for($mes = $mesI; $mes < $mesF; $mes++):  
+    
+    	$mesReal = ($mes > 12)?($mes-12):$mes;
+      	$anyReal = ($mes == 13)?$any+1:$any;
+    
+    	$week = 1; $IndexMes++; 
+    	$diesMes = cal_days_in_month(CAL_GREGORIAN, $mesReal, $anyReal );
+    	
+    	for($dia = 1; $dia <= $diesMes; $dia++ ):
+    	    	
+    		$diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mesReal , $dia , $anyReal) , 0 );
+    		$diaSetmana = ($diaSetmana==0)?7:$diaSetmana;
+    		    		 
+    		$dies[$week][$diaSetmana][$IndexMes]['day'] = $dia;
+    		$dies[$week][$diaSetmana][$IndexMes]['month'] = $mesReal;
+    		$dies[$week][$diaSetmana][$IndexMes]['year'] = $anyReal;
+    		
+    		if($diaSetmana == 7) $week++;
+    		
+    	endfor;
+    	    	
+    	$RET .= "<TD class=\"titol_mes\" colspan=\"7\">".mesos($mesReal)."</TD><td width=\"20px\"></td>";
+    	    
+    endfor;
+   
+	$RET .= '</tr>';	
+
+	$RET .= "<TR>";    
+    for($i = 0; $i < $Q; $i++):
+    	$RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD><TD></TD>";
+    endfor;    
+    $RET .= "</TR>";
+        
+    
+    for($row = 1; $row <= 6; $row++):
+    	$RET .= "<tr>";
+	    for($col = 1; $col<=(7*$Q); $col++):    		
+		
+			$IndexMes = ceil($col / 7);
+			$colR = $col - (7 * ($IndexMes-1));
+
+			//Color de fons per diferenciar els mesos
+			if($IndexMes % 2) $background = "beige"; else $background = "beige";
+			
+			//Color de fons per diferenciar els caps de setmana
+			if( $colR == 6 || $colR == 7) $background="#CCCCCC";			 
+						
+			if(isset($dies[$row][$colR][$IndexMes])):
+
+				$dades = $dies[$row][$colR][$IndexMes];
+			
+				$SPAN = ""; $color = "";
+		        $CalDia = mktime(0,0,0,$dades['month'],$dades['day'],$dades['year']);
+		        
+		        if(isset($CALENDARI[$CalDia])):
+		        	$SELECCIONAT = "SELECCIONAT";		        	
+		        	$SPAN  = '<span><table id="TD1"><tr><th>Inici</th><th>Fi</th><th>Espai</th><th>Títol</th><th>Organitzador</th></tr>';				 
+		          		foreach($CALENDARI[$CalDia] as $CAL) $SPAN .= '<tr><td>'.$CAL['HORAI'].'</td><td>'.$CAL['HORAF'].'</td><td>'.$CAL['ESPAIS'].'</td><td>'.$CAL['TITOL'].'</td><td>'.$CAL['ORGANITZADOR'].'</td></tr>';
+		            $SPAN .= '</table></span>';
+		        else: 
+		        	$SELECCIONAT = "";
+		        endif; 
+		                                        
+				$RET .= '<TD class="DIES" style="background-color:'.$background.';">'.link_to($dades['day'].$SPAN,"gestio/gActivitats?accio=CD&DIA=".$CalDia , array('class'=>"tt2 $SELECCIONAT")).'</TD>';
+      																						
+			else: 
+				
+				$RET .= '<TD class="DIES" style="background-color:'.$background.';"></TD>';
+			
+			endif; 			
+
+			if($colR == 7): $RET .= '<td></td>'; endif; 
+			
+		endfor;        
+		$RET .= "</tr>";
+    endfor;
+    
+    $RET .= "</TR>";
+	        
+    return $RET;
+      
+  }
+  
+  
+
+  function ParImpar($i){ if($i % 2 == 0) return "PAR"; else return "IPAR"; }
+  
+  
+  /**
+   * A partir d'una DataI generem els enllaços del menú
+   * @param time() $DATAI
+   * @return string
+   */
+  
+  function getSelData($DATAI = NULL)
+  {
+
+     $MES = date('m',$DATAI); 
+     $ANY = date('Y',$DATAI);            
+     
+     $RET = "";
+     $RET = link_to($ANY-1,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$ANY-1),array('class'=>'negreta'))." ";
+     for($any = $ANY ; $any < $ANY+2 ; $any++ ):
+     	$RET .= link_to($any,'gestio/gActivitats?accio=CC&DATAI='.mktime(0,0,0,1,1,$any),array('class'=>'negreta'))." ";
+     	for($mes = 1; $mes < 13; $mes++):
+     		$RET .= link_to(mesosSimplificats($mes),"gestio/gActivitats?accio=CC&DATAI=".mktime(0,0,0,$mes,1,$any),array('class'=>'mesos_unit'))." ";
+     	endfor;     
+     endfor;
+      
+     return $RET;
+     
+  }
+  
+  function mesos($mes)  
+  {
+    switch($mes){
+      case 1: $text = "Gener"; break;
+      case 2: $text = "Febrer"; break;
+      case 3: $text = "Març"; break;
+      case 4: $text = "Abril"; break;
+      case 5: $text = "Maig"; break;
+      case 6: $text = "Juny"; break;
+      case 7: $text = "Juliol"; break;
+      case 8: $text = "Agost"; break;
+      case 9: $text = "Setembre"; break;
+      case 10: $text = "Octubre"; break;
+      case 11: $text = "Novembre"; break;
+      case 12: $text = "Desembre"; break;
+    }
+    
+    return $text; //utf8_encode($text);
+  
+  }
+  
+  function mesosSimplificats($mes)  
+  {
+    switch($mes){
+      case 1: $text = "G"; break;
+      case 2: $text = "F"; break;
+      case 3: $text = "M"; break;
+      case 4: $text = "A"; break;
+      case 5: $text = "M"; break;
+      case 6: $text = "J"; break;
+      case 7: $text = "J"; break;
+      case 8: $text = "A"; break;
+      case 9: $text = "S"; break;
+      case 10: $text = "O"; break;
+      case 11: $text = "N"; break;
+      case 12: $text = "D"; break;
+    }
+    
+    return utf8_encode($text);
+  
+  }
+  
+  
+  
+  
 
 }

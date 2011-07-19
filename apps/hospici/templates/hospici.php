@@ -16,13 +16,16 @@
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
   <!-- Facebook & Twitter -->
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" />   
-  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />  
+  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
+  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/thickbox.css'; ?>" />  
+  
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>       
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/jquery.validate.min.js' ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js' ?>"></script>
-        
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>            
   
      
 <!--[if lt IE 7]>
@@ -34,6 +37,32 @@
 <style type="text/css">
 
 * { font-family: Myriad Pro, Trebuchet MS, Arial, Sans-Serif; margin:0px; padding:0px; font-size:12px; }
+
+td.checkbox_list { border:1px solid #CCCCCC; background-color: #FFEFD7; }
+
+.checkbox_list li  {	
+	display: inline;
+	float:left;	
+	margin: 0px;
+	padding: 0px;
+	list-style: none;	
+}
+
+.ul_espais input { background-color:white; border:0px; }
+.ul_material input { background-color:white; border:0px; }
+
+li.ul_espais { 	
+	width:200px; 
+}
+
+li.ul_material{ 	
+	width:100px; 
+}
+
+.tt2 { text-decoration:none; color:black; }
+.tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
+.tt2 span { display:none; text-align:left; }
+.selec { text-decoration: underline;  }
 
 .requadre_missatge { padding:5px; background-color: #FFFEE4; }
 .requadre_mini { border-radius:4px; padding:2px; font-size:11px; }
@@ -117,7 +146,7 @@
     .taula_dades input:focus { background-color:#EEEEEE; }
     .taula_dades select { border:1px solid #DDDDDD; width:200px; }
     .taula_dades select:focus { background-color:#EEEEEE;  }
-    .taula_dades th { text-align:right; width:100px; padding-right:5px; }    
+    .taula_dades th { text-align:right; width:100px; padding-right:5px; }  
 
     .taula_llistat { width:600px; border-collapse:collapse;  }
     .taula_llistat th { text-align:left; padding:3px;  }

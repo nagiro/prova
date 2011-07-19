@@ -1,17 +1,21 @@
 <?php use_helper('Form') ?>
 <?php use_helper('Presentation') ?>
 <?php $BASE = '/images/hospici'; ?>
- 
+  
 <script type="text/javascript">
 
-    <?php   $ext = ""; 
-            if($SECCIO == 'COMPRA_ENTRADA') $ext = ', selected: 4';
-            elseif($SECCIO == 'INICI') $ext = ', selected: 0';
-            elseif($SECCIO == 'MATRICULA') $ext = ', selected: 2'; 
+    <?php   $ext = "";                        
+            switch($SECCIO){                
+                case 'INICI': $ext = ', selected: 0'; break;
+                case 'USUARI': $ext = ', selected: 1'; break;
+                case 'MATRICULA': $ext = ', selected: 2'; break;
+                case 'RESERVA': $ext = ', selected: 3'; break;
+                case 'COMPRA_ENTRADA': $ext = ', selected: 4'; break;                
+                default: $ext = ', selected: 0'; break;
+            }              
     
     ?>
     
-
     $(document).ready(function() {                                                   
             $( "#tabs" ).tabs({ cookie: { expires: 30 } <?php echo $ext ?> });
         });
@@ -19,12 +23,13 @@
 </script>
 
 <style>
-    .taula_dades { width:500px;  }
+    .taula_dades { width:600px;  }
     .taula_dades input { border:1px solid #DDDDDD; padding:3px; }
     .taula_dades input:focus { background-color:#EEEEEE; }
     .taula_dades select { border:1px solid #DDDDDD; width:200px; }
     .taula_dades select:focus { background-color:#EEEEEE;  }
-    .taula_dades th { text-align:right; width:100px; padding-right:5px; }
+    .taula_dades th { text-align:right; width:150px; padding-right:5px; }
+    .taula_dades td { padding:3px;  }
 
     .taula_llistat { width:600px; border-collapse:collapse;  }
     .taula_llistat th { text-align:left; padding:3px;  }
@@ -93,41 +98,63 @@
                 <th>Entitat</th>
                 <th>Estat</th>
             </tr>            
-            <?php               
+            <?php                                           
                 if(empty($LMatricules)): echo '<tr><td colspan="4">No s\'han trobat matrícules.</td></tr>';
                 else:                           
                     foreach($LMatricules as $OM):
+                        $nom = SitesPeer::getNom($OM->getSiteId());                        
                         echo '<tr>
                                 <td>'.$OM->getDatainscripcio('m/Y').'</td>
                                 <td>'.$OM->getCursos()->getCodi().'</td>
                                 <td>'.$OM->getCursos()->getTitolcurs().'</td>
-                                <td>'.SitesPeer::initialize($OM->getSiteId())->getObject()->getNom().'</td>
+                                <td>'.$nom.'</td>
                                 <td>'.$OM->getEstatString().'</td>
                              </tr>';                                                            
                     endforeach;
                 endif;
             ?>                        
-        </table>                
-        
+        </table>                        
     </div>
     
     
     
     <div id="tabs-4">
+         
+        <?php if(isset($FReserva) && $FReserva instanceof HospiciReservesForm): ?>
+        <form action="<?php echo url_for('@hospici_nova_reserva_espai_save'); ?>" method="POST">
+            <?php 
+                if(isset($MISSATGE) && $MISSATGE == 'OK') echo '<div style="margin-bottom:20px;"><div class="missatge">Les seves dades han estat actualitzades amb èxit.</div></div>'; 
+                elseif(isset($MISSATGE) && $MISSATGE == 'ERROR_SAVE') echo '<div style="margin-bottom:20px;"><div class="missatge">Hi ha alguna dada errònia. Si us plau, correixi-la.</div></div>'; 
+            ?>
+            <div style="background-color:#EEEEEE; padding:5px; font-weight:bold; text-align:center;">FORMULARI DE RESERVA D'ESPAI</div>                                    
+            <table class="taula_dades">                                
+                <?php echo $FReserva; ?>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right;">
+                        <br />
+                        <?php   if($OPCIONS == 'VISUALITZA') { echo link_to('Torna al llistat','@hospici_llista_reserves'); } 
+                                else { echo '<input type="submit" value="Sol·licita la reserva" />'; } ?> 
+                    </td>
+                </tr>
+            </table>
+        </form>
+        
+        <?php else: ?>
 
         <table class="taula_llistat">
             <tr>
+                <th>Referència</th>
+                <th>Nom reserva</th>
                 <th>Data</th>
-                <th>Codi</th>
-                <th>Curs</th>
-                <th>Entitat</th>
+                <th>Estat</th>
             </tr>            
             <?php
                 if(empty($LReserves)): echo '<tr><td colspan="4">No s\'han trobat reserves d\'espais.</td></tr>';
                 else:                           
                     foreach($LReserves as $OR):
                         echo '<tr>
-                                <td>'.$OR->getCodi().'</td>
+                                <td>'.link_to($OR->getCodi(),'@hospici_reserva_espai?idR='.$OR->getReservaespaiid()).'</td>
                                 <td>'.$OR->getNom().'</td>
                                 <td>'.$OR->getDataalta('d/m/Y').'</td>
                                 <td>'.$OR->getEstatText().'</td>
@@ -136,6 +163,8 @@
                 endif;
             ?>                                    
         </table> 
+        
+        <?php endif; ?>
         
     </div>
     <div id="tabs-5">
@@ -152,21 +181,27 @@
             <?php
                 if(empty($LEntrades)): echo '<tr><td colspan="4">No s\'ha trobat cap entrada comprada.</td></tr>';
                 else:                           
-                    foreach($LEntrades as $OER):                        
+                    foreach($LEntrades as $OER):                                                
                         $OH = $OER->getHorari();
-                        $OA = $OH->getActivitatss();
-                        $OS = SitesPeer::retrieveByPK($OA->getSiteId());
-                        $class = "";
-                        if($OER->getEstat() == EntradesReservaPeer::ANULADA) $class="class=\"tatxat\"";                        
-                        echo "<tr>
-                                <td $class>{$OH->getDia('Y-m-d')}</td>
-                                <td $class>{$OH->getHorainici('H:m')}</td>
-                                <td $class>{$OA->getTmig()}</td>
-                                <td $class>{$OS->getNom()}</td>
-                                <td $class>{$OER->getQuantes()}</td>
-                                <td $class>{$OER->getEstatString()}</td>";
-                        if($OER->getEstat() != EntradesReservaPeer::ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getEntradesReservaId())."\">Anul·lar</a></td>";
-                        echo "</tr>";
+                        if($OH instanceof Horaris)
+                        {
+                            $OA = $OH->getActivitatss();
+                            if($OA instanceof Activitats)
+                            {                                                                                                
+                                $SiteName = SitesPeer::getNom($OA->getSiteId());
+                                $class = "";
+                                if($OER->getEstat() == EntradesReservaPeer::ANULADA) $class="class=\"tatxat\"";
+                                echo "<tr>
+                                        <td $class>{$OH->getDia('Y-m-d')}</td>
+                                        <td $class>{$OH->getHorainici('H:m')}</td>
+                                        <td $class>{$OA->getTmig()}</td>
+                                        <td $class>{$SiteName}</td>
+                                        <td $class>{$OER->getQuantes()}</td>
+                                        <td $class>{$OER->getEstatString()}</td>";
+                                if($OER->getEstat() != EntradesReservaPeer::ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getEntradesReservaId())."\">Anul·lar</a></td>";
+                                echo "</tr>";
+                            }                                                
+                        }
                     endforeach;
                 endif;
             ?>                                    

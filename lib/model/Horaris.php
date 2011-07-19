@@ -96,7 +96,7 @@ class Horaris extends BaseHoraris
 
     public function getActivitatss()
     {
-        $C = new Criteria();
+        $C = new Criteria();                        
         $C = ActivitatsPeer::getCriteriaActiu($C,$this->getSiteId());
         $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
         

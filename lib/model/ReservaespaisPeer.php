@@ -49,6 +49,24 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     
   }
 
+  static public function initializeHospici($idR , $idS , $idE = null , $idU = 0)
+  {
+    //Mirem si existeix, la carreguem. 
+    $OR = self::retrieveByPK($idR);    
+	if(!($OR instanceof Reservaespais)):                 
+		$OR = new Reservaespais(); 
+  		$OR->setCodi(ReservaespaisPeer::getNextCodi());
+        $OR->setUsuarisUsuariid($idU);
+        $OR->setEstat(ReservaEspaisPeer::EN_ESPERA);
+        $OR->setSiteId($idS);        
+        $OR->setActiu(true); 
+        if(!is_null($idE)) $OR->setEspaissolicitats($idE);
+	endif; 
+    if($OR->getCondicionsccg() == ""){ $OR->setCondicionsccg(ReservaespaisPeer::getCondicionsGeneric($OR,$idS)); }
+    
+    return new HospiciReservesForm($OR,array('IDS'=>$idS));
+       
+  }
   
   static function selectEstat()
   {

@@ -1,3 +1,6 @@
+<link rel="stylesheet" type="text/css" media="screen" href="/js/lightbox/css/jquery.lightbox-0.5.css" />
+<script type="text/javascript" src="/js/lightbox/js/jquery.lightbox-0.5.js"></script>
+
 <style>    
     .pager { font-size:16px;  }
     .pager a { font-size:16px; color:inherit; text-decoration:inherit;  }
@@ -6,6 +9,7 @@
 <script>
 
     $(document).ready(function(){
+   	    $('a.lightbox').lightBox(); 
         $('[name="link_compra"]').click(function(){
             <?php if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0): ?>            
                 return true;
@@ -24,48 +28,52 @@
 
     <div>
         
-    <?php 
-        $C = new Criteria();
-        $C->addAscendingOrderByColumn(HorarisPeer::DIA);
+    <?php     
+     
         $cat_ant = "";
-        if(!$LLISTAT_CURSOS->getNbResults()):
+        if(!$LLISTAT_ESPAIS->getNbResults()):
             echo '<div>';                                
-            echo '<div class="h_llistat_activitat_titol">No hem trobat cap resultat amb aquests par‡metres.</div>';                                
+            echo '<div class="h_llistat_activitat_titol">No hem trobat cap resultat amb aquests par√†metres.</div>';
             echo '</div>';
             echo '<div style="margin-top:10px; clear:both;"></div>';                                                                                                                                                                    
         else:                        
-            foreach($LLISTAT_CURSOS->getResults() as $OC):
-                $DATA_INICI =  $OC->getDatainici('d').' '.generaMes($OC->getDatainici('m')).' de '.$OC->getDatainici('Y');                
+            foreach($LLISTAT_ESPAIS->getResults() as $OE):                                
                 echo '<div style="margin-top:10px; margin-bottom:10px;">';
                     
-                    //Si la categoria Ès diferent a l'anterior la mostrem
-                    if($cat_ant <> $OC->getCategoria()):
-                        echo '<div class="h_llistat_activitat_tipus_titol">'.$OC->getCategoriaText().'</div>';
+                    //Si la categoria √©s diferent a l'anterior la mostrem
+                    if($cat_ant <> $OE->getSiteId()):
+                        echo '<div class="h_llistat_activitat_tipus_titol">'.$OE->getSiteName().'</div>';
                     endif;
                     
                     echo '<div class="h_llistat_acivitat_titol">
                             <div style="float:left">
-                                <a href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl()).'">'.$OC->getTitolcurs().'</a>
+                                <a style="font-size:14px;" href="'.url_for('@hospici_espai_detall?idE='.$OE->getEspaiid().'&titol='.$OE->getNomForUrl()).'">'.$OE->getNom().'</a>
                             </div>';
                             
-                    //Si es pot reservar entrada per internet, es mostra. 
-                    if($OC->getIsEntrada()):
-                        echo '  <div style="float:right">
-                                    <a name="link_compra" style="text-decoration:underline; color:blue; font-size:10px;" href="'.url_for('@hospici_detall_curs?idC='.$OA->getIdCursos().'&titol='.$OC->getNomForUrl()).'">Reservar matrÌcula</a>
-                                </div>';
-                    endif;
+                    //Si apareix aqu√≠ √©s perqu√® es pot demanar per internet.                     
+                    echo '  <div style="float:right">
+                                <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                    <a name="link_compra" style="text-decoration:none;" href="'.url_for('@hospici_espai_detall?idE='.$OE->getEspaiid().'&titol='.$OE->getNomForUrl()).'">Reservar espai</a>
+                                </div>
+                            </div>';                
                     echo '</div>';
-                    echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';
-                    echo '<div class="h_llistat_activitat_organitzador">|&nbsp;&nbsp;Organitza: '.$OC->getNomSite().'</div>';
+                    
+                    echo '<div style="clear:both">';
+                    foreach($OE->getFotos() as $OM):
+                        echo '<a class="lightbox" href="/images/multimedia/'.$OM->getLargeImage().'"><img src="/images/multimedia/'.$OM->getUrl().'" height="30" alt="" /></a>';                        
+                    endforeach;                     
+                    echo '</div>';                   
+                    //echo '<div style="clear:both" class="h_llistat_activitat_organitzador">Entitat: '.$OE->getSiteName().'</div>';
+                    //echo '<div class="h_llistat_activitat_horari">|&nbsp;&nbsp;+info </div>';
+                    
                     echo '<div style="clear:both"></div>';
                 echo '</div>';
                 echo '<div style="height:1px; background-color:#CCCCCC; clear:both;"></div>';
-                $cat_ant = $OC->getCategoria();                                                                                               
+                $cat_ant = $OE->getSiteId();                                                                                               
             endforeach; 
         endif;
 		
-        echo '<div class="pagerE">'.setPager($LLISTAT_CURSOS,'@hospici_cercador_cursos').'</div>';        
-        
+        echo '<div class="pagerE">'.setPager($LLISTAT_ESPAIS,'@hospici_cercador_espais').'</div>';                
     ?>
                         
     </div>

@@ -81,6 +81,22 @@ class webActions extends sfActions
   /**
    * Omple el quadre de cerca amb tots els valors per defecte. 
    * */
+  private function getCercaEspaisComplet($C)
+  {    
+    if(!isset($C['TEXT']))              $C['TEXT'] = "";
+    if(!isset($C['SITE']))              $C['SITE'] = 0;
+    if(!isset($C['POBLE']))             $C['POBLE'] = 0;
+    if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = 0;
+    if(!isset($C['DATAI']))             $C['DATAI'] = 0;    
+    if(!isset($C['DATAF']))             $C['DATAF'] = 0;
+    if(!isset($C['P']))                 $C['P'] = 1;
+    return $C;
+  }  
+
+
+  /**
+   * Omple el quadre de cerca amb tots els valors per defecte. 
+   * */
   private function getCercaComplet($C)
   {    
     if(!isset($C['TEXT']))              $C['TEXT'] = "";
@@ -134,50 +150,6 @@ class webActions extends sfActions
    
   
   }  
-
-
-  /**
-   * Realitza totes les consultes AJAX D'activitats
-   * */    
-  public function executeAjaxCUR(sfWebRequest $request)
-  {
-    $accio = $request->getParameter('ACCIO');
-    
-    switch($accio){
-        case 'POB_ON':
-                $C = new Criteria();
-                $text = $request->getParameter('TEXT');
-                $idP = $request->getParameter('ON');    
-                $sel = $request->getParameter('SEL');
-                $R = CursosPeer::selectCategoriesCursos($idP[0],$text);
-            break;
-        case 'POB_QUAN':
-             	$C = new Criteria();
-                $idP = $request->getParameter('ON');
-                $idC = $request->getParameter('CAT');    
-                $sel = $request->getParameter('SEL');
-                $text = $request->getParameter('TEXT');
-                $R = CursosPeer::selectDatesCursos($idP[0],$idC[0],$text,null);
-            break;
-        case 'ENT_QUAN':
-             	$C = new Criteria();
-                $idE = $request->getParameter('ENT');        
-                $sel = $request->getParameter('SEL');
-                $text = $request->getParameter('TEXT');
-                $R = CursosPeer::selectDatesCursos(null,null,$text,$idE[0]);            
-            break;        
-    }
-    
-    $RET = "";
-    foreach($R as $K=>$E){
-        $SELECTED = ($sel == $K)?"SELECTED":"";        
-        $RET .= '<option '.$SELECTED.' value="'.$K.'">'.$E.'</option>';        
-    }        
-    return $this->renderText($RET);
-   
-  
-  }  
-
 
   public function executeLogin(sfWebRequest $request)
   {
@@ -239,7 +211,7 @@ class webActions extends sfActions
     $this->setLayout('hospici');
     
     if($request->isMethod('POST')):        
-        //L'usuari, l'he de donar d'alta de l'Hospici com a mÃ­nim, que serÃ  un SITE = 0.
+        //L'usuari, l'he de donar d'alta de l'Hospici com a mínim, que serà un SITE = 0.
         //Primer mirarem si l'usuari ja existeix
         $RS = $request->getParameter('usuaris');
         $this->FUSUARI = UsuarisPeer::initialize(null,0,false,true);
@@ -268,7 +240,7 @@ class webActions extends sfActions
         
         case 'inici':
             $this->SECCIO = 'INICI';
-            break;
+        break;
         
         //Modificació de les dades de l'usuari.
         case 'update':
@@ -278,9 +250,11 @@ class webActions extends sfActions
                 $FU->bind($RS);                
                 if($FU->isValid()):
                     $FU->save();
-                    $this->MISSATGE = "OK";                             
+                    $this->MISSATGE = "OK";                                                 
                 endif;                                                       
             endif;
+            $this->SECCIO = 'USUARI';
+        break;
             
         case 'compra_entrada':
             //Des de l'Hospici nomÃ©s es pot reservar una entrada. MÃ©s endavant s'haurÃ  d'abonar l'import.
@@ -330,7 +304,54 @@ class webActions extends sfActions
                 if($OM == 1) $this->MISSATGE = "JA_EXISTEIX";
                 else $this->MISSATGE = "KO";
             endif;             
-        break;                                
+        break;
+
+        case 'llista_reserves':
+            $this->SECCIO = 'RESERVA';
+        break;
+
+        case 'edita_reserva':
+            $this->SECCIO = "RESERVA";
+            $OR = ReservaespaisPeer::retrieveByPK($request->getParameter('idR'));
+            if($OR instanceof Reservaespais):
+                $this->FReserva = new HospiciReservesForm($OR,array('IDS'=>$OR->getSiteid()));
+                $this->OPCIONS = 'VISUALITZA'; 
+            else: 
+                $this->redirect('@hospici_llista_reserves');
+            endif;
+            
+        break;
+        
+        case 'nova_reserva':        
+            $idE = $request->getParameter('idE');
+            $OE = EspaisPeer::retrieveByPK($idE);
+            $this->SECCIO = 'RESERVA';
+            
+            if($OE instanceof Espais){
+                $this->FReserva = ReservaespaisPeer::initializeHospici(null,$OE->getSiteid(),$OE->getEspaiid(),$this->getUser()->getSessionPar('idU'));                                
+            } else {
+                $this->MISSATGE = "ERROR_ESPAI";                
+            }
+        break;  
+    
+        case 'save_nova_reserva':
+            
+            $RP = $request->getParameter('reservaespais');
+            $this->SECCIO = 'RESERVA';
+            $this->FReserva = ReservaespaisPeer::initializeHospici(null,$RP['site_id'],null,$this->getUser()->getSessionPar('idU'));
+            $this->FReserva->bind($RP);
+                        
+            if($this->FReserva->isValid()){
+                $this->FReserva->save();       
+                $this->MISSATGE = "OK";
+                $this->redirect('@hospici_llista_reserves');             
+            } else {
+                $this->MISSATGE = 'ERROR_SAVE';            
+            }                
+                            
+        break;               
+                       
+                         
     }
     
     $this->setLayout('hospici');
@@ -412,41 +433,49 @@ class webActions extends sfActions
     $this->accio = $request->getParameter('accio','index');        
     
     //Carrego la cerca
-    $this->CERCA = $this->getUser()->getSessionPar('cerca');    
-
-    switch($this->accio){        
-        case 'cerca_cursos':
-               
-                //Agafo el parÃ metre
-                $C = $request->getParameter('cerca',array());
-                                
-                //Normalitzo tots els camps                    
-                $C2 = $this->getCercaComplet($C);        
-                                                        
-                //Guardem a sessiÃ³ la cerca "actual"        
-                $this->CERCA = $C2;
-                $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
-                                                
-                $this->LLISTAT_CURSOS = CursosPeer::getCursosHospici($this->CERCA['TEXT'],$this->CERCA['SITE'],$this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'][0],$this->CERCA['DATAR'],$this->CERCA['P']);
-                
-                $this->MODE = 'CERCA';
-                
-            break;
+    $this->CERCA = $this->getUser()->getSessionPar('cerca',array());    
+    $this->DESPLEGABLES = array();
+    $this->AUTH = $this->getUser()->isAuthenticated();      
     
-        case 'detall_curs':
+    if($this->accio == 'cerca_espais' || $this->accio == 'inici'):
         
-                $this->CURS = CursosPeer::retrieveByPK($request->getParameter('idC'));
-                $this->MODE = 'DETALL';
-                
-            break;
-        
-        //Arribem per primer cop al web o no entrem per cap url interessant
-        default:            
-            //Inicialitzem la cerca i la guardem a memÃ²ria
-            $this->CERCA = $this->getCercaComplet(null);
-            $this->getUser()->setSessionPar('cerca',$this->CERCA);
-            $this->MODE = 'INICIAL';
-    }                                        
+        //Agafo els paràmetres
+        $C = $request->getParameter('cerca',array());
+        $C2 = $this->getCercaEspaisComplet($C);
+                                        
+        //Faig la cerca dels cursos de l'Hospici i ho retorno amb valors
+        //La cerca hauria de tornar els cursos, segons els paràmetres i a més els llistats amb els valors.        
+        $this->LLISTAT_ESPAIS = EspaisPeer::getEspaisCercaHospici($C2);                                 
+        $this->DESPLEGABLES['SELECT_POBLACIONS'] = EspaisPeer::getPoblacionsHospici($C2);        
+        $this->DESPLEGABLES['SELECT_ENTITATS']   = EspaisPeer::getEntitatsHospici($C2);
+        $this->DESPLEGABLES['SELECT_CATEGORIES'] = EspaisPeer::getCategoriesHospici($C2);                        
+                                                                
+        //Guardem a sessió la cerca "actual"        
+        $this->CERCA = $C2;    
+        $this->getUser()->setSessionPar('cerca',$this->CERCA);
+                             
+        $this->MODE = 'CERCA';            
+            
+    elseif($this->accio == 'detall_espai'):
+                    
+                $this->ESPAI = EspaisPeer::retrieveByPK($request->getParameter('idE'));
+                $this->DATA = $request->getParameter('data',time());                
+                $month = date('m',$this->DATA); $year = date('Y',$this->DATA);                                
+                $this->OCUPACIO = EspaisPeer::getEstadistiquesEspais(
+                                                                        array($request->getParameter('idE')), 
+                                                                        $this->ESPAI->getSiteId(), 
+                                                                        $month,
+                                                                        $year);
+                                                                                        
+                $d = mktime(0,0,0,$month+1,1,$year);
+                $month = date('m',$d); $year = date('Y',$d);
+                $this->OCUPACIO2 = EspaisPeer::getEstadistiquesEspais(
+                                                                        array($request->getParameter('idE')), 
+                                                                        $this->ESPAI->getSiteId(), 
+                                                                        $month,
+                                                                        $year);                                                                        
+                $this->MODE = 'DETALL';                                        
+    endif;                                        
     
   }
 

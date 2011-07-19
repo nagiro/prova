@@ -20,4 +20,10 @@ require 'lib/model/om/BaseMultimedia.php';
  */
 class Multimedia extends BaseMultimedia {
 
+    public function getLargeImage(){
+        $url = $this->getUrl();
+        list($nom,$ext) = explode('.',$url);
+        return $nom.'-L.'.$ext;
+    }
+
 } // Multimedia

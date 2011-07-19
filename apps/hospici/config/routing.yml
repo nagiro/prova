@@ -64,6 +64,32 @@ hospici_nova_matricula:
   url: /usuaris/matricula/:idC
   param: { module: web, action:usuaris, accio:nova_matricula  }
 
+hospici_espai_detall:
+  url: /espais/detall/:idE/:titol
+  param: { module: web, action:espais, accio:detall_espai }
+
+hospici_espai_detall_canvi_mes:
+  url: /espais/detall/:idE/:titol/:data
+  param: { module: web, action:espais, accio:detall_espai }
+  
+hospici_nova_reserva_espai:
+  url: /usuaris/espais/:idE/reserva
+  param: { module: web, action:usuaris, accio:nova_reserva  }
+
+hospici_reserva_espai:
+  url: /usuaris/espais/:idR/reserva/edita
+  param: { module: web, action:usuaris, accio:edita_reserva  }
+
+  
+hospici_nova_reserva_espai_save:  
+  url: /usuaris/espais/reserva/guarda
+  param: { module: web, action:usuaris, accio:save_nova_reserva }
+
+hospici_llista_reserves:
+  url: /usuaris/espais
+  param: { module: web, action:usuaris, accio:llista_reserves  }
+
+
 #####################################################
 # DEFAULT                                           #
 #####################################################
