@@ -3,7 +3,7 @@
 <?php $BASE = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
  
 
-<?php include_partial('web/showCercadorActivitats',array('CERCA'=>$CERCA,'VISIBLE'=>($MODE <> 'DETALL'))); ?>
+<?php if($MODE == 'CERCA' || $MODE == 'INICIAL') include_partial('web/showCercadorActivitats',array('CERCA'=>$CERCA,'VISIBLE'=>($MODE <> 'DETALL'),'DESPLEGABLES'=>$DESPLEGABLES)); ?>
 <?php if(!$MODE == 'INICIAL') include_partial('web/showDestacats'); ?>                
 <?php if($MODE == 'DETALL') include_partial('web/showDetallActivitat',array('ACTIVITAT'=>$ACTIVITAT, 'LHO'=>$LHO, 'AUTENTIFICAT'=>$AUTENTIFICAT)); ?>                
 <?php if($MODE == 'CERCA') include_partial('web/showLlistatActivitats',array('LLISTAT_ACTIVITATS'=>$LLISTAT_ACTIVITATS, 'AUTENTIFICAT'=>$AUTENTIFICAT)); ?>    

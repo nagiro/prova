@@ -6,9 +6,11 @@
     <div>
         
     <?php if($ACTIVITAT instanceof Activitats):
-            $i = $ACTIVITAT->getImatge();
-            $imatge = sfConfig::get('sf_webrooturl').'images/activitats/'.$i;
-            if(empty($i)) $imatge = sfConfig::get('sf_webrooturl').'images/web/logo_hospici.png'; 
+    
+            $i = $ACTIVITAT->getImatge();            
+            $imatge = '/images/activitats/'.$i;
+            
+            if(!($i > 0)) $imatge = SitesPeer::getSiteLogo($ACTIVITAT->getSiteId());                                     
             
             $pdf = $ACTIVITAT->getPdf();                          
      ?>
@@ -49,7 +51,7 @@
    				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">RESERVA D'ENTRADES</div> 
 				<div style=" margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
 					<div style="padding:10px; font-size:10px;">
-                    
+
                     <?php if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0): ?>                                        
                         <div class="taula_dades">
                             <div style="font-weight:bold; float:left; width: 60px;text-align:right;">Dia</div>    
@@ -59,6 +61,7 @@
                             <div style="font-weight:bold; float:left; width: 60px;text-align:right;"></div>
                             <div style="clear: both;"></div>
                             <?php   foreach($LHO as $HO): ?>
+                            <div style="margin-top: 5px;">
                             <form action="<?php echo url_for('@hospici_compra_entrada') ?>">
                                 <div style="float:left; width: 60px;text-align:right;"><?php echo $HO->getDia('d/m/Y') ?></div>    
                                 <div style="float:left; width: 60px;text-align:right;"><?php echo $HO->getHorainici('H:i') ?></div>
@@ -67,6 +70,7 @@
                                 <div style="float:left; width: 60px;text-align:right;"><input type="submit" name="BRESERVA" value="Reserva" /></div>
                                 <div style="clear: both;"><input type="hidden" value="<?php echo $HO->getHorarisid() ?>" name="entrades[idH]" /></div>
                             </form>
+                            </div>
                             <?php   endforeach; ?>                        
                         </div>
                     <?php else: ?>

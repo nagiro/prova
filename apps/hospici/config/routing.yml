@@ -18,11 +18,7 @@ hospici_usuaris_alta:
   
 hospici_usuaris_remember:
   url:  /recorda
-  param: { module: web, action:remember }  
-  
-hospici_cercador_entitats:
-  url: /entitats
-  param: { module: web, action:entitats, accio:cerca_entitats  }  
+  param: { module: web, action:remember }    
   
 hospici_cercador_espais:
   url: /cercador_espais
@@ -79,7 +75,6 @@ hospici_nova_reserva_espai:
 hospici_reserva_espai:
   url: /usuaris/espais/:idR/reserva/edita
   param: { module: web, action:usuaris, accio:edita_reserva  }
-
   
 hospici_nova_reserva_espai_save:  
   url: /usuaris/espais/reserva/guarda
@@ -89,7 +84,22 @@ hospici_llista_reserves:
   url: /usuaris/espais
   param: { module: web, action:usuaris, accio:llista_reserves  }
 
+hospici_cercador_entitats:
+  url: /entitats
+  param: { module: web, action:entitats, accio:cerca_entitats  }
+  
+hospici_cercador_entitats_activitats:
+  url: /activitats_entitat/:SITE
+  param: { module: web, action:index, accio:cerca_activitat  }  
 
+hospici_cercador_entitats_espais:
+  url: /espais_entitat/:SITE
+  param: { module: web, action:espais, accio:cerca_espais }
+  
+hospici_cercador_entitats_cursos:
+  url: /cursos_entitat/:SITE
+  param: { module: web, action:cursos, accio:cerca_cursos }
+  
 #####################################################
 # DEFAULT                                           #
 #####################################################

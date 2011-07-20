@@ -7,13 +7,10 @@
         
     <?php if($CURS instanceof Cursos):
             
-            //Carrego el Site
-            $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
-            
-            $imatge = '/images/sites/'.$OS->getLogourl();
-            if($OS->getLogourl() == "") $imatge = "/images/hospici/hospici100_100.jpg";            
-                                                    
-            //Si l'entitat té imatge, l'hauríem de carregar, sinó la de l'hospici.                                              
+            //Carrego la imatge del site
+            $imatge = SitesPeer::getSiteLogo($CURS->getSiteId());
+                                                               
+            //Si l'entitat té un pdf, l'hauríem de carregar.                                               
             if(empty($pdf)) $pdf = 0;             
     ?>
 			<div style="border:0px solid #96BF0D; clear:both; padding:10px;">

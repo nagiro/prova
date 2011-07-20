@@ -410,7 +410,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    *  
    * @return
    */
-  static public function selectSitesActivitats($text = null)
+/*  static public function selectSitesActivitats($text = null)
   {
     $C = new Criteria();
     $C->add(ActivitatsPeer::ACTIU, true);
@@ -446,7 +446,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     return $FIN;   
     
   }
-
+*/
   
   /**
    * ActivitatsPeer::selectPoblesActivitats()
@@ -455,7 +455,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    * 
    * @return array
    */
-  static public function selectPoblesActivitats($text = null)
+/*  static public function selectPoblesActivitats($text = null)
   {
     
     //Busquem les activitats futures amb tots els ets i uts que de moment és la població
@@ -472,7 +472,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     return $FIN;    
              
   }
-
+*/
   /**
    * ActivitatsPeer::selectCategoriesActivitats()
    *
@@ -481,7 +481,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    * @param mixed $idP
    * @return
    */
-  static public function selectCategoriesActivitats( $idP , $text )
+/*  static public function selectCategoriesActivitats( $idP , $text )
   {
     
     //Busquem les activitats futures amb tots els ets i uts que de moment és la població
@@ -514,7 +514,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     return $FIN;    
         
   }
-  
+*/  
   /**
    * ActivitatsPeer::selectDatesActivitats()
    * 
@@ -524,7 +524,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    * @param mixed $idC
    * @return
    */
-  static public function selectDatesActivitats($idP = null, $idC = null, $text = null, $idE = null)
+/*  static public function selectDatesActivitats($idP = null, $idC = null, $text = null, $idE = null)
   {
     
     //Busquem les activitats futures amb tots els ets i uts que de moment és la població
@@ -587,7 +587,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     return $FIN;    
         
   }  
-  
+*/  
 
   /**
    * ActivitatsPeer::getActivitatsHospiciCerca()
@@ -603,7 +603,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    * @param bool $hasPobles
    * @return
    */
-  static public function getActivitatsHospiciCerca($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates = null, $hasPobles = false )
+/*  static public function getActivitatsHospiciCerca($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates = null, $hasPobles = false )
   {
                         
     //Segons text
@@ -676,7 +676,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     return $RET;
                     
   }
-
+*/
   /**
    * ActivitatsPeer::getActivitatsHospici()
    * 
@@ -691,7 +691,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
    * @param integer $p
    * @return
    */
-  static public function getActivitatsHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates, $p = 1 )
+/*  static public function getActivitatsHospici($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates, $p = 1 )
   {
     
     $RET = self::getActivitatsHospiciCerca($idText, $idSite, $idPoble, $idCategoria, $idData, $aDates, false);    
@@ -706,5 +706,188 @@ class ActivitatsPeer extends BaseActivitatsPeer
     return $pager; 
 
   }
+*/
+  static public function getActivitatsCercaHospici($CER){
+    $idText         = $CER['TEXT'];
+    $idPoble        = $CER['POBLE'];
+    $idCategoria    = $CER['CATEGORIA'];
+    $idSite         = $CER['SITE'];
+    $datai          = myUser::revDate($CER['DATAI']);
+    $dataf          = myUser::revDate($CER['DATAF']);
+    $p              = $CER['P'];
+
+    $idText = addslashes($idText);    
+    $text = (!is_null($idText) && !empty($idText))?" AND (a.tMig like '%{$idText}%' OR a.dMig like '%{$idText}%')":"";             
+    $poble = (!is_null($idPoble) && $idPoble > 0)?' AND p.idPoblacio = '.$idPoble:'';            
+    $categoria = (!is_null($idCategoria) && $idCategoria > 0)?' AND a.TipusActivitat_idTipusActivitat = '.$idCategoria:'';        
+    $data = " AND h.Dia >= '".$datai."' AND h.Dia <= '".$dataf."'";
+    $site = ($idSite > 0)?" AND s.site_id = $idSite":"";
+                             
+
+    $connection = Propel::getConnection();        
+    $query = 
+            "              
+                Select a.ActivitatID as idA
+                  from activitats a 
+                  LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID )
+                  LEFT JOIN horarisespais he ON (h.HorarisID = he.Horaris_HorarisID)
+                  LEFT JOIN espais e ON (he.Espais_EspaiID = e.EspaiID)
+                  LEFT JOIN sites s ON (a.site_id = s.site_id)
+                  LEFT JOIN poblacions p ON (p.idPoblacio = s.poble)  
+                WHERE 
+                   a.actiu = 1 AND h.actiu = 1 AND he.actiu = 1 AND e.actiu = 1 AND s.actiu = 1
+                   AND a.PublicaWEB = 1
+                   {$text}
+                   {$poble}
+                   {$categoria}
+                   {$data}
+                   {$site}
+              GROUP BY idA                                                        
+                
+                UNION
+                Select a.ActivitatID as idA
+                  from activitats a 
+                  LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID )
+                  LEFT JOIN horarisespais he ON (h.HorarisID = he.Horaris_HorarisID)
+                  LEFT JOIN espais_externs ee ON (he.idEspaiextern = ee.idEspaiextern)
+                  LEFT JOIN sites s ON (a.site_id = s.site_id)
+                  LEFT JOIN poblacions p ON (p.idPoblacio = ee.Poble)  
+                WHERE 
+                   a.actiu = 1 AND h.actiu = 1 AND he.actiu = 1 AND ee.actiu = 1 AND s.actiu = 1
+                   AND a.PublicaWEB = 1
+                   {$text}
+                   {$poble}
+                   {$categoria}
+                   {$data}
+                   {$site}
+              GROUP BY idA              
+            ";               
+
+    //echo $query;
+        
+    $statement = $connection->prepare($query);        
+    $statement->execute();
+    $RET = array();
+    
+    //Guardo els elements resultats i els passo a un format Criteria    
+    while($result = $statement->fetch(PDO::FETCH_ASSOC)) $RET[$result['idA']] = $result['idA'];
+    
+    //Ara fem la select dels cursos amb el pager
+    $C = new Criteria();    
+    $C->add(self::ACTIVITATID , $RET , CRITERIA::IN );
+    $C->addJoin(HorarisPeer::ACTIVITATS_ACTIVITATID, self::ACTIVITATID);
+    $C->addAscendingOrderByColumn(self::TIPUSACTIVITAT_IDTIPUSACTIVITAT);
+    $C->addAscendingOrderByColumn(HorarisPeer::DIA);
+    $C->addGroupByColumn(self::ACTIVITATID);
+    $pager = new sfPropelPager('Activitats', 20);
+    $pager->setCriteria($C);
+    $pager->setPage($p);
+    $pager->init();    	                
+       
+    return array('PAGER'=>$pager,'LACTIVITATS'=>$RET);
+                  
+  }
+
+  /**
+   * Funció qeu amb un llistat d'activitats, ens mostra quantes van a cada poble.
+   * @param $A_ACTIVITATS (Llistat amb ID activitats)
+   * @return SELECT AMB VALORS
+   * */  
+  public static function getPoblacionsActivitatsHospici($A_ACTIVITATS){
+    $C = new Criteria();            
+    $C->add( self::ACTIVITATID , $A_ACTIVITATS , CRITERIA::IN );
+    $C->addJoin( self::ACTIVITATID , HorarisPeer::ACTIVITATS_ACTIVITATID  );
+    $C->addJoin( HorarisPeer::HORARISID , HorarisespaisPeer::HORARIS_HORARISID);
+    $C->addJoin( HorarisespaisPeer::ESPAIS_ESPAIID , EspaisPeer::ESPAIID );
+    $C->addJoin( EspaisPeer::SITE_ID , SitesPeer::SITE_ID );
+    $C->addJoin( SitesPeer::POBLE , PoblacionsPeer::IDPOBLACIO );
+    $C->addGroupByColumn( self::ACTIVITATID );
+    
+    $C2 = new Criteria();            
+    $C2->add( self::ACTIVITATID , $A_ACTIVITATS , CRITERIA::IN );
+    $C2->addJoin( self::ACTIVITATID , HorarisPeer::ACTIVITATS_ACTIVITATID  );
+    $C2->addJoin( HorarisPeer::HORARISID , HorarisespaisPeer::HORARIS_HORARISID);
+    $C2->addJoin( HorarisespaisPeer::IDESPAIEXTERN , EspaisExternsPeer::IDESPAIEXTERN );
+    $C2->addJoin( EspaisexternsPeer::POBLE , PoblacionsPeer::IDPOBLACIO );
+    $C2->addGroupByColumn( self::ACTIVITATID );    
+                    
+    $RET = array(); $SOL = array();
+    
+    $RET[0] = array('NOM' => "Tots els pobles..." , 'COUNT'=>0);
+    foreach(PoblacionsPeer::doSelect($C) as $OP):
+        if(!isset($RET[$OP->getIdpoblacio()])) $RET[$OP->getIdpoblacio()] = array('NOM' => $OP->getNom(),'COUNT'=>0);
+        $RET[$OP->getIdpoblacio()]['COUNT'] += 1;
+        $RET[0]['COUNT'] += 1;
+    endforeach;
+
+    foreach(PoblacionsPeer::doSelect($C2) as $OP):
+        if(!isset($RET[$OP->getIdpoblacio()])) $RET[$OP->getIdpoblacio()] = array('NOM' => $OP->getNom(),'COUNT'=>0);
+        $RET[$OP->getIdpoblacio()]['COUNT'] += 1;
+        $RET[0]['COUNT'] += 1;
+    endforeach;    
+        
+    foreach($RET as $K=>$V):
+        $SOL[$K] = $V['NOM']." ({$V['COUNT']})";
+    endforeach;
+    
+    return $SOL; 
+    
+  }
+  
+  /**
+   * Funció qeu amb un llistat d'activitats, ens mostra a quines entitats s'executen.
+   * @param $A_ACTIVITATS (Llistat amb ID activitats)
+   * @return SELECT AMB VALORS
+   * */  
+  public static function getEntitatsActivitatsHospici($A_ACTIVITATS){    
+    $C = new Criteria();
+    $C->add( self::ACTIVITATID , $A_ACTIVITATS , CRITERIA::IN );
+    $C->addJoin( self::SITE_ID , SitesPeer::SITE_ID );    
+    $C->addGroupByColumn( self::ACTIVITATID );
+                    
+    $RET = array(); $SOL = array();
+    
+    $RET[0] = array('NOM' => "Tots els pobles..." , 'COUNT'=>0);
+    foreach(SitesPeer::doSelect($C) as $OS):
+        if(!isset($RET[$OS->getSiteId()])) $RET[$OS->getSiteId()] = array('NOM' => $OS->getNom(),'COUNT'=>0);
+        $RET[$OS->getSiteId()]['COUNT'] += 1;
+        $RET[0]['COUNT'] += 1;
+    endforeach;
+        
+    foreach($RET as $K=>$V):
+        $SOL[$K] = $V['NOM']." ({$V['COUNT']})";
+    endforeach;
+    
+    return $SOL; 
+    
+  }  
+  
+  /**
+   * Funció qeu amb un llistat d'activitats, ens mostra a quines entitats s'executen.
+   * @param $A_ACTIVITATS (Llistat amb ID activitats)
+   * @return SELECT AMB VALORS
+   * */  
+  public static function getCategoriaActivitatsHospici($A_ACTIVITATS){
+    $C = new Criteria();
+    $C->add( self::ACTIVITATID , $A_ACTIVITATS , CRITERIA::IN );
+    $C->addJoin( self::TIPUSACTIVITAT_IDTIPUSACTIVITAT , TipusactivitatPeer::IDTIPUSACTIVITAT );
+    $C->addGroupByColumn( self::ACTIVITATID );    
+                    
+    $RET = array(); $SOL = array();
+    
+    $RET[0] = array('NOM' => "Tots els tipus..." , 'COUNT'=>0);
+    foreach(TipusactivitatPeer::doSelect($C) as $OT):
+        if(!isset($RET[$OT->getIdtipusactivitat()])) $RET[$OT->getIdtipusactivitat()] = array('NOM' => $OT->getNom(),'COUNT'=>0);
+        $RET[$OT->getIdtipusactivitat()]['COUNT'] += 1;
+        $RET[0]['COUNT'] += 1;
+    endforeach;
+        
+    foreach($RET as $K=>$V):
+        $SOL[$K] = $V['NOM']." ({$V['COUNT']})";
+    endforeach;
+    
+    return $SOL; 
+    
+  }  
 
 }

@@ -460,8 +460,9 @@ class myUser extends sfBasicSecurityUser
   
   }
   
+  static public function revDate($data){
+    list($dia,$mes,$any) = explode('-',$data);
+    return $any.'-'.$mes.'-'.$dia;
+  }
   
-  
-  
-
 }

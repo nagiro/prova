@@ -115,5 +115,122 @@ class SitesPeer extends BaseSitesPeer {
         return $RET;                
     }
     
+    static public function getSiteLogo($idS)
+    {
+        $OS = self::retrieveByPK($idS);
+        if($OS instanceof Sites){
+            $url = $OS->getLogourl();
+            if(!empty($url)) return '/images/sites/'.$OS->getLogourl();
+            else return "/images/hospici/hospici100_100.jpg";            
+        }                                        
+        else
+        {
+            return "/images/hospici/hospici100_100.jpg";
+        }
+            
+    }
+
+
+
+
+
+
+  static public function getCategoriesCercaHospici($CER)
+  {
+    $C = new Criteria();
+//    $C->add(self::ACTIU, true);        
+//    $C->add(self::IDCURSOS , $a_cursos , CRITERIA::IN );
+//    $C->addJoin(TipusPeer::IDTIPUS, self::CATEGORIA);            
+    
+//    $RET = array(); $SOL = array();
+    
+    $RET[0] = array('NOM' => "Totes les categories..." , 'COUNT'=>0);
+//    foreach(TipusPeer::doSelect($C) as $OT):
+//        if(!isset($RET[$OT->getIdtipus()])) $RET[$OT->getIdtipus()] = array('NOM' => $OT->getTipusdesc(),'COUNT'=>0);        
+//        $RET[$OT->getIdtipus()]['COUNT'] += 1;
+//        $RET[0]['COUNT'] += 1;
+//    endforeach;
+        
+    foreach($RET as $K=>$V):
+//        $SOL[$K] = $V['NOM']." ({$V['COUNT']})";
+        $SOL[$K] = $V['NOM'];            
+    endforeach;
+    
+    return $SOL; 
+    
+  }        
+                
+  static public function getPoblacionsCercaHospici( $CER )
+  {
+    $C = new Criteria();
+    
+    $C = self::CriteriaCercaEntitatsHospici( $CER , $C );
+        
+    $C->add(SitesPeer::ACTIU, true);
+    $C->addJoin(PoblacionsPeer::IDPOBLACIO, SitesPeer::POBLE);
+    $C->addJoin(self::SITE_ID, SitesPeer::SITE_ID);
+        
+    $RET = array(); $SOL = array();
+    
+    $RET[0] = array('NOM' => "Tots els pobles..." , 'COUNT'=>0);
+    foreach(PoblacionsPeer::doSelect($C) as $OP):
+        if(!isset($RET[$OP->getIdpoblacio()])) $RET[$OP->getIdpoblacio()] = array('NOM' => $OP->getNom(),'COUNT'=>0);        
+        $RET[$OP->getIdpoblacio()]['COUNT'] += 1;
+        $RET[0]['COUNT'] += 1;
+    endforeach;
+    
+    foreach($RET as $K=>$V):
+        $SOL[$K] = $V['NOM']." ({$V['COUNT']})";
+    endforeach;
+    
+    return $SOL; 
+  }
+   
+  static private function CriteriaCercaEntitatsHospici( $CER , $C ){        
+    
+    //Agafo els sites que estan actius.      
+    $C->add(self::ACTIU, true);    
+
+    if( !empty($CER['TEXT']) ) {        
+        $C->add(self::NOM, '%'.$CER['TEXT'].'%', Criteria::LIKE);                
+    }
+        
+    if(  $CER['POBLE'] > 0 ){        
+        $C->add(self::POBLE, $CER['POBLE']);
+    }
+    
+/* Encara no existeix la categoria en les entitats
+    if(  $CER['CATEGORIA'] > 0 ){
+        $C->addJoin(self::SITE_ID, SitesPeer::SITE_ID);
+        $C->add(SitesPeer::POBLE, $CER['POBLE']);
+    }
+*/    
+    $C->addAscendingOrderByColumn(self::NOM);    
+    
+    return $C;
+    
+  }
+        
+  static public function getEntitatsCercaHospici($CER)
+  {
+    
+    $C = new Criteria();
+       
+    $C = self::CriteriaCercaEntitatsHospici( $CER , $C );
+                                
+    //Ara fem la select dels cursos amb el pager        
+    $pager = new sfPropelPager('Sites', 20);
+    $pager->setCriteria($C);
+    $pager->setPage($CER['P']);
+    $pager->init();    	                
+       
+    return $pager;
+    
+  }
+
+
+
+
+
     
 } // SitesPeer

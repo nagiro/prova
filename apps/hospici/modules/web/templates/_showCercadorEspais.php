@@ -42,18 +42,6 @@
         </div>
 
         
-        <div style="float: left;">
-            <div style="margin: 5px;">            
-                <b>Data inici</b><br /><?php echo input_tag('cerca[DATAI]',$CERCA['DATAI'],array('id'=>'di')); ?>
-            </div>
-        </div>
-
-        <div style="float: left;">
-            <div style="margin: 5px;">            
-                <b>Data fi</b><br /><?php echo input_tag('cerca[DATAF]',$CERCA['DATAF'],array('id'=>'df')); ?>
-            </div>
-        </div>
-
         <div style="clear:both; float: left; width:400px;">            
             <div style="float: left; margin-right:5px; margin-top:4px;">
                 <input type="hidden" name="cerca[P]" value="1" style="height:30px; width:100px;" />                                                

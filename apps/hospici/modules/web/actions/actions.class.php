@@ -20,25 +20,35 @@ class webActions extends sfActions
     
     $this->setLayout('hospici');
     $this->accio = $request->getParameter('accio','index');
-    $this->AUTENTIFICAT = $this->getUser()->getSessionPar('idU');
+    $this->AUTENTIFICAT = $this->getUser()->getSessionPar('idU');    
     
     //Carrego la cerca
-    $this->CERCA = $this->getUser()->getSessionPar('cerca');    
+    $this->CERCA = $this->getUser()->getSessionPar('cerca');            
+    $this->DESPLEGABLES = array();            
 
     switch($this->accio){        
         case 'cerca_activitat':
         
-                //Agafo el parÃ metre
+                //Agafo el paràmetre
                 $C = $request->getParameter('cerca',array());
+                
+                //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
+                if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');                
                                 
                 //Normalitzo tots els camps                    
                 $C2 = $this->getCercaComplet($C);        
+                
+                $RET = ActivitatsPeer::getActivitatsCercaHospici($C2);        
+                $this->LLISTAT_ACTIVITATS = $RET['PAGER'];        
+                $LACTIVITATS = $RET['LACTIVITATS'];                
+                $this->DESPLEGABLES['SELECT_POBLACIONS'] = ActivitatsPeer::getPoblacionsActivitatsHospici($LACTIVITATS);
+                $this->DESPLEGABLES['SELECT_ENTITATS']   = ActivitatsPeer::getEntitatsActivitatsHospici($LACTIVITATS);
+                $this->DESPLEGABLES['SELECT_CATEGORIES'] = ActivitatsPeer::getCategoriaActivitatsHospici($LACTIVITATS);
                                                         
-                //Guardem a sessiÃ³ la cerca "actual"        
+                //Guardem a sessió la cerca "actual"        
                 $this->CERCA = $C2;
                 $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
-                                                
-                $this->LLISTAT_ACTIVITATS = ActivitatsPeer::getActivitatsHospici($this->CERCA['TEXT'],$this->CERCA['SITE'],$this->CERCA['POBLE'][0],$this->CERCA['CATEGORIA'][0],$this->CERCA['DATA'][0],$this->CERCA['DATAR'],$this->CERCA['P']);
+                                                                
                 $this->MODE = 'CERCA';
             break;
     
@@ -100,11 +110,11 @@ class webActions extends sfActions
   private function getCercaComplet($C)
   {    
     if(!isset($C['TEXT']))              $C['TEXT'] = "";
-    if(!isset($C['SITE']))              $C['SITE'] = array(0=>0);
-    if(!isset($C['POBLE']))             $C['POBLE'] = array(0=>0);
-    if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = array(0=>0);
-    if(!isset($C['DATA']))              $C['DATA'] = array(0=>0);
-    if(!isset($C['DATAR']))             $C['DATAR'] = array('DI'=>time(), 'DF'=>time());
+    if(!isset($C['SITE']))              $C['SITE'] = 0;
+    if(!isset($C['POBLE']))             $C['POBLE'] = 0;
+    if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = 0;
+    if(!isset($C['DATAI']))             $C['DATAI'] = date('d-m-Y',time());
+    if(!isset($C['DATAF']))             $C['DATAF'] = date('d-m-Y',mktime(0,0,0,date('m',time())+1,date('d',time()),date('Y',time())));
     if(!isset($C['P']))                 $C['P'] = 1;
     return $C;
   }  
@@ -112,7 +122,7 @@ class webActions extends sfActions
   /**
    * Realitza totes les consultes AJAX D'activitats
    * */    
-  public function executeAjaxACT(sfWebRequest $request)
+/*  public function executeAjaxACT(sfWebRequest $request)
   {
     $accio = $request->getParameter('ACCIO');
     
@@ -150,7 +160,7 @@ class webActions extends sfActions
    
   
   }  
-
+*/
   public function executeLogin(sfWebRequest $request)
   {
     $this->setLayout('hospici');    
@@ -391,8 +401,12 @@ class webActions extends sfActions
         
         //Agafo els paràmetres
         $C = $request->getParameter('cerca',array());
+
+        //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
+        if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');
+        
         $C2 = $this->getCercaCursosComplet($C);
-                                        
+                                
         //Faig la cerca dels cursos de l'Hospici i ho retorno amb valors
         //La cerca hauria de tornar els cursos, segons els paràmetres i a més els llistats amb els valors.    
         $RET = CursosPeer::getCursosCercaHospici($C2['TEXT'],$C2['SITE'],$C2['POBLE'],$C2['CATEGORIA'],$C2['DATA'],$C2['P']);        
@@ -441,6 +455,10 @@ class webActions extends sfActions
         
         //Agafo els paràmetres
         $C = $request->getParameter('cerca',array());
+        
+        //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
+        if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');
+        
         $C2 = $this->getCercaEspaisComplet($C);
                                         
         //Faig la cerca dels cursos de l'Hospici i ho retorno amb valors
@@ -479,46 +497,46 @@ class webActions extends sfActions
     
   }
 
-  static public function getDatesCercadorHospici($idData,$aDates){
+  /**
+   * hospiciActions::executeEntitats()
+   * 
+   * Part de mostra dels espais per reservar a l'hospici
+   * 
+   * @param mixed $request
+   * @return void
+   */
+  public function executeEntitats(sfWebRequest $request)
+  {    
   
-    //Hem de buscar segons data.    
-    switch($idData){
-        case "0": //El mateix dia 
-            $datai = date('Y-m-d',time());
-            $dataf = date('Y-m-d',time());            
-            break;
-        case "1": //El cap de setmana
-            $t = time();            
-            while(6 <> date('w',$t)) $t = strtotime(date("Y-m-d", $t) . "+1 day");
-            $datai = date('Y-m-d',$t);                        
-            while(0 <> date('w',$t)) $t = strtotime(date("Y-m-d", $t) . "+1 day");
-            $dataf = date('Y-m-d',$t);
-            break;
-        case "2": //Aquest mes
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time())));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+1 month"));            
-            break;
-        case "3": //El mes que ve
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+1 month"));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+2 month"));            
-            break;
-        case "4": //Dos mesos
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+2 month"));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+3 month"));            
-            break;
-        case "5": //Rang
-            $datai = preg_replace("/([0-9]{2})[\/|\-]([0-9]{2})[\/|\-]([0-9]{4})/","\$3-\$2-\$1",$aDates['DI']);
-            $dataf = preg_replace("/([0-9]{2})[\/|\-]([0-9]{2})[\/|\-]([0-9]{4})/","\$3-\$2-\$1",$aDates['DF']);
-            break;
-        default:
-            $datai = date('Y-m-d',strtotime(date("Y-m-d", time())));
-            $dataf = date('Y-m-d',strtotime(date("Y-m-d", time()) . "+3 month"));
-            break;                                            
-    }    
-
-    return array('datai'=>$datai,'dataf'=>$dataf);
-
+    $this->setLayout('hospici');
+    $this->setTemplate('indexEntitats');
+    $this->accio = $request->getParameter('accio','index');        
+    
+    //Carrego la cerca
+    $this->CERCA = $this->getUser()->getSessionPar('cerca',array());
+    $this->DESPLEGABLES = array();
+    $this->AUTH = $this->getUser()->isAuthenticated();      
+            
+    //Comença la cerca *************************************************
+            
+    //Agafo els paràmetres
+    $C = $request->getParameter('cerca',array());
+    $C2 = $this->getCercaEspaisComplet($C);
+                                    
+    //Faig la cerca dels cursos de l'Hospici i ho retorno amb valors
+    //La cerca hauria de tornar els cursos, segons els paràmetres i a més els llistats amb els valors.        
+    $this->LLISTAT_ENTITATS = SitesPeer::getEntitatsCercaHospici($C2);                                 
+    $this->DESPLEGABLES['SELECT_POBLACIONS'] = SitesPeer::getPoblacionsCercaHospici($C2);                
+    $this->DESPLEGABLES['SELECT_CATEGORIES'] = SitesPeer::getCategoriesCercaHospici($C2);                        
+                                                            
+    //Guardem a sessió la cerca "actual"        
+    $this->CERCA = $C2;    
+    $this->getUser()->setSessionPar('cerca',$this->CERCA);
+                         
+    $this->MODE = 'CERCA';            
+                                                                                 
   }
+
 
   private function sendMail($from,$to,$subject,$body = "",$files = array())
   {

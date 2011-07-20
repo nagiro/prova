@@ -1,7 +1,7 @@
 /* Inicialització en català per a l'extenció 'calendar' per jQuery. */
 /* Writers: (joan.leon@gmail.com). */
 (function($) {
-	$.datepick.regional['ca'] = {
+	$.datepicker.regional['ca'] = {
 		clearText: 'Netejar', clearStatus: '',
 		closeText: 'Tancar', closeStatus: '',
 		prevText: '&#x3c;Ant', prevStatus: '',
@@ -19,8 +19,8 @@
 		dayNamesShort: ['Dug','Dln','Dmt','Dmc','Djs','Dvn','Dsb'],
 		dayNamesMin: ['Dg','Dl','Dt','Dc','Dj','Dv','Ds'],
 		dayStatus: 'DD', dateStatus: 'D, M d',
-		dateFormat: 'dd/mm/yy', firstDay: 1,
+		dateFormat: 'dd-mm-yy', firstDay: 1,
 		initStatus: '', isRTL: false,
 		showMonthAfterYear: false, yearSuffix: ''};
-	$.datepick.setDefaults($.datepick.regional['ca']);
+	$.datepicker.setDefaults($.datepick.regional['ca']);
 })(jQuery);

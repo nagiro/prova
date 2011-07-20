@@ -48,9 +48,12 @@
                             </div>';
                             
                     //Si es pot comprar entrada per internet, es mostra. 
-                    if($OA->getIsEntrada()):                            
-                        echo '<div style="float:right">
-                                    <a name="link_compra" style="text-decoration:underline; color:blue; font-size:10px;" href="'.url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()).'">Comprar o reservar entrada</a>
+                    if($OA->getIsEntrada()):
+                        $url = url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()); 
+                        echo '  <div style="float:right">
+                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                        <a name="link_compra" style="text-decoration:none;" href="'.$url.'">Reservar entrada</a>                                        
+                                    </div>
                                 </div>';
                     endif;
                     echo '</div>';
