@@ -8,9 +8,13 @@
 	    <DIV class="REQUADRE">
 	    <DIV class="TITOL"><?php echo link_to(image_tag('tango/32x32/actions/document-new.png', array('size'=>'16x16','alt'=>'Nou node')),'gestio/gPromocions?accio=N') ?> Llistat de promocions</DIV>
 	    	<table class="DADES">          
-                <?php                                                   
-                  foreach($PROMOCIONS as $P):                  	                                         
-                      echo '<TR><td>'.link_to(image_tag('/images/banners/'.$P->getExtensio()),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';                      
+                <?php
+                  $ant = 0;                                                                     
+                  foreach($PROMOCIONS as $P):
+                    if($ant != $P->getIsactiva()){ echo ($P->getIsactiva())?'<tr><th class="titol">ACTIVES</th></tr>':'<tr><th class="titol">NO ACTIVES</th></tr>'; } 
+                    if($P->getIsactiva()) echo '<TR><td>'.link_to(image_tag('/images/banners/'.$P->getExtensio()),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';                      
+                    else echo '<TR><td>'.link_to($P->getNom(),'gestio/gPromocions?IDP='.$P->getPromocioid().'&accio=E').'</TD></tr>';
+                    $ant = $P->getIsactiva();
                   endforeach;                                  
                   
                 ?>  

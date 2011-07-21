@@ -30,10 +30,12 @@ class PromocionsPeer extends BasePromocionsPeer
         return new PromocionsForm($OP,array('IDS'=>$idS));
     }
 
-    static public function getAllPromocions($idS)
+    static public function getAllPromocions($idS,$activa = true)
     {
         $C = new Criteria();
         $C = self::getCriteriaActiu($C,$idS);
+        if($activa) $C->add(self::ISACTIVA, true);
+        $C->addDescendingOrderByColumn(PromocionsPeer::ISACTIVA);
         $C->addAscendingOrderByColumn(PromocionsPeer::ORDRE);        
         return self::doSelect($C);        
     }

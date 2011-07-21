@@ -807,7 +807,7 @@ class gestioActions extends sfActions
                                         
     }
     
-    $this->PROMOCIONS = PromocionsPeer::getAllPromocions($this->IDS);                    
+    $this->PROMOCIONS = PromocionsPeer::getAllPromocions($this->IDS,false);                    
   }
           
   //******************************************************************************************

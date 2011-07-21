@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
 class PromocionsForm extends sfFormPropel
@@ -22,8 +22,8 @@ class PromocionsForm extends sfFormPropel
       'Nom'        => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'URL'        => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Ordre'      => new sfWidgetFormChoice(array('choices'=>PromocionsPeer::selectOrdre($this->getOption('IDS'),$this->isNew()))),    
-      'isActiva'   => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
-      'isFixa'     => new sfWidgetFormInputCheckbox(array(),array('value'=>true)),
+      'isActiva'   => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array('value'=>1)),
+      'isFixa'     => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array('value'=>1)),
       'Extensio'   => new sfWidgetFormInputFileEditable(array('file_src'=>$this->WEB_URL,'edit_mode'=>true,'is_image'=>true,'with_delete'=>false)),
             
     ));
