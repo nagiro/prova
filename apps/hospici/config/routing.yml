@@ -106,7 +106,7 @@ hospici_cercador_entitats_cursos:
 
 homepage:
   url:   /
-  param: { module: web, action: index }
+  param: { module: web, action:index, accio:cerca_activitat  }
 
 default_index:
   url:   /:module
