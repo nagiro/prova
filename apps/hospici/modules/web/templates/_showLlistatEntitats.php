@@ -10,14 +10,7 @@
 
     $(document).ready(function(){
    	    $('a.lightbox').lightBox(); 
-        $('[name="link_compra"]').click(function(){
-            <?php if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0): ?>            
-                return true;
-            <?php else: ?>
-                alert('Per poder comprar o reservar entrades heu d\'accedir al vostre usuari o crear-ne un de nou'); 
-                return false; 
-            <?php endif; ?>            
-        });
+    });
     });    
 
 </script>

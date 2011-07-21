@@ -10,14 +10,6 @@
 
     $(document).ready(function(){
    	    $('a.lightbox').lightBox(); 
-        $('[name="link_compra"]').click(function(){
-            <?php if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0): ?>            
-                return true;
-            <?php else: ?>
-                alert('Per poder comprar o reservar entrades heu d\'accedir al vostre usuari o crear-ne un de nou'); 
-                return false; 
-            <?php endif; ?>            
-        });
     });    
 
 </script>
@@ -50,12 +42,24 @@
                                 <a style="font-size:14px;" href="'.url_for('@hospici_espai_detall?idE='.$OE->getEspaiid().'&titol='.$OE->getNomForUrl()).'">'.$OE->getNom().'</a>
                             </div>';
                             
-                    //Si apareix aquí és perquè es pot demanar per internet.                     
-                    echo '  <div style="float:right">
-                                <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                    <a name="link_compra" style="text-decoration:none;" href="'.url_for('@hospici_espai_detall?idE='.$OE->getEspaiid().'&titol='.$OE->getNomForUrl()).'">Reservar espai</a>
-                                </div>
-                            </div>';                
+                    //Si apareix aquí és perquè es pot demanar per internet.
+                    $url = url_for('@hospici_espai_detall?idE='.$OE->getEspaiid().'&titol='.$OE->getNomForUrl()); 
+                    if(isset($AUTH) && $AUTH > 0){
+                        echo '  <div style="float:right">
+                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                        <a name="link_compra" style="text-decoration:none;" href="'.$url.'">Reservar espai</a>
+                                    </div>
+                                </div>';                    
+                    } 
+                    else
+                    {
+                        echo '  <div style="float:right">
+                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                        <a class="auth" url="'.$url.'" name="link_compra" style="text-decoration:none;" href="#">Reservar espai</a>
+                                    </div>
+                                </div>';                                            
+                    }                  
+                    
                     echo '</div>';
                     
                     echo '<div style="clear:both">';

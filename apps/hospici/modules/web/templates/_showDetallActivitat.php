@@ -74,8 +74,9 @@
                             <?php   endforeach; ?>                        
                         </div>
                     <?php else: ?>
-                        <div>
-                            Per poder comprar o reservar entrades heu d'accedir al vostre usuari o crear-ne un de nou. 
+                    <?php $url = url_for('@hospici_detall_activitat?idA='.$ACTIVITAT->getActivitatid().'&titol='.$ACTIVITAT->getNomForUrl()) ?>
+                        <div>                            
+                            Per poder comprar o reservar entrades heu d'accedir al vostre usuari clicant <a href="#" class="auth" url="<?php echo $url ?>" >aquí</a>. 
                         </div>
                     <?php endif; ?>
 					</div>

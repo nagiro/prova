@@ -161,27 +161,49 @@ class webActions extends sfActions
   
   }  
 */
+
+  public function executeLoginAjax(sfWebRequest $request){
+
+    if($this->makeLogin($request->getParameter('login'),$request->getParameter('pass'))){
+                $this->renderText('OK');        
+    } else {    $this->renderText($request->getParameter('login'));  }    
+            
+    return sfView::NONE;
+  }
+
   public function executeLogin(sfWebRequest $request)
   {
     $this->setLayout('hospici');    
     $this->setTemplate('index');
     
-    $OU = UsuarisPeer::getUserLogin($request->getParameter('login'),$request->getParameter('pass'),null);    
+    if($this->makeLogin($request->getParameter('login'),$request->getParameter('pass'))){
+                $this->redirect('@hospici_usuaris');        
+    } else {    $this->redirect('@hospici_cercador_activitats');  }
+            
+  }  
+
+  private function makeLogin($user,$pass){
+
+    $OU = UsuarisPeer::getUserLogin($user,$pass,null);
+    
+    $OK = false;    
     if($OU instanceof Usuaris):
         $this->getUser()->setAuthenticated(true);        
         $this->getUser()->setSessionPar('idU',$OU->getUsuariid());
         $this->getUser()->setSessionPar('username',$OU->getNomComplet());
-        $this->getUser()->setSessionPar('compres',array());
-        $this->redirect('@hospici_usuaris');        
+        $this->getUser()->setSessionPar('compres',array());        
+        $OK = true;        
     else: 
         $this->getUser()->setAuthenticated(false);
         $this->getUser()->setSessionPar('idU',0);
         $this->getUser()->setSessionPar('username','');
         $this->getUser()->setSessionPar('compres',array());
-        $this->redirect('@hospici_cercador_activitats');        
+        $OK = false;        
     endif;
-            
-  }  
+
+    return $OK;
+    
+  }
 
   public function executeRemember(sfWebRequest $request)
   {

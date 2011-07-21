@@ -3,20 +3,6 @@
     .pager a { font-size:16px; color:inherit; text-decoration:inherit;  }
     .pagerE { margin-top:10px; margin-bottom:30px; text-align:center;  }
 </style>
-<script>
-
-    $(document).ready(function(){
-        $('[name="link_compra"]').click(function(){
-            <?php if(isset($AUTH) && $AUTH > 0): ?>            
-                return true;
-            <?php else: ?>
-                alert('Per poder comprar o reservar entrades heu d\'accedir al vostre usuari o crear-ne un de nou'); 
-                return false; 
-            <?php endif; ?>            
-        });
-    });    
-
-</script>
 <div class="h_requadre_resultats">
     <div class="h_subtitle_gray c1">
         L'HOSPICI...
@@ -49,20 +35,37 @@
                             </div>';
                             
                     //Si es pot reservar entrada per internet, es mostra. 
-                    if($OC->getIsEntrada()):
-                        
-                        if(!isset($CURSOS_MATRICULATS[$OC->getIdcursos()])):
-                        echo '  <div style="float:right">
-                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                        <a name="link_compra" style="text-decoration:none;" href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdCursos().'&titol='.$OC->getNomForUrl()).'">Reservar matrícula</a>
-                                    </div>
-                                </div>';
-                        else: 
-                        echo '  <div style="float:right">
-                                    <div class="requadre_mini" style="color:white; background-color:#29A729;">Ja hi esteu matriculat</div>                                                                        
-                                </div>';
-                        endif; 
-                    endif;
+                    if($OC->getIsEntrada())
+                    {
+                                                                        
+                        if(!isset($CURSOS_MATRICULATS[$OC->getIdcursos()]))
+                        {
+                            $url = url_for('@hospici_detall_curs?idC='.$OC->getIdCursos().'&titol='.$OC->getNomForUrl()); 
+                            if(isset($AUTH) && $AUTH > 0)
+                            {
+                                echo '  <div style="float:right">
+                                            <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                                <a name="link_compra" style="text-decoration:none;" href="'.$url.'">Reservar matrícula</a>
+                                            </div>
+                                        </div>';
+                            } 
+                            else 
+                            {
+                                echo '  <div style="float:right">
+                                            <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
+                                                <a class="auth" url="" name="link_compra" style="text-decoration:none;" url="'.$url.'" href="#">Reservar matrícula</a>
+                                            </div>
+                                        </div>';                                                     
+                            }
+                        } 
+                        else
+                        { 
+                            echo '  <div style="float:right">
+                                        <div class="requadre_mini" style="color:white; background-color:#29A729;">Ja hi esteu matriculat</div>                                                                        
+                                    </div>';
+                        }
+                                                     
+                    }
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';
                     echo '<div class="h_llistat_activitat_organitzador">|&nbsp;&nbsp;Organitza: '.$OC->getNomSite().'</div>';

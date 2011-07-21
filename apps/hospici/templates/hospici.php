@@ -18,15 +18,14 @@
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" />   
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/thickbox.css'; ?>" />  
-  
+    
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>       
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-datepicker-ca.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/jquery.validate.min.js' ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js' ?>"></script>
-  
-  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>            
-  
+                  
      
 <!--[if lt IE 7]>
     <script type="text/javascript" src="/intranet/js/buttonfix.js"></script>
@@ -160,10 +159,58 @@ li.ul_material{
     .missatge { padding:10px; margin-top: 20px; background-color:#FBFFD5; }
      
 </style>
+
+	<style>
+        
+		label, input { display:block; }
+		input.text { margin-bottom:12px; width:95%; padding: .4em; }
+		fieldset { padding:0; border:0; margin-top:10px; }
+		h1 { font-size: 1.2em; margin: .6em 0; }
+		div#users-contain { width: 350px; margin: 20px 0; }
+		div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+		div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+		.ui-dialog .ui-state-error { padding: .3em; }
+		.validateTips { border: 1px solid transparent; padding: 0.3em; }
+	</style>
+
 <script>
     
     $(document).ready(function(){
+        
+        var url = '';
+        
         $("#LOGINSUBMIT").click(function(){ $("#FLOGIN").submit(); });
+        
+		$( "#dialog-form" ).dialog({
+			autoOpen: false,
+			height: 310,
+			width: 350,
+			modal: true,
+			buttons: {
+				"Entra >>": function() {    					                        
+                        $.post(
+                            '<?php echo url_for('web/LoginAjax') ?>',
+                            { 'login':$("#login").val() , 'pass':$('#password').val() },
+                             function(data) {                                                     
+                                if(data == 'OK'){ $('#dialog-form').dialog( "close" ); $(location).attr('href',url); }
+                                else { alert('Incorrecte'); }                                                           
+                             }   
+                            );                        
+					}				
+			},
+			close: function() {
+				//allFields.val( "" ).removeClass( "ui-state-error" );
+			}
+		});
+
+
+		$( ".auth" )
+			.click(function() {
+                url = $(this).attr('url');
+				$( "#dialog-form" ).dialog( "open" );
+			});        
+        
+        
     });
 
 </script>
@@ -227,8 +274,20 @@ li.ul_material{
 
             </div>
            
+            <div id="dialog-form" title="Accedeix a l'Hospici">
+            	<form>    
+            	<fieldset>
+                    <div style="margin-bottom: 10px;">
+                        Per poder accedir i realitzar accions a l'Hospici ha d'entrar el seu DNI i contrassenya. Si no recorda la contrassenya cliqui <a href="">aquí</a>. Si no té usuari, pot crear-lo <a href="">aquí</a>.<br />
+                    </div> 
+            		<label for="login">DNI: </label>
+            		<input type="text" name="login" id="login" class="text ui-widget-content ui-corner-all" />		
+            		<label for="password">Contrassenya: </label>
+            		<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+            	</fieldset>
+            	</form>
+            </div>
             
-
             <div class="h_right_col">                
 
                 <div class="h_requadre_login">

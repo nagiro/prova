@@ -23,20 +23,21 @@
                         
 						<div style="margin-top:20px; font-size:10px">
                             <div class="requadre_mini" style="background-color:#A2844A;">
-                                <a href="javascript:history.back()">< Torna al llistat de cursos</a>
+                                <a href="javascript:history.back()">< Torna al llistat d'espais</a>
                             </div>
-                        </div>                                                
-
-                        <?php if( isset($AUTH) && $AUTH > 0 ): ?>                                                   
+                        </div>
+                                                                        
+                        <?php $url = url_for('@hospici_nova_reserva_espai?idE='.$ESPAI->getEspaiid()); ?>
+                        <?php if( isset($AUTH) && $AUTH > 0 ): ?>                                                                           
                             <div style="margin-top: 5px;">
                                 <div class="requadre_mini" style="background-color: #FFCC00;">
-                                    <a href="<?php echo url_for('@hospici_nova_reserva_espai?idE='.$ESPAI->getEspaiid()); ?>">RESERVA L'ESPAI</a>
+                                    <a href="<?php echo $url ?>">RESERVA L'ESPAI</a>
                                 </div>
                             </div>                                                                                        
                         <?php else: ?>
                             <div style="margin-top: 5px">
-                                <div class="requadre_mini" style="background-color: #FFCC00;">
-                                    <a href="javascript:alert('Per poder fer una reserva, primer ha d\'entrar al seu compte d\'usuari i tornar a buscar aquest curs.');">Autentifica't i reserva</a>
+                                <div class="requadre_mini" style="background-color: #FFCC00;">                
+                                    <a class="auth" url="<?php echo $url ?>" href="#">Autentifica't i reserva</a>
                                 </div>
                             </div>
                         <?php endif; ?>                        

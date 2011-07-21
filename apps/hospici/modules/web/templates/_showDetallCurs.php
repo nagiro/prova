@@ -35,12 +35,13 @@
                             </div>
                         <?php endif; ?>
 
+                        <?php $url = url_for('@hospici_nova_matricula?idC='.$CURS->getIdcursos()); ?>
                         <?php if( isset($AUTH) && $AUTH > 0 ): ?>
                             <?php if($CURS->getIsEntrada()): ?>
                                 <?php if(!isset($CURSOS_MATRICULATS[$CURS->getIdcursos()])): ?>
                                         <div style="margin-top: 5px;">
                                             <div class="requadre_mini" style="background-color: #FFCC00;">
-                                                <a href="<?php echo url_for('@hospici_nova_matricula?idC='.$CURS->getIdcursos()); ?>">MATRICULA'T</a>
+                                                <a href="<?php echo $url ?>">MATRICULA'T</a>
                                             </div>
                                         </div>                                        
                                 <?php else: ?>
@@ -60,7 +61,7 @@
                         <?php else: ?>
                             <div style="margin-top: 5px">
                                 <div class="requadre_mini" style="background-color: #FFCC00;">
-                                    <a href="javascript:alert('Per poder matricular-se, primer ha d\'entrar al seu compte d\'usuari i tornar a buscar aquest curs.');">Autentifica't i matricula't</a>
+                                    <a class="auth" url="<?php echo $url ?>" href="#">Autentifica't i matricula't</a>
                                 </div>
                             </div>
                         <?php endif; ?>                        
