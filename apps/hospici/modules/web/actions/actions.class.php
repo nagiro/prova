@@ -20,8 +20,7 @@ class webActions extends sfActions
     
     $this->setLayout('hospici');
     $this->accio = $request->getParameter('accio','index');
-    $this->AUTENTIFICAT = $this->getUser()->getSessionPar('idU');    
-    var_dump($request->getParameter('accio'));        
+    $this->AUTENTIFICAT = $this->getUser()->getSessionPar('idU');                
     
     //Carrego la cerca
     $this->CERCA = $this->getUser()->getSessionPar('cerca');            
