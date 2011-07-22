@@ -21,6 +21,7 @@ class webActions extends sfActions
     $this->setLayout('hospici');
     $this->accio = $request->getParameter('accio','index');
     $this->AUTENTIFICAT = $this->getUser()->getSessionPar('idU');    
+    var_dump($request->getParameter('accio'));        
     
     //Carrego la cerca
     $this->CERCA = $this->getUser()->getSessionPar('cerca');            
@@ -29,16 +30,17 @@ class webActions extends sfActions
     switch($this->accio){        
         case 'cerca_activitat':
         
-                //Agafo el paràmetre
-                $C = $request->getParameter('cerca',array());
+                //Agafo el paràmetre                
+                if($request->getMethod() == 'POST') $C = $this->getUser()->ParReqSesForm($request,'cerca',array());
+                $C['P'] = $request->getParameter('P',1);                                
                 
                 //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
-                if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');                
-                                
+                if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');                                
+                                                
                 //Normalitzo tots els camps                    
-                $C2 = $this->getCercaComplet($C);        
+                $C2 = $this->getCercaComplet($C);
                 
-                $RET = ActivitatsPeer::getActivitatsCercaHospici($C2);        
+                $RET = ActivitatsPeer::getActivitatsCercaHospici($C2);
                 $this->LLISTAT_ACTIVITATS = $RET['PAGER'];        
                 $LACTIVITATS = $RET['LACTIVITATS'];                
                 $this->DESPLEGABLES['SELECT_POBLACIONS'] = ActivitatsPeer::getPoblacionsActivitatsHospici($LACTIVITATS);
@@ -113,54 +115,11 @@ class webActions extends sfActions
     if(!isset($C['SITE']))              $C['SITE'] = 0;
     if(!isset($C['POBLE']))             $C['POBLE'] = 0;
     if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = 0;
-    if(!isset($C['DATAI']))             $C['DATAI'] = date('d-m-Y',time());
-    if(!isset($C['DATAF']))             $C['DATAF'] = date('d-m-Y',mktime(0,0,0,date('m',time())+1,date('d',time()),date('Y',time())));
+    if(!isset($C['DATAI']))             $C['DATAI'] = date('d/m/Y',time());
+    if(!isset($C['DATAF']))             $C['DATAF'] = date('d/m/Y',mktime(0,0,0,date('m',time())+1,date('d',time()),date('Y',time())));
     if(!isset($C['P']))                 $C['P'] = 1;
     return $C;
-  }  
-  
-  /**
-   * Realitza totes les consultes AJAX D'activitats
-   * */    
-/*  public function executeAjaxACT(sfWebRequest $request)
-  {
-    $accio = $request->getParameter('ACCIO');
-    
-    switch($accio){
-        case 'POB_ON':
-                $C = new Criteria();
-                $text = $request->getParameter('TEXT');
-                $idP = $request->getParameter('ON');    
-                $sel = $request->getParameter('SEL');
-                $R = ActivitatsPeer::selectCategoriesActivitats($idP[0],$text);
-            break;
-        case 'POB_QUAN':
-             	$C = new Criteria();
-                $idP = $request->getParameter('ON');
-                $idC = $request->getParameter('CAT');    
-                $sel = $request->getParameter('SEL');
-                $text = $request->getParameter('TEXT');
-                $R = ActivitatsPeer::selectDatesActivitats($idP[0],$idC[0],$text,null);
-            break;
-        case 'ENT_QUAN':
-             	$C = new Criteria();
-                $idE = $request->getParameter('ENT');        
-                $sel = $request->getParameter('SEL');
-                $text = $request->getParameter('TEXT');
-                $R = ActivitatsPeer::selectDatesActivitats(null,null,$text,$idE[0]);            
-            break;        
-    }
-    
-    $RET = "";
-    foreach($R as $K=>$E){
-        $SELECTED = ($sel == $K)?"SELECTED":"";        
-        $RET .= '<option '.$SELECTED.' value="'.$K.'">'.$E.'</option>';        
-    }        
-    return $this->renderText($RET);
-   
-  
-  }  
-*/
+  }   
 
   public function executeLoginAjax(sfWebRequest $request){
 
@@ -422,7 +381,8 @@ class webActions extends sfActions
     if($this->accio == 'cerca_cursos' || $this->accio == 'inici'):
         
         //Agafo els paràmetres
-        $C = $request->getParameter('cerca',array());
+        if($request->getMethod() == 'POST') $C = $request->getParameter('cerca',array());
+        $C['P'] = $request->getParameter('P',1);
 
         //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
         if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');
@@ -475,8 +435,9 @@ class webActions extends sfActions
     
     if($this->accio == 'cerca_espais' || $this->accio == 'inici'):
         
-        //Agafo els paràmetres
-        $C = $request->getParameter('cerca',array());
+        //Agafo els paràmetres                
+        if($request->getMethod() == 'POST') $C = $request->getParameter('cerca',array());
+        $C['P'] = $request->getParameter('P',1);
         
         //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
         if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');

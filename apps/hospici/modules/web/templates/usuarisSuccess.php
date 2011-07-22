@@ -127,7 +127,7 @@
                 elseif(isset($MISSATGE) && $MISSATGE == 'ERROR_SAVE') echo '<div style="margin-bottom:20px;"><div class="missatge">Hi ha alguna dada errònia. Si us plau, correixi-la.</div></div>'; 
             ?>
             <div style="background-color:#EEEEEE; padding:5px; font-weight:bold; text-align:center;">FORMULARI DE RESERVA D'ESPAI</div>                                    
-            <table class="taula_dades">                                
+            <table class="taula_dades">
                 <?php echo $FReserva; ?>
                 <tr>
                     <td></td>

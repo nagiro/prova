@@ -20,18 +20,18 @@
     
             <div style="float: left; width: 600px;">
                 <div style="margin: 5px;">
-                    <b>Text a cercar</b><br /><input type="text" id="R_TEXT" name="cerca[TEXT]" value="<?php echo $CERCA['TEXT'] ?>" style="width: 500px;" />
+                    <b>Text a cercar</b><br /><input type="text" id="R_TEXT" name="cerca[TEXT]" value="<?php echo $CERCA['TEXT'] ?>" class="input_common" style="width: 500px;" />
                 </div>
             </div>
             <div style="clear:both; float: left;">
                 <div style="margin: 5px;">
-                    <b>Població</b><br /><?php echo select_tag( 'cerca[POBLE]', options_for_select( $DESPLEGABLES['SELECT_POBLACIONS'] , $CERCA['POBLE'] ), array( 'style'=>'background-color:#EEEEEE; border:1px solid #CCCCCC; padding:2px; width:250px;','id'=>'R_ON' )); ?>
+                    <b>Població</b><br /><?php echo select_tag( 'cerca[POBLE]', options_for_select( $DESPLEGABLES['SELECT_POBLACIONS'] , $CERCA['POBLE'] ), array('class'=>'input_common','style'=>'width:250px;','id'=>'R_ON' )); ?>
                 </div>
             </div>
     
             <div style="float: left;">
                 <div style="margin: 5px;">            
-                    <b>Categoria</b><br /><?php echo select_tag( 'cerca[CATEGORIA]', options_for_select( $DESPLEGABLES['SELECT_CATEGORIES'] , $CERCA['SITE'] ), array( 'style'=>'background-color:#EEEEEE; border:1px solid #CCCCCC; padding:2px; width:250px;','id'=>'R_ON' )); ?>
+                    <b>Categoria</b><br /><?php echo select_tag( 'cerca[CATEGORIA]', options_for_select( $DESPLEGABLES['SELECT_CATEGORIES'] , $CERCA['SITE'] ), array('class'=>'input_common','style'=>'width:250px;','id'=>'R_ON' )); ?>
                 </div>
             </div>
     

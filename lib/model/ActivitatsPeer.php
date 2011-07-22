@@ -726,8 +726,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
 
     $connection = Propel::getConnection();        
     $query = 
-            "              
-                Select a.ActivitatID as idA
+            "                              
+               Select a.ActivitatID as idA
                   from activitats a 
                   LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID )
                   LEFT JOIN horarisespais he ON (h.HorarisID = he.Horaris_HorarisID)
@@ -742,10 +742,10 @@ class ActivitatsPeer extends BaseActivitatsPeer
                    {$categoria}
                    {$data}
                    {$site}
-              GROUP BY idA                                                        
+              GROUP BY idA
                 
                 UNION
-                Select a.ActivitatID as idA
+              Select a.ActivitatID as idA
                   from activitats a 
                   LEFT JOIN horaris h ON (a.ActivitatID = h.Activitats_ActivitatID )
                   LEFT JOIN horarisespais he ON (h.HorarisID = he.Horaris_HorarisID)
@@ -762,15 +762,13 @@ class ActivitatsPeer extends BaseActivitatsPeer
                    {$site}
               GROUP BY idA              
             ";               
-
-    //echo $query;
-        
+            
     $statement = $connection->prepare($query);        
     $statement->execute();
     $RET = array();
     
     //Guardo els elements resultats i els passo a un format Criteria    
-    while($result = $statement->fetch(PDO::FETCH_ASSOC)) $RET[$result['idA']] = $result['idA'];
+    while($result = $statement->fetch(PDO::FETCH_ASSOC)){ $RET[$result['idA']] = $result['idA']; }
     
     //Ara fem la select dels cursos amb el pager
     $C = new Criteria();    
@@ -780,7 +778,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
     $C->addAscendingOrderByColumn(HorarisPeer::DIA);
     $C->addGroupByColumn(self::ACTIVITATID);
     $pager = new sfPropelPager('Activitats', 20);
-    $pager->setCriteria($C);
+    $pager->setCriteria($C);    
     $pager->setPage($p);
     $pager->init();    	                
        

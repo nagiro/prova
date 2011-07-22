@@ -928,8 +928,8 @@ function _convert_include_custom_for_select($options, &$select_options)
  */
 function setPager( sfPager $pager , $url ){
 	
-    $e = '&p=';
-    if(!stripos($url,'?')) $e = '?p=';    
+    $e = '&P=';
+    if(!stripos($url,'?')) $e = '?P=';    
     
 	$RET = '<div class="pager">';
 	if ($pager->haveToPaginate()):

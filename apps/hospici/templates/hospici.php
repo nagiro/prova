@@ -47,16 +47,21 @@ td.checkbox_list { border:1px solid #CCCCCC; background-color: #FFEFD7; }
 	list-style: none;	
 }
 
-.ul_espais input { background-color:white; border:0px; }
-.ul_material input { background-color:white; border:0px; }
+.ul_espais input { background-color:white; border:0px; float:left; width:30px; }
+.ul_material input { background-color:white; border:0px; float:left; width:30px; }
 
-li.ul_espais { 	
-	width:200px; 
+label.ul_espais { float:left;  width:160px;  }
+label.ul_material { float:left; width:50px;  }
+
+li.ul_espais { 		        
+    width:200px;    
 }
 
 li.ul_material{ 	
 	width:100px; 
 }
+
+.input_common { background-color:#EEEEEE; border:1px solid #CCCCCC; padding:2px; }
 
 .tt2 { text-decoration:none; color:black; }
 .tt2:hover span { margin-top:10px; padding:5px; position: absolute; display: block; background: #fdd; border: 1px solid brown; font-size:10px; font-weight:normal; }  
@@ -278,7 +283,7 @@ li.ul_material{
             	<form>    
             	<fieldset>
                     <div style="margin-bottom: 10px;">
-                        Per poder accedir i realitzar accions a l'Hospici ha d'entrar el seu DNI i contrassenya. Si no recorda la contrassenya cliqui <a href="">aquí</a>. Si no té usuari, pot crear-lo <a href="">aquí</a>.<br />
+                        Per poder accedir i realitzar accions a l'Hospici ha d'entrar el seu DNI i contrassenya. Si no recorda la contrassenya cliqui <a href="<?php url_for('@hospici_usuaris_remember') ?>">aquí</a>. Si no té usuari, pot crear-lo <a href="<?php url_for('@hospici_usuaris_alta') ?>">aquí</a>.<br />
                     </div> 
             		<label for="login">DNI: </label>
             		<input type="text" name="login" id="login" class="text ui-widget-content ui-corner-all" />		
