@@ -16,7 +16,7 @@
     .row:hover { background-color:#EEE;  }
 	.row_field { width:70%; }
 	.row_title { width:30%;  }
-	.row_field input { width:100%; }    
+	.row_field input { width:20px;}          
 
 </STYLE>
    
