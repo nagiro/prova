@@ -221,6 +221,7 @@ class webActions extends sfActions
   
   public function executeUsuaris(sfWebRequest $request)
   {
+    $this->setLayout('hospici');
     $accio = $request->getParameter('accio','inici');
     $this->IDU = $this->getUser()->getSessionPar('idU');
     $this->IDS = SitesPeer::HOSPICI_ID;
@@ -247,20 +248,30 @@ class webActions extends sfActions
         break;
             
         case 'compra_entrada':
-            //Des de l'Hospici nomÃ©s es pot reservar una entrada. MÃ©s endavant s'haurÃ  d'abonar l'import.
+            //Des de l'Hospici només es pot reservar una entrada. Més endavant s'haurà d'abonar l'import.
             $RS = $request->getParameter('entrades');
             $OER = EntradesReservaPeer::initialize()->getObject();
+            $OH = HorarisPeer::retrieveByPK($RS['idH']);
+            $idS = 0; if($OH instanceof Horaris) $idS = $OH->getSiteid();
+            $this->MISSATGE = 'OK';
+            try{ 
             //Si no existeix una compra per aquest usuari, la fem, altrament, no fem res.
             if(!EntradesReservaPeer::ExisteixenEntradesComprades($this->IDU,$RS['idH'])):
+                //Falta mirar si hi ha entrades disponibles. 
                 $OER->setUsuariid($this->IDU);
                 $OER->setHorarisid($RS['idH']);
                 $OER->setQuantes($RS['num']);
                 $OER->setData(date('Y-m-d H:i',time()));
                 $OER->setEstat(0);
-                $OER->setActiu(true);
+                $OER->setActiu(true);                
+                $OER->setSiteid($idS);
                 $OER->save();
-            endif;
-                                    
+                UsuarisPeer::addSite($this->IDU,$idS);
+            else: 
+                $this->MISSATGE = 'ENTRADA_REPE';
+            endif;            
+            } catch(Exception $e){ $this->MISSATGE = 'ERROR';  }
+                                
             $this->SECCIO = 'COMPRA_ENTRADA';
                                                 
         break;
@@ -282,25 +293,125 @@ class webActions extends sfActions
         
         case 'nova_matricula':
             
-            $idC = $request->getParameter('idC');            
-            $OM = MatriculesPeer::saveNewMatricula($this->IDU,$idC,0);
-            $this->SECCIO = 'MATRICULA';            
-            if($OM instanceof Matricules):
-                $this->MISSATGE = "OK";
-                if($OM->getEstat() == MatriculesPeer::EN_ESPERA):
-                    $this->MISSATGE = 'ESPERA';
-                endif;
-            else: 
-                if($OM == 1) $this->MISSATGE = "JA_EXISTEIX";
-                else $this->MISSATGE = "KO";
-            endif;             
+            //Capturem el codi del curs i el codi del descompte
+            $idC = $request->getParameter('idC');
+            $idD = $request->getParameter('idD');
+            $OC = CursosPeer::retrieveByPK($idC);
+
+            //Si el curs és correcte
+            if($OC instanceof Cursos)
+            {
+
+                //Generem la matícula en procés.                                                                                
+                $OM = MatriculesPeer::saveNewMatricula($this->IDU,$idC,0,'Matrícula hospici',$idD);            
+                $this->SECCIO = 'MATRICULA';
+                                            
+                if($OM instanceof Matricules)
+                {            
+                    
+                    if($OM->getEstat() == MatriculesPeer::EN_ESPERA)
+                    {
+                        //El curs en qüestió ja està ple. Mostrem el llistat però el missatge de "en espera"
+                        $this->MISSATGE = 'ESPERA';
+                    }
+                    elseif($OM->getEstat() == MatriculesPeer::EN_PROCES)
+                    {
+                        //La matrícula s'ha de cobrar amb targeta, només.
+                        try 
+                        {   
+                            
+                            //Carreguem les dades de l'usuari que està fent la matrícula  
+                            $OU = UsuarisPeer::retrieveByPK($this->IDU);
+    
+                            //Carreguem el TPV
+                            $this->TPV = MatriculesPeer::getTPV(
+                                                    CursosPeer::CalculaPreu( $idC, $idD, $OC->getSiteId() ), 
+                                                    $OU->getNomComplet() , 
+                                                    $OM->getIdmatricules() , 
+                                                    $this->IDS , true );
+                            
+                        } catch (Exception $e) { $this->MISSATGE = 'KO'; /* Faltarà enviar un missatge de mail */  }
+                        
+                        $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
+                        $this->setLayout('blanc');
+                        $this->setTemplate('pagament');
+                                                                    
+                    }
+                    else
+                    {
+                        //Tot correcte. Mostrem el llistat de matrícules i el missatge que ha anat bé. 
+                        $this->MISSATGE = "OK";
+                    }
+                }            
+                else
+                { 
+                    if($OM == 1) $this->MISSATGE = "JA_EXISTEIX";
+                    else $this->MISSATGE = "KO";
+                }             
+            }
+            else
+            {
+                $this->MISSATGE = "CURS_NO_EXISTEIX";
+            }
         break;
+
+        case 'matricula_OK':
+                $this->MISSATGE = "OK";
+                $this->SECCIO   = 'MATRICULA';                
+            break;
+            
+        case 'matricula_KO':
+                $this->MISSATGE = "KO";
+                $this->SECCIO   = 'MATRICULA';
+            break;
+            
+        case 'GET_TPV':                
+                //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
+                if( $request->isMethod() == 'POST' && $request->getParameter('Ds_Response') == '0000' )
+                {
+                    
+                    $idM = $request->getParameter('Ds_MerchantData',null);
+                    
+                    $OM = MatriculesPeer::retrieveByPK($idM);
+                    
+                    if($OM instanceof Matricules)
+                    {
+                                                                
+                        //Un cop sabem que la matrícula existeix, comprovem la signatura i si és correcta, marquem com a pagat.
+                        if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Signature'), OptionsPeer::getString('TPV_PASSWORD',$OM->getSiteid() )))
+                        {
+                            $from       = OptionsPeer::getString('MAIL_FROM',$OM->getSiteId());
+                            $MailMat    = MatriculesPeer::MailMatricula($OM,$OM->getSiteid());
+                            $subject    = 'Hospici :: Nova matrícula';                            
+                            
+                            $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
+                            $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
+                            $OM->setTpvOrder($request->getParameter('Ds_Order'));
+                            $OM->save();                            
+                            
+                            $this->sendMail($from,$OM->getUsuaris()->getEmail(),$subject,$MailMat);
+                            $this->sendMail($from,'informatica@casadecultura.org',$subject,$MailMat);
+                                            
+                        } else {
+                            
+                 			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',$idM);
+                            
+                        }
+                        
+                    }
+
+                    $this->sendMail($from,'informatica@casadecultura.org','CODI MATRÍCULA ERRONI',$idM);
+                    
+                }
+                                
+            break;
 
         case 'llista_reserves':
             $this->SECCIO = 'RESERVA';
         break;
 
         case 'edita_reserva':
+        
             $this->SECCIO = "RESERVA";
             $OR = ReservaespaisPeer::retrieveByPK($request->getParameter('idR'));
             if($OR instanceof Reservaespais):
@@ -327,12 +438,18 @@ class webActions extends sfActions
         case 'save_nova_reserva':
             
             $RP = $request->getParameter('reservaespais');
+            $idU = $this->getUser()->getSessionPar('idU');
             $this->SECCIO = 'RESERVA';
-            $this->FReserva = ReservaespaisPeer::initializeHospici(null,$RP['site_id'],null,$this->getUser()->getSessionPar('idU'));
+            $this->FReserva = ReservaespaisPeer::initializeHospici(null,$RP['site_id'],null,$idU);
             $this->FReserva->bind($RP);
                         
             if($this->FReserva->isValid()){
-                $this->FReserva->save();       
+                //Guardem la reserva
+                $this->FReserva->save();
+                
+                //Vinculem l'usuari amb el site corresponent
+                UsuarisPeer::addSite($idU,$RP['site_id']);
+                                        
                 $this->MISSATGE = "OK";
                 $this->redirect('@hospici_llista_reserves');             
             } else {
@@ -340,12 +457,9 @@ class webActions extends sfActions
             }                
                             
         break;               
-                       
-                         
+                                                
     }
-    
-    $this->setLayout('hospici');
-    
+            
     //Si ja hi hem fet operacions... carreguem l'actual, sinÃ³ en fem un de nou.
     if(isset($FU) && $FU instanceof UsuarisForm) $this->FUsuari = $FU;
     else $this->FUsuari = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
@@ -369,7 +483,7 @@ class webActions extends sfActions
   {    
     $this->setLayout('hospici');
     $this->setTemplate('indexCursos');
-    $this->accio = $request->getParameter('accio','index');        
+    $this->accio = $request->getParameter('accio','index');            
     
     //Carrego la cerca
     $this->CERCA = $this->getUser()->getSessionPar('cerca',array());    

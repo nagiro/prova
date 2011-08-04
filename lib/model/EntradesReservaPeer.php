@@ -53,6 +53,12 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         return self::doSelect($C);        
     }
 
+    /**
+     * L'usuari ja ha comprat entrades per aquest dia en concret.
+     * @param $idU Usuari ID
+     * @param $idH Horari ID
+     * @return Int Quantes entrades s'han trobat.
+     * */
     static public function ExisteixenEntradesComprades($idU,$idH)
     {
         $C = new Criteria();

@@ -54,10 +54,6 @@ hospici_anula_entrada:
   url: /usuaris/anula_entrada/:idER
   param: { module: web, action:usuaris, accio:anula_entrada  }
   
-hospici_nova_matricula:
-  url: /usuaris/matricula/:idC
-  param: { module: web, action:usuaris, accio:nova_matricula  }
-
 hospici_espai_detall:
   url: /espais/detall/:idE/:titol
   param: { module: web, action:espais, accio:detall_espai }
@@ -97,7 +93,24 @@ hospici_cercador_entitats_espais:
 hospici_cercador_entitats_cursos:
   url: /cursos_entitat/:SITE
   param: { module: web, action:cursos, accio:cerca_cursos }
+
+hospici_nova_matricula:
+  url: /usuaris/matricula/nova
+  param: { module: web, action:usuaris, accio:nova_matricula }
+
+hospici_matricula_TPV_OK:
+  url: /usuaris/matricula/ok
+  param: { module: web, action:usuaris, accio:matricula_OK }
   
+hospici_matricula_TPV_KO:
+  url: /usuaris/matricula/ko
+  param: { module: web, action:usuaris, accio:matricula_KO }
+
+hospici_matricula_TPV_GET:
+  url: /usuaris/matricula/get
+  param: { module: web, action:usuaris, accio:GET_TPV }
+   
+
 #####################################################
 # DEFAULT                                           #
 #####################################################

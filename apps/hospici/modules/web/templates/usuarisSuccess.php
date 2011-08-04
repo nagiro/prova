@@ -89,31 +89,12 @@
                 <div class="requadre_missatge">A la nostra base de dades ja existeix una matrícula seva a aquest curs.<br /> Si us plau, posi's en contacte amb l'entitat per solventar-ho. <br />Moltes gràcies i perdoni les molèsties.</div>
                 <br />                
         <?php endif; ?>
+
+        <?php 
+            if(isset($LMatricules)) LlistaMatricules($LMatricules);
+            else ValidaMatricula($FMatricula);                                
+         ?> 
                 
-        <table class="taula_llistat">
-            <tr>
-                <th>Data</th>
-                <th>Codi</th>
-                <th>Curs</th>
-                <th>Entitat</th>
-                <th>Estat</th>
-            </tr>            
-            <?php                                           
-                if(empty($LMatricules)): echo '<tr><td colspan="4">No s\'han trobat matrícules.</td></tr>';
-                else:                           
-                    foreach($LMatricules as $OM):
-                        $nom = SitesPeer::getNom($OM->getSiteId());                        
-                        echo '<tr>
-                                <td>'.$OM->getDatainscripcio('m/Y').'</td>
-                                <td>'.$OM->getCursos()->getCodi().'</td>
-                                <td>'.$OM->getCursos()->getTitolcurs().'</td>
-                                <td>'.$nom.'</td>
-                                <td>'.$OM->getEstatString().'</td>
-                             </tr>';                                                            
-                    endforeach;
-                endif;
-            ?>                        
-        </table>                        
     </div>
     
     
@@ -168,6 +149,18 @@
         
     </div>
     <div id="tabs-5">
+
+        <?php if(isset($MISSATGE) && $MISSATGE == 'ENTRADA_REPE'): ?>
+                <div class="requadre_missatge">Vostè ja ha reservat entrades per aquest espectacle. <br /> Si vol fer canvis, primer anul·li la seva reserva prèvia i torni-ho a reservar.</div>
+                <br />
+        <?php elseif(isset($MISSATGE) && $MISSATGE == 'ERROR'): ?>
+                <div class="requadre_missatge">Hi ha hagut un error reservant les entrades. <br />Si us plau, posis en contacte amb informatica@casadecultura.org o bé truqui al telèfon 972.20.20.13. </div>
+                <br />
+        <?php elseif(isset($MISSATGE) && $MISSATGE == 'OK'): ?>
+                <div class="requadre_missatge">La seva entrada ha estat reservada correctament.</div>
+                <br />                                        
+        <?php endif; ?>
+
     
         <table class="taula_llistat">
             <tr>
@@ -210,3 +203,92 @@
     </div>
     <div id="tabs-6"></div>	
 </div>
+
+
+
+<?php 
+
+    function LlistaMatricules($LMatricules)
+    { 
+
+?>
+        <table class="taula_llistat">
+            <tr>
+                <th>Data</th>
+                <th>Codi</th>
+                <th>Curs</th>
+                <th>Entitat</th>
+                <th>Estat</th>
+            </tr>            
+            <?php                                           
+                if(empty($LMatricules)): echo '<tr><td colspan="4">No s\'han trobat matrícules.</td></tr>';
+                else:                           
+                    foreach($LMatricules as $OM):
+                        $nom = SitesPeer::getNom($OM->getSiteId());                        
+                        echo '<tr>
+                                <td>'.$OM->getDatainscripcio('m/Y').'</td>
+                                <td>'.$OM->getCursos()->getCodi().'</td>
+                                <td>'.$OM->getCursos()->getTitolcurs().'</td>
+                                <td>'.$nom.'</td>
+                                <td>'.$OM->getEstatString().'</td>
+                             </tr>';                                                            
+                    endforeach;
+                endif;
+            ?>                        
+        </table>                        
+
+<?php 
+    } 
+?>
+
+
+<?php 
+
+    function ValidaMatricula($FMatricula)
+    { 
+        //Si entrem aquí és perquè hi ha pagament amb targeta de crèdit i per tant es mostra el TPV             
+        $URL = OptionsPeer::getString('TPV_URL',$IDS);
+        $RET .= '<FORM name="COMPRA" action="'.$URL.'" method="POST" target="TPV">';
+        
+        //Guardem tots els paràmetres com a hidden inputs
+        foreach($TPV as $K => $T) $RET .= input_hidden_tag($K,$T);                     
+?>
+        
+
+         $RET .= '<FIELDSET class="REQUADRE"><LEGEND class="LLEGENDA">Verificació de la matrícula</LEGEND>';	
+        
+    	 $RET .= ' <TABLE class="FORMULARI" style="magin-right:40px;">
+    		        <TR><TD><b>DNI</b></TD>     <TD>'.$DADES_MATRICULA['DNI'].'</TD></TR>
+                    <TR><TD><b>NOM</b></TD>     <TD>'.$DADES_MATRICULA['NOM'].'</TD></TR>
+                    <TR><TD><b>PAGAMENT</b></TD><TD>'.MatriculesPeer::textPagament($DADES_MATRICULA['MODALITAT']).'</TD></TR>
+                    <TR><TD><b>IMPORT</b></TD>  <TD>'.$DADES_MATRICULA['PREU'].'€'.'</TD></TR>
+                    <TR><TD><b>DATA</b></TD>    <TD>'.$DADES_MATRICULA['DATA'].'</TD></TR>
+                    <TR><TD><b>DESCOMPTE</b></TD>  <TD>'.MatriculesPeer::textDescomptes($DADES_MATRICULA['DESCOMPTE']).'</TD></TR>
+                    <TR><TD><b>CURS</b></TD>  <TD>';
+        $RET .=     '<TABLE width="100%" class="FORMULARI">';                  								
+   	
+        $CURS = CursosPeer::retrieveByPK($DADES_MATRICULA['CURS']);                  								
+        $RET .= '       <TR>
+                	        <TD>'.$CURS->getCodi().'</TD>
+                            <TD>'.$CURS->getTitolcurs().' '.$ESPLE.'</TD>
+                            <TD>'.$CURS->CalculaPreu($DADES_MATRICULA['DESCOMPTE']).'€'.'</TD>
+                			</TR>                  								                  								                  	                           
+      		         </TABLE>
+    	           </TD></TR>  	 	          
+      	          </TABLE>	
+                    
+                    <div style="text-align:right">
+                        <button type="submit" name="BPAGAMATRICULA" class="BOTO_ACTIVITAT" >
+                            '.image_tag('template/coins.png').' Finalitzar la matrícula
+                        </button>
+                    </div>                                         
+                    		                                  
+    	       </FIELDSET>    	
+    	</FORM>';
+        
+        return $RET;
+
+
+<?php 
+    } 
+?>

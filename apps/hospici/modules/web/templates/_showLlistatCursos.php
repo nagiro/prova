@@ -3,6 +3,27 @@
     .pager a { font-size:16px; color:inherit; text-decoration:inherit;  }
     .pagerE { margin-top:10px; margin-bottom:30px; text-align:center;  }
 </style>
+<script>
+
+
+    $(document).ready(function(){
+        	$( ".matricula_presencial" ).dialog({
+			autoOpen: false,
+			height: 310,
+			width: 350,
+			modal: true,
+            buttons: {},
+			close: function() {}
+		});
+    });
+
+    function MostraDialegMatriculaPresencial(id){
+        $( " [idD=" + id + "]" ).dialog( "open" );
+        return false;    
+    }
+    
+
+</script>
 <div class="h_requadre_resultats">
     <div class="h_subtitle_gray c1">
         L'HOSPICI...
@@ -37,34 +58,37 @@
                     //Si es pot reservar entrada per internet, es mostra. 
                     if($OC->getIsEntrada())
                     {
-                                                                        
-                        if(!isset($CURSOS_MATRICULATS[$OC->getIdcursos()]))
-                        {
-                            $url = url_for('@hospici_detall_curs?idC='.$OC->getIdCursos().'&titol='.$OC->getNomForUrl()); 
-                            if(isset($AUTH) && $AUTH > 0)
-                            {
-                                echo '  <div style="float:right">
-                                            <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                                <a name="link_compra" style="text-decoration:none;" href="'.$url.'">Reservar matrícula</a>
-                                            </div>
-                                        </div>';
-                            } 
-                            else 
-                            {
-                                echo '  <div style="float:right">
-                                            <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                                <a class="auth" url="" name="link_compra" style="text-decoration:none;" url="'.$url.'" href="#">Reservar matrícula</a>
-                                            </div>
-                                        </div>';                                                     
+                        $url = url_for('@hospici_detall_curs?idC='.$OC->getIdCursos().'&titol='.$OC->getNomForUrl());
+                        //Es pot reservar i estic autentificat 
+                        if(isset($AUTH) && $AUTH > 0) {
+
+                            //Es pot reservar, estic autentificat i no m'hi he matriculat prèviament.
+                            if(!isset($CURSOS_MATRICULATS[$OC->getIdcursos()])) {
+                                echo '  <div style="float:right">'.ph_getRoundCorner('<a name="link_compra" style="text-decoration:none;" href="'.$url.'">Matricula\'m-hi</a>','#FFCC00').'</div>';                                                                                                     
                             }
-                        } 
-                        else
-                        { 
-                            echo '  <div style="float:right">
-                                        <div class="requadre_mini" style="color:white; background-color:#29A729;">Ja hi esteu matriculat</div>                                                                        
-                                    </div>';
+                            
+                            //Es pot reservar, estic autentificat i ja m'hi he matriculat.  
+                            else { 
+                                echo '  <div class="tip" title="Vostè ja ha realitzat una reserva o matrícula a aquest curs." style="float:right">'.ph_getRoundCorner('Ja hi esteu matriculat','#29A729').'</div>';
+                                //echo '  <div style="float:right">'.ph_getRoundCorner('Ja hi esteu matriculat','#29A729').'</div>';                                        
+                            }
+    
                         }
-                                                     
+                        
+                        //Es pot reservar i no estic autentificat 
+                        else {                            
+                            echo '  <div style="float:right">'.ph_getRoundCorner('<a class="auth" url="" name="link_compra" style="text-decoration:none;" url="'.$url.'" href="#">Matricula\'m-hi</a>','#FFCC00').'</div>';                                                                                         
+                        }
+                                                                                                     
+                    }
+                    //No es pot matriculat per internet.
+                    else {
+                        $OS = SitesPeer::retrieveByPK($OC->getSiteId());
+                        $tel = $OS->getTelefonString();
+                        $email = $OS->getEmailString();
+                        $nom = $OS->getNom();                        
+                        echo "  <div class=\"tip\" title=\"Aquest curs no disposa de matrícula en línia. Per poder-s'hi matricular, ha de posar-se en contacte amb <b>{$nom}</b> enviant un correu electrònic a <b>{$email}</b> o bé trucant al telèfon <b>{$tel}</b>.<br /><br />Disculpi les molèsties.\" style=\"float:right\">".ph_getRoundCorner('<a class="requadre_mini" style="text-decoration:none;" href="#">Matrícula presencial</a>','#FF4B4B').'</div>';                        
+                                                                                                             
                     }
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';

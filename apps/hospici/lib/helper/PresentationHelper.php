@@ -1,5 +1,22 @@
 <?php
 
+
+     /**
+      * h_getRoundCorner()
+      * 
+      * Retorna un round corner per a l'Hospici.
+      *  
+      * @return
+      */
+     function ph_getRoundCorner($text,$color)
+     {
+        $RET = '<div class="requadre_mini" style="background-color: '.$color.';">';
+        $RET .= $text;
+        $RET .= '</div>';
+        
+        return $RET;                                                                                    
+     }
+
      /**
       * ph_getAddThisDiv()
       * 
