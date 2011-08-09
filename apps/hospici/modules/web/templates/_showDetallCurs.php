@@ -16,7 +16,7 @@
             $TNReserva =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
             $TReserva  =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
             $TReservaT =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
-            $datai     =  $OC->getDatainmatricula('U');
+            $datai     =  $CURS->getDatainmatricula('U');
             
             $JaMat = (isset($CURSOS_MATRICULATS[$CURS->getIdcursos()]));
             $url = url_for('@hospici_detall_curs?idC='.$CURS->getIdcursos().'&titol='.$CURS->getNomForUrl());                        
