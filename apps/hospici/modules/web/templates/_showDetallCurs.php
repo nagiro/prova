@@ -49,22 +49,10 @@
                         <?php endif; ?>
                         
                         <!-- Inici del marcador de curs -->
-                        <div style="margin-top: 5px;">
-                        <?php                                                 
-                            
-                            //Estàs autentificat i et pots matricular.
-                            if( $AUTEN && !$JaMat && ($TReserva || $TReservaT )){
-                                echo ph_getRoundCorner('<a href="#matricula">MATRICULA\'T</a>', '#FFCC00');                                                                                
-                            }elseif( $AUTEN && $JaMat ){
-                                echo ph_getRoundCorner('Ja estàs matriculat', '#29A729');
-                            }elseif( $AUTEN && $TNReserva ){
-                                echo ph_getRoundCorner('Matrícula web tancada', '#FF0000');
-                            }elseif( !$AUTEN ){
-                                echo ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i matricula\'t</a>', '#FFCC00');
-                            }
-                            
-                ?>                                                                                                                                                    
-                    </div>  
+                        <div style="margin-top: 5px; margin-bottom:5px;">
+                            <?php echo ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $CURS->getSiteId()); ?>                                                                                                                                                    
+                        </div>
+                        <!-- Fi del marcador de curs -->  
                       
                     <div style="margin-top:20px;">
                         <?php echo ph_getAddThisDiv(); ?>
@@ -138,16 +126,20 @@
                                             </div>
                                     <?php } else {
                                                                                  
-                                            if($TNReserva){
+                                            if($JaMat){
                                                 $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
                                                 $tel = $OS->getTelefonString();
                                                 $email = $OS->getEmailString();
                                                 $nom = $OS->getNom();
-                                                echo "<div>Aquest curs té la reserva per internet tancada. <br />Si voleu matricular-vos-hi, poseu-vos en contacte amb <b>{$nom}</b> enviant un correu a <b>{$email}</b> o bé trucant al telèfon <b>{$tel}</b>.</div>";
-                                            } elseif($JaMat){
-                                                echo "<div>Vostè ja està matriculat Per poder matricular-vos d'un curs heu d'autentificar-vos clicant <a href=\"#\" class=\"auth\" url=\"{$url}\" >aquí</a>.</div>";
+                                                echo '<div>Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';
+                                            } elseif($TNReserva){
+                                                $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
+                                                $tel = $OS->getTelefonString();
+                                                $email = $OS->getEmailString();
+                                                $nom = $OS->getNom();
+                                                echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>';
                                             } else {
-                                                echo "<div>Per poder matricular-vos d'un curs heu d'autentificar-vos clicant <a href=\"#\" class=\"auth\" url=\"{$url}\" >aquí</a>.</div>";
+                                                echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a href="#" class="auth" url="'.$url.'" >aquí</a>.</div>';
                                             }
                                          }
                                     ?>

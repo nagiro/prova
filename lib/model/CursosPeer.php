@@ -488,7 +488,9 @@ class CursosPeer extends BaseCursosPeer
     
     //Ara fem la select dels cursos amb el pager
     $C = new Criteria();    
-    $C->add(self::IDCURSOS , $RET , CRITERIA::IN );
+    $C->add(self::IDCURSOS , $RET , CRITERIA::IN );    
+    $C->addAscendingOrderByColumn(self::CATEGORIA);
+    $C->addAscendingOrderByColumn(self::SITE_ID);
     $pager = new sfPropelPager('Cursos', 20);
     $pager->setCriteria($C);
     $pager->setPage($p);

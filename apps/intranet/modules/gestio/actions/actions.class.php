@@ -2333,7 +2333,8 @@ class gestioActions extends sfActions
     		    if($this->FCurs->isValid()):                    
     		    	$this->FCurs->save();
                     $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );
-    		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());    		    	     		    
+    		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());
+                    $this->redirect('gestio/gCursos?accio=CA');    		    	     		    
     		    endif;    		        		    
     			$this->MODE = 'EDICIO_CONTINGUT';
     		break;

@@ -2,22 +2,6 @@
 
 
      /**
-      * h_getRoundCorner()
-      * 
-      * Retorna un round corner per a l'Hospici.
-      *  
-      * @return
-      */
-     function ph_getRoundCorner($text,$color)
-     {
-        $RET = '<div class="requadre_mini" style="background-color: '.$color.';">';
-        $RET .= $text;
-        $RET .= '</div>';
-        
-        return $RET;                                                                                    
-     }
-
-     /**
       * ph_getAddThisDiv()
       * 
       * Retorna el div amb el format de botons d'addThis per fer social un site.
@@ -215,5 +199,52 @@
 		return $ret;
 		
 	}
+    
+
+     /**
+      * h_getRoundCorner()
+      * 
+      * Retorna un round corner per a l'Hospici.
+      *  
+      * @return
+      */
+     function ph_getRoundCorner($text,$color)
+     {
+        $RET = '<div class="requadre_mini" style="background-color: '.$color.';">';
+        $RET .= $text;
+        $RET .= '</div>';
+        
+        return $RET;                                                                                    
+     }
+    
+
+    /**
+     * Mostra les etiquetes amb els estats i accions dels cursos
+     * */
+    function ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $idS = 1)
+    {
+        $RET = "";                        
+        
+        //Estàs autentificat i et pots matricular.
+        if( $AUTEN && !$JaMat && ($TReserva || $TReservaT )){
+            $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">MATRICULA\'T</a>', '#FF8D00');                                                                                
+        }elseif( $AUTEN && $JaMat ){
+            $OS = SitesPeer::retrieveByPK($idS);
+            if(!($OS instanceof Sites)) $OS = new Sites();
+            $tel  = $OS->getTelefonString(); $email = $OS->getEmailString(); $nom = $OS->getNom();                        
+            $RET  = '  <div class="tip" title="Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Ja hi esteu matriculat', '#29A729').'</div>';            
+        }elseif( $AUTEN && $TNReserva ){
+            $OS = SitesPeer::retrieveByPK($idS);
+            if(!($OS instanceof Sites)) $OS = new Sites();
+            $tel  = $OS->getTelefonString(); $email = $OS->getEmailString(); $nom = $OS->getNom();                        
+            $RET  = '  <div class="tip" title="Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
+            $RET .= ph_getRoundCorner('Matrícula web tancada', '#FF0000').'</div>';            
+        }elseif( !$AUTEN ){
+            $RET = ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i matricula\'t</a>', '#FFCC00');
+        }
+                
+        return $RET;         
+    }
         
 ?>

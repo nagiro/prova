@@ -34,9 +34,14 @@ li.ul_material{
 .selec { text-decoration: underline;  }
 
 .requadre_missatge { padding:5px; background-color: #FFFEE4; }
-.requadre_mini { border-radius:4px; padding:2px; font-size:11px; }
+.requadre_mini { border-radius:4px; padding:3px; font-size:11px; color:white; }
 .requadre_mini a { text-decoration:none; color:white; font-size:11px;  }
 .requadre_mini a:hover { text-decoration:underline;   }
+
+.pagerN { border-radius:4px; padding:3px; color:white; background-color:#96BF0B; }
+.pagerN a { text-decoration:none; color:white; font-weight:bold; font-size:12px;}
+.pagerN a:hover { text-decoration:none;  }
+.pagerN:hover { background-color:orange; }
 
 #taula { width:1024px; margin:0 auto; text-align:left; border:1px solid black;  }
         

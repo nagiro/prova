@@ -920,7 +920,7 @@ function _convert_include_custom_for_select($options, &$select_options)
 
 /**
  * setPager()
- * Imprimeix per pantalla la indexaci� de p�gines 
+ * Imprimeix per pantalla la indexació de pàgines 
  * @param mixed $pager
  * @param mixed $url
  * @param mixed $page
@@ -947,6 +947,29 @@ function setPager( sfPager $pager , $url ){
 	return $RET;
 	
 }
+
+/**
+ * setPager()
+ * Imprimeix per pantalla la indexació de pàgines 
+ * @param mixed $pager
+ * @param mixed $url
+ * @param mixed $page
+ * @return
+ */
+function setPagerN( sfPager $pager , $url ){
+	
+    $e = '&P=';
+    if(!stripos($url,'?')) $e = '?P=';    
+    
+	$RET = '<div class="pagerN">';
+	if ($pager->haveToPaginate()):        		
+		$RET .= link_to('Veure\'n més >>>', $url.$e.$pager->getNextPage());		
+	endif;
+	$RET .= '</div>';
+	return $RET;
+	
+}
+
 
 function closetags ( $html )
 {
