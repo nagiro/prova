@@ -961,11 +961,12 @@ function setPagerN( sfPager $pager , $url ){
     $e = '&P=';
     if(!stripos($url,'?')) $e = '?P=';    
     
-	$RET = '<div class="pagerN">';
-	if ($pager->haveToPaginate()):        		
-		$RET .= link_to('Veure\'n més >>>', $url.$e.$pager->getNextPage());		
+    if ($pager->haveToPaginate()):
+	   $RET = '<div class="pagerN">';	        		
+	   $RET .= link_to('Veure\'n més >>>', $url.$e.$pager->getNextPage());
+       $RET .= '</div>';		
 	endif;
-	$RET .= '</div>';
+	
 	return $RET;
 	
 }
