@@ -75,7 +75,7 @@
                                     <?php
                                                                                                                                                               
                                         //Fem visible les reserves si estem autentificats, i podem reservar o matricular-nos.
-                                        if(isset($AUTH) && $AUTH > 0 && ( $TReserva || $TReservaT ) ){
+                                        if(isset($AUTH) && $AUTH > 0 && ( $TReserva || $TReservaT ) && (time() >= $datai) ){
                                                                                                                                         
                                             echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
                                             
@@ -120,10 +120,10 @@
                                                 </div>
                                                 <div style="padding-top:10px; clear:both;">
                                                     <?php 
-                                                        $closed = (time() < $datai); 
-                                                        if($TReserva && !$closed) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Reserva plaça!" /></div>';
-                                                        elseif($TReservaT && !$closed) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Matricula\'m" /></div>';
-                                                        elseif($closed) echo '<div style="margin-left:220px;">Tancada fins el '.$date('d/m/Y',$datai).'</div>';                                                            
+                                                         
+                                                        if($TReserva) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Reserva plaça!" /></div>';
+                                                        elseif($TReservaT) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Matricula\'m" /></div>';
+                                                                                                                    
                                                     ?>
                                                 </div>
                                             </div>
@@ -141,6 +141,12 @@
                                                 $email = $OS->getEmailString();
                                                 $nom = $OS->getNom();
                                                 echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>';
+                                            } elseif(time() < $datai) {
+                                                $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
+                                                $tel = $OS->getTelefonString();
+                                                $email = $OS->getEmailString();
+                                                $nom = $OS->getNom();
+                                                echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';                                                                                            
                                             } else {
                                                 echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a href="#" class="auth" url="'.$url.'" >aquí</a>.</div>';
                                             }
