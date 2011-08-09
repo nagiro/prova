@@ -16,6 +16,7 @@
             $TNReserva =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
             $TReserva  =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
             $TReservaT =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+            $datai     =  $OC->getDatainmatricula('U');
             
             $JaMat = (isset($CURSOS_MATRICULATS[$CURS->getIdcursos()]));
             $url = url_for('@hospici_detall_curs?idC='.$CURS->getIdcursos().'&titol='.$CURS->getNomForUrl());                        
@@ -50,7 +51,7 @@
                         
                         <!-- Inici del marcador de curs -->
                         <div style="margin-top: 5px; margin-bottom:5px;">
-                            <?php echo ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $CURS->getSiteId()); ?>                                                                                                                                                    
+                            <?php echo ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $CURS->getSiteId(), $datai); ?>                                                                                                                                                    
                         </div>
                         <!-- Fi del marcador de curs -->  
                       

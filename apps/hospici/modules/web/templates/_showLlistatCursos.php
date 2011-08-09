@@ -41,11 +41,12 @@
                     $TNReserva =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
                     $TReserva  =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
                     $TReservaT =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+                    $datai     =  $OC->getDataInMatricula('U');                    
                     
                     $JaMat = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
                     $url = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());                        
 
-                    echo '<div style="float:right; margin-top: 5px;">'.ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $OC->getSiteId()).'</div>';                      
+                    echo '<div style="float:right; margin-top: 5px;">'.ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $OC->getSiteId(), $datai).'</div>';                      
                                         
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';
