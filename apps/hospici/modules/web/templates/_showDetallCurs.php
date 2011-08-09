@@ -120,8 +120,10 @@
                                                 </div>
                                                 <div style="padding-top:10px; clear:both;">
                                                     <?php 
-                                                        if($TReserva) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Reserva plaça!" /></div>';
-                                                        elseif($TReservaT) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Matricula\'m" /></div>';                                                            
+                                                        $closed = (time() < $datai); 
+                                                        if($TReserva && !$closed) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Reserva plaça!" /></div>';
+                                                        elseif($TReservaT && !$closed) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Matricula\'m" /></div>';
+                                                        elseif($closed) echo '<div style="margin-left:220px;">Tancada fins el '.$date('d/m/Y',$datai).'</div>';                                                            
                                                     ?>
                                                 </div>
                                             </div>
