@@ -403,11 +403,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
     $C1 = $C->getNewCriterion(self::ESTAT, self::ACCEPTAT_PAGAT);
     $C2 = $C->getNewCriterion(self::ESTAT, self::ACCEPTAT_NO_PAGAT);
-    $C3 = $C->getNewCriterion(self::ESTAT, self::EN_ESPERA);
-    $C4 = $C->getNewCriterion(self::ESTAT, self::CANVI_GRUP);
-    $C5 = $C->getNewCriterion(self::ESTAT, self::DEVOLUCIO);
-    $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5);
-    $C->add($C1);
+    $C1->addOr($C2); $C->add($C1);
             
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
 
@@ -454,14 +450,16 @@ class MatriculesPeer extends BaseMatriculesPeer
    * @param $password
    * @return boolean  
    * */
-  static public function valTPV($Ds_Merchant_Amount,$Ds_Merchant_Order,$Ds_Merchant_MerchantCode,$Ds_Merchant_Currency,$MerchantSignature,$password)
+  static public function valTPV($Ds_Merchant_Amount,$Ds_Merchant_Order,$Ds_Merchant_MerchantCode,$Ds_Merchant_Currency,$Ds_Response,$MerchantSignature,$password)
   {
+       
      $message =  $Ds_Merchant_Amount.
                  $Ds_Merchant_Order.
                  $Ds_Merchant_MerchantCode.
                  $Ds_Merchant_Currency.
-                 $password;                  
-                       
+                 $Ds_Response.
+                 $password;
+
      return ($MerchantSignature == strtoupper(sha1($message)));
     
   }
@@ -503,7 +501,7 @@ class MatriculesPeer extends BaseMatriculesPeer
                  $TPV['Ds_Merchant_Order'].
                  $TPV['Ds_Merchant_MerchantCode'].
                  $TPV['Ds_Merchant_Currency'].
-                 OptionsPeer::getString('TPV_PASSWORD',$idS); 
+                 OptionsPeer::getString('TPV_PASSWORD',$idS);               
                        
      $TPV['Ds_Merchant_MerchantSignature'] = strtoupper(sha1($message));
      
@@ -565,15 +563,19 @@ class MatriculesPeer extends BaseMatriculesPeer
   {
   	
   	$Nom = $OM->getUsuaris()->getNomComplet();
-  	$NomCurs = $OM->getCursos()->getCodi().' | '.$OM->getCursos()->getTitolcurs();
-  	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');        
+  	$NomCurs = $OM->getCursos()->getCodi().' | '.$OM->getCursos()->getTitolcurs();   
+  	$dataInici = $OM->getCursos()->getDatainici('d-m-Y');
+    $OS = SitesPeer::retrieveByPK($OM->getSiteId());
     
-    $TEXT = OptionsPeer::getString( 'MAIL_MAT_OK' , $idS );    
-    $TEXT = str_replace( '{{LOGO_URL}}', OptionsPeer::getString( 'LOGO_URL' , $idS ) , $TEXT );    
-    $TEXT = str_replace( '{{URL_LOGIN}}', OptionsPeer::getString( 'URL_LOGIN' , $idS ) , $TEXT );
+    $TEXT = OptionsPeer::getString( 'BODY_MAIL_MATRICULA' , $idS );            
     $TEXT = str_replace( '{{NOM}}' , $Nom , $TEXT );
-    $TEXT = str_replace( '{{NOM_CURS}}' , $NomCurs , $TEXT );
-    $TEXT = str_replace( '{{DATA_INICI}}' , $dataInici , $TEXT );
+    $TEXT = str_replace( '{{CURS}}' , $NomCurs , $TEXT );
+    $TEXT = str_replace( '{{ENTITAT}}' , $OS->getNom() , $TEXT );
+    $TEXT = str_replace( '{{TEL_ENTITAT}}' , $OS->getTelefon() , $TEXT );
+    $TEXT = str_replace( '{{MAIL_ENTITAT}}' , $OS->getEmail() , $TEXT );
+    $TEXT = str_replace( '{{TEL_ADMIN}}' , '972.20.20.13' , $TEXT );
+    $TEXT = str_replace( '{{MAIL_ADMIN}}' , OptionsPeer::getString('MAIL_ADMIN',$idS) , $TEXT );            
+    $TEXT = str_replace( '{{DIA_CLASSE}}' , $dataInici , $TEXT );
       	
    	return $TEXT; 
   	

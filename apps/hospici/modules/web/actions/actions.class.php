@@ -30,7 +30,7 @@ class webActions extends sfActions
         case 'cerca_activitat':
         
                 //Agafo el paràmetre                
-                if($request->getMethod() == 'POST') $C = $this->getUser()->ParReqSesForm($request,'cerca',array());
+                $C = $this->getUser()->ParReqSesForm($request,'cerca',array());
                 $C['P'] = $request->getParameter('P',1);                                
                 
                 //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
@@ -138,7 +138,7 @@ class webActions extends sfActions
                 $this->redirect('@hospici_usuaris');        
     } else {    $this->redirect('@hospici_cercador_activitats');  }
             
-  }  
+  }      
 
   private function makeLogin($user,$pass){
 
@@ -209,6 +209,8 @@ class webActions extends sfActions
         if($this->FUSUARI->isValid()):
             $this->FUSUARI->save();
             $this->SECCIO = 'GUARDAT';
+            $OU = $this->FUSUARI->getObject();
+            $this->makeLogin($OU->getDni(),$OU->getPasswd());                        
         else: 
             $this->SECCIO = 'INICI';        
         endif;                    
@@ -241,7 +243,7 @@ class webActions extends sfActions
                 $FU->bind($RS);                
                 if($FU->isValid()):
                     $FU->save();
-                    $this->MISSATGE = "OK";                                                 
+                    $this->MISSATGE1 = "OK";                                                 
                 endif;                                                       
             endif;
             $this->SECCIO = 'USUARI';
@@ -253,7 +255,7 @@ class webActions extends sfActions
             $OER = EntradesReservaPeer::initialize()->getObject();
             $OH = HorarisPeer::retrieveByPK($RS['idH']);
             $idS = 0; if($OH instanceof Horaris) $idS = $OH->getSiteid();
-            $this->MISSATGE = 'OK';
+            $this->MISSATGE2 = 'OK';
             try{ 
             //Si no existeix una compra per aquest usuari, la fem, altrament, no fem res.
             if(!EntradesReservaPeer::ExisteixenEntradesComprades($this->IDU,$RS['idH'])):
@@ -268,9 +270,9 @@ class webActions extends sfActions
                 $OER->save();
                 UsuarisPeer::addSite($this->IDU,$idS);
             else: 
-                $this->MISSATGE = 'ENTRADA_REPE';
+                $this->MISSATGE2 = 'ENTRADA_REPE';
             endif;            
-            } catch(Exception $e){ $this->MISSATGE = 'ERROR';  }
+            } catch(Exception $e){ $this->MISSATGE2 = 'ERROR';  }
                                 
             $this->SECCIO = 'COMPRA_ENTRADA';
                                                 
@@ -312,7 +314,7 @@ class webActions extends sfActions
                     if($OM->getEstat() == MatriculesPeer::EN_ESPERA)
                     {
                         //El curs en qüestió ja està ple. Mostrem el llistat però el missatge de "en espera"
-                        $this->MISSATGE = 'ESPERA';
+                        $this->MISSATGE3 = 'ESPERA';
                     }
                     elseif($OM->getEstat() == MatriculesPeer::EN_PROCES)
                     {
@@ -330,7 +332,7 @@ class webActions extends sfActions
                                                     $OM->getIdmatricules() , 
                                                     $this->IDS , true );
                             
-                        } catch (Exception $e) { $this->MISSATGE = 'KO'; /* Faltarà enviar un missatge de mail */  }
+                        } catch (Exception $e) { $this->MISSATGE3 = 'KO'; /* Faltarà enviar un missatge de mail */  }
                         
                         $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
                         $this->setLayout('blanc');
@@ -340,49 +342,54 @@ class webActions extends sfActions
                     else
                     {
                         //Tot correcte. Mostrem el llistat de matrícules i el missatge que ha anat bé. 
-                        $this->MISSATGE = "OK";
+                        $this->MISSATGE3 = "OK";
                     }
                 }            
                 else
                 { 
-                    if($OM == 1) $this->MISSATGE = "JA_EXISTEIX";
-                    else $this->MISSATGE = "KO";
+                    if($OM == 1) $this->MISSATGE3 = "JA_EXISTEIX";
+                    else $this->MISSATGE3 = "KO";
                 }             
             }
             else
             {
-                $this->MISSATGE = "CURS_NO_EXISTEIX";
+                $this->MISSATGE3 = "CURS_NO_EXISTEIX";
             }
         break;
 
         case 'matricula_OK':
-                $this->MISSATGE = "OK";
+                $this->MISSATGE3 = "OK";
                 $this->SECCIO   = 'MATRICULA';                
             break;
             
         case 'matricula_KO':
-                $this->MISSATGE = "KO";
+                $this->MISSATGE3 = "KO";
                 $this->SECCIO   = 'MATRICULA';
             break;
             
-        case 'GET_TPV':                
+        case 'GET_TPV':
+        
                 //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
-                if( $request->isMethod() == 'POST' && $request->getParameter('Ds_Response') == '0000' )
+                //if( $request->isMethod() == 'POST' && $request->getParameter('Ds_Response') == '0000' )
+                if( $request->getParameter('Ds_Response') == '0000' )
                 {
                     
                     $idM = $request->getParameter('Ds_MerchantData',null);
                     
-                    $OM = MatriculesPeer::retrieveByPK($idM);
+                    $OM     = MatriculesPeer::retrieveByPK($idM);
+                    
                     
                     if($OM instanceof Matricules)
-                    {
-                                                                
+                    {                                                
+                        
+                        $from   = OptionsPeer::getString('MAIL_FROM',$OM->getSiteId());
+                        
                         //Un cop sabem que la matrícula existeix, comprovem la signatura i si és correcta, marquem com a pagat.
-                        if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Signature'), OptionsPeer::getString('TPV_PASSWORD',$OM->getSiteid() )))
+                        if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Response') , $request->getParameter('Ds_Signature'), OptionsPeer::getString('TPV_PASSWORD',$OM->getSiteid() )))
                         {
-                            $from       = OptionsPeer::getString('MAIL_FROM',$OM->getSiteId());
+                                                                                    
                             $MailMat    = MatriculesPeer::MailMatricula($OM,$OM->getSiteid());
-                            $subject    = 'Hospici :: Nova matrícula';                            
+                            $subject    = 'Hospici :: Nova matrícula';
                             
                             $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
                             $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
@@ -393,15 +400,17 @@ class webActions extends sfActions
                             $this->sendMail($from,'informatica@casadecultura.org',$subject,$MailMat);
                                             
                         } else {
-                            
+
                  			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',$idM);
                             
                         }
+                                                    
+                    } else {
+                        
+                        $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI',$idM);
                         
                     }
-
-                    $this->sendMail($from,'informatica@casadecultura.org','CODI MATRÍCULA ERRONI',$idM);
-                    
+                                        
                 }
                                 
             break;
@@ -431,7 +440,7 @@ class webActions extends sfActions
             if($OE instanceof Espais){
                 $this->FReserva = ReservaespaisPeer::initializeHospici(null,$OE->getSiteid(),$OE->getEspaiid(),$this->getUser()->getSessionPar('idU'));                                
             } else {
-                $this->MISSATGE = "ERROR_ESPAI";                
+                $this->MISSATGE4 = "ERROR_ESPAI";                
             }
         break;  
     
@@ -450,10 +459,10 @@ class webActions extends sfActions
                 //Vinculem l'usuari amb el site corresponent
                 UsuarisPeer::addSite($idU,$RP['site_id']);
                                         
-                $this->MISSATGE = "OK";
+                $this->MISSATGE4 = "OK";
                 $this->redirect('@hospici_llista_reserves');             
             } else {
-                $this->MISSATGE = 'ERROR_SAVE';            
+                $this->MISSATGE4 = 'ERROR_SAVE';            
             }                
                             
         break;               
@@ -621,7 +630,7 @@ class webActions extends sfActions
                                     
     //Faig la cerca dels cursos de l'Hospici i ho retorno amb valors
     //La cerca hauria de tornar els cursos, segons els paràmetres i a més els llistats amb els valors.        
-    $this->LLISTAT_ENTITATS = SitesPeer::getEntitatsCercaHospici($C2);                                 
+    $this->LLISTAT_ENTITATS = SitesPeer::getEntitatsCercaHospici($C2);
     $this->DESPLEGABLES['SELECT_POBLACIONS'] = SitesPeer::getPoblacionsCercaHospici($C2);                
     $this->DESPLEGABLES['SELECT_CATEGORIES'] = SitesPeer::getCategoriesCercaHospici($C2);                        
                                                             

@@ -920,7 +920,7 @@ function _convert_include_custom_for_select($options, &$select_options)
 
 /**
  * setPager()
- * Imprimeix per pantalla la indexació de pàgines 
+ * Imprimeix per pantalla la indexaciÃƒÆ’Ã‚Â³ de pÃƒÆ’Ã‚Â gines 
  * @param mixed $pager
  * @param mixed $url
  * @param mixed $page
@@ -950,21 +950,28 @@ function setPager( sfPager $pager , $url ){
 
 /**
  * setPager()
- * Imprimeix per pantalla la indexació de pàgines 
+ * Imprimeix per pantalla la indexaciÃ³ de pÃ gines 
  * @param mixed $pager
- * @param mixed $url
- * @param mixed $page
+ * @param mixed $url 
+ * @param mixed $toInici (Retorna al principi del pager?)
  * @return
  */
-function setPagerN( sfPager $pager , $url ){
+function setPagerN( sfPager $pager , $url , $toInici = false ){
 	
     $e = '&P=';
-    if(!stripos($url,'?')) $e = '?P=';    
-    
+    if(!stripos($url,'?')) $e = '?P=';
+    $RET = "";    
+        
     if ($pager->haveToPaginate()):
-	   $RET = '<div class="pagerN">';	        		
-	   $RET .= link_to('Veure\'n més >>>', $url.$e.$pager->getNextPage());
-       $RET .= '</div>';		
+        if($toInici): 
+            $RET = '<div class="pagerN">';	        		
+            $RET .= link_to('<<< No hi ha més resultats. Tornar al principi', $url.$e.'1');
+            $RET .= '</div>';
+        else:    
+            $RET = '<div class="pagerN">';	        		
+            $RET .= link_to('Veure\'n més >>>', $url.$e.$pager->getNextPage());
+            $RET .= '</div>';
+        endif;		
 	endif;
 	
 	return $RET;

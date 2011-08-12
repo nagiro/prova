@@ -55,14 +55,14 @@
     <div id="tabs-1">        
         Benvingut a la zona privada de l'Hospici.<br /><br /> 
         Si està veient aquesta pàgina és perquè vostè ja és un usuari registrat de l'Hospici i ha entrat el seu DNI i contrassenya correctament.<br /> 
-        Sota el títol <b>Què pots fer?</b>, al requadre de la dreta, li apareixeran totes les accions que pot realitzar com a usuari registrat. Per altra banda clicant clicant les pestanyes superiors veurà tot allò que vostè ha fet amb l'Hospici.<br />
+        Sota el títol <b>Què desitges fer?</b>, al requadre de la dreta, li apareixeran totes les accions que pot realitzar com a usuari registrat. Per altra banda clicant clicant les pestanyes superiors veurà tot allò que vostè ha fet amb l'Hospici.<br />
         Moltes gràcies per utilitzar l'Hospici. 
         
         <br /><br />                    
     </div>
     <div id="tabs-2">
         <form action="<?php echo url_for('@hospici_usuaris_modifica'); ?>" method="POST">
-            <?php if(isset($MISSATGE) && $MISSATGE == 'OK') echo '<div style="margin-bottom:20px;"><div class="missatge">Les seves dades han estat actualitzades amb èxit.</div></div>'; ?>
+            <?php if(isset($MISSATGE1) && $MISSATGE1 == 'OK') echo '<div style="margin-bottom:20px;"><div class="missatge">Les seves dades han estat actualitzades amb èxit.</div></div>'; ?>
             <table class="taula_dades">                
                 <?php echo $FUsuari; ?>
                 <tr>
@@ -76,16 +76,16 @@
         </form>
     </div>
     <div id="tabs-3">
-        <?php if(isset($MISSATGE) && $MISSATGE == 'OK'): ?>
-                <div class="requadre_missatge">La matrícula s'ha efectuat correctament.<br /> Aviat ens posarem en contacte amb vostè per finalitzar-la.</div>
+        <?php if(isset($MISSATGE3) && $MISSATGE3 == 'OK'): ?>
+                <div class="requadre_missatge">La matrícula s'ha efectuat correctament.<br /> Si només ha realitzat una reserva, aviat ens posarem en contacte amb vostè per finalitzar-la.</div>
                 <br />
-        <?php elseif(isset($MISSATGE) && $MISSATGE == 'KO'): ?>
+        <?php elseif(isset($MISSATGE3) && $MISSATGE3 == 'KO'): ?>
                 <div class="requadre_missatge">Hi ha hagut algun problema guardant la seva matrícula. <br />Torni-ho a provar o bé envii un missatge a informatica@casadecultura.org per informar de la incidència. <br /><br />Moltes gràcies i perdoni les molèsties.</div>
                 <br />
-        <?php elseif(isset($MISSATGE) && $MISSATGE == 'ESPERA'): ?>
+        <?php elseif(isset($MISSATGE3) && $MISSATGE3 == 'ESPERA'): ?>
                 <div class="requadre_missatge">El curs és ple i vostè ha estat afegit a la llista d'espera.<br /> Si s'alliberen places, ens posarem en contacte amb vostè per saber si encara hi està interessat. <br />Moltes gràcies i perdoni les molèsties.</div>
                 <br />                
-        <?php elseif(isset($MISSATGE) && $MISSATGE == 'JA_EXISTEIX'): ?>
+        <?php elseif(isset($MISSATGE3) && $MISSATGE3 == 'JA_EXISTEIX'): ?>
                 <div class="requadre_missatge">A la nostra base de dades ja existeix una matrícula seva a aquest curs.<br /> Si us plau, posi's en contacte amb l'entitat per solventar-ho. <br />Moltes gràcies i perdoni les molèsties.</div>
                 <br />                
         <?php endif; ?>
@@ -104,8 +104,8 @@
         <?php if(isset($FReserva) && $FReserva instanceof HospiciReservesForm): ?>
         <form action="<?php echo url_for('@hospici_nova_reserva_espai_save'); ?>" method="POST">
             <?php 
-                if(isset($MISSATGE) && $MISSATGE == 'OK') echo '<div style="margin-bottom:20px;"><div class="missatge">Les seves dades han estat actualitzades amb èxit.</div></div>'; 
-                elseif(isset($MISSATGE) && $MISSATGE == 'ERROR_SAVE') echo '<div style="margin-bottom:20px;"><div class="missatge">Hi ha alguna dada errònia. Si us plau, correixi-la.</div></div>'; 
+                if(isset($MISSATGE4) && $MISSATGE3 == 'OK') echo '<div style="margin-bottom:20px;"><div class="missatge">Les seves dades han estat actualitzades amb èxit.</div></div>'; 
+                elseif(isset($MISSATGE4) && $MISSATGE3 == 'ERROR_SAVE') echo '<div style="margin-bottom:20px;"><div class="missatge">Hi ha alguna dada errònia. Si us plau, correixi-la.</div></div>'; 
             ?>
             <div style="background-color:#EEEEEE; padding:5px; font-weight:bold; text-align:center;">FORMULARI DE RESERVA D'ESPAI</div>                                    
             <table class="taula_dades">
@@ -150,13 +150,13 @@
     </div>
     <div id="tabs-5">
 
-        <?php if(isset($MISSATGE) && $MISSATGE == 'ENTRADA_REPE'): ?>
+        <?php if(isset($MISSATGE2) && $MISSATGE2 == 'ENTRADA_REPE'): ?>
                 <div class="requadre_missatge">Vostè ja ha reservat entrades per aquest espectacle. <br /> Si vol fer canvis, primer anul·li la seva reserva prèvia i torni-ho a reservar.</div>
                 <br />
-        <?php elseif(isset($MISSATGE) && $MISSATGE == 'ERROR'): ?>
+        <?php elseif(isset($MISSATGE2) && $MISSATGE2 == 'ERROR'): ?>
                 <div class="requadre_missatge">Hi ha hagut un error reservant les entrades. <br />Si us plau, posis en contacte amb informatica@casadecultura.org o bé truqui al telèfon 972.20.20.13. </div>
                 <br />
-        <?php elseif(isset($MISSATGE) && $MISSATGE == 'OK'): ?>
+        <?php elseif(isset($MISSATGE2) && $MISSATGE2 == 'OK'): ?>
                 <div class="requadre_missatge">La seva entrada ha estat reservada correctament.</div>
                 <br />                                        
         <?php endif; ?>

@@ -62,7 +62,7 @@
 <div style="margin-bottom: 50px;">
     <div style="padding:10px; margin-top: 20px; background-color:#FBFFD5;">
         El seu usuari ha estat creat correctament. <br />
-        Si us plau, accedeixi a l'Hospici amb les dades entrades. <br />
+        Per poder-lo començar a utilitzar, si us plau, cliqui <?php echo link_to('aquí','@hospici_usuaris'); ?> o bé entri amb les seves dades al portal. <br />
         En cas que no pugui accedir, si us plau envii un correu a informatica@casadecultura.org.<br />
         Moltes gràcies. 
     </div>

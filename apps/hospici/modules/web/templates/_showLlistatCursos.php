@@ -11,7 +11,8 @@
 
     <div>
         
-    <?php 
+    <?php            
+         
         $C = new Criteria();
         $C->addAscendingOrderByColumn(HorarisPeer::DIA);
         $cat_ant = "";
@@ -20,8 +21,9 @@
             echo '<div class="h_llistat_activitat_titol">No hem trobat cap resultat amb aquests paràmetres.</div>';                                
             echo '</div>';
             echo '<div style="margin-top:10px; clear:both;"></div>';                                                                                                                                                                    
-        else:                        
-            foreach($LLISTAT_CURSOS->getResults() as $OC):
+        else:
+            $LCUR = $LLISTAT_CURSOS->getResults();                        
+            foreach($LCUR as $OC):
                 $DATA_INICI =  $OC->getDatainici('d').' '.generaMes($OC->getDatainici('m')).' de '.$OC->getDatainici('Y');                
                 echo '<div style="margin-top:10px; margin-bottom:10px;">';
                     
@@ -34,19 +36,10 @@
                             <div style="float:left;">
                                 <a style="font-size:14px;" href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl()).'">'.$OC->getTitolcurs().'</a>
                             </div>';
-
                             
-                    /* Inici del marcador de curs */
-                    $AUTEN = (isset($AUTH) && $AUTH > 0);           
-                    $TNReserva =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
-                    $TReserva  =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
-                    $TReservaT =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
-                    $datai     =  $OC->getDataInMatricula('U');                    
-                    
-                    $JaMat = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
                     $url = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());                        
 
-                    echo '<div style="float:right; margin-top: 5px;">'.ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $OC->getSiteId(), $datai).'</div>';                      
+                    echo '<div style="float:right; margin-top: 5px;">'.myUser::ph_getEtiquetaCursos($AUTH, $OC, $url, $CURSOS_MATRICULATS).'</div>';                      
                                         
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';
@@ -58,7 +51,8 @@
             endforeach; 
         endif;
 		
-        echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos').'</div>';        
+        if(!empty($LCUR)) echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',false).'</div>';
+        else echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',true).'</div>';
         
     ?>
                         

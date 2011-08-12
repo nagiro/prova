@@ -180,9 +180,6 @@
                         <?php endif; ?>
                                             
                         <br />
-                        <div class="h_requadre_login_imatge">
-                            <img src="<?php echo $BASE_I.'/logo_hospici.png'; ?>">
-                        </div>
                     </div>                
                 </div>                        
             </div>

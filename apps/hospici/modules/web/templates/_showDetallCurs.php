@@ -13,9 +13,11 @@
             //Carrego els identificadors bàsics
             $AUTEN = (isset($AUTH) && $AUTH > 0);
             
-            $TNReserva =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
-            $TReserva  =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
-            $TReservaT =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+            $TNReserva  =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
+            $TReserva   =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
+            $TReservaT  =  ($CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+            $HiHaPlaces =  $CURS->isPle();            
+            
             $datai     =  $CURS->getDatainmatricula('U');
             
             $JaMat = (isset($CURSOS_MATRICULATS[$CURS->getIdcursos()]));
@@ -51,7 +53,7 @@
                         
                         <!-- Inici del marcador de curs -->
                         <div style="margin-top: 5px; margin-bottom:5px;">
-                            <?php echo ph_getEtiquetaCursos($AUTEN, $JaMat, $TReserva, $TReservaT, $TNReserva, $url, $CURS->getSiteId(), $datai); ?>                                                                                                                                                    
+                            <?php echo myUser::ph_getEtiquetaCursos($AUTH, $CURS, $url, $CURSOS_MATRICULATS); ?>                                                                                                                                                    
                         </div>
                         <!-- Fi del marcador de curs -->  
                       
@@ -73,85 +75,134 @@
             					<div style="padding:10px; font-size:10px;">
             
                                     <?php
-                                                                                                                                                              
+                                                                                                                                                                                                      
                                         //Fem visible les reserves si estem autentificats, i podem reservar o matricular-nos.
-                                        if(isset($AUTH) && $AUTH > 0 && ( $TReserva || $TReservaT ) && (time() >= $datai) ){
+                                        if( !$AUTEN ){
+                                            echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a href="#" class="auth" url="'.$url.'" >aquí</a>.</div>';                                        
+                                        } else {
+                                            
+                                            //Encara no s'ha matriculat
+                                            if( !$JaMat ){
+                                                
+                                                //Hi ha places lliures
+                                                if( $HiHaPlaces ){
+                                                
+                                                    //Ja som al període de matrícula
+                                                    if( !$TNReserva ){
+                                                    
+                                                        //Som dins el període de matrícula
+                                                        if( time() >= $datai ){
+                                                        
+                                                            //Pot fer una reserva o matricular-se
+                                                            if($TReserva || $TReservaT){
+                                                            
+                                                                echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
+                                                                
+                                                                //Guardem el codi del curs                                                               	                                                                                                         
+                                                                echo input_hidden_tag('idC',$CURS->getIdcursos());
+                                                                
+                                                                 ?>
+                                                                <div class="taula_dades">
+                                                                    <div style="padding-top:10px;">
+                                                                        <div style="float: left; width:120px;"><b>Pagament:</b></div>                                            
+                                                                        <div style="float: left;">
+                                                                        <?php
+                                                                            if($TReserva) echo 'Només reserva <span class="tipMy tip" title="A través del portal es fa la reserva de plaça, a cost 0, i posteriorment l\'entitat organitzadora es posarà en contacte amb vostè per finalitzar la matrícula.">?</span>';
+                                                                            elseif($TReservaT) echo 'Targeta de crèdit <span class="tipMy tip" title="A través del portal realitzarà i pagarà la matrícula del curs.">?</span>';
+                                                                        ?>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="padding-top:5px; clear:both;">
+                                                                        <div style="float: left; width:120px;"><b>Descompte: </b></div>
+                                                                        <div style="float: left;">
+                                                                        <?php 
+                                                                            
+                                                                            $A_Descomptes = $CURS->h_getDescomptes();
+                                                                            //Si hi ha descompte al curs, el mostrem
+                                                                            if(empty($A_Descomptes)) echo 'Cap descompte disponible <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
+                                                                            else echo select_tag('idD',options_for_select($A_Descomptes,1)).' <span class="tipMy tip" title="Esculli, si s\'escau, el descompte que s\'adeqüi a la seva situació. Aquest haurà de ser demostrat a l\'entitat organitzadora a l\'inici de les classes.">?</span>';
+                                                                            
+                                                                        ?>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="padding-top:5px; clear:both;">
+                                                                        <div style="float: left; width:120px;"><b>Preu: </b></div>
+                                                                        <div style="float: left;">
+                                                                        <?php
+                                                                          
+                                                                            //Si no hi ha descompte, no ensenyem el preu reduit.
+                                                                            if(empty($A_Descomptes)) echo "{$CURS->getPreu()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan inici el curs o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
+                                                                            else echo "Estàndard: {$CURS->getPreu()} € / Reduït: {$CURS->getPreur()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan l\'entitat organitzadora li reclami o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
+                                                                            
+                                                                        ?>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="padding-top:10px; clear:both;">
+                                                                        <?php 
+                                                                             
+                                                                            if($TReserva) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Reserva plaça!" /></div>';
+                                                                            elseif($TReservaT) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Matricula\'m" /></div>';
                                                                                                                                         
-                                            echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
+                                                                        ?>
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                            <?php
+                                                            
+                                                            } else {
+                                                                
+                                                                $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
+                                                                $tel = $OS->getTelefonString();
+                                                                $email = $OS->getEmailString();
+                                                                $nom = $OS->getNom();
+                                                                echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>';
+
+                                                            }
+                                                        
+                                                        //Fora del període de matrícula
+                                                        } else {
+                                                        
+                                                            $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
+                                                            $tel = $OS->getTelefonString();
+                                                            $email = $OS->getEmailString();
+                                                            $nom = $OS->getNom();
+                                                            echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';
+                                                            
+                                                        } 
+                                                    
+                                                    //No hi ha reserva en línia
+                                                    } else {                                                
+                                                    
+                                                        $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
+                                                        $tel = $OS->getTelefonString();
+                                                        $email = $OS->getEmailString();
+                                                        $nom = $OS->getNom();
+                                                        echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>';
+                                                            
+                                                    }
+                                                
+                                                //No hi ha places disponibles
+                                                } else {
+                                                
+                                                    $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
+                                                    $tel = $OS->getTelefonString();
+                                                    $email = $OS->getEmailString();
+                                                    $nom = $OS->getNom();
+                                                    echo '<div>Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.</div>';
+    
+                                                }
                                             
-                                            //Guardem el codi del curs                                                               	                                                                                                         
-                                            echo input_hidden_tag('idC',$CURS->getIdcursos());
-                                            
-                                    ?>
-                                            <div class="taula_dades">
-                                                <div style="padding-top:10px;">
-                                                    <div style="float: left; width:120px;"><b>Pagament:</b></div>                                            
-                                                    <div style="float: left;">
-                                                    <?php
-                                                        if($TReserva) echo 'Només reserva <span class="tipMy tip" title="A través del portal es fa la reserva de plaça, a cost 0, i posteriorment l\'entitat organitzadora es posarà en contacte amb vostè per finalitzar la matrícula.">?</span>';
-                                                        elseif($TReservaT) echo 'Targeta de crèdit <span class="tipMy tip" title="A través del portal realitzarà i pagarà la matrícula del curs.">?</span>';
-                                                    ?>
-                                                    </div>
-                                                </div>
-                                                <div style="padding-top:5px; clear:both;">
-                                                    <div style="float: left; width:120px;"><b>Descompte: </b></div>
-                                                    <div style="float: left;">
-                                                    <?php 
-                                                        
-                                                        $A_Descomptes = $CURS->h_getDescomptes();
-                                                        //Si hi ha descompte al curs, el mostrem
-                                                        if(empty($A_Descomptes)) echo 'Cap descompte disponible <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
-                                                        else echo select_tag('idD',options_for_select($A_Descomptes,1)).' <span class="tipMy tip" title="Esculli, si s\'escau, el descompte que s\'adeqüi a la seva situació. Aquest haurà de ser demostrat a l\'entitat organitzadora a l\'inici de les classes.">?</span>';
-                                                        
-                                                    ?>
-                                                    </div>
-                                                </div>
-                                                <div style="padding-top:5px; clear:both;">
-                                                    <div style="float: left; width:120px;"><b>Preu: </b></div>
-                                                    <div style="float: left;">
-                                                    <?php
-                                                      
-                                                        //Si no hi ha descompte, no ensenyem el preu reduit.
-                                                        if(empty($A_Descomptes)) echo "{$CURS->getPreu()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan inici el curs o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
-                                                        else echo "Estàndard: {$CURS->getPreu()} € / Reduït: {$CURS->getPreur()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan l\'entitat organitzadora li reclami o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
-                                                        
-                                                    ?>
-                                                    </div>
-                                                </div>
-                                                <div style="padding-top:10px; clear:both;">
-                                                    <?php 
-                                                         
-                                                        if($TReserva) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Reserva plaça!" /></div>';
-                                                        elseif($TReservaT) echo '<div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Matricula\'m" /></div>';
-                                                                                                                    
-                                                    ?>
-                                                </div>
-                                            </div>
-                                    <?php } else {
-                                                                                 
-                                            if($JaMat){
+                                            //Ja estàs matriculat al curs
+                                            } else {
                                                 $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
                                                 $tel = $OS->getTelefonString();
                                                 $email = $OS->getEmailString();
                                                 $nom = $OS->getNom();
                                                 echo '<div>Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';
-                                            } elseif($TNReserva){
-                                                $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
-                                                $tel = $OS->getTelefonString();
-                                                $email = $OS->getEmailString();
-                                                $nom = $OS->getNom();
-                                                echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>';
-                                            } elseif(time() < $datai) {
-                                                $OS = SitesPeer::retrieveByPK($CURS->getSiteId());
-                                                $tel = $OS->getTelefonString();
-                                                $email = $OS->getEmailString();
-                                                $nom = $OS->getNom();
-                                                echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';                                                                                            
-                                            } else {
-                                                echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a href="#" class="auth" url="'.$url.'" >aquí</a>.</div>';
                                             }
-                                         }
-                                    ?>
+                                    }
+                                        
+                                ?>                                                                                                                                        
             				    </div>
                             </div>
                         </div>

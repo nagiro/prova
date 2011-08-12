@@ -20,8 +20,9 @@
             echo '<div class="h_llistat_activitat_titol">No hem trobat cap resultat amb aquests paràmetres.</div>';                                
             echo '</div>';
             echo '<div style="margin-top:10px; clear:both;"></div>';                                                                                                                                                                    
-        else:                        
-            foreach($LLISTAT_ACTIVITATS->getResults() as $OA):
+        else:     
+            $LACT = $LLISTAT_ACTIVITATS->getResults();                    
+            foreach($LACT as $OA):                
                 echo '<div style="margin-top:10px; margin-bottom:10px;">';
                     
                     //Si la categoria és diferent a l'anterior la mostrem
@@ -58,10 +59,11 @@
                 echo '</div>';
                 echo '<div style="height:1px; background-color:#CCCCCC; clear:both;"></div>';
                 $cat_ant = $OA->getTipusactivitatIdtipusactivitat();                                                                                               
-            endforeach; 
+            endforeach;             
         endif;
-		
-        echo '<div class="pagerE">'.setPager($LLISTAT_ACTIVITATS,'@hospici_cercador_activitats').'</div>';        
+        
+		if(!empty($LACT)) echo '<div class="pagerE">'.setPagerN($LLISTAT_ACTIVITATS,'@hospici_cercador_activitats',false).'</div>';
+        else echo '<div class="pagerE">'.setPagerN($LLISTAT_ACTIVITATS,'@hospici_cercador_activitats',true).'</div>';         
         
     ?>
                         
