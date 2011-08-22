@@ -64,8 +64,11 @@ FIELDSET .REQUADRE { border:1px solid #CCCCCC; padding:10px; margin-right:40px; 
     	<fieldset class="REQUADRE"><legend class="LLEGENDA">Matricula't</legend>
     		<form method="post" action="<?php echo url_for('web/matriculat') ?>">
                 <div>
-                   Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.<br /> 		   			
-                   Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">aquí</a>.            
+                   El període de matriculació s'obre el 19 de setembre i es tancarà el mateix dia d'inici de cadascun dels cursos o quan s'hagin exhaurit les places, tret d'indicacions específiques en sentit contrari.
+                   <br /><br />Els alumnes matriculats a idiomes el curs anterior podran inscriure's a partir del 12 de setembre.
+                   <br /><br />La casa de Cultura de Girona es reserva el dret de modificar els horaris i dates anunciats o d'anul·lar un curs tant per raons organitzatives com si no hi ha un nombre suficient d'alumnes. 		   			
+                   <!-- Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.
+                        Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">aquí</a>. -->            
                 </div>
     		</form>
        </fieldset>
