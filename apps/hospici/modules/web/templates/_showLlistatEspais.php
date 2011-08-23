@@ -77,7 +77,11 @@
             endforeach; 
         endif;
 		
-        echo '<div class="pagerE">'.setPager($LLISTAT_ESPAIS,'@hospici_cercador_espais').'</div>';                
+        if($LLISTAT_ESPAIS->getLastPage() > $LLISTAT_ESPAIS->getPage()):
+            echo '<div class="pagerE">'.setPagerN($LLISTAT_ESPAIS,'@hospici_cercador_espais',false).'</div>';
+        else:      
+            echo '<div class="pagerE">'.setPagerN($LLISTAT_ESPAIS,'@hospici_cercador_espais',true).'</div>';
+        endif;                
     ?>
                         
     </div>

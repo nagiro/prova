@@ -920,7 +920,7 @@ function _convert_include_custom_for_select($options, &$select_options)
 
 /**
  * setPager()
- * Imprimeix per pantalla la indexaciÃƒÆ’Ã‚Â³ de pÃƒÆ’Ã‚Â gines 
+ * Imprimeix per pantalla la indexaciÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³ de pÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â gines 
  * @param mixed $pager
  * @param mixed $url
  * @param mixed $page
@@ -950,7 +950,7 @@ function setPager( sfPager $pager , $url ){
 
 /**
  * setPager()
- * Imprimeix per pantalla la indexaciÃ³ de pÃ gines 
+ * Imprimeix per pantalla la indexaciÃƒÆ’Ã‚Â³ de pÃƒÆ’Ã‚Â gines 
  * @param mixed $pager
  * @param mixed $url 
  * @param mixed $toInici (Retorna al principi del pager?)

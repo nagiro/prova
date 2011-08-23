@@ -23,15 +23,20 @@ class webActions extends sfActions
     $this->AUTENTIFICAT = $this->getUser()->isAuthenticated();                
     
     //Carrego la cerca
-    $this->CERCA = $this->getUser()->getSessionPar('cerca');            
+    $this->CERCA = $this->getUser()->getSessionPar('cerca');
+    $C = $this->CERCA;            
     $this->DESPLEGABLES = array();            
 
-    switch($this->accio){        
-        case 'cerca_activitat':
+    switch($this->accio){
         
-                //Agafo el paràmetre                
-                $C = $this->getUser()->ParReqSesForm($request,'cerca',array());
-                $C['P'] = $request->getParameter('P',1);                                
+        case 'cerca_activitat':
+                                                                
+                //Agafo els paràmetres si é sun post o bé si canvi de pàgina o sinó doncs cerca en blanc.                 
+                if($request->getMethod() == 'POST') $C = $request->getParameter('cerca',array());                               
+                $C['P'] = $request->getParameter('P',1);
+
+                $this->getUser()->ParReqSesForm($request,'cerca',array());                                   
+                $C['P'] = $request->getParameter('P',1);                     
                 
                 //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.
                 if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');                                
@@ -67,7 +72,7 @@ class webActions extends sfActions
         //Arribem per primer cop al web o no entrem per cap url interessant
         default:
                                 
-            //Inicialitzem la cerca i la guardem a memÃ²ria
+            //Inicialitzem la cerca i la guardem a memòria
             $this->CERCA = $this->getCercaComplet(null);
             $this->getUser()->setSessionPar('cerca',$this->CERCA);
             $this->MODE = 'INICIAL';
@@ -98,9 +103,7 @@ class webActions extends sfActions
     if(!isset($C['TEXT']))              $C['TEXT'] = "";
     if(!isset($C['SITE']))              $C['SITE'] = 0;
     if(!isset($C['POBLE']))             $C['POBLE'] = 0;
-    if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = 0;
-    if(!isset($C['DATAI']))             $C['DATAI'] = 0;    
-    if(!isset($C['DATAF']))             $C['DATAF'] = 0;
+    if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = 0;    
     if(!isset($C['P']))                 $C['P'] = 1;
     return $C;
   }  
@@ -110,7 +113,7 @@ class webActions extends sfActions
    * Omple el quadre de cerca amb tots els valors per defecte. 
    * */
   private function getCercaComplet($C)
-  {    
+  {      
     if(!isset($C['TEXT']))              $C['TEXT'] = "";
     if(!isset($C['SITE']))              $C['SITE'] = 0;
     if(!isset($C['POBLE']))             $C['POBLE'] = 0;
@@ -533,15 +536,16 @@ class webActions extends sfActions
     $this->accio = $request->getParameter('accio','index');            
     
     //Carrego la cerca
-    $this->CERCA = $this->getUser()->getSessionPar('cerca',array());    
+    $this->CERCA = $this->getUser()->getSessionPar('cerca',array());
+    $C = $this->CERCA;    
     $this->DESPLEGABLES = array();
     $this->AUTH = $this->getUser()->isAuthenticated();
     $this->CURSOS_MATRICULATS = MatriculesPeer::h_getMatriculesCursosUsuariArray($this->getUser()->getSessionPar('idU'));  
     
     if($this->accio == 'cerca_cursos' || $this->accio == 'inici'):
         
-        //Agafo els paràmetres
-        if($request->getMethod() == 'POST') $C = $request->getParameter('cerca',array());
+        //Agafo els paràmetres si é sun post o bé si canvi de pàgina o sinó doncs cerca en blanc.         
+        if($request->getMethod() == 'POST') $C = $request->getParameter('cerca',array());        
         $C['P'] = $request->getParameter('P',1);
 
         //Si em trobo el paràmetre SITE, impilca que he entrat per llistat d'entitats i vull veure tot el d'una.

@@ -573,7 +573,7 @@ class myUser extends sfBasicSecurityUser
     {
         
         $AUTEN  = (isset($AUTH) && $AUTH > 0);
-        $isMat  = $OA->getIsentrada();
+        $isEnt  = $OA->getIsentrada();
         $Places = $OA->getPlaces();
         $isPle  = $OA->getIsPle();                 
         $JaRes  = (isset($ACTIVITATS_AMB_ENTRADES[$OA->getActivitatid()]));
@@ -613,14 +613,18 @@ class myUser extends sfBasicSecurityUser
             
             //No ha reservat            
             } else {
-                
+              
+                //No hi ha venta per internet
+                if( !$isEnt ){
+                    $RET  = '';                                                        
+                                                    
                 //No queden places
-                if( $isPle ){
+                }elseif( $isPle ){
                     $RET  = '  <div class="tip" title="Aquesta activitat ha exhaurit les entrades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
                     $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Entrades exhaurides</a>', '#EF0101').'</div>';            
                                         
                 //Pot reservar entrades
-                }elseif( $isMat ){
+                }elseif( $isEnt ){
                     $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Reserva entrada</a>', '#FF8D00');                        
                 }            
                 
