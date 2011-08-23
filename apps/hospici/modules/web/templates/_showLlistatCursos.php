@@ -34,7 +34,7 @@
                     
                     echo '<div class="h_llistat_acivitat_titol">
                             <div style="float:left;">
-                                <a style="font-size:14px;" href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl()).'">'.$OC->getTitolcurs().'</a>
+                                <a style="font-size:14px;" href="'.url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl()).'">'.$OC->getTitolcurs().' || '.$OC->getCodi().' </a>
                             </div>';
                             
                     $url = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());                        

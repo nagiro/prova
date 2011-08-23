@@ -547,7 +547,7 @@ class myUser extends sfBasicSecurityUser
                     $OS = SitesPeer::retrieveByPK($idS);
                     if(!($OS instanceof Sites)) $OS = new Sites();
                     $tel  = $OS->getTelefonString(); $email = $OS->getEmailString(); $nom = $OS->getNom();                        
-                    $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y').'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                    $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
                     $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
                                 
                 //Es pot matricular
