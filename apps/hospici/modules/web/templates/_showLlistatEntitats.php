@@ -33,11 +33,6 @@
             foreach($LLISTAT_ENTITATS->getResults() as $OE):                                
                 echo '<div style="margin-top:10px; margin-bottom:10px;">';
                     
-                    //Si la categoria és diferent a l'anterior la mostrem
-/*                    if($cat_ant <> $OE->getSiteId()):
-                        echo '<div class="h_llistat_activitat_tipus_titol">'.$OE->getSiteName().'</div>';
-                    endif;
-*/                    
                     $url = $OE->getWebUrl();
                     if(empty($url)) $url = "";        
                     else $url = ' | <a style=" font-size:12px;" href="'.url_for($url,true).'">WEB</a>';

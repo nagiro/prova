@@ -49,7 +49,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     
   }
 
-  static public function initializeHospici($idR , $idS , $idE = null , $idU = 0)
+  static public function initializeHospici($idR , $idS = 1 , $idE = null , $idU = 0)
   {
     //Mirem si existeix, la carreguem. 
     $OR = self::retrieveByPK($idR);    
@@ -240,11 +240,12 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
    static public function sendMailCondicions( $OR , $PAREA , $PARER , $idS )
    {
   	
+    
     $TEXT = OptionsPeer::getString('RESERVA_ESPAIS_MAILCOND' , $idS );
     $TEXT = str_replace('{{LOGO_URL}}',OptionsPeer::getString('LOGO_URL',$idS) , $TEXT );    
     $TEXT = str_replace('{{MISSATGE}}',$OR->getCondicionsccg() , $TEXT );
-    $TEXT = str_replace('{{URL_ACCEPTA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'gestio/uFormularis?PAR='.$PAREA , $TEXT );
-    $TEXT = str_replace('{{URL_REBUTJA}}',OptionsPeer::getString('SF_WEBROOTURL',$idS).'gestio/uFormularis?PAR='.$PARER , $TEXT );
+    $TEXT = str_replace('{{URL_ACCEPTA}}','http://www.hospici.cat/formularis/'.$PAREA , $TEXT );
+    $TEXT = str_replace('{{URL_REBUTJA}}','http://www.hospici.cat/formularis/'.$PARER , $TEXT );
           				
    	return $TEXT; 
     

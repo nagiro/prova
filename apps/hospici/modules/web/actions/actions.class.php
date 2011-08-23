@@ -40,7 +40,10 @@ class webActions extends sfActions
                 $C2 = $this->getCercaComplet($C);
                 
                 $RET = ActivitatsPeer::getActivitatsCercaHospici($C2);
-                $this->LLISTAT_ACTIVITATS = $RET['PAGER'];        
+                
+                $this->ACTIVITATS_AMB_ENTRADES = EntradesReservaPeer::h_getEntradesUsuariArray($this->getUser()->getSessionPar('idU'));
+                                
+                $this->LLISTAT_ACTIVITATS = $RET['PAGER'];
                 $LACTIVITATS = $RET['LACTIVITATS'];                
                 $this->DESPLEGABLES['SELECT_POBLACIONS'] = ActivitatsPeer::getPoblacionsActivitatsHospici($LACTIVITATS);
                 $this->DESPLEGABLES['SELECT_ENTITATS']   = ActivitatsPeer::getEntitatsActivitatsHospici($LACTIVITATS);
@@ -55,11 +58,9 @@ class webActions extends sfActions
     
         case 'detall_activitat':                
                 $this->CERCA = $this->getUser()->getSessionPar('cerca');
-                $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));                                            
-                //Sempre s'haurÃ  de comprar una entrada per un horari.                          
-                if(!($this->ACTIVITAT instanceof Activitats)) $this->ACTIVITAT = new Activitats();
-                $this->LHO = $this->ACTIVITAT->getEntradesHoraris();                
-                
+                $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
+                $this->ACTIVITATS_AMB_ENTRADES = EntradesReservaPeer::h_getEntradesUsuariArray($this->getUser()->getSessionPar('idU'));                                            
+                                
                 $this->MODE = 'DETALL';
             break;
         
@@ -128,13 +129,23 @@ class webActions extends sfActions
             
     return sfView::NONE;
   }
-
+    
   public function executeLogin(sfWebRequest $request)
   {
     $this->setLayout('hospici');    
-    $this->setTemplate('index');
+    $this->setTemplate('index');                
+  
+    $login = ""; $pass  = "";
+  
+    if($request->hasParameter('id')){        
+        $PAR = unserialize(Encript::Desencripta($request->getParameter('id')));
+        $login = $PAR['login']; $pass = $PAR['pass'];   
+    } else {
+        $login = $request->getParameter('login');
+        $pass  = $request->getParameter('pass');
+    }
     
-    if($this->makeLogin($request->getParameter('login'),$request->getParameter('pass'))){
+    if($this->makeLogin($login,$pass)){
                 $this->redirect('@hospici_usuaris');        
     } else {    $this->redirect('@hospici_cercador_activitats');  }
             
@@ -253,19 +264,19 @@ class webActions extends sfActions
             //Des de l'Hospici només es pot reservar una entrada. Més endavant s'haurà d'abonar l'import.
             $RS = $request->getParameter('entrades');
             $OER = EntradesReservaPeer::initialize()->getObject();
-            $OH = HorarisPeer::retrieveByPK($RS['idH']);
-            $idS = 0; if($OH instanceof Horaris) $idS = $OH->getSiteid();
+            $OA = ActivitatsPeer::retrieveByPK($RS['idA']);
+            $idS = 0; if($OA instanceof Activitats) $idS = $OA->getSiteid();
             $this->MISSATGE2 = 'OK';
             try{ 
             //Si no existeix una compra per aquest usuari, la fem, altrament, no fem res.
-            if(!EntradesReservaPeer::ExisteixenEntradesComprades($this->IDU,$RS['idH'])):
+            if(!EntradesReservaPeer::ExisteixenEntradesComprades($this->IDU,$RS['idA'])):
                 //Falta mirar si hi ha entrades disponibles. 
                 $OER->setUsuariid($this->IDU);
-                $OER->setHorarisid($RS['idH']);
+                $OER->setActivitatsid($RS['idA']);
                 $OER->setQuantes($RS['num']);
                 $OER->setData(date('Y-m-d H:i',time()));
-                $OER->setEstat(0);
-                $OER->setActiu(true);                
+                $OER->setEstat(EntradesReservaPeer::CONFIRMADA);
+                $OER->setActiu(true);
                 $OER->setSiteid($idS);
                 $OER->save();
                 UsuarisPeer::addSite($this->IDU,$idS);
@@ -370,8 +381,8 @@ class webActions extends sfActions
         case 'GET_TPV':
         
                 //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
-                //if( $request->isMethod() == 'POST' && $request->getParameter('Ds_Response') == '0000' )
-                if( $request->getParameter('Ds_Response') == '0000' )
+                //if( $request->getParameter('Ds_Response') == '0000' )
+                if( $request->isMethod() == 'POST' && $request->getParameter('Ds_Response') == '0000' )                                
                 {
                     
                     $idM = $request->getParameter('Ds_MerchantData',null);
@@ -416,7 +427,8 @@ class webActions extends sfActions
             break;
 
         case 'llista_reserves':
-            $this->SECCIO = 'RESERVA';
+            $this->SECCIO = 'RESERVA';            
+            $this->MISSATGE4 = $request->getParameter('estat',null);
         break;
 
         case 'edita_reserva':
@@ -443,7 +455,7 @@ class webActions extends sfActions
                 $this->MISSATGE4 = "ERROR_ESPAI";                
             }
         break;  
-    
+                                        
         case 'save_nova_reserva':
             
             $RP = $request->getParameter('reservaespais');
@@ -458,14 +470,40 @@ class webActions extends sfActions
                 
                 //Vinculem l'usuari amb el site corresponent
                 UsuarisPeer::addSite($idU,$RP['site_id']);
-                                        
-                $this->MISSATGE4 = "OK";
-                $this->redirect('@hospici_llista_reserves');             
+                                                        
+                $this->redirect('@hospici_llista_reserves?estat=OK');
             } else {
                 $this->MISSATGE4 = 'ERROR_SAVE';            
             }                
                             
+        break;
+        
+        case 'condicions':
+            
+            $this->SECCIO = 'RESERVA';
+            $RP = $request->getParameter('reservaespais');
+            $idU = $this->getUser()->getSessionPar('idU');
+            $OR = ReservaespaisPeer::retrieveByPK($request->getParameter('idR'));
+            if($OR instanceof Reservaespais):
+                if($request->hasParameter('B_ACCEPTO')){
+                    $OR->setEstat(ReservaespaisPeer::ACCEPTADA);
+                    $OR->setDataacceptaciocondicions(date('Y-m-d',time()));
+                    $OR->save();            
+                    $this->redirect('@hospici_llista_reserves?estat=RESERVA_ACCEPTADA');
+                } elseif($request->hasParameter('B_NO_ACCEPTO')){
+                    $OR->setEstat(ReservaespaisPeer::ANULADA);
+                    $OR->setDataacceptaciocondicions(date('Y-m-d',time()));
+                    $OR->save();
+                    $this->redirect('@hospici_llista_reserves?estat=RESERVA_ANULADA');
+                } else {
+                    $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');
+                }                
+            else:                 
+                $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');
+            endif; 
+                                                                                
         break;               
+                       
                                                 
     }
             
@@ -474,8 +512,8 @@ class webActions extends sfActions
     else $this->FUsuari = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
     
     $this->LMatricules = MatriculesPeer::h_getMatriculesUsuari($this->IDU);
-    $this->LReserves = ReservaespaisPeer::h_getReservesUsuaris($this->IDU,$this->IDS);
-    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);
+    $this->LReserves = ReservaespaisPeer::h_getReservesUsuaris($this->IDU,$this->IDS);    
+    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);        
     // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();    
         
   }  
@@ -654,5 +692,63 @@ class webActions extends sfActions
     return $this->getMailer()->send($swift_message);
 		
   }
+
+
+    /**
+     * Gestió de formularis a través de mail     
+     * */
+   public function executeFormularis(sfWebRequest $request)
+   {               
+    
+        $this->setLayout('gestio');
+        $this->DEFAULT = false;
+        $this->IDU = $this->getUser()->getSessionPar('idU');
+        $this->IDS = $this->getUser()->getSessionPar('idS');
+    
+        //Entren crides i es mostra una reposta en web si ha anat bé o no.        
+        $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
+        $PAR = unserialize($PARAMETRES);
+        switch($PAR['formulari']){
+        
+            //Paràmetres [id = IDReservaEspais]
+            //Només es podrà si l'estat actual és ESPERA_ACCEPTACIÓ_CONDICIONS
+            case 'Reserva_Espais_Mail_Accepta_Condicions':                    
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+                    
+                    //Fem un login i després acceptem les condicions
+                    $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
+                    $this->makeLogin($OU->getDNI(),$OU->getPasswd());
+                    
+                    if($OR instanceof Reservaespais && $OR->setAcceptada()):
+                        $this->redirect('@hospici_llista_reserves?estat=RESERVA_ACCEPTADA');                        
+                    else:
+                        $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');                        
+                    endif;                                          
+                                       
+                    UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );    
+                break;
+                
+            //Des del mail la persona no accepta i rebutja les condicions. 
+            case 'Reserva_Espais_Mail_Rebutja_Condicions':                    
+                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
+
+                    //Fem un login i després acceptem les condicions
+                    $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
+                    $this->makeLogin($OU->getDNI(),$OU->getPasswd());
+                                        
+                    if($OR instanceof Reservaespais && $OR->setRebutjada()):        
+                        $this->redirect('@hospici_llista_reserves?estat=RESERVA_ANULADA');                        
+                    else:
+                        $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');                        
+                    endif;
+                    
+                    UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );
+                break;
+            default:
+            break;
+        }    
+   }
+
+
 
 }

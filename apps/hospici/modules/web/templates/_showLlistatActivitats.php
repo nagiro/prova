@@ -33,25 +33,12 @@
                     echo '<div class="h_llistat_acivitat_titol">
                             <div style="float:left">
                                 <a href="'.url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl()).'">'.$OA->getTMig().'</a>
+                            </div>
+                                                    
+                            <div style="float:right">'.
+                                myUser::ph_getEtiquetaActivitats($AUTENTIFICAT, $OA, $ACTIVITATS_AMB_ENTRADES).'
                             </div>';
-                            
-                    //Si es pot comprar entrada per internet, es mostra. 
-                    if($OA->getIsEntrada()):
-                        $url = url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl());
-                        if(isset($AUTENTIFICAT) && $AUTENTIFICAT > 0):  
-                            echo '  <div style="float:right">
-                                        <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                            <a name="link_compra" style="text-decoration:none;" href="'.$url.'">Reservar entrada</a>                                        
-                                        </div>
-                                    </div>';
-                        else: 
-                            echo '  <div style="float:right">
-                                        <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                            <a class="auth" name="link_compra" style="text-decoration:none;" url="'.$url.'" href="#">Reservar entrada</a>                                        
-                                        </div>
-                                    </div>';                                                
-                        endif;
-                    endif;
+                    
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">'.generaHorarisCompactat($OA->getHorariss($C)).'</div>';
                     echo '<div class="h_llistat_activitat_organitzador">|&nbsp;&nbsp;Organitza: '.$OA->getNomSite().'</div>';

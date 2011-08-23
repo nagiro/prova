@@ -485,6 +485,11 @@ class myUser extends sfBasicSecurityUser
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
         $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());
         $idS        = $OC->getSiteId();
+        
+        $OS         = SitesPeer::retrieveByPK($idS);
+        $nom        = $OS->getNom();
+        $email      = $OS->getEmailString();
+        $tel        = $OS->getTelefonString();
 
         $RET = "";                                        
         
@@ -548,6 +553,75 @@ class myUser extends sfBasicSecurityUser
                 //Es pot matricular
                 }elseif( $TReserva || $TReservaT ){
                     $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">MATRICULA\'T</a>', '#FF8D00');                        
+                }            
+                
+            }
+            
+        }
+                
+        return $RET;         
+    }
+
+    /**
+     * Mostra les etiquetes amb els estats i accions dels cursos
+     * @param $AUTEN Si l'usuari està autentificat o no
+     * @param $OC Objecte Cursos
+     * @param $url On s'ha d'anar si es clica l'enllaç
+     * @return String
+     * */
+    static public function ph_getEtiquetaActivitats($AUTH, $OA, $ACTIVITATS_AMB_ENTRADES)
+    {
+        
+        $AUTEN  = (isset($AUTH) && $AUTH > 0);
+        $isMat  = $OA->getIsentrada();
+        $Places = $OA->getPlaces();
+        $isPle  = $OA->getIsPle();                 
+        $JaRes  = (isset($ACTIVITATS_AMB_ENTRADES[$OA->getActivitatid()]));
+        $url    = url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl());
+        $idS    = $OA->getSiteId();
+
+        $OS     = SitesPeer::retrieveByPK($idS);
+        $nom    = $OS->getNom();
+        $email  = $OS->getEmailString();
+        $tel    = $OS->getTelefonString();
+
+        $RET    = "";                                                          
+
+        //Si no està autentificat
+        if( !$AUTEN ){
+            
+            $RET = ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i reserva</a>', '#FFCC00');
+            
+        //Ja està autentificat
+        }else {
+
+            //Ja ha reservat per aquesta activitat
+            if( $JaRes ){
+                
+                $OER =  EntradesreservaPeer::retrieveByPK($ACTIVITATS_AMB_ENTRADES[$OA->getActivitatid()]);
+                if( $OER instanceof EntradesReserva ){
+                    //Si l'usuari ja té l'entrada reservada, doncs li marquem
+                    if($OER->getEstat() == EntradesreservaPeer::CONFIRMADA){
+                        $RET  = '  <div class="tip" title="Vostè ha reservat entrades per aquesta activitat correctament.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET .= ph_getRoundCorner('Reserva confirmada', '#29A729').'</div>';
+                    //L'usuari està en espera'
+                    } elseif($OER->getEstat() == EntradesreservaPeer::ANULADA) {
+                        $RET  = '  <div class="tip" title="Vostè ha reservat entrades però han estat anul·lades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET .= ph_getRoundCorner('Reserva anul·lada', '#F184DD').'</div>';
+                    }
+                }                                                                                                
+            
+            //No ha reservat            
+            } else {
+                
+                //No queden places
+                if( $isPle ){
+                    $RET  = '  <div class="tip" title="Aquesta activitat ha exhaurit les entrades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                    $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Entrades exhaurides</a>', '#EF0101').'</div>';            
+                                        
+                //Pot reservar entrades
+                }elseif( $isMat ){
+                    $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Reserva entrada</a>', '#FF8D00');                        
                 }            
                 
             }

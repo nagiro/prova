@@ -74,6 +74,10 @@ hospici_nova_reserva_espai_save:
   url: /usuaris/espais/reserva/guarda
   param: { module: web, action:usuaris, accio:save_nova_reserva }
 
+hospici_reserva_espai_condicions:
+  url: /usuaris/espais/reserva/condicions
+  param: { module: web, action: usuaris, accio: condicions }
+
 hospici_llista_reserves:
   url: /usuaris/espais
   param: { module: web, action:usuaris, accio:llista_reserves  }
@@ -110,6 +114,10 @@ hospici_matricula_TPV_GET:
   url: /usuaris/matricula/get
   param: { module: web, action:usuaris, accio:GET_TPV }
    
+hospici_formulari_get:
+  url: /formularis/:PAR
+  param: { module: web, action: formularis, accio: GET }
+  
 
 #####################################################
 # DEFAULT                                           #

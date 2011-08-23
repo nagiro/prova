@@ -12,48 +12,6 @@
 class gestioActions extends sfActions
 {
     
-   public function executeUFormularis(sfWebRequest $request)
-   {               
-    
-        $this->setLayout('gestio');
-        $this->DEFAULT = false;
-        $this->IDU = $this->getUser()->getSessionPar('idU');
-        $this->IDS = $this->getUser()->getSessionPar('idS');
-    
-        //Entren crides i es mostra una reposta en web si ha anat bé o no.        
-        $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
-        $PAR = unserialize($PARAMETRES);
-        switch($PAR['formulari']){
-        
-            //Paràmetres [id = IDReservaEspais]
-            //Només es podrà si l'estat actual és ESPERA_ACCEPTACIÓ_CONDICIONS
-            case 'Reserva_Espais_Mail_Accepta_Condicions':
-                    $this->TITOL = "Reserva d'espais";
-                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
-                    if($OR instanceof Reservaespais && $OR->setAcceptada()):
-                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitgi podrà consultar les seves reserves accedint a la serva zona privada del web.</span>';
-                    else:
-                        $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error tècnic en l\'acceptació.<br />Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
-                    endif;                                                             
-                    UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );    
-                break;
-                
-            //Des del mail la persona no accepta i rebutja les condicions. 
-            case 'Reserva_Espais_Mail_Rebutja_Condicions':
-                    $this->TITOL = "Reserva d'espais";
-                    $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);                    
-                    if($OR instanceof Reservaespais && $OR->setRebutjada()):                        
-                        $this->MISS = '<span style="font-size:14px;">La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitgi podrà consultar les seves reserves accedint a la serva zona privada del web.</span">';
-                    else:
-                        $this->MISS = '<span style="font-size:14px;">Hi ha hagut un error en l\'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
-                    endif;
-                    UsuarisPeer::addSite( $OR->getUsuarisUsuariid() , $OR->getSiteid() );
-                break;
-            default:
-            break;
-        }    
-   }
-    
   public function executeURemember(sfWebRequest $request)
   {
 
@@ -299,6 +257,7 @@ class gestioActions extends sfActions
                             
   }
 
+/* Això ara ho fem des del web de l'Hospici
   public function executeGetTPV(sfWebRequest $request)
   {
   	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.
@@ -349,7 +308,7 @@ class gestioActions extends sfActions
   	 
   	return sfView::NONE;
   }
-
+*/
 
   private function guardaMatricula( $DADES_MATRICULA , $IDMATRICULA = 0 , $idS )
   {
@@ -485,9 +444,12 @@ class gestioActions extends sfActions
                 $this->redirect('gestio/uRemember');            
             break;
         
-/*        default:
-            if($this->getUser()->isAuthenticated()) $this->redirect('gestio/uLogin');
-*/        
+        default:
+            if($this->getUser()->isAuthenticated() && $this->getUser()->getSessionPar('idU') > 0):                
+                $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
+                $this->makeLogin( $USUARI , $this->IDS );
+            endif;
+        
      }
 		   
   }  
@@ -496,18 +458,24 @@ class gestioActions extends sfActions
   {
       //Consulto el nivell que té l'usuari pel site. Si té nivell == 2 o no té nivell, és usuari normal. 
       //Si té nivell 1 serà administrador.
+      $this->getUser()->addLogAction('login','login',null);
       $idN = $USUARI->getSiteNivell($IDS);
- 	  $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
-      $this->getUser()->setSessionPar('idN',$idN);
-      $this->getUser()->setAuthenticated(true);
-      $this->getUser()->addLogAction('login','login',null);                                      
-      if( $idN == NivellsPeer::ADMIN ):
+      
+      //si el nivell és d'administrador, entrem a la intranet i guardem les dades de l'usuari.                                      
+      if( $idN == NivellsPeer::ADMIN ):        
+ 	    $this->getUser()->setSessionPar('idU',$USUARI->getUsuariid());
+        $this->getUser()->setSessionPar('idN',$idN);
+        $this->getUser()->setAuthenticated(true);
         $this->getUser()->setSessionPar('idS',$IDS);
         $this->getUser()->addCredential('admin');        
         $this->redirect( '@gAdmin' );
+        
+      //Sempre que s'entri com un usuari, es redirigeix cap a l'hospici.
       elseif( $idN == NivellsPeer::REGISTRAT ):
-        $this->getUser()->addCredential('user');        
-        $this->redirect( '@gUser' );
+        //$this->getUser()->addCredential('user');
+        $s = Encript::Encripta( serialize( array( 'login'=>$USUARI->getDni() , 'pass'=>$USUARI->getPasswd() ) ) );
+        $this->redirect('http://www.hospici.cat/login?id='.$s);        
+        //$this->redirect( '@gUser' );
       else:   	 	
      	$this->ERROR = "El DNI o la contrasenya són incorrectes";
       endif;
@@ -1117,7 +1085,7 @@ class gestioActions extends sfActions
                     	              
   }
 
-  public function executeGEntrades(sfWebRequest $request)
+  public function executeGPrintEntrades(sfWebRequest $request)
   {
 
     $this->setLayout('gestio');
@@ -1173,6 +1141,59 @@ class gestioActions extends sfActions
     
     $this->ENTRADES = EntradesPeer::getList($this->PAGINA);
   	
+  }
+
+
+  public function executeGEntrades(sfWebRequest $request)
+  {
+
+    $this->setLayout('gestio');
+    $this->IDS = $this->getUser()->getSessionPar('idS');
+    $this->P   = $this->getUser()->ParReqSesForm($request,'P',1);    
+    
+    $accio = $request->getParameter('accio','LH');            
+            
+    switch($accio)
+    {    
+        //Edita una reserva
+    	case 'ER':    			    	
+    			$this->getUser()->addLogAction('inside','gEntrades');
+                $this->MODE = "EDITA_RESERVA";
+                try{                    
+                    $this->FReserva = EntradesReservaPeer::initialize( $request->getParameter('IDR') );                                        
+                } catch (Exception $e) { echo $e;  }
+    		break;
+        
+        //Llista els que han reservat
+    	case 'LR':
+                $IDA = $request->getParameter('IDA');                
+    			$this->MODE = 'LLISTA_ENTRADES';      
+    			$this->LLISTAT_ENTRADES = EntradesReservaPeer::getEntradesActivitat($IDA); 			
+    		break;    	
+        
+        //Anul·la la reserva
+        case 'AR':	    	
+                $IDR = $request->getParameter('IDR');
+                $IDA = 0;
+                
+                try{
+                    $OR = EntradesReservaPeer::retrieveByPK($IDR);
+                    $OR->setInactiu();
+                    $IDA = $OR->getActivitatsid();        
+                } catch (Exception $e) {}
+                                
+                $this->MODE = 'LLISTA_ENTRADES';
+                $this->redirect('gestio/gReserves?accio=LR&IDA='.$IDA);
+            break;
+      
+        //Llisto els horaris que disposen d'entrades
+        default:
+                //Agafo els horaris que tenen entrades a la venta i els ordeno per data 
+                $this->LLISTAT_ACTIVITATS = ActivitatsPeer::cercaActivitatsVenta( $this->P , $this->IDS );                                        
+                $this->MODE   = "LLISTA_ACTIVITATS";
+            break;
+    }        
+          	
   }
   
   public function executePrintEntrades($OE)
@@ -2439,51 +2460,43 @@ class gestioActions extends sfActions
 				$this->getUser()->addLogAction('inside','gReserves');
     			break;
        
-        //Envio un correu amb les condicions. 
+        //Guardo el formulari amb els canvis i envio un correu amb les condicions. 
         case 'SR':
         
             $RP = $request->getParameter('reservaespais');
             $this->FReserva = ReservaespaisPeer::initialize($RP['ReservaEspaiID'],$this->IDS);        	    		        		  	    
-    	    $this->FReserva->bind($RP);    		    
+    	    $this->FReserva->bind($RP);    	            	    
     	    if($this->FReserva->isValid())
             {
                 $this->FReserva->save();
-                $OR = $this->FReserva->getObject();                                                            
+                $OR = $this->FReserva->getObject();
+                //El poso en pendent de confirmació per mail o web
                 $OR->setEstat(ReservaespaisPeer::PENDENT_CONFIRMACIO);
-                $OR->save();                    
+                $OR->save();
                 
                 //Marquem quin formulari haurà d'executar i amb quina ID
                 $PARA  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Accepta_Condicions', 
-                                                            'id' => $OR->getReservaespaiid())));
+                                                             'id' => $OR->getReservaespaiid())));
                 $PARR  = Encript::Encripta(serialize(array(  'formulari' => 'Reserva_Espais_Mail_Rebutja_Condicions', 
-                                                            'id' => $OR->getReservaespaiid())));                                                            
+                                                             'id' => $OR->getReservaespaiid())));                                                            
                             
                 //Si no podem carregar un usuari, enviem el correu a informatica@casadecultura.org                                    
-                if($OR instanceof Reservaespais){                                        
+                if($OR instanceof Reservaespais){
                     $OU = UsuarisPeer::retrieveByPK($OR->getUsuarisUsuariid());
                     if($OU instanceof Usuaris) $email = $OU->getEmail();
                     else $email = 'informatica@casadecultura.org';                            
                 }                                                            
-                                    
-                //Enviem el correu a la persona amb les condicions. 
-                $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-                                $email,
-                                'Hospici :: Nova reserva d\'espai',
-                                ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
-                                
-                //També una còpia a secretaria
-                $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-                                OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),
-                                'Hospici :: Nova reserva d\'espai',
-                                ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
 
-                //També una còpia a informàtica
-                $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-                                OptionsPeer::getString('MAIL_ADMIN',$this->IDS),
-                                'Hospici :: Nova reserva d\'espai - '.$email,
-                                ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS ));
-
+                //Enviem el correu a la persona amb les condicions.
+                $from = OptionsPeer::getString('MAIL_FROM',$this->IDS);
+                $subject = "Hospici :: Nova reserva d'espai";
+                $body = ReservaespaisPeer::sendMailCondicions( $OR , $PARA , $PARR , $this->IDS );
+                $to = array($email,OptionsPeer::getString('MAIL_SECRETARIA',$this->IDS),OptionsPeer::getString('MAIL_ADMIN',$this->IDS));
+                
+                //Enviem el mail a l'usuari, a secretaria i a l'administrador
+                $this->sendMail($from , $to , $subject , $body );
             
+                //Guardem l'acció
     	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);	    	                                        
              }
              else 
@@ -2603,7 +2616,7 @@ class gestioActions extends sfActions
     				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMatricula->getObject());
                     //Si tot OK, iniciem l'elecció del curs
                     $this->IDM = $this->FMatricula->getObject()->getIdmatricules();     				
-    				$this->CURSOS = MatriculesPeer::getCursosMatriculacio($this->IDS);    		    			    			    			
+    				$this->CURSOS = MatriculesPeer::getCursosMatriculacio($this->IDS);
     			    $this->MODE = 'NOU';
                 else: 
                     $this->MODE = 'MAT_USUARI';
@@ -2663,11 +2676,11 @@ class gestioActions extends sfActions
     	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
     	case 'OK':
         
-              $this->IDM = $request->getParameter('Ds_MerchantData',0);                                        
-    		  if($request->hasParameter('OK') && $this->IDM > 0 ):                                                   
-                 $this->MISSATGE = "OK";                                                   
-              else:			            
-                 $this->MISSATGE = "KO";              
+              $this->IDM = $request->getParameter('Ds_MerchantData',0);
+    		  if($request->hasParameter('OK') && $this->IDM > 0 ):
+                 $this->MISSATGE = "OK";
+              else:
+                 $this->MISSATGE = "KO";
               endif;
               $this->MODE = 'PAGAMENT';
               break;
@@ -2714,7 +2727,7 @@ class gestioActions extends sfActions
 				$this->MODE = 'CONSULTA';
 			break;
 		case 'LMA':
-				$this->MATRICULES = MatriculesPeer::getMatriculesUsuari($request->getParameter('IDA') , $this->IDS );				
+				$this->MATRICULES = MatriculesPeer::getMatriculesUsuari($request->getParameter('IDA') , $this->IDS );                				
 				$this->MODE = 'LMATRICULES'; 
 			break;
 		case 'LMC':
