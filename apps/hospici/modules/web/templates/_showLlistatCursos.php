@@ -51,8 +51,14 @@
             endforeach; 
         endif;
 		
-        if(!empty($LCUR)) echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',false).'</div>';
-        else echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',true).'</div>';
+        if($LLISTAT_CURSOS->getLastPage() > $LLISTAT_CURSOS->getPage()):
+            echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',false).'</div>';
+        else:      
+            echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',true).'</div>';
+        endif;
+        
+//        if(!empty($LCUR)) echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',false).'</div>';
+//        else echo '<div class="pagerE">'.setPagerN($LLISTAT_CURSOS,'@hospici_cercador_cursos',true).'</div>';
         
     ?>
                         
