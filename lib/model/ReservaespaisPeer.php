@@ -137,6 +137,7 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       $C = new Criteria();
       $C = self::h_getCriteriaActiu( $C );
       $C->add(ReservaespaisPeer::USUARIS_USUARIID , $idU);
+      $C->addDescendingOrderByColumn(self::DATAALTA);
       return ReservaespaisPeer::doSelect($C);
    }
 

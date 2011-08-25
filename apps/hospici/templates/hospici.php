@@ -57,7 +57,7 @@
             <div style="width:1024px; height:140px; background-color:#3f3f3f;">
                 <div style="float: left; padding-top:8px; padding-left:10px;"><img src="/images/hospici/logo_hospici.png" /></div>
                 <div style="float: left; font-family: 'Delius',cursive; color:#FF8D00; font-size:60px; padding-top:35px; padding-left:20px;">l'hospici</div>
-                <div style="float: left; font-family: 'Gloria Hallelujah', cursive; font-size: 20px; color:#E8E462; padding-top:100px; padding-left:150px;">el teu contacte amb la cultura</div>
+                <div style="float: left; font-family: 'Gloria Hallelujah', cursive; font-size: 20px; color:#E8E462; padding-top:100px; padding-left:100px;">portal de gestió cultural pels municipis</div>
                 <div style="float: right; width:150px; height:100%; "><img src="/images/hospici/header_decoration.png" /></div>
                 <div style="clear: both;"></div>
             </div>

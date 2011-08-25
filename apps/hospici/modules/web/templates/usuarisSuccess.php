@@ -263,7 +263,7 @@
             <tr>
                 <th>Referència</th>
                 <th>Nom reserva</th>
-                <th>Data</th>
+                <th>Data alta</th>
                 <th>Estat</th>
             </tr>            
             <?php
@@ -275,7 +275,7 @@
                                 <td>'.$OR->getNom().'</td>
                                 <td>'.$OR->getDataalta('d/m/Y').'</td>
                                 <td>'.$OR->getEstatText().'</td>
-                             </tr>';                                                            
+                             </tr>';
                     endforeach;
                 endif;
             ?>                                    
