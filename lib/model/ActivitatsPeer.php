@@ -168,6 +168,13 @@ class ActivitatsPeer extends BaseActivitatsPeer
         $C = self::getCriteriaActiu($C,$idS);
         
 		$C->add(self::CICLES_CICLEID,$idC);
+        
+        //Afegit per poder ordenar per dia les activitats del cicle
+        $C->addJoin(HorarisPeer::ACTIVITATS_ACTIVITATID, self::ACTIVITATID);
+        $C = HorarisPeer::getCriteriaActiu($C,$idS);        
+        $C->addAscendingOrderByColumn(HorarisPeer::DIA);
+        $C->addGroupByColumn(self::ACTIVITATID);        
+        
         if($publicaweb) $C->add(self::PUBLICAWEB, true);        
 		
 		if($pager):
@@ -179,8 +186,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		else: 
 			return self::doSelect($C);
 		endif; 
-		
-		
+				
 	}
    	
 			
