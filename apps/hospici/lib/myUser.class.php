@@ -465,15 +465,7 @@ class myUser extends sfBasicSecurityUser
     return $any.'-'.$mes.'-'.$dia;
   }
 
-    /**
-     * Mostra les etiquetes amb els estats i accions dels cursos
-     * @param $AUTEN Si l'usuari està autentificat o no
-     * @param $OC Objecte Cursos
-     * @param $url On s'ha d'anar si es clica l'enllaç
-     * @return String
-     * */
-    static public function ph_getEtiquetaCursos($AUTH, $OC, $url, $CURSOS_MATRICULATS)
-    {
+    static public function ph_EstatCurs($AUTH, $OC, $url, $CURSOS_MATRICULATS){
         
         $AUTEN = (isset($AUTH) && $AUTH > 0);
         
@@ -490,7 +482,9 @@ class myUser extends sfBasicSecurityUser
         $nom        = $OS->getNom();
         $email      = $OS->getEmailString();
         $tel        = $OS->getTelefonString();
-
+        $MatAntIdi  = CursosPeer::IsAnticAlumne($OC->getIdcursos(),$CURSOS_MATRICULATS);
+        $dataiA     = mktime(0,0,0,9,12,2011);
+        
         $RET = "";                                        
         
         //Si la data d'inici de matrícula és inferior a la d'avui, mostrem que encara no s'han iniciat les matrícules
@@ -499,7 +493,7 @@ class myUser extends sfBasicSecurityUser
         //Si no està autentificat
         if( !$AUTEN ){
             
-            $RET = ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i matricula\'t</a>', '#FFCC00');
+            return "NO_AUTENTIFICAT";
             
         //Ja està autentificat
         }else {
@@ -509,55 +503,110 @@ class myUser extends sfBasicSecurityUser
                 
                 $OM = MatriculesPeer::retrieveByPK($CURSOS_MATRICULATS[$OC->getIdcursos()]);
                 if($OM instanceof Matricules){
+                    
                     //Si l'usuari ja està matriculat, doncs li marquem
                     if(MatriculesPeer::ACCEPTAT_NO_PAGAT == $OM->getEstat() || MatriculesPeer::ACCEPTAT_PAGAT == $OM->getEstat()){
-                        $RET  = '  <div class="tip" title="Vostè està matriculat correctament al curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                        $RET .= ph_getRoundCorner('Ja hi esteu matriculat', '#29A729').'</div>';
+                        return "MATRICULAT";
+                        
                     //L'usuari està en espera'
                     } elseif(MatriculesPeer::EN_ESPERA == $OM->getEstat()) {
-                        $RET  = '  <div class="tip" title="Vostè està en espera de plaça per aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                        $RET .= ph_getRoundCorner('En espera de plaça', '#F184DD').'</div>';
+                        return "EN_ESPERA";
                     }
                 } else {
-                    $RET  = '  <div class="tip" title="Vostè ha realitzat una matrícula en aquest curs, però no hi està matriculat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                    $RET .= ph_getRoundCorner('Matrícula aunl·lada', '#CCCCCC').'</div>';
+                    
+                    return "ANULADA";
                 }                                                                                                
             
-            //No està matriculat            
+            //No està matriculat
             } else {
                 
                 //No queden places
-                if( !$HiHaPlaces ){
-                    $OS = SitesPeer::retrieveByPK($idS);
-                    if(!($OS instanceof Sites)) $OS = new Sites();
-                    $tel  = $OS->getTelefonString(); $email = $OS->getEmailString(); $nom = $OS->getNom();                        
-                    $RET  = '  <div class="tip" title="Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
-                    $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Curs ple</a>', '#EF0101').'</div>';
-
+                if( !$HiHaPlaces ){      
+                    return "NO_HI_PLACES";                
+                                        
                 //No hi ha reserva en línia
                 }elseif( $TNReserva ){
-                    $OS = SitesPeer::retrieveByPK($idS);
-                    if(!($OS instanceof Sites)) $OS = new Sites();
-                    $tel  = $OS->getTelefonString(); $email = $OS->getEmailString(); $nom = $OS->getNom();
-                    $RET  = '  <div class="tip" title="Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
-                    $RET .= ph_getRoundCorner('Matrícula presencial', '#CCCCCC').'</div>';
+                    return "NO_HI_HA_RESERVA_LINIA";
         
-                //Encara no es pot matricular
-                }elseif( $avui < $datai ){
-                    $OS = SitesPeer::retrieveByPK($idS);
-                    if(!($OS instanceof Sites)) $OS = new Sites();
-                    $tel  = $OS->getTelefonString(); $email = $OS->getEmailString(); $nom = $OS->getNom();                        
-                    $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                    $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
-                                
+                //Encara no es pot matricular i és alumne antic d'idiomes
+                }elseif( $MatAntIdi && $avui < $dataiA ){
+                    return "ABANS_PERIODE_MATRICULA_AA_IDIOMES";                    
+        
+                //Encara no es pot matricular i no és un alumne antic d'idiomes o el curs no és d'idiomes
+                }elseif( !$MatAntIdi && $avui < $datai ){
+                    return "ABANS_PERIODE_MATRICULA";                    
+
                 //Es pot matricular
                 }elseif( $TReserva || $TReservaT ){
-                    $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">MATRICULA\'T</a>', '#FF8D00');                        
-                }            
+                    return "POT_MATRICULAR";                                            
+                }                            
+            }            
+        }        
+    }
+
+
+
+    /**
+     * Mostra les etiquetes amb els estats i accions dels cursos
+     * @param $AUTEN Si l'usuari està autentificat o no
+     * @param $OC Objecte Cursos
+     * @param $url On s'ha d'anar si es clica l'enllaç
+     * @return String
+     * */
+    static public function ph_getEtiquetaCursos($AUTH, $OC, $url, $CURSOS_MATRICULATS)
+    {
+        
+        $ESTAT = self::ph_EstatCurs($AUTH, $OC, $url, $CURSOS_MATRICULATS);
                 
-            }
+        $datai      =  $OC->getDatainmatricula('U');
+        $avui       = time();        
+        $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
+        $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());
+        
+        $OS         = SitesPeer::retrieveByPK($OC->getSiteId());
+        $nom        = $OS->getNom();
+        $email      = $OS->getEmailString();
+        $tel        = $OS->getTelefonString();
+        $MatAntIdi  = CursosPeer::IsAnticAlumne($OC->getIdcursos(),$CURSOS_MATRICULATS);
+        $dataiA     = mktime(0,0,0,9,12,2011);
+
+        $RET = "";                                        
+                          
+        //Si no està autentificat
+        if( $ESTAT == 'NO_AUTENTIFICAT' ){            
+            $RET = ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i matricula\'t</a>', '#FFCC00');
+                        
+        }elseif( $ESTAT == 'MATRICULAT' ){
+            $RET  = '  <div class="tip" title="Vostè està matriculat correctament al curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Ja hi esteu matriculat', '#29A729').'</div>';
             
-        }
+        }elseif( $ESTAT == 'EN_ESPERA'){
+            $RET  = '  <div class="tip" title="Vostè està en espera de plaça per aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('En espera de plaça', '#F184DD').'</div>';
+                            
+        }elseif( $ESTAT == 'ANULADA'){
+            $RET  = '  <div class="tip" title="Vostè ha realitzat una matrícula en aquest curs, però no hi està matriculat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Matrícula aunl·lada', '#CCCCCC').'</div>';               
+        
+        }elseif( $ESTAT == 'NO_HI_PLACES'){                                    
+            $RET  = '  <div class="tip" title="Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
+            $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Curs ple</a>', '#EF0101').'</div>';            
+        
+        }elseif( $ESTAT == 'NO_HI_HA_RESERVA_LINIA'){            
+            $RET  = '  <div class="tip" title="Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
+            $RET .= ph_getRoundCorner('Matrícula presencial', '#CCCCCC').'</div>';
+                        
+        }elseif( $ESTAT == 'ABANS_PERIODE_MATRICULA_AA_IDIOMES'){                                    
+            $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$dataiA).' si vol continuar els estudis d\'idiomes.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$dataiA), '#CBAD85').'</div>';
+            
+        }elseif( $ESTAT == 'ABANS_PERIODE_MATRICULA'){                                    
+            $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
+                        
+        }elseif( $ESTAT == 'POT_MATRICULAR'){
+            $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">MATRICULA\'T</a>', '#FF8D00');            
+        }                
                 
         return $RET;         
     }

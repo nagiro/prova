@@ -499,5 +499,28 @@ class CursosPeer extends BaseCursosPeer
     return array('PAGER'=>$pager,'LCURSOS'=>$RET);
     
   }
-        
+  
+  /**
+   * Funció que retorna si es pot matricular a un curs d'idiomes abans o no.
+   * @param $idC IdCursos
+   * @param $CURSOS_MATRICULATS Llistat dels cursos als que s'ha matriculat
+   * */  
+  static public function IsAnticAlumne( $idC , $CURSOS_MATRICULATS ){
+  
+    //Hem de comprovar que la persona ja s'ha matriculat a algun curs d'idiomes si idC és d'idiomes.
+    $ANG = array(29,30,31,32,33,34,35,36,37,124,125,126,127,128,129,130,131,136,188,189,190,191,192,193,194,195,196,228,275,278,279,280,281,282,283,284,285,286,356,384,385,386,387,388,389,390,391,396,397,445,451,452,474,475,476,477,478,479,480,481);
+    $FRA = array(41,42,43,44,132,133,134,135,184,185,186,187,276,277,287,288,289,290,358,392,393,394,395,482,483,484,485,486);
+    
+    //El curs actual és un curs d'anglès?
+    $exist = false;
+    if(in_array($idC,$ANG)){
+      foreach($CURSOS_MATRICULATS as $idC => $idM) if(in_array($idC,$ANG)) $exist = true;        
+    }elseif(in_array($idC,$FRA)){
+      foreach($CURSOS_MATRICULATS as $idC => $idM) if(in_array($idC,$FRA)) $exist = true;
+    }
+
+    return $exist;    
+    
+  }
+  
 }
