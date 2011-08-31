@@ -2742,7 +2742,9 @@ class gestioActions extends sfActions
 				$OC = $OM->getCursos();
 				
 				$doc = new sfTinyDoc();
-				$doc->createFrom(array('extension' => 'docx'));
+				if($OM->getSiteid() > 1) $doc->createFrom(OptionsPeer::getString('SF_WEBSYSROOT').'web/images/matricules/gMatriculesGenSuccess.docx');
+                else $doc->createFrom(array('extension' => 'docx'));
+                
 				$doc->loadXml('word/document.xml');
                                                 
                 $mat = 'MAT'.$OM->getIdmatricules();                 

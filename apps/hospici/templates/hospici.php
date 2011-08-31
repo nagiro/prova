@@ -150,10 +150,10 @@
     
                         <div class="h_requadre_login_text">
                             Ser soci de l&rsquo;hospici et d&oacute;na dret a veure totes les activitats de les entitats s&ograve;cies de la xarxa.
-                            <br />
+                            <br /><br />
                             &Eacute;s totalment gratu&iuml;t.
                             <br />
-                            Consulta aqu&iacute; les condicions de registre de les teves dades.
+                            <!-- Consulta aqu&iacute; les condicions de registre de les teves dades. -->
                         </div>
                         
                         <!-- USUARI AUTENTIFICAT -->
