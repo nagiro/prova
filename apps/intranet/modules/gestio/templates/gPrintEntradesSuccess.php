@@ -22,7 +22,7 @@
                       				<TD	style='width:200px;'>".link_to(image_tag('intranet/Submenu2.png').' '.$E->getTitol(),'gestio/gPrintEntrades?accio=EDITA&IDE='.$E->getIdentrada() )."</TD>
                       				<TD style='width:50px;' class=\"LINIA\">".$E->getVenudes()."</TD>
                       				<TD style='width:50px;' class=\"LINIA\">".$E->getRecaptat()."</TD>                      				
-                      				<TD style='width:50px;' class=\"LINIA\">".link_to(image_tag('template/printer.png'),'gestio/gEntrades?accio=PRINT&IDE='.$E->getIdentrada())."</TD>
+                      				<TD style='width:50px;' class=\"LINIA\">".link_to(image_tag('template/printer.png'),'gestio/gPrintEntrades?accio=PRINT&IDE='.$E->getIdentrada())."</TD>
                       			  </TR>";                      		 
                       	}                    	
                     }
