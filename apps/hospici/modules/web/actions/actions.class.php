@@ -133,6 +133,17 @@ class webActions extends sfActions
     return sfView::NONE;
   }
     
+  public function executeFeedbackAjax(sfWebRequest $request){
+
+    $TEXT = $request->getParameter('nom');
+    $TEXT .= '<br />'.$request->getParameter('mail');
+    $TEXT .= '<br />'.$request->getParameter('comentari');
+    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','Hospici :: Nou suggeriment',$TEXT);
+    $this->renderText('OK');        
+                        
+    return sfView::NONE;
+  }
+
   public function executeLogin(sfWebRequest $request)
   {
     $this->setLayout('hospici');    

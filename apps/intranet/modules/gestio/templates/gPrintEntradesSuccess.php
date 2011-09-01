@@ -31,9 +31,9 @@
          
         <?php
         	if ($ENTRADES->haveToPaginate()):
-        		if($PAGINA > 1) echo link_to('<-- Veure entrades anteriors', 'gestio/gEntrades?PAGINA='.$ENTRADES->getPreviousPage());
+        		if($PAGINA > 1) echo link_to('<-- Veure entrades anteriors', 'gestio/gPrintEntrades?PAGINA='.$ENTRADES->getPreviousPage());
   				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";  
-  				if($PAGINA < $ENTRADES->getLastPage()) echo link_to('Veure entrades següents -->', 'gestio/gEntrades?PAGINA='.$ENTRADES->getNextPage());  
+  				if($PAGINA < $ENTRADES->getLastPage()) echo link_to('Veure entrades següents -->', 'gestio/gPrintEntrades?PAGINA='.$ENTRADES->getNextPage());  
 			endif; 
 		?>
         
@@ -43,10 +43,10 @@
     
   <?php IF( isset($MODE['NOU']) || isset($MODE['EDICIO']) ): ?>
       
-	<form action="<?php echo url_for('gestio/gEntrades') ?>" method="POST">
+	<form action="<?php echo url_for('gestio/gPrintEntrades') ?>" method="POST">
 	
 	 	<div class="REQUADRE fb">
-	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gEntrades?accio=C')) ?>
+	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gPrintEntrades?accio=C')) ?>
 					 	 		
 	 		<div class="FORMULARI fb">
 	 			<?php echo $FENTRADES ?>	 	

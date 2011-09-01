@@ -26,11 +26,38 @@ $(document).ready(function(){
 		}
 	});
 
-
 	$( ".auth" )
 		.click(function() {
             url = $(this).attr('url');
 			$( "#dialog-form" ).dialog( "open" );
+		});        
+
+	$( "#feedback-form" ).dialog({
+		autoOpen: false,
+		height: 510,
+		width: 350,
+		modal: true,
+		buttons: {
+			"Envia comentari": function() {    					                        
+                    $.post(
+                        h_feedback_Ajax,
+                        { 'nom':$("#feedback-nom").val() , 'mail':$('#feedback-mail').val(), 'comentari':$('#feedback-comentari').val()  },
+                         function(data) {                                                     
+                            if(data == 'OK'){ $('#feedback-form').dialog( "close" ); }
+                            else { alert('Incorrecte'); }                                                           
+                         }   
+                        );                        
+				}				
+		},
+		close: function() {
+			//allFields.val( "" ).removeClass( "ui-state-error" );
+		}
+	});
+
+	$( "#feedback" )
+		.click(function() {
+            url = $(this).attr('url');
+			$( "#feedback-form" ).dialog( "open" );
 		});        
     
 

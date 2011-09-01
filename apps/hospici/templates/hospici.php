@@ -17,22 +17,23 @@
       <link rel="stylesheet" type="text/css" media="screen" href="/css/smoothness/jquery-ui-1.7.2.custom.css" />   
       <link rel="stylesheet" type="text/css" media="screen" href="/css/jquery-datepick/jquery.datepick.css" />
       <link rel="stylesheet" type="text/css" media="screen" href="/css/thickbox.css" />  
-      <link rel="stylesheet" type="text/css" media="screen" href="/css/TipTip/TipTip.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="/css/TipTip/TipTip.css" />      
         
-      <!-- General plugins js -->
+      <!-- General plugins js -->      
       <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>       
       <script type="text/javascript" src="/js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js"></script>
       <script type="text/javascript" src="/js/jquery-ui/js/jquery-datepicker-ca.js"></script>
       <script type="text/javascript" src="/js/jquery.cookie.js"></script>
       <script type="text/javascript" src="/js/jquery-validate/jquery.validate.min.js"></script>
       <script type="text/javascript" src="/js/jquery-validate/localization/messages_es.js"></script>
-      <script type="text/javascript" src="/js/TipTip/jquery.tipTip.minified.js"></script>
+      <script type="text/javascript" src="/js/TipTip/jquery.tipTip.minified.js"></script>      
     
       <!-- Personal plugins js & css -->
       <script>
     
         /* Descripció de variables utilitzades als scripts posteriors */
-        var h_cursos_loginAjax = '<?php echo url_for('web/LoginAjax') ?>';
+        var h_cursos_loginAjax = '<?php echo url_for('web/LoginAjax'); ?>';
+        var h_feedback_Ajax = '<?php echo url_for('web/FeedbackAjax'); ?>';
             
       </script>
       <script type="text/javascript" src="/js/hospici.js"></script>       
@@ -47,6 +48,24 @@
   </head>
   
   <body>      
+    
+    <div id="feedback-form" title="Deixa un comentari sobre el portal">
+    	<form>    
+    	<fieldset>
+            <div style="margin-bottom: 10px;">
+                Li estarem molt agraïts que ens comuniqui qualsevol error, millora o idea sobre el portal i el seu funcionament.<br />
+            </div> 
+    		<label for="nom"><b>Nom i Cognoms</b></label>
+    		<input type="text" name="nom" id="feedback-nom" class="text ui-widget-content ui-corner-all" />		
+    		<label for="mail"><b>Contacte</b></label>
+    		<input type="text" name="mail" id="feedback-mail" value="" class="text ui-widget-content ui-corner-all" />
+            <label for="comentari"><b>Observació</b></label>
+            <textarea name="comentari" id="feedback-comentari" style="height:200px; width:300px;" class="text ui-widget-content ui-corner-all"></textarea>
+    	</fieldset>
+    	</form>
+    </div>
+
+
   
     <div style="text-align:center;">  
     
@@ -180,7 +199,8 @@
                         <?php endif; ?>
                                             
                         <br />
-                    </div>                
+                    </div>
+                    <div id="feedback" style="margin-left:10px; margin-top:5px; text-align: center; border-radius: 10px; padding:0px 10px; color:#89E886; background-color: #3F3F3F; width:155px;">Deixa un suggeriment</div>                
                 </div>                        
             </div>
             <div style="clear: both; ">&nbsp;</div>

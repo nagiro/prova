@@ -23,7 +23,7 @@
             if(empty($pdf)) $pdf = 0;             
     ?>
 			<div style="border:0px solid #96BF0D; clear:both; padding:10px;">
-				<div style="font-size:11px"><b><?php echo $CURS->getTitolcurs() ?></b></div>
+				<div style="font-size:11px"><b><?php echo $CURS->getTitolcurs() ?></b><br /><span style="color: gray;"><?php echo $nom; ?></span></div>
 				<div style="font-size:10px"><?php // echo generaHoraris($ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
 				<div style="height:30px;">&nbsp;</div>				
 										
@@ -112,6 +112,27 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
             ?>
             </div>
         </div>
+
+        <div style="padding-top:5px; clear:both;">
+            <div style="float: left; width:120px;"><b>Preu: </b></div>
+            <div style="float: left;">
+            <?php
+              
+                //Si no hi ha descompte, no ensenyem el preu reduit.
+                if(empty($A_Descomptes)) echo "{$CURS->getPreu()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan inici el curs o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
+                else echo "Estàndard: {$CURS->getPreu()} € / Reduït: {$CURS->getPreur()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan l'entitat organitzadora li reclami o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
+                
+            ?>
+            </div>
+        </div>
+
+        <div style="padding-top:5px; clear:both;">
+            <div style="float: left; width:120px;"><b>Organitza: </b></div>
+            <div style="float: left;">                 
+                <?php echo $nom ?>                              
+            </div>
+        </div>
+
         <div style="padding-top:5px; clear:both;">
             <div style="float: left; width:120px;"><b>Descompte: </b></div>
             <div style="float: left;">
@@ -125,18 +146,7 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
             ?>
             </div>
         </div>
-        <div style="padding-top:5px; clear:both;">
-            <div style="float: left; width:120px;"><b>Preu: </b></div>
-            <div style="float: left;">
-            <?php
-              
-                //Si no hi ha descompte, no ensenyem el preu reduit.
-                if(empty($A_Descomptes)) echo "{$CURS->getPreu()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan inici el curs o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
-                else echo "Estàndard: {$CURS->getPreu()} € / Reduït: {$CURS->getPreur()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan l'entitat organitzadora li reclami o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
-                
-            ?>
-            </div>
-        </div>
+        
         <div style="padding-top:10px; clear:both;">
             <?php 
                  
