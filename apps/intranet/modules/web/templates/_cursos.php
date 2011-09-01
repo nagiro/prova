@@ -66,7 +66,7 @@
                    El període de matriculació s'obre el 19 de setembre i es tancarà el mateix dia d'inici de cadascun dels cursos o quan s'hagin exhaurit les places, tret d'indicacions específiques en sentit contrari.
                    <br /><br />Els alumnes matriculats a idiomes el curs anterior podran inscriure's a partir del 12 de setembre.
                    <br /><br />La casa de Cultura de Girona es reserva el dret de modificar els horaris i dates anunciats o d'anul·lar un curs tant per raons organitzatives com si no hi ha un nombre suficient d'alumnes. 		   			
-                   <br /><br />Les matrícules als cursos es realitzaran a través del portal <a href="http://www.hospici.cat/cursos_entitat/1">Hospici</a>. Si ja disposeu d'usuari a la Casa de Cultura, podreu utilitzar el mateix DNI i contrassenya per accedir-hi.
+                   <br /><br />Per matricular-vos per internet, cliqueu aquest <a href="http://www.hospici.cat/cursos_entitat/1">enllaç</a>. Per accedir-hi heu de ser usuari de la Casa de Cultura o bé crear-ne un de nou si no en sou. 
                    <!-- Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.
                         Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">aquí</a>. -->            
                 </div>

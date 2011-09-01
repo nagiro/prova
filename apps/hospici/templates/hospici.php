@@ -168,7 +168,7 @@
                         <br />
     
                         <div class="h_requadre_login_text">
-                            Ser soci de l&rsquo;hospici et d&oacute;na dret a veure totes les activitats de les entitats s&ograve;cies de la xarxa.
+                            Ser usuari de l&rsquo;hospici et d&oacute;na dret a accedir a la informació de totes les activitats, cursos i espais de les entitats s&ograve;cies de la xarxa.
                             <br /><br />
                             &Eacute;s totalment gratu&iuml;t.
                             <br />

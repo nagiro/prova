@@ -581,15 +581,15 @@ class myUser extends sfBasicSecurityUser
             $RET .= ph_getRoundCorner('Ja hi esteu matriculat', '#29A729').'</div>';
             
         }elseif( $ESTAT == 'EN_ESPERA'){
-            $RET  = '  <div class="tip" title="Vostè està en espera de plaça per aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET  = '  <div class="tip" title="El curs està complet. La seva matrícula queda en llista d\'espera.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
             $RET .= ph_getRoundCorner('En espera de plaça', '#F184DD').'</div>';
                             
         }elseif( $ESTAT == 'ANULADA'){
-            $RET  = '  <div class="tip" title="Vostè ha realitzat una matrícula en aquest curs, però no hi està matriculat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET  = '  <div class="tip" title="Vostè s\'ha matriculat en aquest curs, però s\'ha donat de baixa o el procés no s\'ha completat correctament. Matrícula sense efecte.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
             $RET .= ph_getRoundCorner('Matrícula aunl·lada', '#CCCCCC').'</div>';               
         
         }elseif( $ESTAT == 'NO_HI_PLACES'){                                    
-            $RET  = '  <div class="tip" title="Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
+            $RET  = '  <div class="tip" title="Aquest curs no disposa de més places.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
             $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Curs ple</a>', '#EF0101').'</div>';            
         
         }elseif( $ESTAT == 'NO_HI_HA_RESERVA_LINIA'){            
@@ -597,7 +597,7 @@ class myUser extends sfBasicSecurityUser
             $RET .= ph_getRoundCorner('Matrícula presencial', '#CCCCCC').'</div>';
                         
         }elseif( $ESTAT == 'ABANS_PERIODE_MATRICULA_AA_IDIOMES'){                                    
-            $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$dataiA).' si vol continuar els estudis d\'idiomes.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$dataiA).' si vol continuar els estudis d\'idiomes. Assegureu-vos que us matriculeu al curs que us correspon o la matrícula quedarà invalidada sense guardar plaça. <br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
             $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$dataiA), '#CBAD85').'</div>';
             
         }elseif( $ESTAT == 'ABANS_PERIODE_MATRICULA'){                                    
@@ -605,7 +605,7 @@ class myUser extends sfBasicSecurityUser
             $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
                         
         }elseif( $ESTAT == 'POT_MATRICULAR'){
-            $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">MATRICULA\'T</a>', '#FF8D00');            
+            $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Matriculeu-vos</a>', '#FF8D00');            
         }                
                 
         return $RET;         
