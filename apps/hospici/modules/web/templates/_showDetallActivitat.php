@@ -74,8 +74,8 @@
                 <!-- Fi Requadre d'informació pràctica  -->
                 <!-- Requadre de compra o reserva d'entrades  -->
                 
-   				<div style="margin-left:200px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">RESERVA D'ENTRADES</div> 
-				<div style="margin-left:200px; width:330px; clear:both; background-color:#DFECB6">					
+   				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">RESERVA D'ENTRADES</div> 
+				<div style="margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
 					<div style="padding:10px; font-size:10px;">
 
                         <?php
