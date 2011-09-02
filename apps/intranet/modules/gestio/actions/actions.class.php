@@ -4259,7 +4259,6 @@ class gestioActions extends sfActions
     }     
   }  
   
-
   /**
    * Executa processos en background... que llança el sistema
    * */
@@ -4275,13 +4274,11 @@ class gestioActions extends sfActions
                     $idS = $OR->getSiteId();
                     $this->SendMailReservaEspais( $OR , $idS , true );    
                 }
-                                
+                $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','Hospici :: Remember condicions',var_dump($LOR));
         break;
     }
     
     return sfView::NONE;
   }  
-
-  
-    
+   
 }
