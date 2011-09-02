@@ -23,7 +23,7 @@
                                         
 				<div style="width:150px; float:left">
                 
-					<div><img src="<?php echo $imatge ?>" style="vertical-align:middle" /></div>
+					<div><img src="<?php echo $imatge ?>" style="width:150px; vertical-align:middle;" /></div>
                     
                     <div style="margin-top:20px; font-size:10px">
                         <div class="requadre_mini" style="background-color:#A2844A;">
