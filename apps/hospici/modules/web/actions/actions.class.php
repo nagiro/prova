@@ -274,6 +274,7 @@ class webActions extends sfActions
             $this->SECCIO = 'USUARI';
         break;
             
+        //Usuari que compra o reserva una entrada
         case 'compra_entrada':
             //Des de l'Hospici només es pot reservar una entrada. Més endavant s'haurà d'abonar l'import.
             $RS = $request->getParameter('entrades');
@@ -303,6 +304,7 @@ class webActions extends sfActions
                                                 
         break;
         
+        //Usuari que anul·la una entrada prèviament reservada
         case 'anula_entrada':            
             $RS = $request->getParameter('idER');
             $OER = EntradesReservaPeer::retrieveByPK($RS);
@@ -318,6 +320,7 @@ class webActions extends sfActions
                                                 
         break;        
         
+        //Nova matrícula a un curs
         case 'nova_matricula':
             
             //Capturem el codi del curs i el codi del descompte
@@ -382,16 +385,19 @@ class webActions extends sfActions
             }
         break;
 
+        //S'ha matriculat correctament i TPV ok
         case 'matricula_OK':
                 $this->MISSATGE3 = "OK";
                 $this->SECCIO   = 'MATRICULA';                
             break;
             
+        //No s'ha matriculat correctament o error a TPV
         case 'matricula_KO':
                 $this->MISSATGE3 = "KO";
                 $this->SECCIO   = 'MATRICULA';
             break;
             
+        //Gestió del que retorna el TPV
         case 'GET_TPV':
         
                 //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
@@ -440,11 +446,13 @@ class webActions extends sfActions
                                 
             break;
 
+        //Mostra totes les reserves que s'han fet
         case 'llista_reserves':
             $this->SECCIO = 'RESERVA';            
             $this->MISSATGE4 = $request->getParameter('estat',null);
         break;
 
+        //Editem una reserva prèviament feta
         case 'edita_reserva':
         
             $this->SECCIO = "RESERVA";
@@ -458,6 +466,7 @@ class webActions extends sfActions
             
         break;
         
+        //Creem una nova reserva, i mostrem el formulari
         case 'nova_reserva':        
             $idE = $request->getParameter('idE');
             $OE = EspaisPeer::retrieveByPK($idE);
@@ -470,6 +479,7 @@ class webActions extends sfActions
             }
         break;  
                                         
+        //Guardem la nova reserva
         case 'save_nova_reserva':
             
             $RP = $request->getParameter('reservaespais');
@@ -482,6 +492,13 @@ class webActions extends sfActions
                 //Guardem la reserva
                 $this->FReserva->save();
                 
+                //Enviem mails per informar que s'ha fet una nova reserva d'espais a secretaria
+                $from = OptionsPeer::getString('MAIL_FROM',$RP['site_id']);
+                $to   = OptionsPeer::getString('MAIL_SECRETARIA',$RP['site_id']);
+                $sub  = "Hospici | Nova reserva d'espai";
+                $miss = "S'ha sol·licitat una nova reserva d'espai amb el codi {$RP['ReservaEspaiID']}";
+                $this->sendMail($from, $to, $sub, $miss);
+                
                 //Vinculem l'usuari amb el site corresponent
                 UsuarisPeer::addSite($idU,$RP['site_id']);
                                                         
@@ -492,6 +509,7 @@ class webActions extends sfActions
                             
         break;
         
+        //Capturem el que ens arriba del mail de condicions. 
         case 'condicions':
             
             $this->SECCIO = 'RESERVA';
@@ -517,11 +535,10 @@ class webActions extends sfActions
             endif; 
                                                                                 
         break;               
-                       
-                                                
+                                                                       
     }
             
-    //Si ja hi hem fet operacions... carreguem l'actual, sinÃ³ en fem un de nou.
+    //Si ja hi hem fet operacions... carreguem l'actual, sinó en fem un de nou.
     if(isset($FU) && $FU instanceof UsuarisForm) $this->FUsuari = $FU;
     else $this->FUsuari = UsuarisPeer::initialize($this->IDU,$this->IDS,false,true);
     
@@ -574,7 +591,7 @@ class webActions extends sfActions
         $this->DESPLEGABLES['SELECT_CATEGORIES'] = CursosPeer::getCategoriaCursosHospici($LCURSOS);
         $this->DESPLEGABLES['SELECT_DATES']      = CursosPeer::getDatesCursosHospici($LCURSOS);                
                                                                 
-        //Guardem a sessiÃ³ la cerca "actual"        
+        //Guardem a sessió la cerca "actual"
         $this->CERCA = $C2;    
         $this->getUser()->setSessionPar('cerca',$this->CERCA);
                              

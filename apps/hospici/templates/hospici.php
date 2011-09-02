@@ -1,5 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
   
       <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -10,7 +11,7 @@
        ?>  
       
       <!-- Facebook & Twitter -->
-      <script src="http://connect.facebook.net/ca_ES/all.js#xfbml=1"></script>
+      <script type="text/javascript" src="http://connect.facebook.net/ca_ES/all.js#xfbml=1"></script>
       <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
       
       <!-- General plugins css -->
@@ -29,7 +30,7 @@
       <script type="text/javascript" src="/js/TipTip/jquery.tipTip.minified.js"></script>      
     
       <!-- Personal plugins js & css -->
-      <script>
+      <script type="text/javascript">
     
         /* Descripció de variables utilitzades als scripts posteriors */
         var h_cursos_loginAjax = '<?php echo url_for('web/LoginAjax'); ?>';
@@ -50,8 +51,7 @@
   <body>      
     
     <div id="feedback-form" title="Deixa un comentari sobre el portal">
-    	<form>    
-    	<fieldset>
+    	<form action="#">        	
             <div style="margin-bottom: 10px;">
                 Li estarem molt agraïts que ens comuniqui qualsevol error, millora o idea sobre el portal i el seu funcionament.<br />
             </div> 
@@ -60,8 +60,7 @@
     		<label for="mail"><b>Contacte</b></label>
     		<input type="text" name="mail" id="feedback-mail" value="" class="text ui-widget-content ui-corner-all" />
             <label for="comentari"><b>Observació</b></label>
-            <textarea name="comentari" id="feedback-comentari" style="height:200px; width:300px;" class="text ui-widget-content ui-corner-all"></textarea>
-    	</fieldset>
+            <textarea name="comentari" id="feedback-comentari" cols="10" rows="10" style="height:200px; width:300px;" class="text ui-widget-content ui-corner-all"></textarea>    	
     	</form>
     </div>
 
@@ -74,10 +73,10 @@
             <!-- HEADER -->
     
             <div style="width:1024px; height:140px; background-color:#3f3f3f;">
-                <div style="float: left; padding-top:8px; padding-left:10px;"><img src="/images/hospici/logo_hospici.png" /></div>
+                <div style="float: left; padding-top:8px; padding-left:10px;"><img src="/images/hospici/logo_hospici.png" alt=""></div>
                 <div style="float: left; font-family: 'Delius',cursive; color:#FF8D00; font-size:60px; padding-top:35px; padding-left:20px;">l'hospici</div>
                 <div style="float: left; font-family: 'Gloria Hallelujah', cursive; font-size: 20px; color:#E8E462; padding-top:100px; padding-left:100px;">portal de gestió cultural pels municipis</div>
-                <div style="float: right; width:150px; height:100%; "><img src="/images/hospici/header_decoration.png" /></div>
+                <div style="float: right; width:150px; height:100%; "><img alt="" src="/images/hospici/header_decoration.png" /></div>
                 <div style="clear: both;"></div>
             </div>
     

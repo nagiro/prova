@@ -1,4 +1,4 @@
-<style>    
+<style type="text/css">    
     .pager { font-size:16px;  }
     .pager a { font-size:16px; color:inherit; text-decoration:inherit;  }
     .pagerE { margin-top:10px; margin-bottom:30px; text-align:center;  }
