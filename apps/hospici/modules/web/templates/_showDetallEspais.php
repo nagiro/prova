@@ -47,7 +47,7 @@
                     </div>
 				</div>
                                 
-				<div style="width:330px; float:left;">
+				<div style="width:400px; float:left;">
 					<div style="padding-left:10px; font-size:10px;">
                         <?php
                             $desc = $ESPAI->getDescripcio();   
