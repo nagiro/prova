@@ -1,11 +1,5 @@
 <link rel="stylesheet" type="text/css" media="screen" href="/js/lightbox/css/jquery.lightbox-0.5.css" />
 <script type="text/javascript" src="/js/lightbox/js/jquery.lightbox-0.5.js"></script>
-
-<style type="text/css">    
-    .pager { font-size:16px;  }
-    .pager a { font-size:16px; color:inherit; text-decoration:inherit;  }
-    .pagerE { margin-top:10px; margin-bottom:30px; text-align:center;  }
-</style>
 <script type="text/javascript">
 
     $(document).ready(function(){

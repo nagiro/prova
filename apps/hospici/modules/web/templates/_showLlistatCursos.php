@@ -1,9 +1,3 @@
-<style type="text/css">    
-    .pager { font-size:16px;  }
-    .pager a { font-size:16px; color:inherit; text-decoration:inherit;  }
-    .pagerE { margin-top:10px; margin-bottom:30px; text-align:center;  }
-</style>
-
 <div class="h_requadre_resultats">
     <div class="h_subtitle_gray c1">
         L'HOSPICI...

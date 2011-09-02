@@ -43,6 +43,9 @@ li.ul_material{
 .pagerN a:hover { text-decoration:none;  }
 .pagerN:hover { background-color:orange; }
 
+.pagerE { margin-top:10px; margin-bottom:30px; text-align:center;  }
+
+
 #taula { width:1024px; margin:0 auto; text-align:left; border:1px solid black;  }
         
 .h_left_col { width:200px;float:left; vertical-align: top;  }
