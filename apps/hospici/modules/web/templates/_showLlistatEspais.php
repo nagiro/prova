@@ -1,4 +1,3 @@
-<link rel="stylesheet" type="text/css" media="screen" href="/js/lightbox/css/jquery.lightbox-0.5.css" />
 <script type="text/javascript" src="/js/lightbox/js/jquery.lightbox-0.5.js"></script>
 <script type="text/javascript">
 
@@ -49,7 +48,7 @@
                     {
                         echo '  <div style="float:right">
                                     <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                        <a class="auth" url="'.$url.'" name="link_compra" style="text-decoration:none;" href="#">Reservar espai</a>
+                                        <a class="auth" href="'.$url.'" name="link_compra" style="text-decoration:none;">Reservar espai</a>
                                     </div>
                                 </div>';                                            
                     }                  

@@ -21,7 +21,7 @@
         
     	<div class="taula_dades" id="tabs-1">
     
-        <form id="formulari" action="<?php echo url_for('@hospici_cercador_cursos')?>" method="POST">
+        <form id="formulari" action="<?php echo url_for('@hospici_cercador_cursos')?>" method="post">
     
             <div style="float: left; width: 600px;">
                 <div style="margin: 5px;">

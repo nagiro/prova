@@ -27,7 +27,7 @@
                     
                     <div style="margin-top:20px; font-size:10px">
                         <div class="requadre_mini" style="background-color:#A2844A;">
-                            <a href="javascript:history.back()">< Torna al llistat de cursos</a>
+                            <a href="javascript:history.back()">&lt; Torna al llistat de cursos</a>
                         </div>
                     </div>
                     
@@ -96,7 +96,7 @@
 
                             //Si no està autentificat
                             if( !$AUTEN ){
-                                echo '<div>Per poder comprar o reservar entrades heu d\'accedir al vostre usuari clicant <a href="#" class="auth" url="'.$url.'" >aquí</a>.</div>';
+                                echo '<div>Per poder comprar o reservar entrades heu d\'accedir al vostre usuari clicant <a class="auth" href="'.$url.'" >aquí</a>.</div>';
                             //Ja està autentificat
                             }else {                    
                                 //Ja ha reservat per aquesta activitat

@@ -18,7 +18,8 @@
       <link rel="stylesheet" type="text/css" media="screen" href="/css/smoothness/jquery-ui-1.7.2.custom.css" />   
       <link rel="stylesheet" type="text/css" media="screen" href="/css/jquery-datepick/jquery.datepick.css" />
       <link rel="stylesheet" type="text/css" media="screen" href="/css/thickbox.css" />  
-      <link rel="stylesheet" type="text/css" media="screen" href="/css/TipTip/TipTip.css" />      
+      <link rel="stylesheet" type="text/css" media="screen" href="/css/TipTip/TipTip.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="/js/lightbox/css/jquery.lightbox-0.5.css" />      
         
       <!-- General plugins js -->      
       <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>       
@@ -123,10 +124,10 @@
                 </div>
                
                 <div id="dialog-form" title="Accedeix a l'Hospici">
-                	<form>    
+                	<form action="#">    
                 	<fieldset>
                         <div style="margin-bottom: 10px;">
-                            Per poder accedir i realitzar accions a l'Hospici ha d'entrar el seu DNI i contrassenya. Si no recorda la contrassenya cliqui <a href="<?php url_for('@hospici_usuaris_remember') ?>">aquí</a>. Si no té usuari, pot crear-lo <a href="<?php url_for('@hospici_usuaris_alta') ?>">aquí</a>.<br />
+                            Per poder accedir i realitzar accions a l'Hospici ha d'entrar el seu DNI i contrassenya. Si no recorda la contrassenya cliqui <a href="<?php echo url_for('@hospici_usuaris_remember') ?>">aquí</a>. Si no té usuari, pot crear-lo <a href="<?php echo url_for('@hospici_usuaris_alta') ?>">aquí</a>.<br />
                         </div> 
                 		<label for="login">DNI: </label>
                 		<input type="text" name="login" id="login" class="text ui-widget-content ui-corner-all" />		

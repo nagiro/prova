@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" media="screen" href="/js/lightbox/css/jquery.lightbox-0.5.css" />
-<script type="text/javascript" src="/js/lightbox/js/jquery.lightbox-0.5.js"></script>
 <script  type="text/javascript">
 
     $(document).ready(function(){
@@ -38,7 +36,7 @@
                                     <img src="'.$logo.'" height="30" alt="" />
                                 </div>
                                 <div style="float:left; font-size:16px; padding-left:10px;">
-                                    '.$OE->getNom().'<br/>
+                                    '.$OE->getNom().'<br />
                                     <div style="font-size:12px; color:gray;">
                                     <a href="'.url_for('@hospici_cercador_entitats_activitats?SITE='.$OE->getSiteId()).'">Activitats</a> | 
                                     <a href="'.url_for('@hospici_cercador_entitats_espais?SITE='.$OE->getSiteId()).'">Espais</a> |

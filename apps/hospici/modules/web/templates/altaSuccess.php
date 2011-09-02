@@ -46,7 +46,7 @@
 </div>
 
 <div style="margin-bottom: 50px;">
-    <form id="new_user" action="<?php echo url_for('@hospici_usuaris_alta') ?>" method="POST">
+    <form id="new_user" action="<?php echo url_for('@hospici_usuaris_alta') ?>" method="post">
         <table class="taula_dades">
             <?php echo $FUSUARI; ?>
         <tr><td></td><td style="padding-top:20px; text-align: right;"><input type="submit" value="Dona'm d'alta" /></td></tr>        

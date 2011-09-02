@@ -28,11 +28,11 @@
 				<div style="height:30px;">&nbsp;</div>				
 										
 				<div style="width:150px; float:left">                    
-					<div><img width="150px" src="<?php echo $imatge ?>" style="vertical-align:middle" /></div>
+					<div><img src="<?php echo $imatge ?>" style="width:150px; vertical-align:middle" /></div>
                         
 						<div style="margin-top:20px; font-size:10px">
                             <div class="requadre_mini" style="background-color:#A2844A;">
-                                <a href="javascript:history.back()">< Torna al llistat de cursos</a>
+                                <a href="javascript:history.back()">&lt; Torna al llistat de cursos</a>
                             </div>
                         </div>
                         
@@ -71,7 +71,7 @@
 
 
 if( $ESTAT == 'NO_AUTENTIFICAT' ){            
-    echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a href="#" class="auth" url="'.$url.'" >aquí</a>.</div>';
+    echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a class="auth" href="'.$url.'" >aquí</a>.</div>';
                 
 }elseif( $ESTAT == 'MATRICULAT' ){
     echo '<div>Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';

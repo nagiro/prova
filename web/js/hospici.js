@@ -28,8 +28,9 @@ $(document).ready(function(){
 
 	$( ".auth" )
 		.click(function() {
-            url = $(this).attr('url');
+            url = $(this).attr('href');
 			$( "#dialog-form" ).dialog( "open" );
+            return false;
 		});        
 
 	$( "#feedback-form" ).dialog({
@@ -56,7 +57,7 @@ $(document).ready(function(){
 
 	$( "#feedback" )
 		.click(function() {
-            url = $(this).attr('url');
+            url = $(this).attr('href');
 			$( "#feedback-form" ).dialog( "open" );
 		});        
     

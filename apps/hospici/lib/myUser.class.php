@@ -574,7 +574,7 @@ class myUser extends sfBasicSecurityUser
                           
         //Si no està autentificat
         if( $ESTAT == 'NO_AUTENTIFICAT' ){            
-            $RET = ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i matricula\'t</a>', '#FFCC00');
+            $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i matricula\'t</a>', '#FFCC00');
                         
         }elseif( $ESTAT == 'MATRICULAT' ){
             $RET  = '  <div class="tip" title="Vostè està matriculat correctament al curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
@@ -639,7 +639,7 @@ class myUser extends sfBasicSecurityUser
         //Si no està autentificat
         if( !$AUTEN ){
             
-            $RET = ph_getRoundCorner('<a class="auth" url="'.$url.'" href="#">Autentifica\'t i reserva</a>', '#FFCC00');
+            $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i reserva</a>', '#FFCC00');
             
         //Ja està autentificat
         }else {
