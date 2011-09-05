@@ -10,7 +10,8 @@
                 case 'USUARI': $ext = ', selected: 1'; break;
                 case 'MATRICULA': $ext = ', selected: 2'; break;
                 case 'RESERVA': $ext = ', selected: 3'; break;
-                case 'COMPRA_ENTRADA': $ext = ', selected: 4'; break;                
+                case 'COMPRA_ENTRADA': $ext = ', selected: 4'; break;
+                case 'FORMULARIS': $ext = ', selected: 5'; break;                
                 default: $ext = ', selected: 0'; break;
             }              
     
@@ -49,7 +50,7 @@
         <li><a href="#tabs-3">Matrícules</a></li>
         <li><a href="#tabs-4">Reserves d'espais</a></li>
         <li><a href="#tabs-5">Entrades</a></li>
-        <li><a href="#tabs-6">Missatgeria</a></li>        
+        <li><a href="#tabs-6">Formularis</a></li>        
 	</ul>
     
     <div id="tabs-1">        
@@ -132,7 +133,17 @@
         ?>
     
     </div>
-    <div id="tabs-6"></div>	
+    <div id="tabs-6">
+        <?php 
+        
+            if(isset($MISSATGE6)){
+                if($MISSATGE6 == 'ALTA_OK') show_missatge("El seu formulari s'ha enregistrat correctament.");                
+            }
+
+            echo Formularis_Llista($LFormularis);    
+    
+        ?>    
+    </div>	
 </div>
 
 
@@ -325,4 +336,31 @@
             ?>                                    
         </table>
          
-<?php } ?>    
+<?php } ?>
+
+<?php function Formularis_Llista($LFormularis){ ?>
+
+        <table class="taula_llistat">
+            <tr>
+                <th>Formulari</th>
+                <th>Entitat</th>
+                <th>Registrat</th>                
+            </tr>            
+            <?php                                           
+                if(empty($LFormularis)): echo '<tr><td colspan="4">No s\'ha trobat cap formulari.</td></tr>';
+                else:                           
+                    foreach($LFormularis as $OF):                                        
+                        $nom = SitesPeer::getNom($OF->getSiteId());                                                                                                                        
+                        echo '<tr>
+                                <td>'.$OF->getNom().'</td>
+                                <td>'.$nom.'</td>                                                                
+                                <td>'.$OF->getRegistrat().'</td>
+                             </tr>';                                                                                                         
+                    endforeach;
+                endif;
+            ?>                        
+        </table>                        
+
+<?php } ?> 
+
+    

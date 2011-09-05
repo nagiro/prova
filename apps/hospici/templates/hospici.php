@@ -107,6 +107,9 @@
                                     <a href="<?php echo url_for('@hospici_cercador_entitats') ?>">Conèixer entitats</a>
                                 </li>
                                 <li>
+                                    <a href="<?php echo url_for('@hospici_cercador_formularis') ?>">Formularis</a>
+                                </li>                                
+                                <li>
                                     <a href="<?php echo url_for('@hospici_usuaris_alta') ?>">Vull ser-ne membre</a>
                                 </li>                                                                                                                                                                                                                                                            
                             </ul>

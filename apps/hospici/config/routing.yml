@@ -17,6 +17,14 @@ hospici_usuaris_alta:
 hospici_usuaris_remember:
   url:  /recorda
   param: { module: web, action:remember }    
+
+hospici_cercador_formularis:
+  url: /cercador_formularis
+  param: { module: web, action:forms, accio:cerca_formularis } 
+
+hospici_formularis_detall:
+  url: /formularis/:idF/:titol
+  param: { module: web, action:forms, accio:detall_formularis }
   
 hospici_cercador_espais:
   url: /cercador_espais
@@ -113,7 +121,17 @@ hospici_matricula_TPV_KO:
 hospici_matricula_TPV_GET:
   url: /usuaris/matricula/get
   param: { module: web, action:usuaris, accio:GET_TPV }
+  
+# Aquest pels formularis de l'hospici
+hospici_nou_formulari:
+  url: /usuaris/formularis/alta
+  param: { module: web, action: usuaris, accio: alta_formulari }
+  
+hospici_llista_formularis:
+  url: /usuaris/formularis
+  param: { module: web, action: usuaris, accio: llista_formularis }
    
+# Aquest és pels mails
 hospici_formulari_get:
   url: /formularis/:PAR
   param: { module: web, action: formularis, accio: GET }

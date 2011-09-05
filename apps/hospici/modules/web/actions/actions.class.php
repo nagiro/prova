@@ -124,6 +124,18 @@ class webActions extends sfActions
     return $C;
   }   
 
+  /**
+   * Omple el quadre de cerca amb tots els valors per defecte. 
+   * */
+  private function getCercaFormularisComplet($C)
+  {    
+    if(!isset($C['TEXT']))              $C['TEXT'] = "";
+    if(!isset($C['SITE']))              $C['SITE'] = 0;        
+    if(!isset($C['P']))                 $C['P'] = 1;
+    return $C;
+  }  
+
+
   public function executeLoginAjax(sfWebRequest $request){
 
     if($this->makeLogin($request->getParameter('login'),$request->getParameter('pass'))){
@@ -248,6 +260,7 @@ class webActions extends sfActions
   
   public function executeUsuaris(sfWebRequest $request)
   {
+    
     $this->setLayout('hospici');
     $accio = $request->getParameter('accio','inici');
     $this->IDU = $this->getUser()->getSessionPar('idU');
@@ -508,6 +521,33 @@ class webActions extends sfActions
             }                
                             
         break;
+
+        //Alta d'un nou formulari
+        case 'alta_formulari':
+                        
+            $RP = $request->getParameter('formulari');
+            $idU = $this->getUser()->getSessionPar('idU');            
+            $OF = FormularisRespostesPeer::initialize($RP['idF'],$idU,serialize($RP));
+            $OF->save();                                                    
+            
+            //Enviem mails per informar que s'ha fet una nova reserva d'espais a secretaria
+            $from = OptionsPeer::getString('MAIL_FROM',$OF->getSiteid());
+            $to   = OptionsPeer::getString('MAIL_ADMIN',$OF->getSiteid());
+            $sub  = "Hospici | Nou formulari enviat";
+            $miss = "S'ha enviat la següent informació amb una reserva d'espai.<br/><br />Dades:<br /><br /> ";
+            foreach($RP as $K=>$V):
+                $miss .= $K.': '.$V.'<br/>';
+            endforeach;
+            $this->sendMail($from, $to, $sub, $miss);
+            $this->sendMail($from, 'giroscopi@casadecultura.org', $sub, $miss);
+            
+            //Vinculem l'usuari amb el site corresponent
+            UsuarisPeer::addSite($idU,$OF->getSiteid());
+            
+            $this->MISSATGE6 = 'ALTA_OK';
+            $this->SECCIO = "FORMULARIS";
+                            
+        break;
         
         //Capturem el que ens arriba del mail de condicions. 
         case 'condicions':
@@ -544,8 +584,9 @@ class webActions extends sfActions
     
     $this->LMatricules = MatriculesPeer::h_getMatriculesUsuari($this->IDU);
     $this->LReserves = ReservaespaisPeer::h_getReservesUsuaris($this->IDU,$this->IDS);    
-    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);        
-    // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();    
+    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);
+    $this->LFormularis = FormularisRespostesPeer::getFormularisUsuari($this->IDU);    
+    // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();
         
   }  
   
@@ -712,6 +753,56 @@ class webActions extends sfActions
                                                                                  
   }
 
+
+  /**
+   * hospiciActions::executeFormularis()
+   * 
+   * Part de mostra dels formularis a l'hospici
+   * 
+   * @param mixed $request
+   * @return void
+   */
+  public function executeForms(sfWebRequest $request)
+  {    
+   
+    $this->setLayout('hospici');
+    $this->setTemplate('indexFormularis');
+    $this->accio = $request->getParameter('accio','index');        
+    
+    //Carrego la cerca
+    $this->CERCA = $this->getUser()->getSessionPar('cerca',array());    
+    $this->DESPLEGABLES = array();
+    $this->AUTH = $this->getUser()->isAuthenticated();      
+    
+    if($this->accio == 'cerca_formularis' || $this->accio == 'inici'):
+        
+        //Agafo els paràmetres                
+        if($request->getMethod() == 'POST') $C = $request->getParameter('cerca',array());
+        $C['P'] = $request->getParameter('P',1);
+        
+        //Si em trobo el paràmetre SITE, implica que he entrat per llistat d'entitats i vull veure els formularis.
+        if($request->hasParameter('SITE')) $C['SITE'] = $request->getParameter('SITE');
+        
+        $C2 = $this->getCercaFormularisComplet($C);
+
+        //La cerca hauria de tornar el llistat dels formularis que compleixen.        
+        $this->LLISTAT_FORMS = FormularisPeer::getFormularisCercaHospici($C2);                                                 
+        $this->DESPLEGABLES['SELECT_ENTITATS'] = FormularisPeer::getEntitatsHospici($C2);
+                                                                
+        //Guardem a sessió la cerca "actual"        
+        $this->CERCA = $C2;    
+        $this->getUser()->setSessionPar('cerca',$this->CERCA);
+                             
+        $this->MODE = 'CERCA';            
+            
+    elseif($this->accio == 'detall_formularis'):
+                    
+                $this->FORM = FormularisPeer::retrieveByPK($request->getParameter('idF'));                                                                                                                                        
+                $this->MODE = 'DETALL';
+                
+    endif;                          
+                                                                                 
+  }
 
   private function sendMail($from,$to,$subject,$body = "",$files = array())
   {

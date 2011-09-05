@@ -118,6 +118,16 @@ li.ul_material{
 .h_llistat_activitat_horari { margin-left:20px; color:green; font-weight:normal; float:left;  }
 .h_llistat_activitat_organitzador { color:#888888; margin-left:10px; font-weight:normal; float:left;  }
 
+.div_dades { width:600px;  }
+.div_dades input { border:1px solid #DDDDDD; padding:3px; float:left; }
+.div_dades input:focus { background-color:#EEEEEE; }
+.div_dades select { border:1px solid #DDDDDD; width:200px; }
+.div_dades select:focus { background-color:#EEEEEE;  }
+.div_dades .col1 { width:150px; padding-right:5px; float:left; clear:both; }
+.div_dades .col2 { text-align:justify; width:400px; padding-right:5px; float:left; }
+.div_dades .text-secund { color:gray; text-align:justify; padding-left:30px;  }
+.div_dades .title { clear:both; padding:10px;  }  
+
 .taula_dades { width:600px;  }
 .taula_dades input { border:1px solid #DDDDDD; padding:3px; }
 .taula_dades input:focus { background-color:#EEEEEE; }
