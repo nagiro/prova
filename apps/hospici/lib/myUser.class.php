@@ -684,5 +684,53 @@ class myUser extends sfBasicSecurityUser
         return $RET;         
     }
 
+
+    /**
+     * Mostra les etiquetes amb els estats i accions dels cursos
+     * @param $AUTEN Si l'usuari està autentificat o no
+     * @param $OC Objecte Cursos
+     * @param $url On s'ha d'anar si es clica l'enllaç
+     * @return String
+     * */
+    static public function ph_getEtiquetaFormulari( $AUTH, $OF , $idU )
+    {
+        
+        $AUTEN  = (isset($AUTH) && $AUTH > 0);
+        $isPle  = $OF->isOmplert($idU);                                         
+        $url    = url_for('@hospici_formularis_detall?idF='.$OF->getIdformularis().'&titol='.$OF->getNomForUrl());
+        $idS    = $OF->getSiteId();
+
+        $OS     = SitesPeer::retrieveByPK($idS);
+        $nom    = $OS->getNom();
+        $email  = $OS->getEmailString();
+        $tel    = $OS->getTelefonString();
+
+        $RET    = "";                                                          
+
+        //Si no està autentificat
+        if( !$AUTEN ){
+            
+            $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i omple\'l</a>', '#FFCC00');
+            
+        //Ja està autentificat
+        }else {
+
+            //Ja ha omplert el formulari
+            if( $isPle ){
+                                
+                $RET  = '  <div class="tip" title="Vostè ja ha omplert aquest formulari correctament.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                $RET .= ph_getRoundCorner('<a class="link_compra" href="'.$url.'">Formulari omplert</a>', '#29A729').'</div>';                                                                                                                    
+            
+            //Encara no l'ha omplert            
+            } else {
+                              
+                $RET = ph_getRoundCorner('<a href="'.$url.'">Omple el formulari</a>', '#FF8D00');
+                                                                                    
+            }
+            
+        }
+                
+        return $RET;         
+    }
   
 }

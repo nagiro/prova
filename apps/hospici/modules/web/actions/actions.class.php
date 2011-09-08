@@ -486,7 +486,7 @@ class webActions extends sfActions
             $this->SECCIO = 'RESERVA';
             
             if($OE instanceof Espais){
-                $this->FReserva = ReservaespaisPeer::initializeHospici(null,$OE->getSiteid(),$OE->getEspaiid(),$this->getUser()->getSessionPar('idU'));                                
+                $this->FReserva = ReservaespaisPeer::initializeHospici(null,$OE->getSiteid(),$OE->getEspaiid(),$this->getUser()->getSessionPar('idU'));                                                
             } else {
                 $this->MISSATGE4 = "ERROR_ESPAI";                
             }
@@ -772,7 +772,8 @@ class webActions extends sfActions
     //Carrego la cerca
     $this->CERCA = $this->getUser()->getSessionPar('cerca',array());    
     $this->DESPLEGABLES = array();
-    $this->AUTH = $this->getUser()->isAuthenticated();      
+    $this->AUTH = $this->getUser()->isAuthenticated();
+    $this->IDU  = $this->getUser()->getSessionPar('idU');      
     
     if($this->accio == 'cerca_formularis' || $this->accio == 'inici'):
         
@@ -796,10 +797,13 @@ class webActions extends sfActions
         $this->MODE = 'CERCA';            
             
     elseif($this->accio == 'detall_formularis'):
-                    
-                $this->FORM = FormularisPeer::retrieveByPK($request->getParameter('idF'));                                                                                                                                        
+                                    
+                $idU = $this->getUser()->getSessionPar('idU',0);
+                $idF = $request->getParameter('idF',0);
+                $this->FORM = FormularisPeer::retrieveByPK($idF);
+                $this->FORM_TEXT = FormularisRespostesPeer::getFormulariDetall( $idU , $idF );                                                                                                                                                        
                 $this->MODE = 'DETALL';
-                
+                                
     endif;                          
                                                                                  
   }

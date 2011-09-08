@@ -46,9 +46,15 @@ class Formularis extends BaseFormularis {
         else return 'n/d';        
     }
    
-    public function generaFormulari()
-    {        
+    public function isOmplert($idU)
+    {
+        $C = new Criteria();
+        $C->add(FormularisRespostesPeer::IDUSUARIS, $idU);
+        $C->add(FormularisRespostesPeer::IDFORMULARIS, $this->getIdformularis());
+        $C->add(FormularisRespostesPeer::ACTIU, true);
+        
+        return (FormularisRespostesPeer::doCount($C) > 0)?true:false;
+        
     }
-    
-
+   
 } // Formularis

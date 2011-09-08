@@ -41,4 +41,64 @@ class FormularisRespostesPeer extends BaseFormularisRespostesPeer {
         return self::doSelect($C);
     }
 
+    static public function getFormulariDetall($idU,$idF){
+        
+        //Carreguem el formulari formulari
+        $OF = FormularisPeer::retrieveByPK($idF);
+        if($OF instanceof Formularis) $FORM = $OF->getFormulari();
+        else $FORM = "No s'ha trobat el formulari. ";                        
+        
+        //Mirem si l'usuari ja en té algun de creat.
+        $C = new Criteria();
+        $C->add(FormularisRespostesPeer::IDUSUARIS, $idU);
+        $C->add(FormularisRespostesPeer::IDFORMULARIS, $idF);
+        $C->addDescendingOrderByColumn(FormularisRespostesPeer::IDFORMULARISRESPOSTES);
+        
+        $OFR = FormularisRespostesPeer::doSelectOne($C);
+        
+        //Analitzo el formulari i canvio els codis per inputs pertinents. 
+        $ARR = array(); preg_match_all("/#@@(.*)@@#/", $FORM , $ARR );
+        
+        //Serà l'array amb els valors a carregar
+        $A_D = array();        
+                        
+        //Si ja hi ha una resposta, reomplim el formulari
+        if($OFR instanceof FormularisRespostes):
+            $A_D = unserialize($OFR->getDades());                                                    
+                    
+        //Si no hi ha cap registre previ, posem les dades de registre per estalviar feina. 
+        else:
+        
+            $OU = UsuarisPeer::retrieveByPK($idU);
+            if($OU instanceof Usuaris):
+                $A_D = array(   'NOM'=>$OU->getNom(), 
+                                'COGNOMS'=>$OU->getCog1().' '.$OU->getCog2(), 
+                                'DNI'=>$OU->getDni(), 
+                                'POBLACIO' => $OU->getPoblacioString(), 
+                                'TELEFON'=> $OU->getTelefonString(),
+                                'EMAIL' => $OU->getEmail(),
+                                'ENTITAT' => $OU->getEntitat()
+                            );                                                                                 
+            endif;
+            
+        endif;
+                
+        //Construim el formulari amb els valors que hem extret del formulari
+        foreach($ARR[1] as $K=>$V){
+            $A = explode("@@",$V);
+                                  
+            if($A[0] == 'text'){                
+                if(isset($A_D[$A[1]]))  $FORM = str_replace( $ARR[0][$K], '<input type="text" value="'.$A_D[$A[1]].'" name="formulari['.$A[1].']" '.$A[2].' />', $FORM );
+                else                    $FORM = str_replace( $ARR[0][$K], '<input type="text" value="" name="formulari['.$A[1].']" '.$A[2].' />', $FORM );
+            }         
+            elseif($A[0] == 'checkbox'){                
+                if(isset($A_D[$A[1]]))  $FORM = str_replace( $ARR[0][$K], '<input type="checkbox" checked="checked" name="formulari['.$A[1].']" '.$A[2].' />', $FORM );
+                else                    $FORM = str_replace( $ARR[0][$K], '<input type="checkbox" name="formulari['.$A[1].']" '.$A[2].' />', $FORM );  
+            }             
+        }
+                        
+        return $FORM; 
+    }    
+
+
 } // FormularisRespostesPeer

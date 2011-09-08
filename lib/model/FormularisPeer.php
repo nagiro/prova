@@ -83,5 +83,5 @@ class FormularisPeer extends BaseFormularisPeer
         return $pager;
 
     }
-    
+        
 } // FormularisPeer

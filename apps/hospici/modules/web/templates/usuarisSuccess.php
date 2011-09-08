@@ -349,12 +349,16 @@
             <?php                                           
                 if(empty($LFormularis)): echo '<tr><td colspan="4">No s\'ha trobat cap formulari.</td></tr>';
                 else:                           
-                    foreach($LFormularis as $OF):                                        
-                        $nom = SitesPeer::getNom($OF->getSiteId());                                                                                                                        
+                    foreach($LFormularis as $OFR):                                        
+                        $nom = SitesPeer::getNom($OFR->getSiteId());
+                        $OF = $OFR->getFormulariss();
+                        $OF = $OF[0];
+                        $url = url_for('@hospici_formularis_detall?idF='.$OF->getIdformularis().'&titol='.$OF->getNomForUrl());
+                                                                                                                                                
                         echo '<tr>
-                                <td>'.$OF->getNom().'</td>
+                                <td><a href="'.$url.'">'.$OF->getNom().'</a></td>
                                 <td>'.$nom.'</td>                                                                
-                                <td>'.$OF->getRegistrat().'</td>
+                                <td>'.$OFR->getRegistrat().'</td>
                              </tr>';                                                                                                         
                     endforeach;
                 endif;

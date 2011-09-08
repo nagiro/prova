@@ -24,22 +24,7 @@
                             
                     //Si apareix aquí és perquè es pot demanar per internet.
                     $url = url_for('@hospici_formularis_detall?idF='.$OF->getIdformularis().'&titol='.$OF->getNomForUrl()); 
-                    if(isset($AUTH) && $AUTH > 0){
-                        echo '  <div style="float:right">
-                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                        <a name="link_compra" style="text-decoration:none;" href="'.$url.'">Omple formulari</a>
-                                    </div>
-                                </div>';                    
-                    } 
-                    else
-                    {
-                        echo '  <div style="float:right">
-                                    <div class="requadre_mini" style="color:white; background-color:#FFCC00;">
-                                        <a class="auth" href="'.$url.'" name="link_compra" style="text-decoration:none;">Autentifica\'t i omple</a>
-                                    </div>
-                                </div>';                                            
-                    }                  
-                    
+                    echo '<div style="float:right; margin-top: 5px;">'.myUser::ph_getEtiquetaFormulari($AUTH, $OF, $IDU).'</div>';                                        
                     echo '</div>';
                                          
                     echo '<div style="clear:both" class="h_llistat_activitat_organitzador">'.$OF->getDescripcio().'</div>';                    

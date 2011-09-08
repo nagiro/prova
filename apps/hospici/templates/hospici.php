@@ -194,6 +194,7 @@
                                     <li><a href="<?php echo url_for('@hospici_cercador_activitats') ?>">Buscar activitats</a></li>
                                     <li><a href="<?php echo url_for('@hospici_cercador_cursos') ?>">Buscar cursos</a></li>
                                     <li><a href="<?php echo url_for('@hospici_cercador_espais') ?>">Reservar un espai</a></li>
+                                    <li><a href="<?php echo url_for('@hospici_cercador_formularis') ?>">Omplir un formulari</a></li>
                                     <li><a href="<?php echo url_for('@hospici_login') ?>">Sortir</a></li>
                                 </ul> 
                                 
