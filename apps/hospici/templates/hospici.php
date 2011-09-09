@@ -152,9 +152,9 @@
                         <?php if(!$sf_user->isAuthenticated()): ?>
                         
                             <form id="FLOGIN" action="<?php echo url_for('@hospici_login') ?>" method="post">
-                                <div class="h_requadre_login_inputs">
-                                    <input type="text"     name="login" /> 
-                                    <input type="password" name="pass"  />
+                                <div class="h_requadre_login_inputs">                                     
+                                    <input type="text"     name="login" value="Entreu el DNI..." />                                    
+                                    <input type="password" name="pass" value="Contrassenya..." />
                                 </div>                            
                                 <div class="h_requadre_login_button">
                                     <a href="#" id="LOGINSUBMIT">Entra &gt;&gt;&gt;</a>

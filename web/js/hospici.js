@@ -1,6 +1,9 @@
 $(document).ready(function(){
     
-    var url = '';
+    var url = '';        
+    
+    $('[name="login"]').focus(function(){ $('[name="login"]').val(""); });
+    $('[name="pass"]').focus(function(){ $('[name="pass"]').val(""); });
     
     $("#LOGINSUBMIT").click(function(){ $("#FLOGIN").submit(); });
     

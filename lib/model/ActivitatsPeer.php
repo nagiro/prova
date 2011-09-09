@@ -851,7 +851,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
                     
     $RET = array(); $SOL = array();
     
-    $RET[0] = array('NOM' => "Tots els pobles..." , 'COUNT'=>0);
+    $RET[0] = array('NOM' => "Totes les entitats..." , 'COUNT'=>0);
     foreach(SitesPeer::doSelect($C) as $OS):
         if(!isset($RET[$OS->getSiteId()])) $RET[$OS->getSiteId()] = array('NOM' => $OS->getNom(),'COUNT'=>0);
         $RET[$OS->getSiteId()]['COUNT'] += 1;
