@@ -35,8 +35,9 @@ class MatriculesPeer extends BaseMatriculesPeer
     {
         $C1 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_PAGAT);
         $C2 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_NO_PAGAT);
-        $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
-        $C1->addOr($C2); $C1->addOr($C3); $C->add($C1);
+//        $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
+        $C1->addOr($C2); $C->add($C1);
+//        $C1->addOr($C3); 
         $C->add(self::ACTIU, true);
         return $C;
     } 
@@ -399,7 +400,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C = new Criteria();    
     $C = self::h_getCriteriaActiu( $C );
     $C = self::criteriaMatriculat( $C );
-    $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);            
+    $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);                
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
 
     return MatriculesPeer::doSelect($C);
