@@ -30,7 +30,7 @@ class UsuarisForm extends sfFormPropel
       'Email'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Adreca'            => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'CodiPostal'        => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
-      'Poblacio'          => new sfWidgetFormPropelChoice(array('model' => 'Poblacions', 'add_empty' => true)),
+      'Poblacio'          => new sfWidgetFormChoice(array('choices' => PoblacionsPeer::select())),
       'Poblaciotext'      => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Telefon'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Mobil'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
