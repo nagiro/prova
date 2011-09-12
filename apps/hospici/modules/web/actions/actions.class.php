@@ -415,7 +415,7 @@ class webActions extends sfActions
         
                 //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
                 //if( $request->getParameter('Ds_Response') == '0000' )
-                if( $request->isMethod() == 'POST' && $request->getParameter('Ds_Response') == '0000' )                                
+                if( $request->getParameter('Ds_Response') == '0000' )                                
                 {
                     
                     $idM = $request->getParameter('Ds_MerchantData',null);
