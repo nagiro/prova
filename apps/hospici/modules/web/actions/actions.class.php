@@ -542,7 +542,7 @@ class webActions extends sfActions
   }  
   
 
-  public function getTPV(sfWebRequest $request)
+  public function executeGetTPV(sfWebRequest $request)
   {
 
     //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
