@@ -576,19 +576,21 @@ class webActions extends sfActions
                                 
             } else {
 
-     			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',$idM);
+     			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI','IDM:'.$idM);
                 
             }
                                         
         } else {
             
-            $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI',$idM);
+            $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI','IDM:'.$idM);
             
         }
                             
     }
     
-    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','NO HA ENTRAT AMB TPV',$idM);
+    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','NO HA ENTRAT AMB TPV','IDM:'.$idM);
+    
+    return sfView::NONE;
 
   }
   
