@@ -117,10 +117,10 @@ class UsuarisForm extends sfFormPropel
   	  	    
   	$DNI = trim($valor);
   	
-  	if(self::valida_nif_cif_nie($DNI) <= 0) throw new sfValidatorError($A, "Error: El DNI Ã©s incorrecte.<br /> Recorda escriure'l amb el format 99999999A.");
+  	if(self::valida_nif_cif_nie($DNI) <= 0) throw new sfValidatorError($A, "Error: El DNI és incorrecte.<br /> Recorda escriure'l amb el format 99999999A.");
   	
   	$OUsuari = UsuarisPeer::cercaDNI($DNI);    
-  	if($OUsuari instanceof Usuaris && $OUsuari->getUsuariid() != $arguments['idU']) throw new sfValidatorError($A, "Error: El DNI ja existeix. Si us plau envii un missatge a informatica@casadecultura.org per a mÃ©s informaciÃ³. ");
+  	if($OUsuari instanceof Usuaris && $OUsuari->getUsuariid() != $arguments['idU']) throw new sfValidatorError($A, "Error: El DNI ja existeix. Si us plau envii un missatge a informatica@casadecultura.org per a més informació. ");
   	return $valor;
   	  	
   } 
