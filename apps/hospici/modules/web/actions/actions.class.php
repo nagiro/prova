@@ -587,6 +587,8 @@ class webActions extends sfActions
         }
                             
     }
+    
+    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','NO HA ENTRAT AMB TPV',$idM);
 
   }
   
