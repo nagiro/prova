@@ -120,7 +120,7 @@ hospici_matricula_TPV_KO:
 
 hospici_matricula_TPV_GET:
   url: /usuaris/matricula/get
-  param: { module: web, action:usuaris, accio:GET_TPV }
+  param: { module: web, action:getTPV }
   
 # Aquest pels formularis de l'hospici
 hospici_nou_formulari:

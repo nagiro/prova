@@ -408,56 +408,7 @@ class webActions extends sfActions
         case 'matricula_KO':
                 $this->MISSATGE3 = "KO";
                 $this->SECCIO   = 'MATRICULA';
-            break;
-            
-        //Gestió del que retorna el TPV
-        case 'GET_TPV':
-        
-                //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
-                //if( $request->getParameter('Ds_Response') == '0000' )
-                if( $request->getParameter('Ds_Response') == '0000' )                                
-                {
-                    
-                    $idM = $request->getParameter('Ds_MerchantData',null);
-                    
-                    $OM     = MatriculesPeer::retrieveByPK($idM);
-                    
-                    
-                    if($OM instanceof Matricules)
-                    {                                                
-                        
-                        $from   = OptionsPeer::getString('MAIL_FROM',$OM->getSiteId());
-                        
-                        //Un cop sabem que la matrícula existeix, comprovem la signatura i si és correcta, marquem com a pagat.
-                        if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Response') , $request->getParameter('Ds_Signature'), OptionsPeer::getString('TPV_PASSWORD',$OM->getSiteid() )))
-                        {
-                                                                                    
-                            $MailMat    = MatriculesPeer::MailMatricula($OM,$OM->getSiteid());
-                            $subject    = 'Hospici :: Nova matrícula';
-                            
-                            $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
-                            $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
-                            $OM->setTpvOrder($request->getParameter('Ds_Order'));
-                            $OM->save();                            
-                            
-                            $this->sendMail($from,$OM->getUsuaris()->getEmail(),$subject,$MailMat);
-                            $this->sendMail($from,'informatica@casadecultura.org',$subject,$MailMat);
-                                            
-                        } else {
-
-                 			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',$idM);
-                            
-                        }
-                                                    
-                    } else {
-                        
-                        $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI',$idM);
-                        
-                    }
-                                        
-                }
-                                
-            break;
+            break;        
 
         //Mostra totes les reserves que s'han fet
         case 'llista_reserves':
@@ -589,6 +540,56 @@ class webActions extends sfActions
     // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();
         
   }  
+  
+
+  public function getTPV(sfWebRequest $request)
+  {
+
+    //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
+    //if( $request->getParameter('Ds_Response') == '0000' )
+    if( $request->getParameter('Ds_Response') == '0000' )                                
+    {
+        
+        $idM = $request->getParameter('Ds_MerchantData',null);
+        
+        $OM     = MatriculesPeer::retrieveByPK($idM);
+                            
+        if($OM instanceof Matricules)
+        {                                                
+            
+            $from   = OptionsPeer::getString('MAIL_FROM',$OM->getSiteId());
+            
+            //Un cop sabem que la matrícula existeix, comprovem la signatura i si és correcta, marquem com a pagat.
+            if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Response') , $request->getParameter('Ds_Signature'), OptionsPeer::getString('TPV_PASSWORD',$OM->getSiteid() )))
+            {
+                                                                        
+                $MailMat    = MatriculesPeer::MailMatricula($OM,$OM->getSiteid());
+                $subject    = 'Hospici :: Nova matrícula';
+                
+                $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
+                $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
+                $OM->setTpvOrder($request->getParameter('Ds_Order'));
+                $OM->save();                            
+                
+                $this->sendMail($from,$OM->getUsuaris()->getEmail(),$subject,$MailMat);
+                $this->sendMail($from,'informatica@casadecultura.org',$subject,$MailMat);
+                                
+            } else {
+
+     			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',$idM);
+                
+            }
+                                        
+        } else {
+            
+            $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI',$idM);
+            
+        }
+                            
+    }
+
+  }
+  
   
   /**
    * hospiciActions::executeCursos()
