@@ -565,10 +565,12 @@ class webActions extends sfActions
                                                                         
                 $MailMat    = MatriculesPeer::MailMatricula($OM,$OM->getSiteid());
                 $subject    = 'Hospici :: Nova matrícula';
+                $preu       = strval($request->getParameter('Ds_Order')) / 100;
                 
                 $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
                 $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
                 $OM->setTpvOrder($request->getParameter('Ds_Order'));
+                $OM->setPagat($preu);
                 $OM->save();                            
                 
                 $this->sendMail($from,$OM->getUsuaris()->getEmail(),$subject,$MailMat);
