@@ -27,12 +27,12 @@
 
 <?php use_helper('Form') ?>
 
-    <TD colspan="3" class="CONTINGUT_ADMIN">
+    <td colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'USUARIS')); ?>
     
-   	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="POST">
-	    <DIV class="REQUADRE">
+   	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
+	    <div class="REQUADRE">
 	    	<table class="FORMULARI">          
 	            <?php echo $FCerca ?>
 	            <tr>
@@ -42,13 +42,13 @@
 	            	</td>
 	            </tr>
 	        </table>
-	     </DIV>
+	     </div>
      </form>  
   
   <?php IF( isset($MODE['NOU']) && $MODE['NOU'] || isset($MODE['EDICIO']) && $MODE['EDICIO'] ): ?>
       
 	<form id="new_user" action="<?php echo url_for('gestio/gUsuaris') ?>" method="post" enctype="multipart/form-data">  	               
-	 	<DIV class="REQUADRE">
+	 	<div class="REQUADRE">
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	 	
 	    	<table class="FORMULARI" width="500px">
                 <?php echo $FUsuari?>                								
@@ -58,8 +58,8 @@
 						<?php include_partial('botonera',array('element'=>'l\\\'usuari')); ?>	            	
 					</td>
 	            </tr>                	 
-      		</TABLE>
-      	</DIV>
+      		</table>
+      	</div>
      </form>    
   
   <?php ENDIF;?>
@@ -67,28 +67,28 @@
   <?php IF( isset($MODE['LLISTES']) && $MODE['LLISTES'] ): ?>
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
-     <DIV class="REQUADRE">
+     <div class="REQUADRE">
      	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>        
-        <DIV class="TITOL">Llistes subscrites de'n <?php echo $USUARI->getNomComplet() ?></DIV>
-      	<TABLE class="DADES">
+        <div class="TITOL">Llistes subscrites de'n <?php echo $USUARI->getNomComplet() ?></div>
+      	<table class="DADES">
                 <?php
                                                      
-                  if($USUARI->countUsuarisllistess() == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no està subscrit a cap llista.</TD></TR>';                                    
+                  if($USUARI->countUsuarisllistess() == 0) echo '<tr><td class="LINIA" colspan="5">L\'Usuari no està subscrit a cap llista.</td></tr>';                                    
                   foreach($USUARI->getUsuarisllistess() as $L):                  
-                      echo '<TR>
-                       			<TD width="10px" class="LINIA">'.checkbox_tag('D[IDL][]',$L->getLlistesIdllistes(),false).'<TD class="LINIA">'.$L->getLlistes()->getNom().'</TD>                                                           
-                            </TR>';                                   
+                      echo '<tr>
+                       			<td width="10px" class="LINIA">'.checkbox_tag('D[IDL][]',$L->getLlistesIdllistes(),false).'<td class="LINIA">'.$L->getLlistes()->getNom().'</td>                                                           
+                            </tr>';                                   
                   endforeach;                                  
-                  echo '<TR><TD colspan="2"><button name="BDESVINCULA">DESVINCULA</button></TD></TR>';
+                  echo '<tr><td colspan="2"><button name="BDESVINCULA">DESVINCULA</button></td></tr>';
                                     
                 ?>
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
   
-     <DIV class="REQUADRE">
+     <div class="REQUADRE">
         <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gUsuaris?accio=FC'); ?></div>
-        <DIV class="TITOL">Llistes disponibles per a en <?php echo $USUARI->getNomComplet() ?></DIV>
-      	<TABLE class="DADES">
+        <div class="TITOL">Llistes disponibles per a en <?php echo $USUARI->getNomComplet() ?></div>
+      	<table class="DADES">
                   <?php
                                                      
 	                  if(empty($LLISTAT_LLISTES)) echo '<TR><TD class="LINIA" colspan="5">No s\'ha trobat cap llista disponible.</TD></TR>';                                    
@@ -100,18 +100,18 @@
 	                  echo '<TR><TD colspan="2"><button name="BVINCULA">VINCULA</button></TD></TR>';
                                     
                 ?>
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
       </form>
     
   <?php ENDIF;?>
   
   <?php IF( isset($MODE['CURSOS']) && $MODE['CURSOS'] ): ?>
 
-     <DIV class="REQUADRE">
+     <div class="REQUADRE">
      	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	    
-        <DIV class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=NU&id_usuari='.$USUARI->getUsuariid()); ?>)</DIV>
-      	<TABLE class="DADES">
+        <div class="TITOL">Llistat de matrícules de'n <?php echo $USUARI->getNomComplet() ?> (<?php echo link_to('Nova matricula','gestio/gMatricules?accio=NU&id_usuari='.$USUARI->getUsuariid()); ?>)</div>
+      	<table class="DADES">
                 <?php                 
                   if(sizeof($MATRICULES) == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap curs a la Casa de Cultura.</TD></TR>';                                    
                   foreach($MATRICULES as $M):                  		
@@ -127,40 +127,40 @@
 						endif;                  
                   endforeach;                                                    
                 ?>
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
   
   <?php ENDIF; ?>
   
   <?php IF( isset($MODE['REGISTRES']) && $MODE['REGISTRES'] ): ?>
 
-     <DIV class="REQUADRE">
+     <div class="REQUADRE">
      	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>
-        <DIV class="TITOL">Llistat de reserves de'n <?php echo $USUARI->getNomComplet() ?></DIV>
-      	<TABLE class="DADES">
+        <div class="TITOL">Llistat de reserves de'n <?php echo $USUARI->getNomComplet() ?></div>
+      	<table class="DADES">
                 <?php
                                   
-                  if(sizeof($RESERVES) == 0) echo '<TR><TD class="LINIA" colspan="5">L\'Usuari no ha fet cap reserva.</TD></TR>';                                    
+                  if(sizeof($RESERVES) == 0) echo '<tr><td class="LINIA" colspan="5">L\'Usuari no ha fet cap reserva.</td></tr>';                                    
                   foreach($RESERVES as $R):                                            
-                      echo "<TR><TD class=\"LINIA\">".link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid())."</TD><TD class=\"LINIA\">".$R->getUsuaris()->getNomComplet()."</TD><TD class=\"LINIA\">".$R->getDataactivitat()."</TD><TD class=\"LINIA\">".$R->getEstatText()."<TD></TR>";
+                      echo "<tr><td class=\"LINIA\">".link_to($R->getNom(),'gestio/gReserves?accio=E&IDR='.$R->getReservaespaiid())."</TD><TD class=\"LINIA\">".$R->getUsuaris()->getNomComplet()."</TD><TD class=\"LINIA\">".$R->getDataactivitat()."</TD><TD class=\"LINIA\">".$R->getEstatText()."<td></tr>";
                   endforeach;                                  
 
                 ?>
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
 
   <?php ENDIF; ?>
   
   <?php IF( isset($MODE['GESTIO_APLICACIONS']) && $MODE['GESTIO_APLICACIONS'] ): ?>
 
 	<form action="<?php echo url_for('gestio/gUsuaris') ?>" method="post">
-     <DIV class="REQUADRE">
+     <div class="REQUADRE">
 	    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'));
                 echo input_hidden_tag('id_usuari',$USUARI->getUsuariId());
         
         ?>
-        <DIV class="TITOL">Gestió de permisos d'aplicacions de l'usuari <?php echo $USUARI->getNomComplet() ?></DIV>        
-      	<TABLE class="DADES">
+        <div class="TITOL">Gestió de permisos d'aplicacions de l'usuari <?php echo $USUARI->getNomComplet() ?></div>        
+      	<table class="DADES">
                 <?php                    
                 	foreach(AppsPeer::select() as $IDAPP => $APP):     
                 		$SELECT = (isset($LLISTAT_PERMISOS[$IDAPP]))?$LLISTAT_PERMISOS[$IDAPP]:NivellsPeer::CAP;                		
@@ -172,41 +172,39 @@
                 	
                 	echo '<TR><TD colspan="2"><button name="BACTUALITZA_PERMISOS" class="BOTO_ACTIVITAT">ACTUALITZA</TD></TR>';                                         
                 ?>
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
      </form>
 
-  <?php ENDIF; ?>
+  <?php endif; ?>
 
-	<?php IF( isset($MODE['CONSULTA']) && $MODE['CONSULTA'] ): ?>
+	<?php if( isset($MODE['CONSULTA']) && $MODE['CONSULTA'] ): ?>
 
-     <DIV class="REQUADRE">     	
-        <DIV class="TITOL">Llistat d'usuaris (<?php echo $PAGER_USUARIS->getNbResults()?>)</DIV>
-      	<TABLE class="DADES">
+     <div class="REQUADRE">     	
+        <div class="TITOL">Llistat d'usuaris (<?php echo $PAGER_USUARIS->getNbResults()?>)</div>
+      	<table class="DADES">
       			<?php 
                 	if($PAGER_USUARIS->getNbResults() == 0):
-                  		echo '<TR><TD class="LINIA" colspan="4">No s\'ha trobat cap usuari.</TD></TR>';
+                  		echo '<tr><td class="LINIA" colspan="4">No s\'ha trobat cap usuari.</td></tr>';
                  	else:                 
 	                 	foreach($PAGER_USUARIS->getResults() as $U):
-		                 	echo '	<TR><TD class="LINIA">'.link_to($U->getDni(),'gestio/gUsuaris'.getPar($PAGINA,$U->getusuariid(),'E')).'</TD>
-		                        		<TD class="LINIA">'.$U->getNomComplet().'</TD>
-		                        		<TD class="LINIA">'.$U->getTelefon().'</TD> 
-		                        		<TD class="OPCIONS">'.creaOpcions($PAGINA, $U->getusuariid(), NULL).'</TD>
-		                    		</TR>';                                   
+		                 	echo '	<tr><td class="LINIA">'.link_to($U->getDni(),'gestio/gUsuaris'.getPar($PAGINA,$U->getusuariid(),'E')).'</td>
+		                        		<td class="LINIA">'.$U->getNomComplet().'</td>
+		                        		<td class="LINIA">'.$U->getTelefon().'</td> 
+		                        		<td class="OPCIONS">'.creaOpcions($PAGINA, $U->getusuariid(), NULL).'</td>
+		                    		</tr>';                                   
 	                	endforeach;                    
-	                	echo '<TR><TD>'.gestorPaginesUsuaris( $PAGER_USUARIS ).'</TD></TR>';
+	                	echo '<tr><td>'.gestorPaginesUsuaris( $PAGER_USUARIS ).'</td></tr>';
 	            	endif;
 	            ?> 
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
 
-  <?php ENDIF; ?>
-
-  
-    
-      <DIV STYLE="height:40px;"></DIV>
+  <?php endif; ?>
+      
+      <div style="height:40px;"></div>
                 
-    </TD>    
+    </td>    
     
     
 <!-- FI CONTINGUT -->

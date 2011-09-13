@@ -35,7 +35,7 @@ class UsuarisForm extends sfFormPropel
       'Telefon'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Mobil'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'Entitat'           => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
-      'Habilitat'         => new sfWidgetFormChoice(array('choices'=>array(1=>'SÃ­',0=>'No')),array()),
+      'Habilitat'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'Actualitzacio'     => new sfWidgetFormInputHidden(array(),array()),
       'site_id'           => new sfWidgetFormInputHidden(array(),array()),
     ));

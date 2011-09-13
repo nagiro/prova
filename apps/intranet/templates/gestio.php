@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:fb="http://www.facebook.com/2008/fbml">
   <head>
-  <meta http-equiv="content-type" content="text/html; charset=windows-1250">   
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />   
 
   <?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
     
