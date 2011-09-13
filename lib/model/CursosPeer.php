@@ -518,6 +518,8 @@ class CursosPeer extends BaseCursosPeer
       foreach($CURSOS_MATRICULATS as $idC => $idM) if(in_array($idC,$ANG)) $exist = true;        
     }elseif(in_array($idC,$FRA)){
       foreach($CURSOS_MATRICULATS as $idC => $idM) if(in_array($idC,$FRA)) $exist = true;
+    }elseif(in_array($idC,$ART)){
+      foreach($CURSOS_MATRICULATS as $idC => $idM) if(in_array($idC,$ART)) $exist = true;      
     }
 
     return $exist;    
