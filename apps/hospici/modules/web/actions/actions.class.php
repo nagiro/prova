@@ -333,6 +333,42 @@ class webActions extends sfActions
                                                 
         break;        
         
+        //Nova matrícula a un curs però quan ens quedem en espera
+        case 'nova_matricula_espera':
+            
+            //Capturem el codi del curs i el codi del descompte
+            $idC = $request->getParameter('idC');            
+            $OC = CursosPeer::retrieveByPK($idC);
+
+            //Si el curs és correcte
+            if($OC instanceof Cursos)
+            {
+
+                //Generem la matícula en procés.                                                                                
+                $OM = MatriculesPeer::saveNewMatricula($this->IDU,$idC,0,'Espera Hospici');            
+                $this->SECCIO = 'MATRICULA';
+                                            
+                if($OM instanceof Matricules)                
+                {            
+                    //Ho marquem clarament, per si de cas. 
+                    $OM->setPagat(0);
+                    $OM->setEstat(MatriculesPeer::EN_ESPERA);
+                    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','Hospici :: Espera de matrícula',$OM->getIdmatricules());
+                    //El curs en qüestió ja està ple. Mostrem el llistat però el missatge de "en espera".
+                    $this->MISSATGE3 = 'ESPERA';
+                }            
+                else
+                {                 
+                    if($OM == 1) $this->MISSATGE3 = "JA_EXISTEIX";
+                    else $this->MISSATGE3 = "KO";
+                }             
+            }
+            else
+            {
+                $this->MISSATGE3 = "CURS_NO_EXISTEIX";
+            }
+        break;
+                
         //Nova matrícula a un curs
         case 'nova_matricula':
             

@@ -109,6 +109,10 @@ hospici_cercador_entitats_cursos:
 hospici_nova_matricula:
   url: /usuaris/matricula/nova
   param: { module: web, action:usuaris, accio:nova_matricula }
+  
+hospici_nova_matricula_espera:
+  url: /usuaris/matricula/nova_espera
+  param: { module: web, action:usuaris, accio:nova_matricula_espera }  
 
 hospici_matricula_TPV_OK:
   url: /usuaris/matricula/ok

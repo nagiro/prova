@@ -36,23 +36,23 @@
 		 $("#activitats_nom").fadeOut(0);						 
 		 $("label[for=activitats_nom]").fadeOut(0);
          
-		 $("#horaris_HoraPre_hour").change(function(){
-		      hora = parseInt($("#horaris_HoraPre_hour").val());              
-		      $("#horaris_HoraInici_hour").val(hora);
-              $("#horaris_HoraPost_hour").val(hora+1);
-              $("#horaris_HoraFi_hour").val(hora+1);
-            });
+//		 $("#horaris_HoraPre_hour").change(function(){
+//		      hora = parseInt($("#horaris_HoraPre_hour").val());              
+//		      $("#horaris_HoraInici_hour").val(hora);
+//            $("#horaris_HoraPost_hour").val(hora+1);
+//              $("#horaris_HoraFi_hour").val(hora+1);
+//            });
             
-         $("#horaris_HoraInici_hour").change(function(){
-		      hora = parseInt($("#horaris_HoraInici_hour").val());              		      
-              $("#horaris_HoraPost_hour").val(hora+1);
-              $("#horaris_HoraFi_hour").val(hora+1);
-            });
+//         $("#horaris_HoraInici_hour").change(function(){
+//		      hora = parseInt($("#horaris_HoraInici_hour").val());              		      
+//              $("#horaris_HoraPost_hour").val(hora+1);
+//              $("#horaris_HoraFi_hour").val(hora+1);
+//            });
             
-         $("#horaris_HoraFi_hour").change(function(){
-		      hora = parseInt($("#horaris_HoraFi_hour").val());
-              $("#horaris_HoraPost_hour").val(hora);
-            });
+//         $("#horaris_HoraFi_hour").change(function(){
+//		      hora = parseInt($("#horaris_HoraFi_hour").val());
+//              $("#horaris_HoraPost_hour").val(hora);
+//            });
         
         //Si l'espai que tenim és un espai extern ho mostrem directament.
         <?php if(isset($EXTRES['ESPAIEXTERN']) && $EXTRES['ESPAIEXTERN']->getObject()->getPoble() <= 0){ ?>                                

@@ -77,13 +77,14 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
     echo '<div>Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';
     
 }elseif( $ESTAT == 'EN_ESPERA'){
-    echo '<div>Vostè està en espera de plaça per aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';
+    echo '<div>Vostè està en espera de plaça per aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';    
                     
 }elseif( $ESTAT == 'ANULADA'){
     echo '<div>Vostè ha realitzat una matrícula en aquest curs, però no hi està matriculat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';                   
 
 }elseif( $ESTAT == 'NO_HI_PLACES'){                                    
-    echo '<div>Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.</div>';
+    echo '<div>Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /></div>';
+    echo mostraFormulariComplet($nom,$CURS);
     
 }elseif( $ESTAT == 'NO_HI_HA_RESERVA_LINIA'){
     echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>';
@@ -96,17 +97,61 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
                     
 }elseif( $ESTAT == 'POT_MATRICULAR'){
                                                             
+        echo mostraFormulari($nom, $CURS);
+                    
+} ?>                
+            				    </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Fi Requadre de compra o reserva d'entrades  -->	        													
+                        
+					</div>					
+				</div>
+				                                                
+                <!-- Fi Requadre de descripció  -->													
+			</div>
+           
+           <!-- Fi de curs -->  
+      
+      <?php } ?>  
+</div>
+
+
+
+<?php 
+
+function mostraFormulariComplet($nom, $CURS)
+{
+
+    echo '<form method="post" action="'.url_for('@hospici_nova_matricula_espera').'">';
+    
+    //Guardem el codi del curs                                                               	                                                                                                         
+    echo input_hidden_tag('idC',$CURS->getIdcursos());
+    
+     ?>
+    <div class="taula_dades">        
+        <div style="padding-top:10px; clear:both;">                              
+            <div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Posa'm en espera" /></div>                                                                                                    
+        </div>
+    </div>
+<?php }
+
+function mostraFormulari($nom, $CURS )
+{
+
     echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
     
     //Guardem el codi del curs                                                               	                                                                                                         
     echo input_hidden_tag('idC',$CURS->getIdcursos());
+    $A_Descomptes = $CURS->h_getDescomptes();
     
      ?>
     <div class="taula_dades">
         <div style="padding-top:10px;">
             <div style="float: left; width:120px;"><b>Pagament:</b></div>                                            
             <div style="float: left;">
-            <?php
+            <?php                                
                 if( $CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA ) echo 'Només reserva <span class="tipMy tip" title="A través del portal es fa la reserva de plaça, a cost 0, i posteriorment l\'entitat organitzadora es posarà en contacte amb vostè per finalitzar la matrícula.">?</span>';
                 elseif( $CURS->getIsentrada() == CursosPeer::HOSPICI_RESERVA_TARGETA ) echo 'Targeta de crèdit <span class="tipMy tip" title="A través del portal realitzarà i pagarà la matrícula del curs.">?</span>';
             ?>
@@ -137,8 +182,7 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
             <div style="float: left; width:120px;"><b>Descompte: </b></div>
             <div style="float: left;">
             <?php 
-                
-                $A_Descomptes = $CURS->h_getDescomptes();
+                                
                 //Si hi ha descompte al curs, el mostrem
                 if(empty($A_Descomptes)) echo 'Cap descompte disponible <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
                 else echo select_tag('idD',options_for_select($A_Descomptes,1)).' <span class="tipMy tip" title="Esculli, si s\'escau, el descompte que s\'adeqüi a la seva situació. Aquest haurà de ser demostrat a l\'entitat organitzadora a l\'inici de les classes.">?</span>';
@@ -156,21 +200,4 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
             ?>
         </div>
     </div>
-            
-    <?php } ?>                
-            				    </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Fi Requadre de compra o reserva d'entrades  -->	        													
-                        
-					</div>					
-				</div>
-				                                                
-                <!-- Fi Requadre de descripció  -->													
-			</div>
-           
-           <!-- Fi de curs -->  
-      
-      <?php } ?>  
-</div>
+<?php } ?>

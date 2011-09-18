@@ -87,8 +87,8 @@ class gestioActions extends sfActions
             break;
         case 'GUARDA_USUARI':
                 $RP = $request->getParameter('usuaris');
-                $this->FUSUARI = UsuarisPeer::initialize($RP['UsuariID'],$RP['site_id'],false,true);                
-                $this->FUSUARI->bind($RP);                
+                $this->FUSUARI = UsuarisPeer::initialize($RP['UsuariID'],$RP['site_id'],false,true);
+                $this->FUSUARI->bind($RP);
                 if($this->FUSUARI->isValid()):                    
                     $this->getUser()->addLogAction($this->accio,'uGestio',$this->FUSUARI->getObject(),$RS);
                     $this->FUSUARI->save();
@@ -669,14 +669,14 @@ class gestioActions extends sfActions
        //Guarda un usuari 
        case 'S':       
             $RP = $request->getParameter('usuaris');
-            $this->IDU = $RP['UsuariID']; 
-            $this->FUsuari = UsuarisPeer::initialize( $this->IDU , $this->IDS , false );             		                                       		  
+            $this->IDU = $RP['UsuariID'];                                             
+            $this->FUsuari = UsuarisPeer::initialize( $this->IDU , $this->IDS , false , false );                        
             $this->FUsuari->bind($RP);             
 		    if($this->FUsuari->isValid())
 		    { 		     	
 	    	  $this->FUsuari->save();
               $this->getUser()->addLogAction($accio,'gUsuaris',null, $this->FUsuari->getObject()); 
-		    }		     
+		    }                		     
 		    $this->MODE['EDICIO'] = true;      		     
             break;
               

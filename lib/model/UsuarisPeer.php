@@ -15,15 +15,17 @@ class UsuarisPeer extends BaseUsuarisPeer
   
   static public function initialize( $idU , $idS , $isMatricules = false , $isWeb = false )
   {
+    
+    //Carrego l'usuari segons el seu IDU
     $OU = UsuarisPeer::retrieveByPK($idU);            
 	if(!($OU instanceof Usuaris)):            		
 		$OU = new Usuaris();
         $OU->setSiteId($idS);        
         $OU->setActiu(true);
 		$OU->setNivellsIdnivells(NivellsPeer::REGISTRAT);
-    	$OU->setHabilitat(true);     
-	endif; 
-
+    	$OU->setHabilitat(true);
+    endif; 
+            
     if($isMatricules):
         return new UsuarisMatriculesForm($OU);
     elseif($isWeb):
@@ -48,8 +50,8 @@ class UsuarisPeer extends BaseUsuarisPeer
      
   static function cercaDNI($DNI)
   {
-    $C = new Criteria();                 
-    $C->add(self::DNI, $DNI, Criteria::EQUAL);
+    $C = new Criteria();              
+    $C->add(self::DNI, strtoupper(trim($DNI)), Criteria::EQUAL);
     return self::doSelectOne($C);
   }
   

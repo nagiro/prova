@@ -99,14 +99,14 @@ class UsuarisForm extends sfFormPropel
   public function save($conn = null)
   {
     
-    //Les dades de l'usuari que es mantenen sÃ³n sempre les noves. Guardem la data d'actualitzaciÃ³ i avall.'
+    //Les dades de l'usuari que es mantenen són sempre les noves. Guardem la data d'actualització i avall.
     $this->updateObject();
     $OU = $this->getObject();
-    $OU->setActualitzacio(date('Y-m-d',time())); //Guardem la data d'actualitzaciÃ³.'
+    $OU->setActualitzacio(date('Y-m-d',time())); //Guardem la data d'actualització.
     $OU->save();                    
         
-    //Mirem si l'usuari estÃ  relacionat amb el SITE
-    $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();    
+    //Mirem si l'usuari està relacionat amb el SITE
+    $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();
     $OUS->setNivellid($this->getValue('Nivells_idNivells'));
     $OUS->save();
     
