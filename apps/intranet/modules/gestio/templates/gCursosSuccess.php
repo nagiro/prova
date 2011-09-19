@@ -175,7 +175,7 @@
 						if($CAT_ANT <> $C->getCategoria()) echo '<TR><TD colspan="6" class="TITOLCAT">'.$C->getCategoriaText().'</TD></TR>';
 						$CAT_ANT = $C->getCategoria(); $SPAN = ""; 
 						$PLACES = CursosPeer::getPlaces($C->getIdcursos(),$IDS);
-                        $ple = ($PLACES['OCUPADES'] == $PLACES['TOTAL'])?"style=\"background-color:#FF7373;\"":"";											
+                        $ple = ($PLACES['OCUPADES'] >= $PLACES['TOTAL'])?"style=\"background-color:#EDE765;\"":"";											
                       	$PAR = ParImpar($i++);	                      	
 						echo '<TR>
 								<TD '.$ple.' class="'.$PAR.'">'.link_to($C->getCodi().$SPAN , "gestio/gCursos?accio=EC&IDC=".$C->getIdcursos() , array('class' => 'tt2') ).'</TD>
