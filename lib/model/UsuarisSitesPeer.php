@@ -100,8 +100,7 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
             $OO->setUsuariId($idU);
             $OO->setSiteId($idS);
             $OO->setNivellId(NivellsPeer::REGISTRAT);
-            $OO->setActiu(true);
-            $OO->setNivellId(NivellsPeer::CAP);			     						
+            $OO->setActiu(true);            			     						
 		endif; 
         
         return new UsuarisSitesForm($OO,array('IDS'=>$idS,'NEW'=>$new));
