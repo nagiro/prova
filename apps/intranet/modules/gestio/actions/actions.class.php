@@ -2415,7 +2415,7 @@ class gestioActions extends sfActions
 //      	$this->PAGINA = $this->getUser()->setSessionPar('pagina',1);
 //    endif;    
         
-    $this->PAGINA = $this->getUser()->ParReqSesForm($request,'pagina',1);    
+    $PAGINA = $this->getUser()->ParReqSesForm($request,'P',1);    
     $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>'','select'=>'0'));    
     
     //Inicialitzem el formulari de cerca
@@ -2490,7 +2490,7 @@ class gestioActions extends sfActions
             break;        	 
     }
         
-    $this->RESERVES = ReservaespaisPeer::getReservesSelect( $this->CERCA['text'] , $this->CERCA['select'] , $this->PAGINA , $this->IDS );    
+    $this->RESERVES = ReservaespaisPeer::getReservesSelect( $this->CERCA['text'] , $this->CERCA['select'] , $PAGINA , $this->IDS );    
   		
   }
 

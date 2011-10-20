@@ -126,7 +126,7 @@ hospici_matricula_TPV_GET:
   url: /usuaris/matricula/get
   param: { module: web, action:getTPV }
   
-# Aquest pels formularis de l'hospici
+# Aquest pels formularis de hospici
 hospici_nou_formulari:
   url: /usuaris/formularis/alta
   param: { module: web, action: usuaris, accio: alta_formulari }
@@ -135,7 +135,7 @@ hospici_llista_formularis:
   url: /usuaris/formularis
   param: { module: web, action: usuaris, accio: llista_formularis }
    
-# Aquest és pels mails
+# Aquest es pels mails
 hospici_formulari_get:
   url: /formularis/:PAR
   param: { module: web, action: formularis, accio: GET }

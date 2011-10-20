@@ -13,6 +13,10 @@
 
 <script type="text/javascript">
 
+    $(document).ready(function(){
+        $("#cerca_select").change(function(){ $("#FORM_CERCA_RESERVES").submit(); });
+    });
+
 	function vacio(q){for(i=0;i<q.length;i++){if(q.charAt(i)!=" "){return true}}return false}  
 
 	function ValidaReserves(){		
@@ -28,7 +32,7 @@
     
     <?php include_partial('breadcumb',array('text'=>'RESERVES')); ?>
     
-    <form action="<?php echo url_for('gestio/gReserves') ?>" method="POST">
+    <form id="FORM_CERCA_RESERVES" action="<?php echo url_for('gestio/gReserves') ?>" method="POST">
     	<?php include_partial('cerca',array(
     										'TIPUS'=>'Select',
     										'FCerca'=>$FCerca,
@@ -133,9 +137,9 @@ function gestorPagines($MODEL)
   if($MODEL->haveToPaginate())
   {       
   	 echo '<TR><TD colspan="5" class="TITOL">';  	 
-     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gReserves?PAGINA='.$MODEL->getPreviousPage());
-     echo " ";
-     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gReserves?PAGINA='.$MODEL->getNextPage());
+     echo link_to(image_tag('tango/16x16/actions/go-previous.png'), 'gestio/gReserves?P='.$MODEL->getPreviousPage());
+     echo " ".$MODEL->getPage()."/".$MODEL->getLastPage()." ";
+     echo link_to(image_tag('tango/16x16/actions/go-next.png'), 'gestio/gReserves?P='.$MODEL->getNextPage());
      echo '</TD></TR>';
   }
 }

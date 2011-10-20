@@ -6,10 +6,7 @@ homepage:
   url:   /
   param: { module: web, action: index }
 
-
-#####################################################
-# GESTIÓ                                            #
-#####################################################
+# admin 
 
 gAdmin:
   url: /gestio/main
@@ -22,14 +19,12 @@ gUser:
 uLogin:
   url: /gestio/uLogin
   param: { module:gestio, action:uLogin  }
-
-#####################################################
-# FACEBOOK                                          #
-#####################################################
   
 gConfig:
   url: /gestio/gConfig
   param: { module:gestio, action:gConfig }
+
+# facebook
 
 fb_login:
   url: /gestio/fb_login
@@ -51,18 +46,13 @@ fb_user_unlink:
   url: /gestio/fb_user_unlink
   param: { module:gestio, action:uGestio, accio:FB_UNLINK }  
 
-#####################################################
-# NOTICIES CULTURALS                                #
-#####################################################
+# NOTICIES CULTURALS
 
 noticies_culturals:
   url:  /noticiesculturals
   param: { module:blogs, action:noticiesculturals }
 
-
-#####################################################
-# WEB CCG                                           #
-#####################################################
+# WEB CONTINGUTS
 
 web_contingut_auto:
   url: /web/cicles/:node/:titol
@@ -84,18 +74,11 @@ web_cicle:
   url: /web/cicle/:idC/:titol
   param: { module:web, action:index, accio:cc  }
 
-#####################################################
-# BACKGROUND                                        #
-#####################################################
-
 reserva_espai_remember_mail:
   url: /gestio/background/reserva_remember
-  param: { module: gestio, action:sBackground, accio:RECORDATORI_RESERVA_ESPAIS }
+  param: { module: gestio, action:sBackground, accio:RECORDATORI_RESERVA_ESPAIS }                                         
 
-#####################################################
-# GENERIQUES                                        #
-# please, remove them by adding more specific rules #
-#####################################################
+# GENERICS
 
 default_index:
   url:   /:module
