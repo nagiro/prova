@@ -15,7 +15,7 @@ abstract class BaseEspaisExternsForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idEspaiextern' => new sfWidgetFormInputHidden(),
-      'Poble'         => new sfWidgetFormPropelChoice(array('model' => 'Poblacions', 'add_empty' => false)),
+      'Poble'         => new sfWidgetFormInputText(),
       'Nom'           => new sfWidgetFormTextarea(),
       'Adreca'        => new sfWidgetFormTextarea(),
       'Contacte'      => new sfWidgetFormTextarea(),
@@ -24,7 +24,7 @@ abstract class BaseEspaisExternsForm extends BaseFormPropel
 
     $this->setValidators(array(
       'idEspaiextern' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdespaiextern()), 'empty_value' => $this->getObject()->getIdespaiextern(), 'required' => false)),
-      'Poble'         => new sfValidatorPropelChoice(array('model' => 'Poblacions', 'column' => 'idPoblacio')),
+      'Poble'         => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'Nom'           => new sfValidatorString(),
       'Adreca'        => new sfValidatorString(),
       'Contacte'      => new sfValidatorString(),

@@ -19,7 +19,7 @@ $(document).ready(function(){
                         { 'login':$("#login").val() , 'pass':$('#password').val() },
                          function(data) {                                                     
                             if(data == 'OK'){ $('#dialog-form').dialog( "close" ); $(location).attr('href',url); }
-                            else { alert('Incorrecte'); }                                                           
+                            else { alert('Dades incorrectes.'); }                                                           
                          }   
                         );                        
 				}				

@@ -14,18 +14,24 @@ abstract class BaseMissatgesEmailsForm extends BaseFormPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'idLlista' => new sfWidgetFormInputHidden(),
-      'email'    => new sfWidgetFormInputHidden(),
-      'site_id'  => new sfWidgetFormInputText(),
-      'actiu'    => new sfWidgetFormInputText(),
+      'idEmail' => new sfWidgetFormInputHidden(),
+      'email'   => new sfWidgetFormInputText(),
+      'alta'    => new sfWidgetFormDate(),
+      'baixa'   => new sfWidgetFormDate(),
+      'actiu'   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'idLlista' => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
-      'email'    => new sfValidatorChoice(array('choices' => array($this->getObject()->getEmail()), 'empty_value' => $this->getObject()->getEmail(), 'required' => false)),
-      'site_id'  => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'idEmail' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdemail()), 'empty_value' => $this->getObject()->getIdemail(), 'required' => false)),
+      'email'   => new sfValidatorString(array('max_length' => 50)),
+      'alta'    => new sfValidatorDate(array('required' => false)),
+      'baixa'   => new sfValidatorDate(array('required' => false)),
+      'actiu'   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
+
+    $this->validatorSchema->setPostValidator(
+      new sfValidatorPropelUnique(array('model' => 'MissatgesEmails', 'column' => array('email')))
+    );
 
     $this->widgetSchema->setNameFormat('missatges_emails[%s]');
 

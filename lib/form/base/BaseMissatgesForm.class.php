@@ -33,7 +33,7 @@ abstract class BaseMissatgesForm extends BaseFormPropel
       'Date'             => new sfValidatorDateTime(array('required' => false)),
       'Publicacio'       => new sfValidatorDate(array('required' => false)),
       'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'isGlobal'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 

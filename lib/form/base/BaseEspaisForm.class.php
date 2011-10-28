@@ -28,9 +28,9 @@ abstract class BaseEspaisForm extends BaseFormPropel
       'Nom'        => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'Ordre'      => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'isLlogable' => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'descripcio' => new sfValidatorString(array('required' => false)),
+      'descripcio' => new sfValidatorString(),
     ));
 
     $this->widgetSchema->setNameFormat('espais[%s]');

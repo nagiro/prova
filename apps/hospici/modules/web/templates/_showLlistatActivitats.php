@@ -1,6 +1,6 @@
 <div class="h_requadre_resultats">
     <div class="h_subtitle_gray c1">
-        L'HOSPICI...
+        L'HOSPICI <?php echo ($CERCA['DATAI'] == $CERCA['DATAF'])?'AVUI':''; ?>...
     </div>
 
     <div>

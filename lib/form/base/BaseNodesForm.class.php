@@ -40,7 +40,7 @@ abstract class BaseNodesForm extends BaseFormPropel
       'Url'         => new sfValidatorString(),
       'Categories'  => new sfValidatorString(array('max_length' => 100)),
       'site_id'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('nodes[%s]');

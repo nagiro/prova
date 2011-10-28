@@ -17,7 +17,7 @@ abstract class BaseHorarisespaisForm extends BaseFormPropel
       'idHorarisEspais'     => new sfWidgetFormInputHidden(),
       'Material_idMaterial' => new sfWidgetFormPropelChoice(array('model' => 'Material', 'add_empty' => true)),
       'Espais_EspaiID'      => new sfWidgetFormPropelChoice(array('model' => 'Espais', 'add_empty' => true)),
-      'idEspaiextern'       => new sfWidgetFormPropelChoice(array('model' => 'EspaisExterns', 'add_empty' => true)),
+      'idEspaiextern'       => new sfWidgetFormInputText(),
       'Horaris_HorarisID'   => new sfWidgetFormPropelChoice(array('model' => 'Horaris', 'add_empty' => true)),
       'site_id'             => new sfWidgetFormInputText(),
       'actiu'               => new sfWidgetFormInputText(),
@@ -27,10 +27,10 @@ abstract class BaseHorarisespaisForm extends BaseFormPropel
       'idHorarisEspais'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdhorarisespais()), 'empty_value' => $this->getObject()->getIdhorarisespais(), 'required' => false)),
       'Material_idMaterial' => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial', 'required' => false)),
       'Espais_EspaiID'      => new sfValidatorPropelChoice(array('model' => 'Espais', 'column' => 'EspaiID', 'required' => false)),
-      'idEspaiextern'       => new sfValidatorPropelChoice(array('model' => 'EspaisExterns', 'column' => 'idEspaiextern', 'required' => false)),
+      'idEspaiextern'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'Horaris_HorarisID'   => new sfValidatorPropelChoice(array('model' => 'Horaris', 'column' => 'HorarisID', 'required' => false)),
       'site_id'             => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'               => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'               => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('horarisespais[%s]');

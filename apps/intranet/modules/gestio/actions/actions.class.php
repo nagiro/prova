@@ -867,159 +867,119 @@ class gestioActions extends sfActions
     $this->MODE   = "";
     
     $accio = $request->getParameter('accio');
-    if($request->hasParameter('BCERCA')){ $accio = 'U'; $this->PAGINA = 1; }
-    if($request->hasParameter('BSAVE')) $accio = 'S';
-    if($request->hasParameter('BDELETE')) $accio = 'D';    
     if($request->hasParameter('BSAVE_MISSATGE')) $accio = 'SM';
-    if($request->hasParameter('BSEGUEIX_LLISTES')) $accio = 'LM';    
-    if($request->hasParameter('BSAVE_LLISTES')) $accio = 'SLM';
-    if($request->hasParameter('BSEGUEIX_ENVIAMENT')) $accio = 'SLEE';
+    if($request->hasParameter('BSEGUEIX_LLISTES')) $accio = 'LL';
+    
+    if($request->hasParameter('BSAVE_LLISTES')) $accio = 'SL';
+    if($request->hasParameter('BSEGUEIX_ENVIAMENT')) $accio = 'SE';    
+
     if($request->hasParameter('BSEND_PROVA')) $accio = 'SP';
-    if($request->hasParameter('BSEND_TOTHOM')) $accio = 'SMT';
-    if($request->hasParameter('BFI')) $accio = 'SFI';        
-    if($request->hasParameter('BSEND')) $accio = 'SEND';
-    if($request->hasParameter('BVINCULA')) $accio = 'VINCULA';
-    if($request->hasParameter('BDESVINCULA')) $accio = 'DESVINCULA';
-    if($request->hasParameter('BACTUALITZAEMAILS')) $accio = 'UPDATE_EMAILS';            
+    if($request->hasParameter('BSEND_LLISTES')) $accio = 'SLL';        
     
-    switch($accio)
-    {
-    	//Edito un missatge o en creo un de nou.
-    	case 'EM':                                                            			
-                $this->FMissatge = MissatgesmailingPeer::initialize($this->IDM,$this->IDS);                			                                                                                                                       
-    			$this->MODE = 'MISSATGES';                    			
-    		break;
-    		
-    	//Guardo un missatge editat. 
-    	case 'SM':    			
-    			if($this->saveMissatge($request)) $this->MODE = 'MISSATGES';
-    			else $this->MODE = 'MISSATGES';    			                                                                      	
-    		break;
-    		
-    	//Esborro un missatge guardat
-    	case 'DM':    			
-                $OM = MissatgesmailingPeer::initialize($this->IDM,$this->IDS)->getObject();    			
-    			$OM->setActiu(false);
-                $OM->save();    
-                $this->getUser()->addLogAction($accio,'gLlistes',null,$this->FHtml->getObject());
-   				$this->redirect('gestio/gLlistes?accio=C');    				    			    		
-    		break;
+    if($request->hasParameter('BSAVELIST')) $accio = 'SAVELIST';
     
-    	//Mostro les llistes a les que puc enviar el missatge
-    	case 'LM':
-                        		
-    			if($this->saveMissatge($request)):                    
-    				$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistesArray($this->IDM,$this->IDS);                         				     				    				    				
-        			$this->MODE = 'MISSATGES_LLISTES';    				
-    			else: 
-    				$this->MODE = 'MISSATGES'; 			
-    			endif;     			    			
+    if($request->hasParameter('BCERCAMAIL')) $accio = 'CERCA_MAIL';
+    if($request->hasParameter('BCERCAMAILDNI')) $accio = 'CERCA_MAIL_DNI';        
 
-    		break;
-    		
-    	//Guardo les llistes a les que enviaré el missatge
-    	case 'SLM':
-    		    			
-    			$this->saveMissatgeLlistes($request);
-    			$this->LLISTES_ENVIAMENT = MissatgesllistesPeer::getLlistes($this->IDM);    			
-    			$this->MODE = 'MISSATGES_LLISTES';
-    					
-    		break;
-    		
-    		//Segueixo amb l'enviament del missatge
-    	case 'SLEE':                        		
-    			$this->saveMissatgeLlistes($request);
-    			$this->MODE = "FER_PROVA";
-    		
-    		break;
-
-    	//Envio un missatge de prova a l'adreça que digui l'usuari
-    	case 'SP':
-            		
-    		$this->SendProvaMissatge( $this->IDM , $request->getParameter('email') , $this->IDS );    			    		
-    		$this->MODE = "FER_PROVA";
-   		
-    		break;
-
-    	//Envio el missatge a tothom
-    	case 'SMT':    		
-            $this->sendTothomMissatge( $this->IDM , $this->IDS );    			    		
-    		$this->MODE = "FER_PROVA";
-   		
-    		break;
-    		
-    		
-    	//Hem acabat l'edició... no fem res, només tornem a les llistes
-    	case 'SFI':
-    			$this->redirect('gestio/gLlistes');
-    		break;    		
-    		    		
-      case 'N':      
-                $this->FLlista = LlistesPeer::initialize(0,$this->IDS);			      			      			
-                $this->MODE = 'NOU';
-                break;
-      case 'E':
-                $this->IDL = $request->getParameter('IDL'); 
-                $this->FLlista = LlistesPeer::initialize($this->IDL,$this->IDS);                                                                
-                $this->MODE = 'EDICIO'; 
-                break;                      
-      case 'VINCULA':                               
-               $ALTA_USUARI = $request->getParameter('ALTA_USUARI');                                                                           
-               UsuarisllistesPeer::Vincula( $ALTA_USUARI , $this->IDL );
-               $this->execLlistesUpdateUsers($request, array() ,$this->IDS);                             
-            break;
-      case 'DESVINCULA':                              
-               $BAIXA_USUARI = $request->getParameter( 'BAIXA_USUARI' );                              
-               UsuarisllistesPeer::Desvincula( $BAIXA_USUARI , $this->IDL );
-               $this->execLlistesUpdateUsers( $request , array() , $this->IDS );        
-            break;
-      case 'UPDATE_EMAILS':
-                $EMAILS = $request->getParameter('EMAILS');
-                $R = MissatgesEmailsPeer::update( $this->IDL , $EMAILS );
-                $M = array('Actualitzat correctament. ','Afegits: '.$R['Afegits'],'Esborrats: '.$R['Esborrats'],'Incorrectes: '.$R['Erronis'],'Existents: '.$R['Existents']);
-                $this->execLlistesUpdateUsers( $request , $M , $this->IDS );
-            break;
-      
-/*      case 'MV':                               
-                $this->IDM = $request->getParameter('IDM');
-                $this->LLISTA_MISSATGES = LlistesPeer::getMissatges( $this->IDL , LlistesPeer::TOTS , $this->PAGINA3 , $this->IDS );
-                $this->MISSATGE = MissatgesllistesPeer::initialize($request->getParameter('IDM'),null,$this.->IDS);                                         
-                $this->MODE = 'MISSATGES';        
-                break;                */
-      case 'S':
-                $RP = $request->getParameter('llistes');
-                $this->IDL = $RP['idLlistes'];
-                $this->FLlista = LlistesPeer::initialize( $this->IDL , $this->IDS );                                                 
-                $this->FLlista->bind($RP);
-                if($this->FLlista->isValid()) $this->FLlista->save();
-                $this->MODE = 'EDICIO';                
-                break;       	         	       
-      case 'L':                                              
-               $this->LLISTA = LlistesPeer::initialize($this->IDL, $this->IDS)->getObject(); 
-               $this->LMISSATGES = LlistesPeer::getMissatges($this->IDL,null,$this->PAGINA,$this->IDS);                             
-               $this->MODE = 'LLISTAT';
-               break;
-      case 'SEND':
-                $this->IDM = $request->getParameter('IDM');               
-                $this->MAILS = LlistesPeer::EnviaMissatge($this->IDM,$this->IDS);
-                $this->ENVIAT = true;                               
-               break;
-      case 'U_EMAIL':
-      		
-      		break;
-      case 'U':
-                $this->execLlistesUpdateUsers( $request , array() , $this->IDS );                    
-      		break;       
-	  //Imprimeix etiquetes               
-      case 'P': 
-      		return $this->printEtiquetes($this->IDL);     	
-      		break;
+    //Edició i guardar missatge
+    if($accio == 'NM' || $accio == 'EM' || $accio == 'SM' || $accio == 'LL'):        
+        $this->FMissatge = LlistesMissatgesPeer::initialize($this->IDM,$this->IDS);                            
+        if($accio == 'EM'): $this->MODE = 'EDITA_MISSATGE';
+        elseif($accio == 'SM' || $accio == 'LL'):
+            //Guardem el missatge
+            $RM = $request->getParameter('llistes_missatges');                                          
+            $this->FMissatge = LlistesMissatgesPeer::initialize($RM['idMissatge'],$this->IDS);      	
+            $this->FMissatge->bind($RM);    
+            if($this->FMissatge->isValid()){                
+                $this->FMissatge->save();
+                $this->IDM = $this->FMissatge->getObject()->getIdmissatge();
+                $this->getUser()->addLogAction('SAVE_MISS','gLlistes',null,$this->FMissatge->getObject());
+                if($accio == 'LL'){ 
+                    $this->MODE = 'ESCULL_LLISTA';                                         
+                    $this->LLISTES = LlistesLlistesPeer::getLlistesAll($this->IDS);                    
+                    $this->LLISTES_ENV = LlistesLlistesPeer::getLlistesMissatge($this->IDM);                    
+                } else { $this->MODE = 'EDITA_MISSATGE'; }
+            } else { $this->MODE = 'EDITA_MISSATGE'; }
+        elseif($accio == 'NM'):
+            $this->MODE = 'EDITA_MISSATGE';                    
+        endif;
+                        
+    //Guardem a quines llistes s'envia el missatge
+    elseif($accio == 'EL' || $accio == 'SL' || $accio == 'SE'):
     
-    }        
-  
-    //Inicialitzem els valors comuns
-	$this->LLISTES = LlistesPeer::getLlistesAll($this->IDS);
-	$this->MISSATGES = MissatgesmailingPeer::getMissatges( $this->IDL , $this->PAGINA , $this->IDS );    
+        $this->IDM = $request->getParameter('idM',0);
+        $this->LLISTES = $request->getParameter('llistes',array());                
+        if($accio == "SE"):
+            $this->MODE = 'EDITA_ENVIAMENT';
+            LlistesLlistesMissatgesPeer::doGuardar($this->IDM, $this->LLISTES);
+            $this->MISSATGE = LlistesMissatgesPeer::retrieveByPK($this->IDM);
+            $this->LLISTES_ENV = LlistesLlistesPeer::getLlistesMissatge($this->IDM);
+        elseif($accio == 'SL'):         
+            $this->MODE = 'ESCULL_LLISTA';                                     
+            LlistesLlistesMissatgesPeer::doGuardar($this->IDM, $this->LLISTES);    
+            $this->LLISTES = LlistesLlistesPeer::getLlistesAll($this->IDS);                    
+            $this->LLISTES_ENV = LlistesLlistesPeer::getLlistesMissatge($this->IDM);
+        elseif($accio == 'EL'):
+            $this->MODE = 'ESCULL_LLISTA';
+            $this->LLISTES = LlistesLlistesPeer::getLlistesAll($this->IDS);                    
+            $this->LLISTES_ENV = LlistesLlistesPeer::getLlistesMissatge($this->IDM);
+        endif;
+
+    //Enviem el missatge de prova o bé a les llistes
+    elseif($accio == 'SP' || $accio == 'SLL'):
+        $email = $request->getParameter('email','informatica@casadecultura.org');
+        $missatge = $request->getParameter('missatge');
+        $llistes = $request->getParameter('llistes');
+        $OM = LlistesMissatgesPeer::retrieveByPK($missatge);
+        if($accio == 'SP'):
+            if($OM instanceof LlistesMissatges) $this->sendMail('Prova',$email,$OM->getTitol(), $OM->getText());
+            else $this->sendMail('PROVA ERRÒNIA',$email,"No s'ha trobat el missatge amb codi ".$missatge,'');
+        elseif($accio == 'SLL'):            
+            $this->MODE = 'CARREGA_DADES';                        
+            $this->EMAILS = LlistesLlistesEmailsPeer::getEmailsFromLlistesAll($llistes);
+            $this->MISSATGE = LlistesMissatgesPeer::retrieveByPK($missatge);            
+            //Enviament a totes les llistes
+        endif;
+
+    //Creem una nova llista
+    elseif($accio == 'EDITLIST' || $accio == 'SAVELIST' || $accio == 'NEWLIST' || $accio == 'BML'):
+                    
+        //Guardem la llista
+        if($accio == 'SAVELIST'):
+            if(empty($this->IDL)) $this->LLISTA = new LlistesLlistes();
+            else $this->LLISTA = LlistesLlistesPeer::retrieveByPK($this->IDL);                        
+            $this->LLISTA->setNom($request->getParameter('nom_llista'));
+            $this->LLISTA->setSiteId($this->IDS);
+            $this->LLISTA->setActiu(true);
+            $this->LLISTA->save();
+            $this->IDL = $this->LLISTA->getIdllista();            
+            $this->INPUTS = LlistesLlistesEmailsPeer::addEmails( $request->getParameter('llistat_mails') , $this->IDL , $this->IDS );
+                    
+        //Baixa de mail d'una llista                        
+        elseif($accio == 'BML'):            
+            LlistesLlistesEmailsPeer::baixaEmail( $request->getParameter('IDE') , $request->getParameter('IDL') );
+            $this->LLISTA = LlistesLlistesPeer::retrieveByPK( $this->IDL );            
+        elseif($accio == 'EDITLIST'):
+            $this->LLISTA = LlistesLlistesPeer::retrieveByPK( $this->IDL );                    
+        elseif($accio == 'NEWLIST'):
+            $this->LLISTA = new LlistesLlistes();
+        endif;
+                
+        $this->EMAILS = LlistesLlistesEmailsPeer::getEmailsFromLlistes( array( $this->IDL ) , $request->getParameter('P',1) );
+        $this->MODE = 'EDIT_LIST';
+                        
+
+    //Fem una cerca d'email
+    elseif($accio == 'CERCA_MAIL' || $accio == 'CERCA_MAIL_DNI' || $accio == 'BAIXA_GENERAL'):
+        if($accio == 'CERCA_MAIL') $this->LLISTAT_EMAILS = LlistesEmailsPeer::cercaMail($request->getParameter('email') , $this->IDS );
+        elseif($accio == 'CERCA_MAIL_DNI') $this->LLISTAT_EMAILS = LlistesEmailsPeer::cercaMailDNI($request->getParameter('dni') , $this->IDS );
+        elseif($accio == 'BAIXA_GENERAL') LlistesEmailsPeer::baixaGeneral($request->getParameter('idM'),$this->IDS);                                   
+    endif;
+    
+                    
+    //Inicialitzem els valors comuns	
+	$this->MISSATGES = LlistesMissatgesPeer::getMissatgesAll( $this->IDS, $this->PAGINA );    
+	$this->LLISTES = LlistesLlistesPeer::getLlistesAll( $this->IDS );    	
   
   }  
   
@@ -1067,24 +1027,6 @@ class gestioActions extends sfActions
 	    endforeach;  
   }
   
-  public function saveMissatge(sfWebRequest $request)
-  {
-  	
-    $RM = $request->getParameter('missatgesmailing');
-    $this->IDM = $RM['idMissatge'];                      
-    
-    $this->FMissatge = MissatgesmailingPeer::initialize($this->IDM,$this->IDS);      	
-    $this->FMissatge->bind($RM);    
-    if($this->FMissatge->isValid()){ 
-        $this->FMissatge->save();
-        $this->IDM = $this->FMissatge->getObject()->getIdmissatge();
-        $this->getUser()->addLogAction('SAVE_MISS','gLlistes',null,$this->FMissatge->getObject());           
-        return true; 
-    }         	   
-    else { return false; }
-                    	              
-  }
-
   public function executeGPrintEntrades(sfWebRequest $request)
   {
 

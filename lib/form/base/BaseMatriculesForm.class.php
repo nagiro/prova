@@ -40,7 +40,7 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'tReduccio'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'tPagament'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'tpv_operacio'     => new sfValidatorString(array('max_length' => 20)),
       'tpv_order'        => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
     ));

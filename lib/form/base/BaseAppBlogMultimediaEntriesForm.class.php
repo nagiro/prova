@@ -24,7 +24,7 @@ abstract class BaseAppBlogMultimediaEntriesForm extends BaseFormPropel
       'entries_id'    => new sfValidatorPropelChoice(array('model' => 'AppBlogsEntries', 'column' => 'id', 'required' => false)),
       'multimedia_id' => new sfValidatorPropelChoice(array('model' => 'AppBlogsMultimedia', 'column' => 'id', 'required' => false)),
       'site_id'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blog_multimedia_entries[%s]');

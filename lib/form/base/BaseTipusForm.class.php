@@ -18,6 +18,7 @@ abstract class BaseTipusForm extends BaseFormPropel
       'tipusNom'  => new sfWidgetFormTextarea(),
       'tipusDesc' => new sfWidgetFormTextarea(),
       'site_id'   => new sfWidgetFormInputText(),
+      'actiu'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ abstract class BaseTipusForm extends BaseFormPropel
       'tipusNom'  => new sfValidatorString(array('required' => false)),
       'tipusDesc' => new sfValidatorString(array('required' => false)),
       'site_id'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('tipus[%s]');

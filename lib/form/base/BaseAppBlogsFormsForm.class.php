@@ -28,7 +28,7 @@ abstract class BaseAppBlogsFormsForm extends BaseFormPropel
       'blog_id'     => new sfValidatorPropelChoice(array('model' => 'AppBlogsBlogs', 'column' => 'id')),
       'view_fields' => new sfValidatorString(),
       'site_id'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_blogs_forms[%s]');

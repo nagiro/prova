@@ -2,7 +2,27 @@
 
 class myUser extends sfBasicSecurityUser
 {
-	
+    
+
+  public function Paginacio($pager,$url){
+    
+    $RET = "";
+    if ($pager->haveToPaginate()):
+        $RET .= link_to('&laquo;', $url.'&P='.$pager->getFirstPage());
+        $RET .= link_to('&lt;', $url.'&P='.$pager->getPreviousPage());
+        $links = $pager->getLinks(20);                 
+        foreach ($links as $page):
+            $RET .= ($page == $pager->getPage()) ? $page : link_to($page, $url.'&P='.$page);
+            if ($page != $pager->getCurrentMaxLink()): $RET .= '-'; endif;
+        endforeach;
+      $RET .= link_to('&gt;', $url.'&P='.$pager->getNextPage());
+      $RET .= link_to('&raquo;', $url.'&P='.$pager->getLastPage());
+    endif;
+
+    return $RET;
+
+  }
+    	
   /**
    * myUser::ParReqSesForm()
    * 

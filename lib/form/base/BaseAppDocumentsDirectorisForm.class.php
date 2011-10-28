@@ -27,7 +27,7 @@ abstract class BaseAppDocumentsDirectorisForm extends BaseFormPropel
       'Nom'                             => new sfValidatorString(),
       'Pare'                            => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'site_id'                         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

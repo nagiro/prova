@@ -68,7 +68,7 @@ abstract class BaseActivitatsForm extends BaseFormPropel
       'Responsable'                     => new sfValidatorString(),
       'InfoPractica'                    => new sfValidatorString(),
       'site_id'                         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'isEntrada'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'Places'                          => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
     ));

@@ -56,7 +56,8 @@ class webActions extends sfActions
                                                         
                 //Guardem a sessió la cerca "actual"        
                 $this->CERCA = $C2;
-                $this->getUser()->setSessionPar('cerca',$this->CERCA);                                                                                                                                                    
+                $this->getUser()->setSessionPar('cerca',$this->CERCA);
+                $this->ERROR = $request->getParameter('ERROR',0);                                                                                                                                                    
                                                                 
                 $this->MODE = 'CERCA';
             break;
@@ -119,7 +120,7 @@ class webActions extends sfActions
     if(!isset($C['POBLE']))             $C['POBLE'] = 0;
     if(!isset($C['CATEGORIA']))         $C['CATEGORIA'] = 0;
     if(!isset($C['DATAI']))             $C['DATAI'] = date('d/m/Y',time());
-    if(!isset($C['DATAF']))             $C['DATAF'] = date('d/m/Y',mktime(0,0,0,date('m',time())+1,date('d',time()),date('Y',time())));
+    if(!isset($C['DATAF']))             $C['DATAF'] = date('d/m/Y',time()); //date('d/m/Y',mktime(0,0,0,date('m',time())+1,date('d',time()),date('Y',time())));
     if(!isset($C['P']))                 $C['P'] = 1;
     return $C;
   }   
@@ -173,7 +174,7 @@ class webActions extends sfActions
     
     if($this->makeLogin($login,$pass)){
                 $this->redirect('@hospici_usuaris');        
-    } else {    $this->redirect('@hospici_cercador_activitats');  }
+    } else {    $this->redirect('@hospici_cercador_activitats?ERROR=1');  }
             
   }      
 

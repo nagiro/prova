@@ -50,8 +50,8 @@ abstract class BaseHorarisForm extends BaseFormPropel
       'PreuR'                  => new sfValidatorNumber(),
       'Estat'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'Responsable'            => new sfValidatorString(),
-      'site_id'                => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'actiu'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'                => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'                  => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'isEntrada'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 

@@ -30,7 +30,7 @@ abstract class BaseAgendatelefonicadadesForm extends BaseFormPropel
       'Dada'                                => new sfValidatorString(array('required' => false)),
       'Notes'                               => new sfValidatorString(array('required' => false)),
       'site_id'                             => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                               => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                               => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('agendatelefonicadades[%s]');

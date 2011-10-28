@@ -96,7 +96,7 @@ class LlistesPeer extends BaseLlistesPeer
 
   static public function getLlistesAll($idS)
   {
-    $C = new Criteria();
+    $C = new Criteria();    
     $C = self::getCriteriaActiu($C,$idS);
     return self::doSelect($C);
   }

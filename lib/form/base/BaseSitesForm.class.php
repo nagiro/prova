@@ -22,6 +22,7 @@ abstract class BaseSitesForm extends BaseFormPropel
       'webUrl'             => new sfWidgetFormInputText(),
       'telefon'            => new sfWidgetFormInputText(),
       'email'              => new sfWidgetFormInputText(),
+      'usuaris_menus_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
       'usuaris_sites_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'Usuaris')),
     ));
 
@@ -29,11 +30,12 @@ abstract class BaseSitesForm extends BaseFormPropel
       'site_id'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getSiteId()), 'empty_value' => $this->getObject()->getSiteId(), 'required' => false)),
       'nom'                => new sfValidatorString(),
       'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'poble'              => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'poble'              => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
       'logoUrl'            => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'webUrl'             => new sfValidatorString(array('max_length' => 255, 'required' => false)),
-      'telefon'            => new sfValidatorString(array('max_length' => 30, 'required' => false)),
+      'telefon'            => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'email'              => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'usuaris_menus_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
       'usuaris_sites_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 
@@ -54,6 +56,17 @@ abstract class BaseSitesForm extends BaseFormPropel
   {
     parent::updateDefaultsFromObject();
 
+    if (isset($this->widgetSchema['usuaris_menus_list']))
+    {
+      $values = array();
+      foreach ($this->object->getUsuarisMenuss() as $obj)
+      {
+        $values[] = $obj->getUsuariId();
+      }
+
+      $this->setDefault('usuaris_menus_list', $values);
+    }
+
     if (isset($this->widgetSchema['usuaris_sites_list']))
     {
       $values = array();
@@ -71,7 +84,43 @@ abstract class BaseSitesForm extends BaseFormPropel
   {
     parent::doSave($con);
 
+    $this->saveUsuarisMenusList($con);
     $this->saveUsuarisSitesList($con);
+  }
+
+  public function saveUsuarisMenusList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['usuaris_menus_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (null === $con)
+    {
+      $con = $this->getConnection();
+    }
+
+    $c = new Criteria();
+    $c->add(UsuarisMenusPeer::SITE_ID, $this->object->getPrimaryKey());
+    UsuarisMenusPeer::doDelete($c, $con);
+
+    $values = $this->getValue('usuaris_menus_list');
+    if (is_array($values))
+    {
+      foreach ($values as $value)
+      {
+        $obj = new UsuarisMenus();
+        $obj->setSiteId($this->object->getPrimaryKey());
+        $obj->setUsuariId($value);
+        $obj->save();
+      }
+    }
   }
 
   public function saveUsuarisSitesList($con = null)

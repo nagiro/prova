@@ -21,6 +21,7 @@ abstract class BaseConceptesForm extends BaseFormPropel
       'Concepte'   => new sfWidgetFormTextarea(),
       'Quantitat'  => new sfWidgetFormInputText(),
       'site_id'    => new sfWidgetFormInputText(),
+      'actiu'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -31,6 +32,7 @@ abstract class BaseConceptesForm extends BaseFormPropel
       'Concepte'   => new sfValidatorString(array('required' => false)),
       'Quantitat'  => new sfValidatorNumber(array('required' => false)),
       'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('conceptes[%s]');

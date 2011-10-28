@@ -60,7 +60,7 @@ abstract class BaseUsuarisForm extends BaseFormPropel
       'Habilitat'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'Actualitzacio'                   => new sfValidatorDate(array('required' => false)),
       'site_id'                         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'facebook_id'                     => new sfValidatorInteger(array('min' => -9.2233720368548E+18, 'max' => 9.2233720368548E+18, 'required' => false)),
       'app_documents_permisos_dir_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppDocumentsDirectoris', 'required' => false)),
       'app_documents_permisos_list'     => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppDocumentsArxius', 'required' => false)),

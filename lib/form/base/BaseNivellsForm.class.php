@@ -17,12 +17,14 @@ abstract class BaseNivellsForm extends BaseFormPropel
       'idNivells' => new sfWidgetFormInputHidden(),
       'Nom'       => new sfWidgetFormTextarea(),
       'site_id'   => new sfWidgetFormInputText(),
+      'actiu'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'idNivells' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdnivells()), 'empty_value' => $this->getObject()->getIdnivells(), 'required' => false)),
       'Nom'       => new sfValidatorString(array('required' => false)),
       'site_id'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('nivells[%s]');

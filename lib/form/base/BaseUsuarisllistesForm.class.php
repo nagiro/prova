@@ -26,7 +26,7 @@ abstract class BaseUsuarisllistesForm extends BaseFormPropel
       'Llistes_idLlistes' => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
       'Usuaris_UsuarisID' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'site_id'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'             => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'             => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('usuarisllistes[%s]');

@@ -36,7 +36,7 @@ abstract class BaseIncidenciesForm extends BaseFormPropel
       'dataalta'      => new sfValidatorDate(),
       'dataresolucio' => new sfValidatorDate(array('required' => false)),
       'site_id'       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('incidencies[%s]');

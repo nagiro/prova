@@ -39,7 +39,7 @@ abstract class BasePersonalForm extends BaseFormPropel
       'data_baixa'       => new sfValidatorDate(array('required' => false)),
       'usuariUpdateId'   => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'site_id'          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'data_finalitzada' => new sfValidatorDateTime(array('required' => false)),
     ));
 

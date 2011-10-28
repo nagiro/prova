@@ -58,10 +58,10 @@ abstract class BaseCursosForm extends BaseFormPropel
       'DataInici'       => new sfValidatorDate(array('required' => false)),
       'VisibleWEB'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'activitat_id'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'isEntrada'       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'PDF'             => new sfValidatorString(),
+      'PDF'             => new sfValidatorString(array('required' => false)),
       'ADescomptes'     => new sfValidatorString(array('required' => false)),
     ));
 

@@ -41,7 +41,7 @@ abstract class BaseAppBlogsEntriesForm extends BaseFormPropel
       'tags'                             => new sfValidatorString(array('max_length' => 150)),
       'url'                              => new sfValidatorString(),
       'site_id'                          => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'app_blog_multimedia_entries_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'AppBlogsMultimedia', 'required' => false)),
     ));
 

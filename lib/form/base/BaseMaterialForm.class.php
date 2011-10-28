@@ -64,10 +64,10 @@ abstract class BaseMaterialForm extends BaseFormPropel
       'DataReparacio'                     => new sfValidatorDate(array('required' => false)),
       'Disponible'                        => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'AltaRegistre'                      => new sfValidatorDate(array('required' => false)),
-      'isTransferible'                    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'isAdministratiu'                   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'isTransferible'                    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'isAdministratiu'                   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'site_id'                           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                             => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                             => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'unitats'                           => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
     ));
 

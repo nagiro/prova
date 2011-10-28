@@ -28,19 +28,7 @@
                         </div>
                                                                         
                         <?php $url = url_for('@hospici_nova_reserva_espai?idE='.$ESPAI->getEspaiid()); ?>
-                        <?php if( isset($AUTH) && $AUTH > 0 ): ?>                                                                           
-                            <div style="margin-top: 5px;">
-                                <div class="requadre_mini" style="background-color: #FFCC00;">
-                                    <a href="<?php echo $url ?>">RESERVA L'ESPAI</a>
-                                </div>
-                            </div>                                                                                        
-                        <?php else: ?>
-                            <div style="margin-top: 5px">
-                                <div class="requadre_mini" style="background-color: #FFCC00;">                
-                                    <a class="auth" href="<?php echo $url ?>">Autentifica't i reserva</a>
-                                </div>
-                            </div>
-                        <?php endif; ?>                        
+                        <?php echo myUser::ph_getEtiquetaReservaEspais($AUTH,$url); ?>
                         
                     <div style="margin-top:20px;">
                         <?php echo ph_getAddThisDiv(); ?>
@@ -60,7 +48,7 @@
                 
             <div style="margin-left:40px;">   				
                 <div style="padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">OCUPACIÓ DE L'ESPAI</div> 
-				<div style="width:330px; height:170px; clear:both; background-color:#DFECB6">					
+				<div style="width:330px; height:190px; clear:both; background-color:#DFECB6">					
 					<div style="padding:10px; font-size:10px;">
                                                                     
 <?php
@@ -77,8 +65,11 @@
                         $data1 = mktime(0,0,0,date('m',$DATA)+1,1,date('Y',$DATA));                        
                         echo    '<div style="float:left; margin-left:30px;">'.this_calendari_mes($data1,$OCUPACIO2).'</div>';
                         
-?>                      
-                    <div style="padding-top:10px; clear:both; font-size:10px; color:gray;">* Les dades ofertes per aquest calendari són aproximades.</div>                  
+?>                                          
+                    <div style="padding-top:10px; clear:both; font-size:10px; color:gray;">* Les dades ofertes per aquest calendari són aproximades.</div>
+                    <div style="padding-left:200px; padding-top:10px;">
+                        <?php echo myUser::ph_getEtiquetaReservaEspais($AUTH,$url); ?>
+                    </div>                                      
 					</div>                    
 				</div>
             </div>
@@ -94,6 +85,7 @@
 
 
 <?php 
+
 
 
     function this_calendari_mes($data,$OCUPACIO = array()){

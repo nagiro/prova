@@ -28,7 +28,7 @@ abstract class BaseAppDocumentsPermisosForm extends BaseFormPropel
       'idNivell'        => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required' => false)),
       'DataModificacio' => new sfValidatorDate(),
       'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('app_documents_permisos[%s]');

@@ -26,7 +26,7 @@ abstract class BaseUsuarisAppsForm extends BaseFormPropel
       'app_id'    => new sfValidatorPropelChoice(array('model' => 'Apps', 'column' => 'app_id', 'required' => false)),
       'nivell_id' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells', 'required' => false)),
       'site_id'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('usuaris_apps[%s]');

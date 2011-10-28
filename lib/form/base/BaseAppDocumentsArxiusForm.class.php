@@ -31,7 +31,7 @@ abstract class BaseAppDocumentsArxiusForm extends BaseFormPropel
       'url'                         => new sfValidatorString(),
       'DataCreacio'                 => new sfValidatorDate(),
       'site_id'                     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'app_documents_permisos_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'Usuaris', 'required' => false)),
     ));
 

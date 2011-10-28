@@ -24,7 +24,7 @@ abstract class BaseUsuarisMenusForm extends BaseFormPropel
     $this->setValidators(array(
       'usuari_id' => new sfValidatorPropelChoice(array('model' => 'Usuaris', 'column' => 'UsuariID', 'required' => false)),
       'menu_id'   => new sfValidatorPropelChoice(array('model' => 'GestioMenus', 'column' => 'menu_id', 'required' => false)),
-      'site_id'   => new sfValidatorChoice(array('choices' => array($this->getObject()->getSiteId()), 'empty_value' => $this->getObject()->getSiteId(), 'required' => false)),
+      'site_id'   => new sfValidatorPropelChoice(array('model' => 'Sites', 'column' => 'site_id', 'required' => false)),
       'nivell_id' => new sfValidatorPropelChoice(array('model' => 'Nivells', 'column' => 'idNivells')),
       'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));

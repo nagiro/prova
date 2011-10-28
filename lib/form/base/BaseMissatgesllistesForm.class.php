@@ -1,35 +1,39 @@
 <?php
 
 /**
- * Missatgesllistes form base class.
+ * MissatgesLlistes form base class.
  *
- * @method Missatgesllistes getObject() Returns the current form's model object
+ * @method MissatgesLlistes getObject() Returns the current form's model object
  *
  * @package    intranet
  * @subpackage form
  * @author     Your name here
  */
-abstract class BaseMissatgesllistesForm extends BaseFormPropel
+abstract class BaseMissatgesLlistesForm extends BaseFormPropel
 {
   public function setup()
   {
     $this->setWidgets(array(
-      'idMissatgesLlistes' => new sfWidgetFormInputHidden(),
-      'Llistes_idLlistes'  => new sfWidgetFormInputHidden(),
-      'Enviat'             => new sfWidgetFormDate(),
-      'site_id'            => new sfWidgetFormInputText(),
-      'actiu'              => new sfWidgetFormInputText(),
+      'idLlistes' => new sfWidgetFormInputHidden(),
+      'idEmail'   => new sfWidgetFormInputText(),
+      'enviat'    => new sfWidgetFormDate(),
+      'site_id'   => new sfWidgetFormInputText(),
+      'actiu'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'idMissatgesLlistes' => new sfValidatorPropelChoice(array('model' => 'Missatgesmailing', 'column' => 'idMissatge', 'required' => false)),
-      'Llistes_idLlistes'  => new sfValidatorPropelChoice(array('model' => 'Llistes', 'column' => 'idLlistes', 'required' => false)),
-      'Enviat'             => new sfValidatorDate(array('required' => false)),
-      'site_id'            => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'idLlistes' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdllistes()), 'empty_value' => $this->getObject()->getIdllistes(), 'required' => false)),
+      'idEmail'   => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'enviat'    => new sfValidatorDate(array('required' => false)),
+      'site_id'   => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
+      'actiu'     => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
-    $this->widgetSchema->setNameFormat('missatgesllistes[%s]');
+    $this->validatorSchema->setPostValidator(
+      new sfValidatorPropelUnique(array('model' => 'MissatgesLlistes', 'column' => array('idEmail')))
+    );
+
+    $this->widgetSchema->setNameFormat('missatges_llistes[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
@@ -38,7 +42,7 @@ abstract class BaseMissatgesllistesForm extends BaseFormPropel
 
   public function getModelName()
   {
-    return 'Missatgesllistes';
+    return 'MissatgesLlistes';
   }
 
 

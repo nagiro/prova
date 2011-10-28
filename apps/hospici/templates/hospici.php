@@ -135,7 +135,7 @@
                 		<label for="login">DNI: </label>
                 		<input type="text" name="login" id="login" class="text ui-widget-content ui-corner-all" />		
                 		<label for="password">Contrassenya: </label>
-                		<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+                		<input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />                        
                 	</fieldset>
                 	</form>
                 </div>
@@ -155,7 +155,9 @@
                                 <div class="h_requadre_login_inputs">                                     
                                     <input type="text"     name="login" value="Entreu el DNI..." />                                    
                                     <input type="password" name="pass" value="Contrassenya..." />
-                                </div>                            
+                                </div>
+                                <?php if($sf_params->get('ERROR') == 1) echo '<div style="background-color:red;">Dades incorrectes.</div>'; ?>
+                                                            
                                 <div class="h_requadre_login_button">
                                     <a href="#" id="LOGINSUBMIT">Entra &gt;&gt;&gt;</a>
                                 </div>
@@ -164,8 +166,7 @@
                                 </div>
                                 <div class="h_requadre_login_button" >
                                     <a href="<?php echo url_for('@hospici_usuaris_remember'); ?>" style="font-size: 10px;">Recorda contrassenya &gt;&gt;&gt;</a>
-                                </div>
-                                
+                                </div>                                
                             </form>
                                                                     
                         <br />

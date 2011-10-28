@@ -34,7 +34,7 @@ abstract class BasePromocionsForm extends BaseFormPropel
       'isFixa'     => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
       'URL'        => new sfValidatorString(),
       'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('promocions[%s]');

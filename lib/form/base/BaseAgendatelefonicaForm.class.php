@@ -34,7 +34,7 @@ abstract class BaseAgendatelefonicaForm extends BaseFormPropel
       'Tags'               => new sfValidatorString(array('max_length' => 100, 'required' => false)),
       'Entitat'            => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'site_id'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'              => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('agendatelefonica[%s]');

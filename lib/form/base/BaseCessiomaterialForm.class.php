@@ -26,7 +26,7 @@ abstract class BaseCessiomaterialForm extends BaseFormPropel
       'Material_idMaterial' => new sfValidatorPropelChoice(array('model' => 'Material', 'column' => 'idMaterial')),
       'cessio_id'           => new sfValidatorPropelChoice(array('model' => 'Cessio', 'column' => 'cessio_id')),
       'site_id'             => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
-      'actiu'               => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'actiu'               => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cessiomaterial[%s]');

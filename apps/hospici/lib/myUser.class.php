@@ -687,6 +687,34 @@ class myUser extends sfBasicSecurityUser
 
     /**
      * Mostra les etiquetes amb els estats i accions dels cursos
+     * @param $AUTH Si l'usuari està autentificat o no     
+     * @param $url On s'ha d'anar si es clica l'enllaç
+     * @return String
+     * */
+    function ph_getEtiquetaReservaEspais($AUTH,$url){
+        $RET = "";
+        
+        if( isset($AUTH) && $AUTH > 0 ):                                                                           
+            $RET = '<div style="margin-top: 5px;">
+                        <div class="requadre_mini" style="background-color: #FF8D00;">
+                            <a href="'.$url.'">RESERVA L\'ESPAI</a>
+                        </div>
+                    </div>';                                                                                        
+        else:
+            $RET = '<div style="margin-top: 5px">
+                        <div class="requadre_mini" style="background-color: #FFCC00;">                
+                            <a class="auth" href="'.$url.'">Autentifica\'t i reserva</a>
+                        </div>
+                    </div>';
+        endif;      
+        
+        return $RET;                  
+        
+    }
+
+
+    /**
+     * Mostra les etiquetes amb els estats i accions dels cursos
      * @param $AUTEN Si l'usuari està autentificat o no
      * @param $OC Objecte Cursos
      * @param $url On s'ha d'anar si es clica l'enllaç
