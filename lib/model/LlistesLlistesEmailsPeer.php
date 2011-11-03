@@ -20,25 +20,25 @@ require 'lib/model/om/BaseLlistesLlistesEmailsPeer.php';
  */
 class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
 
-    static private function CriteriaEmailsFromLlistes($A_llistes){
+    static private function CriteriaEmailsFromLlistes($A_llistes,$all = false){
         $C = new Criteria();
-        $C->add(self::ACTIU, true);
+        if(!$all) $C->add(self::ACTIU, true);
         $C->add(self::IDLLISTA, $A_llistes ,CRITERIA::IN);
         $C->addJoin(LlistesEmailsPeer::IDEMAIL, self::IDEMAIL);
-        $C->add(LlistesEmailsPeer::ACTIU, true);
+        $C->add(LlistesEmailsPeer::ACTIU, true);    //Si està de baixa global, ho haurà d'informar a informatica
         $C->addGroupByColumn(self::IDEMAIL);
         $C->addAscendingOrderByColumn(LlistesEmailsPeer::EMAIL);
         return $C;        
     }
 
     static public function getEmailsFromLlistesAll($A_llistes){
-        $C = self::CriteriaEmailsFromLlistes($A_llistes);        
+        $C = self::CriteriaEmailsFromLlistes($A_llistes,false);        
         return LlistesEmailsPeer::doSelect($C);
     }
 
     static public function getEmailsFromLlistes( $A_llistes , $P ){
                 
-        $C = self::CriteriaEmailsFromLlistes($A_llistes);
+        $C = self::CriteriaEmailsFromLlistes($A_llistes,true);
                         
         $pager = new sfPropelPager('LlistesEmails', 50);
         $pager->setCriteria($C);
@@ -57,7 +57,7 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
             $email = trim($MAIL);
             $C = new Criteria();
             $C->add(LlistesEmailsPeer::EMAIL, $email);
-            $OM = LlistesEmailsPeer::doSelectOne($C);            
+            $OM = LlistesEmailsPeer::doSelectOne($C);
             if(!($OM instanceof LlistesEmails)):            
                 if(ValidaMail($email)):
                 
@@ -80,15 +80,15 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
                 else: 
                     $RET['ERRORS'][] = trim($MAIL).' és invàlid. <br />';                    
                 endif;
-            else:                             
+            else:
                 if($OM->getActiu() == false):
-                    $RET['ERRORS'][] = trim($MAIL).' està marcat com inactiu. <br />';                    
+                    $RET['ERRORS'][] = trim($MAIL).' està marcat com inactiu. Contacta amb informatica@casadecultura.org. <br />';
                 else:    
-                    $C = new Criteria();                
+                    $C = new Criteria();
                     $C->add(self::IDLLISTA, $idL);
                     $C->add(self::IDEMAIL, $OM->getIdemail());        
                     $OLLE = self::doSelectOne($C);
-                    if(!($OLLE instanceof LlistesLlistesEmails)):                
+                    if(!($OLLE instanceof LlistesLlistesEmails)):
                         $OLLE = new LlistesLlistesEmails();
                         $OLLE->setIdllista($idL);
                         $OLLE->setIdemail($OM->getIdemail());
@@ -108,13 +108,14 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
         
     }
     
+    //Farem la baixa
     static public function baixaEmail($idE, $idL){
         $C = new Criteria();                
         $C->add(self::IDLLISTA, $idL);
-        $C->add(self::IDEMAIL, $idE);
+        $C->add(self::IDEMAIL, $idE);                        
         
         $O = self::doSelectOne($C);
-        if($O instanceof LlistesLlistesEmails):
+        if($O instanceof LlistesLlistesEmails):        
             $act = !($O->getActiu());                        
             $O->setActiu($act);
             if($O->getActiu()) $O->setBaixa(null);

@@ -28,10 +28,10 @@ class gestioActions extends sfActions
         $OUsuari = UsuarisPeer::cercaDNI($this->FREMEMBER->getValue('DNI'));
         if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()):
   	        $BODY = OptionsPeer::getString('MAIL_REMEMBER',$this->IDS);
-            $BODY = str_replace('{{PASSWORD}}',$OUsuari->getPasswd(),$BODY);
-            $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$OUsuari->getEmail(),' Hospici :: Recordatori de contrasenya ',$BODY);
+            $BODY = str_replace('{{PASSWORD}}',$OUsuari->getPasswd(),$BODY);                        
             $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),'informatica@casadecultura.org', '[Hospici :: RECORDATORI]',$BODY);
-            if(!$this->ENVIAT):
+            $this->ENVIAT = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$OUsuari->getEmail(),' Hospici :: Recordatori de contrasenya ',$BODY);
+            if(!$this->ENVIAT['OK']):
                 $this->ERROR = "Hi ha hagut algun problema enviant la contrassenya.<br /> Si us plau, torni-ho a provar més tard.";
                 $this->ENVIAT = false; 			        			            
             endif;                   
@@ -256,59 +256,6 @@ class gestioActions extends sfActions
     }        
                             
   }
-
-/* Això ara ho fem des del web de l'Hospici
-  public function executeGetTPV(sfWebRequest $request)
-  {
-  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.
-  	if($request->getParameter('Ds_Response') == '0000')
-    {
-  		//Recuperem la matrícula que acaba de pagar
-        $idM = $request->getParameter('Ds_MerchantData');
-  		$OM = MatriculesPeer::retrieveByPK($idM);
-        
-        //Si el codi de matrícula del missatge és correcte, seguim.
-  		if($OM instanceof Matricules)
-        {
-            if(MatriculesPeer::setMatriculaPagada($OM))
-            {
-                //Guardem el codi d'operació
-                $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
-                //Guardem el codi d'ordre
-                $OM->setTpvOrder($request->getParameter('Ds_Order'));
-                //Guardem la matrícula
-                $OM->save();
-                
-                //Enviem els correus pertinents                        
-      			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
-      							$OM->getUsuaris()->getEmail(),
-      							'Matrícula realitzada correctament',
-      							MatriculesPeer::MailMatricula($OM,$OM->getSiteId()));  			
-    			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
-      							'informatica@casadecultura.org',
-      							'Matrícula realitzada correctament',
-      							MatriculesPeer::MailMatricula($OM,$OM->getSiteId()));
-             }  							
-             else
-             {
-    			$this->sendMail(OptionsPeer::getString('MAIL_FROM',$OM->getSiteId()),
-      							'informatica@casadecultura.org',
-      							'Matrícula errònia',
-      							MatriculesPeer::MailMatriculaFAIL($OM,$OM->getSiteId()));                          
-             }
-        }
-  		else
-        {
-	  		$this->sendMail('informatica@casadecultura.org',
-	  						'informatica@casadecultura.org',
-	  						'Matrícula cobrada i Error en objecte',
-	  						'Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');   			  			  			
-  		}   	   		
-  	}
-  	 
-  	return sfView::NONE;
-  }
-*/
 
   private function guardaMatricula( $DADES_MATRICULA , $IDMATRICULA = 0 , $idS )
   {
@@ -675,7 +622,8 @@ class gestioActions extends sfActions
 		    if($this->FUsuari->isValid())
 		    { 		     	
 	    	  $this->FUsuari->save();
-              $this->getUser()->addLogAction($accio,'gUsuaris',null, $this->FUsuari->getObject()); 
+              $this->getUser()->addLogAction($accio,'gUsuaris',null, $this->FUsuari->getObject());
+              $this->MISSATGE = 'Usuari guardat correctament'; 
 		    }                		     
 		    $this->MODE['EDICIO'] = true;      		     
             break;
@@ -868,6 +816,7 @@ class gestioActions extends sfActions
     
     $accio = $request->getParameter('accio');
     if($request->hasParameter('BSAVE_MISSATGE')) $accio = 'SM';
+    if($request->hasParameter('BDELETE_MISSATGE')) $accio = 'DM';
     if($request->hasParameter('BSEGUEIX_LLISTES')) $accio = 'LL';
     
     if($request->hasParameter('BSAVE_LLISTES')) $accio = 'SL';
@@ -879,7 +828,16 @@ class gestioActions extends sfActions
     if($request->hasParameter('BSAVELIST')) $accio = 'SAVELIST';
     
     if($request->hasParameter('BCERCAMAIL')) $accio = 'CERCA_MAIL';
-    if($request->hasParameter('BCERCAMAILDNI')) $accio = 'CERCA_MAIL_DNI';        
+    if($request->hasParameter('BCERCAMAILDNI')) $accio = 'CERCA_MAIL_DNI';
+    if($request->hasParameter('BCERCABAIXES')) $accio = 'CERCA_BAIXES';                
+
+    //Esborrem un missatge
+    if($accio == 'DM'):        
+        $RM = $request->getParameter('llistes_missatges');
+        $OM = LlistesMissatgesPeer::retrieveByPK($RM['idMissatge']);
+        if($OM instanceof LlistesMissatges) $OM->setActiu(false)->save();
+        $this->redirect('gestio/gLlistes');
+    endif;
 
     //Edició i guardar missatge
     if($accio == 'NM' || $accio == 'EM' || $accio == 'SM' || $accio == 'LL'):        
@@ -930,14 +888,27 @@ class gestioActions extends sfActions
         $email = $request->getParameter('email','informatica@casadecultura.org');
         $missatge = $request->getParameter('missatge');
         $llistes = $request->getParameter('llistes');
-        $OM = LlistesMissatgesPeer::retrieveByPK($missatge);
+        $this->MISSATGE = LlistesMissatgesPeer::retrieveByPK($missatge);
         if($accio == 'SP'):
-            if($OM instanceof LlistesMissatges) $this->sendMail('Prova',$email,$OM->getTitol(), $OM->getText());
-            else $this->sendMail('PROVA ERRÒNIA',$email,"No s'ha trobat el missatge amb codi ".$missatge,'');
+            $this->MODE = 'EDITA_ENVIAMENT';            
+            $this->LLISTES_ENV = LlistesLlistesPeer::getLlistesMissatge($missatge);
+            if($this->MISSATGE instanceof LlistesMissatges) $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$email,$this->MISSATGE->getTitol(), $this->MISSATGE->getText());
+            else $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$email,"No s'ha trobat el missatge amb codi ".$missatge,'');
         elseif($accio == 'SLL'):            
             $this->MODE = 'CARREGA_DADES';                        
             $this->EMAILS = LlistesLlistesEmailsPeer::getEmailsFromLlistesAll($llistes);
-            $this->MISSATGE = LlistesMissatgesPeer::retrieveByPK($missatge);            
+            $this->MISSATGE = LlistesMissatgesPeer::retrieveByPK($missatge);                        
+            try { 
+                $MAILS = array();
+                foreach($this->EMAILS as $OM):
+                    $MAILS[$OM->getIdemail()] = $OM->getEmail();
+                endforeach;
+                $this->NUM_MAILS = sizeof($MAILS);                 
+                $RET = $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),$MAILS,$this->MISSATGE->getTitol(),$this->MISSATGE->getText());
+                $this->EMAIL_INC = $RET['MAILS_INC'];                                                            
+            } catch (Exception $e) { echo $e->toString(); }            
+            $this->MISSATGE->setDataEnviament(date('Y-m-d',time()));
+            $this->MISSATGE->save();
             //Enviament a totes les llistes
         endif;
 
@@ -970,10 +941,11 @@ class gestioActions extends sfActions
                         
 
     //Fem una cerca d'email
-    elseif($accio == 'CERCA_MAIL' || $accio == 'CERCA_MAIL_DNI' || $accio == 'BAIXA_GENERAL'):
+    elseif($accio == 'CERCA_MAIL' || $accio == 'CERCA_MAIL_DNI' || $accio == 'BAIXA_GENERAL' || $accio == 'CERCA_BAIXES'):
         if($accio == 'CERCA_MAIL') $this->LLISTAT_EMAILS = LlistesEmailsPeer::cercaMail($request->getParameter('email') , $this->IDS );
         elseif($accio == 'CERCA_MAIL_DNI') $this->LLISTAT_EMAILS = LlistesEmailsPeer::cercaMailDNI($request->getParameter('dni') , $this->IDS );
-        elseif($accio == 'BAIXA_GENERAL') LlistesEmailsPeer::baixaGeneral($request->getParameter('idM'),$this->IDS);                                   
+        elseif($accio == 'BAIXA_GENERAL') LlistesEmailsPeer::baixaGeneral($request->getParameter('idM'),$this->IDS);
+        elseif($accio == 'CERCA_BAIXES') $this->LLISTAT_EMAILS = LlistesEmailsPeer::getAllBaixes($this->IDS);                                   
     endif;
     
                     
@@ -3866,27 +3838,34 @@ class gestioActions extends sfActions
         $mails = $to;
         if(!is_array($to)) $mails = array($to);
         
-        //Enviem tots els correus 
+        //Definim el mailer
+        $t = Swift_SmtpTransport::newInstance('smtp.casadecultura.org',587);
+        $t->setUsername('informatica@casadecultura.org');
+        $t->setPassword('gi1807bj');
+        $mailer = Swift_Mailer::newInstance($t);
+        
+        //Enviem tots els correus         
         foreach($mails as $to):
         
             //Comencem l'enviament de correus als que el tinguin correcte.
        	    try{
-        		$swift_message = $this->getMailer()->compose($from,$to,$subject,$body);
+                
+        		$sm = Swift_Message::newInstance($subject,$body,'text/html','utf8');
+                $sm->setFrom($from);
+                $sm->setTo($to);
         		
         		foreach($files as $F):
-        			$swift_message->attach(Swift_Attachment::fromPath($F['tmp_name']));
-        		endforeach;
-        		
-        		$swift_message->setBody($body,'text/html');	    
+        			$sm->attach(Swift_Attachment::fromPath($F['tmp_name']));
+        		endforeach;        		        			    
             	
-        		$OK = $this->getMailer()->send($swift_message);
+        		$OK = $mailer->send($sm,$errors);                                                
             
-            } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }
+            } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
             
         endforeach;
 		
-        return $OK;
-   }
+        return array('OK'=>$OK,'MAILS_INC'=>$errors);
+   }   
    
    
   public function executeGConfig(sfWebRequest $request)

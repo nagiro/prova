@@ -28,7 +28,12 @@ body { font-size:10px; }
 BUTTON { background:#FFEFD7; border:1px solid #BBBBBB; padding:2px; }
 BUTTON:focus { background: #FFD7DC; }
 
+.tatxat { text-decoration: line-through; }
+
 .MISSATGE { background-color:#CCCCCC; }
+.MISSATGE_OK { padding:10px; background-color:#77E677; }
+.MISSATGE_KO { padding:10px; background-color:#E85252; color:white; }
+
 #validacio { font-style: italic; width:200px; }
 #valor_validacio { font-weight:bold; padding:10px; text-align:center; width:150px; }
 #resultat_validacio { width:20px; }

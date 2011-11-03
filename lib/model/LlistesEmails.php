@@ -20,4 +20,14 @@ require 'lib/model/om/BaseLlistesEmails.php';
  */
 class LlistesEmails extends BaseLlistesEmails {
 
+    public function isListActiu($idL){
+        $C = new Criteria();
+        $C->add(LlistesLlistesEmailsPeer::IDEMAIL, $this->getIdemail());
+        $C->add(LlistesLlistesEmailsPeer::IDLLISTA, $idL);
+        
+        $O = LlistesLlistesEmailsPeer::doSelectOne($C);
+        if($O instanceof LlistesLlistesEmails) return $O->getActiu();
+        else false; 
+    }
+
 } // LlistesEmails

@@ -20,6 +20,13 @@ require 'lib/model/om/BaseLlistesEmailsPeer.php';
  */
 class LlistesEmailsPeer extends BaseLlistesEmailsPeer {
 
+    static public function getAllBaixes($idS){
+        $C = new Criteria();
+        $C->add(self::ACTIU, false);
+        
+        return self::doSelect($C);
+    }
+
     static public function baixaGeneral($idE,$idS){                                
         $C = new Criteria();
         $C->add(self::IDEMAIL, $idE);

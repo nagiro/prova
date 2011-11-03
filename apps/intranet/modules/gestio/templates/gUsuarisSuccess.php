@@ -51,6 +51,7 @@
 	 	<div class="REQUADRE">
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	 	
 	    	<table class="FORMULARI" width="500px">
+                <?php if(isset($MISSATGE)) echo '<tr><td class="MISSATGE_OK" colspan="2">'.$MISSATGE.'</td></tr>'; ?>
                 <?php echo $FUsuari?>                								
                 <tr>
                 	<td width="100px"></td>               	

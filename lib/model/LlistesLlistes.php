@@ -31,4 +31,12 @@ class LlistesLlistes extends BaseLlistesLlistes {
 		parent::__construct();
 	}
 
+    public function getInscrits(){
+        $C = new Criteria();
+        $C->add(LlistesLlistesEmailsPeer::IDLLISTA, $this->getIdllista());
+        $C->add(LlistesLlistesEmailsPeer::ACTIU, true);
+        
+        return LlistesLlistesEmailsPeer::doCount($C);
+    }
+
 } // LlistesLlistes

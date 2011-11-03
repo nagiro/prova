@@ -9,7 +9,7 @@
  */ 
 class Llistes extends BaseLlistes
 {
-	
+	    
 	public function getMailsUsuaris()
 	{
 		

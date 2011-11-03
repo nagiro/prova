@@ -16,7 +16,8 @@
                 <tr>
                 	<td width="100px"></td>               	
 	            	<td class="dreta" width="400px">
-	            		<br />	            			            		    			
+	            		<br />
+                        <button class="BOTO_ACTIVITAT" name="BDELETE_MISSATGE">Esborra'l</button>	            			            		    			
 	            		<button class="BOTO_ACTIVITAT" name="BSEGUEIX_LLISTES">Segueix enviant -->></button>	            			            	            		
 	            	</td>
 	            </tr>
@@ -33,8 +34,7 @@
             <table class="DADES">
                 <tr>
                     <td class="titol" style="width:20px; ">SEL.</td>
-                    <td class="titol" style="width: 400px;">NOM</td>
-                    <td class="titol" style="width: 180px;">OPCIONS</td>
+                    <td class="titol" style="width: 400px;">NOM</td>                    
                 </tr>
                                               
                 <?php echo input_hidden_tag('idM',$IDM); ?>
@@ -45,14 +45,12 @@
                     <?php endforeach; ?>
                     <tr>
                         <td><?php echo checkbox_tag('llistes['.$OL->getIdllista().']',$OL->getIdllista(),$check) ?></td>
-                        <td><?php echo $OL->getNom(); ?></a></td>                        
-                        <td></td>
+                        <td><?php echo $OL->getNom(); ?></a></td>                                                
                     </tr>                                        
                 <?php endforeach; ?>
                 <tr>
                 	<td colspan="3" class="dreta" style="border-bottom: 0px solid white;">
-	            		<br />
-	            		<button class="BOTO_ACTIVITAT" name="BSAVE_LLISTES">Guardar</button>	            		    			
+	            		<br />	            			            		    			
 	            		<button class="BOTO_ACTIVITAT" name="BSEGUEIX_ENVIAMENT">Segueix enviant -->></button>	            			            	            		
 	            	</td>
 	            </tr>                
@@ -97,7 +95,7 @@
                 
                 <div style="margin-top: 10px; text-align:right;">
                     <button class="BOTO_ACTIVITAT" name="BSEND_PROVA">Envia prova</button>	                        		        		    			
-            		<button class="BOTO_ACTIVITAT" name="BSEND_LLISTES">Genera llistes -->></button>	            			            	            		
+            		<button class="BOTO_ACTIVITAT" name="BSEND_LLISTES">Envia a les llistes!!!</button>	            			            	            		
            	    </div>
         </div>
     </form>    
@@ -107,26 +105,16 @@
     
     <form action="<?php echo url_for('gestio/gLlistes') ?>" method="post" enctype="multipart/form-data">
   	    <div class="REQUADRE">
-            <div class="TITOL">ARXIUS PER FER L'ENVIAMENT</div>
-            
-                <?php echo input_hidden_tag('missatge',$MISSATGE->getIdmissatge()); ?>
+            <div class="TITOL">MAILING REALITZAT</div>                            
                 <div>
-                    <div class="titol">TITOL</div>
-                    <div><?php echo $MISSATGE->getTitol(); ?></div>
+                    <div class="titol">MAILS ENVIATS</div>
+                    <div style="font-size:18px;"><?php echo $NUM_MAILS - sizeof($EMAIL_INC); ?></div>
                 </div>
                 
                 <div style="margin-top: 10px;">
-                    <div class="titol">MISSATGE</div>
-                    <div><?php echo htmlentities($MISSATGE->getText()); ?></div>
-                </div>
-                
-                <div style="margin-top: 10px;">
-                    <div class="titol">EMAILS</div>
-                    <div style="width: 600px;">
-                        <?php $A = array(); foreach($EMAILS as $O): $A[$O->getIdemail()] = $O->getEmail(); endforeach; echo implode('; ',$A); ?>
-                    </div>
-                </div>
-                                
+                    <div class="titol">MAILS ERRONIS O NO ENVIATS</div>
+                    <div><?php echo implode('<br />',$EMAIL_INC); ?></div>
+                </div>                                                
         </div>
     </form>    
 
@@ -165,9 +153,10 @@
                         <table>
                             <tr><td class="titol" style="width: 400px;">EMAIL</td><td class="titol">ACCIONS</td></tr>                            
                             <?php foreach($EMAILS->getResults() as $OM): ?>
-                            <tr><td><?php echo $OM->getEmail() ?></td>
+                            <?php $class = ($OM->isListActiu($LLISTA->getIdllista()))?'actiu':'tatxat'; ?>
+                            <tr><td class="<?php echo $class ?>"><?php echo $OM->getEmail() ?></td>
                                 <td>
-                                    <?php if($OM->getActiu()): ?>
+                                    <?php if($OM->isListActiu($LLISTA->getIdllista())): ?>
                                         <?php echo link_to('Baixa','gestio/gLlistes?accio=BML&IDL='.$LLISTA->getIdllista().'&IDE='.$OM->getIdemail()); ?>
                                     <?php else: ?>                                    
                                         <?php echo link_to('Reactiva','gestio/gLlistes?accio=BML&IDL='.$LLISTA->getIdllista().'&IDE='.$OM->getIdemail()); ?>
@@ -186,25 +175,24 @@
         </div>
     </form>    
 
-<?php endif; ?>
+<?php else: ?>
 
     <form action="<?php echo url_for('gestio/gLlistes') ?>" method="post" enctype="multipart/form-data">
   	    <div class="REQUADRE">
             <div class="TITOL">Missatges enviats ( <a href="<?php echo url_for('gestio/gLlistes?accio=NM'); ?>">Nou missatge</a> )</div>
             <table class="DADES">
                 <tr>
-                    <td class="titol" style="width:400px">TITOL</td>
+                    <td class="titol" style="width:500px">TITOL</td>
                     <td class="titol">DATA ENV.</td>
-                    <td class="titol">OPCIONS</td>
                 </tr>
                                               
                 <?php foreach($MISSATGES->getResults() as $OM): ?>
                     <tr>
                         <td><?php echo link_to($OM->getTitol(),'gestio/gLlistes?accio=EM&IDM='.$OM->getIdmissatge()); ?></td>
-                        <td><?php echo $OM->getDataEnviament('d/m/Y'); ?></td>
-                        <td></td>
+                        <td><?php echo $OM->getDataEnviament('d/m/Y'); ?></td>                        
                     </tr>
                 <?php endforeach; ?>
+                <tr><td colspan="2"><?php echo myUser::Paginacio($MISSATGES,'gestio/gLlistes'); ?></td></tr>
 	        </table>
         </div>
     </form>    
@@ -214,12 +202,17 @@
             <div class="TITOL">Llistes ( <a href="<?php echo url_for('gestio/gLlistes?accio=NEWLIST'); ?>">Nova llista</a> )</div>
             <table class="DADES">
                 <tr>
-                    <td class="titol" style="width:400px">TITOL</td>                                        
+                    <td class="titol" style="width:400px">TITOL</td>
+                    <td class="titol" style="width:100px">SUBSCRITS</td>                                        
                 </tr>
+                
+                                                            
+                
                                               
                 <?php foreach($LLISTES as $OL): ?>
                     <tr>
                         <td><?php echo link_to($OL->getNom(),'gestio/gLlistes?accio=EDITLIST&IDL='.$OL->getIdllista()); ?></td>                                                
+                        <td><?php echo $OL->getInscrits(); ?></td>
                     </tr>
                 <?php endforeach; ?>
 	        </table>
@@ -231,14 +224,19 @@
             <div class="TITOL">Emails</div>            
             <table class="DADES">
                 <tr>
-                    <td style="width: 50px;">Email: </td>                                        
+                    <td style="width: 50px; font-weight: bold;">Email: </td>                                        
                     <td style="width:250px;"><input style="width:200px" type="text" name="email" /></td>
                     <td><button class="BOTO_ACTIVITAT" name="BCERCAMAIL">Cercar</button></td>
                 </tr>                                                             
                 <tr>
-                    <td style="width: 50px;">DNI: </td>                                        
+                    <td style="width: 50px; font-weight: bold;">DNI: </td>                                        
                     <td style="width:250px;"><input style="width:200px" type="text" name="dni" /></td>
                     <td><button class="BOTO_ACTIVITAT" name="BCERCAMAILDNI">Cercar</button></td>
+                </tr>                
+                <tr>
+                    <td style="width: 50px; font-weight: bold;">Veure Baixes: </td>
+                    <td style="width: 250px; ">&nbsp;</td>
+                    <td ><button class="BOTO_ACTIVITAT" name="BCERCABAIXES">Mostra-me-les</button></td>
                 </tr>                
 	        </table>
             <table>
@@ -278,3 +276,4 @@
         </div>
     </form>    
         
+<?php endif; ?>

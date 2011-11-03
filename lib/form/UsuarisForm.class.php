@@ -65,7 +65,7 @@ class UsuarisForm extends sfFormPropel
       'site_id'           => new sfValidatorPass(array(),array()),
     ));
 
-    $this->setValidator('DNI', new sfValidatorCallback(array('callback'=>array('UsuarisForm','ComprovaDNI'), 'arguments' => array('idU'=>$this->getObject()->getUsuariId()) , 'required'=>true)));
+    $this->setValidator('DNI', new sfValidatorCallback(array('callback'=>array('UsuarisForm','ComprovaDNI'), 'arguments' => array('idU'=>$this->getObject()->getUsuariId(),'ADMIN'=>$this->getOption('ADMIN')) , 'required'=>true)));
     
     $this->widgetSchema->setLabels(array(          
       'Nivells_idNivells' => 'Nivell: ',
@@ -99,18 +99,30 @@ class UsuarisForm extends sfFormPropel
   public function save($conn = null)
   {
     
-    //Les dades de l'usuari que es mantenen són sempre les noves. Guardem la data d'actualització i avall.
-    $this->updateObject();
-    $OU = $this->getObject();
-    $OU->setActualitzacio(date('Y-m-d',time())); //Guardem la data d'actualització.
-    $OU->save();                    
+    //Les dades de l'usuari que es mantenen són sempre les noves. Guardem la data d'actualització i avall.    
+    $DNI = trim($this->getValue('DNI'));                    //Corregim el DNI, i trec els espais en blanc
+    $OUsuari = UsuarisPeer::cercaDNI($DNI);                 //Busco la persona que he entrat
+    if($OUsuari instanceof Usuaris 
+    && is_null($this->getObject()->getUsuariId()) 
+    && $this->getOption('ADMIN'))                           //Si el DNI ja existeix, és nou i estem en administració, vinculem amb el SITE
+    {                     
+        UsuarisSitesPeer::initialize($OUsuari->getUsuariid(),$this->getObject()->getSiteId())->getObject()->save();
+    } 
+    else    //Sinó, modifico l'usuari o l'entro de nou
+    {   
+        $this->updateObject();
+        $OU = $this->getObject();
+        $OU->setActualitzacio(date('Y-m-d',time())); //Guardem la data d'actualització.
+        $OU->save();                            
         
-    //Mirem si l'usuari està relacionat amb el SITE
-    $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();
-    $OUS->setNivellid($this->getValue('Nivells_idNivells'));
-    $OUS->save();
-    
-  }
+        //Mirem si l'usuari està relacionat amb el SITE
+        $OUS = UsuarisSitesPeer::initialize($OU->getUsuariId() , $OU->getSiteId())->getObject();
+        $OUS->setNivellid($this->getValue('Nivells_idNivells'));
+        $OUS->save();
+    }
+                
+  }  
+
 
   static public function ComprovaDNI($A,$valor,$arguments)
   {
@@ -119,9 +131,26 @@ class UsuarisForm extends sfFormPropel
   	
   	if(self::valida_nif_cif_nie($DNI) <= 0) throw new sfValidatorError($A, "Error: El DNI és incorrecte.<br /> Recorda escriure'l amb el format 99999999A.");
   	
-  	$OUsuari = UsuarisPeer::cercaDNI($DNI);    
-  	if($OUsuari instanceof Usuaris && $OUsuari->getUsuariid() != $arguments['idU']) 
-      throw new sfValidatorError($A, "Error: Ja hi ha un usuari creat amb aqeust DNI.<br />Provi de recuperar la seva contrassenya i si no pot, contacti per e-mail amb informatica@casadecultura.org. ");
+  	$OUsuari = UsuarisPeer::cercaDNI($DNI);
+    
+    //Hi ha un usuari amb aquest DNI    
+  	if($OUsuari instanceof Usuaris)
+    {
+        //L'usuari i l'actual són diferents        
+        if($OUsuari->getUsuariid() != $arguments['idU'])
+        {             
+            //Són diferents perquè és un usuari nou i estem en administració
+            if($arguments['ADMIN'] && is_null($arguments['idU']))
+            {                
+                return $valor;
+            }
+            else
+            {
+                throw new sfValidatorError($A, "Error: Ja hi ha un usuari creat amb aquest DNI.<br />Provi de recuperar la seva contrassenya i si no pot, contacti per e-mail amb informatica@casadecultura.org. ");
+            }
+        } 
+    }
+    
   	return $valor;
   	  	
   } 

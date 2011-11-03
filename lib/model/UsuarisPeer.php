@@ -27,11 +27,11 @@ class UsuarisPeer extends BaseUsuarisPeer
     endif; 
             
     if($isMatricules):
-        return new UsuarisMatriculesForm($OU);
+        return new UsuarisMatriculesForm($OU,array('ADMIN'=>false));
     elseif($isWeb):
-        return new ClientUsuarisForm($OU);
+        return new ClientUsuarisForm($OU,array('ADMIN'=>false));
     else:
-        return new UsuarisForm($OU);
+        return new UsuarisForm($OU,array('ADMIN'=>true));
     endif; 			    
 
   }
