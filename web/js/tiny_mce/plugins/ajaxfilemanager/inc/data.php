@@ -1,8 +1,8 @@
 <pre>Array
 (
-    [currentFolderPath] => ../uploaded/
-    [new_folder] => Test
+    [currentFolderPath] => ../../../../uploaded//
+    [new_folder] => CasaCulturaGirona
 )
 </pre>
 
-22/Sep/2008 13:17:12
+03/Nov/2011 10:19:28

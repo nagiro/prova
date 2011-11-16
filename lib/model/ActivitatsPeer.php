@@ -895,26 +895,27 @@ class ActivitatsPeer extends BaseActivitatsPeer
   }  
 
     /**
-     * Funció que retorna els horaris que tenen entrades a la venta. S'usa bàsicament a la gestió de reserves.
+     * Funció que retorna totes les entrades a la venta. S'usa bàsicament a la gestió de reserves.
      * @param $P Pàgina actual
      * @param $idS Site que està consultant
      * @return Pager d'Horaris()
      * */
     static public function cercaActivitatsVenta($P = 1, $idS = 1)
     {
-        
+                
         $connection = Propel::getConnection();        
         $query =         
                 "                              
                    SELECT a.ActivitatID as idA, a.Nom as nom, a.Places as places, min(h.Dia) as dia, min(h.HoraInici) as hora
-                     FROM activitats a, horaris h                       
-                    WHERE a.actiu = 1 AND h.actiu = 1 
+                     FROM entrades_preus ep, activitats a, horaris h                       
+                    WHERE a.actiu = 1 AND h.actiu = 1 AND ep.actiu = 1 
                       AND h.Activitats_ActivitatID = a.ActivitatID
                       AND a.isEntrada = true
                       AND a.site_id = $idS
+                      AND ep.activitat_id = h.Activitats_ActivitatID
                     GROUP BY idA, nom, places                                                           
                     HAVING MIN(h.Dia) AND MIN(h.HoraInici)
-                    ORDER BY dia desc, hora asc                    
+                    ORDER BY dia desc, hora asc
                 ";               
                 
         $statement = $connection->prepare($query);        
@@ -927,7 +928,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
         while($res = $statement->fetch(PDO::FETCH_ASSOC)){
             if( $i >= $min && $i < $max ):
                 $RET[$res['idA']] = array(  'nom'=>$res['nom'],
-                                            'places'=>$res['places'],
+                                            'places'=>(empty($res['places']))?0:$res['places'],
                                             'dia'=>$res['dia'],
                                             'hora'=>$res['hora']);        
             endif;

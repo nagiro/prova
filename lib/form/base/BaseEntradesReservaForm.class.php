@@ -14,25 +14,29 @@ abstract class BaseEntradesReservaForm extends BaseFormPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'entrades_reserva_id' => new sfWidgetFormInputHidden(),
-      'usuari_id'           => new sfWidgetFormInputText(),
-      'activitats_id'       => new sfWidgetFormInputText(),
-      'quantes'             => new sfWidgetFormInputText(),
-      'data'                => new sfWidgetFormDateTime(),
-      'estat'               => new sfWidgetFormInputText(),
-      'actiu'               => new sfWidgetFormInputText(),
-      'site_id'             => new sfWidgetFormInputText(),
+      'idEntrada'                   => new sfWidgetFormInputHidden(),
+      'entrades_preus_horari_id'    => new sfWidgetFormInputText(),
+      'entrades_preus_activitat_id' => new sfWidgetFormInputText(),
+      'usuari_id'                   => new sfWidgetFormInputText(),
+      'nom_reserva'                 => new sfWidgetFormTextarea(),
+      'quantitat'                   => new sfWidgetFormInputText(),
+      'data'                        => new sfWidgetFormDateTime(),
+      'estat'                       => new sfWidgetFormInputText(),
+      'actiu'                       => new sfWidgetFormInputText(),
+      'site_id'                     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
-      'entrades_reserva_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getEntradesReservaId()), 'empty_value' => $this->getObject()->getEntradesReservaId(), 'required' => false)),
-      'usuari_id'           => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
-      'activitats_id'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
-      'quantes'             => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
-      'data'                => new sfValidatorDateTime(array('required' => false)),
-      'estat'               => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
-      'actiu'               => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
-      'site_id'             => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'idEntrada'                   => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdentrada()), 'empty_value' => $this->getObject()->getIdentrada(), 'required' => false)),
+      'entrades_preus_horari_id'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'entrades_preus_activitat_id' => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'usuari_id'                   => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'nom_reserva'                 => new sfValidatorString(array('required' => false)),
+      'quantitat'                   => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'data'                        => new sfValidatorDateTime(array('required' => false)),
+      'estat'                       => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
+      'actiu'                       => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'                     => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('entrades_reserva[%s]');

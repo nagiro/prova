@@ -19,10 +19,10 @@ require 'lib/model/om/BaseEntradesReservaPeer.php';
  * @package    lib.model
  */
 class EntradesReservaPeer extends BaseEntradesReservaPeer {
-
-    const ENVIADA = 0;    
-    const CONFIRMADA = 10;
-    const ANULADA = 20;
+        
+    const ESTAT_ENTRADA_CONFIRMADA = 10;
+    const ESTAT_ENTRADA_ANULADA = 20;
+    const ESTAT_ENTRADA_EN_ESPERA = 30;
 
     static public function getCriteriaActiu($C)
     {
@@ -30,19 +30,33 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         return $C;
     }
 
-	static public function initialize( $idER = 0 )
+    static public function selectEstats(){
+        return array(
+            self::ESTAT_ENTRADA_EN_ESPERA => 'En espera',            
+            self::ESTAT_ENTRADA_CONFIRMADA => 'Confirmada',
+            self::ESTAT_ENTRADA_ANULADA => 'Anulada',        
+        );
+        
+    }
+
+	static public function initialize( $idS , $url_ajax_usuaris, $idER = 0 , $idA = 0, $idH = 0 , $idU = 0 )
 	{				
         $OER = self::retrieveByPK($idER);	
         
 		if(!($OER instanceof EntradesReserva)):
 			$OER = new EntradesReserva();
-			$OER->setUsuariid(null);
-			$OER->setActivitatsid(null);
-			$OER->setQuantes(0);
-			$OER->setData(date('Y-m-d H:i',time()));						
+            $OER->setEntradesPreusActivitatId(($idA == 0)?null:$idA);
+            $OER->setEntradesPreusHorariId(($idH == 0)?null:$idH);
+			$OER->setUsuariid(($idU == 0)?null:$idU);
+            $OER->setNomReserva("");
+            $OER->setQuantitat(0);			
+			$OER->setEstat(self::ESTAT_ENTRADA_EN_ESPERA);
+            $OER->setActiu(true);
+            $OER->setSiteid($idS);
+			$OER->setData(date('Y-m-d H:i',time()));
 		endif; 		
 		
-        return new EntradesReservaForm($OER);
+        return new EntradesReservaForm($OER,array('ajax'=>$url_ajax_usuaris));
 	}
 
     static public function h_getEntradesUsuariArray($idU){
@@ -90,13 +104,15 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
      * @param $idA Activitat id     
      * @return Int Quantes entrades s'han trobat.
      * */
-    static public function countEntradesActivitatConf($idA){
+    static public function countEntradesActivitatConf($idA,$idH = 0){
         $RET = 0;
         
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);
-        $C->add( self::ACTIVITATS_ID , $idA );
-        $C->add( self::ESTAT , self::CONFIRMADA);
+        $C->add( self::ENTRADES_PREUS_ACTIVITAT_ID , $idA );
+        if($idH > 0) $C->add( self::ENTRADES_PREUS_HORARI_ID , $idH ); 
+        $C->add( self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA);
+        
         foreach(self::doSelect($C) as $OE):            
             $RET += $OE->getQuantes();
         endforeach;

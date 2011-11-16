@@ -33,12 +33,13 @@ class LlistesLlistesPeer extends BaseLlistesLlistesPeer {
      * @param $idM idMissatge     
      * @return Select LlistesLlistes
      * */
-    static public function getLlistesMissatge($idM){
+    static public function getLlistesMissatge($idM){        
         $C = new Criteria();
         $C->add(self::ACTIU, true);        
-        $C->addJoin(LlistesLlistesMissatgesPeer::IDMISSATGE, $idM);
+        $C->addJoin(LlistesLlistesMissatgesPeer::IDLLISTA, self::IDLLISTA);
+        $C->add(LlistesLlistesMissatgesPeer::IDMISSATGE, $idM);
         $C->add(LlistesLlistesMissatgesPeer::ACTIU, true);
-        $C->addGroupByColumn(self::IDLLISTA);
+        $C->addGroupByColumn(self::IDLLISTA);        
         
         return self::doSelect($C);
     }

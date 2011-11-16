@@ -12,7 +12,7 @@
     
         if($MODE == 'LLISTA_ACTIVITATS') Entrades_LlistaActivitats( $LLISTAT_ACTIVITATS , $P );        
         elseif($MODE == 'LLISTA_ENTRADES') Entrades_LlistaEntrades( $LLISTAT_ENTRADES , $P );
-        elseif($MODE == 'EDITA_RESERVA') Entrades_EditaReserva( $FReserva );                                    
+        elseif($MODE == 'EDITA_ENTRADA') Entrades_EditaReserva( $FReserva );                                    
     
     ?>
                
@@ -28,34 +28,56 @@
         <div class="REQUADRE">
         <div class="TITOL">Activitats amb reserva d'entrades</div>
         <div class="DADIV">
-            <div class="titol" style=" width:250px; "> Nom activitat </div> 
-            <div class="titol" style=" text-align:right; width:100px; "> Data </div>
-            <div class="titol" style=" text-align:right; width:100px; "> Hora </div>
-            <div class="titol" style=" text-align:right; width:100px; "> Reserves </div>            
-            <div class="titol" style=" text-align:right; width:50px; "> Llistat </div>
-            <?php 
-                if( sizeof($LLISTAT_ACTIVITATS) == 0 ){ 
-                    
-                    echo '<div>No hi ha cap més activitat amb reserva per internet.</div>';
-                    
-                } else {
-
-                    foreach($LLISTAT_ACTIVITATS as $idA => $D ):
-                        try{                            
-                            
-                            $NE = EntradesReservaPeer::countEntradesActivitatConf($idA);
-                                                    
-                            echo '<div class="col" style="width:250px; clear:both;">'.link_to($D['nom'],'gestio/gActivitats?accio=ACTIVITAT&IDA='.$idA).'</div>';
-                            echo '<div class="col" style="text-align:right; width:100px;">'.$D['dia'].'</div>';
-                            echo '<div class="col" style="text-align:right; width:100px;">'.$D['hora'].'</div>';
-                            echo '<div class="col" style="text-align:right; width:100px;">'.$NE.'/'.$D['places'].'</div>';
-                            echo '<div class="col" style="text-align:right; width:50px;">'.link_to(image_tag('template/user.png',array('style'=>'height:13px;')).'<span>Llistat de persones que han fet una reserva.</span>','gestio/gEntrades?accio=LR&IDA='.$idA , array('class'=>'tt2') ).'</div>';                            
-                            
-                        } catch(Exception $e) { }
-                    endforeach;
-                }
-            ?>
+            <div class="titol" style=" width:310px; "> Nom activitat </div> 
+            <div class="titol" style=" text-align:right; width:100px; ">Data</div>
+            <div class="titol" style=" text-align:right; width:75px; ">Hora</div>
+            <div class="titol" style=" text-align:right; width:75px; ">Entrades</div>            
+            <div class="titol" style=" text-align:right; width:50px; ">Llistat</div>
             
+            <?php if( sizeof($LLISTAT_ACTIVITATS) == 0 ){ ?>
+                                 
+                <div>No hi ha cap més activitat amb reserva per internet.</div>
+                                    
+            <?php } else { ?>
+                                
+                <?php foreach($LLISTAT_ACTIVITATS as $idA => $D ): ?>
+                
+                    <?php try{ ?>
+                                                                            
+                        <?php $NE = EntradesReservaPeer::countEntradesActivitatConf($idA); ?>                            
+                        <?php $L_HORARIS = EntradesPreusPeer::getEntradesHorarisByActivitat($idA); ?>
+                        <?php if(empty($L_HORARIS)): ?>
+                            <div style="border-bottom: 1px solid #CCCCCC;">                                                                                
+                                <div class="colo" style="width:250px;"><?php echo link_to($D['nom'],'gestio/gActivitats?accio=ACTIVITAT&IDA='.$idA) ?></div>
+                                <div class="colo" style="text-align:right; width:100px;"><?php echo $D['dia'] ?></div>
+                                <div class="colo" style="text-align:right; width:75px;"><?php echo $D['hora'] ?></div>
+                                <div class="colo" style="text-align:right; width:75px;"><?php echo $NE.'/'.$D['places'] ?></div>
+                                <div class="colo" style="text-align:right; width:50px;"></div>
+                                <div style="clear: both;">&nbsp;</div>
+                            </div>
+                        <?php else : ?>
+                            <div style="border-bottom: 1px solid #CCCCCC;">                                                                                
+                                <div class="colo" style="width:290px;"><?php echo link_to($D['nom'],'gestio/gActivitats?accio=ACTIVITAT&IDA='.$idA) ?></div>
+                                <div class="colo">                                
+                                <?php foreach($L_HORARIS as $OH): ?>                                                                                                        
+                                    <?php $OEP = EntradesPreusPeer::retrieveByPK($OH->getHorarisId(), $idA);  ?>                                                                        
+                                    <?php $NE = $OEP->countEntradesVenudes();  ?>                                    
+                                    <div class="colo" style="text-align:right; width:100px;"><?php echo $OH->getDia('d/m/Y') ?></div>                                    
+                                    <div class="colo" style="text-align:right; width:75px;"><?php echo $OH->getHorainici('H:i') ?></div>
+                                    <div class="colo" style="text-align:right; width:75px;"><?php echo $NE.'/'.$OEP->getPlaces() ?></div>
+                                    <div class="colo" style="text-align:right; width:50px;"><?php echo link_to(image_tag('template/user.png',array('style'=>'height:13px;')).'<span>Llistat de persones que han fet una reserva.</span>','gestio/gEntrades?accio=LR&IDA='.$idA , array('class'=>'tt2') ) ?></div>
+                                    <div class="colo" style="text-align:right; width:50px;"><?php echo link_to(image_tag('template/user.png',array('style'=>'height:13px;')).'<span>Vendre o reservar una entrada.</span>','gestio/gEntrades?accio=VE&IDH='.$OH->getHorarisId().'&IDA='.$idA , array('class'=>'tt2') ) ?></div>
+                                    <div style="clear: both;"></div>                                    
+                                <?php endforeach; ?>
+                                </div>
+                            </div>
+                                                                                
+                        <?php endif; ?>
+                                                    
+                    <?php } catch(Exception $e) { echo $e; } ?>
+                <?php endforeach; ?>
+            <?php } ?>
+                        
         </div>
         <div style="clear: both;">&nbsp;</div>
   		         
@@ -72,7 +94,6 @@
   	</div>
     
 <?php } ?>
-    
     
             
 <?php function Entrades_LlistaEntrades( $LLISTAT_ENTRADES , $P ){ ?>
@@ -124,13 +145,13 @@
         <div class="REQUADRE">
         <div class="TITOL">Activitats amb reserva d'entrades</div>
         <div class="DADIV">            
-            <?php echo $FReserva->Render(); ?>             
+            <?php echo $FReserva->Render(); ?>
         </div>
         <div style="clear: both; float:left;">
             <button type="submit" name="BRESERVASAVE" class="BOTO_ACTIVITAT">
                 <?php echo image_tag('template/disk.png').' Guarda ' ?>
         	</button>
-            <?php echo link_to('Tornar','gestio/gEntrades?accio=LR&IDA='.$FReserva->getObject()->getActivitatsid()); ?>       
+            <?php //echo link_to('Tornar','gestio/gEntrades?accio=LR&IDA='.$FReserva->getObject()->getActivitatsid()); ?>       
         </div>
         <div style="clear: both;">&nbsp;</div>
   		                 

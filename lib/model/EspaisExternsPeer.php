@@ -51,7 +51,4 @@ class EspaisExternsPeer extends BaseEspaisExternsPeer
         return EspaisExternsPeer::doSelect($C);                    
   }
 
-
-
-
 } // EspaisExternsPeer

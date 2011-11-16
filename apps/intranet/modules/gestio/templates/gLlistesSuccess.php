@@ -95,28 +95,36 @@
                 
                 <div style="margin-top: 10px; text-align:right;">
                     <button class="BOTO_ACTIVITAT" name="BSEND_PROVA">Envia prova</button>	                        		        		    			
-            		<button class="BOTO_ACTIVITAT" name="BSEND_LLISTES">Envia a les llistes!!!</button>	            			            	            		
+            		<button class="BOTO_ACTIVITAT" name="BSEND_LLISTES">Genera dades d'enviament!!!</button>	            			            	            		
            	    </div>
         </div>
     </form>    
 
 <?php elseif($MODE == 'CARREGA_DADES'): ?>
 
-    
-    <form action="<?php echo url_for('gestio/gLlistes') ?>" method="post" enctype="multipart/form-data">
-  	    <div class="REQUADRE">
-            <div class="TITOL">MAILING REALITZAT</div>                            
-                <div>
-                    <div class="titol">MAILS ENVIATS</div>
-                    <div style="font-size:18px;"><?php echo $NUM_MAILS - sizeof($EMAIL_INC); ?></div>
+    <div class="REQUADRE">
+        <div class="TITOL">DADES PER ENVIAR</div>
+                            
+            <div>
+                <div class="titol">TITOL (<?php echo link_to('Edita el titol','gestio/gLlistes?accio=EM&IDM='.$MISSATGE->getIdmissatge()); ?>)</div>
+                <div><?php echo $MISSATGE->getTitol(); ?></div>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                <div class="titol">MISSATGE (<?php echo link_to('Edita el missatge','gestio/gLlistes?accio=EM&IDM='.$MISSATGE->getIdmissatge()); ?>)</div>
+                <div><?php echo htmlspecialchars($MISSATGE->getText()); ?></div>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                <div class="titol">EMAILS DE LES LLISTES</div>
+                <div>                                        
+                    <?php foreach($EMAILS as $OE): ?>
+                        <?php echo $OE->getEmail(); ?><br />                        
+                    <?php endforeach; ?>                    
                 </div>
-                
-                <div style="margin-top: 10px;">
-                    <div class="titol">MAILS ERRONIS O NO ENVIATS</div>
-                    <div><?php echo implode('<br />',$EMAIL_INC); ?></div>
-                </div>                                                
-        </div>
-    </form>    
+            </div>
+    </div>
+    
 
 <?php elseif($MODE == 'EDIT_LIST'): ?>
     

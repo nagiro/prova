@@ -66,6 +66,7 @@ DIV.text { font-size:11px; }
 /****** Disseny taula dades amb div ****************/
 .DADIV { }
 .DADIV .col { float:left; padding:5px; border-bottom: 1px solid #CCCCCC; }
+.DADIV .colo { float:left; padding:5px; }
 .DADIV .titol { background-color:#CCCCCC; float:left; font-size:11px;  border:0px; border-bottom: 2px solid #CCC; }
 .DADIV A { font-size:11px; text-decoration:none; color:black; font-weight:bold; }
 

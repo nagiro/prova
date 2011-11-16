@@ -21,8 +21,8 @@ class Horarisespais extends BaseHorarisespais
         //Si l'espai és null ens quedem amb el nom que apareix a l'horari.
         $idE = $this->getEspaisEspaiid();
         if(is_null($idE)){                
-            $OEE = $this->getEspaisExterns();
-            if(empty($OEE)) return 'n/d';
+            $OEE = EspaisExternsPeer::retrieveByPK($this->getIdespaiextern());
+            if(!($OEE instanceof EspaisExterns)) return 'n/d';
             else return $OEE->getNom().' ('.$OEE->getPoblacions()->getNom().')';                         
         
         //Sinó retornem el nom de l'espai que hi ha a la taula espais'

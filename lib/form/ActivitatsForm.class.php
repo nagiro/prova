@@ -17,16 +17,16 @@ class ActivitatsForm extends sfFormPropel
       'Nom'                             => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),    
       'Cicles_CicleID'                  => new sfWidgetFormChoice(array('choices'=>CiclesPeer::getSelect($this->getOption('IDS')))),
       'TipusActivitat_idTipusActivitat' => new sfWidgetFormChoice(array('choices'=>TipusactivitatPeer::getSelect($this->getOption('IDS')))),
-      'Preu'                            => new sfWidgetFormInputText(),
-      'PreuReduit'                      => new sfWidgetFormInputText(),
-      'Places'                          => new sfWidgetFormInputText(),
-      'isEntrada'                       => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'Estat'                           => new sfWidgetFormChoice(array('choices'=>ActivitatsPeer::getSelectEstats())),
       'Organitzador'				    => new sfWidgetFormInputText(),
       'Responsable'		 			    => new sfWidgetFormInputText(),
       'site_id'                         => new sfWidgetFormInputHidden(array(),array()),
       'actiu'                           => new sfWidgetFormInputHidden(array(),array()),            
-      'Publicable'                      => new sfWidgetFormInputHidden(array(),array()),
+      'Publicable'                      => new sfWidgetFormInputHidden(array(),array()),      
+      'Preu'                            => new sfWidgetFormInputText(),
+      'PreuReduit'                      => new sfWidgetFormInputText(),
+      'Places'                          => new sfWidgetFormInputText(),
+      'isEntrada'                       => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),      
     ));
 
     $this->setValidators(array(

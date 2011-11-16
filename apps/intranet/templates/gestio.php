@@ -10,6 +10,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/gestio.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
+  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery.autocompleter.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/thickbox.css'; ?>" />    
 
   <!--[if lte IE 7]>
@@ -22,11 +23,11 @@
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/jquery.validate.min.js'; ?>"></script>
-  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js'; ?>"></script>
-
+  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js'; ?>"></script>  
     
-    <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>    
+  <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>    
     
 <!--[if lt IE 7]>
     <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>
