@@ -31,9 +31,10 @@ class EspaisExterns extends BaseEspaisExterns {
     }
     
     public function getPoblacions(){
-        try{
-            return PoblacionsPeer::retrieveByPK($this->getPoble())->getNom();
-        } catch (Exception $e) { return 'n/d'; }        
+        $OP = PoblacionsPeer::retrieveByPK($this->getPoble());
+        if($OP instanceof Poblacions){
+            return $OP->getNom();
+        } else return 'n/d';                    
     }
 
 } // EspaisExterns
