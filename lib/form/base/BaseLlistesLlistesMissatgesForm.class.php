@@ -17,12 +17,14 @@ abstract class BaseLlistesLlistesMissatgesForm extends BaseFormPropel
       'idLlista'   => new sfWidgetFormInputHidden(),
       'idMissatge' => new sfWidgetFormInputHidden(),
       'actiu'      => new sfWidgetFormInputText(),
+      'site_id'    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
       'idLlista'   => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdllista()), 'empty_value' => $this->getObject()->getIdllista(), 'required' => false)),
       'idMissatge' => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdmissatge()), 'empty_value' => $this->getObject()->getIdmissatge(), 'required' => false)),
       'actiu'      => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('llistes_llistes_missatges[%s]');

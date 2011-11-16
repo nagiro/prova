@@ -20,7 +20,7 @@ require 'lib/model/om/BaseLlistesLlistesMissatgesPeer.php';
  */
 class LlistesLlistesMissatgesPeer extends BaseLlistesLlistesMissatgesPeer {
 
-    static public function doGuardar($idM, $A_llistes){
+    static public function doGuardar( $idM , $A_llistes , $idS ){
         //Seleccionem les actuals del missatge
         //Reutilitzem les que ja hi ha amb les noves i les que sobren les esborrem.
         $C = new Criteria();
@@ -37,6 +37,7 @@ class LlistesLlistesMissatgesPeer extends BaseLlistesLlistesMissatgesPeer {
             $OLLM->setIdllista($idL);
             $OLLM->setIdmissatge($idM);
             $OLLM->setActiu(true);
+            $OLLM->setSiteId($idS);
             $OLLM->save();            
         endforeach;
     }

@@ -75,6 +75,7 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
                     $OLLE->setIdemail($OLE->getIdemail());
                     $OLLE->setAlta(date('Y-m-d',time()));
                     $OLLE->setActiu(true);
+                    $OLLE->setSiteid($idS);
                     $OLLE->save();                
                                                                                                               
                 else: 
@@ -94,6 +95,7 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
                         $OLLE->setIdemail($OM->getIdemail());
                         $OLLE->setAlta(date('Y-m-d',time()));
                         $OLLE->setActiu(true);
+                        $OLLE->setSiteid($idS);
                         $OLLE->save();
                     else: 
                         $OLLE->setActiu(true);

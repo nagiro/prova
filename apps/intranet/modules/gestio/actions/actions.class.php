@@ -904,7 +904,7 @@ class gestioActions extends sfActions
         case 'SE':
                 $this->IDM = $request->getParameter('idM',0);
                 $this->LLISTES = $request->getParameter('llistes',array());                
-                LlistesLlistesMissatgesPeer::doGuardar($this->IDM, $this->LLISTES);
+                LlistesLlistesMissatgesPeer::doGuardar($this->IDM, $this->LLISTES,$this->IDS);
                 $this->MISSATGE = LlistesMissatgesPeer::retrieveByPK($this->IDM);
                 $this->LLISTES_ENV = LlistesLlistesPeer::getLlistesMissatge($this->IDM);                
                 $this->MODE = 'EDITA_ENVIAMENT';        

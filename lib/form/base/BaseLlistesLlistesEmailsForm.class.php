@@ -19,6 +19,7 @@ abstract class BaseLlistesLlistesEmailsForm extends BaseFormPropel
       'alta'     => new sfWidgetFormDate(),
       'baixa'    => new sfWidgetFormDate(),
       'actiu'    => new sfWidgetFormInputText(),
+      'site_id'  => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -27,6 +28,7 @@ abstract class BaseLlistesLlistesEmailsForm extends BaseFormPropel
       'alta'     => new sfValidatorDate(array('required' => false)),
       'baixa'    => new sfValidatorDate(array('required' => false)),
       'actiu'    => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
+      'site_id'  => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));
 
     $this->widgetSchema->setNameFormat('llistes_llistes_emails[%s]');
