@@ -80,7 +80,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C = self::getCriteriaActiu($C);
         
         $C->add(self::USUARI_ID, $idU);
-        $C->addDescendingOrderByColumn(self::ENTRADES_RESERVA_ID);
+        $C->addDescendingOrderByColumn(self::IDENTRADA);
         return self::doSelect($C);        
     }
 
