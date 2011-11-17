@@ -290,7 +290,7 @@ class myUser extends sfBasicSecurityUser
   
   
     
-  function llistaCalendariV($DATAI, $CALENDARI)
+  static public function llistaCalendariV($DATAI, $CALENDARI)
   {
     
     //Inicialitzem variables i marquem els dies en blanc
@@ -390,7 +390,7 @@ class myUser extends sfBasicSecurityUser
   
   
 
-  function ParImpar($i){ if($i % 2 == 0) return "PAR"; else return "IPAR"; }
+  static public function ParImpar($i){ if($i % 2 == 0) return "PAR"; else return "IPAR"; }
   
   
   /**
@@ -399,7 +399,7 @@ class myUser extends sfBasicSecurityUser
    * @return string
    */
   
-  function getSelData($DATAI = NULL)
+  static public function getSelData($DATAI = NULL)
   {
 
      $MES = date('m',$DATAI); 
@@ -418,7 +418,7 @@ class myUser extends sfBasicSecurityUser
      
   }
   
-  function mesos($mes)  
+  static public function mesos($mes)  
   {
     switch($mes){
       case 1: $text = "Gener"; break;
@@ -439,7 +439,7 @@ class myUser extends sfBasicSecurityUser
   
   }
   
-  function mesosSimplificats($mes)  
+  static public function mesosSimplificats($mes)  
   {
     switch($mes){
       case 1: $text = "G"; break;
@@ -691,7 +691,7 @@ class myUser extends sfBasicSecurityUser
      * @param $url On s'ha d'anar si es clica l'enllaç
      * @return String
      * */
-    function ph_getEtiquetaReservaEspais($AUTH,$url){
+    static public function ph_getEtiquetaReservaEspais($AUTH,$url){
         $RET = "";
         
         if( isset($AUTH) && $AUTH > 0 ):                                                                           
