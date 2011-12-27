@@ -35,6 +35,10 @@
 		 
 		 $("#activitats_nom").fadeOut(0);						 
 		 $("label[for=activitats_nom]").fadeOut(0);
+
+        $("#ORDENA_HORARIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").show(); $("#LLISTAT_ORDENAT_ESPAIS").hide(); });
+        $("#ORDENA_ESPAIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").hide(); $("#LLISTAT_ORDENAT_ESPAIS").show(); });
+
          
 //		 $("#horaris_HoraPre_hour").change(function(){
 //		      hora = parseInt($("#horaris_HoraPre_hour").val());              
@@ -424,47 +428,83 @@
 <?php function formLlistaActivitats($ACTIVITATS,$PAGINA){ ?>
 
      <div class="REQUADRE">
-        <div class="TITOL">Llistat d'activitats </div>
-      	<table class="DADES">
- 			<?php 	if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif; 
- 					$i = 0; $j=0; $Tall = 30; 					  			   			
+        <div class="TITOL">Llistat d'activitats <span style="color:gray; font-weight:normal; ">(Ordenat per <a id="ORDENA_ESPAIS" href="#">espais</a> / <a id="ORDENA_HORARIS" href="#">horaris</a>)</span></div>
+      	<table id="LLISTAT_ORDENAT_HORARIS" class="DADES">
+ 			<?php 	                
+                    if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif;  					  			   			
 					foreach($ACTIVITATS as $idH => $A):			
-	                  	if($i >= $Tall*($PAGINA-1) && $i < ($Tall*($PAGINA-1)+$Tall)  ):
 	                    
-		                  	$AVIS = ""; $ESP = ""; $MAT = "";                              	                                                        
-		                  	if( !empty( $A['ESPAIS'] ) ):     $ESP = implode("<br />",$A['ESPAIS']); endif;
-		                  	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
-		                  	if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
-		                  	$j = 1;
-		                  	$PAR = ParImpar($j++);
-                            $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
-                            $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
-                            $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";                                                                           	                            
-	                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
-		                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
-		                  	echo '	<TR>                      						               							                	
-		                  				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
-					               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>
-					               		<TD class="LIST2 '.$PAR.'"><b>'.$A['HORA_FI'].'</b></TD>';                              					    
-                            echo '	    <TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:#800000;">'.$ESP.'</span></TD>';                            
-					        echo '     	<TD class="LIST2 '.$PAR.'">'.$MAT.'</TD>
-					                	<TD class="LIST2 '.$PAR.'">'.$A['DIA'].'</TD>						            
-					                </TR>';		                  			                  	
-	                 	endif;
-	                 	$i++;                                                
+	                  	$AVIS = ""; $ESP = ""; $MAT = "";                              	                                                        
+	                  	if( !empty( $A['ESPAIS'] ) ):     $ESP = implode("<br />",$A['ESPAIS']); endif;
+	                  	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
+	                  	if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+	                  	$j = 1;
+	                  	$PAR = ParImpar($j++);
+                        $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
+                        $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
+                        $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";                                                                           	                            
+                  		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
+	                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
+	                  	echo '	<TR>                      						               							                	
+	                  				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
+				               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>
+				               		<TD class="LIST2 '.$PAR.'"><b>'.$A['HORA_FI'].'</b></TD>';                              					    
+                        echo '	    <TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:#800000;">'.$ESP.'</span></TD>';                            
+				        echo '     	<TD class="LIST2 '.$PAR.'">'.$MAT.'</TD>
+				                	<TD class="LIST2 '.$PAR.'">'.$A['DIA'].'</TD>						            
+				                </TR>';		                  			                  	
+                                                
 				 	endforeach; 
 				 
-				 	$sof = sizeof($ACTIVITATS);			 
-	                	$TALL = intval($sof/$Tall)+1;                  
-	                  	if($TALL > 1):
-		                	echo '<TR><TD class="LINIA" colspan="5" align="CENTER">';	                                                     
-		                  	for($i = 1; $i <= $TALL ; $i++ ):
-		                  		echo link_to("pàg ".$i." - ",'gestio/gActivitats?PAGINA='.$i);                  	
-		                  	endfor;
-	                  	 echo '</TD></TR>';
-	                  endif;
 	                ?>            	
+      	</table>
+
+      	<table id="LLISTAT_ORDENAT_ESPAIS" class="DADES" style="display: none;">
+ 			<?php 	                
+                if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif;
+                $ESPAIS = array();                
+                foreach($ACTIVITATS as $idH => $A):
+                    foreach($A['ESPAIS'] as $idE => $E):
+                        $ESPAIS[$idE][] = $idH;
+                    endforeach; 
+                endforeach;             
+                $ANT = "";                   
+				foreach($ESPAIS as $idE => $HORA):
+                    foreach($HORA as $idH):			
+                        $A = $ACTIVITATS[$idH];
+                        //Per cada horari, agafem l'espai i fem un vector on guardarem els resultats.'                    
+                      	$AVIS = ""; $ESP = ""; $MAT = "";                              	                                                        
+                      	if( !empty( $A['ESPAIS'] ) ):     $ESP = $A['ESPAIS'][$idE]; endif;
+                      	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
+                      	if( strlen( $A['AVIS'] ) > 2 ):   $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+                      	$j = 1; $PAR = ParImpar($j++);
+                        $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
+                        $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
+                        $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";
+                        
+                        if($ANT <> $ESP):                                                                                               	                            
+                  		    echo '	<tr><td style="background-color:#AAAAAA; font-size:14px; color:EEEEEE; font-style:italic; border:1px solid #EEEEEE; height:15px;" colspan="6">'.$ESP.'</td></tr>';
+                        else: 
+                            echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6">&nbsp;</td></tr>';
+                        endif;		                  	
+                        $ANT = $ESP;
+                        
+                      	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
+                      	echo '	<TR>                      						               							                	
+                      				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
+    			               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>
+    			               		<TD class="LIST2 '.$PAR.'"><b>'.$A['HORA_FI'].'</b></TD>';                              					    
+                        echo '	    <TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:#800000;">'.$ESP.'</span></TD>';                            
+    			        echo '     	<TD class="LIST2 '.$PAR.'">'.$MAT.'</TD>
+    			                	<TD class="LIST2 '.$PAR.'">'.$A['DIA'].'</TD>						            
+    			                </TR>';		                  			                  	                                                
+                    endforeach;                                                
+			 	endforeach; 
+			 
+                ?>            	 				                         	
       	</table>      
+
+                
       </div>
 
 <?php } ?>  
