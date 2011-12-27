@@ -9,6 +9,25 @@
  */ 
 class Cicles extends BaseCicles
 {
+
+    public function getPrimeraActivitat()
+    {
+        $C = new Criteria();        
+        $C = CiclesPeer::getCriteriaActiu($C,$this->getSiteId());
+        $C = ActivitatsPeer::getCriteriaActiu($C,$this->getSiteId());
+        $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
+        
+        $C->add(CiclesPeer::CICLEID, $this->getCicleid());
+        
+        $C->addJoin(CiclesPeer::CICLEID, ActivitatsPeer::CICLES_CICLEID);
+        $C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+        $C->addAscendingOrderByColumn(HorarisPeer::DIA);                
+                        
+        $OA = ActivitatsPeer::doSelectOne($C);
+        if($OA instanceof Activitats) return $OA;
+        else return null;
+                
+    }
     
     public function getPrimerDia()
     {

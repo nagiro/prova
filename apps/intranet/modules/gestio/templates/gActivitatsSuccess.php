@@ -428,7 +428,7 @@
 <?php function formLlistaActivitats($ACTIVITATS,$PAGINA){ ?>
 
      <div class="REQUADRE">
-        <div class="TITOL">Llistat d'activitats <span style="color:gray; font-weight:normal; ">(Ordenat per <a id="ORDENA_ESPAIS" href="#">espais</a> / <a id="ORDENA_HORARIS" href="#">horaris</a>)</span></div>
+        <div class="TITOL">Llistat d'activitats <span style="color:gray; font-weight:normal; ">(Ordenat per <a id="ORDENA_HORARIS" href="#">horaris</a> / <a id="ORDENA_ESPAIS" href="#">espais</a> )</span></div>
       	<table id="LLISTAT_ORDENAT_HORARIS" class="DADES">
  			<?php 	                
                     if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif;  					  			   			
