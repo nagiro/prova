@@ -14,7 +14,7 @@
             <div style="float: left;"><?php echo select_tag('matricules[descompte]',options_for_select($RET),array('style'=>'width:300px','id'=>'DESCOMPTES')); ?></div>
         </div>
         
-        <?php if($OC->isReserva()): ?>
+        <?php if(!$OC->isReserva()): ?>
             <div style="float: left; clear:both; margin-top:5px;">
                 <div style="float: left; width:150px;"><b>Com ha pagat? </b></div>
                 <div style="float: left;"><?php echo select_tag('matricules[mode_pagament]',options_for_select(MatriculesPeer::selectPagament()),array('style'=>'width:300px')) ?></div>
