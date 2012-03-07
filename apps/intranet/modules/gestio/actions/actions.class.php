@@ -2602,6 +2602,7 @@ class gestioActions extends sfActions
     
     switch($accio){
 
+
     	// Iniciem una nova matrícula
     	case 'NU':                            						
                 $this->IDM = $request->getParameter('IDM',null);                
