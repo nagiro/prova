@@ -104,7 +104,7 @@ class Cursos extends BaseCursos
     foreach(explode('@',$this->getAdescomptes()) as $IDD){
         $OD = DescomptesPeer::retrieveByPK($IDD);
         if($OD instanceof Descomptes):
-            $RET[$IDD]  = $OD->getNom();
+            $RET[$IDD]  = $OD->getDescripcio();
             if($ambPreu) $RET[$IDD] .= ' ('.DescomptesPeer::getPreuAmbDescompte($this->getPreu(),$IDD).'€)';
         endif;        
     }            
