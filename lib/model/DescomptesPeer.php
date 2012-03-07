@@ -36,6 +36,7 @@ class DescomptesPeer extends BaseDescomptesPeer {
         return new DescomptesForm($OD,array('IDS'=>$idS));
 	}
     
+
     /**
      * @param $new ( Apareix al desplegble que se'n pot afegir un )
      * */
@@ -47,6 +48,7 @@ class DescomptesPeer extends BaseDescomptesPeer {
         
         $RET = array();
         if($new) $RET[null] = "Nou descompte";
+        $RET[0] = 'Cap descompte';
         foreach(self::doSelect($C) as $OD):
             $RET[$OD->getIddescompte()] = $OD->getDescripcio();
         endforeach;

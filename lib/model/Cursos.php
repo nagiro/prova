@@ -96,8 +96,9 @@ class Cursos extends BaseCursos
   }
 
   public function getDescomptesArray($ambPreu = true){
-    $RET = array();
     
+    $RET = array();
+
     $RET[DescomptesPeer::CAP]  = 'Sense descompte';
     if($ambPreu) $RET[DescomptesPeer::CAP] .= ' ('.$this->getPreu().'€)';    
     
@@ -109,6 +110,8 @@ class Cursos extends BaseCursos
         endif;        
     }            
     return $RET;
+
+    
   }
   
   public function isCompra(){
