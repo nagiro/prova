@@ -50,7 +50,7 @@ class DescomptesPeer extends BaseDescomptesPeer {
         if($new) $RET[null] = "Nou descompte";
         $RET[0] = 'Cap descompte';
         foreach(self::doSelect($C) as $OD):
-            $RET[$OD->getIddescompte()] = $OD->getDescripcio();
+            $RET[$OD->getIddescompte()] = $OD->getNom();
         endforeach;
                 
         return $RET;
