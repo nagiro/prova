@@ -160,7 +160,7 @@
             formLlistaActivitatsEdicio($CICLE,$ACTIVITATS,$IDS);                    
         }
         
-        if( isset($MODE['LLISTAT']) && isset($ACTIVITATS) ) { formLlistaActivitats($ACTIVITATS,$PAGINA);  }
+        if( isset($MODE['LLISTAT']) && isset($ACTIVITATS) ) { formLlistaActivitats($ACTIVITATS,$PAGINA,$IDS);  }
                 
     ?>
 
@@ -425,7 +425,7 @@
      </form>
 <?php } ?> 
 
-<?php function formLlistaActivitats($ACTIVITATS,$PAGINA){ ?>
+<?php function formLlistaActivitats($ACTIVITATS,$PAGINA,$IDS){ ?>
 
      <div class="REQUADRE">
         <div class="TITOL">Llistat d'activitats <span style="color:gray; font-weight:normal; ">(Ordenat per <a id="ORDENA_HORARIS" href="#">horaris</a> / <a id="ORDENA_ESPAIS" href="#">espais</a> )</span></div>
@@ -468,8 +468,17 @@
                         $ESPAIS[$idE][] = $idH;
                     endforeach; 
                 endforeach;             
-                $ANT = "";                   
-				foreach($ESPAIS as $idE => $HORA):
+                $ANT = "";         
+                
+                //Reordeno espais perquè apareguin com estan ordenats a la intranet. 
+                $ESPAIS_REAL = EspaisPeer::getEspaisSite($IDS);
+                $ESPAIS_ORDENAT = array();
+                foreach($ESPAIS_REAL as $OE):
+                    $idE = $OE->getNom();                    
+                    if(isset($ESPAIS[$idE])) $ESPAIS_ORDENAT[$idE] = $ESPAIS[$idE];                    
+                endforeach;
+                                                      
+				foreach($ESPAIS_ORDENAT as $idE => $HORA):
                     foreach($HORA as $idH):			
                         $A = $ACTIVITATS[$idH];
                         //Per cada horari, agafem l'espai i fem un vector on guardarem els resultats.'                    
