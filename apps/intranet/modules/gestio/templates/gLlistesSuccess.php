@@ -200,7 +200,7 @@
                         <td><?php echo $OM->getDataEnviament('d/m/Y'); ?></td>                        
                     </tr>
                 <?php endforeach; ?>
-                <tr><td colspan="2"><?php echo myUser::Paginacio($MISSATGES,'gestio/gLlistes'); ?></td></tr>
+                <tr><td colspan="2"><?php echo myUser::Paginacio($MISSATGES,'gestio/gLlistes?1=1'); ?></td></tr>
 	        </table>
         </div>
     </form>    

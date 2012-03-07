@@ -24,6 +24,7 @@ class LlistesMissatgesPeer extends BaseLlistesMissatgesPeer {
         $C = new Criteria();
         $C->add(self::ACTIU, true);
         $C->add(self::SITE_ID, $idS);
+        $C->addDescendingOrderByColumn(self::IDMISSATGE);
         
         $pager = new sfPropelPager('LlistesMissatges', 20);
         $pager->setCriteria($C);

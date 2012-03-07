@@ -1006,8 +1006,7 @@ class gestioActions extends sfActions
 
                         
     }
-                
-                    
+                                    
     //Inicialitzem els valors comuns	
 	$this->MISSATGES = LlistesMissatgesPeer::getMissatgesAll( $this->IDS, $this->PAGINA );    
 	$this->LLISTES = LlistesLlistesPeer::getLlistesAll( $this->IDS );    	
@@ -2028,8 +2027,7 @@ class gestioActions extends sfActions
   
   //**************************************************************************************************************************************************
   //**************************************************************************************************************************************************
-  
-  
+    
   public function executeGMissatges(sfWebRequest $request)  
   {
   	   	
