@@ -39,7 +39,7 @@
 										
 				<div class="df" style="width:150px;">
 					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
-						<div style="margin-top:20px; font-size:10px"><?php echo getRetorn(); ?></div>
+						<div style="margin-top:20px; font-size:10px"><a href="<?php echo url_for('@web_cicle?idC='.$idC.'&titol='.$url_cicle); ?>"></a></div>
                         <?php if(!empty($nom_cicle)): ?>
                             <div style="font-size:10px"><a href="<?php echo url_for('@web_cicle?idC='.$idC.'&titol='.$url_cicle) ?>">Veure activitats del cicle</a></div>
                         <?php endif; ?>
