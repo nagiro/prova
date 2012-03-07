@@ -15,7 +15,7 @@
 </style>
  
  
-<TD colspan="3" class="CONTINGUT_ADMIN">	
+<td colspan="3" class="CONTINGUT_ADMIN">	
 
 	<?php include_partial('breadcumb',array('text'=>'HORARI PERSONAL')); ?>
 	
@@ -27,7 +27,7 @@
     <?php echo showCalendari($DATAI,$CALENDARI); ?>
               	 
      
-</TD>
+</td>
                 
 <?php 
 
@@ -70,14 +70,29 @@ function menu($seleccionat = 1,$nova = false)
   	$primer_dilluns = mktime(0,0,0,$mes,($dia-$dia_setmana+1),$year);
   	$primer_diumenge = mktime(0,0,0,$mes,$dia+(7-$dia_setmana),$year);
   	  	
-  	$RET = "<TR><td></td>";
+
+    //Mostrem el mes al que pertany cada dia
+    
+    $RET .= "<TR><td></td>";
+    $j = 1;               
+    for($i = 0; $i < $Q; $i++):	    	   
+	    $diaA = mktime(0,0,0,$mes,($dia-$dia_setmana+1)+($i*7),$year);                                    
+        $RET .= '<td class="titol" colspan="7">'.mesos(date('m',$diaA)).' '.date('Y',$diaA).'</td>';            	                      
+    endfor;
+	$RET .= "</TR>";
+
+
+    //Escrivim els dies de la setmana
+    
+  	$RET .= "<TR><td></td>";
   	for($i = $Q; $i>0;$i--):
   		$RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD>";
   	endfor;
 	$RET .= "</TR>";
-	
-	foreach($CALENDARI as $idU => $DADES):
-	
+
+	    
+	foreach($CALENDARI as $idU => $DADES):	        
+    
 		$RET .= "<TR>";
 		$RET .= '<td>'.$DADES['TREBALLADOR'].'</td>';		
 		
@@ -109,7 +124,7 @@ function menu($seleccionat = 1,$nova = false)
                                                 
 				$SPAN = "<span>";
                                 
-                foreach($DADES['DIES'][$diaA] as $D2):                  
+                foreach($DADES['DIES'][$diaA] as $D2):                                                      
                     //Quan vingui un canvi d'horari aquest quedarà fins que en vingui un altre                
     				if($D2->getTipus() == PersonalPeer::HORARI_USUARI): 					
     					$ULTIM_HORARI = $D2->getText();                          				                                         
@@ -166,8 +181,7 @@ function menu($seleccionat = 1,$nova = false)
     return $RET;
       
   }
-
-    
+     
   function getSelData($DATAI = NULL)
   {
 
