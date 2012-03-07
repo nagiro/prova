@@ -1,7 +1,7 @@
 <?php use_helper('DateForm'); ?>
 <?php use_helper('Date'); ?>
 
-<STYLE>
+<style>
 #HORA { width: 50px; }
 .NOTICIA { vertical-align: top; }
 .COL2 { vertical-align: top; padding-left:40px; width:60%; }
@@ -13,37 +13,19 @@
 SELECT {  border: 1px gray solid; background-color: rgb(250,254,218); margin:2px; }
 #HORA { border: 1px whitesmoke solid; background-color: rgb(250,254,218); margin:2px; }
 #DIA { border: 1px whitesmoke solid; background-color: white; margin:2px; }
-</STYLE>
+</style>
 
- 
 
-<script type="text/javascript">   
-       
-/*   $(document).ready(function(){
-    alert('hello');
-    $('#HORA').change(function(){ alert($(this).text());} );          
-   });  
-  
-  
-  
-  function canvia($val)
-  {    
-    alert("asdf"+$val.text());    
-  }
-*/
-</script>
-
-    <TD colspan="3" class="CONTINGUT_ADMIN" style="padding-left:30px;">    
+    <td colspan="3" class="CONTINGUT_ADMIN" style="padding-left:30px;">    
     
-      <?php echo nice_form_tag('gestio/gHoraris',array('method'=>'post')); ?>
-    
-         
-    <TABLE width="100%"><TR><TD>
+    <?php echo nice_form_tag('gestio/gHoraris',array('method'=>'post')); ?>
+             
+    <table width="100%"><tr><td>
 
-        <TABLE class="BOX2">
-          <TR><TD class="NOTICIA">                
-                  <DIV class="TITOL">Calendari d'activitats</DIV>
-                  <TABLE class="CALENDARI">
+        <table class="BOX2">
+          <tr><td class="NOTICIA">                
+                  <div class="TITOL">Calendari d'activitats</div>
+                  <table class="CALENDARI">
                   <?php                 
                     
                     $DATA = explode("-",$DATAI);
@@ -52,24 +34,24 @@ SELECT {  border: 1px gray solid; background-color: rgb(250,254,218); margin:2px
                     echo llistaCalendariV($DI , $MES, $ANY , $VARIAMES , $VARIAANY , $PAGINA , $IDA , $ACCIO);
   
                   ?>
-                  </TABLE>                                                                  
-              </TD>
-          </TR>
-        </TABLE>
-      </TD>
-      <TD class="COL2">
-        <TABLE class="BOX2">
-            <TR><TD class="NOTICIA">                
-                    <DIV class="TITOL">Calendari d'activitats</DIV>
+                  </table>                                                                  
+              </td>
+          </tr>
+        </table>
+      </td>
+      <td class="COL2">
+        <table class="BOX2">
+            <tr><td class="NOTICIA">                
+                    <div class="TITOL">Calendari d'activitats</div>
                     <?php echo input_hidden_tag('ACCIO','S'); ?>
                     <?php echo input_hidden_tag('IDA',$ACTIVITAT->getActivitatid()); ?>
-                    <TABLE class="DADES" width="100%">
-                      <TR><TD class="LINIA"> Hora Muntatge </TD><TD><?php echo input_tag('DI[HORAPRE]',$DI['HORAPRE'],array('id'=>'HORA')); ?></TD></TR>
-                      <TR><TD class="LINIA"> Hora Inici </TD><TD><?php echo input_tag('DI[HORAI]',$DI['HORAI'],array('id'=>'HORA')); ?> </TD></TR>                    
-                      <TR><TD class="LINIA"> Hora Fi </TD><TD><?php echo input_tag('DI[HORAF]',$DI['HORAF'],array('id'=>'HORA')); ?> </TD></TR>
-                      <TR><TD class="LINIA"> Hora Desmuntatge</TD><TD><?php echo input_tag('DI[HORAPOST]',$DI['HORAPOST'],array('id'=>'HORA')); ?> </TD></TR>
-                      <TR><TD class="LINIA"> Espais <br /> <?php echo select_tag('DI[ESPAIS]',options_for_select(EspaisPeer::select(),$DI['ESPAIS']), array('multiple'=>true)); ?> </TD> <TD class="LINIA"> Material <br /> <?php echo select_tag('DI[MATERIAL]',options_for_select(MaterialgenericPeer::select(),$DI['MATERIAL']), array('multiple'=>true)); ?> </TD> </TR>                             
-                    </TABLE>
+                    <table class="DADES" width="100%">
+                      <tr><td class="LINIA"> Hora Muntatge </td><td><?php echo input_tag('DI[HORAPRE]',$DI['HORAPRE'],array('id'=>'HORA')); ?></td></tr>
+                      <tr><td class="LINIA"> Hora Inici </td><td><?php echo input_tag('DI[HORAI]',$DI['HORAI'],array('id'=>'HORA')); ?> </td></tr>                    
+                      <tr><td class="LINIA"> Hora Fi </td><td><?php echo input_tag('DI[HORAF]',$DI['HORAF'],array('id'=>'HORA')); ?> </td></tr>
+                      <tr><td class="LINIA"> Hora Desmuntatge</td><td><?php echo input_tag('DI[HORAPOST]',$DI['HORAPOST'],array('id'=>'HORA')); ?> </td></tr>
+                      <tr><td class="LINIA"> Espais <br /> <?php echo select_tag('DI[ESPAIS]',options_for_select(EspaisPeer::select(),$DI['ESPAIS']), array('multiple'=>true)); ?> </TD> <TD class="LINIA"> Material <br /> <?php echo select_tag('DI[MATERIAL]',options_for_select(MaterialgenericPeer::select(),$DI['MATERIAL']), array('multiple'=>true)); ?> </td> </tr>                             
+                    </table>
                     <?php echo submit_tag('SEGUIR...',array('name'=>'Seguir')); ?>
                     <?php  ?>
                     <?php IF($LEVEL1):
@@ -99,23 +81,23 @@ SELECT {  border: 1px gray solid; background-color: rgb(250,254,218); margin:2px
                             echo submit_tag('Guardar',array('name'=>'Save'));
                           ENDIF; ?>
                                                                                                                          
-                </TD>
-            </TR>
-          </TABLE>
-      </TD>
-      </TR></TABLE>  
+                </td>
+            </tr>
+          </table>
+      </td>
+      </tr></table>  
   
-      <DIV STYLE="height:40px;"></DIV>
+      <div style="height:40px;"></div>
                 
-    </TD>    
+    </td>    
     
     
 <!-- FI CONTINGUT -->
 <!-- CALENDARI -->
  <!-- >
-    <TD class="CALENDARI">          
+    <td class="CALENDARI">          
       
-    </TD>
+    </td>
 -->
 <!-- FI CALENDARI -->
 
@@ -166,11 +148,11 @@ function getPar($PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY = NULL , $MES 
     $mesF = $mesI+6;                    //De moment només sumem 3 mesos
     if($mesF > 12) $mesF = $mesF-12;      
          
-    $RET = "<TR><TD></TD>";
+    $RET = "<tr><td></td>";
     for($i = 6; $i>0; $i--):
-      $RET .= "<TD>Dll</TD><TD>Dm</TD><TD>Dc</TD><TD>Dj</TD><TD>Dv</TD><TD>Ds</TD><TD>Dg</TD>";
+      $RET .= "<td>Dll</td><td>Dm</td><td>Dc</td><td>Dj</td><td>Dv</td><td>Ds</td><td>Dg</td>";
     endfor;
-    $RET .= "</TR>";
+    $RET .= "</tr>";
     
     for($mes = $mesI; $mes < $mesF; $mes++):
       
@@ -179,24 +161,24 @@ function getPar($PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY = NULL , $MES 
       if($diaSetmana == 0) $blancs = 6-1; else  $blancs = $diaSetmana-2;
       
       if($mes % 2) $background = "beige"; else $background = "white";                   //Mirem el color del fons
-      $RET .= "<TR><TD>".mesos($mes)."</TD>";
+      $RET .= "<tr><td>".mesos($mes)."</td>";
       
       for($dia = 0; $dia < 40; $dia++):                                             //Generem el calendari
         $diaA = $dia-$blancs;
         if($dia <= $blancs || $diaA > $dies):                                        //Si és blanc el marquem com a tal i si el dia ha passat el màxim de dies del mes no el marquem
-          $RET .= "<TD></TD>";
+          $RET .= "<td></td>";
         else:                                  
           $diaSetmana = jddayofweek(cal_to_jd(CAL_GREGORIAN, $mes , $diaA , $any) , 0 );
           if( $diaSetmana == 6 || $diaSetmana == 0) $background="beige"; else $background = "white"; 
           if(isset($CALENDARI[intval($any)][intval($mes)][intval($diaA)])) $background = "RED";
           
-          $RET .= '<TD class="DIES" style="background-color:'.$background.'; text-align:center;">'.link_to($diaA,"gestio/gActivitats".getPar($PAGINA , $IDA , 'C' , $any , $mes , $diaA , $VARIAMES , $VARIAANY ))
+          $RET .= '<td class="DIES" style="background-color:'.$background.'; text-align:center;">'.link_to($diaA,"gestio/gActivitats".getPar($PAGINA , $IDA , 'C' , $any , $mes , $diaA , $VARIAMES , $VARIAANY ))
                   .' '.checkbox_tag('DIES[]',mktime(0,0,0,$mes,$dia,$any),false).
-                  '</TD>';          
+                  '</td>';          
                               
         endif;    
       endfor;
-      $RET .= "</TR>";
+      $RET .= "</tr>";
       if($mes == 12) $any = $any+1;
     endfor;
           
