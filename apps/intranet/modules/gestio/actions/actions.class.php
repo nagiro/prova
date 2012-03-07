@@ -1952,12 +1952,13 @@ class gestioActions extends sfActions
   	$this->CERCA  	= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));  	
   	$this->accio  	= $request->getParameter('accio','C');  	
   	$this->MODE     = "";  	           	
+    $this->P        = $request->getParameter('P',1);
   	
   	//Tractem el formulari de cerca
   	$this->FCerca = new CercaForm();  	  
   	$this->FCerca->bind($this->CERCA);
         
-  	//Definim l'acciÃ³ segons el botÃ³ premut  	
+  	//Definim l'acció segons el botó premut  	
     if( $this->getRequest()->hasParameter('BNOU') ) $this->accio = 'N';
     if( $this->getRequest()->hasParameter('BSAVE') ) $this->accio = 'S';
     if( $this->getRequest()->hasParameter('BDELETE') ) $this->accio = 'D';
@@ -1970,7 +1971,7 @@ class gestioActions extends sfActions
     	
       case 'C':
     			$this->getUser()->addLogAction('inside','gAgenda');                
-    			$this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->IDS );
+    			$this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->IDS , $this->P );
     			break;
     	
       case 'N':
@@ -2012,13 +2013,13 @@ class gestioActions extends sfActions
                 endif;  
                 break;       
       default:                 
-                $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->getUser()->getSessionPar('idS') );
+                $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->IDS , $this->P );
                 break;
     
     }    
     
     if(!empty($this->CERCA)):       
-       $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->getUser()->getSessionPar('idS') );
+       $this->AGENDES = AgendatelefonicadadesPeer::doSearch( $this->CERCA['text'] , $this->IDS , $this->P );
     else:
        $this->AGENDES = array();
     endif;

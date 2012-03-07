@@ -89,7 +89,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 
 </script>
    
-    <TD colspan="3" class="CONTINGUT_ADMIN">
+    <td colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'AGENDA')); ?>
     
@@ -108,7 +108,7 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
      </form>    
 
       
-  <?php IF( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
+  <?php if( $MODE == 'NOU' || $MODE == 'EDICIO' ): ?>
       
 	<form action="<?php echo url_for('gestio/gAgenda') ?>" method="POST">
 		            
@@ -122,32 +122,32 @@ function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
 	 				<input type="button" value="+" id="mesdades" class="clear fb"></input>		 			
 	 			</div>
 	 		
-	 		<?php include_partial('botoneraDiv',array('element'=>"TOTA l\'agenda")); ?>		
+	 		<?php include_partial('botoneraDiv',array('element'=>"TOTES les dades d\'aquest registre?")); ?>		
 	 		</div>
 	 			 	 	
       	</div>
       	
      </form>    
     
-  <?php ELSE: ?>
+  <?php else: ?>
       
-      <DIV class="REQUADRE">   	  
-        <DIV class="TITOL">Llistat contactes</DIV>
-      	<TABLE id="LLISTAT_DADES" class="DADES" style="border-collapse: collapse;" >
+      <div class="REQUADRE">   	  
+        <div class="TITOL">Llistat contactes</div>
+      	<table id="LLISTAT_DADES" class="DADES" style="border-collapse: collapse;" >
       		<?php           			 			
 				include_partial('listAgenda', array('AGENDES' => $AGENDES, 'IDS' => $IDS));								      		      		
       		?>
 			<!-- Aquí hi apareix el llistat que surt de la funció AJAX gestio/SearchAjaxAgenda i Partial( _listAgenda ) -->      	
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
       
               
                
-  <?php ENDIF; ?>
+  <?php endif; ?>
                
-      <DIV STYLE="height:40px;"></DIV>
+      <div style="height:40px;"></div>
                 
-    </TD>        
+    </td>        
     
 <?php 
 

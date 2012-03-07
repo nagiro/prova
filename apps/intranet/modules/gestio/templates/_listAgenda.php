@@ -1,10 +1,10 @@
 <?php
-
-	if( empty( $AGENDES ) ):
-				echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap resultat d\'entre '.AgendatelefonicaPeer::getLinies($IDS).' disponibles.</TD></TR>';
+    
+	if( $AGENDES->getNbResults() == 0 ):
+	   echo '<TR><TD class="LINIA" colspan="3">No s\'ha trobat cap resultat d\'entre '.AgendatelefonicaPeer::getLinies($IDS).' disponibles.</TD></TR>';
 	else: 
 		$i = 0;
-		foreach($AGENDES as $A):
+		foreach($AGENDES->getResults() as $A):
 			$SPAN = '<SPAN>';                      	
 		    foreach($A->getAgendatelefonicadadesActiu() as $ATD): $SPAN  .= AgendatelefonicadadesPeer::getTipus($ATD->getTipus()).': '.$ATD->getDada().' - '.$ATD->getNotes().'<BR />'; endforeach;
 		    	$SPAN .= '</SPAN>';
@@ -17,12 +17,7 @@
 		                 </TR>';
 		endforeach;
 	endif;
+    
+    echo '<tr><td colspan="4" style="text-align:center;">'.myUser::Paginacio($AGENDES,url_for('gestio/gAgenda').'?1=1').'</td></tr>';
 	
-/*	
-  function ParImpar($i)
-  {
-	if($i % 2 == 0) return "PAR";
-	else return "IPAR";
-  }
-*/
 ?>

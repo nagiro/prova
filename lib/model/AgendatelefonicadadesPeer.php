@@ -17,30 +17,32 @@ class AgendatelefonicadadesPeer extends BaseAgendatelefonicadadesPeer
     return $C;
   }
    
-  static function doSearch( $TEXT , $idS = 1 )
+  static function doSearch( $TEXT , $idS = 1 , $page = 1 )
   {
     
-     $C = new Criteria();
-     $C = AgendatelefonicaPeer::getCriteriaActiu($C,$idS);
+    $C = new Criteria();
+    $C = AgendatelefonicaPeer::getCriteriaActiu($C,$idS);
      
-     $PARAULES = explode(" ",$TEXT); $PAR2 = array();
-     foreach( $PARAULES as $P ) if( strlen( $P ) > 2 ): $PAR2[] = trim($P); endif;                      
+    $PARAULES = explode(" ",$TEXT); $PAR2 = array();
+    foreach( $PARAULES as $P ) if( strlen( $P ) > 2 ): $PAR2[] = trim($P); endif;                      
      
-     foreach( $PAR2 as $P ):
-      
-//      $text1Criterion = $C->getNewCriterion( AgendatelefonicadadesPeer::DADA , '%'.$P.'%', CRITERIA::LIKE);
-      $text1Criterion = $C->getNewCriterion( AgendatelefonicaPeer::NOM , '%'.$P.'%', CRITERIA::LIKE);
-      $text2Criterion = $C->getNewCriterion( AgendatelefonicaPeer::TAGS , '%'.$P.'%', CRITERIA::LIKE);
-      $text3Criterion = $C->getNewCriterion( AgendatelefonicaPeer::ENTITAT , '%'.$P.'%', CRITERIA::LIKE);
-      $text1Criterion->addOr($text2Criterion); $text1Criterion->addOr($text3Criterion);  $C->add($text1Criterion);          
-     endforeach;
-     $C->add(AgendatelefonicaPeer::SITE_ID, $idS);     
-     $C->addGroupByColumn( AgendatelefonicaPeer::AGENDATELEFONICAID );     
-     $C->addAscendingOrderByColumn( AgendatelefonicaPeer::NOM );
-     $C->setLimit(20);
-     $ATD = AgendatelefonicaPeer::doSelect($C);
-     
-     return $ATD; 
+    foreach( $PAR2 as $P ):      
+        $text1Criterion = $C->getNewCriterion( AgendatelefonicaPeer::NOM , '%'.$P.'%', CRITERIA::LIKE);
+        $text2Criterion = $C->getNewCriterion( AgendatelefonicaPeer::TAGS , '%'.$P.'%', CRITERIA::LIKE);
+        $text3Criterion = $C->getNewCriterion( AgendatelefonicaPeer::ENTITAT , '%'.$P.'%', CRITERIA::LIKE);
+        $text1Criterion->addOr($text2Criterion); $text1Criterion->addOr($text3Criterion);  $C->add($text1Criterion);          
+    endforeach;
+    
+    $C->add(AgendatelefonicaPeer::SITE_ID, $idS);     
+    $C->addGroupByColumn( AgendatelefonicaPeer::AGENDATELEFONICAID );     
+    $C->addAscendingOrderByColumn( AgendatelefonicaPeer::NOM );    
+          
+    $pager = new sfPropelPager('Agendatelefonica', 20);
+	$pager->setCriteria($C);
+    $pager->setPage($page);
+    $pager->init();
+               
+    return $pager; 
   
   }
     
