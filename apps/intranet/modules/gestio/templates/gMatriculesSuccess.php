@@ -185,8 +185,9 @@
                     <div>
                         <div style="float: left; width:100px;"><b>Usuari: </b></div>
                         <div style="float: left; ">
-                            <input name="matricules[U]" id="autocomplete_usuari_id" type="text" value="Entra el DNI o nom" style="width: 300px;" />
-                            <input name="matricules[idU]" id="autocomplete_usuari_id_hidden" value="0" type="hidden" style="width: 300px;" />                            
+                            <input style="float:left; width:300px;" name="matricules[U]" id="autocomplete_usuari_id" type="text" value="Entra el DNI o nom" />
+                            <input name="matricules[idU]" id="autocomplete_usuari_id_hidden" value="0" type="hidden" style="width: 300px;" />
+                            <a target="_blank" style="margin-left:20px; float:left;" href="<?php echo url_for('gestio/gUsuaris?accio=N'); ?>">Crea un nou usuari</a>                            
                         </div>                        
                     </div>
                 </div>

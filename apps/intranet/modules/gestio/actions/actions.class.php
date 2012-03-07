@@ -540,6 +540,10 @@ class gestioActions extends sfActions
     	$this->getUser()->setSessionPar('cerca',array('text'=>""));
     	$this->getUser()->setSessionPar('PAGINA',1);
     	$this->redirect('gestio/gUsuaris?accio=FC');
+    //Apartat afegit per quan es vingui d'un enllaç per crear un nou usuari, com per exemple de matrícules
+    elseif($request->getParameter('accio') == 'N'):
+        $this->getUser()->setSessionPar('cerca',array('text'=>""));
+    	$this->getUser()->setSessionPar('PAGINA',1);
     endif; 
     
     $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));                    
