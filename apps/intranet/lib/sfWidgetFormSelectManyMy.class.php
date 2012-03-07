@@ -11,8 +11,8 @@ class sfWidgetFormSelectManyMy extends sfWidgetFormSelectCheckbox
   protected function formatChoices($name, $value, $choices, $attributes)
   {
     $inputs = array();
-    
-    if(!is_array($value) && !empty($value)) $value = explode('@',$value);
+        
+    if(!is_array($value) && (!empty($value) || $value == 0) ) $value = explode('@',$value);
     elseif(is_array($value)) $value = $value;
     else $value = array();
     
