@@ -26,8 +26,8 @@
                 echo '<div style="margin-top:10px; margin-bottom:10px;">';
                     
                     $url = $OE->getWebUrl();
-                    if(empty($url)) $url = "";        
-                    else $url = ' | <a style=" font-size:12px;" href="'.url_for($url,true).'">WEB</a>';
+                    if(empty($url)) $url = "#";        
+                    else $url = ' | <a style=" font-size:12px;" href="'.$url.'">WEB</a>';
 
                     $logo = SitesPeer::getSiteLogo($OE->getSiteId());
                                                                                                         
