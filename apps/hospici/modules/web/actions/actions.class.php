@@ -570,7 +570,7 @@ class webActions extends sfActions
                             
     } else {
     
-        $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','NO HA ENTRAT AMB TPV','IDM:'.$idM);
+        $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','NO HA ENTRAT AMB TPV',serialize($_POST));
         
     }
     
