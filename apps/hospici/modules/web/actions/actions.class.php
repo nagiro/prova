@@ -370,7 +370,7 @@ class webActions extends sfActions
             //La matrícula es paga amb TPV
             if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
                 $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
-    			$this->TPV = MatriculesPeer::getTPV( $RET['OM']->getPagat() , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , false );
+    			$this->TPV = MatriculesPeer::getTPV( $RET['OM']->getPagat() , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , true );
                 $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());
                 $this->setLayout('blanc');
                 $this->setTemplate('pagament');                                
