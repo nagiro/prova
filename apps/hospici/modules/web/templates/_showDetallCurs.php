@@ -21,6 +21,7 @@
                                                                
             //Si l'entitat té un pdf, l'hauríem de carregar.                                               
             if(empty($pdf)) $pdf = 0;             
+            
     ?>
 			<div style="border:0px solid #96BF0D; clear:both; padding:10px;">
 				<div style="font-size:11px"><b><?php echo $CURS->getTitolcurs() ?></b><br /><span style="color: gray;"><?php echo $nom; ?></span></div>
@@ -73,7 +74,7 @@
 if( $ESTAT == 'NO_AUTENTIFICAT' ){            
     echo '<div>Per poder matricular-vos d\'un curs heu d\'autentificar-vos clicant <a class="auth" href="'.$url.'" >aquí</a>.</div>';
                 
-}elseif( $ESTAT == 'MATRICULAT' ){
+}elseif( $ESTAT == 'MATRICULAT' || $ESTAT == 'RESERVAT' ){
     echo '<div>Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>';
     
 }elseif( $ESTAT == 'EN_ESPERA'){
@@ -97,7 +98,8 @@ if( $ESTAT == 'NO_AUTENTIFICAT' ){
                     
 }elseif( $ESTAT == 'POT_MATRICULAR'){
                                                             
-        echo mostraFormulari($nom, $CURS);
+        
+        echo mostraFormulari($nom, $CURS, $MISSATGE);
                     
 } ?>                
             				    </div>
@@ -137,23 +139,31 @@ function mostraFormulariComplet($nom, $CURS)
     </div>
 <?php }
 
-function mostraFormulari($nom, $CURS )
+function mostraFormulari($nom, $CURS , $MISSATGE )
 {
 
     echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
     
-    //Guardem el codi del curs                                                               	                                                                                                         
+    //Guardem el codi del curs
     echo input_hidden_tag('idC',$CURS->getIdcursos());
     $A_Descomptes = $CURS->h_getDescomptes();
     
      ?>
-    <div class="taula_dades">
+    <div class="taula_dades" style="width:330px;">
+    
+        <?php if(isset($MISSATGE) && $MISSATGE != ""): echo '<div style="background-color:red; color:white; width:95%; padding:5px;">'.$MISSATGE.'</div>'; endif; ?>
+                
         <div style="padding-top:10px;">
             <div style="float: left; width:120px;"><b>Pagament:</b></div>                                            
             <div style="float: left;">
             <?php                                
-                if( $CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA ) echo 'Només reserva <span class="tipMy tip" title="A través del portal es fa la reserva de plaça, a cost 0, i posteriorment l\'entitat organitzadora es posarà en contacte amb vostè per finalitzar la matrícula.">?</span>';
-                elseif( $CURS->getIsentrada() == CursosPeer::HOSPICI_RESERVA_TARGETA ) echo 'Targeta de crèdit <span class="tipMy tip" title="A través del portal realitzarà i pagarà la matrícula del curs.">?</span>';
+                if( $CURS->getIsEntrada() == CursosPeer::HOSPICI_RESERVA ):
+                    echo 'Només reserva <span class="tipMy tip" title="A través del portal es fa la reserva de plaça, a cost 0, i posteriorment l\'entitat organitzadora es posarà en contacte amb vostè per finalitzar la matrícula.">?</span>';
+                    echo input_hidden_tag('idMP',MatriculesPeer::RESERVAT);
+                elseif( $CURS->getIsentrada() == CursosPeer::HOSPICI_RESERVA_TARGETA ):
+                    echo 'Targeta de crèdit <span class="tipMy tip" title="A través del portal realitzarà i pagarà la matrícula del curs.">?</span>';
+                    echo input_hidden_tag('idMP',MatriculesPeer::PAGAMENT_TARGETA);
+                endif;
             ?>
             </div>
         </div>
@@ -165,7 +175,7 @@ function mostraFormulari($nom, $CURS )
               
                 //Si no hi ha descompte, no ensenyem el preu reduit.
                 if(empty($A_Descomptes)) echo "{$CURS->getPreu()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan inici el curs o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
-                else echo "Estàndard: {$CURS->getPreu()} € / Reduït: {$CURS->getPreur()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan l'entitat organitzadora li reclami o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
+                else echo "{$CURS->getPreu()} € <span class=\"tipMy tip\" title=\"Preu del curs que haurà d'abonar quan l'entitat organitzadora li reclami o bé tot seguit si el pagament és amb targeta de crèdit.\">?</span>";
                 
             ?>
             </div>

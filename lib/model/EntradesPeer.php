@@ -21,7 +21,6 @@ require 'lib/model/om/BaseEntradesPeer.php';
 class EntradesPeer extends BaseEntradesPeer {
 
     
-
 	static public function getList($PAGE = 1)
 	{
 		$C = new Criteria();

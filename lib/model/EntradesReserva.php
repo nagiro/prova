@@ -23,9 +23,10 @@ class EntradesReserva extends BaseEntradesReserva {
     public function getEstatString()
     {
         switch($this->getEstat()){
-            case EntradesReservaPeer::ANULADA: return 'Anul·lada';
-            case EntradesReservaPeer::CONFIRMADA: return 'Confirmada';
-            case EntradesReservaPeer::ENVIADA: return 'Enviada';
+            case EntradesReservaPeer::ESTAT_ENTRADA_ANULADA: return 'Anul·lada';
+            case EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA: return 'Confirmada';
+            case EntradesReservaPeer::ESTAT_ENTRADA_EN_ESPERA: return 'En espera';
+            //case EntradesReservaPeer::ENVIADA: return 'Enviada';
         }
     }
 

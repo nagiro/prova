@@ -156,7 +156,7 @@
             if( isset($FHorari)) { formEditaHoraris($IDA,$FHorari,$MISSATGE,$EXTRES,$IDS);  }
             if( isset($MODE['HORARI']) ){ formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS,$FHorari);  }            
             if( isset($MODE['DESCRIPCIO']) ) { formEditaDescripcio($IDA,$FActivitat); }
-            if( isset($MODE['PREUS']) ){ formLlistaPreus($IDA,$NOMACTIVITAT,$HORARIS);  }
+            if( isset($MODE['PREUS']) ){ formLlistaPreus( $OA );  }
             formLlistaActivitatsEdicio($CICLE,$ACTIVITATS,$IDS);                    
         }
         
@@ -510,12 +510,14 @@
 <?php } ?>  
 
 
-<?php function formLlistaPreus($IDA , $NOMACTIVITAT , $HORARIS =array() , $FHorari=null){ ?>    
-    	    	            
+<?php function formLlistaPreus( $OA ){ ?>    
+    	    	
+    <?php $IDA = $OA->getActivitatid(); ?>
+                                                         
 	<div class="REQUADRE">
     	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=PREUS&IDA='.$IDA); ?></div>	
     	<div class="titol">
-    	   <?php echo 'Editant els preus de l\'activitat: '.$NOMACTIVITAT; ?>
+    	   <?php echo 'Editant els preus de l\'activitat: '.$OA->getNom(); ?>
     	</div>
             
     	<div class="TITOL">Preu general</div>
@@ -523,7 +525,7 @@
             <?php echo input_hidden_tag('IDA',$IDA); ?>
           	<div class="DADES">
                    			
-                <?php $OEP = EntradesPreusPeer::retrieveByPK($IDA,$IDA); ?>
+                <?php $OEP = EntradesPreusPeer::retrieveByPK($IDA,$IDA); ?>                
             
                 <div style="float:left;">                            
                     <?php echo input_hidden_tag('PREUS['.$IDA.'][IDA]', $IDA ) ?>
@@ -532,13 +534,15 @@
                         <div style="float: left; padding-left:10px;">Preu:<br /> <?php echo input_tag('PREUS['.$IDA.'][PREU]',$OEP->getPreu(),array('style'=>'width:50px')) ?>€</div>
                         <div style="float: left; padding-left:10px;">Preu reduït:<br /><?php echo input_tag('PREUS['.$IDA.'][PREUR]',$OEP->getPreur(),array('style'=>'width:50px')) ?>€</div> 
                         <div style="float: left; padding-left:10px;">Places:<br /><?php echo input_tag('PREUS['.$IDA.'][PLACES]',$OEP->getPlaces(),array('style'=>'width:50px')) ?></div>
-                        <div style="float: left; padding-left:10px;">Venudes:<br /><?php echo $OEP->countEntradesVenudes() ?></div>                                                                          
+                        <div style="float: left; padding-left:10px;">Venudes:<br /><?php echo $OEP->countEntradesVenudes() ?></div>
+                        <div style="float: left; padding-left:10px;">Descomptes:<br /><?php echo select_tag('PREUS['.$IDA.'][DESCOMPTES][]',options_for_select(TipusPeer::getDescomptesArray(),$OEP->getDescomptesArray()),array('multiple'=>'multiple')) ?></div>                                                                          
                     <?php else: ?>
                         <div style="float: left; padding-left:10px;">Tipus:<br /> <?php echo select_tag('PREUS['.$IDA.'][TIPUS]',options_for_select(array(0=>'Desactivat',1=>'Reserva',2=>'Venta'),0),array('style'=>'width:100px')) ?></div>
                         <div style="float: left; padding-left:10px;">Preu:<br /> <?php echo input_tag('PREUS['.$IDA.'][PREU]','',array('style'=>'width:50px')) ?>€</div>
                         <div style="float: left; padding-left:10px;">Preu reduït:<br /><?php echo input_tag('PREUS['.$IDA.'][PREUR]','',array('style'=>'width:50px')) ?>€</div> 
                         <div style="float: left; padding-left:10px;">Places:<br /><?php echo input_tag('PREUS['.$IDA.'][PLACES]','',array('style'=>'width:50px')) ?></div>
                         <div style="float: left; padding-left:10px;">Venudes:<br /> 0</div>
+                        <div style="float: left; padding-left:10px;">Descomptes:<br /><?php echo select_tag('PREUS['.$IDA.'][DESCOMPTES][]',options_for_select(TipusPeer::getDescomptesArray(),$OEP->getDescomptesArray()),array('multiple'=>'multiple')) ?></div>
                     <?php endif; ?>                        
                 </div>                                                                                        						    						
     			<div style="clear:both; text-align:right; padding-top:20px;"><button name="BPREUSSAVE" class="BOTO_ACTIVITAT">Actualitza</button></div>	                   	
@@ -548,7 +552,9 @@
         <br />
     	<div class="TITOL">Preu horaris</div>
         <form action="<?php echo url_for('gestio/gActivitats') ?>" method="post">
-            <?php echo input_hidden_tag('IDA',$IDA); ?>            
+            <?php echo input_hidden_tag('IDA',$IDA); ?>
+            <?php $HORARIS = $OA->getHorarisActius($OA->getSiteId()); ?>
+                        
           	<div class="DADES">
      			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
     			<?php 	foreach($HORARIS as $H): $M = $H->getArrayHorarisEspaisMaterial(); $HE = $H->getArrayHorarisEspaisActiusAgrupats(); ?>
@@ -563,19 +569,22 @@
                                 <div style="float: left; padding-left:10px;">Preu:<br /> <?php echo input_tag('PREUS['.$H->getHorarisid().'][PREU]',$OEP->getPreu(),array('style'=>'width:50px')) ?>€</div>
                                 <div style="float: left; padding-left:10px;">Preu reduït:<br /><?php echo input_tag('PREUS['.$H->getHorarisid().'][PREUR]',$OEP->getPreur(),array('style'=>'width:50px')) ?>€</div> 
                                 <div style="float: left; padding-left:10px;">Places:<br /><?php echo input_tag('PREUS['.$H->getHorarisid().'][PLACES]',$OEP->getPlaces(),array('style'=>'width:50px')) ?></div>
-                                <div style="float: left; padding-left:10px;">Venudes:<br /><?php echo $OEP->countEntradesVenudes() ?></div>                                                                          
+                                <div style="float: left; padding-left:10px;">Venudes:<br /><?php echo $OEP->countEntradesVenudes() ?></div>
+                                <div style="float: left; padding-left:10px;">Descomptes:<br /><?php echo select_tag('PREUS['.$H->getHorarisid().'][DESCOMPTES][]',options_for_select(TipusPeer::getDescomptesArray(),$OEP->getDescomptesArray()),array('multiple'=>'multiple')) ?></div>                                                                          
                             <?php else: ?>
                                 <div style="float: left; padding-left:10px; clear:both; ">Tipus:<br /> <?php echo select_tag('PREUS['.$H->getHorarisid().'][TIPUS]',options_for_select(array(0=>'Desactivat',1=>'Reserva',2=>'Venta'),0),array('style'=>'width:100px')) ?></div>
                                 <div style="float: left; padding-left:10px;">Preu:<br /> <?php echo input_tag('PREUS['.$H->getHorarisid().'][PREU]','',array('style'=>'width:50px')) ?>€</div>
                                 <div style="float: left; padding-left:10px;">Preu reduït:<br /><?php echo input_tag('PREUS['.$H->getHorarisid().'][PREUR]','',array('style'=>'width:50px')) ?>€</div> 
                                 <div style="float: left; padding-left:10px;">Places:<br /><?php echo input_tag('PREUS['.$H->getHorarisid().'][PLACES]','',array('style'=>'width:50px')) ?></div>
                                 <div style="float: left; padding-left:10px;">Venudes:<br /> 0</div>
+                                <div style="float: left; padding-left:10px;">Descomptes:<br /><?php echo select_tag('PREUS['.$H->getHorarisid().'][DESCOMPTES][]',options_for_select(TipusPeer::getDescomptesArray(),$OEP->getDescomptesArray()),array('multiple'=>'multiple')) ?></div>
                             <?php endif; ?>                        
                         </div>                                                                                        						
     			<?php    endforeach; ?>				
     			<div style="clear:both; text-align:right; padding-top:20px;"><button name="BPREUSSAVE" class="BOTO_ACTIVITAT">Actualitza</button></div>	                   	
         	</div>    	
-         </form>        
+         </form>
+                 
 	</div>
 <?php } ?>
 

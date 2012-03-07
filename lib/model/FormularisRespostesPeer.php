@@ -77,7 +77,9 @@ class FormularisRespostesPeer extends BaseFormularisRespostesPeer {
                                 'POBLACIO' => $OU->getPoblacioString(), 
                                 'TELEFON'=> $OU->getTelefonString(),
                                 'EMAIL' => $OU->getEmail(),
-                                'ENTITAT' => $OU->getEntitat()
+                                'ENTITAT' => $OU->getEntitat(),
+                                'ADRECA' => $OU->getAdreca(),
+                                'CODI_POSTAL' => $OU->getCodipostal(),
                             );                                                                                 
             endif;
             

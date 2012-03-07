@@ -46,8 +46,8 @@ class HorarisForm extends sfFormPropel
       'Avis'                   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Responsable'			   => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'Espectadors'            => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),
-      'Places'                 => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),      
-      'isEntrada'              => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
+//      'Places'                 => new sfWidgetFormInputText(array(),array('style'=>'width:50px')),      
+//      'isEntrada'              => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
     ));
 
     $this->setValidators(array(
@@ -61,8 +61,8 @@ class HorarisForm extends sfFormPropel
       'Avis'                   => new sfValidatorString(array('required'=>false)),
       'Responsable'            => new sfValidatorString(array('required'=>false)),
       'Espectadors'            => new sfValidatorInteger(array('required'=>false)),
-      'Places'                 => new sfValidatorInteger(array('required'=>false)),
-      'isEntrada'              => new sfValidatorBoolean(),      
+//      'Places'                 => new sfValidatorInteger(array('required'=>false)),
+//      'isEntrada'              => new sfValidatorBoolean(),      
     ));
 
     
@@ -75,8 +75,8 @@ class HorarisForm extends sfFormPropel
       'Avis'                   => 'Avís: ',
       'Responsable'            => 'Responsable: ',
       'Espectadors'            => 'Espectadors: ',
-      'Places'                 => 'Places: ',      
-      'isEntrada'             => 'Venta internet?',
+//      'Places'                 => 'Places: ',      
+//      'isEntrada'             => 'Venta internet?',
     ));
     
     

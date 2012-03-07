@@ -42,9 +42,9 @@ class FormularisRespostes extends BaseFormularisRespostes {
     public function getFormulariss()
     {
         $C = new Criteria();
-        $C->add(FormularisRespostesPeer::ACTIU, true);
-        $C->add(FormularisRespostesPeer::IDFORMULARIS, $this->getIdformularis());
-        $C->addDescendingOrderByColumn(FormularisRespostesPeer::IDFORMULARISRESPOSTES);
+        $C->add(FormularisPeer::ACTIU, true);
+        $C->add(FormularisPeer::IDFORMULARIS, $this->getIdformularis());
+        $C->addDescendingOrderByColumn(FormularisPeer::IDFORMULARIS);
         
         return FormularisPeer::doSelect($C);
         

@@ -1685,40 +1685,42 @@ class gestioActions extends sfActions
       
       case 'PREUS':
                 $this->CarregaActivitats($request,false);
-                $OA = ActivitatsPeer::retrieveByPK($this->IDA);
-                $this->HORARIS = $OA->getHorarisActius(); 
+                $this->OA = ActivitatsPeer::retrieveByPK($this->IDA);                 
                                                     					    			
 			    $this->MODE['PREUS'] = true;
       
             break;
             
       case 'PREUS_SAVE':
-                $this->CarregaActivitats($request,false);
-                
-                $OA = ActivitatsPeer::retrieveByPK($this->IDA);
-                $this->HORARIS = $OA->getHorarisActius(); 
-                                                                            
-                foreach($request->getParameter('PREUS') as $idEP => $RS):
-                
-              		$OEP = EntradesPreusPeer::retrieveByPK($idEP,$RS['IDA']);            
-                    if(!($OEP instanceof EntradesPreus)) $OEP = new EntradesPreus();
+                $this->CarregaActivitats($request,false);                                 
+                                                                                                            
+                foreach($request->getParameter('PREUS') as $idH => $RS):
+                               
+                    print_r($RS);
+                                              
+                                                    
+              		$OEP = EntradesPreusPeer::retrieveByPK($idH,$RS['IDA']);            
+                    if(!($OEP instanceof EntradesPreus)){ $OEP = new EntradesPreus(); }
                     
-                    $OEP->setHorariid($idEP);
+                    $OEP->setHorariid($idH);
                     $OEP->setPreu($RS['PREU']);
                     $OEP->setPreuR($RS['PREUR']);
                     $OEP->setPlaces($RS['PLACES']);
                     $OEP->setTipus($RS['TIPUS']);
                     $OEP->setActivitatid($RS['IDA']);
                     $OEP->setActiu(true);
-                    $OEP->setSiteId($this->IDS);                                		
+                    $OEP->setSiteId($this->IDS);
+                    $OEP->setDescomptesString($RS['DESCOMPTES']);                                		
                     $OEP->save();
+                    $this->IDA = $RS['IDA'];
                 
                 endforeach;                                                            
                                                     					    			
 			    $this->MODE['PREUS'] = true;
+                
+                $this->OA = ActivitatsPeer::retrieveByPK($this->IDA);
       
-            break;
-            
+            break;                        
     					
     }                                
     
@@ -2388,6 +2390,7 @@ class gestioActions extends sfActions
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC') , $this->IDS );
 				$this->MODE = 'LLISTAT_ALUMNES'; 
 			break;
+
 		case 'C':
 				$this->getUser()->addLogAction('inside','gCursos');
 			break;
@@ -2589,6 +2592,8 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BSUBMIT')) 		 $accio = 'S';
 	    elseif($request->hasParameter('BDELETE')) 		 $accio = 'D';
 	    elseif($request->hasParameter('BSAVE')) 		 $accio = 'SAVE_MATRICULA';
+        
+        elseif($request->hasParameter('BSAVEMATRICULA')) $accio = 'SAVE_NEW_MATRICULA';
     }                
     
     //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
@@ -2597,112 +2602,85 @@ class gestioActions extends sfActions
     
     switch($accio){
 
-    	//Crea un usuari nou per poder seguir fent la matrícula
-    	case 'ADD_USER':    		
-                $this->FUsuari = UsuarisPeer::initialize(0,$this->IDS,true,false);    			    		    			     							    	    		
-    			$this->MODE = 'MAT_NOU_USUARI';    			  	
-    		break;
-    		
-    	//Guarda el nou usuari
-    	case 'SAVE_NEW_USER':    			    			    			
-                $RU = $request->getParameter('usuaris');
-    			$this->FUsuari = UsuarisPeer::initialize(0,$this->IDS,true,false);  			
-    			$this->FUsuari->bind($RU);
-    			if($this->FUsuari->isValid()):
-    				$this->FUsuari->save();
-    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FUsuari->getObject());    				    				    			
-    				$this->redirect('gestio/gMatricules?accio=NU');
-    			endif;     			    							    	    		
-    			$this->MODE = 'MAT_NOU_USUARI';    			  	
-    		break;
-    	
-    	// Nova matrícula
+    	// Iniciem una nova matrícula
     	case 'NU':                            						
-                $this->IDM = $request->getParameter('IDM',null);
-                $this->FMatricula = MatriculesPeer::initialize($this->IDM,$this->IDS,true);            				    			    			    			
+                $this->IDM = $request->getParameter('IDM',null);                
+                $this->CURSOS = MatriculesPeer::getCursosMatriculacio($this->IDS);            				    			    			    			
     			$this->MODE = 'MAT_USUARI';  	
     		break;            
             
+        //Consultem els usuaris disponibles
         case 'AJAX_USUARIS':    
                 $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),$this->IDS);                                          
                 return $this->renderText(json_encode($RET));                
             break;
-    		
-    	//Comprovem les dades que hem entrat de l'usuari
-    	case 'SNU':
-                $RM = $request->getParameter('matricules_usuari');
-                $this->FMatricula = MatriculesPeer::initialize(0,$this->IDS,true);    			    			
-    			$this->FMatricula->bind($RM);    			
-    			if($this->FMatricula->isValid()):
-    				$this->FMatricula->save();
-    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMatricula->getObject());
-                    //Si tot OK, iniciem l'elecció del curs
-                    $this->IDM = $this->FMatricula->getObject()->getIdmatricules();     				
-    				$this->CURSOS = MatriculesPeer::getCursosMatriculacio($this->IDS);
-    			    $this->MODE = 'NOU';
-                else: 
-                    $this->MODE = 'MAT_USUARI';
-    			endif;    			    			     			
-    		break;
-    	
-    	//Guardem la matrícula al curs que hem escollit
-    	case 'SAVE_CURS':
-                                
-                $this->IDM = $request->getParameter('IDM'); //L'hem enviat ocult
-                $this->IDC = $request->getParameter('IDC');
-                                                                
-                $this->FMatricula = MatriculesPeer::initialize($this->IDM,$this->IDS,false);
-                                		
-                $OMatricula = $this->FMatricula->getObject();
-    			$OMatricula->setCursosIdcursos($this->IDC);
-    			$OMatricula->setDatainscripcio(date('Y-m-d H:i',time()));
-    			$Preu = CursosPeer::CalculaPreu($OMatricula->getCursosIdcursos(),$OMatricula->getTreduccio(), $this->IDS );
-    			$OMatricula->setEstat(MatriculesPeer::EN_PROCES);
-    			$OMatricula->setPagat($Preu);    			
-    			$OMatricula->save();
-    			$this->getUser()->addLogAction($accio,'gMatricules',$OMatricula);
-    			$this->redirect('gestio/gMatricules?accio=FP&IDM='.$this->IDM);
+        
+        //Carreguem les dades de pagament de la matrícula
+        case 'EXTRES':
+        
+                $OC = CursosPeer::retrieveByPK($request->getParameter('IDC'));
+                                    
+                //Si no hem trobat el curs, retornem un error
+                if(!($OC instanceof Cursos)):
                 
-    		break;
-
-    	//Mostra la prematrícula i carreguem les dades del pagament
-    	case 'FP':    		
-                $this->FMatricula = MatriculesPeer::initialize($request->getParameter('IDM'),$this->IDS);                
-    			$this->MATRICULA = $this->FMatricula->getObject();
-                $this->IDM = $this->MATRICULA->getIdmatricules();
-    			    			    			    		     
-    		    $PREU = CursosPeer::CalculaTotalPreus(array($this->MATRICULA->getCursosIdcursos()),$this->MATRICULA->getTreduccio(),$this->IDS);
-    		    $NOM  = UsuarisPeer::retrieveByPK($this->MATRICULA->getUsuarisUsuariid())->getNomComplet();
-                $this->CURS_PLE = CursosPeer::isPle($this->MATRICULA->getCursosIdcursos(),$this->IDS); //Passem si el curs es ple
-    		    $MATRICULA = $this->MATRICULA->getIdmatricules();
-                    		        		        			
-    			$this->TPV = MatriculesPeer::getTPV($PREU,$NOM,$MATRICULA,$this->IDS,false);    			    			
-    			$this->MODE = 'VALIDACIO_CURS';
-    		break;
-    		    		
-    	//Entenem que hem fet un pagament a caixa i mostrem missatge de finalització.  
-    	case 'PAGAMENT':        
-                $this->IDM = $request->getParameter('IDM');
-                $this->OM = MatriculesPeer::retrieveByPK( $this->IDM );
-    			if(MatriculesPeer::setMatriculaPagada( $this->OM )){
-        			if($this->OM instanceof Matricules && $this->IDM > 0) 
-                            $this->MISSATGE = "OK";
-                    else    $this->MISSATGE = "KO";
+                    return $this->renderPartial('matricules',array("OC"=>new Cursos(),"RET"=>array(),"ERROR"=>"ERROR: El curs no s'ha trobat."));
                     
-        			$this->getUser()->addLogAction($accio,'gMatricules',$this->MATRICULA);
-        			$this->MODE = 'PAGAMENT';
-                    $this->SendMailMatricula($this->OM,$this->IDS); 
-    			}                       			  							
+                else:
+                                
+                    $MostraPreu = ($OC->isCompra() && !$OC->isPle());                
+                                                                                                                                                                                                                                               
+                    return $this->renderPartial('matricules',array("OC"=>$OC,"RET"=>$OC->getDescomptesArray($MostraPreu),"ERROR"=>""));
+                
+                endif;
+                    
+            break;
+    		
+
+        //Guardem les dades de la matrícula i carreguem les dades de pagament o bé redireccionem cap a OK. 
+        case 'SAVE_NEW_MATRICULA':
+        
+                //La matrícula pot ser amb pagament de targeta de crèdit o bé en metàl·lic.
+                $RS = $request->getParameter('matricules');
+                $RET = MatriculesPeer::saveNewMatricula( $RS['idU'] , $RS['idC'] , "" , $RS['descompte'] , $RS['mode_pagament'] );
+                $AVISOS = $RET['AVISOS'];                                
+                                                                     			
+                //Si la matrícula surt amb algun estat que no sigui tpv, fem la redirecció i mostrem el missatge. 
+                if(array_key_exists('ERR_USUARI',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM=0&MISSATGE=ERR_USUARI'); 
+                elseif(array_key_exists('ERR_CURS',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM=0&MISSATGE=ERR_CURS');
+                elseif(array_key_exists('ERR_JA_TE_UNA_MATRICULA',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM=0&MISSATGE=ERR_JA_TE_UNA_MATRICULA');
+                elseif(array_key_exists('CURS_PLE',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=CURS_PLE');
+                elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=RESERVA_OK');                
+                elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_METALIC_OK');
+        
+                //La matrícula es paga amb TPV
+                if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
+                    $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
+        			$this->TPV = MatriculesPeer::getTPV( $PREU , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , false );
+                    $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());
+                    $this->setLayout('blank');
+                    $this->setTemplate('pagament');                                
+                endif;                                                                                
+                                                                
+            break;
+    		    		
+    	//Entenem que hem fet un pagament correcte i mostrem pantalla de finalització.  
+    	case 'PAGAMENT':        
+                 
+                $this->IDM = $request->getParameter('IDM');                            
+                $this->OM = MatriculesPeer::retrieveByPK( $this->IDM );                    			 
+                $this->MISSATGE = $request->getParameter('MISSATGE');                      			
+    			$this->MODE = 'PAGAMENT';                
+                $this->getUser()->addLogAction($accio,'gMatricules',$this->IDM);
+                 					
     		break;
             
-    	//Si hem fet un pagament amb targeta, anem a la següent pantalla. 
-    	case 'OK':
-        
+    	//Si hem fet un pagament amb targeta, anem a la següent pantalla. El TPV serà l'encarregat de donar-li l'estat oportú. 
+    	case 'OK':        
               $this->IDM = $request->getParameter('Ds_MerchantData',0);
     		  if($request->hasParameter('OK') && $this->IDM > 0 ):
-                 $this->MISSATGE = "OK";
+                 $this->MISSATGE = "PAGAMENT_TPV";
               else:
-                 $this->MISSATGE = "KO";
+                 $this->MISSATGE = "PAGAMENT_TPV_KO";
               endif;
               $this->MODE = 'PAGAMENT';
               break;
@@ -2718,8 +2696,8 @@ class gestioActions extends sfActions
     	    break;
     	    
    	    //Edita una matrícula
-    	case 'E':
-                $this->IDM = $request->getParameter('IDM');
+    	case 'E':                
+                $this->IDM = $request->getParameter('IDM');                                
                 $this->FMATRICULA = MatriculesPeer::initialize( $this->IDM , $this->IDS );     			    			    			    			
     			$this->MODE = 'EDICIO';
     		break;
@@ -2737,12 +2715,15 @@ class gestioActions extends sfActions
     			endif;
     			$this->MODE = 'EDICIO';    		
     		break;    	
-    			
+
+        //Cerquem alumnes    			
 		case 'CA':					
 				$this->ALUMNES = MatriculesPeer::cercaAlumnes($this->CERCA['text'] , $this->PAGINA , $this->IDS );
 				$this->SELECT = 2;
 				$this->MODE = 'CONSULTA';				 
 			break;		
+            
+        //Cerquem cursos
 		case 'CC':
 				$this->CURSOS = MatriculesPeer::cercaCursos($this->CERCA['text'] , $this->PAGINA , $this->IDS );
 				$this->SELECT = 1;
@@ -2808,7 +2789,7 @@ class gestioActions extends sfActions
   public function executeAjaxUsuaris(sfWebRequest $request)
   {
     $this->IDS = $this->getUser()->getSessionPar('idS');
-    $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),$this->IDS);                                          
+    $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),null);                                          
     return $this->renderText(json_encode($RET));                
   }
   
@@ -2826,29 +2807,10 @@ class gestioActions extends sfActions
     return $this->renderText(json_encode($RET));                
   }
 
-
   
   //Envia el correu d'una matrícula
   public function SendMailMatricula($OM,$idS){
-    if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):
-        $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-      					$OM->getUsuaris()->getEmail(),  							
-      					'Resguard de matrícula',
-      					MatriculesPeer::MailMatricula($OM,$idS));  			
-    	$this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-    					'informatica@casadecultura.org',
-    					'Resguard de matrícula',
-    					MatriculesPeer::MailMatricula($OM,$idS));
-     else: 
-        $this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-      					$OM->getUsuaris()->getEmail(),  							
-      					'Problema en realitzar matrícula',
-      					MatriculesPeer::MailMatriculaFAIL($OM,$idS));  			
-    	$this->sendMail(OptionsPeer::getString('MAIL_FROM',$this->IDS),
-    					'informatica@casadecultura.org',
-    					'Problema en realitzar matrícula',
-    					MatriculesPeer::MailMatriculaFAIL($OM,$idS));     
-     endif; 
+    MatriculesPeer::SendMailMatricula($OM, $idS); 
   }
         
   public function executeGNoticies(sfWebRequest $request)  
@@ -3929,37 +3891,8 @@ class gestioActions extends sfActions
   
    private function sendMail($from,$to,$subject,$body = "",$files = array())
    {    
-        //Si entrem un mail que no és en format array, l'inicialitzem
-        $mails = $to;
-        if(!is_array($to)) $mails = array($to);
-        
-        //Definim el mailer
-        $t = Swift_SmtpTransport::newInstance('smtp.casadecultura.org',587);
-        $t->setUsername('informatica@casadecultura.org');
-        $t->setPassword('gi1807bj');
-        $mailer = Swift_Mailer::newInstance($t);
-        
-        //Enviem tots els correus         
-        foreach($mails as $to):
-        
-            //Comencem l'enviament de correus als que el tinguin correcte.
-       	    try{
-                
-        		$sm = Swift_Message::newInstance($subject,$body,'text/html','utf8');
-                $sm->setFrom($from);
-                $sm->setTo($to);
-        		
-        		foreach($files as $F):
-        			$sm->attach(Swift_Attachment::fromPath($F['tmp_name']));
-        		endforeach;        		        			    
-            	
-        		$OK = $mailer->send($sm,$errors);                                                
-            
-            } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
-            
-        endforeach;
-		
-        return array('OK'=>$OK,'MAILS_INC'=>$errors);
+        //Ho he passat a myUser per fer-ho més compatible amb totes les parts del programa. 
+        myUser::sendMail($from,$to,$subject,$body,$files);
    }   
    
    
@@ -3971,12 +3904,14 @@ class gestioActions extends sfActions
     $this->accio = $request->getParameter('accio','C');
     $ROPTIONS = $request->getParameter('options',array('option_id'=>'0'));
     $RESPAIS = $request->getParameter('espais',array('EspaiID'=>'0'));
-    $RMATERIAL = $request->getParameter('materialgeneric',array('idMaterialGeneric'=>''));    
+    $RMATERIAL = $request->getParameter('materialgeneric',array('idMaterialGeneric'=>''));
+    $RDESCOMPTE = $request->getParameter('descomptes',array('idDescompte'=>'0'));    
     
     $this->FOPTIONS = OptionsPeer::initialize($ROPTIONS['option_id'],$this->IDS,false);
     $this->FESPAIS  = EspaisPeer::initialize($RESPAIS['EspaiID'],$this->IDS);        
     $this->FMATERIAL = MaterialgenericPeer::initialize($RMATERIAL['idMaterialGeneric'],$this->IDS);
     $this->FENTITAT = SitesPeer::initialize($this->IDS);
+    $this->FDESCOMPTE = DescomptesPeer::initialize( $RDESCOMPTE['idDescompte'] , $this->IDS );
 
     //Agafem el codi de facebook de l'usuari
     $this->FBI = UsuarisPeer::getUserFbCode($this->getUser()->getSessionPar('idU'));    
@@ -3991,6 +3926,7 @@ class gestioActions extends sfActions
     if($request->hasParameter('BSAVEMATERIAL')) $this->accio = 'SAVE_MATERIAL';    
     if($request->hasParameter('BDELETEMATERIAL')) $this->accio = 'DELETE_MATERIAL';
     if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
+    if($request->hasParameter('BSAVEDESCOMPTE')) $this->accio = 'SAVE_DESCOMPTE';    
     
     switch($this->accio){
         case 'AJAX_OPCIO':
@@ -4091,7 +4027,16 @@ class gestioActions extends sfActions
                 $this->FENTITAT = SitesPeer::initialize($this->IDS);                
             endif;
             break;
-            
+
+        case 'SAVE_DESCOMPTE':
+            //Si entrem un descompte que és 0, vol dir que creem un nou descompte                                          
+            $this->FDESCOMPTE->bind($RDESCOMPTE);
+            if($this->FDESCOMPTE->isValid()):
+                $this->FDESCOMPTE->save();                
+                $this->getUser()->addLogAction($this->accio,'gConfig',$this->FDESCOMPTE->getObject());
+                $this->FDESCOMPTE  = DescomptesPeer::initialize($this->FDESCOMPTE->getObject()->getIddescompte(),$this->IDS);                
+            endif;
+            break;
     }       
   }   
   

@@ -27,6 +27,21 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
     const TIPUS_RESERVA = 1;
     const TIPUS_VENTA = 2;    
 
+
+    static public function getPreu($IDH,$NEntrades,$Descompte)
+    {
+        $OEP = self::getByActivitatOHorari(0,$IDH);
+        if(!($OEP instanceof EntradesPreus)) return -1;
+        //FALTA ACABAR-HO!!!                        
+    }
+
+    static public function isEntradesByActivitat($idA){
+        $C = new Criteria();
+        $C->add(self::ACTIVITAT_ID, $idA);
+        $C->add(self::ACTIU, true);
+        return (self::doCount($C) > 0);
+    }
+
     static public function getEntradesHorarisByActivitat($idA){
         
         $C = new Criteria();
@@ -39,5 +54,49 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
         return HorarisPeer::doSelect($C);
                 
     }
+
+    /**
+     * Ens retorna les condicions d'entrada segons l'activitat o horaris 
+     * */
+    static public function getByActivitatOHorari($idA = 0, $idH = 0){
+        //Primer mirem si hi ha un preu per l'horari entrat.
+            //si no hi ha cap preu per l'horari, entrem amb l'activitat
+        
+                
+        $C = new Criteria();
+        $C->add(self::HORARI_ID, $idH);
+        $C->add(self::ACTIU, true);            
+        $OEP = self::doSelectOne($C);
+        
+        if($OEP instanceof EntradesPreus):
+            return $OEP;
+        else:
+            $C = new Criteria();
+            $C->add(self::ACTIVITAT_ID, $idA);            
+            $C->add(self::ACTIU, true);
+            $OEP = self::doSelectOne($C);
+            if($OEP instanceof EntradesPreu):
+                return $OEP;
+            else: 
+                return null;
+            endif;                        
+        endif;                                  
+        
+    } 
+
+
+    /**
+     * Ens diu quin tipus de venta hi ha associada a aquesta activitat i/o horari en espeical. 
+     * */
+    static public function getTipusVenta($idA = 0, $idH = 0){
+        $C = new Criteria();
+        if($idH > 0) $C->add(self::HORARI_ID, $idH);
+        if($idA > 0) $C->add(self::ACTIVITAT_ID, $idA);
+        $C->add(self::ACTIU);
+        
+        $OEP = self::doSelectOne();
+        if($OEP instanceof EntradesPreus) return $OEP->getTipus();
+        else return self::TIPUS_DESACTIVAT;
+    } 
 
 } // EntradesPreusPeer

@@ -24,6 +24,63 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
     const ESTAT_ENTRADA_ANULADA = 20;
     const ESTAT_ENTRADA_EN_ESPERA = 30;
 
+
+    /**
+     * @return -1 (OH incorrecte)
+     * @return -2 (OA incorrecte)
+     * @return -3 (OEP incorrecte)
+     * @return -4 (Repe)
+     * @return -5 (Exhaurides)
+     * @return -6 (Error TPV)
+     * @return 1 (Reserva OK)
+     * @return 2 (Compra OK)
+     * */
+    static public function setCompraEntrada($IDH, $IDU, $NEntrades, $Descompte, $COMPRA = false)
+    {
+            
+        //Carreguem l'activitat en qüestió per carregar les dades.
+        $OH = HorarisPeer::retrieveByPK($IDH);
+        if(!($OH instanceof Horaris)) return -1;
+        $IDA = $OH->getActivitatsActivitatid(); 
+        
+        $OA = ActivitatsPeer::retrieveByPK($IDA);        
+        if(!($OA instanceof Activitats)) return -2;
+        
+        $OEP = EntradesPreusPeer::getByActivitatOHorari($IDA, $IDH);
+        if(!($OEP instanceof EntradesPreus)) return -3; //HORARI_INEXISTENT
+        
+        
+        //Tenim un horari carregat i una activitat. 
+        $idS = $OA->getSiteid();
+        
+        $HaComprat = EntradesReservaPeer::ExisteixenEntradesComprades($IDU, $IDH);
+        $PlacesLliures = EntradesReservaPeer::countEntradesActivitatConf($IDH);
+        $Tipus = ($COMPRA)?EntradesPreusPeer::TIPUS_VENTA:EntradesPreusPeer::TIPUS_RESERVA;                        
+                            
+        if($HaComprat) return -4; //ENTRADA_REPE
+        if(($PlacesLliures - $this->NEntrades) <= 0) return -5; //NO_QUEDEN_PROU_ENTRADES                                                      
+                                                        
+        //Generem la nova compra o reserva
+        $OER = EntradesReservaPeer::initialize( $idS , '' , 0 , $IDA , $IDH , $IDU , $NEntrades , $Tipus , $Descompte )->getObject();
+            
+        //Si és reserva                    
+        if( $Tipus == EntradesPreusPeer::TIPUS_RESERVA ){
+        
+            $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA);                                            
+            $OER->save();
+         
+        } elseif($Tipus == EntradesPreusPeer::TIPUS_VENTA) {
+        
+            $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_ESPERA);
+            $OER->save();            
+                                            
+        }
+               
+        UsuarisPeer::addSite($IDU,$idS);
+        return $OER;                                                                         
+        
+    } 
+    
     static public function getCriteriaActiu($C)
     {
         $C->add(self::ACTIU, true);
@@ -39,9 +96,9 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         
     }
 
-	static public function initialize( $idS , $url_ajax_usuaris, $idER = 0 , $idA = 0, $idH = 0 , $idU = 0 )
+	static public function initialize( $idS , $url_ajax_usuaris, $idER = 0, $idA = 0, $idH = 0 , $idU = 0 , $quantitat = 0 , $tipus = EntradesPreusPeer::TIPUS_RESERVA , $Descompte )
 	{				
-        $OER = self::retrieveByPK($idER);	
+        $OER = self::retrieveByPKs($idER);	
         
 		if(!($OER instanceof EntradesReserva)):
 			$OER = new EntradesReserva();
@@ -49,9 +106,11 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
             $OER->setEntradesPreusHorariId(($idH == 0)?null:$idH);
 			$OER->setUsuariid(($idU == 0)?null:$idU);
             $OER->setNomReserva("");
-            $OER->setQuantitat(0);			
+            $OER->setQuantitat($quantitat);			
 			$OER->setEstat(self::ESTAT_ENTRADA_EN_ESPERA);
             $OER->setActiu(true);
+            $OER->setTipus($tipus);
+            $OER->setDescompte($Descompte);
             $OER->setSiteid($idS);
 			$OER->setData(date('Y-m-d H:i',time()));
 		endif; 		
@@ -59,16 +118,31 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         return new EntradesReservaForm($OER,array('ajax'=>$url_ajax_usuaris));
 	}
 
+    /**
+     * Retorna per quins horaris, l'usuari ha comprat entrades
+     * */
     static public function h_getEntradesUsuariArray($idU){
         $RET = array();
         
-        foreach(self::getEntradesUsuari($idU) as $OE):
-            $RET[$OE->getActivitatsid()] = $OE->getEntradesReservaId();
+        foreach(self::getEntradesUsuari($idU) as $OER):
+            $RET[$OER->getEntradesPreusHorariId()] = $OER->getIdentrada();
         endforeach;
         
         return $RET;
     }
 
+    /**
+     * Retorna per quins horaris, l'usuari ha comprat entrades
+     * */
+    static public function h_getEntradesActivitatUsuariArray($idU){
+        $RET = array();
+        
+        foreach(self::getEntradesUsuari($idU) as $OER):
+            $RET[$OER->getIdentrada()] = $OER->getIdentrada();
+        endforeach;
+        
+        return $RET;
+    }    
 
     /**
      * Retorna les entrades guardades per a un usuari en concret.
@@ -77,9 +151,9 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
      * */
     static public function getEntradesUsuari($idU){
         $C = new Criteria();
-        $C = self::getCriteriaActiu($C);
-        
+        $C = self::getCriteriaActiu($C);        
         $C->add(self::USUARI_ID, $idU);
+        
         $C->addDescendingOrderByColumn(self::IDENTRADA);
         return self::doSelect($C);        
     }
@@ -104,7 +178,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
      * @param $idA Activitat id     
      * @return Int Quantes entrades s'han trobat.
      * */
-    static public function countEntradesActivitatConf($idA,$idH = 0){
+/*    static public function countEntradesActivitatConf($idA,$idH = 0){
         $RET = 0;
         
         $C = new Criteria();
@@ -118,6 +192,29 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         endforeach;
         
         return $RET;
+    }
+*/
+
+    /**
+     * Places lliures a un horari determinat
+     * @param $idH Horariid     
+     * @return Int Quantes entrades queden lliures.
+     * */
+    static public function countEntradesActivitatConf($idH){
+        $RET = 0;
+        
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C);
+        $C->add( self::ENTRADES_PREUS_HORARI_ID , $idH );         
+        $C->add( self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA);
+        
+        foreach(self::doSelect($C) as $OE):
+            $RET += $OE->getQuantes();
+        endforeach;
+        
+        $OEP = EntradesPreusPeer::getByActivitatOHorari(0,$idH);
+        return $OEP->getPlaces() - $RET;
+                
     }
 
 
@@ -133,8 +230,8 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C = self::getCriteriaActiu($C);
         
         $C->add(self::USUARI_ID, $idU);
-        $C->add(self::ACTIVITATS_ID, $idH);
-        $C->add(self::ESTAT,EntradesReservaPeer::ANULADA, CRITERIA::NOT_EQUAL);
+        $C->add(self::ENTRADES_PREUS_HORARI_ID, $idH);
+        $C->add(self::ESTAT,self::ESTAT_ENTRADA_ANULADA, CRITERIA::NOT_EQUAL);
         return (self::doCount($C)>0);        
     }
 

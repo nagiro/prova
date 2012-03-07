@@ -12,7 +12,8 @@
 	.cinquanta { width:50%; }
 	.HTEXT { height:100px; }
 	.espai { padding-left:5px; padding-right:5px; }
-    .MAtrICULES th { font-size:12px; font-weight:bold; }
+    .MAtrICULES th { font-size:12px; font-weight:bold; }    
+    .linia_curs:hover { background-color: #CCC; }
 
  </style>
 
@@ -20,19 +21,59 @@
 
 <script type="text/javascript">
 
-	$(document).ready( function() { 
+	$(document).ready( function() {
+
+
+        /******************************************************/
+        /* Selecció de curs i càrrega de formulari amb extres */    
+        /******************************************************/
+        
+        $('#autocomplete_usuari_id').change(function(){ $('#LLISTAT_CURSOS').show(); });
+        $('#autocomplete_usuari_id').focus(function(){ $(this).val(''); });                
+                                
+        $('.matricula').click(function(){            
+            $.post( "<?php echo url_for('gestio/gMatricules?accio=EXTRES') ?>", 
+                    { IDC: this.value }, 
+                    function(data) { $("#EXTRES").html(data); }
+                ); 
+        });
+                        
+	            
+        /******************************/
+        /* Autocompletat de l'usuari  */    
+        /******************************/
+        
+        jQuery("#autocomplete_usuari_id")
+        .autocomplete('/index.php/gestio/ajaxUsuaris', jQuery.extend({}, {
+          dataType: 'json',
+          parse:    function(data) {
+            var parsed = [];        
+            for (key in data) { parsed[parsed.length] = { data: [ data[key]['text'], data[key]['clau'] ], value: data[key]['text'], result: data[key]['clau'] }; }
+            return parsed;
+          }
+        }, { }))
+        .result(function(event, data) { $("#autocomplete_usuari_id").val(data[0]); $("#autocomplete_usuari_id_hidden").val(data[1]); });      
+    
+        /* CERCA */
+           
 		$('#cerca_select').change( function() {
 			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); 			
 		});        
 
-        $('#form_sel_user').validate({
+        /* Validació dels formularis de matrícula */
+
+        $('#form_new_matricula').validate({
                 rules:{
-                    "autocomplete_matricules_usuari[Usuaris_UsuariID]": { required: true },
+                    "matricules[idU]": { required: true },
+                    "matricules[idC]": { required: true },
                 },
                 messages: {
-                    "autocomplete_matricules_usuari[Usuaris_UsuariID]": { required: "<br />Escriu un DNI o nom i escull-lo del llistat. Si no apareix, prem a crea un usuari nou." }
+                    "matricules[idU]": { required: "<br />Escriu un DNI o nom i escull-lo del llistat. Si no apareix, prem a crea un usuari nou." },
+                    "matricules[idC]": { required: "<br />Has d'escollir algun curs per poder-te matricular." }
                 }            
         });
+
+        /* Validació de nou usuari */
 
         $('#form_usuari').validate({            
                 rules:{
@@ -90,9 +131,9 @@
 					else:					 
 						echo '<tr><td class="TITOL">DNI</td><td class="TITOL">Nom</td></tr>';
 						
-						$i = 0;						
+						$i = 0; $ant = "";						
 						foreach($ALUMNES->getresults() as $A):						
-	                      	$PAR = ParImpar($i++);                	
+	                      	$PAR = ParImpar($i++);                                              	
 	                    	echo '<tr>							
 									<td class="LINIA">'.link_to($A->getdni(),'gestio/gMatricules?accio=LMA&IDA='.$A->getUsuariid()).'</td>
 								    <td class="LINIA">'.$A->getNomComplet().'</td>
@@ -136,131 +177,67 @@
 
   <?php ELSEIF( $MODE == 'MAT_USUARI' ):  ?>
 
- 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST" id="form_sel_user">
-	    <div class="REQUADRE">	    
-	    	<table class="FORMULARI" width="100%">                            
-	 			<?php echo $FMatricula; ?>	 		
-                <tr>
-	 			<td colspan="2" class="dreta"><br />
-	 				<?php echo link_to('Crea nou usuari','gestio/gMatricules?accio=ADD_USER'); ?> o 	            		
-	            	<?php echo submit_tag('Segueix matriculant...',array('name'=>'BSELCURS','class'=>'BOTO_ACTIVITAT')) ?>
-	            </td>
-                </tr>
-	 		      
-	        </table>
+ 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST" id="form_new_matricula">
+	    <div class="REQUADRE">
+            <div style="width: 650px;" class="FORMULARI">
+                <div style="float:left; background-color:#CCC; color:#555; padding:5px; width:640px; ">ALUMNE</div>
+                <div style="margin-top:10px; float:left; clear:both;">
+                    <div>
+                        <div style="float: left; width:100px;"><b>Usuari: </b></div>
+                        <div style="float: left; ">
+                            <input name="matricules[U]" id="autocomplete_usuari_id" type="text" value="Entra el DNI o nom" style="width: 300px;" />
+                            <input name="matricules[idU]" id="autocomplete_usuari_id_hidden" value="0" type="hidden" style="width: 300px;" />                            
+                        </div>                        
+                    </div>
+                </div>
+
+<!-- Mostrem el llistat de cursos -->
+                <div style="display: none;" id="LLISTAT_CURSOS">
+                <div style="margin-top:20px; float:left; background-color:#CCC; color:#555; padding:5px; width:640px; ">CURS</div>
+                <div style="margin-top:10px; float:left; clear:both;">
+                    <?php foreach($CURSOS as $OC): ?>
+                    <?php $places = $OC->getPlacesArray(); ?>
+                    <?php if($OC->isPle()) $style=" background-color: #FFC4C4; "; else $style=""; ?>                        
+                    <div style="clear: both; <?php echo $style ?>" class="linia_curs">
+                        <div style="float: left;">                            
+                            <?php echo radiobutton_tag('matricules[idC]',$OC->getIdcursos(),false,array('class'=>'matricula')); ?>
+                        </div>
+                        <div style="padding-left:5px; float: left; width:100px;"><b><?php echo $OC->getCodi(); ?></b></div>
+                        <div style="padding-left:5px; float: left; width:300px;"><?php echo $OC->getTitolcurs(); ?></div>
+                        <div style="padding-left:5px; float: left; width:50px;"><?php echo $OC->getPreu(); ?>€</div>
+                        <div style="padding-left:5px; float: left; width:100px;"><?php echo $OC->getDatainici('d/m/Y'); ?></div>
+                        <div style="padding-left:5px; float: left; width:50px;"><?php echo $places['OCUPADES'].' / '.$places['TOTAL']; ?></div>
+                        <div style="clear: both;"></div>
+                    </div>                                                                                                
+                    <?php endforeach; ?>
+                </div>
+                </div>
+
+                <!-- Apareix el _matriculesSuccess.php a partir d'un ajax que ha cridat el curs -->
+                <div id="EXTRES"></div>
+                
+            
+            <div style="clear: both;"></div>
+            </div>	    
 	     </div>
      </form>	
-
-  <?php ELSEIF( $MODE == 'MAT_NOU_USUARI' ):  ?>
-
- 	<form action="<?php echo url_for('gestio/gMatricules') ?>" id="form_usuari" method="POST">
-	    <div class="REQUADRE">	    
-	    <div class="OPCIO_FINEStrA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules'); ?></div>
-	    	<table class="FORMULARI" width="100%">
-	 			<?php echo $FUsuari; ?>	 		
-	 			<td colspan="2" class="dreta"><br>
-	 				<?php echo submit_tag('Guarda',array('name'=>'BSAVENEWUSER','class'=>'BOTO_ACTIVITAT')) ?>	            			            	
-	            </td>
-	 		      
-	        </table>
-	     </div>
-     </form>	
-
-  <?php ELSEIF( $MODE == 'NOU' ):  ?>
-  
- 	<form action="<?php echo url_for('gestio/gMatricules') ?>" method="POST">
-	    <div class="REQUADRE">	    
-	    	<table class="DADES">
-	 			<?php 
-					if( sizeof($CURSOS) == 0 ):
-						echo '<tr><td class="LINIA" colspan="3">No hi ha cap curs actiu.</td></tr>';
-					else: 
-						echo '<tr><td class="TITOL"></td><td class="TITOL">CODI</td><td class="TITOL">NOM</td><td class="TITOL">DATA INICI</td><td class="TITOL">PREU</td><td class="TITOL">PLACES</td></tr>';
-						$i = 0;
-                        echo input_hidden_tag('IDM',$IDM);
-                        
-                        //Per cada curs, mostrem les places lliures                        
-						foreach($CURSOS as $C):
-	                      	$PAR = ParImpar($i++);
-	                      	$nMatriculats = $C->countMatriculesActives($IDS); 
-	                      	if(!$C->isPle()):
-	                      	
-	                      		$BACKGROUND = " style=\"background:red\"";
-	                      		$nMatriculats = $C->getPlaces();
-	                      		
-	                      	else:
-
-	                      		$BACKGROUND = " style=\"background:green\"";	                      		
-	                      	
-	                      	endif;
-	                      	
-	                      	echo '<tr >							
-	                      			<td class="LINIA">'.radiobutton_tag('IDC', $C->getIdcursos(), true).'</td>
-									<td class="LINIA">'.$C->getCodi().'</td>
-									<td class="LINIA">'.$C->getTitolcurs().' ('.$C->getHoraris().')</td>
-									<td class="LINIA">'.$C->getdatainici('d/m/Y').'</td>
-									<td class="LINIA">'.$C->getPreu().'/'.$C->getPreur().'</td>
-									<td class="LINIA" '.$BACKGROUND.'>'.$nMatriculats.'/'.$C->getPlaces().'</td>
-								  </tr>';                		                 															                		                 															
-	                    endforeach;
-	                    echo '<td colspan="6" class="dreta"><br>';	                    	            		
-	            		echo submit_tag('Segueix matriculant -->',array('name'=>'BSAVECURS','class'=>'BOTO_ACTIVITAT'));
-	            		echo '</td>';
-	                    
-	                 endif;                     
-	             ?>      
-	        </table>
-	     </div>
-     </form>  
-
-  <?php ELSEIF( $MODE == 'VALIDACIO_CURS' ):  ?>  
-  <?php         
-         //Si la matricula es paga amb Targeta de crèdit, passem al TPV, altrament mostrem el comprovant                     
-        if($MATRICULA->getPagat() > 0 && ( $MATRICULA->getTpagament() == MatriculesPeer::PAGAMENT_TARGETA || $MATRICULA->getTpagament() == MatriculesPeer::PAGAMENT_TELEFON ) ):
-            $URL = OptionsPeer::getString('TPV_URL',$IDS);
-            echo '<FORM name="COMPRA" action="'.$URL.'" method="POST" target="TPV">';         	 
-            //$RET .= '<FORM name="COMPRA" action="https://sis-t.sermepa.es:25443/sis/realizarPago" method="POST" target="TPV">';
-            //$RET .= '<form name="COMPRA" action="https://sis.sermepa.es/sis/realizarPago" method="POST" target="TPV">';             
-            foreach($TPV as $K => $T) echo input_hidden_tag($K,$T);             
-        else:         
-            echo '<form method="post" action="'.url_for('gestio/gMatricules').'">';
-            echo input_hidden_tag('IDM',$IDM);
-        endif;
-
-	?>  
-  
- 	
-	    <div class="REQUADRE">	 
-	    	<?php $CURS   = $MATRICULA->getCursos();?>
-	    	<?php $USUARI = $MATRICULA->getUsuaris();?>	    	   	    	
-	    	<?php $CURS_PLE_TEXT = ($CURS_PLE)?" (EN ESPERA)":"";    ?>	    	
-	    	<table class="MATRICULES" width="100%">
-	    		<tr><th class="TITOL" colspan="3">RESGUARD DE MAtrÍCULA</th></tr>
-	    		<tr><th>DNI: </th><td colspan="2"><?php echo $USUARI->getdni(); ?></td></tr>
-	    		<tr><th>Nom: </th><td colspan="2"><?php echo $USUARI->getNomComplet(); ?></td></tr>	    		
-	    		<tr><th>Pagament: </th><td colspan="2"><?php echo $MATRICULA->getTpagamentString(); ?></td></tr>
-	    		<tr><th>Import: </th><td colspan="2"><?php echo $MATRICULA->getPagat(); ?>€</td></tr>
-	    		<tr><th>Data: </th><td colspan="2"><?php echo $MATRICULA->getdatainscripcio(); ?></td></tr>
-	    		<tr><th>Reducció: </th><td colspan="2"><?php echo $MATRICULA->gettreduccioString(); ?></td></tr>
-	    		<tr><th class="TITOL">CODI</th><th class="TITOL">NOM DEL CURS</th><th class="TITOL">PREU</th></tr>	    		
-	    		<tr><td><?php echo $CURS->getCodi(); ?></td><td><?php echo $CURS->getTitolcurs().$CURS_PLE_TEXT; ?></td><td><?php echo $MATRICULA->getPagat(); ?>€</td></tr>
-	    		<td colspan="3" class="dreta"><br />	                    	            		
-	            	<?php echo submit_tag('Segueix matriculant -->',array('name'=>'BPAGAMENT','class'=>'BOTO_ACTIVITAT')); ?>
-	            </td>	    		
-	        </table>
-	     </div>
-     </form>  
 
  <?php elseif( $MODE == 'PAGAMENT' ):  ?>  
  	
  	<div class="REQUADRE">	    
         <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
-            <?php   
-                if($MISSATGE == 'OK'):
-                    echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard.";
-                else:
-                    echo "Hi ha hagut algun problema fent la matrícula. Si us plau, torna-ho a intentar.";            
-                endif;
+            <?php  
+                switch($MISSATGE){
+                    case 'PAGAMENT_TPV': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;
+                    case 'RESERVA_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break; 
+                    case 'MATRICULA_METALIC_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;                    
+                    case 'PAGAMENT_TPV_KO': echo "Hi ha hagut algun problema fent el pagament de la matrícula a través del TPV. Si us plau, torna-ho a intentar."; break;
+                    case 'MATRICULA_FINAL_KO': echo "Hi ha hagut algun problema generant el resguard de la matrícula. Si us plau, posa't en contacte amb informatica@casadecultura.org."; break;
+                    case 'ERR_USUARI': echo "Hi ha hagut algun problema amb el codi d'usuari. Si us plau, torna-ho a intentar."; break;
+                    case 'ERR_CURS': echo "Hi ha hagut algun problema amb el codi del curs. Si us plau, torna-ho a intentar."; break;
+                    case 'ERR_JA_TE_UNA_MATRICULA': echo "Aquest usuari ja té una matrícula a aquest curs. La nova matrícula no s'ha efectuat."; break;
+                    case 'CURS_PLE': echo "El curs ja està ple i l'usuari ha quedat en llista d'espera correctament. Quan hi hagi places lliures s'haurà d'avisar. "; break;                                         
+                } 
             ?>
     </div>
  	 	  
@@ -290,17 +267,22 @@
 					if( sizeof($MATRICULES) == 0):
 						echo '<tr><td class="LINIA" colspan="3">No hi ha cap matrícula amb aquests paràmetres.</td></tr>';
 					else: 
-						echo '<tr><td class="TITOL">DNI</td><td class="TITOL">NOM</td><td class="TITOL">DATA INICI</td></tr>';
+						echo '<tr><td class="TITOL">DNI</td><td class="TITOL">NOM</td><td class="TITOL">CURS</td></tr>';
 						$i = 0;
-						foreach($MATRICULES as $M):
+						$ant = "";
+                        foreach($MATRICULES as $M):
 				            $C = $M->getCursos();
 				            $U = $M->getUsuaris();
-				            $TEXT_REDUCCIO ="";
-				            $PREU = $M->getPagat();				            
+                            $TEXT_DESCOMPTE = ($M->hasDescompte())?'|R':'';                            				            
+				            $PREU = $M->getPagat();
+                            
+                            if($ant != $M->getEstat()) echo '<tr><td colspan="3" style="font-weight:bold; background-color:#CCC">'.$M->getEstatString().'</td></tr>';
+                            $ant = $M->getEstat();
+                            
 				            echo '<tr>
 									<td class="LINIA" width="15%">'.link_to($U->getdni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</td>
 									<td class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefonString().' | '.$M->getdatainscripcio().'<br />'.$U->getEmail().'</td>
-									<td class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO.') <br />
+									<td class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_DESCOMPTE.') <br />
 								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().' '.
 				            										'<a href="'.url_for('gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules()).'"><img src="'.$BASE.'images/template/printer.png'.'" /></a>
 								                     		       </td>							

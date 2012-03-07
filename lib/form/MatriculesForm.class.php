@@ -5,22 +5,22 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Albert Johé i Martí
+ * @author     Albert JohÃ© i MartÃ­
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
 class MatriculesForm extends sfFormPropel
 {
   public function setup()
   {  	
-  	
+  	    
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
   	  'Usuaris_UsuariID' => new sfWidgetFormInputHidden(),  	  
-  	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursos())),
+  	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursosMatriculaInterna($this->getOption('IDS')))),
       'Estat'            => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::getEstatsSelect())),
       'DataInscripcio'   => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
       'Pagat'        	 => new sfWidgetFormInputText(),
-      'tReduccio'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectDescomptes())),
+      'tReduccio'        => new sfWidgetFormChoice(array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false))),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
   	  'Comentari'        => new sfWidgetFormTextarea(),
     ));

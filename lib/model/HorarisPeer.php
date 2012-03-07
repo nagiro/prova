@@ -216,8 +216,7 @@ class HorarisPeer extends BaseHorarisPeer
 	  	$OH->setHorapre($DBDD['HoraPre']);
 	  	$OH->setHorapost($DBDD['HoraPost']);
 	  	$OH->setHorafi($DBDD['HoraFi']);
-	  	$OH->setAvis($HORARIS['Avis']);
-        $OH->setIsentrada($HORARIS['isEntrada']);
+	  	$OH->setAvis($HORARIS['Avis']);        
 	  	$OH->setEspectadors($HORARIS['Espectadors']);
 	  	$OH->setPlaces($HORARIS['Places']);
 		$OH->setDia($D);

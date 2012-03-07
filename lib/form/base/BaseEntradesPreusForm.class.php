@@ -20,6 +20,7 @@ abstract class BaseEntradesPreusForm extends BaseFormPropel
       'Places'       => new sfWidgetFormInputText(),
       'Tipus'        => new sfWidgetFormInputText(),
       'activitat_id' => new sfWidgetFormInputHidden(),
+      'descomptes'   => new sfWidgetFormInputText(),
       'site_id'      => new sfWidgetFormInputText(),
       'actiu'        => new sfWidgetFormInputText(),
     ));
@@ -31,6 +32,7 @@ abstract class BaseEntradesPreusForm extends BaseFormPropel
       'Places'       => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
       'Tipus'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
       'activitat_id' => new sfValidatorChoice(array('choices' => array($this->getObject()->getActivitatId()), 'empty_value' => $this->getObject()->getActivitatId(), 'required' => false)),
+      'descomptes'   => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'site_id'      => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'actiu'        => new sfValidatorInteger(array('min' => -128, 'max' => 127)),
     ));

@@ -307,5 +307,42 @@ class myUser extends sfBasicSecurityUser
     return $RET;
   
   }
+  
+  static public function sendMail($from,$to,$subject,$body = "",$files = array())
+    {    
+        //Si entrem un mail que no és en format array, l'inicialitzem
+        $mails = $to;
+        if(!is_array($to)) $mails = array($to);
+        
+        //Definim el mailer
+    //        $t = Swift_SmtpTransport::newInstance('smtp.casadecultura.org',587);
+    //        $t->setUsername('informatica@casadecultura.org');
+    //        $t->setPassword('gi1807bj');
+        $t = Swift_MailTransport::newInstance();
+        $mailer = Swift_Mailer::newInstance($t);
+        
+        //Enviem tots els correus         
+        foreach($mails as $to):
+        
+            //Comencem l'enviament de correus als que el tinguin correcte.
+       	    try{
+                
+        		$sm = Swift_Message::newInstance($subject,$body,'text/html','utf8');
+                $sm->setFrom($from);
+                $sm->setTo($to);
+        		
+        		foreach($files as $F):
+        			$sm->attach(Swift_Attachment::fromPath($F['tmp_name']));
+        		endforeach;        		        			    
+            	
+        		$OK = $mailer->send($sm,$errors);                                                
+            
+            } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
+            
+        endforeach;
+    	
+        return array('OK'=>$OK,'MAILS_INC'=>$errors);
+    }   
+  
 
 }

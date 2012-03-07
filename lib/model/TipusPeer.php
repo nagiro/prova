@@ -23,4 +23,18 @@ class TipusPeer extends BaseTipusPeer
 		return self::doSelectOne($C);
 	}
 	
+    static public function getDescomptesArray()
+    {
+        $RET = array();
+        $C = new Criteria();
+        $C->add(self::TIPUSNOM, 'matricula_reduccio');
+        $C->add(self::ACTIU, true);
+        
+        foreach(self::doSelect($C) as $OT):
+            $RET[$OT->getIdtipus()] = $OT->getTipusdesc();
+        endforeach;
+        
+        return $RET;
+    }
+    
 }

@@ -77,8 +77,11 @@
     <div id="tabs-3">
     
         <?php
-         
-            if(isset($MISSATGE3)){
+
+            if(isset($MISSATGE3)){                                                                              
+
+                //No sé d'on venen aquests missatges. Caldrà mirar-ho. 
+                            
                 if($MISSATGE3 == 'OK') show_missatge("La matrícula s'ha efectuat correctament.<br /> Si només ha realitzat una reserva, aviat ens posarem en contacte amb vostè per finalitzar-la.");
                 if($MISSATGE3 == 'KO') show_missatge("Hi ha hagut algun problema guardant la seva matrícula. <br />Torni-ho a provar o bé envii un missatge a informatica@casadecultura.org per informar de la incidència. <br /><br />Moltes gràcies i perdoni les molèsties.");
                 if($MISSATGE3 == 'ESPERA')  show_missatge("El curs és ple i vostè ha estat afegit a la llista d'espera.<br /> Si s'alliberen places, ens posarem en contacte amb vostè per saber si encara hi està interessat. <br />Moltes gràcies i perdoni les molèsties.");                
@@ -123,6 +126,10 @@
         <?php 
         
             if(isset($MISSATGE2)){
+                
+                if($MISSATGE2 == 'HORARI_INEXISTENT') show_missatge("Hi ha hagut algun error en l'horari escollit. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
+                if($MISSATGE2 == 'TIPUS_VENDA_INCORRECTE') show_missatge("Hi ha hagut algun error en el tipus de reserva/compra. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
+                if($MISSATGE2 == 'NO_QUEDEN_PROU_ENTRADES') show_missatge("No queden prou entrades per aquesta activitat. <br /> Esculli un nombre inferior d'entrades i torni-ho aprovar. ");
                 if($MISSATGE2 == 'ENTRADA_REPE') show_missatge("Vostè ja ha reservat entrades per aquest espectacle. <br /> Si vol fer canvis, primer anul·li la seva reserva prèvia i torni-ho a reservar.");
                 if($MISSATGE2 == 'ERROR') show_missatge("Hi ha hagut un error reservant les entrades. <br />Si us plau, posis en contacte amb informatica@casadecultura.org o bé truqui al telèfon 972.20.20.13.");
                 if($MISSATGE2 == 'OK') show_missatge("La seva entrada ha estat reservada correctament.");                
@@ -314,21 +321,21 @@
                 if(empty($LEntrades)): echo '<tr><td colspan="4">No s\'ha trobat cap entrada comprada.</td></tr>';
                 else:                           
                     foreach($LEntrades as $OER):                        
-                        $OA = $OER->getActivitat();
-                        $OH = $OA->getPrimerHorari();                        
-                        if($OH instanceof Horaris)
+                        $OA = ActivitatsPeer::retrieveByPK($OER->getEntradesPreusActivitatId());
+                        $OH = HorarisPeer::retrieveByPK($OER->getEntradesPreusHorariId());
+                        if($OA instanceof Activitats && $OH instanceof Horaris)                        
                         {
                             $SiteName = SitesPeer::getNom($OA->getSiteId());
                             $class = "";
-                            if($OER->getEstat() == EntradesReservaPeer::ANULADA) $class="class=\"tatxat\"";
+                            if($OER->getEstat() == EntradesReservaPeer::ESTAT_ENTRADA_ANULADA) $class="class=\"tatxat\"";
                             echo "<tr>
                                     <td $class>{$OH->getDia('d-m-Y')}</td>
                                     <td $class>{$OH->getHorainici('H:m')}</td>
                                     <td $class>{$OA->getTmig()}</td>
                                     <td $class>{$SiteName}</td>
-                                    <td $class>{$OER->getQuantes()}</td>
+                                    <td $class>{$OER->getQuantitat()}</td>
                                     <td $class>{$OER->getEstatString()}</td>";
-                            if($OER->getEstat() != EntradesReservaPeer::ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getEntradesReservaId())."\">Anul·lar</a></td>";
+                            if($OER->getEstat() != EntradesReservaPeer::ESTAT_ENTRADA_ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getIdentrada())."\">Anul·lar</a></td>";
                             echo "</tr>";                                                                            
                         }
                     endforeach;
@@ -346,13 +353,14 @@
                 <th>Entitat</th>
                 <th>Registrat</th>                
             </tr>            
-            <?php                                           
+            <?php                 
+                                                  
                 if(empty($LFormularis)): echo '<tr><td colspan="4">No s\'ha trobat cap formulari.</td></tr>';
                 else:                           
                     foreach($LFormularis as $OFR):                                        
                         $nom = SitesPeer::getNom($OFR->getSiteId());
                         $OF = $OFR->getFormulariss();
-                        $OF = $OF[0];
+                        $OF = $OF[0];                                                
                         $url = url_for('@hospici_formularis_detall?idF='.$OF->getIdformularis().'&titol='.$OF->getNomForUrl());
                                                                                                                                                 
                         echo '<tr>

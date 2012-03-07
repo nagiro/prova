@@ -15,7 +15,7 @@
             echo '</div>';
             echo '<div style="margin-top:10px; clear:both;"></div>';                                                                                                                                                                    
         else:     
-            $LACT = $LLISTAT_ACTIVITATS->getResults();                    
+            $LACT = $LLISTAT_ACTIVITATS->getResults();
             foreach($LACT as $OA):                
                 echo '<div style="margin-top:10px; margin-bottom:10px;">';
                     
@@ -30,8 +30,8 @@
                             </div>
                                                     
                             <div style="float:right">'.
-                                myUser::ph_getEtiquetaActivitats($AUTENTIFICAT, $OA, $ACTIVITATS_AMB_ENTRADES).'
-                            </div>';
+                                myUser::ph_getEtiquetaLlistatActivitats($AUTENTIFICAT, $OA, $ACTIVITATS_AMB_ENTRADES)
+                            .'</div>';
                     
                     echo '</div>';
                     echo '<div style="clear:both" class="h_llistat_activitat_horari">'.generaHorarisCompactat($OA->getHorariss($C)).'</div>';

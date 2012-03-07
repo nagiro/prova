@@ -3,7 +3,7 @@
 <?php use_stylesheet('/sfFormExtraPlugin/css/jquery.autocompleter.css') ?>
 
 
-<STYLE>
+<style>
 .cent { width:100%; }
 .vuitanta { width:80%; }
 .setanta { width:75%; }
@@ -18,7 +18,7 @@
 	.row_title { width:30%;  }
 	.row_field input { width:20px;}          
 
-</STYLE>
+</style>
    
 <script type="text/javascript">
 
@@ -79,7 +79,7 @@
    
    
    
-    <TD colspan="3" class="CONTINGUT_ADMIN">
+    <td colspan="3" class="CONTINGUT_ADMIN">
     
     <?php include_partial('breadcumb',array('text'=>'CURSOS')); ?>
     
@@ -146,24 +146,26 @@
       
     <?php ELSEIF( $MODE == 'LLISTAT_ALUMNES' ): ?>
 
-     <DIV class="REQUADRE">     
-        <DIV class="TITOL">Llistat d'alumnes </DIV>
-      	<TABLE class="DADES">
- 			<?php if( sizeof($MATRICULES) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap alumne matriculat.</TD></TR>'; endif; ?>            
-            <TR><TD class="TITOL" colspan="3">ACCEPTATS I PAGAT</TD></TR> 
+     <div class="REQUADRE">     
+        <div class="TITOL">Llistat d'alumnes </div>
+      	<table class="DADES">
+ 			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>            
+            <tr><td class="TITOL" colspan="3">RESERVATS</td></tr> 
+            <?php echo mostraCursos($MATRICULES,MatriculesPeer::RESERVAT); ?>
+            <tr><td class="TITOL" colspan="3">ACCEPTATS I PAGAT</td></tr> 
             <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_PAGAT); ?>
-            <TR><TD class="TITOL" colspan="3">ACCEPTATS I NO PAGAT</TD></TR>
+            <tr><td class="TITOL" colspan="3">ACCEPTATS I NO PAGAT</td></tr>
             <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_NO_PAGAT); ?>
-            <TR><TD class="TITOL" colspan="3">EN ESPERA</TD></TR>
+            <tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>
             <?php echo mostraCursos($MATRICULES,MatriculesPeer::EN_ESPERA); ?>                           			                        	
-      	</TABLE>      
-      </DIV>
+      	</table>      
+      </div>
       
   <?php ELSE: ?>
 
-     <DIV class="REQUADRE">     
-        <DIV class="TITOL">Llistat de cursos </DIV>
-      	<TABLE class="DADES">
+     <div class="REQUADRE">     
+        <div class="TITOL">Llistat de cursos </div>
+      	<table class="DADES">
  			<?php 
  				                                
 				if( $CURSOS->getNbResults() == 0 ){
@@ -190,15 +192,15 @@
 				}     
 				               
              ?>      
-              <TR><TD colspan="6" class="TITOL"><?php echo gestorPagines($CURSOS,$MODE);?></TD></TR>    	
-      	</TABLE>      
-      </DIV>
+              <tr><td colspan="6" class="TITOL"><?php echo gestorPagines($CURSOS,$MODE);?></td></tr>    	
+      	</table>      
+      </div>
 
   <?php ENDIF; ?>
   
-      <DIV STYLE="height:40px;"></DIV>
+      <div style="height:40px;"></div>
                 
-    </TD>    
+    </td>    
 
 <?php 
 
@@ -208,8 +210,8 @@ function mostraCursos($MATRICULES, $estat)
     foreach($MATRICULES as $M):
         $C = $M->getCursos();
         $U = $M->getUsuaris();
-        $TEXT_REDUCCIO =""; 
-        if($M->getTreduccio() == MatriculesPeer::REDUCCIO_CAP) { $PREU = $M->getPagat(); } else { $PREU = $M->getPagat(); $TEXT_REDUCCIO = ' |R'; }
+        $TEXT_REDUCCIO ="";         
+        if(!$M->hasDescompte()) { $PREU = $M->getPagat(); } else { $PREU = $M->getPagat(); $TEXT_REDUCCIO = ' |R'; }
         if($M->getEstat() == $estat):
           	$RET .= '<TR>';
 			$RET .= '<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>';

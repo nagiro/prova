@@ -62,31 +62,32 @@ class CursosPeer extends BaseCursosPeer
             
     }
   
-    static function getSelectCursos()
+    static function getSelectCursosMatriculaInterna($idS)
     {
     
+        //Llistar cursos en ordre. Segons any, Categoria, Títol. 
         $RET = array();
         $C = new Criteria();
         
-        $C->add( self::ISACTIU , true );
+        //$C->add( self::ISACTIU , true );
+        $C->add(self::SITE_ID, $idS);
         
-        $C->addAscendingOrderByColumn( self::CATEGORIA );
-        $C->addDescendingOrderByColumn( self::TITOLCURS );
         $C->addDescendingOrderByColumn( 'YEAR('.self::DATAINICI.')' );
-        $C->addDescendingOrderByColumn( 'MONTH('.self::DATAINICI.')' );  	
+        $C->addAscendingOrderByColumn( self::CATEGORIA );
+        $C->addDescendingOrderByColumn( self::TITOLCURS );            
+        $C->addDescendingOrderByColumn( 'MONTH('.self::DATAINICI.')' );      	
         
-        $RET[0] = 'El curs no està actiu o bé escolliu-ne un';
+        //$RET[0] = 'El curs no està actiu o bé escolliu-ne un';
           	
-        foreach(self::doSelect($C) as $CURS):
-        	$DATA = $CURS->getDatafimatricula();  		  		
-        	list($year,$month,$day) = explode("-",$DATA); 
-        	$RET[$CURS->getIdcursos()] = $CURS->getCodi().'('.$year.'-'.$month.') - '.$CURS->getTitolcurs();
+        foreach(self::doSelect($C) as $CURS):        	            
+            $RET['Any '.$CURS->getDatainici('Y')][$CURS->getIdcursos()] = $CURS->getCodi().' ( '.$CURS->getDatainici('M').' ) - '.$CURS->getTitolcurs();          	
         endforeach;  	    
         
         return $RET;  	
         
     }
   
+
     static function getSelectCursosActius()
     {
         
@@ -114,7 +115,7 @@ class CursosPeer extends BaseCursosPeer
     if($visibleWeb) $C->add(self::VISIBLEWEB, true); //Si ha de ser només per web, marquem com a només els visibles. 
               	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	//$C->addAscendingOrderByColumn( self::DATADESAPARICIO );
+  	$C->addAscendingOrderByColumn( self::DATAINICI );
   	$C->addAscendingOrderByColumn( self::CODI );
   	
   	if(!empty($CERCA)):
@@ -143,29 +144,26 @@ class CursosPeer extends BaseCursosPeer
 	$pager->init();  	
   	return $pager;  	
   }
-      
+       
   static function getMatricules($idC,$idS)
   {
   	$Curs = self::retrieveByPK($idC);
   	$C = new Criteria();
-    $C = MatriculesPeer::getCriteriaActiu($C,$idS);
-  	$c3 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::ACCEPTAT_NO_PAGAT);
-    $c1 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::ACCEPTAT_PAGAT);
-  	$c2 = $C->getNewCriterion(MatriculesPeer::ESTAT,MatriculesPeer::EN_ESPERA);
-  	$c1->addOr($c2); $c1->addOr($c3);
-  	$C->add($c1);  	  	
-  	$C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
+    $C = MatriculesPeer::criteriaMatriculat($C,true);
+    $C->add( MatriculesPeer::CURSOS_IDCURSOS , $idC );
+  	
+  	$C->addJoin( MatriculesPeer::USUARIS_USUARIID , UsuarisPeer::USUARIID );
     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
     $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
     $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
   	  	
-  	return $Curs->getMatriculess($C);
+  	return MatriculesPeer::doSelect($C);
   }
+
 
   /**
    * return array(OCUPADES, TOTAL);
    * */
-
   static function getPlaces( $idC , $idS )
   {
      
@@ -184,74 +182,6 @@ class CursosPeer extends BaseCursosPeer
      return ($PLACES['OCUPADES'] >= $PLACES['TOTAL']);              
   }
         
-
-  static function HospiciCalculaPreu($IDCURS,$DESCOMPTE,$CURS_PLE = false)
-  {
-
-    $PREU = 0;
-    $CURS = CursosPeer::retrieveByPK($IDCURS);
-    
-    if($CURS instanceof Cursos)
-    {
-
-        if(!$CURS_PLE)
-        {
-            if(MatriculesPeer::REDUCCIO_CAP)                $PREU = $CURS->getPreu();
-            elseif(MatriculesPeer::REDUCCIO_GRATUIT)        $PREU = 0;
-            elseif(MatriculesPeer::REDUCCIO_ATURAT)         $PREU = $CURS->getPreur();
-            elseif(MatriculesPeer::REDUCCIO_JUBILAT)        $PREU = $CURS->getPreur();
-            elseif(MatriculesPeer::REDUCCIO_MENOR_25_ANYS)  $PREU = $CURS->getPreur();
-            elseif(MatriculesPeer::REDUCCIO_ESPECIAL)       $PREU = $CURS->getPreur();
-            else $PREU = $CURS->getPreu();                    
-        }
-        
-    } 
-    else
-    {
-        
-       throw new Exception('Curs inexistent.');
-        
-    }
-         
-    return $PREU;
-  }        
-
-        
-        
-  static function CalculaPreu($IDCURS , $DESCOMPTE , $idS )
-  {   
-    
-     //Recuperem les places del curs
-     $PLACES = CursosPeer::getPlaces( $IDCURS , $idS );
-     
-     //Si les places ocupades són iguals o més que el total, fem la matrícula gratuïta. 
-     if($PLACES['OCUPADES'] >= $PLACES['TOTAL']) $DESCOMPTE = MatriculesPeer::REDUCCIO_GRATUIT;
-
-     //Carreguem el curs i retornem el preu reduit o normal segons el que hem entrat     
-     $CURS = CursosPeer::retrieveByPK($IDCURS);
-     
-     switch($DESCOMPTE){
-         case MatriculesPeer::REDUCCIO_CAP : return $CURS->getPreu();
-         case MatriculesPeer::REDUCCIO_ATURAT : return $CURS->getPreur();
-         case MatriculesPeer::REDUCCIO_JUBILAT : return $CURS->getPreur();
-         case MatriculesPeer::REDUCCIO_MENOR_25_ANYS : return $CURS->getPreur();
-         case MatriculesPeer::REDUCCIO_GRATUIT   : return 0;
-         case MatriculesPeer::REDUCCIO_ESPECIAL : return $CURS->getPreur();           
-      }
-               
-  }
-  
-  
-  static function CalculaTotalPreus( $CURSOS , $DESCOMPTE , $idS )
-  {   
-     $Preu = 0;
-     foreach($CURSOS as $C):
-        $Preu += self::CalculaPreu($C , $DESCOMPTE , $idS );
-     endforeach;     
-      
-     return $Preu;
-  }
-  
   static function getCodisAjax($query,$limit)
   {
   	$RET = array();

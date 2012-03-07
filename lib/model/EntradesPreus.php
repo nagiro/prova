@@ -20,6 +20,7 @@ require 'lib/model/om/BaseEntradesPreus.php';
  */
 class EntradesPreus extends BaseEntradesPreus {
 
+
 	/**
 	 * Initializes internal state of EntradesPreus object.
 	 * @see        parent::__construct()
@@ -31,16 +32,46 @@ class EntradesPreus extends BaseEntradesPreus {
 		parent::__construct();
 	}
 
+    public function getDescomptesArrayStrings()
+    {
+        $RET = array();
+        foreach(explode('@',$this->getDescomptes()) as $idT):
+            $OT = TipusPeer::retrieveByPK($idT);
+            if($OT instanceof Tipus) $RET[$idT] = $OT->getTipusDesc();            
+        endforeach;
+        
+        return $RET;            
+    }
+
+    public function getDescomptesArray()
+    {
+        return explode('@',$this->getDescomptes());                
+    }
+
+    public function setDescomptesString($array)
+    {
+        $this->setDescomptes(implode("@",$array));
+    }
+
+
     public function countEntradesVenudes(){
         $C = new Criteria();
         $C->add(EntradesReservaPeer::ENTRADES_PREUS_HORARI_ID, $this->getHorariid());
         $C->add(EntradesReservaPeer::ENTRADES_PREUS_ACTIVITAT_ID, $this->getActivitatid());
+        $C->add(EntradesReservaPeer::ESTAT, EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA);
         $C->add(EntradesReservaPeer::ACTIU, true);
         $RES = 0;
         
         foreach(EntradesReservaPeer::doSelect($C) as $OER) $RES += $OER->getQuantitat();
         
         return $RES;
+    }
+    
+    /**
+     * Ens indica si en una entrada determinada ja estan les reserves exhaurides
+     * */
+    public function getIsPle(){        
+        return ($this->countEntradesVenudes() >= $this->getPlaces()); 
     }
 
 } // EntradesPreus

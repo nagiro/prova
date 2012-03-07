@@ -46,7 +46,7 @@ class webActions extends sfActions
                 
                 $RET = ActivitatsPeer::getActivitatsCercaHospici($C2);
                 
-                $this->ACTIVITATS_AMB_ENTRADES = EntradesReservaPeer::h_getEntradesUsuariArray($this->getUser()->getSessionPar('idU'));
+                $this->ACTIVITATS_AMB_ENTRADES = EntradesReservaPeer::h_getEntradesActivitatUsuariArray($this->getUser()->getSessionPar('idU'));
                                 
                 $this->LLISTAT_ACTIVITATS = $RET['PAGER'];
                 $LACTIVITATS = $RET['LACTIVITATS'];                
@@ -65,7 +65,8 @@ class webActions extends sfActions
         case 'detall_activitat':                
                 $this->CERCA = $this->getUser()->getSessionPar('cerca');
                 $this->ACTIVITAT = ActivitatsPeer::retrieveByPK($request->getParameter('idA'));
-                $this->ACTIVITATS_AMB_ENTRADES = EntradesReservaPeer::h_getEntradesUsuariArray($this->getUser()->getSessionPar('idU'));                                            
+                $this->HORARIS_AMB_ENTRADES = EntradesReservaPeer::h_getEntradesUsuariArray($this->getUser()->getSessionPar('idU'));
+                $this->HORARIS = $this->ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA);                                                                            
                                 
                 $this->MODE = 'DETALL';
             break;
@@ -289,31 +290,41 @@ class webActions extends sfActions
         break;
             
         //Usuari que compra o reserva una entrada
-        case 'compra_entrada':
-            //Des de l'Hospici només es pot reservar una entrada. Més endavant s'haurà d'abonar l'import.
-            $RS = $request->getParameter('entrades');
-            $OER = EntradesReservaPeer::initialize()->getObject();
-            $OA = ActivitatsPeer::retrieveByPK($RS['idA']);
-            $idS = 0; if($OA instanceof Activitats) $idS = $OA->getSiteid();
-            $this->MISSATGE2 = 'OK';
-            try{ 
-            //Si no existeix una compra per aquest usuari, la fem, altrament, no fem res.
-            if(!EntradesReservaPeer::ExisteixenEntradesComprades($this->IDU,$RS['idA'])):
-                //Falta mirar si hi ha entrades disponibles. 
-                $OER->setUsuariid($this->IDU);
-                $OER->setActivitatsid($RS['idA']);
-                $OER->setQuantes($RS['num']);
-                $OER->setData(date('Y-m-d H:i',time()));
-                $OER->setEstat(EntradesReservaPeer::CONFIRMADA);
-                $OER->setActiu(true);
-                $OER->setSiteid($idS);
-                $OER->save();
-                UsuarisPeer::addSite($this->IDU,$idS);
-            else: 
-                $this->MISSATGE2 = 'ENTRADA_REPE';
-            endif;            
-            } catch(Exception $e){ $this->MISSATGE2 = 'ERROR';  }
-                                
+        case 'compra_entrada':            
+            $A_E = $request->getParameter('entrades',array());
+                        
+            foreach($A_E as $IDA => $A_H):
+                $this->IDA = $IDA;
+                foreach($A_H as $IDH => $Descomptes):
+                    foreach($Descomptes as $idD => $data ):
+                        $IDH = $IDH;
+                        $NEntrades = (int)$data['num'];                                    
+                        $Descompte = (int)$data['desc'];
+                        $TOTAL += EntradesPreusPeer::getPreu($IDH,$NEntrades,$Descompte);
+                        //Comprem o reservem l'entrada
+                        $OER = EntradesReservaPeer::setCompraEntrada( $IDH , $this->IDU , $NEntrades , $Descompte );
+                        if($OER instanceof EntradesReserva)
+                        {
+                            if($OER->getTipus() == EntradesPreusPeer::TIPUS_VENTA){
+                                $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
+                                $this->setLayout('blanc');
+                                $this->setTemplate('pagament');    
+                            }                                                        
+                        } 
+                        else  //Falta acabar-ho.
+                        {
+                            switch($OER){
+                                case -1: break;
+                                case -2: break;
+                                case -3: break;
+                                case -4: break;
+                                case -5: break;
+                            }                            
+                        }
+                    endforeach;
+                endforeach;                                                 
+            endforeach;           
+                                                                            
             $this->SECCIO = 'COMPRA_ENTRADA';
                                                 
         break;
@@ -334,105 +345,37 @@ class webActions extends sfActions
                                                 
         break;        
         
-        //Nova matrícula a un curs però quan ens quedem en espera
-        case 'nova_matricula_espera':
-            
-            //Capturem el codi del curs i el codi del descompte
-            $idC = $request->getParameter('idC');            
-            $OC = CursosPeer::retrieveByPK($idC);
-
-            //Si el curs és correcte
-            if($OC instanceof Cursos)
-            {
-
-                //Generem la matícula en procés.                                                                                
-                $OM = MatriculesPeer::saveNewMatricula($this->IDU,$idC,0,'Espera Hospici');            
-                $this->SECCIO = 'MATRICULA';
-                                            
-                if($OM instanceof Matricules)                
-                {            
-                    //Ho marquem clarament, per si de cas. 
-                    $OM->setPagat(0);
-                    $OM->setEstat(MatriculesPeer::EN_ESPERA);
-                    $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','Hospici :: Espera de matrícula',$OM->getIdmatricules());
-                    //El curs en qüestió ja està ple. Mostrem el llistat però el missatge de "en espera".
-                    $this->MISSATGE3 = 'ESPERA';
-                }            
-                else
-                {                 
-                    if($OM == 1) $this->MISSATGE3 = "JA_EXISTEIX";
-                    else $this->MISSATGE3 = "KO";
-                }             
-            }
-            else
-            {
-                $this->MISSATGE3 = "CURS_NO_EXISTEIX";
-            }
-        break;
-                
         //Nova matrícula a un curs
         case 'nova_matricula':
             
-            //Capturem el codi del curs i el codi del descompte
-            $idC = $request->getParameter('idC');
-            $idD = $request->getParameter('idD');
-            $OC = CursosPeer::retrieveByPK($idC);
-
-            //Si el curs és correcte
-            if($OC instanceof Cursos)
-            {
-
-                //Generem la matícula en procés.                                                                                
-                $OM = MatriculesPeer::saveNewMatricula($this->IDU,$idC,0,'Matrícula hospici',$idD);            
-                $this->SECCIO = 'MATRICULA';
-                                            
-                if($OM instanceof Matricules)
-                {            
-                    
-                    if($OM->getEstat() == MatriculesPeer::EN_ESPERA)
-                    {
-                        //El curs en qüestió ja està ple. Mostrem el llistat però el missatge de "en espera"
-                        $this->MISSATGE3 = 'ESPERA';
-                    }
-                    elseif($OM->getEstat() == MatriculesPeer::EN_PROCES)
-                    {
-                        //La matrícula s'ha de cobrar amb targeta, només.
-                        try 
-                        {   
-                            
-                            //Carreguem les dades de l'usuari que està fent la matrícula  
-                            $OU = UsuarisPeer::retrieveByPK($this->IDU);
+            //La matrícula pot ser amb pagament de targeta de crèdit o bé en metàl·lic.            
+            $idC = $request->getParameter('idC'); $idU = $this->getUser()->getSessionPar('idU');
+            $idD = $request->getParameter('idD'); $idMP = $request->getParameter('idMP');
+            
+            $RET = MatriculesPeer::saveNewMatricula( $idU , $idC , "" , $idD , $idMP );
+            
+            $AVISOS = $RET['AVISOS'];
+            $this->SECCIO = 'MATRICULA';                                
+            $this->getUser()->addLogAction('SAVE_MATRICULA','gMatricules',$RET['OM']->getIdmatricules());
+                                                                 			
+            //Si la matrícula surt amb algun estat que no sigui tpv, fem la redirecció i mostrem el missatge.            
+            $this->redirectIf(array_key_exists('ERR_USUARI',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_USUARI');                                       
+            $this->redirectIf(array_key_exists('ERR_CURS',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_CURS');
+            $this->redirectIf(array_key_exists('ERR_JA_TE_UNA_MATRICULA',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_JA_TE_UNA_MATRICULA');
+                                      
+            if(array_key_exists('CURS_PLE',$AVISOS)) $this->MISSATGE3 = "CURS_PLE";                
+            elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->MISSATGE3 = "RESERVA_OK";                
+            elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->MISSATGE3 = 'MATRICULA_METALIC_OK'; 
     
-                            //Carreguem el TPV
-                            $this->TPV = MatriculesPeer::getTPV(
-                                                    CursosPeer::CalculaPreu( $idC, $idD, $OC->getSiteId() ), 
-                                                    $OU->getNomComplet() , 
-                                                    $OM->getIdmatricules() , 
-                                                    $this->IDS , true );
-                            
-                        } catch (Exception $e) { $this->MISSATGE3 = 'KO'; /* Faltarà enviar un missatge de mail */  }
-                        
-                        $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
-                        $this->setLayout('blanc');
-                        $this->setTemplate('pagament');
-                                                                    
-                    }
-                    else
-                    {
-                        //Tot correcte. Mostrem el llistat de matrícules i el missatge que ha anat bé. 
-                        $this->MISSATGE3 = "OK";
-                    }
-                }            
-                else
-                { 
-                    if($OM == 1) $this->MISSATGE3 = "JA_EXISTEIX";
-                    else $this->MISSATGE3 = "KO";
-                }             
-            }
-            else
-            {
-                $this->MISSATGE3 = "CURS_NO_EXISTEIX";
-            }
+            //La matrícula es paga amb TPV
+            if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
+                $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
+    			$this->TPV = MatriculesPeer::getTPV( $RET['OM']->getPagat() , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , false );
+                $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());
+                $this->setLayout('blanc');
+                $this->setTemplate('pagament');                                
+            endif;                                                                                
+                                                                                                                    
         break;
 
         //S'ha matriculat correctament i TPV ok
@@ -577,7 +520,7 @@ class webActions extends sfActions
     // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();
         
   }  
-  
+
 
   public function executeGetTPV(sfWebRequest $request)
   {
@@ -655,7 +598,8 @@ class webActions extends sfActions
     $C = $this->CERCA;    
     $this->DESPLEGABLES = array();
     $this->AUTH = $this->getUser()->isAuthenticated();
-    $this->CURSOS_MATRICULATS = MatriculesPeer::h_getMatriculesCursosUsuariArray($this->getUser()->getSessionPar('idU'));  
+    $this->CURSOS_MATRICULATS = MatriculesPeer::h_getMatriculesCursosUsuariArray($this->getUser()->getSessionPar('idU'));    
+    $this->MISSATGE = "";  
     
     if($this->accio == 'cerca_cursos' || $this->accio == 'inici'):
         
@@ -686,8 +630,15 @@ class webActions extends sfActions
             
     elseif($this->accio == 'detall_curs'):
                     
-                $this->CURS = CursosPeer::retrieveByPK($request->getParameter('idC'));
-                $this->MODE = 'DETALL';                                        
+        $this->CURS = CursosPeer::retrieveByPK($request->getParameter('idC'));        
+        $this->MODE = 'DETALL';                       
+        
+        switch($request->getParameter('mis')){
+            case 'ERR_USUARI': $this->MISSATGE = "Hi ha hagut algun problema carregant el seu usuari. Si us plau posi's en contacte amb informatica@casadecultura.org.";
+            case 'ERR_CURS': $this->MISSATGE = "Hi ha hagut algun problema carregant el curs al que es vol matricular. Si us plau posi's en contacte amb informatica@casadecultura.org.";
+            case 'ERR_JA_TE_UNA_MATRICULA': $this->MISSATGE = "Vostè ja està matriculat a aquest curs. Si us plau posi's en contacte amb informatica@casadecultura.org.";
+        }        
+        
     endif;                                        
     
   }

@@ -33,7 +33,7 @@
                         </div>                        
                                                 
                         <!-- Requadre de compra o reserva d'entrades  -->
-                    <?php if(!$FORM->isOmplert($IDU)){ ?>                        
+                    <?php //if(!$FORM->isOmplert($IDU)){ ?>                        
            				<div style="margin-left:150px; padding-top:20px; width:330px; clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">ENVIA EL FORMULARI</div> 
         				<div style="margin-left:150px; width:330px; clear:both; background-color:#DFECB6">					
         					<div style="padding:10px; font-size:10px;">
@@ -60,7 +60,7 @@
                        </div>                
                         
                         <!-- Fi Requadre de compra o reserva d'entrades  -->
-                        <?php } ?>													
+                        <?php //} ?>													
                         </form>                                                                           
 					</div>                    
                 </div>

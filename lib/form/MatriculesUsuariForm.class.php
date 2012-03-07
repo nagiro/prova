@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
 class MatriculesUsuariForm extends sfFormPropel
@@ -24,7 +24,7 @@ class MatriculesUsuariForm extends sfFormPropel
       'Comentari'        => new sfWidgetFormInputHidden(),
       'DataInscripcio'   => new sfWidgetFormInputHidden(),
       'Pagat'        	 => new sfWidgetFormInputHidden(),  	  
-      'tReduccio'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectDescomptes())),
+      'tReduccio'        => new sfWidgetFormInputHidden(),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
     ));
 
@@ -36,7 +36,7 @@ class MatriculesUsuariForm extends sfFormPropel
       'Comentari'        => new sfValidatorString(array('required' => false)),
       'DataInscripcio'   => new sfValidatorDateTime(array('required' => false)),
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
-      'tReduccio'        => new sfValidatorInteger(),
+      'tReduccio'        => new sfValidatorPass(),
       'tPagament'        => new sfValidatorInteger(),    
     ));
 
@@ -67,7 +67,7 @@ class MatriculesUsuariForm extends sfFormPropel
   static public function ComprovaUsuari($A,$idU,$arguments)
   {
   	
-  	//Si estem al període d'antics alumnes i no ho és, emetem error
+  	//Si estem al perÃ­ode d'antics alumnes i no ho Ã©s, emetem error
   	if(!MatriculesPeer::isAnticAlumne($idU,$arguments['IDS']) && MatriculesPeer::isPeriodeAnticsAlumnes($arguments['IDS'])){
   		throw new sfValidatorError($A, "Error: L'usuari no ha cursat cap curs amb anterioritat");
   	}

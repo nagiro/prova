@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage web
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: actions.class.php 2692 2006-11-15 21:03:55Z fabien $
  * 
  */
@@ -39,15 +39,15 @@ class webActions extends sfActions
   public function LoadWEB(sfWebRequest $request)
   {
 	
-  	//Carrego els banners i les fotos que mostraré
-  	//Si s'entra un menú, carrego el contingut que toca segons el menú
-  		//Si el menú és només títol, mostro l'estructura de directoris
-  		//Si el menú té contingut, 
-  			//Si el contingut és automàtic, mostro el contingut automàtic
-  			//Si el contingut és manual, mostro el contingut manual
+  	//Carrego els banners i les fotos que mostrarÃ©
+  	//Si s'entra un menÃº, carrego el contingut que toca segons el menÃº
+  		//Si el menÃº Ã©s nomÃ©s tÃ­tol, mostro l'estructura de directoris
+  		//Si el menÃº tÃ© contingut, 
+  			//Si el contingut Ã©s automÃ tic, mostro el contingut automÃ tic
+  			//Si el contingut Ã©s manual, mostro el contingut manual
   	//Si s'entra una cerca, carrego les activitats que corresponen a la cerca i marco el calendari els dies
   	//Si s'entra un dia del calendari, cerco les activitats d'aquell dia
-  	//Si no es cap, carrego les notícies de les últimes activitats...
+  	//Si no es cap, carrego les notÃ­cies de les Ãºltimes activitats...
   	        
   	$this->setLayout('layout');   	
     $this->IDS = 1;
@@ -64,7 +64,7 @@ class webActions extends sfActions
     $this->DATACAL = $this->getUser()->ParReqSesForm($request,'DATACAL',time());            
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'p',1);
 
-    //Gestió de menús
+    //GestiÃ³ de menÃºs
     $idN = $request->getParameter('node',0);   	
     $this->OBERT = $this->gestionaNodes($idN);    
       	
@@ -87,7 +87,7 @@ class webActions extends sfActions
 				$this->ACCIO = 'web';								    				
   			break;
   			
-  		//Contingut automàtic de cicles
+  		//Contingut automÃ tic de cicles
   		case 'ac':
   			$this->NODE = NodesPeer::selectPagina($idN);
   			if(!$this->NODE->isNew()):
@@ -101,7 +101,7 @@ class webActions extends sfActions
 	     	$this->NODE = $idN;
   			break;
   			
-  		//Contingut automàtic d'activitats d'un cicle
+  		//Contingut automÃ tic d'activitats d'un cicle
 		 case 'aca':
 		 		$this->CAT = $request->getParameter('cat','');
 		 		$this->IDC = $request->getParameter('idc',1);
@@ -160,7 +160,7 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
 			$this->NODE = $request->getParameter('node',0);
   			$this->ACCIO = 'mostra_activitat';
-  			$this->TITOL = 'Informació de l\'activitat';
+  			$this->TITOL = 'InformaciÃ³ de l\'activitat';
 
             $OA = $this->LLISTAT_ACTIVITATS[0];              
             $this->getResponse()->addMeta('facebook',
@@ -177,7 +177,7 @@ class webActions extends sfActions
 		case 'cdc':				
 				$this->redirect('web/index?accio=c&CERCA=mensual&DATACAL='.$this->DATACAL);							
 			break;
-  		//Mostrem notícies		  	
+  		//Mostrem notÃ­cies		  	
 		default:
 			
 			$this->IDN = $request->getParameter('idN',0);
@@ -229,8 +229,8 @@ class webActions extends sfActions
      $FConsulta->bind($request->getParameter('consulta'));
 
      $BODY = "El senyor/a {$FConsulta->getValue('Cognoms')}, {$FConsulta->getValue('Nom')}".
-             " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('Email')}".
-             " vol fer el següent comentari : {$FConsulta->getValue('Missatge')} "; 
+             " amb telÃ¨fon {$FConsulta->getValue('Telefon')} i correu electrÃ²nic {$FConsulta->getValue('Email')}".
+             " vol fer el segÃ¼ent comentari : {$FConsulta->getValue('Missatge')} "; 
           
 	  $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org',' CCG :: Formulari contacte Web ',$BODY);               
   }
@@ -308,7 +308,7 @@ class webActions extends sfActions
     	$OUsuari = UsuarisPeer::cercaDNI($dni);
     	if($OUsuari instanceof Usuaris && $this->FREMEMBER->isValid()): 
  				    			    	
- 			$BODY = "Benvolgut/da, <br /> La seva contrasenya és : <b>{$OUsuari->getPasswd()}</b>. <br /><br />Cordialment,<br /> Casa de Cultura de Girona. ";
+ 			$BODY = "Benvolgut/da, <br /> La seva contrasenya Ã©s : <b>{$OUsuari->getPasswd()}</b>. <br /><br />Cordialment,<br /> Casa de Cultura de Girona. ";
 			$this->ENVIAT = $this->sendMail('informatica@casadecultura.org',$OUsuari->getEmail(),' CCG :: Recordatori de contrasenya ',$BODY);
             $this->ENVIAT = $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org', '[CCG::RECORDATORI]',$BODY);          
 
@@ -379,11 +379,11 @@ class webActions extends sfActions
      		 	$this->redirectif( $USUARI->getNivellsIdnivells() > 1 , 'web/gestio?accio=landing');     		 	             
      		 else:     		 	
      		 	$this->getUser()->addLogAction('error','login',$L);     		 
-     		 	$this->ERROR = "El DNI o la contrasenya són incorrectes";
+     		 	$this->ERROR = "El DNI o la contrasenya sÃ³n incorrectes";
      		 endif;
         else:
         	 $this->getUser()->addLogAction('error','login',$L);
-        	 $this->ERROR = "El DNI o la contrasenya són incorrectes";
+        	 $this->ERROR = "El DNI o la contrasenya sÃ³n incorrectes";
 			 $this->ACCIO = 'login';
         endif;     		 
      endif;
@@ -395,7 +395,7 @@ class webActions extends sfActions
   {      
     
   	//Carrego les notícies de les últimes activitats... 
-  	//Carrego els banners que mostraré
+  	//Carrego els banners que mostrarà
   	//Si s'entra un menú, carrego el contingut que toca segons el menú
   		//Si el menú és només títol, mostro l'estructura de directoris
   		//Si el menú té contingut, 
@@ -408,240 +408,7 @@ class webActions extends sfActions
         
   }
      
-  /**
-   * Funció on anem a parar si premem un boto de l'apartat de "cursos"
-   * 
-   */
-/*  
-  public function executeMatriculat(sfWebRequest $request)  
-  {
-     
-     $this->redirectif($request->hasParameter('BNOUALUMNE'), 'web/registre' );     
-     $this->redirectif($request->hasParameter('BREGISTRAT'), 'web/gestio?accio=gc');
-          
-  }
-  
-  public function executeGestio(sfWebRequest $request)
-  {
-    
-     $this->LoadWEB($request);
-     $this->setTemplate('index');
-     $this->GUARDADA = false;     
-     
-     $accio = $this->getRequestParameter('accio');
-     $this->IDU = $this->getUser()->getSessionPar('idU');
-     $this->LLISTES = null;
-     $this->FRESERVA = null;
-     $this->RESERVES = null;
-     $this->MATRICULES = null;
-     $this->CURSOS = null; 
-     $this->LCURSOS = array();
-     $this->FUSUARI = null;
-     $this->ISPLE = false;
-          
-     switch($accio){
-	   case 'landing':
-       
-		    $this->MODUL = 'landing_page';
-		    $this->ACCIO = 'gestio';		    		         		
-     		break;
-            
-       case 'gd':
-       
-		    $this->MODUL = 'gestiona_dades';
-		    $this->ACCIO = 'gestio';
-		    		    
-		    //Entrem la info per la gestió del captcha
-		    $rand = array(1=>rand(0,10),2=>rand(0,10));
-		    $this->getUser()->setSessionPar('rand',$rand);
-            $OU = UsuarisPeer::initialize($this->IDU,$this->IDS,false);		    
-		    $this->FUSUARI = new ClientUsuarisForm($OU->getObject(),array('rand'=>$rand));
-	        break;
-            
-	   case 'gc':
-       
-	        $this->MODUL = 'gestiona_cursos';
-            $this->ACCIO = 'gestio';                        
-            $this->MATRICULES = MatriculesPeer::getMatriculesUsuari( $this->IDU , $this->IDS );
-            $this->LCURSOS    = CursosPeer::getCursos(CursosPeer::ACTIU,1,"",$this->IDS);                                                                           
-            break;
-            
-	   case 'gl':
-       
-			$this->MODUL = 'gestiona_llistes';
-			$this->ACCIO = 'gestio';
-			$this->LLISTES = UsuarisllistesPeer::getLlistesUsuari( $this->IDU , $this->IDS );            
-			break;
-            
-	   case 'gr':
-       
-            $this->IDR = $request->getParameter('idR',0);
-            $this->RESERVES = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );            
-            $this->FRESERVA = ReservaespaisPeer::initialize( $this->IDR , $this->IDS , $this->IDU , true );	   		
-                           
-	        $this->MODUL = 'gestiona_reserves';
-	        $this->ACCIO = 'gestio';	        
-	        break;
-            
-	   case 'sd':
-       
-	   		$this->MODUL = 'gestiona_dades'; $this->ACCIO = 'gestio';
-            
-            $RP = $request->getParameter('usuaris');                        		    
-	   		$OU = UsuarisPeer::initialize($RP['UsuariID'],$this->IDS)->getObject();	   		
-            $this->FUSUARI = new ClientUsuarisForm($OU,array('rand'=>$this->getUser()->getSessionPar('rand')));
-	   		$this->FUSUARI->bind($RP);
-	   		if($this->FUSUARI->isValid()) { $this->FUSUARI->save(); $this->MISSATGE[] = "Dades modificades correctament"; }
-	   		else { $this->MISSATGE[] = 'Hi ha algun error a les dades'; }     
-	        break;
-                   	                    	             	        
-	   case 'sl':
-
-            $RP = $request->getParameter( 'LLISTA' );       
-	        UsuarisllistesPeer::saveUsuarisLlistes( $RP , $this->IDU );
-	        
-            $this->MODUL = 'gestiona_llistes'; $this->ACCIO = 'gestio';
-		    $this->LLISTES = UsuarisllistesPeer::getLlistesUsuari( $this->IDU , $this->IDS );
-		    $this->MISSATGE[] = "Dades modificades correctament";
-            
-	        break;
-            
-	   case 'sr':
-	   	
-	   		$PR = $request->getParameter('reservaespais');	   			   		
-            $this->FRESERVA = ReservaespaisPeer::initialize( $PR['ReservaEspaiID'] , $this->IDS , $this->IDU , true );							
-			$this->FRESERVA->bind($PR);				
-            if($this->FRESERVA->isValid()):                
-				$this->FRESERVA->save();
-                $OO = $this->FRESERVA->getObject();
-                $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array()); 
-                $this->sendMail('informatica@casadecultura.org','ctulsa@casadecultura.org','CCG :: NOVA RESERVA ESPAI',ReservaespaisPeer::sendMailNovaReserva($OO),array());                      			                	                
-                $this->MISSATGE = array('Sol·licitud enviada correctament.');				
-			else:
-                $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','ERROR FORMULARI RESERVA ESPAIS',print_r($this->FRESERVA));
-                $this->MISSATGE = array('Hi ha hagut algun problema enviant la sol·licitud.');
-			endif;			
-            
-            $this->RESERVES = ReservaespaisPeer::getReservesUsuaris( $this->IDU , $this->IDS );
-			$this->MODUL = 'gestiona_reserves';
-	        $this->ACCIO = 'gestio';	       
-	        break;
-
-	   //Anul·la la reserva
-	   case 'ar':
-	   		$RE = ReservaespaisPeer::retrieveByPK($this->getUser()->getSessionPar('idR'));	   			   		
-	   		if($RE instanceof Reservaespais):
-	   			$RE->setEstat(ReservaespaisPeer::ANULADA);
-	   			$RE->save();
-	   		endif;
-	   		
-			//Posem les dades de càrrega del mòdul
-	        $this->RESERVES = ReservaespaisPeer::getReservesUsuaris($this->getUser()->getSessionPar('idU'));
-	        $this->MODUL = 'gestiona_reserves'; $this->ACCIO = 'gestio';		    	   		
-	   		break;
-	   		
-	   case 'im':   //Iniciem la matrícula
-	   		                                     	   				   		   		                         
-            $D = $request->getParameter('D');                        
-                                                 
-            $USUARI = UsuarisPeer::retrieveByPK($this->getUser()->getSessionPar('idU'));
-            
-            $this->DADES_MATRICULA = array();
-            $this->DADES_MATRICULA['DNI'] = $USUARI->getDni();
-            $this->DADES_MATRICULA['NOM'] = $USUARI->getNomComplet();
-            $this->DADES_MATRICULA['IDU'] = $this->getUser()->getSessionPar('idU');
-            $this->DADES_MATRICULA['MODALITAT'] = MatriculesPeer::PAGAMENT_TARGETA;
-            $this->DADES_MATRICULA['DESCOMPTE'] = $D['DESCOMPTE'];
-            $this->DADES_MATRICULA['DATA'] = date('d-m-Y h:m',time());
-            $this->DADES_MATRICULA['COMENTARI'] = "MATRÍCULA INTERNET";
-            //Apliquem els descomptes i gratuït si ja està el grup ple
-            $this->DADES_MATRICULA['PREU'] = CursosPeer::CalculaPreu($D['CURS'],$D['DESCOMPTE'],$this->IDS);
-            $this->DADES_MATRICULA['CURS'] = $D['CURS'];
-            $this->ISPLE = CursosPeer::isPle($D['CURS'],$this->IDS);                        
-              
-            //Retorna id de matrícula
-            $matricules = $this->guardaMatricula($this->DADES_MATRICULA,false,0,$this->IDS); 
-              
-            //Carreguem el TPV
-            $this->TPV = MatriculesPeer::getTPV($this->DADES_MATRICULA['PREU'] , $this->DADES_MATRICULA['NOM'] , $matricules , $this->IDS );
-            $this->ACCIO = "verifica";
-            $this->MODUL = "gestiona_verificacio";                                                      
-	        break;
-     }
-               
-  }
-
-  //Guardem el TPV
-  public function executeGetTPV(sfWebRequest $request)
-  {
-  	
-  	//Si arribem aquí és perquè hem fet un pagament amb tarjeta i segur que tenim lloc.   
-  	if($request->getParameter('Ds_Response') == '0000'):
-  		$idM = $request->getParameter('Ds_MerchantData');
-  		$OM = MatriculesPeer::retrieveByPK($idM);                
-  		if($OM instanceof Matricules):                        
-            if(MatriculesPeer::setMatriculaPagada($idM)):              			  			
-      			$this->sendMail('informatica@casadecultura.org',
-      							$OM->getUsuaris()->getEmail(),  							
-      							'Matrícula Casa de Cultura de Girona',
-      							MatriculesPeer::MailMatricula($OM));  			
-    			$this->sendMail('informatica@casadecultura.org',
-      							'informatica@casadecultura.org',
-      							'Matrícula Casa de Cultura de Girona',
-      							MatriculesPeer::MailMatricula($OM));  							
-             else: 
-      			$this->sendMail('informatica@casadecultura.org',
-      							$OM->getUsuaris()->getEmail(),  							
-      							'Matrícula Casa de Cultura de Girona',
-      							MatriculesPeer::MailMatriculaFAIL($OM));  			
-    			$this->sendMail('informatica@casadecultura.org',
-      							'informatica@casadecultura.org',
-      							'Matrícula Casa de Cultura de Girona',
-      							MatriculesPeer::MailMatriculaFAIL($OM));                          
-             endif; 
-  		else:
-	  		$this->sendMail('informatica@casadecultura.org',
-	  						'informatica@casadecultura.org',
-	  						'Matrícula cobrada i Error en objecte',
-	  						'Hi ha hagut algun error en una matrícula que s\'ha cobrat i no s\'ha pogut guardar com a pagada');   			  			  			
-  		endif; 
-  	else: 
-  		$OM->setEstat(MatriculesPeer::ERROR); //Si arriba aquí és que no ha pagat correctament
-  		$OM->save();
-  	endif;
-  	 
-  	return sfView::NONE;
-  	
-  } 
-      
-  private function guardaMatricula( $DADES_MATRICULA , $IDMATRICULA = 0 , $idS )
-  {
-  	
-     //Quan guardem la matrícula mirem
-     // Si el curs és ple, guardem Estat "En llista d'espera"
-     // Si queden places, guardem en procès i quan hagi pagat se li guardarà.  
-     
-     $M = MatriculesPeer::initialize($IDMATRICULA,$idS,false)->getObject();
-                    
-     if(CursosPeer::isPle($DADES_MATRICULA['CURS'],$this->IDS)):
-		$M->setEstat(MatriculesPeer::EN_ESPERA);
-	 else:  
-     	$M->setEstat(MatriculesPeer::EN_PROCES);
-     endif;
-     
-     $M->setUsuarisUsuariid($DADES_MATRICULA['IDU']);
-     $M->setComentari("Pagament internet");
-     $M->setDatainscripcio($DADES_MATRICULA['DATA']);     
-     $M->setTreduccio($DADES_MATRICULA['DESCOMPTE']);
-     $M->setTpagament(MatriculesPeer::PAGAMENT_TARGETA);
-     $M->setCursosIdcursos($DADES_MATRICULA['CURS']);
-     $M->setPagat($DADES_MATRICULA['PREU']);     
-     $M->save();
-     
-     return $M->getIdmatricules();
-     
-  }
-*/        
+        
   private function getFotos()
   {
   	$FOTOS = array();
@@ -658,7 +425,7 @@ class webActions extends sfActions
   	//Inicialitzacions
   	$TEMP = array('FIX'=>array() , 'VAR'=>array()); $BANNERS = array(); $C = new Criteria();
   	   	
-	//Selecció i consulta de les promocions
+	//SelecciÃ³ i consulta de les promocions
     $i = 0;      	  
     $LOP = PromocionsPeer::getAllPromocions($this->IDS);    	  	
   	foreach($LOP as $O):  		
@@ -718,19 +485,19 @@ class webActions extends sfActions
     
         $this->LoadWEB($request);
         $this->setTemplate('index');
-        //Entren crides i es mostra una reposta en web si ha anat bé o no.        
+        //Entren crides i es mostra una reposta en web si ha anat bÃ© o no.        
         $PARAMETRES = Encript::Desencripta($request->getParameter('PAR'));
         $PAR = unserialize($PARAMETRES);                
         switch($PAR['formulari']){
             
-            //Paràmetres [id = IDReservaEspais]
-            //Només es podrà si l'estat actual és ESPERA_ACCEPTACIÓ_CONDICIONS
+            //ParÃ metres [id = IDReservaEspais]
+            //NomÃ©s es podrÃ  si l'estat actual Ã©s ESPERA_ACCEPTACIÃ“_CONDICIONS
             case 'Reserva_Espais_Mail_Accepta_Condicions':
                     $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
                     if($OR instanceof Reservaespais && $OR->setAcceptada()):                        
-                        $this->MISSATGE = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span>';
+                        $this->MISSATGE = '<span style="font-size:14px;">La seva reserva ha estat acceptada. </span><br /><br /><span style="font-size:14px;">Sempre que ho desitji podrÃ  consultar les seves reserves accedint a la serva zona privada del web.</span>';
                     else:
-                        $this->MISSATGE = '<span style="font-size:14px;">Hi ha hagut un error tècnic en l\'acceptació.<br />Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
+                        $this->MISSATGE = '<span style="font-size:14px;">Hi ha hagut un error tÃ¨cnic en l\'acceptaciÃ³.<br />Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bÃ© per correu a informatica@casadecultura.org<br />Perdoni les molÃ¨sties</span>';
                     endif;                         
                     $this->ACCIO = 'missatge';                    
                 break;
@@ -740,9 +507,9 @@ class webActions extends sfActions
                     $OR = ReservaespaisPeer::retrieveByPK($PAR['id']);
                     if($OR instanceof Reservaespais && $OR->setRebutjada()):
                         
-                        $this->MISSATGE = '<span style="font-size:14px;">La seva reserva ha estat anul·lada degut a què vostè no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitji podrà consultar les seves reserves accedint a la serva zona privada del web.</span">';
+                        $this->MISSATGE = '<span style="font-size:14px;">La seva reserva ha estat anulÂ·lada degut a quÃ¨ vostÃ¨ no ha acceptat les condicions de la Casa de Cultura. <br />Sempre que ho desitji podrÃ  consultar les seves reserves accedint a la serva zona privada del web.</span">';
                     else:
-                        $this->MISSATGE = '<span style="font-size:14px;">Hi ha hagut un error en l\'anul·lació de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bé per correu a informatica@casadecultura.org<br />Perdoni les molèsties</span>';
+                        $this->MISSATGE = '<span style="font-size:14px;">Hi ha hagut un error en l\'anulÂ·laciÃ³ de la reserva. Si us plau posis en contacte amb la Casa de Cultura trucant al 972.20.20.13 o bÃ© per correu a informatica@casadecultura.org<br />Perdoni les molÃ¨sties</span>';
                     endif;                         
                     $this->ACCIO = 'missatge';                    
                 break;                

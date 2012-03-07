@@ -12,6 +12,7 @@ class MatriculesPeer extends BaseMatriculesPeer
 
    const ACCEPTAT_PAGAT = "8";
    const ACCEPTAT_NO_PAGAT = "12";
+   const RESERVAT = "26";
    const EN_ESPERA = "14";   
    const ERROR = "10";
    const BAIXA = "9";
@@ -29,18 +30,32 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_METALIC         = '21';
    const PAGAMENT_TARGETA         = '20';
    const PAGAMENT_TELEFON         = '23';
-   const PAGAMENT_TRANSFERENCIA   = '24';   
+   const PAGAMENT_TRANSFERENCIA   = '24';
 
-    static public function criteriaMatriculat($C)
+    static public function criteriaMatriculat($C,$amb_llista_espera = false)
     {
         $C1 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_PAGAT);
         $C2 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_NO_PAGAT);
-//        $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
-        $C1->addOr($C2); $C->add($C1);
-//        $C1->addOr($C3); 
+        $C4 = $C->getNewCriterion(self::ESTAT,self::RESERVAT);                                  //També agafem aquells que estan en estat de plaça reservada
+        if($amb_llista_espera) $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
+        if($amb_llista_espera) $C1->addOr($C3);        
+        $C1->addOr($C4);
+        $C1->addOr($C2);         
+        $C->add($C1); 
         $C->add(self::ACTIU, true);
         return $C;
     } 
+
+    static public function getMatriculaUsuari($idU,$idC,$idS)
+    {
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C,$idS);
+        $C->add(self::CURSOS_IDCURSOS, $idC);
+        $C->add(self::USUARIS_USUARIID, $idU);
+        $C = self::criteriaMatriculat($C);
+                                       
+        return self::doSelectOne($C);
+    }
 
     static public function hasMatriculaUsuari($idU,$idC,$idS)
     {
@@ -54,96 +69,122 @@ class MatriculesPeer extends BaseMatriculesPeer
     }
 
     /**
-     * Funció que carrega les dades i guarda una matrícula. També li posa un estat i un preu segons el que s'ha escollit.
+     * Funció que guarda una matrícula després d'enviar-ho des del gestor o bé des de l'hospici. 
      * @param $idU Identificador d'usuari
      * @param $idC Identificador de curs
      * @param $idM Identificador de matrícula si volem reutilitzar-la
      * @param $comment Comentari a guardar
      * @return new Matricules() o $error ( Codi d'error ) 
      * */
-    static public function saveNewMatricula( $idU , $idC , $idM = 0 , $comment = "" , $Descompte = self::REDUCCIO_CAP )
+    static public function saveNewMatricula( $idU , $idC , $comment = "" , $idD , $Mode_pagament )
     {        
-        //Carreguem les dades de l'usuari
-        $OU = UsuarisPeer::retrieveByPK($idU);
+        
+        //Parametre que retornarem
+        $RET = array('AVISOS'=>array(),'OM'=>new Matricules());
+                
         $OC = CursosPeer::retrieveByPK($idC);
-                
-        //Si tenim un codi de matrícula, la carreguem.
-        $OM = self::retrieveByPK($idM);
-        if(!($OM instanceof Matricules)) $OM = new Matricules();
-                                                        
-        //Si ho hem carregat tot correctament, seguim
-        if($OU instanceof Usuaris && $OC instanceof Cursos && $OM instanceof Matricules)
-        {
-
-            //Comprovem si la matrícula ja s'ha fet.            
-            if( self::hasMatriculaUsuari( $idU , $idC , $OC->getSiteid() ) > 0 )
-            {
-                $OM = 1; //Retorna aquest error quan ja hi ha una matrícula del mateix curs per aquesta persona
-            }
-            else
-            {
-                //Mirem si hi ha places i marquem l'estat 
-                $PLACES = $OC->getPlacesArray();
-                if($PLACES['OCUPADES'] < $PLACES['TOTAL'])
-                {                                        
-                    //Si el pagament és amb targeta marquem l'estat EN_PROCES
-                    if($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA){
-                        $OM->setPagat(0);
-                        $OM->setEstat(self::EN_PROCES);
-                    }                                                                    
-                    else
-                    {
-                        $OM->setPagat(0);
-                        $OM->setEstat(self::ACCEPTAT_NO_PAGAT);
-                    }                                                                                 
-                }
-                else
-                {                     
-                    $OM->setPagat(0);
-                    $OM->setEstat(self::EN_ESPERA);
-                }        
-    
-                $OM->setUsuarisUsuariid($OU->getUsuariid());
-                $OM->setCursosIdcursos($OC->getIdCursos());            
-                $OM->setComentari($comment);
-                $OM->setDatainscripcio(date('Y-m-d h:i',time()));            
-                $OM->setTreduccio($Descompte);
-                
-                //Si el pagament és havent marcat Hospici només reserva... posem pagament POSTERIOR. 
-                if($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA)
-                     $OM->setTpagament(self::PAGAMENT_METALIC); //Afegir pagament posterior
-                else $OM->setTpagament(self::PAGAMENT_TARGETA);                
-                $OM->setSiteId($OC->getSiteid());
-                $OM->setActiu(true);
-                $OM->save();   
+        
+        //Comprovem que l'usuari existeixi.
+        if(is_null(UsuarisPeer::retrieveByPK($idU))) { $RET['AVISOS']["ERR_USUARI"] = "ERR_USUARI"; return $RET; }
+        
+        //Comprovem que el curs existeixi.
+        if(is_null(CursosPeer::retrieveByPK($idC))) { $RET['AVISOS']["ERR_CURS"] = "ERR_CURS"; return $RET; }
+        
+        //Comprovem que aquest usuari no tingui ja una matrícula a aquest curs. Si ja ha estat matriculat, retornem -1.
+        $OM = self::getMatriculaUsuari($idU, $idC, $OC->getSiteid());
+        if(!is_null($OM)){ $RET['AVISOS']["ERR_JA_TE_UNA_MATRICULA"] = "ERR_JA_TE_UNA_MATRICULA"; return $RET; }                                     
+                                  
+        //Entrem les dades que tenim i la deixem en procès per modificar-la després segons el que hagi passat
+        $OM = new Matricules();
+        $OM->setUsuarisUsuariid($idU);
+        $OM->setCursosIdcursos($idC);
+        $OM->setEstat(MatriculesPeer::EN_PROCES);
+        $OM->setComentari($comment);
+        $OM->setDatainscripcio(date('Y-m-d H:i',time()));
+        $OM->setPagat(DescomptesPeer::getPreuAmbDescompte($OC->getPreu(),$idD));
+        $OM->setTreduccio($idD);
+        $OM->setTpagament($Mode_pagament);
+        $OM->setSiteId($OC->getSiteid());
+        $OM->setActiu(true);
+        $OM->setTpvOperacio(0);
+        $OM->setTpvOrder(0);        
+        $OM->save();
+        
+        //Guardem l'identificador de la matrícula
+        $RET['OM'] = $OM;
+        
+        //Ara comprovem les diferents possibilitats. Calculem el preu amb reducció i deixem a 0 si no hi ha places. 
+        $PREU = DescomptesPeer::getPreuAmbDescompte( $OC->getPreu() , $OM->getTreduccio() );
+        
+        //Si el curs és ple, guardem que està en espera i mostrem que el curs està ple i resta en llista d'espera
+        if($OC->isPle()){
                               
-                //Un cop feta la matrícula, hem de donar visibilitat a l'usuari
-                UsuarisPeer::addSite($OU->getUsuariid(),$OC->getSiteid());
+          $OM->setPagat(0);
+          $OM->setEstat(MatriculesPeer::EN_ESPERA);
+          $OM->save();
+          $RET['AVISOS']['CURS_PLE'] = "CURS_PLE";
+          
+        //Si queden places al curs                
+        } else {
+            
+            //Si hem dit que el curs és en format reserva en comptes de pagament
+            if($OC->isReserva())
+            {
+                $OM->setPagat(0);
+                $OM->setEstat(MatriculesPeer::RESERVAT);
+                $OM->save();
+                $RET['AVISOS']['RESERVA_OK'] = "RESERVA_OK";                
+                self::SendMailMatricula($OM,$OM->getSiteid()); //Enviem el correu electrònic per a la reserva
                 
+            } 
+            //Si és una matrícula de compra
+            elseif($OC->isCompra())
+            {
+            
+                //Si el mode de pagament és targeta, cridem el tpv
+                if( $Mode_pagament == MatriculesPeer::PAGAMENT_TARGETA ){
+      		        $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
+                                        
+                //Altrament, acceptem i mostrem la matrícula
+                } else { 
+                    
+                    //Guardem la matrícula tal qual està.
+                    $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
+                    $OM->setPagat($PREU);
+                    $OM->save();
+                    $RET['AVISOS']['MATRICULA_METALIC_OK'] = "MATRICULA_METALIC_OK";
+                    self::SendMailMatricula($OM,$OM->getSiteid());                
+                }
             }
         }
-        else
-        { 
-            $OM = 0; //Retorna aquest error quan hi ha alguna dada inicial malament o objecte que no existeix        
-        }
-                               
-        return $OM;
-                                
-    }   
+        
+        return $RET;
+    }
    
+    //Envia el correu d'una matrícula
+    static public function SendMailMatricula($OM,$idS){
+    if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):
+        myUser::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), $OM->getUsuaris()->getEmail(), 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));  			
+    	myUser::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), 'informatica@casadecultura.org', 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));
+     endif; 
+    }    
+   
+    /**
+     * Funció que inicialitza una matrícula
+     * */   
     static public function initialize( $idM , $idS , $selUsuari = false, $URL_AJAX_USER = null )
     {
         $OM = MatriculesPeer::retrieveByPK($idM);            
         if($OM instanceof Matricules):            
-        	return new MatriculesForm($OM);
+        	return new MatriculesForm($OM,array('IDS'=>$OM->getSiteid()));
         else:
         	$OM = new Matricules();
             $OM->setDatainscripcio(date('Y-m-d H:i',time()));
             $OM->setSiteId($idS);        
             $OM->setActiu(true);        
-            if($selUsuari):
+            if($selUsuari):            
                 return new MatriculesUsuariForm($OM,array('IDS'=>$idS));
-            else:
+            else:                
                 return new MatriculesForm($OM,array('IDS'=>$idS));
             endif;			
         endif; 
@@ -211,9 +252,9 @@ class MatriculesPeer extends BaseMatriculesPeer
   {
       return array(
          self::PAGAMENT_METALIC => 'Metal·lic',
-         self::PAGAMENT_TARGETA => 'Targeta',
-         self::PAGAMENT_TELEFON => 'Telèfon',
-         self::PAGAMENT_TRANSFERENCIA => 'Transferència'
+         self::PAGAMENT_TARGETA => 'Targeta',         
+//         self::PAGAMENT_TELEFON => 'Telèfon',
+//         self::PAGAMENT_TRANSFERENCIA => 'Transferència'
       );  
   }
 
@@ -232,8 +273,8 @@ class MatriculesPeer extends BaseMatriculesPeer
   	$C = new Criteria();
   	$C = CursosPeer::getCriteriaActiu($C,$idS);
 	$C->add(CursosPeer::ISACTIU,true);     
-	$C->addDescendingOrderByColumn(CursosPeer::CATEGORIA);
-	$C->addDescendingOrderByColumn(CursosPeer::CODI);
+	$C->addAscendingOrderByColumn(CursosPeer::CATEGORIA);
+	$C->addAscendingOrderByColumn(CursosPeer::CODI);
 
 	return CursosPeer::doSelect($C);
   	
@@ -271,23 +312,16 @@ class MatriculesPeer extends BaseMatriculesPeer
      $C = UsuarisPeer::getCriteriaActiu($C,$idS);
      $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
      
-     $C1 = $C->getNewCriterion(UsuarisPeer::NOM, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C2 = $C->getNewCriterion(UsuarisPeer::COG1, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C3 = $C->getNewCriterion(UsuarisPeer::COG2, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C4 = $C->getNewCriterion(UsuarisPeer::DNI, '%'.$CERCA.'%',CRITERIA::LIKE);
-     
-     $C1->addOr($C2); $C1->addOr($C3);$C1->addOr($C4);
-     
-     $C->add($C1);
-     
+     //Cerquem tots els camps de l'usuari
+     $C = UsuarisPeer::CriteriaCerca($CERCA,$C);
+               
      $C->addJoin( UsuarisPeer::USUARIID , self::USUARIS_USUARIID );
-          
-     
+               
      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
      $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
      $C->addGroupByColumn(UsuarisPeer::DNI);
      
-     $pager = new sfPropelPager('Usuaris', 10);
+     $pager = new sfPropelPager('Usuaris', 20);
 	 $pager->setCriteria($C);
 	 $pager->setPage($PAGINA);
 	 $pager->init();
@@ -300,19 +334,16 @@ class MatriculesPeer extends BaseMatriculesPeer
   {
      $C = new Criteria();          
      $C = self::getCriteriaActiu( $C , $idS );
-      
-     $C1 = $C->getNewCriterion(CursosPeer::CODI, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C2 = $C->getNewCriterion(CursosPeer::TITOLCURS, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C3 = $C->getNewCriterion(CursosPeer::CATEGORIA, '%'.$CERCA.'%',CRITERIA::LIKE);
-     
-     $C4 = $C->getNewCriterion(UsuarisPeer::NOM, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C5 = $C->getNewCriterion(UsuarisPeer::COG1, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C6 = $C->getNewCriterion(UsuarisPeer::COG2, '%'.$CERCA.'%',CRITERIA::LIKE);
-     $C7 = $C->getNewCriterion(UsuarisPeer::DNI, '%'.$CERCA.'%',CRITERIA::LIKE);
-     
-     $C1->addOr($C2); $C1->addOr($C3);$C1->addOr($C4);$C1->addOr($C5);$C1->addOr($C6);$C1->addOr($C7);
-     
-     $C->add($C1);
+
+     foreach(explode(' ',$CERCA) as $PARAULA):     
+        $C1 = $C->getNewCriterion(CursosPeer::CODI, '%'.$PARAULA.'%',CRITERIA::LIKE);
+        $C2 = $C->getNewCriterion(CursosPeer::TITOLCURS, '%'.$PARAULA.'%',CRITERIA::LIKE);
+        $C3 = $C->getNewCriterion(CursosPeer::CATEGORIA, '%'.$PARAULA.'%',CRITERIA::LIKE);            
+        $C1->addOr($C2); $C1->addOr($C3); $C->addAnd($C1);        
+     endforeach;
+          
+     //Cerquem tots els camps de l'usuari
+     $C = UsuarisPeer::CriteriaCerca($CERCA,$C);
      
      $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
      
@@ -376,10 +407,29 @@ class MatriculesPeer extends BaseMatriculesPeer
   					self::BAIXA => 'Baixa',
   					self::CANVI_GRUP => 'Canvi de grup',
   					self::DEVOLUCIO => 'Devolució',
-  					self::EN_PROCES => 'En procès de pagament'  					  	
+  					self::EN_PROCES => 'En procès de pagament',
+                    self::RESERVAT => 'Reservat'  					  	
   	);  
            
   }
+
+  static function getEstatText($Estat)
+  {     
+
+     switch($Estat){
+        case self::ACCEPTAT_PAGAT : return 'Acceptat i pagat';
+        case self::ACCEPTAT_NO_PAGAT : return 'Acceptat i no pagat'; 
+        case self::EN_ESPERA : return 'En espera';
+        case self::ERROR : return 'Error internet';
+        case self::BAIXA : return 'Baixa';
+        case self::CANVI_GRUP : return 'Canvi de grup';
+        case self::EN_PROCES: return 'En procès de pagament';
+        case self::DEVOLUCIO: return 'Devolució';
+        case self::RESERVAT: return 'Reservat';
+        default : return 'NO ESPECIFICAT';  
+     }   
+  }
+  
 
  static public function h_getMatriculesCursosUsuariArray($idU)
  {
@@ -402,7 +452,8 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C1 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_PAGAT);
     $C2 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_NO_PAGAT);
     $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
-    $C1->addOr($C2); $C1->addOr($C3); $C->add($C1);    
+    $C4 = $C->getNewCriterion(self::ESTAT,self::RESERVAT);
+    $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C->add($C1);    
     $C->add(self::ACTIU, true);    
     $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);                
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
@@ -418,8 +469,10 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C = new Criteria();    
     $C = self::getCriteriaActiu( $C , $idS );
     $C->add(MatriculesPeer::USUARIS_USUARIID , $idU);
-    $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
+    //$C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
     $C->add(MatriculesPeer::CURSOS_IDCURSOS, null, CRITERIA::NOT_EQUAL);
+    
+    $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
     $C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
 
     return MatriculesPeer::doSelect($C);
@@ -506,43 +559,6 @@ class MatriculesPeer extends BaseMatriculesPeer
      $TPV['Ds_Merchant_MerchantSignature'] = strtoupper(sha1($message));
      
      return $TPV;
-  }
-  
-  static public function setMatriculaPagada( $OM )
-  {
-                
-    //Mirem si el curs és ple
-    $CURS_PLE = CursosPeer::isPle( $OM->getCursosIdcursos() , $OM->getSiteId() ); 
-  	
-    //Si no és ple, posem a pagat.
-     if(!$CURS_PLE){
-     	$OM->setEstat(self::ACCEPTAT_PAGAT);
-     } else {
-        //Si és ple i l'import és 0, posem en espera
-        if($OM->getPagat() > 0){ $OM->setEstat(self::ACCEPTAT_PAGAT);  }
-        else { $OM->setEstat(self::EN_ESPERA);   }     
-     }
-               
-     $OM->save();
-     
-     return true; 
-     
-  }
-  
-  static function getEstatText($Estat)
-  {     
-
-     switch($Estat){
-        case self::ACCEPTAT_PAGAT : return 'Acceptat i pagat';
-        case self::ACCEPTAT_NO_PAGAT : return 'Acceptat i no pagat'; 
-        case self::EN_ESPERA : return 'En espera';
-        case self::ERROR : return 'Error internet';
-        case self::BAIXA : return 'Baixa';
-        case self::CANVI_GRUP : return 'Canvi de grup';
-        case self::EN_PROCES: return 'En procès de pagament';
-        case self::DEVOLUCIO: return 'Devolució';
-        default : return 'NO ESPECIFICAT';  
-     }   
   }
   
   static public function getMatriculesPagadesDia( $modePagament = 0 , $idS )

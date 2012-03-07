@@ -16,7 +16,8 @@
 		$('#tabs').tabs({ cookie: { expires: 1 } });        
         $('#options_option_id').change(ajaxOptions);
         $('#espais_EspaiID').change(function(){ $('#FESPAIS').submit(); });
-        $('#materialgeneric_idMaterialGeneric').change(function(){ $('#FMATERIAL').submit(); });                                
+        $('#materialgeneric_idMaterialGeneric').change(function(){ $('#FMATERIAL').submit(); });
+        $('#descomptes_idDescompte').change(function(){ $('#FDESCOMPTE').submit(); });                                
 	});
 
     //Funció que captura de quin genèric parlem i busca els disponibles. 
@@ -31,11 +32,11 @@
                                                 
     }
     	
-	</script>
+</script>
 
 
   
-<TD colspan="3" class="CONTINGUT_ADMIN">	
+<td colspan="3" class="CONTINGUT_ADMIN">	
 
 	<?php include_partial('breadcumb',array('text'=>'CONFIGURACIÓ')); ?>		
 		                   	                   	
@@ -48,20 +49,47 @@
                 <li><a href="#tabs-3">Material genèric</a></li>
                 <li><a href="#tabs-4">Autentificacions</a></li>
                 <li><a href="#tabs-5">Entitat</a></li>
+                <li><a href="#tabs-6">Descomptes</a></li>
         	</ul>                        
         	<div id="tabs-1"> <?php echo OptionsTab($FOPTIONS); ?> </div>
         	<div id="tabs-2"> <?php echo EspaisTab($FESPAIS); ?> </div>              	
             <div id="tabs-3"> <?php echo MaterialTab($FMATERIAL); ?> </div>
             <div id="tabs-4"> <?php echo AutentificacioTab($PARS,$FBI,$ERROR); ?> </div>
             <div id="tabs-5"> <?php echo EntitatTab($FENTITAT); ?> </div>
+            <div id="tabs-6"> <?php echo DescomptesTab($FDESCOMPTE); ?> </div>
         </div>
     
     </div>
     
 
-<DIV STYLE="height:40px;"></DIV>
+<div style="height:40px;"></div>
 
 <?php 
+
+
+    /**
+     * Modificació de les dades de l'entitat. Logo i URL del web. 
+     * */
+    function DescomptesTab($FDESCOMPTE)
+    {
+        
+        $idD = (is_null($FDESCOMPTE->getObject()->getIddescompte()))?0:$FDESCOMPTE->getObject()->getIddescompte();                
+        
+        $RET = '
+            <form id="FDESCOMPTE" action="'.url_for('gestio/gConfig').'" method="POST" enctype="multipart/form-data">
+                <table class="FORMULARI">                                    
+                '.$FDESCOMPTE.'                    
+                </table>
+                <div style="text-align:right">
+                    <button type="submit" name="BSAVEDESCOMPTE" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
+                        '.image_tag('template/disk.png').' Guardar i sortir
+                    </button>
+                </div>                                                                                                            
+            </form>';
+                     
+        return $RET;
+        
+    }
 
     /**
      * Modificació de les dades de l'entitat. Logo i URL del web. 

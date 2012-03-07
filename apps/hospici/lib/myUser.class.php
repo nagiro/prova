@@ -472,7 +472,7 @@ class myUser extends sfBasicSecurityUser
         $TNReserva  =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
         $TReserva   =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
         $TReservaT  =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
-        $HiHaPlaces =  $OC->isPle();                    
+        $HiHaPlaces =  !$OC->isPle();                    
         $datai      =  $OC->getDatainmatricula('U');        
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
         $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());
@@ -511,6 +511,10 @@ class myUser extends sfBasicSecurityUser
                     //L'usuari està en espera'
                     } elseif(MatriculesPeer::EN_ESPERA == $OM->getEstat()) {
                         return "EN_ESPERA";
+                        
+                    //L'usuari està en espera'
+                    } elseif(MatriculesPeer::RESERVAT == $OM->getEstat()) {
+                        return "RESERVAT";
                     }
                 } else {
                     
@@ -583,6 +587,10 @@ class myUser extends sfBasicSecurityUser
         }elseif( $ESTAT == 'EN_ESPERA'){
             $RET  = '  <div class="tip" title="El curs està complet. La seva matrícula queda en llista d\'espera.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
             $RET .= ph_getRoundCorner('En espera de plaça', '#F184DD').'</div>';
+
+        }elseif( $ESTAT == 'RESERVAT'){
+            $RET  = '  <div class="tip" title="Vostè ha realitzat la reserva al curs correctament. <br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Plaça reservada', '#29A729').'</div>';            
                             
         }elseif( $ESTAT == 'ANULADA'){
             $RET  = '  <div class="tip" title="Vostè s\'ha matriculat en aquest curs, però s\'ha donat de baixa o el procés no s\'ha completat correctament. Matrícula sense efecte.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
@@ -612,77 +620,124 @@ class myUser extends sfBasicSecurityUser
     }
 
     /**
-     * Mostra les etiquetes amb els estats i accions dels cursos
+     * Mostra les etiquetes amb els estats i accions dels horaris de les activitats
      * @param $AUTEN Si l'usuari està autentificat o no
      * @param $OC Objecte Cursos
      * @param $url On s'ha d'anar si es clica l'enllaç
      * @return String
      * */
-    static public function ph_getEtiquetaActivitats($AUTH, $OA, $ACTIVITATS_AMB_ENTRADES)
+    static public function ph_getEtiquetaActivitats($AUTH, $OA, $HORARIS_AMB_ENTRADES, $OH , $OEP )
     {
         
-        $AUTEN  = (isset($AUTH) && $AUTH > 0);
-        $isEnt  = $OA->getIsentrada();
-        $Places = $OA->getPlaces();
-        $isPle  = $OA->getIsPle();                 
-        $JaRes  = (isset($ACTIVITATS_AMB_ENTRADES[$OA->getActivitatid()]));
-        $url    = url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl());
-        $idS    = $OA->getSiteId();
-
+        $idS    = $OH->getSiteId();
         $OS     = SitesPeer::retrieveByPK($idS);
-        $nom    = $OS->getNom();
-        $email  = $OS->getEmailString();
-        $tel    = $OS->getTelefonString();
-
-        $RET    = "";                                                          
-
-        //Si no està autentificat
-        if( !$AUTEN ){
-            
+        $nom    = $OS->getNom(); $email  = $OS->getEmailString(); $tel    = $OS->getTelefonString();
+        
+        //Està o no està autentificat? 
+        $EstaAutentificat = (isset($AUTH) && $AUTH > 0);
+        $url    = url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl());
+        
+        if(!$EstaAutentificat){
             $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i reserva</a>', '#FFCC00');
-            
-        //Ja està autentificat
-        }else {
-
-            //Ja ha reservat per aquesta activitat
-            if( $JaRes ){
-                
-                $OER =  EntradesreservaPeer::retrieveByPK($ACTIVITATS_AMB_ENTRADES[$OA->getActivitatid()]);
+        } else {
+            $JaHaCompratOReservat  = (isset($HORARIS_AMB_ENTRADES[$OH->getHorarisid()]));
+            if($JaHaCompratOReservat){
+                $OER =  EntradesreservaPeer::retrieveByPK($HORARIS_AMB_ENTRADES[$OH->getHorarisid()]);
                 if( $OER instanceof EntradesReserva ){
-                    //Si l'usuari ja té l'entrada reservada, doncs li marquem
-                    if($OER->getEstat() == EntradesreservaPeer::CONFIRMADA){
-                        $RET  = '  <div class="tip" title="Vostè ha reservat entrades per aquesta activitat correctament.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                        $RET .= ph_getRoundCorner('Reserva confirmada', '#29A729').'</div>';
+
+                    $RET  = '  <div class="tip" title="Vostè ha comprat o reservat '.$OER->getQuantitat().' entrades per aquesta activitat correctament. Tot i això pot comprar més entrades per aquesta activitat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                    if($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_CONFIRMADA){
+                        $RET  = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,$RET);                                            
+                        $RET .= '</div>';
+                        
                     //L'usuari està en espera'
-                    } elseif($OER->getEstat() == EntradesreservaPeer::ANULADA) {
+                    } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_ANULADA) {
                         $RET  = '  <div class="tip" title="Vostè ha reservat entrades però han estat anul·lades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
                         $RET .= ph_getRoundCorner('Reserva anul·lada', '#F184DD').'</div>';
-                    }
-                }                                                                                                
-            
-            //No ha reservat            
+                    } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_EN_ESPERA) {
+                        $RET  = '  <div class="tip" title="Vostè ha sol·licitat una reserva o compra però encara no s\'ha tramitat. <br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET .= ph_getRoundCorner('En espera', '#F184DD').'</div>';
+                    } 
+                }
+            //Encara no ha fet cap compra o reserva d'entrades.                
             } else {
-              
-                //No hi ha venta per internet
-                if( !$isEnt ){
-                    $RET  = '';                                                        
-                                                    
-                //No queden places
-                }elseif( $isPle ){
+                                
+                //Ja no queden entrades
+                if($OEP->getIsPle()){
                     $RET  = '  <div class="tip" title="Aquesta activitat ha exhaurit les entrades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                    $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Entrades exhaurides</a>', '#EF0101').'</div>';            
-                                        
-                //Pot reservar entrades
-                }elseif( $isEnt ){
-                    $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Reserva entrada</a>', '#FF8D00');                        
-                }            
-                
+                    $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Entrades exhaurides</a>', '#EF0101').'</div>';                                                        
+                } else {
+                    $RET = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,"");
+                }                    
             }
-            
-        }
+        }                
                 
         return $RET;         
     }
+
+    static function ph_getEtiquetaActivitats_COMPRA($OEP,$RET){
+        if($OEP->getTipus() == EntradesPreusPeer::TIPUS_VENTA){
+            $RET .= ph_getRoundCorner('<button name="BCOMPRA" style="background-color:inherit; border:0px; color:white;">Compra!</button>', '#FF8D00');    
+        } elseif($OEP->getTipus() == EntradesPreusPeer::TIPUS_RESERVA) {
+            $RET .= ph_getRoundCorner('<button name="BRESERVA" style="background-color:inherit; border:0px; color:white;">Reserva!</button>', '#FF8D00');
+        } else {
+            $RET .= ph_getRoundCorner('<a href="#">No disponible</a>', '#FF8D00');
+        }      
+        
+        return $RET;                      
+    }
+    
+
+    /**
+     * Mostra les etiquetes amb els estats i accions del llistat d'activitats
+     * @param $AUTEN Si l'usuari està autentificat o no
+     * @param $OC Objecte Cursos
+     * @param $url On s'ha d'anar si es clica l'enllaç
+     * @return String
+     * */
+    static public function ph_getEtiquetaLlistatActivitats( $AUTH , $OA , $ACTIVITATS_AMB_ENTRADES )
+    {
+        //A partir d'una activitat mirem si l'usuari té alguna entrada per aquesta activitat.
+        //Mirem si a alguna sessió es venen o reserven entrades i si en aquestes en queda alguna.  
+        
+        $idS    = $OA->getSiteId();
+        $OS     = SitesPeer::retrieveByPK($idS);
+        $nom    = $OS->getNom(); $email  = $OS->getEmailString(); $tel    = $OS->getTelefonString();
+        
+        //Està o no està autentificat? 
+        $EstaAutentificat = (isset($AUTH) && $AUTH > 0);
+        $url    = url_for('@hospici_detall_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl());
+        
+        if(!$EstaAutentificat){
+            $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i reserva</a>', '#FFCC00');
+        } else {
+            $JaHaCompratOReservat  = (isset($ACTIVITATS_AMB_ENTRADES[$OA->getActivitatid()]));
+            if($JaHaCompratOReservat){
+                $OER =  EntradesreservaPeer::retrieveByPK($ACTIVITATS_AMB_ENTRADES[$OH->getHorarisid()]);
+                if( $OER instanceof EntradesReserva ){                    
+                    if($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_CONFIRMADA){
+                        $RET  = '  <div class="tip" title="Vostè ha comprat o reservat entrades per aquesta activitat correctament.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET .= ph_getRoundCorner('Reserva confirmada', '#29A729').'</div>';
+                    //L'usuari està en espera'
+                    } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_ANULADA) {
+                        $RET  = '  <div class="tip" title="Vostè ha reservat entrades però han estat anul·lades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET .= ph_getRoundCorner('Reserva anul·lada', '#F184DD').'</div>';
+                    } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_EN_ESPERA) {
+                        $RET  = '  <div class="tip" title="Vostè ha sol·licitat una reserva o compra però encara no s\'ha tramitat. <br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET .= ph_getRoundCorner('En espera', '#F184DD').'</div>';
+                    } 
+                }
+            //Encara no ha fet cap compra o reserva d'entrades.
+            } else { 
+                if(EntradesPreusPeer::isEntradesByActivitat($OA->getActivitatid()))
+                    $RET = ph_getRoundCorner('<a href="'.$url.'#reserva">Compra o reserva!</a>', '#FF8D00');
+                else $RET = ""; //"ph_getRoundCorner('<a href="'.$url.'#matricula">Consulta-les!</a>', '#FF8D00');                                         
+            }                                                                    
+        }                
+                
+        return $RET;         
+    }
+
 
 
     /**

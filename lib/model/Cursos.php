@@ -16,10 +16,10 @@ class Cursos extends BaseCursos
    */
   public function countMatriculats($idS)
   {  
+    
      $C = new Criteria();
-     $C = MatriculesPeer::getCriteriaActiu($C,$idS); 
-     $C->addOr(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_NO_PAGAT );
-     $C->addOr(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_PAGAT );
+     $C = MatriculesPeer::criteriaMatriculat($C); 
+     $C->add(MatriculesPeer::CURSOS_IDCURSOS, $this->getIdcursos());        
      return self::countMatriculess($C);          
   }
   
@@ -38,10 +38,7 @@ class Cursos extends BaseCursos
   public function countMatriculesActives($idS)
   {
      $C = new Criteria();
-     $C = MatriculesPeer::getCriteriaActiu($C,$idS);          
-     $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_NO_PAGAT );
-     $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT , MatriculesPeer::ACCEPTAT_PAGAT );
-     $C1->addOr($C2); $C->add($C1);
+     $C = MatriculesPeer::criteriaMatriculat($C,false);
      $C->add(MatriculesPeer::CURSOS_IDCURSOS, $this->getIdcursos());     
      return MatriculesPeer::doCount($C);
   }
@@ -49,7 +46,7 @@ class Cursos extends BaseCursos
   public function isPle()
   {
     $RS = $this->getPlacesArray();
-    if($RS['OCUPADES'] < $RS['TOTAL']) return true;
+    if($RS['OCUPADES'] >= $RS['TOTAL']) return true;
     else return false;    
   }
  
@@ -95,12 +92,31 @@ class Cursos extends BaseCursos
 
   public function h_getDescomptes()
   {
-    $RET = array();    
-    foreach(explode('@',$this->getAdescomptes()) as $DESC){
-        $OT = TipusPeer::retrieveByPK($DESC);
-        if($OT instanceof Tipus) $RET[$DESC] = $OT->getTipusdesc();        
-    }
+    return $this->getDescomptesArray();
+  }
+
+  public function getDescomptesArray($ambPreu = true){
+    $RET = array();
+    
+    $RET[DescomptesPeer::CAP]  = 'Sense descompte';
+    if($ambPreu) $RET[DescomptesPeer::CAP] .= ' ('.$this->getPreu().'€)';    
+    
+    foreach(explode('@',$this->getAdescomptes()) as $IDD){
+        $OD = DescomptesPeer::retrieveByPK($IDD);
+        if($OD instanceof Descomptes):
+            $RET[$IDD]  = $OD->getNom();
+            if($ambPreu) $RET[$IDD] .= ' ('.DescomptesPeer::getPreuAmbDescompte($this->getPreu(),$IDD).'€)';
+        endif;        
+    }            
     return $RET;
   }
+  
+  public function isCompra(){
+    return ($this->getIsentrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+  }
     
+  public function isReserva(){
+    return ($this->getIsentrada() == CursosPeer::HOSPICI_RESERVA);
+  }
+
 }

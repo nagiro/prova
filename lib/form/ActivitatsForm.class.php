@@ -23,10 +23,10 @@ class ActivitatsForm extends sfFormPropel
       'site_id'                         => new sfWidgetFormInputHidden(array(),array()),
       'actiu'                           => new sfWidgetFormInputHidden(array(),array()),            
       'Publicable'                      => new sfWidgetFormInputHidden(array(),array()),      
-      'Preu'                            => new sfWidgetFormInputText(),
-      'PreuReduit'                      => new sfWidgetFormInputText(),
-      'Places'                          => new sfWidgetFormInputText(),
-      'isEntrada'                       => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),      
+//      'Preu'                            => new sfWidgetFormInputText(),
+//      'PreuReduit'                      => new sfWidgetFormInputText(),
+//      'Places'                          => new sfWidgetFormInputText(),
+//      'isEntrada'                       => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),      
     ));
 
     $this->setValidators(array(
@@ -34,30 +34,30 @@ class ActivitatsForm extends sfFormPropel
       'Cicles_CicleID'                  => new sfValidatorPropelChoice(array('model' => 'Cicles', 'column' => 'CicleID', 'required' => false)),
       'TipusActivitat_idTipusActivitat' => new sfValidatorPropelChoice(array('model' => 'Tipusactivitat', 'column' => 'idTipusActivitat', 'required' => false)),
       'Nom'                             => new sfValidatorString(array('required' => true)),
-      'Preu'                            => new sfValidatorNumber(array('required' => false)),
-      'PreuReduit'                      => new sfValidatorNumber(array('required' => false)),
-      'Places'                          => new sfValidatorNumber(array('required' => false)),
+//      'Preu'                            => new sfValidatorNumber(array('required' => false)),
+//      'PreuReduit'                      => new sfValidatorNumber(array('required' => false)),
+//      'Places'                          => new sfValidatorNumber(array('required' => false)),
       'Publicable'                      => new sfValidatorInteger(array('required' => false)),
       'Estat'                           => new sfValidatorString(array('max_length' => 1, 'required' => false)),
       'Organitzador'				    => new sfValidatorString(array('required'=>false),array()),
       'Responsable'					    => new sfValidatorString(array('required'=>false),array()),
       'site_id'                         => new sfValidatorPass(),
       'actiu'                           => new sfValidatorPass(),          
-      'isEntrada'                       => new sfValidatorBoolean(),
+//      'isEntrada'                       => new sfValidatorBoolean(),
     ));
 
     $this->widgetSchema->setLabels(array(      
       'Nom'                             => 'Nom de l\'activitat: ',    
       'Cicles_CicleID'                  => 'A quin cicle pertany? ',
       'TipusActivitat_idTipusActivitat' => 'Quin format té? ',
-      'Preu'                            => 'Preu: ',
-      'PreuReduit'                      => 'Preu reduït: ',
+//      'Preu'                            => 'Preu: ',
+//      'PreuReduit'                      => 'Preu reduït: ',
       'Publicable'                      => 'Visible al web?',
       'Estat'                           => 'Estat actual: ',
       'Organitzador'				    => 'Organitzador',
       'Responsable'				    	=> 'Responsable',      
-      'isEntrada'                       => 'Vendre entrades?',
-      'Places'                          => 'Num. entrades',
+//      'isEntrada'                       => 'Vendre entrades?',
+//      'Places'                          => 'Num. entrades',
     ));
     
     

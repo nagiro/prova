@@ -25,7 +25,7 @@ class CursosForm extends sfFormPropel
       'Places'          => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),      
       'Descripcio'      => new sfWidgetFormTextareaTinyMCE(array(),array()),
       'Preu'            => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),
-      'Preur'           => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),
+//      'Preur'           => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),
       'Horaris'         => new sfWidgetFormInputText(array(),array('style'=>'width:50%;')),
       'Categoria'       => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCategories())),      
       'OrdreSortida'    => new sfWidgetFormInputText(array(),array('style'=>'width:10%;')),      
@@ -37,7 +37,7 @@ class CursosForm extends sfFormPropel
       'actiu'           => new sfWidgetFormInputHidden(),
       'isEntrada'       => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Només reserva',2=>'Matrícula i pagament amb targeta')),array()),
       'PDF'             => new sfWidgetFormInputFileEditableMy(array('file_src'=>'/'.$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
-      'ADescomptes'     => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>MatriculesPeer::selectDescomptes() , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')), 
+      'ADescomptes'     => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false) , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')), 
     ));
 
     $this->setDefaults(array(
@@ -54,7 +54,7 @@ class CursosForm extends sfFormPropel
       'Codi'            => new sfValidatorString(array('required' => true)),
       'Descripcio'      => new sfValidatorString(array('required' => true)),
       'Preu'            => new sfValidatorInteger(array('required' => true)),
-      'Preur'           => new sfValidatorInteger(array('required' => true)),
+//      'Preur'           => new sfValidatorInteger(array('required' => true)),
       'Horaris'         => new sfValidatorString(array('required' => true)),
       'Categoria'       => new sfValidatorString(array('required' => true)),
       'OrdreSortida'    => new sfValidatorInteger(array('required' => false)),

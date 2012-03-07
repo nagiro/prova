@@ -30,6 +30,10 @@ class Matricules extends BaseMatricules
   {  
   	return MatriculesPeer::getEstatText($this->getEstat());  	
   }
+   
+  //Ens diu si tenim descompte a la matrícula o no
+  public function hasDescompte(){       
+    return ($this->getTreduccio() != DescomptesPeer::CAP);
+  }
  
-
 }
