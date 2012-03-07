@@ -558,13 +558,13 @@ class webActions extends sfActions
                                 
             } else {
 
-     			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI','IDM:'.$idM);
+     			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',serialize($_POST));
                 
             }
                                         
         } else {
             
-            $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI','IDM:'.$idM);
+            $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI',serialize($_POST));
             
         }
                             
