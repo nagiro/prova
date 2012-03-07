@@ -2642,7 +2642,7 @@ class gestioActions extends sfActions
         
                 //La matrícula pot ser amb pagament de targeta de crèdit o bé en metàl·lic.
                 $RS = $request->getParameter('matricules');
-                $RET = MatriculesPeer::saveNewMatricula( $RS['idU'] , $RS['idC'] , "" , $RS['descompte'] , $RS['mode_pagament'] );
+                $RET = MatriculesPeer::saveNewMatricula( $RS['idU'] , $RS['idC'] , "" , $RS['descompte'] , $RS['mode_pagament'] );                
                 $AVISOS = $RET['AVISOS'];                                
                                                                      			
                 //Si la matrícula surt amb algun estat que no sigui tpv, fem la redirecció i mostrem el missatge. 
@@ -2656,8 +2656,8 @@ class gestioActions extends sfActions
                 //La matrícula es paga amb TPV
                 if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
                     $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
-        			$this->TPV = MatriculesPeer::getTPV( $PREU , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , false );
-                    $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());
+        			$this->TPV = MatriculesPeer::getTPV( $RET['OM']->getPreu() , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , false );
+                    $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());                    
                     $this->setLayout('blank');
                     $this->setTemplate('pagament');                                
                 endif;                                                                                
