@@ -337,7 +337,7 @@ class myUser extends sfBasicSecurityUser
             	
         		$OK = $mailer->send($sm,$errors);                                                
             
-            } catch (Exception $e) { $OK = false; $this->getUser()->addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
+            } catch (Exception $e) { $OK = false; myUser::addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
             
         endforeach;
     	
