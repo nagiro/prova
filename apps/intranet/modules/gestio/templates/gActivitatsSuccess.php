@@ -148,6 +148,8 @@
     
         include_partial('breadcumb',array('text'=>'ACTIVITATS'));
         if(!isset($MISSATGE)) $MISSATGE = null;
+        
+        if(isset($MODE['ERROR_GREU'])){ formErrorGreu($MISSATGE); }
     
         if ( isset($MODE['CONSULTA']) || isset($MODE['LLISTAT']) ) formConsulta($FCerca,$DATAI,$CALENDARI);
         
@@ -302,14 +304,20 @@
 
 <?php function formEditaHoraris($IDA,$FHorari,$MISSATGE,$EXTRES,$IDS){ ?>
 			 
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">
-     	<?php if(isset($MISSATGE)):  ?>
-     	<div style="padding:20px; margin-left:20px; border:10px solid red; width:650px; background-color: black; color:yellow; font-weight:bold;"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?></div>	     	
-     	<?php endif; ?>            
+     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">          	            
      	<div class="REQUADRE">
      	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&form=0'); ?></div> 		
-     		<div class="TITOL">Edició horaris</div>
-            <div class="FORMULARI">        	
+     		<div class="TITOL">
+             
+             Edició horaris ( <?php echo link_to('convertir en activitat independent','gestio/gActivitats?accio=DESDOBLAR&IDH='.$FHorari->getObject()->getHorarisid()); ?> )
+               
+            </div>
+
+            <?php if(isset($MISSATGE)):  ?>
+              <div style="margin:10px 0px; padding:5px; border:3px solid red; width:500px; list-style: none; background-color: black; color:yellow; font-weight:bold;"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?></div>	     	
+            <?php endif; ?>
+                                                
+            <div class="FORMULARI">                   
     
                	<?php echo $FHorari?>
                                                         
@@ -599,27 +607,28 @@
 
 
 
+<?php function formErrorGreu($MISSATGE){ ?>
+	             		
+        <div class="REQUADRE fb">	 	
+         	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&form=0&IDA='.$IDA)) ?>
+         	
+        	<div class="titol">ERROR GREU</div>        		
+        	<div style="padding-top:10px;" class="FORMULARI fb">                        	                
+                <div style="margin:10px 0px; padding:5px; border:3px solid red; width:500px; list-style: none; background-color: black; color:yellow; font-weight:bold;">
+                    <?php 
+                        echo '<ul>'; 
+                        if(!isset($MISSATGE)) $MISSATGE = array(); 
+                        foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	
+                        echo '</ul>'; 
+                    ?>
+                </div>	     	                 
+                <p>Si heu arribat aquí és perquè s'ha produit un error greu. Inforeu el més aviat possible a informatica@casadecultura.org sobre les circumstàncies en les que s'ha produit aquest error i no repetiu el procès ja que podria incrementar-se.<br /><br />Disculpeu les molèsties.</p>
+        	</div>        		 	 	
+        </div>    	                  
+     
+<?php } ?>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-                
 <?php 
 
 function menu($seleccionat = 1,$nova = false)

@@ -1412,6 +1412,13 @@ class gestioActions extends sfActions
         $this->DATAI  = $this->getUser()->setSessionPar('DATAI',time());        	           			       
     endif;    
         
+    //Afegit per si algú ha d'enviar algun error
+    $this->ERROR =          $request->getParameter('ERROR');
+    if($this->ERROR == "HORARI_NO_EXISTEIX"): $this->MISSATGE = array(0=>"L'Horari no existeix o no s'ha trobat.");
+    elseif($this->ERROR == "ACTIVITAT_NO_EXISTEIX"): $this->MISSATGE = array(0=>"La activitat no existeix o no s'ha trobat. ");
+    elseif($this->ERROR == "NO_HI_HA_MES_HORARIS"): $this->MISSATGE = array(0=>"No s'ha creat cap nova activitat, perquè només conté un horari.");
+    endif;
+            
     $this->CERCA  			= $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));    
     
     $T = time();
@@ -1461,7 +1468,7 @@ class gestioActions extends sfActions
     $this->DATAF = mktime(0,0,0,date('m',$this->DATAI)+3,date('d',$this->DATAI),date('Y',$this->DATAI));  //La data final sempre Ã©s 3 mesos superior a la inicial        
 	   
     switch($this->accio){
-    	
+            	
     	//Consulta inicial del calendari sense prèmer cap dia, només amb un factor de cerca
     	case 'C':
 
@@ -1726,12 +1733,43 @@ class gestioActions extends sfActions
                 
                 $this->OA = ActivitatsPeer::retrieveByPK($this->IDA);
       
-            break;                        
+            break;
+            
+        //Des d'un horari, creem una activitat nova amb les mateixes dades. Ja està entrat l'error a dalt.
+        case 'DESDOBLAR':
+                
+                $IDH = $request->getParameter('IDH');
+                $OH = HorarisPeer::retrieveByPK($IDH);
+                if(!($OH instanceof Horaris)) $this->redirect("gestio/gActivitats?accio=ERROR_GREU&ERROR=HORARI_NO_EXISTEIX");
+                                
+                //Carreguem l'activitat i en fem una de nova.
+                $OA = ActivitatsPeer::retrieveByPK($OH->getActivitatsActivitatid());
+                if(!($OA instanceof Activitats)) $this->redirect("gestio/gActivitats?accio=ERROR_GREU&ERROR=ACTIVITAT_NO_EXISTEIX");
+                                                
+                //Comprovem que tingui algun altre horari, sinó donem error.
+                $NH = $OA->countHorarisActius($this->IDS);
+                if($NH <= 1) $this->redirect("gestio/gActivitats?accio=HORARI&IDA={$OA->getActivitatid()}&IDH={$OH->getHorarisid()}&ERROR=NO_HI_HA_MES_HORARIS");                
+                                                                                                
+                $NOVA_ACTIVITAT = $OA->copy();
+                $NOVA_ACTIVITAT->save();                                                  
+                 
+                $OH->setActivitatsActivitatid($NOVA_ACTIVITAT->getActivitatid());
+                $OH->save();
+                                
+                $this->redirect("gestio/gActivitats?accio=HORARI&IDA={$NOVA_ACTIVITAT->getActivitatid()}&IDH={$OH->getHorarisid()}");
+                                                                                                         
+            break;
+            
+        //Mostra un error greu on apareix només el missatge
+        case 'ERROR_GREU':
+            $this->MODE['ERROR_GREU'] = true;            
+            break;
     					
     }                                
     
   }  
-
+  
+  
   private function CarregaActivitats($request,$with_form)
   {
     
