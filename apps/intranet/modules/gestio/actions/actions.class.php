@@ -480,19 +480,22 @@ class gestioActions extends sfActions
     $idU = $this->getUser()->getSessionPar('idU');    
     
     //Carreguem quantes incidències noves hi ha
-    $this->NINCIDENCIES = IncidenciesPeer::QuantesAvui($this->IDS); 
+    //$this->NINCIDENCIES = IncidenciesPeer::QuantesAvui($this->IDS);
+    $this->N_PETICIONS_ESPERA = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::EN_ESPERA); 
+    $this->N_PETICIONS_PENDENTS_ACCEPTAR = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::PENDENT_CONFIRMACIO);
+        
     //Carreguem quantes matrícules noves hi ha
     $this->NMATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
     //Carreguem quant material nou hi ha
-    $this->NMATERIAL    = 0;
+    //$this->NMATERIAL    = 0;
     //Carreguem quants missatges nous hi ha
-    $this->NMISSATGES   = MissatgesPeer::QuantsAvui($idU , $this->getUser()->getSessionPar('idS'));
+    //$this->NMISSATGES   = MissatgesPeer::QuantsAvui($idU , $this->getUser()->getSessionPar('idS'));
     //Carreguem quantes feines s'han fet
-    $this->NFEINES      = 0; //TasquesPeer::QuantesAvui(false,$idU);    
+    //$this->NFEINES      = 0; //TasquesPeer::QuantesAvui(false,$idU);    
     //Carreguem quantes feines ens toca fer
-    $this->NFINES       = 0; //TasquesPeer::QuantesAvui(true,$idU);
+    //$this->NFINES       = 0; //TasquesPeer::QuantesAvui(true,$idU);
     //Carreguem quantes activitats hi ha
-    $this->NACTIVITATS  = ActivitatsPeer::QuantesAvui();
+    //$this->NACTIVITATS  = ActivitatsPeer::QuantesAvui();
     
     //Carreguem els missatges d'avui    
     $this->MISSATGES = MissatgesPeer::getMissatgesAvui( $this->getUser()->getSessionPar('idS') );

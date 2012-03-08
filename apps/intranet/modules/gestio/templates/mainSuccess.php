@@ -5,7 +5,6 @@
         $("#ORDENA_ESPAIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").hide(); $("#LLISTAT_ORDENAT_ESPAIS").show(); });
     });
     
-
 </script>
 
 <style>
@@ -14,14 +13,19 @@
 <td colspan="3" class="CONTINGUT_ADMIN">
      
 	<div class="REQUADRE">
-		<div class="TITOL">Resum d'avui</div>
+		<div class="TITOL">Resum d'avui</div>        
       	<table class="DADES">
-			<tr><td>Incidències : 	</td><td><?=$NINCIDENCIES?></td>
-			<td>Matrícules  : 		</td><td><?=$NMATRICULES?></td>
-			<td>Material    : 		</td><td><?=$NMATERIAL?></td>
-			<td>Missatges   : 		</td><td><?=$NMISSATGES?></td>
-			<td>Feines      : 		</td><td><?=$NFEINES?></td>
-			<td>Activitats  : 		</td><td><?=$NACTIVITATS?></td></tr> 	 				    	
+            <tr>
+                <td class="titol" colspan="2">ESPAIS</td>
+                <td class="titol" >MATRÍCULES</td>
+                <td class="titol" >ENTRADES</td>
+            </tr>
+			<tr>
+                <td>Nova petició: <?php echo $N_PETICIONS_ESPERA ?></td>
+                <td>Pendent acceptar: <?php echo $N_PETICIONS_PENDENTS_ACCEPTAR ?></td>
+    			<td>Matrícules avui: <?php echo $N_MATRICULES ?></td>    			
+    			<td>Entrades avui: <?php echo $N_ENTRADES_VENUDES ?></td>    			
+            </tr> 	 				    	
       	</table>      
       </div>
 	  

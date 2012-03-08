@@ -18,6 +18,16 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
   const ESBORRADA = 5;  
 
 
+    static public function countByEstat($idS,$estat)
+    {
+        $C = new Criteria();
+        $C = self::h_getCriteriaActiu($C);
+        $C->add(self::ESTAT, $estat);
+        
+        return self::doCount($C);
+        
+    }
+
     static public function h_getCriteriaActiu( $C )
     {
         $C->add(self::ACTIU, true);        
