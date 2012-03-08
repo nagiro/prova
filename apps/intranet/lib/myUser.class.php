@@ -26,10 +26,10 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::ParReqSesForm()
    * 
-   * Comprova els paràmetres del request i l'actualtiza amb la sessió.
-   * Si existeix al request, el guarda en sessió i el retorna.
-   * Si no existeix al request, retorna el de sessió. 
-   * Si tampoc existeix a la sessió retorna el default.  
+   * Comprova els parÃ metres del request i l'actualtiza amb la sessiÃ³.
+   * Si existeix al request, el guarda en sessiÃ³ i el retorna.
+   * Si no existeix al request, retorna el de sessiÃ³. 
+   * Si tampoc existeix a la sessiÃ³ retorna el default.  
    * 
    * @param mixed $request
    * @param mixed $nomCamp
@@ -59,7 +59,7 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::setSessionPar()
    *
-   * Actualitza un paràmetre de la sessió
+   * Actualitza un parÃ metre de la sessiÃ³
    *  
    * @param mixed $nomCamp
    * @param mixed $value
@@ -79,7 +79,7 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::getSessionPar()
    * 
-   * Carrega un paràmetre de la sessió 
+   * Carrega un parÃ metre de la sessiÃ³ 
    * 
    * @param mixed $nomCamp
    * @param string $default
@@ -97,7 +97,7 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::addLogAction()
    * 
-   * Afegeix un registre al log amb alguna acció. Versió no estàtica. .
+   * Afegeix un registre al log amb alguna acciÃ³. VersiÃ³ no estÃ tica. .
    * 
    * @param mixed $accio
    * @param mixed $model
@@ -107,13 +107,13 @@ class myUser extends sfBasicSecurityUser
    */
   public function addLogAction($accio,$model,$dadesBefore = null ,$dadesAfter = null)
   {        
-    return self::addLogActionStatic(0,$accio,$model,$dadesBefore,$dadesAfter);      	
+    return self::addLogActionStatic($this->getSessionPar('idU'),$accio,$model,$dadesBefore,$dadesAfter);      	
   }  
 
   /**
    * myUser::addLogAction()
    * 
-   * Afegeix un registre al log amb alguna acció.
+   * Afegeix un registre al log amb alguna acciÃ³.
    * 
    * @param mixed $accio
    * @param mixed $model
@@ -143,8 +143,8 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::gestionaOrdre()
    * 
-   * Funció estàtica que gestionar un ordre. 
-   * Posa a la posició destí el que està a l'actual usant el mètode getOrdre()
+   * FunciÃ³ estÃ tica que gestionar un ordre. 
+   * Posa a la posiciÃ³ destÃ­ el que estÃ  a l'actual usant el mÃ¨tode getOrdre()
    * 
    * @param mixed $desti
    * @param mixed $actual
@@ -154,7 +154,7 @@ class myUser extends sfBasicSecurityUser
    */
   static public function gestionaOrdre( $desti , $actual , $idS , $LO )
   {   
-     //Si el destí i actual són iguals, llavors no fem res. '
+     //Si el destÃ­ i actual sÃ³n iguals, llavors no fem res. '
      if($desti == $actual) return null;
                                                                                   
      //Canvia l'ordre segons els intermitjos.
@@ -165,7 +165,7 @@ class myUser extends sfBasicSecurityUser
         if($Ordre == $actual) $O->setOrdre($desti);                
         elseif($Ordre < $actual && $Ordre >= $desti && $actual > 0 ) $O->setOrdre($Ordre+1);
         elseif($Ordre <= $desti  && $Ordre >= $actual && $actual > 0 ) $O->setOrdre($Ordre-1);
-        elseif($actual == 0 && $Ordre >= $desti) $O->setOrdre($Ordre+1); //És un nou node.        
+        elseif($actual == 0 && $Ordre >= $desti) $O->setOrdre($Ordre+1); //Ã‰s un nou node.        
         
 	    $O->save();
      
@@ -175,8 +175,8 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::selectOrdre()
    * 
-   * Retorna un menú de Select amb els ordres actuals. 
-   * Si és nou a més hi ha Ordre+1 que serà el nou ordre per defecte. 
+   * Retorna un menÃº de Select amb els ordres actuals. 
+   * Si Ã©s nou a mÃ©s hi ha Ordre+1 que serÃ  el nou ordre per defecte. 
    * 
    * @param mixed $idS
    * @param mixed $LOP
@@ -194,7 +194,7 @@ class myUser extends sfBasicSecurityUser
        $last = $OP->getOrdre()+1;         
      }          
      
-     //Si és nou hi afegim un número més.
+     //Si Ã©s nou hi afegim un nÃºmero mÃ©s.
      if($NOU) { $RET[$last] = $last; }
      
      return $RET;            
@@ -203,7 +203,7 @@ class myUser extends sfBasicSecurityUser
   /**
    * myUser::resizeImage()
    * 
-   * Funció estàtica que canvia la mida d'una imatge carregada amb un input file. 
+   * FunciÃ³ estÃ tica que canvia la mida d'una imatge carregada amb un input file. 
    *  
    * @param mixed $x
    * @param mixed $y
@@ -290,13 +290,13 @@ class myUser extends sfBasicSecurityUser
     #Creem l'objecte facebook        
     $facebook = myUser::getFbObject();       
     
-    # Carreguem l'usuari que tenim en sessió (0 si no existeix)
+    # Carreguem l'usuari que tenim en sessiÃ³ (0 si no existeix)
     $uid = $facebook->getUser();
     
     # Generem la url de login
     $RET['logUrl'] = $facebook->getLoginUrl($A);
 
-    # Si l'usuari existeix en sessió, carreguem les seves dades
+    # Si l'usuari existeix en sessiÃ³, carreguem les seves dades
     if($uid){
         try {
             #Provem a veure si l'usuari existeix
@@ -310,7 +310,7 @@ class myUser extends sfBasicSecurityUser
   
   static public function sendMail($from,$to,$subject,$body = "",$files = array())
     {    
-        //Si entrem un mail que no és en format array, l'inicialitzem
+        //Si entrem un mail que no Ã©s en format array, l'inicialitzem
         $mails = $to;
         if(!is_array($to)) $mails = array($to);
         
@@ -337,7 +337,7 @@ class myUser extends sfBasicSecurityUser
             	
         		$OK = $mailer->send($sm,$errors);                                                
             
-            } catch (Exception $e) { $OK = false; myUser::addLogAction('ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
+            } catch (Exception $e) { $OK = false; myUser::addLogActionStatic(0,'ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
             
         endforeach;
     	
