@@ -107,7 +107,7 @@ class myUser extends sfBasicSecurityUser
    */
   public function addLogAction($accio,$model,$dadesBefore = null ,$dadesAfter = null)
   {        
-    return self::addLogActionStatic($this->getSessionPar('idU'),$accio,$model,$dadesBefore,$dadesAfter);      	
+    return self::addLogActionStatic(0,$accio,$model,$dadesBefore,$dadesAfter);      	
   }  
 
   /**
