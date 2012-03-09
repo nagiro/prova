@@ -40,7 +40,7 @@ class DescomptesPeer extends BaseDescomptesPeer {
     /**
      * @param $new ( Apareix al desplegble que se'n pot afegir un )
      * */
-    static public function getDescomptesArray($idS,$new){
+    static public function getDescomptesArray($idS,$new,$config = false){
         
         $C = new Criteria();
         $C->add(self::SITE_ID, $idS);
@@ -48,7 +48,7 @@ class DescomptesPeer extends BaseDescomptesPeer {
         
         $RET = array();
         if($new) $RET[null] = "Nou descompte";
-        $RET[0] = 'Cap descompte';
+        if(!$config) $RET[0] = 'Cap descompte';
         foreach(self::doSelect($C) as $OD):
             $RET[$OD->getIddescompte()] = $OD->getNom();
         endforeach;

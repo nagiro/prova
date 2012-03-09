@@ -13,13 +13,13 @@ class DescomptesForm extends BaseDescomptesForm
   public function setup()
   {
     $this->setWidgets(array(
-      'idDescompte'     => new sfWidgetFormChoice(array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS')))),       
+      'idDescompte'     => new sfWidgetFormChoice(array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),true,true))),       
       'Nom'             => new sfWidgetFormInput(array(),array('style'=>'width:200px;')),
       'Descripcio'      => new sfWidgetFormInput(array(),array('style'=>'width:400px;')),
       'Percentatge'     => new sfWidgetFormInput(array(),array('style'=>'width:50px;')),
       'Percentatge_txt' => new sfWidgetFormInput(array(),array('style'=>'width:50px;')),
       'Tipus'           => new sfWidgetFormChoice(array('choices'=>array(1=>'Estàndard'))),
-      'actiu'           => new sfWidgetFormInputHidden(),
+      'actiu'           => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'site_id'         => new sfWidgetFormInputHidden(),
     ));
 
