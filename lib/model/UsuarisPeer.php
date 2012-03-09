@@ -17,9 +17,9 @@ class UsuarisPeer extends BaseUsuarisPeer
   {
     
     //Carrego l'usuari segons el seu IDU
-    $OU = UsuarisPeer::retrieveByPK($idU);            
+    $OU = UsuarisPeer::retrieveByPK($idU);     
 	if(!($OU instanceof Usuaris)):            		
-		$OU = new Usuaris();
+		$OU = new Usuaris();        
         $OU->setSiteId($idS);        
         $OU->setActiu(true);
 		$OU->setNivellsIdnivells(NivellsPeer::REGISTRAT);
