@@ -105,12 +105,14 @@ class CursosPeer extends BaseCursosPeer
         
     }
   
-  static function getCursos($mode = self::CURSACTIU , $PAGINA = 1, $CERCA = "" , $idS , $visibleWeb = false )
+  static function getCursos($mode = self::CURSACTIU , $PAGINA = 1, $CERCA = "" , $idS , $visibleWeb = false , $datai = null, $dataf = null)
   {
   	$C = new Criteria();  	
     $C = self::getCriteriaActiu($C,$idS);
     
   	if($mode == self::CURSACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;
+    if(!is_null($datai)) $C->add(self::DATAINICI, $datai, CRITERIA::GREATER_THAN);
+    if(!is_null($dataf)) $C->add(self::DATAINICI, $dataf, CRITERIA::LESS_THAN);
    
     if($visibleWeb) $C->add(self::VISIBLEWEB, true); //Si ha de ser només per web, marquem com a només els visibles. 
               	

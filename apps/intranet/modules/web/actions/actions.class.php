@@ -211,10 +211,20 @@ class webActions extends sfActions
   
   public function executeCursos(sfWebRequest $request)
   {
-     $this->LoadWeb($request);
-     $this->setTemplate('index');
-     $this->ACCIO = 'cursos';
-     $this->CURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,'',$this->IDS,true);
+    $any = date('Y',time()); $di = null; $df = null;
+    $mes = date('m',time());
+    if($mes > 9):
+        $di = strval($any).'-08-01';
+        $df = strval($any+1).'-08-01';
+    else:
+        $di = strval($any-1).'-08-01';
+        $df = strval($any).'-08-01';
+    endif;       
+    
+    $this->LoadWeb($request);
+    $this->setTemplate('index');
+    $this->ACCIO = 'cursos';    
+    $this->CURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,'',$this->IDS,true,$di,$df);          
      
   }
 
