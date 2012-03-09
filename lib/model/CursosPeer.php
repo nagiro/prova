@@ -111,9 +111,13 @@ class CursosPeer extends BaseCursosPeer
     $C = self::getCriteriaActiu($C,$idS);
     
   	if($mode == self::CURSACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;
-    if(!is_null($datai)) $C->add(self::DATAINICI, $datai, CRITERIA::GREATER_THAN);
-    if(!is_null($dataf)) $C->add(self::DATAINICI, $dataf, CRITERIA::LESS_THAN);
-   
+    if(!is_null($datai) && !is_null($dataf)):
+        $C1 = $C->getNewCriterion(self::DATAINICI, $datai, CRITERIA::GREATER_THAN);
+        $C2 = $C->getNewCriterion(self::DATAINICI, $dataf, CRITERIA::LESS_THAN);        
+        $C1->addAnd($C2);
+        $C->add($C1);
+    endif;
+       
     if($visibleWeb) $C->add(self::VISIBLEWEB, true); //Si ha de ser només per web, marquem com a només els visibles. 
               	
   	$C->addAscendingOrderByColumn( self::CATEGORIA );
@@ -125,7 +129,7 @@ class CursosPeer extends BaseCursosPeer
   		$C2 = $C->getNewCriterion(self::TITOLCURS , "%$CERCA%" , CRITERIA::LIKE );
 		$C1->addOr($C2); $C->add($C1);  		  	
   	endif; 
-
+    
  	$pager = new sfPropelPager('Cursos', 50);
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);

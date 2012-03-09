@@ -224,7 +224,8 @@ class webActions extends sfActions
     $this->LoadWeb($request);
     $this->setTemplate('index');
     $this->ACCIO = 'cursos';    
-    $this->CURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,'',$this->IDS,true,$di,$df);          
+    $this->CURSOS = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,'',$this->IDS,true);
+    $this->CURSOS_TANCATS = CursosPeer::getCursos(CursosPeer::PASSAT,1,'',$this->IDS,true,$di,$df);                  
      
   }
 
@@ -239,8 +240,8 @@ class webActions extends sfActions
      $FConsulta->bind($request->getParameter('consulta'));
 
      $BODY = "El senyor/a {$FConsulta->getValue('Cognoms')}, {$FConsulta->getValue('Nom')}".
-             " amb telÃ¨fon {$FConsulta->getValue('Telefon')} i correu electrÃ²nic {$FConsulta->getValue('Email')}".
-             " vol fer el segÃ¼ent comentari : {$FConsulta->getValue('Missatge')} "; 
+             " amb telèfon {$FConsulta->getValue('Telefon')} i correu electrònic {$FConsulta->getValue('Email')}".
+             " vol fer el següent comentari : {$FConsulta->getValue('Missatge')} "; 
           
 	  $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org',' CCG :: Formulari contacte Web ',$BODY);               
   }

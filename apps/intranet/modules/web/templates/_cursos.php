@@ -13,29 +13,30 @@
 <td colspan="3" class="CONTINGUT">
    
     <?php if($CURSOS->getNbResults() == 0): ?>
-    <fieldset class="REQUADRE"><legend class="LLEGENDA">Llistat de cursos</legend>
-        Actualment no hi ha oberta la matrícula per a cap curs a través d'internet.<br />
-        Per a més informació, contacti amb la Casa de Cultura de Girona.
-    </fieldset>  
-    <?php else: ?>
-   
-  
-    <?php echo mostraCursos($CURSOS,true); ?>
-    <?php echo mostraCursos($CURSOS,false); ?>
-  
-  
+        <fieldset class="REQUADRE"><legend class="LLEGENDA">Llistat de cursos</legend>
+            Actualment no hi ha oberta la matrícula per a cap curs a través d'internet.<br />
+            Per a més informació, contacti amb la Casa de Cultura de Girona.
+        </fieldset>  
+        <?php else: ?>
+       
+      
+        <?php echo mostraCursos($CURSOS,true); ?>  
+      
     	<fieldset class="REQUADRE"><legend class="LLEGENDA">Matricula't</legend>
     		<form method="post" action="<?php echo url_for('web/matriculat') ?>">
                 <div>
                    El període de matriculació s'obre el 19 de setembre i es tancarà el mateix dia d'inici de cadascun dels cursos o quan s'hagin exhaurit les places, tret d'indicacions específiques en sentit contrari.
                    <br /><br />Els alumnes matriculats a idiomes el curs anterior podran inscriure's a partir del 12 de setembre.
-                   <br /><br />La casa de Cultura de Girona es reserva el dret de modificar els horaris i dates anunciats o d'anul·lar un curs tant per raons organitzatives com si no hi ha un nombre suficient d'alumnes. 		   			
+                   <br /><br />La casa de Cultura de Girona es reserva el dret de modificar els horaris i dates anunciats o d'anul·lar un curs tant per raons organitzatives com si no hi ha un nombre suficient d'alumnes.
+                   <br /><br /> En la majoria de cursos que ofereix la Casa de Cultura de Girona hi ha preus reduïts per a persones aturades, jubilats i estudiants menors de 26 anys. 		   			
                    <br /><br />Per matricular-vos per internet, cliqueu aquest <a href="http://www.hospici.cat/cursos_entitat/1">enllaç</a>. Per accedir-hi heu de ser usuari de la Casa de Cultura o bé crear-ne un de nou si no en sou. 
                    <!-- Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.
                         Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">aquí</a>. -->            
                 </div>
     		</form>
        </fieldset>
+       
+       <?php echo mostraCursos($CURSOS_TANCATS,false); ?>
    
    <?php endif; ?>
       
@@ -63,7 +64,7 @@
     
        <?php $CAT_ANT = ""; ?>   
        <?php foreach($CURSOS->getResults() as $C): ?>
-       <?php if($C->getVisibleweb() == 1 && $C->getActiu() == $is_actiu): ?>                      
+       <?php if($C->getVisibleweb() == 1 && $C->getIsactiu() == $is_actiu): ?>                      
        <?php    if($CAT_ANT <> $C->getCategoria()): ?>   
     			<tr><td colspan="5" class="TITOL_CATEGORIA"><?php echo $C->getCategoriaText()?></td></tr>
        <?php    endif; ?>
@@ -85,7 +86,9 @@
           		<td class="LINIA"><?php echo $C->getPreu()?>€</td>      							
           		<td class="LINIA" width="70px"><?php echo $C->getDatainici('d-m-Y')?></td>
           		<td class="LINIA">
-                    <?php echo (intval($PLACES['TOTAL'])-intval($PLACES['OCUPADES'])) ?>
+                    <?php if($is_actiu): ?> <?php echo (intval($PLACES['TOTAL'])-intval($PLACES['OCUPADES'])) ?>
+                    <?php else: ?> Tancat
+                    <?php endif; ?>                    
                 </td>
           	</tr>                		                 										
        <?php $CAT_ANT = $C->getCategoria(); ?>
