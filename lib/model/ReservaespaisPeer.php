@@ -21,8 +21,8 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
     static public function countByEstat($idS,$estat)
     {
         $C = new Criteria();
-        $C = self::h_getCriteriaActiu($C);
-        $C->add(self::ESTAT, $estat);
+        $C = self::getCriteriaActiu($C,$idS);
+        $C->add(self::ESTAT, $estat);        
         
         return self::doCount($C);
         
