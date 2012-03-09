@@ -39,7 +39,7 @@ class CursosForm extends sfFormPropel
       'PDF'             => new sfWidgetFormInputFileEditableMy(array('file_src'=>'/'.$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
       'ADescomptes'     => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false) , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')), 
     ));
-
+    
     $this->setDefaults(array(
         'isEntrada'     => CursosPeer::HOSPICI_RESERVA,
         'VisibleWEB'    => 1,
@@ -109,8 +109,8 @@ class CursosForm extends sfFormPropel
     //Actualitzem l'objecte
 	$this->updateObject();
   	$OC = $this->getObject();
-    //Guardem els descomptes  	  	  	  	  	
-  	if(!is_null($this['ADescomptes']->getValue())) $OC->setAdescomptes(implode('@',$this['ADescomptes']->getValue()));  	  	
+    //Guardem els descomptes  	  	  	  	       
+  	if(!is_null($this['ADescomptes']->getValue())) $OC->setAdescomptes(implode('@',$this['ADescomptes']->getValue()));    
   	  	
   	$BASE = $this->BASE.$this->WEB_PDF;    
   	 	
