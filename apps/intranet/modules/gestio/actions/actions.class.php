@@ -485,7 +485,7 @@ class gestioActions extends sfActions
     $this->N_PETICIONS_PENDENTS_ACCEPTAR = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::PENDENT_CONFIRMACIO);
         
     //Carreguem quantes matrícules noves hi ha
-    $this->NMATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
+    $this->N_MATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
     //Carreguem quant material nou hi ha
     //$this->NMATERIAL    = 0;
     //Carreguem quants missatges nous hi ha
