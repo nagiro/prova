@@ -45,6 +45,7 @@
 
 
 
+
 <?php function mostraCursos($CURSOS,$is_actiu){ ?>
 
     <fieldset class="REQUADRE">
