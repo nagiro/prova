@@ -93,7 +93,7 @@ class MatriculesPeer extends BaseMatriculesPeer
         //Comprovem que aquest usuari no tingui ja una matrícula a aquest curs. Si ja ha estat matriculat, retornem -1.
         $OM = self::getMatriculaUsuari($idU, $idC, $OC->getSiteid());
         if(!is_null($OM)){ $RET['AVISOS']["ERR_JA_TE_UNA_MATRICULA"] = "ERR_JA_TE_UNA_MATRICULA"; return $RET; }                                     
-                                  
+                                          
         //Entrem les dades que tenim i la deixem en procès per modificar-la després segons el que hagi passat
         $OM = new Matricules();
         $OM->setUsuarisUsuariid($idU);
@@ -139,8 +139,7 @@ class MatriculesPeer extends BaseMatriculesPeer
             } 
             //Si és una matrícula de compra
             elseif($OC->isCompra())
-            {
-            
+            {        
                 //Si el mode de pagament és targeta, cridem el tpv
                 if( $Mode_pagament == MatriculesPeer::PAGAMENT_TARGETA ){
       		        $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
