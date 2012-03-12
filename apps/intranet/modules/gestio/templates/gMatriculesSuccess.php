@@ -199,15 +199,23 @@
                     <?php foreach($CURSOS as $OC): ?>
                     <?php $places = $OC->getPlacesArray(); ?>
                     <?php if($OC->isPle()) $style=" background-color: #FFC4C4; "; else $style=""; ?>                        
-                    <div style="clear: both; <?php echo $style ?>" class="linia_curs">
+                    <div style="margin-top:3px; clear: both; <?php echo $style ?>" class="linia_curs">
                         <div style="float: left;">                            
                             <?php echo radiobutton_tag('matricules[idC]',$OC->getIdcursos(),false,array('class'=>'matricula')); ?>
                         </div>
-                        <div style="padding-left:5px; float: left; width:100px;"><b><?php echo $OC->getCodi(); ?></b></div>
-                        <div style="padding-left:5px; float: left; width:300px;"><?php echo $OC->getTitolcurs(); ?></div>
-                        <div style="padding-left:5px; float: left; width:50px;"><?php echo $OC->getPreu(); ?>€</div>
-                        <div style="padding-left:5px; float: left; width:100px;"><?php echo $OC->getDatainici('d/m/Y'); ?></div>
-                        <div style="padding-left:5px; float: left; width:50px;"><?php echo $places['OCUPADES'].' / '.$places['TOTAL']; ?></div>
+                        <div style="padding-left:5px; float: left; width:100px;">
+                            <b><?php echo $OC->getCodi(); ?></b><br />
+                            <div style="font-size:8px; color:gray;"><?php echo $OC->getDatainici('d/m/Y'); ?></div>
+                        </div>
+                        <div style="padding-left:5px; float: left; width:400px;">
+                            <?php echo $OC->getTitolcurs(). '<span style="color:gray; font-size:8px;"> | '.$OC->getHoraris().' </span> '; ?>
+                        </div>
+                        <div style="padding-left:5px; float: left; width:50px;">
+                            <?php echo $OC->getPreu(); ?>€
+                        </div>                        
+                        <div style="padding-left:5px; float: left; width:50px;">
+                            <?php echo $places['OCUPADES'].' / '.$places['TOTAL']; ?>
+                        </div>
                         <div style="clear: both;"></div>
                     </div>                                                                                                
                     <?php endforeach; ?>
