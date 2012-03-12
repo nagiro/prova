@@ -147,7 +147,7 @@
     <?php ELSEIF( $MODE == 'LLISTAT_ALUMNES' ): ?>
 
      <div class="REQUADRE">     
-        <div class="TITOL">Llistat d'alumnes </div>
+        <div class="TITOL">Llistat d'alumnes <a href="<?php echo url_for('gestio/gCursos?accio=IMPR_LLISTAT_ALUMNES_CURS&IDC='.$IDC) ?>"><img style="padding-left:10px;" src="/images/template/page_white_word.png" /></a></div>
       	<table class="DADES">
  			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>            
             <tr><td class="TITOL" colspan="3">RESERVATS</td></tr> 

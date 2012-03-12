@@ -2432,6 +2432,7 @@ class gestioActions extends sfActions
 			break;					
 		case 'L': 
 				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC') , $this->IDS );
+                $this->IDC = $request->getParameter('IDC');
 				$this->MODE = 'LLISTAT_ALUMNES'; 
 			break;
 
@@ -2456,7 +2457,49 @@ class gestioActions extends sfActions
                 $OA = $this->FCurs->getObject()->getActivitatVinculada();
                 $this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$OA->getActivitatid());                                				
 			break;
-    }           
+    
+        //Imprimeix un llistat dels alumnes del curs
+        case 'IMPR_LLISTAT_ALUMNES_CURS':
+    			
+    				$IDC = $request->getParameter('IDC');
+                    $OC = CursosPeer::retrieveByPK($IDC);
+    				
+                    //Si no existeix el curs, marxem, i sinó carreguem els alumnes.
+                    if(!($OC instanceof Cursos)) $this->redirect('gestio/gCursos?accio=CC');                
+                    $LMAT = CursosPeer::getMatricules($IDC,$OC->getSiteid());
+                    
+    				//Mirem si existeix un patró per nosaltres
+                    $doc = new sfTinyDoc();
+                    
+                    $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/LlistatAlumnesCursos'.$OC->getSiteid().'.docx';
+                    $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/LlistatAlumnesCursosGen.docx';
+                    if(file_exists($url_prop)) $doc->createFrom($url_prop);
+                    else $doc->createFrom($url_gen);
+                                                          
+                    //Comença la càrrega de la informació                                                     
+                    $alumnes = array();
+                    foreach($LMAT as $OM):
+                        $OU = $OM->getUsuaris();
+                        $alumnes[]['nom'] = $OU->getNomComplet();                                                
+                    endforeach;
+                       
+                    
+                    $doc->loadXml('word/document.xml');
+                    $doc->mergeXmlField('curs',$OC->getTitolcurs());                                          
+                    $doc->mergeXmlField('datallistat',date('d/m/Y',time()));
+                    $doc->mergeXmlBlock('lalumnes', $alumnes);                                				                    
+                    
+    				$doc->saveXml();
+    				$doc->close();
+    				$doc->sendResponse();
+    				$doc->remove();
+    				
+    				throw new sfStopException; 
+                
+            break;
+
+    }                       
+    
   }
 	 	  
   public function executeGReserves(sfWebRequest $request)
