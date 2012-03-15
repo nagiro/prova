@@ -552,6 +552,7 @@ class gestioActions extends sfActions
     $this->CERCA  = $this->getUser()->ParReqSesForm($request,'cerca',array('text'=>""));                    
     $this->PAGINA = $this->getUser()->ParReqSesForm($request,'PAGINA',1);
     $accio  = $this->getUser()->ParReqSesForm($request,'accio','FC');
+    $extra  = "";
             
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaForm();            
@@ -559,13 +560,14 @@ class gestioActions extends sfActions
     
 	$this->MODE = array('CONSULTA'=>true, 'NOU', 'EDICIO', 'LLISTES', 'CURSOS', 'REGISTRES', 'GESTIO_APLICACIONS');
 		
-    if($request->hasParameter('BNOU')) 					{ $accio = "N"; }
-    if($request->hasParameter('BCERCA')) 				{ $accio = "FC"; $this->PAGINA = 1; }
-    if($request->hasParameter('BDESVINCULA')) 			{ $accio = "DL"; }
-    if($request->hasParameter('BVINCULA')) 				{ $accio = "VL"; }
-    if($request->hasParameter('BSAVE'))     			{ $accio = "S"; }
-  	if($request->hasParameter('BDELETE'))     			{ $accio = "D"; }    
-    if($request->hasParameter('BACTUALITZA_PERMISOS')) 	{ $accio = "SGA"; }
+    if($request->hasParameter('BNOU')) 					    { $accio = "N"; }
+    if($request->hasParameter('BCERCA')) 				    { $accio = "FC"; $this->PAGINA = 1; }
+    if($request->hasParameter('BDESVINCULA')) 			    { $accio = "DL"; }
+    if($request->hasParameter('BVINCULA')) 				    { $accio = "VL"; }
+    if($request->hasParameter('BSAVE'))     			    { $accio = "S"; }
+  	if($request->hasParameter('BDELETE'))     			    { $accio = "D"; }    
+    if($request->hasParameter('BACTUALITZA_PERMISOS')) 	    { $accio = "SGA"; }
+    if($request->hasParameter('BGUARDA_DADES_BANCARIES'))   { $accio = "CCC"; $extra = 'SAVE'; }
             
     $this->getUser()->setSessionPar('accio',$accio);
     $this->getUser()->setSessionPar('pagina',$this->PAGINA);        
@@ -667,6 +669,37 @@ class gestioActions extends sfActions
         	$this->getUser()->addLogAction($accio,'gUsuaris',$PERM);        				
         	$this->MODE['GESTIO_APLICACIONS'] = true;
         	break;
+            
+        //Gestiona les dades bancaries de l'usuari
+        case 'CCC':
+                        
+            $this->USUARI = UsuarisPeer::initialize($this->IDU , $this->IDS , false)->getObject();
+            $this->IDD = $request->getParameter('IDD', 0);
+            $this->FDB = DadesBancariesPeer::initialize( $this->IDD , $this->IDU , $this->IDS );
+            
+            //var_dump($this->IDD);
+            //die;
+            
+            if($extra == 'SAVE'):
+            
+                $this->FDB = DadesBancariesPeer::initialize( $this->IDD , $this->IDU , $this->IDS );                                                                                        
+                $this->FDB->bind($request->getParameter('dades_bancaries',array()));                
+      		    if($this->FDB->isValid())
+      		    { 		     	      		        
+                    $this->FDB->save();
+                    $this->getUser()->addLogAction($accio.$extra,'gUsuaris',null, $this->FDB->getObject());
+                    $this->MISSATGE = 'Dades bancàries guardades correctament.';
+                    $this->IDD = $this->FDB->getObject()->getIddada(); 
+                }   
+                                                        
+            endif;                        
+                                    
+            $this->CCC_USUARI = DadesBancariesPeer::getSelectBySelect(DadesBancariesPeer::getDadesUsuari($this->IDU),true);                                    
+            if(!($this->FDB instanceof DadesBancariesForm)) $this->FDB = new DadesBancariesForm();            
+            $this->MODE['CCC'] = true;
+            
+        	break;
+            
     }
     
     $this->PAGER_USUARIS = UsuarisPeer::cercaTotsCamps( $this->CERCA['text'] , $this->PAGINA , $this->IDS );

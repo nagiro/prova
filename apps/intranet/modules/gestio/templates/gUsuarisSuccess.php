@@ -21,6 +21,8 @@
                     "usuaris[DNI]": { rangelength: "<br />Format: 00000000A o X0000000A." }
                 }
          });
+         
+         $('#IDD').change(function(){ $('#FDADESBANCARIES').submit(); });         
     });
                                      
 </script>
@@ -202,6 +204,27 @@
       </div>
 
   <?php endif; ?>
+
+  <?php if( isset($MODE['CCC']) && $MODE['CCC'] ): ?>
+
+     <div class="REQUADRE">
+     	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gUsuaris?accio=FC'))?>	    
+        <div class="TITOL"> Dades bancàries de'n <?php echo $USUARI->getNomComplet() ?> </div>
+
+        <br />       	
+        <form id="FDADESBANCARIES" action="<?php echo url_for('gestio/gUsuaris?accio=CCC') ?>" method="post">
+            <?php echo input_hidden_tag('id_usuari',$IDU); ?>
+            <table class="FORMULARI">
+                <tr><td><b>Escull compte:</b></td><td><?php echo select_tag('IDD',options_for_select($CCC_USUARI,$IDD)); ?></td></tr>
+                <?php echo $FDB; ?>
+                <tr><td style="text-align: right;" colspan="2"><button name="BGUARDA_DADES_BANCARIES" class="BOTO_ACTIVITAT">GUARDA</td></tr>
+          	</table>      
+        </form>
+      </div>
+
+  <?php endif; ?>
+
+  
       
       <div style="height:40px;"></div>
                 
@@ -226,6 +249,7 @@
 	  $R .= link_to(image_tag('template/bookmark_document.png').'<span>Historial de cursos</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'C'),array('class'=>'tt2')).' ';  
 	  $R .= link_to(image_tag('template/book.png').'<span>Historial de reserves</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'R'),array('class'=>'tt2')).' ';
 	  $R .= link_to(image_tag('template/application2.png').'<span>Gestió de les aplicacions i permisos.</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'GA'),array('class'=>'tt2')).' ';
+      $R .= link_to(image_tag('template/coins.png').'<span>Gestió de les dades bancàries.</span>','gestio/gUsuaris'.getPar($PAGINA,$IDU,'CCC'),array('class'=>'tt2')).' ';
 	   
 	  return $R;
 	}
