@@ -19,6 +19,7 @@ class MatriculesForm extends sfFormPropel
   	  'Cursos_idCursos'  => new sfWidgetFormChoice(array('choices'=>CursosPeer::getSelectCursosMatriculaInterna($this->getOption('IDS')))),
       'Estat'            => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::getEstatsSelect())),
       'DataInscripcio'   => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
+      'data_baixa'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'Pagat'        	 => new sfWidgetFormInputText(),
       'tReduccio'        => new sfWidgetFormChoice(array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false))),
       'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
@@ -32,6 +33,7 @@ class MatriculesForm extends sfFormPropel
       'Estat'            => new sfValidatorInteger(array('required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
       'DataInscripcio'   => new sfValidatorDateTime(array('required' => false)),
+      'data_baixa'       => new sfValidatorDateTime(array('required' => false)),
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
       'tReduccio'        => new sfValidatorInteger(),
       'tPagament'        => new sfValidatorInteger(),    
@@ -42,6 +44,7 @@ class MatriculesForm extends sfFormPropel
       'Estat'            => 'Estat: ',
       'Comentari'        => 'Comentari: ',
       'DataInscripcio'   => 'Data d\'inscripció: ',
+      'data_baixa'       => 'Data de baixa: ',
       'Descompte'        => 'Te descompte? ',
       'tReduccio'        => 'Te reducció? ',
       'tPagament'        => 'Com ha pagat? ',
@@ -51,6 +54,19 @@ class MatriculesForm extends sfFormPropel
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
+  }
+
+  public function save($conn = null)
+  {
+    
+    $this->updateObject();
+    $OM = $this->getObject();
+    $db = $OM->getDatabaixa('Y-m-d');
+        
+    if(is_null($db) && $OM->getEstat() == MatriculesPeer::BAIXA) $OM->setDatabaixa(date('Y-m-d',time()));
+    
+    return $OM->save();
+    
   }
 
   public function getModelName()

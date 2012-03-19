@@ -8,6 +8,9 @@ class Encript
      * El salt, l'haurem de guardar dins el servidor com un fitxer
      * */
     static public function EncriptaDual($decrypted, $password, $salt='!kQm*fF3pXe1Kbm%9') {
+         $password = file_get_contents( OptionsPeer::getString( 'ENCRYPT_FILE_PASS' , 1 ) );
+         $salt = file_get_contents( OptionsPeer::getString( 'ENCRYPT_FILE_SALT' , 1 ) );         
+
          // Build a 256-bit $key which is a SHA256 hash of $salt and $password.
          $key = hash('SHA256', $salt . $password, true);
          // Build $iv and $iv_base64.  We use a block size of 128 bits (AES compliant) and CBC mode.  (Note: ECB mode is inadequate as IV is not used.)
@@ -24,6 +27,9 @@ class Encript
      * El salt, l'haurem de guardar dins el servidor com un fitxer
      * */
     static public function DesencriptaDual($encrypted, $password, $salt='!kQm*fF3pXe1Kbm%9') {
+         $password = file_get_contents( OptionsPeer::getString( 'ENCRYPT_FILE_PASS' , 1 ) );
+         $salt = file_get_contents( OptionsPeer::getString( 'ENCRYPT_FILE_SALT' , 1 ) );         
+        
          // Build a 256-bit $key which is a SHA256 hash of $salt and $password.
          $key = hash('SHA256', $salt . $password, true);
          // Retrieve $iv which is the first 22 characters plus ==, base64_decoded.

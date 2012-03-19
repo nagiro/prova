@@ -469,9 +469,10 @@ class myUser extends sfBasicSecurityUser
         
         $AUTEN = (isset($AUTH) && $AUTH > 0);
         
-        $TNReserva  =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_NO_RESERVA);
-        $TReserva   =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA);
-        $TReservaT  =  ($OC->getIsEntrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+        $TNReserva  =  ($OC->getIsEntrada() == CursosPeer::TIPUS_PAGAMENT_NO_RESERVA);
+        $TReserva   =  ($OC->getIsEntrada() == CursosPeer::TIPUS_PAGAMENT_RESERVA);
+        $TReservaT  =  ($OC->getIsEntrada() == CursosPeer::TIPUS_PAGAMENT_TARGETA);
+        $TReservaD  =  ($OC->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO);
         $HiHaPlaces =  !$OC->isPle();                    
         $datai      =  $OC->getDatainmatricula('U');        
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
@@ -541,7 +542,7 @@ class myUser extends sfBasicSecurityUser
                     return "ABANS_PERIODE_MATRICULA";                    
 
                 //Es pot matricular
-                }elseif( $TReserva || $TReservaT ){
+                }elseif( $TReserva || $TReservaT || $TReservaD ){
                     return "POT_MATRICULAR";                                            
                 }                            
             }            

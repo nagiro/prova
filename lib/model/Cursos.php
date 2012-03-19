@@ -115,11 +115,15 @@ class Cursos extends BaseCursos
   }
   
   public function isCompra(){
-    return ($this->getIsentrada() == CursosPeer::HOSPICI_RESERVA_TARGETA);
+    return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_TARGETA);
   }
-    
+      
   public function isReserva(){
-    return ($this->getIsentrada() == CursosPeer::HOSPICI_RESERVA);
+    return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_RESERVA);
+  }      
+  
+  public function isDomiciliacio(){
+    return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO);
   }
 
 }

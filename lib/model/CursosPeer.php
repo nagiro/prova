@@ -12,9 +12,19 @@ class CursosPeer extends BaseCursosPeer
 
     const CURSACTIU = 1;
     const PASSAT = 0;
+    
+    /**
+     * HOSPICI_RESERVA = TIPUS_PAGAMENT_RESERVA ( QUAN HO TROBI HO HE D'ANAR CANVIANT ) 
+     * */    
     const HOSPICI_NO_RESERVA = 0;
     const HOSPICI_RESERVA = 1;
     const HOSPICI_RESERVA_TARGETA = 2;
+    const HOSPICI_RESERVA_DOMICILIACIO = 3;
+    
+    const TIPUS_PAGAMENT_NO_RESERVA = 0;
+    const TIPUS_PAGAMENT_RESERVA = 1;
+    const TIPUS_PAGAMENT_TARGETA = 2;
+    const TIPUS_PAGAMENT_DOMICILIACIO = 3;
 
     static public function initialize( $idC , $idS )
     {

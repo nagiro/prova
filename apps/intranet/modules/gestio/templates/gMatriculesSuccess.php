@@ -31,9 +31,9 @@
         $('#autocomplete_usuari_id').change(function(){ $('#LLISTAT_CURSOS').show(); });
         $('#autocomplete_usuari_id').focus(function(){ $(this).val(''); });                
                                 
-        $('.matricula').click(function(){            
+        $('.matricula').click(function(){                
             $.post( "<?php echo url_for('gestio/gMatricules?accio=EXTRES') ?>", 
-                    { IDC: this.value }, 
+                    { IDC: this.value , IDU: $('#autocomplete_usuari_id_hidden').val()  }, 
                     function(data) { $("#EXTRES").html(data); }
                 ); 
         });
@@ -222,7 +222,7 @@
                 </div>
                 </div>
 
-                <!-- Apareix el _matriculesSuccess.php a partir d'un ajax que ha cridat el curs -->
+                <!-- Apareix el _matricules.php a partir d'un ajax que ha cridat el curs "action:EXTRES" -->
                 <div id="EXTRES"></div>
                 
             
@@ -245,7 +245,9 @@
                     case 'ERR_USUARI': echo "Hi ha hagut algun problema amb el codi d'usuari. Si us plau, torna-ho a intentar."; break;
                     case 'ERR_CURS': echo "Hi ha hagut algun problema amb el codi del curs. Si us plau, torna-ho a intentar."; break;
                     case 'ERR_JA_TE_UNA_MATRICULA': echo "Aquest usuari ja té una matrícula a aquest curs. La nova matrícula no s'ha efectuat."; break;
-                    case 'CURS_PLE': echo "El curs ja està ple i l'usuari ha quedat en llista d'espera correctament. Quan hi hagi places lliures s'haurà d'avisar. "; break;                                         
+                    case 'CURS_PLE': echo "El curs ja està ple i l'usuari ha quedat en llista d'espera correctament. Quan hi hagi places lliures s'haurà d'avisar. "; break;
+                    case 'MATRICULA_DOMICILIACIO_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;
+                                                             
                 } 
             ?>
     </div>

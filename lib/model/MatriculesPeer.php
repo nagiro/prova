@@ -31,6 +31,7 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TARGETA         = '20';
    const PAGAMENT_TELEFON         = '23';
    const PAGAMENT_TRANSFERENCIA   = '24';
+   const PAGAMENT_DOMICILIACIO    = '33'; 
 
     static public function criteriaMatriculat($C,$amb_llista_espera = false)
     {
@@ -76,7 +77,7 @@ class MatriculesPeer extends BaseMatriculesPeer
      * @param $comment Comentari a guardar
      * @return new Matricules() o $error ( Codi d'error ) 
      * */
-    static public function saveNewMatricula( $idU , $idC , $comment = "" , $idD , $Mode_pagament )
+    static public function saveNewMatricula( $idU , $idC , $comment = "" , $idD , $Mode_pagament , $idDadesBancaries = null )
     {        
         
         //Parametre que retornarem
@@ -108,6 +109,8 @@ class MatriculesPeer extends BaseMatriculesPeer
         $OM->setActiu(true);
         $OM->setTpvOperacio(0);
         $OM->setTpvOrder(0);        
+        if($idDadesBancaries > 0) $OM->setIddadesbancaries($idDadesBancaries);
+        else $OM->setIddadesbancaries(null);
         $OM->save();
         
         //Guardem l'identificador de la matrícula
@@ -139,7 +142,7 @@ class MatriculesPeer extends BaseMatriculesPeer
             } 
             //Si és una matrícula de compra
             elseif($OC->isCompra())
-            {        
+            {                        
                 //Si el mode de pagament és targeta, cridem el tpv
                 if( $Mode_pagament == MatriculesPeer::PAGAMENT_TARGETA ){
       		        $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
@@ -155,6 +158,18 @@ class MatriculesPeer extends BaseMatriculesPeer
                     self::SendMailMatricula($OM,$OM->getSiteid());                
                 }
             }
+            
+            //Si és una matrícula amb domiciliació
+            elseif($OC->isDomiciliacio())
+            {                
+                $OM->setPagat($PREU);
+                $OM->setEstat(MatriculesPeer::ACCEPTAT_NO_PAGAT);
+                $OM->setTpagament(MatriculesPeer::PAGAMENT_DOMICILIACIO);
+                $OM->save();
+                $RET['AVISOS']['MATRICULA_DOMICILIACIO_OK'] = "MATRICULA_DOMICILIACIO_OK";
+                self::SendMailMatricula($OM,$OM->getSiteid());
+            }
+                                    
         }
         
         return $RET;
@@ -210,7 +225,7 @@ class MatriculesPeer extends BaseMatriculesPeer
      $C->add(self::DATAINSCRIPCIO , $time , Criteria::GREATER_EQUAL );
      return self::doCount($C);     
   }
-   
+/*   
   static function selectDescomptes()
   {
      return array(
@@ -222,7 +237,8 @@ class MatriculesPeer extends BaseMatriculesPeer
               self::REDUCCIO_GRATUIT => 'Gratuït'
             );
   }
-
+*/  
+/*
   static function selectDescomptesWeb()
   {
      return array(
@@ -233,8 +249,8 @@ class MatriculesPeer extends BaseMatriculesPeer
               self::REDUCCIO_ESPECIAL => 'Reducció especial', 
             );
   }
-  
-  
+*/  
+/*  
   static function textDescomptes($D)
   {  
       switch($D){
@@ -246,7 +262,7 @@ class MatriculesPeer extends BaseMatriculesPeer
          default: return 'Desconegut'; 
       }
   }
-  
+*/  
   static function selectPagament()
   {
       return array(
@@ -254,6 +270,7 @@ class MatriculesPeer extends BaseMatriculesPeer
          self::PAGAMENT_TARGETA => 'Targeta',         
 //         self::PAGAMENT_TELEFON => 'Telèfon',
 //         self::PAGAMENT_TRANSFERENCIA => 'Transferència'
+         self::PAGAMENT_DOMICILIACIO => 'Domiciliació',
       );  
   }
 
@@ -264,6 +281,7 @@ class MatriculesPeer extends BaseMatriculesPeer
          case self::PAGAMENT_TARGETA : return 'Targeta de crèdit';
          case self::PAGAMENT_TELEFON : return 'Matrícula per telèfon';
          case self::PAGAMENT_TRANSFERENCIA : return 'Ingrés bancari';
+         case self::PAGAMENT_DOMICILIACIO : return 'Domiciliació bancària';
       }
   }
   

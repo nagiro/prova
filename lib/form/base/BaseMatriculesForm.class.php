@@ -20,6 +20,7 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'Estat'            => new sfWidgetFormInputText(),
       'Comentari'        => new sfWidgetFormTextarea(),
       'DataInscripcio'   => new sfWidgetFormDateTime(),
+      'data_baixa'       => new sfWidgetFormDate(),
       'Pagat'            => new sfWidgetFormInputText(),
       'tReduccio'        => new sfWidgetFormInputText(),
       'tPagament'        => new sfWidgetFormInputText(),
@@ -27,6 +28,9 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'actiu'            => new sfWidgetFormInputText(),
       'tpv_operacio'     => new sfWidgetFormInputText(),
       'tpv_order'        => new sfWidgetFormInputText(),
+      'idDadesBancaries' => new sfWidgetFormInputText(),
+      'tutor_dni'        => new sfWidgetFormTextarea(),
+      'tutor_nom'        => new sfWidgetFormTextarea(),
     ));
 
     $this->setValidators(array(
@@ -36,6 +40,7 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'Estat'            => new sfValidatorInteger(array('min' => -32768, 'max' => 32767, 'required' => false)),
       'Comentari'        => new sfValidatorString(array('required' => false)),
       'DataInscripcio'   => new sfValidatorDateTime(array('required' => false)),
+      'data_baixa'       => new sfValidatorDate(array('required' => false)),
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
       'tReduccio'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
       'tPagament'        => new sfValidatorInteger(array('min' => -32768, 'max' => 32767)),
@@ -43,6 +48,9 @@ abstract class BaseMatriculesForm extends BaseFormPropel
       'actiu'            => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'tpv_operacio'     => new sfValidatorString(array('max_length' => 20)),
       'tpv_order'        => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647)),
+      'idDadesBancaries' => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'tutor_dni'        => new sfValidatorString(array('required' => false)),
+      'tutor_nom'        => new sfValidatorString(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('matricules[%s]');

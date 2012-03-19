@@ -2740,17 +2740,19 @@ class gestioActions extends sfActions
         case 'EXTRES':
         
                 $OC = CursosPeer::retrieveByPK($request->getParameter('IDC'));
+                $IDU = $request->getParameter('IDU');
                                     
                 //Si no hem trobat el curs, retornem un error
                 if(!($OC instanceof Cursos)):
                 
                     return $this->renderPartial('matricules',array("OC"=>new Cursos(),"RET"=>array(),"ERROR"=>"ERROR: El curs no s'ha trobat."));
                     
+                //Treiem les dades extres que s'han d'entrar
                 else:
                                 
-                    $MostraPreu = ($OC->isCompra() && !$OC->isPle());                
-                                                                                                                                                                                                                                               
-                    return $this->renderPartial('matricules',array("OC"=>$OC,"RET"=>$OC->getDescomptesArray($MostraPreu),"ERROR"=>""));
+                    $MostraPreu = ( !$OC->isReserva() && !$OC->isPle());
+                                                                                                                                                                                                                                                                   
+                    return $this->renderPartial( 'matricules' , array( "IDU" => $IDU , "OC" => $OC , "RET"=>$OC->getDescomptesArray( $MostraPreu ) , "ERROR" => "" ) );
                 
                 endif;
                     
@@ -2762,7 +2764,7 @@ class gestioActions extends sfActions
         
                 //La matrícula pot ser amb pagament de targeta de crèdit o bé en metàl·lic.
                 $RS = $request->getParameter('matricules');
-                $RET = MatriculesPeer::saveNewMatricula( $RS['idU'] , $RS['idC'] , "" , $RS['descompte'] , $RS['mode_pagament'] );                
+                $RET = MatriculesPeer::saveNewMatricula( $RS['idU'] , $RS['idC'] , "" , $RS['descompte'] , $RS['mode_pagament'] , $RS['idDadesBancaries'] );                
                 $AVISOS = $RET['AVISOS'];                                
                                                                      			
                 //Si la matrícula surt amb algun estat que no sigui tpv, fem la redirecció i mostrem el missatge. 
@@ -2772,6 +2774,7 @@ class gestioActions extends sfActions
                 elseif(array_key_exists('CURS_PLE',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=CURS_PLE');
                 elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=RESERVA_OK');                
                 elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_METALIC_OK');
+                elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_DOMICILIACIO_OK');                                
         
                 //La matrícula es paga amb TPV
                 if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
@@ -2827,7 +2830,7 @@ class gestioActions extends sfActions
     	case 'SAVE_MATRICULA':    			
     			
                 $RS = $request->getParameter('matricules');
-                $this->FMATRICULA = MatriculesPeer::initialize($RS['idMatricules'] , $this->IDS );                                
+                $this->FMATRICULA = MatriculesPeer::initialize($RS['idMatricules'] , $this->IDS );
     			$this->FMATRICULA->bind($RS);    			
     			if($this->FMATRICULA->isValid()):
     				$this->FMATRICULA->save();

@@ -21,16 +21,16 @@ require 'lib/model/om/BaseDadesBancariesPeer.php';
 class DadesBancariesPeer extends BaseDadesBancariesPeer {
 
     /**
-     * Valida si un compte corrent en format només numèric és correcte.      
+     * Valida si un compte corrent en format nomÃ©s numÃ¨ric Ã©s correcte.      
      * */
     static public function isCorrecteCCC($ccc){
      
-        //$ccc sería el 20770338793100254321
+        //$ccc serÃ­a el 20770338793100254321
         $valido = true;
          
         ///////////////////////////////////////////////////
-        //    Dígito de control de la entidad y sucursal:
-        //Se multiplica cada dígito por su factor de peso
+        //    DÃ­gito de control de la entidad y sucursal:
+        //Se multiplica cada dÃ­gito por su factor de peso
         ///////////////////////////////////////////////////
         $suma = 0;
         $suma += $ccc[0] * 4;
@@ -55,7 +55,7 @@ class DadesBancariesPeer extends BaseDadesBancariesPeer {
         $valido = false;
          
         ///////////////////////////////////////////////////
-        //            Dígito de control de la cuenta:
+        //            DÃ­gito de control de la cuenta:
         ///////////////////////////////////////////////////
         $suma = 0;
         $suma += $ccc[10] * 1;
@@ -133,10 +133,46 @@ class DadesBancariesPeer extends BaseDadesBancariesPeer {
                 
         if($nou) $RET[null] = 'Nou compte corrent';         
         foreach($LODB as $ODB):
-            $RET[$ODB->getIddada()] = $ODB->getCcc();
+            $RET[$ODB->getIddada()] = "xxxx-xxxx-xx-xxxxxx".substr($ODB->getCcc(),16,4);
         endforeach;
         
         return $RET;
+    }
+    
+    /**
+     * A partir d'un CCC el recuperem 
+     **/
+    static public function getByCCC( $CCC , $idU , $idS )
+    {
+        $C = new Criteria();
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);
+        $C->add(self::IDUSUARI, $idU);
+        
+        foreach(self::doSelect($C) as $ODB):
+            if($ODB->getCcc() == $CCC) return $ODB; 
+        endforeach;
+        
+        return null;                                             
+    }
+
+    /**
+     * Afegeixo un compte corrent mitjanÃ§ant una funciÃ³ i retorno el seu ID
+     * */
+    static public function addCCC( $CCC , $idS , $idU , $dni = "" , $titular = "", $entitat = "", $poblacio = "" )
+    {
+        //Recuperem el que hi hagi segons CCC a un site. Si no existeix pel site, l'afegim.
+        $ODB = self::getByCCC( $CCC , $idU , $idS );
+        
+        if(is_null($ODB)){
+            $ODB = self::initialize(null,$idU,$idS)->getObject();
+            $ODB->setNif($dni);
+            $ODB->setTitular($titular);
+            $ODB->setEntitat($entitat);
+            $ODB->setPoblacio($poblacio);
+            $ODB->save();            
+        }
+        return $ODB;
     }
 
 } // DadesBancariesPeer

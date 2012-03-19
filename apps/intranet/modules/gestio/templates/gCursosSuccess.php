@@ -109,7 +109,7 @@
 					 	 		
 	 		<div class="FORMULARI fb">
 	 			<?php echo $FCursCodi ?>	 		
-	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BSAVECODICURS','id'=>'BSAVECODICURS', 'class'=>'BOTO_ACTIVITAT' ,'text'=>'Segueix amb horaris...')); ?>		
+	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BSAVECODICURS','id'=>'BSAVECODICURS', 'class'=>'BOTO_ACTIVITAT' ,'text'=>'Segueix amb detall...')); ?>		
 	 		</div>
 	 			 	 	
       	</div>
@@ -149,15 +149,18 @@
      <div class="REQUADRE">     
         <div class="TITOL">Llistat d'alumnes <a href="<?php echo url_for('gestio/gCursos?accio=IMPR_LLISTAT_ALUMNES_CURS&IDC='.$IDC) ?>"><img style="padding-left:10px;" src="/images/template/page_white_word.png" /></a></div>
       	<table class="DADES">
+        
  			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>            
-            <tr><td class="TITOL" colspan="3">RESERVATS</td></tr> 
-            <?php echo mostraCursos($MATRICULES,MatriculesPeer::RESERVAT); ?>
-            <tr><td class="TITOL" colspan="3">ACCEPTATS I PAGAT</td></tr> 
-            <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_PAGAT); ?>
-            <tr><td class="TITOL" colspan="3">ACCEPTATS I NO PAGAT</td></tr>
-            <?php echo mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_NO_PAGAT); ?>
-            <tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>
-            <?php echo mostraCursos($MATRICULES,MatriculesPeer::EN_ESPERA); ?>                           			                        	
+            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::RESERVAT); ?>
+            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">RESERVATS</td></tr>'.$RET; endif; ?>             
+            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_PAGAT); ?>
+            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I PAGAT</td></tr>'.$RET; endif; ?> 
+            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_NO_PAGAT); ?>
+            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I NO PAGAT</td></tr>'.$RET; endif; ?>
+            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::EN_ESPERA); ?>
+            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>'.$RET; endif; ?>
+            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::BAIXA); ?>
+            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">BAIXA</td></tr>'.$RET; endif; ?>                                       			                        	
       	</table>      
       </div>
       
