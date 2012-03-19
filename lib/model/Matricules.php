@@ -23,7 +23,8 @@ class Matricules extends BaseMatricules
   
   public function getTreduccioString()
   {  
-  	return MatriculesPeer::textDescomptes($this->getTreduccio());  	
+  	$A_D = DescomptesPeer::getDescomptesArray($this->getSiteId(),false,false);
+    return $A_D[$this->getTreduccio()];  	
   }
   
   public function getEstatString()
