@@ -79,7 +79,7 @@
 					<div style="padding:10px; font-size:10px;">
                         <div>                                                                                        
                             <?php 
-                                foreach($HORARIS as $OH):
+/*                                foreach($HORARIS as $OH):
                                 
                                     //Busquem el detall de la venta de tiquets                                
                                     $OEP = EntradesPreusPeer::getByActivitatOHorari($ACTIVITAT->getActivitatid(), $OH->getHorarisid());
@@ -103,7 +103,7 @@
                                                 </form>';                                                                                                                                                    
                                     endif;
                                                                         
-                                endforeach;                                
+                                endforeach;                             */   
                                                                                         
                             ?>
                         </div>
