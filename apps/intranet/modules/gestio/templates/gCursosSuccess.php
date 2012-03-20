@@ -149,18 +149,19 @@
      <div class="REQUADRE">     
         <div class="TITOL">Llistat d'alumnes <a href="<?php echo url_for('gestio/gCursos?accio=IMPR_LLISTAT_ALUMNES_CURS&IDC='.$IDC) ?>"><img style="padding-left:10px;" src="/images/template/page_white_word.png" /></a></div>
       	<table class="DADES">
-        
- 			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>            
-            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::RESERVAT); ?>
-            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">RESERVATS</td></tr>'.$RET; endif; ?>             
-            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_PAGAT); ?>
-            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I PAGAT</td></tr>'.$RET; endif; ?> 
-            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::ACCEPTAT_NO_PAGAT); ?>
-            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I NO PAGAT</td></tr>'.$RET; endif; ?>
-            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::EN_ESPERA); ?>
-            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>'.$RET; endif; ?>
-            <?php $RET = mostraCursos($MATRICULES,MatriculesPeer::BAIXA); ?>
-            <?php if($RET <> ""):   echo '<tr><td class="TITOL" colspan="3">BAIXA</td></tr>'.$RET; endif; ?>                                       			                        	
+                  
+ 			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>                        
+            <?php echo '<tr><td class="TITOL" colspan="3">RESERVATS</td></tr>'.$RET; ?>
+            <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::RESERVAT,'MODE'=>'LLISTAT_ALUMNES')); ?>                         
+            <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I PAGAT</td></tr>'.$RET; ?>
+            <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::ACCEPTAT_PAGAT,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+            <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I NO PAGAT</td></tr>'.$RET; ?>
+            <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::ACCEPTAT_NO_PAGAT,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+            <?php echo '<tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>'.$RET; ?>
+            <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::EN_ESPERA,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+            <?php echo '<tr><td class="TITOL" colspan="3">BAIXA</td></tr>'.$RET; ?>
+            <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::BAIXA,'MODE'=>'LLISTAT_ALUMNES')); ?>
+                                                   			                        	
       	</table>      
       </div>
       
@@ -206,27 +207,6 @@
     </td>    
 
 <?php 
-
-function mostraCursos($MATRICULES, $estat)
-{
-    $RET = "";
-    foreach($MATRICULES as $M):
-        $C = $M->getCursos();
-        $U = $M->getUsuaris();
-        $TEXT_REDUCCIO ="";         
-        if(!$M->hasDescompte()) { $PREU = $M->getPagat(); } else { $PREU = $M->getPagat(); $TEXT_REDUCCIO = ' |R'; }
-        if($M->getEstat() == $estat):
-          	$RET .= '<TR>';
-			$RET .= '<TD class="LINIA" width="15%">'.link_to($U->getDni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</TD>';
-			$RET .= '<TD class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getAdreca().'<BR />'.$U->getCodiPostal().' - '.$U->getPoblacioString().'<BR />'.$U->getTelefonString().' | '.$M->getDatainscripcio().' <br />'.$U->getEmail().'</TD>';
-			$RET .= '<TD class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_REDUCCIO .') <br />';
-			$RET .= MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().'</TD>';							
-			$RET .= '</TR>';
-        endif; 
-   endforeach;
-   
-   return $RET; 
-}
 
 
 function getParam( $accio = "" , $IDC = "" , $PAGINA = 1 )

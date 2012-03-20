@@ -161,11 +161,11 @@ class CursosPeer extends BaseCursosPeer
   	return $pager;  	
   }
        
-  static function getMatricules($idC,$idS)
+  static function getMatricules($idC,$idS,$amb_llista_espera = false, $amb_baixa = false )
   {
   	$Curs = self::retrieveByPK($idC);
   	$C = new Criteria();
-    $C = MatriculesPeer::criteriaMatriculat($C,true);
+    $C = MatriculesPeer::criteriaMatriculat( $C , $amb_llista_espera , $amb_baixa );
     $C->add( MatriculesPeer::CURSOS_IDCURSOS , $idC );
   	
   	$C->addJoin( MatriculesPeer::USUARIS_USUARIID , UsuarisPeer::USUARIID );

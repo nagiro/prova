@@ -2464,7 +2464,7 @@ class gestioActions extends sfActions
 				$this->MODE = 'CA';
 			break;					
 		case 'L': 
-				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC') , $this->IDS );
+				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC') , $this->IDS , true , true );
                 $this->IDC = $request->getParameter('IDC');
 				$this->MODE = 'LLISTAT_ALUMNES'; 
 			break;
@@ -2499,7 +2499,7 @@ class gestioActions extends sfActions
     				
                     //Si no existeix el curs, marxem, i sinó carreguem els alumnes.
                     if(!($OC instanceof Cursos)) $this->redirect('gestio/gCursos?accio=CC');                
-                    $LMAT = CursosPeer::getMatricules($IDC,$OC->getSiteid());
+                    $LMAT = CursosPeer::getMatricules( $IDC , $OC->getSiteid() , false , false );
                     
     				//Mirem si existeix un patró per nosaltres
                     $doc = new sfTinyDoc();

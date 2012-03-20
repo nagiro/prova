@@ -272,37 +272,23 @@
   <?php ELSEIF( $MODE == 'LMATRICULES' ): ?>
   
   	     <div class="REQUADRE">
-	        <div class="TITOL">Llistat de matriculats </div>
-	      	<table class="DADES">
-	 			<?php 
-					if( sizeof($MATRICULES) == 0):
-						echo '<tr><td class="LINIA" colspan="3">No hi ha cap matrícula amb aquests paràmetres.</td></tr>';
-					else: 
-						echo '<tr><td class="TITOL">DNI</td><td class="TITOL">NOM</td><td class="TITOL">CURS</td></tr>';
-						$i = 0;
-						$ant = "";
-                        foreach($MATRICULES as $M):
-				            $C = $M->getCursos();
-				            $U = $M->getUsuaris();
-                            $TEXT_DESCOMPTE = ($M->hasDescompte())?'|R':'';                            				            
-				            $PREU = $M->getPagat();
-                            
-                            if($ant != $M->getEstat()) echo '<tr><td colspan="3" style="font-weight:bold; background-color:#CCC">'.$M->getEstatString().'</td></tr>';
-                            $ant = $M->getEstat();
-                            
-				            echo '<tr>
-									<td class="LINIA" width="15%">'.link_to($U->getdni(),'gestio/gMatricules?accio=E&IDM='.$M->getIdmatricules()).'</td>
-									<td class="LINIA" width="40%"><b>'.$U->getNomComplet().'</b><BR />'.$U->getTelefonString().' | '.$M->getdatainscripcio().'<br />'.$U->getEmail().'</td>
-									<td class="LINIA" width="45%">'.$C->getCodi().' '.$C->getTitolcurs().' ('.$PREU.'€'.$TEXT_DESCOMPTE.') <br />
-								                     		       '.MatriculesPeer::getEstatText($M->getEstat()).' '.$M->getComentari().' '.
-				            										'<a href="'.url_for('gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules()).'"><img src="'.$BASE.'images/template/printer.png'.'" /></a>
-								                     		       </td>							
-								  </tr>';                		                 															                		                 															
-	                   endforeach; 	                  
-	                 endif;       
-	            ?>
-	      	</table>      
-	      </div>
+	        <div class="TITOL">Llistat de matriculats </div>                
+          	<table class="DADES">
+                      
+     			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>                        
+                <?php echo '<tr><td class="TITOL" colspan="3">RESERVATS</td></tr>'.$RET; ?>
+                <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::RESERVAT,'MODE'=>'LLISTAT_ALUMNES')); ?>                         
+                <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I PAGAT</td></tr>'.$RET; ?>
+                <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::ACCEPTAT_PAGAT,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+                <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I NO PAGAT</td></tr>'.$RET; ?>
+                <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::ACCEPTAT_NO_PAGAT,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+                <?php echo '<tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>'.$RET; ?>
+                <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::EN_ESPERA,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+                <?php echo '<tr><td class="TITOL" colspan="3">BAIXA</td></tr>'.$RET; ?>
+                <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::BAIXA,'MODE'=>'LLISTAT_ALUMNES')); ?>
+                                                       			                        	
+          	</table>      
+        </div>
         
   <?php ENDIF; ?>
   

@@ -46,5 +46,13 @@ class DadesBancaries extends BaseDadesBancaries {
         return Encript::DesencriptaDual($this->ccc,'password');        
     }
     
+    public function getCccPublic(){
+        return "xxxx-xxxx-xx-xxxxxx".substr($this->getCcc(),16,4);
+    }
+    
+    public function getCccFormat(){
+        return substr($this->getCcc(),0,4)."-".substr($this->getCcc(),4,4)."-".substr($this->getCcc(),8,2)."-".substr($this->getCcc(),10,10);
+    }
+
 
 } // DadesBancaries
