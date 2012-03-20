@@ -26,8 +26,10 @@ class Cursos extends BaseCursos
   public function getMatriculats()
   {
      $C = new Criteria(); 
-     $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);
-     return self::getMatriculess($C);
+     $C->addAscendingOrderByColumn(MatriculesPeer::ESTAT);     
+     $C->addAscendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);
+     //$C->add(MatriculesPeer::CURSOS_IDCURSOS, $this->getIdcursos());
+     return $this->getMatriculess($C);
   }
   
   public function getCategoriaText()
@@ -126,4 +128,10 @@ class Cursos extends BaseCursos
     return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO);
   }
 
+/*  public function getMatriculess($C = null, PropelPDO $con = null)
+  {
+    if ($C === null) $C = new Criteria();    	    	        	        
+    return MatriculesPeer::doSelect($criteria, $con);                			
+  }
+*/
 }

@@ -2528,8 +2528,55 @@ class gestioActions extends sfActions
     				$doc->remove();
     				
     				throw new sfStopException; 
+         
+            break;
+
+            case 'EXCEL_ALL_CURSOS':
+    			
+			$doc = new PHPExcel();
+            
+            //Consultem tots els cursos actius i de cada un llistem els alumnes. Els que tinguin pagament amb domiciliació van a part.
+            $LOC = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,"",$this->IDS,false,null,null);
+            
+            $fila = 1; $columna = 0;
+            
+            foreach($LOC as $OC):                
+                foreach( CursosPeer::getMatricules( $OC->getIdcursos() , $this->IDS , false , false ) as $OM ):
+                    $OU = $OM->getUsuaris();
+                    if($OU instanceof Usuaris && $OM instanceof Matricules):                                         
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+0  , $fila , $OC->getIdcursos() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+1  , $fila , $OC->getCodi() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+2  , $fila , $OC->getTitolcurs() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+3  , $fila , $OU->getDni() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+4  , $fila , $OU->getNomComplet() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+5  , $fila , $OM->getPagat() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+6  , $fila , $OM->getTPagamentString() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+7  , $fila , $OM->getTreduccioString() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+8  , $fila , $OM->getEstatString() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+9  , $fila , (string)$OM->getCcc() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+10 , $fila++ , $OM->getComentari() );                        
+                    endif;
+                endforeach;
+            endforeach;            																
+           						
+			$nom = OptionsPeer::getString('SF_WEBSYSROOT').'tmp/'.$this->IDS.'CURSOS.xlsx';
+			$web = OptionsPeer::getString('SF_WEBROOT').'tmp/'.$this->IDS.'CURSOS.xlsx';
+			
+			$objWriter = PHPExcel_IOFactory::createWriter($doc, 'Excel2007');			
+			$objWriter->save($nom);
+									
+			$response = sfContext::getInstance()->getResponse();
+    	    $response->setContentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $response->setHttpHeader('Content-Disposition', 'attachment; filename="Excel_Categoria.xlsx');
+            $response->setHttpHeader('Content-Length', filesize($nom));
+            $response->setContent(file_get_contents($nom, false));
+            $response->sendHttpHeaders();
+            $response->sendContent();												
+					
+			throw new sfStopException;			   	  	 
                 
             break;
+            
 
     }                       
     

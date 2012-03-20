@@ -168,7 +168,7 @@
   <?php ELSE: ?>
 
      <div class="REQUADRE">     
-        <div class="TITOL">Llistat de cursos </div>
+        <div class="TITOL">Llistat de cursos <?php echo link_to(image_tag('/images/template/doc_excel_table.png',array('style'=>'margin-left:20px;','alt'=>'Treu un llistat amb tots els cursos i alumnes actius amb totes les seves dades.')),'gestio/gCursos?accio=EXCEL_ALL_CURSOS'); ?></div>
       	<table class="DADES">
  			<?php 
  				                                

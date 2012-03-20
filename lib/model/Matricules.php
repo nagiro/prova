@@ -36,5 +36,15 @@ class Matricules extends BaseMatricules
   public function hasDescompte(){       
     return ($this->getTreduccio() != DescomptesPeer::CAP);
   }
+  
+  public function getCcc()
+  {
+    $ODB = DadesBancariesPeer::retrieveByPK($this->getIddadesbancaries());
+    if($ODB instanceof DadesBancaries):
+        return $ODB->getCcc();
+    else: 
+        return "";
+    endif;  
+  }
  
 }

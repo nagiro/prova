@@ -1,0 +1,8 @@
+all:
+  meta:
+    creator:      Albert Johé (albert.johe@gmail.com)
+    title:        AMB
+    subject:      Compra responsable
+    description:  Document extret del web Compra responsable
+    keywords:     AMB, Compra responsable
+    category:     Categories
