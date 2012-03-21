@@ -2577,6 +2577,115 @@ class gestioActions extends sfActions
                 
             break;
             
+            case 'FITXER_N19':
+            
+                $aeb19 = new AEB19Writter('.');
+                //Número de compte de l'entitat que genera els rebuts.
+                $cuenta = array('2013', '0448', '13', '0200829998');
+                //CIF de la nostra entitat. 
+                $cif = '40359575A';
+                //Nom de la nostra entitat
+                $empresa = 'Casa de Cultura de Girona';
+                
+                //Assignem els noms del presentador
+                //El codi del presentador s'ha de presentar a la dreta així que ho fem manualment. 
+                $aeb19->insertarCampo('codigo_presentador', str_pad($cif, 12, '0', STR_PAD_RIGHT));
+                $aeb19->insertarCampo('fecha_fichero', date('dmy'));
+                $aeb19->insertarCampo('nombre_presentador', $empresa);
+                $aeb19->insertarCampo('entidad_receptora', $cuenta[0]);
+                $aeb19->insertarCampo('oficina_presentador', $cuenta[1]);
+                
+                //La data del càrrec, que serà després de dos dies. 
+                $fechaCargo = date('dmy', strtotime('+2 day'));
+                
+                //Assignem els camps de l'ordenant i guardem el registre. 
+                $aeb19->insertarCampo('codigo_ordenante', str_pad($cif, 12, '0', STR_PAD_RIGHT));
+                $aeb19->insertarCampo('fecha_cargo', $fechaCargo);
+                $aeb19->insertarCampo('nombre_ordenante', $empresa);
+                $aeb19->insertarCampo('cuenta_abono_ordenante', implode('', $cuenta));
+                $aeb19->guardarRegistro('ordenante');
+                
+                //Establim el codi de l'ordenant pels registres obligatoris.
+                $aeb19->insertarCampo('ordenante_domiciliacion' , str_pad($cif, 12, '0', STR_PAD_RIGHT));
+
+
+                //Carreguem els cursos actius i només tractarem els que tinguin domiciliació. 
+                $LOC = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,"",$this->IDS,false,null,null);
+                                                
+                foreach($LOC as $OC):
+                    if($OC->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO):                
+                        foreach( CursosPeer::getMatricules( $OC->getIdcursos() , $this->IDS , false , false ) as $OM ):
+                            $OU = $OM->getUsuaris();                            
+                            $ODB = DadesBancariesPeer::retrieveByPK($OM->getIddadesbancaries());
+                            $idFact = $OM->getIdmatricules();
+                            if($OU instanceof Usuaris && $OM instanceof Matricules && $ODB instanceof DadesBancaries):
+                                                                                                                                                 
+                                //l'IVA que aplicarem a la factura 
+                                $iva = 0.0;
+                                $pagat = $OM->getPagat();
+                                //L'Import de l'IVA
+                                $importeIva = round($i * $iva, 2);
+                                //Total de la factura amb IVA inclòs
+                                $totalFactura = $pagat + $importeIva;
+                                
+                                //Con el codigo_referencia_domiciliacion podremos referenciar la domiciliación
+                                $aeb19->insertarCampo('codigo_referencia_domiciliacion', "fra-$idFact");
+                                //Cliente al que le domiciliamos
+                                $aeb19->insertarCampo('nombre_cliente_domiciliacion', $ODB->getTitular() );
+                                //Cuenta del cliente en la que se domiciliará la factura
+                                $aeb19->insertarCampo('cuenta_adeudo_cliente', $ODB->getCcc());
+                                //El importe de la domiciliación (tiene que ser en céntimos de euro y con el IVA aplicado)
+                                $aeb19->insertarCampo('importe_domiciliacion', ($totalFactura * 100));
+                                //Código para asociar la devolución en caso de que ocurra
+                                $aeb19->insertarCampo('codigo_devolucion_domiciliacion', $OM->getIdmatricules() );
+                                //Código interno para saber a qué corresponde la domiciliación
+                                $aeb19->insertarCampo('codigo_referencia_interna', "fra-$idFact");
+                    
+                                //Preparamos los conceptos de la domiciliación, en un array
+                                //Disponemos de 80 caracteres por línea (elemento del array). Más caracteres serán cortados
+                                //El índice 8 y 9 contendrían el sexto registro opcional, que es distinto a los demás
+                                $conceptosDom = array();
+                                //Los dos primeros índices serán el primer registro opcional
+                                $conceptosDom[] = str_pad("Factura $idFact", 40, ' ', STR_PAD_RIGHT) . str_pad(number_format($pagat, 2, ',', '.'), 40, ' ', STR_PAD_RIGHT);
+                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT) . str_pad("", 40, ' ', STR_PAD_RIGHT);
+                                //Los dos segundos índices serán el segundo registro opcional
+                                $conceptosDom[] = str_pad( $ODB->getTitular() , 40, ' ', STR_PAD_RIGHT);
+                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT) . 'Base imposable:' . str_pad(number_format($pagat, 2, ',', '.') . ' EUR', 25, ' ', STR_PAD_LEFT);
+                                //Los dos terceros índices serán el tercer registro opcional
+                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT).
+                                    'IVA ' . str_pad(number_format($iva * 100, 2, ',', '.'), 2, '0', STR_PAD_LEFT) . '%:'.
+                                    str_pad(number_format($importeIva, 2, ',', '.') . ' EUR', 29, ' ', STR_PAD_LEFT);
+                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT).
+                                    'Total:' . str_pad(number_format($totalFactura, 2, ',', '.') . ' EUR', 34, ' ', STR_PAD_LEFT);                                                                                                        
+                    
+                                //Añadimos la domiciliación
+                                $aeb19->guardarRegistro('domiciliacion', $conceptosDom);
+                            else: 
+                                if(!($OU instanceof Usuaris)) $RET[$idFact][] = "Matrícula $idFact incorrecte. Usuari no trobat."; 
+                                if(!($OM instanceof Matricules)) $RET[$idFact][] = "Matrícula $idFact incorrecte. Matrícula no trobada.";
+                                if(!($ODB instanceof DadesBancaries)) $RET[$idFact][] = "Matrícula $idFact incorrecte. Compte corrent no trobat.";
+                                
+                            endif;
+                            
+                        endforeach;
+                    endif;
+                endforeach;
+                
+/*      			$nom = OptionsPeer::getString('SF_WEBSYSROOT').'tmp/'.$this->IDS.'REBUTS.txt';
+                fwrite( fopen( $nom , 'w' ) , $aeb19->construirArchivo() );
+                $response = sfContext::getInstance()->getResponse();
+        	    $response->setContentType('text/plain');
+                $response->setHttpHeader('Content-Disposition', 'attachment; filename="Rebuts_Domiciliacio.txt');
+                $response->setHttpHeader('Content-Length', filesize($nom));
+                $response->setContent(file_get_contents($nom, false));
+                $response->sendHttpHeaders();
+                $response->sendContent();                                							
+*/
+                echo '<pre>'.$aeb19->construirArchivo().'</pre>';     					
+    			throw new sfStopException;                			   	  	 
+                       
+            break;
+            
 
     }                       
     

@@ -371,13 +371,13 @@ class webActions extends sfActions
             elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->MISSATGE3 = 'OK'; 
             elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->MISSATGE3 = 'OK';
     
-            //Si la matrícula es paga amb TPV fem uns extres.
+            //Si la matrícula es paga amb TPV fem uns extres.            
             if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
                 $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
     			$this->TPV = MatriculesPeer::getTPV( $RET['OM']->getPagat() , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , true );
-                $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());
+                $this->URL = OptionsPeer::getString('TPV_URL',$RET['OM']->getSiteId());                
                 $this->setLayout('blanc');
-                $this->setTemplate('pagament');                                
+                $this->setTemplate('pagament');                  
             endif;
             
             //Si el pagament és amb domiciliació, hem d'afegir el compte corrent i després el podrem donar per validada.

@@ -132,7 +132,7 @@ class MatriculesPeer extends BaseMatriculesPeer
         //Si queden places al curs                
         } else {
             
-            //Si hem dit que el curs és en format reserva en comptes de pagament
+            //Si hem dit que el curs és en format reserva en comptes de pagament                        
             if($OC->isReserva())
             {
                 $OM->setPagat(0);
@@ -145,7 +145,7 @@ class MatriculesPeer extends BaseMatriculesPeer
             //Si és una matrícula de compra
             elseif($OC->isCompra())
             {                        
-                //Si el mode de pagament és targeta, cridem el tpv
+                //Si el mode de pagament és targeta, cridem el tpv                
                 if( $Mode_pagament == MatriculesPeer::PAGAMENT_TARGETA ){
       		        $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
                                         
@@ -180,8 +180,8 @@ class MatriculesPeer extends BaseMatriculesPeer
     //Envia el correu d'una matrícula
     static public function SendMailMatricula($OM,$idS){
     if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):
-        myUser::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), $OM->getUsuaris()->getEmail(), 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));  			
-    	myUser::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), 'informatica@casadecultura.org', 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));
+        self::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), $OM->getUsuaris()->getEmail(), 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));  			
+    	self::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), 'informatica@casadecultura.org', 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));
      endif; 
     }    
    
@@ -633,5 +633,43 @@ class MatriculesPeer extends BaseMatriculesPeer
    	return $TEXT; 
   	
   }  
+
+
+  static public function sendMail($from,$to,$subject,$body = "",$files = array())
+    {    
+        //Si entrem un mail que no és en format array, l'inicialitzem
+        $mails = $to;
+        if(!is_array($to)) $mails = array($to);
+        
+        //Definim el mailer
+    //        $t = Swift_SmtpTransport::newInstance('smtp.casadecultura.org',587);
+    //        $t->setUsername('informatica@casadecultura.org');
+    //        $t->setPassword('gi1807bj');
+        $t = Swift_MailTransport::newInstance();
+        $mailer = Swift_Mailer::newInstance($t);
+        
+        //Enviem tots els correus         
+        foreach($mails as $to):
+        
+            //Comencem l'enviament de correus als que el tinguin correcte.
+       	    try{
+                
+        		$sm = Swift_Message::newInstance($subject,$body,'text/html','utf8');
+                $sm->setFrom($from);
+                $sm->setTo($to);
+        		
+        		foreach($files as $F):
+        			$sm->attach(Swift_Attachment::fromPath($F['tmp_name']));
+        		endforeach;        		        			    
+            	
+        		$OK = $mailer->send($sm,$errors);                                                
+            
+            } catch (Exception $e) { $OK = false; myUser::addLogActionStatic(0,'ErrorEnviantMailSaveMissatgeGlobal',$e->getMessage(),null); }                        
+            
+        endforeach;
+    	
+        return array('OK'=>$OK,'MAILS_INC'=>$errors);
+    }   
+  
   
 }

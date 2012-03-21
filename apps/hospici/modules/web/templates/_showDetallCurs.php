@@ -138,6 +138,7 @@
 
 
                         <!-- Requadre detall matrícula domiciliació  -->
+                        <?php if($CURS->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO): ?>
                         
                         <div id="matricula_domiciliacio" style="margin-top:30px; display:none; ">                        
                				<div style="clear:both; color:#96BF0D; font-size:12px; padding-left:10px;">DADES DE MATRÍCULA</div> 
@@ -156,8 +157,8 @@
                                             case 'NO_HI_HA_RESERVA_LINIA': echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>'; break;
                                             case 'ABANS_PERIODE_MATRICULA_AA_IDIOMES': echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$dataiA).' si vol continuar els estudis d\'idiomes.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
                                             case 'ABANS_PERIODE_MATRICULA': echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
-                                            case 'POT_MATRICULAR':
-                                                echo mostraFormulariMatricula( $nom , $CURS , $MISSATGE , $IDU );  
+                                            case 'POT_MATRICULAR':                                      
+                                                    echo mostraFormulariMatricula( $nom , $CURS , $MISSATGE , $IDU );                                                
                                             break;         
                                         }                                                                        
                                         
@@ -168,6 +169,7 @@
                             </div>
                         </div>
                         
+                        <?php endif; ?>  
                         <!-- Fi Requadre de compra o reserva d'entrades  -->
 
                         
@@ -186,31 +188,13 @@
 
 
 <?php 
-/*
-function mostraFormulariComplet($nom, $CURS)
-{
-
-    echo '<form method="post" action="'.url_for('@hospici_nova_matricula_espera').'">';
-    
-    //Guardem el codi del curs                                                               	                                                                                                         
-    echo input_hidden_tag('idC',$CURS->getIdcursos());
-    
-     ?>
-    <div class="taula_dades">        
-        <div style="padding-top:10px; clear:both;">                              
-            <div style="margin-left:220px;"><input style="width: 100px;" type="submit" value="Posa'm en espera" /></div>                                                                                                    
-        </div>
-    </div>
-<?php }
-*/
-
 
 function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
 {
 
     echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
     
-    //Guardem el codi del curs
+    //Guardem el codi del curs        
     echo input_hidden_tag('idC',$CURS->getIdcursos());
     $A_Descomptes = $CURS->h_getDescomptes();
 
