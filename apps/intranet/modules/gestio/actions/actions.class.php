@@ -2914,10 +2914,14 @@ class gestioActions extends sfActions
 				$OM = MatriculesPeer::retrieveByPK($IDP);
 				$OU = $OM->getUsuaris();
 				$OC = $OM->getCursos();
+                $ODB = DadesBancariesPeer::retrieveByPK($OM->getIddadesbancaries());                
 				
 				$doc = new sfTinyDoc();
-				if($OM->getSiteid() > 1) $doc->createFrom(OptionsPeer::getString('SF_WEBSYSROOT').'images/matricules/gMatriculesGenSuccess.docx');
-                else $doc->createFrom(array('extension' => 'docx'));
+                
+                $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullMatricula'.$this->IDS.'.docx';
+                $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullMatriculaGen.docx';
+                if(file_exists($url_prop)) $doc->createFrom($url_prop);
+                else $doc->createFrom($url_gen);                                				
                 
 				$doc->loadXml('word/document.xml');
                                                 
@@ -2940,7 +2944,14 @@ class gestioActions extends sfActions
                 $doc->mergeXmlField('iva', '0%');
                 $doc->mergeXmlField('total', $OM->getPagat());
                 $doc->mergeXmlField('dia', $OC->getDatainici('d/m/Y'));
-                $doc->mergeXmlField('horari', $OC->getHoraris());                
+                $doc->mergeXmlField('horari', $OC->getHoraris());
+                if(!is_null($ODB)):
+                    $doc->mergeXmlField('ccc', $ODB->getCccFormat() );                
+                    $doc->mergeXmlField('titular', $ODB->getTitular() );
+                else:
+                    $doc->mergeXmlField('ccc', '____ ____ __ __________' );                
+                    $doc->mergeXmlField('titular', '___________________________________' );                    
+                endif;
                 
 				$doc->saveXml();
 				$doc->close();
@@ -2950,6 +2961,41 @@ class gestioActions extends sfActions
 				throw new sfStopException; 
 				
 			break;
+		case 'PB':
+			
+				$IDP = $request->getParameter('IDP');
+				$OM = MatriculesPeer::retrieveByPK($IDP);
+				$OU = $OM->getUsuaris();
+				$OC = $OM->getCursos();                
+				
+				$doc = new sfTinyDoc();
+                
+                $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullBaixa'.$this->IDS.'.docx';
+                $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullBaixaGen.docx';
+                if(file_exists($url_prop)) $doc->createFrom($url_prop);
+                else $doc->createFrom($url_gen);                                				
+                
+				$doc->loadXml('word/document.xml');
+                                                
+                $mat = 'MAT'.$OM->getIdmatricules();                 
+                
+                $doc->mergeXmlField('nom', $OU->getNomComplet());
+                $doc->mergeXmlField('telèfon', $OU->getTelefonString());
+                $doc->mergeXmlField('identificador', $OU->getDni());
+                $doc->mergeXmlField('carrer', $OU->getAdreca());
+                $doc->mergeXmlField('poble', $OU->getPoblacioString());
+                $doc->mergeXmlField('postal', $OU->getCodipostal());
+                $doc->mergeXmlField('concepte', $OC->getCodi().' - '.$OC->getTitolcurs());                
+                $doc->mergeXmlField('data_baixa', $OM->getDataBaixa('d/m/Y'));                
+                
+				$doc->saveXml();
+				$doc->close();
+				$doc->sendResponse();
+				$doc->remove();
+				
+				throw new sfStopException; 
+				
+			break;            
 		case 'C':
 				$this->getUser()->addLogAction('inside','gMatricules');
 			break;

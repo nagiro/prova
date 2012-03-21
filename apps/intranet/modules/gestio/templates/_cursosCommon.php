@@ -18,8 +18,12 @@ if($MODE == 'LLISTAT_ALUMNES'):
                 if(is_null($ODB))   $RET .= 'No disposa de compte corrent.<br />';
                 else                $RET .= link_to($ODB->getCccPublic(),'gestio/gUsuaris?id_usuari='.$M->getUsuarisUsuariid().'&accio=CCC',array('target'=>'_BLANK')).'<br />';                
             endif;
-			$RET .= MatriculesPeer::getEstatText($M->getEstat()).'<br />'.$M->getComentari().'</TD>';							
-			$RET .= '</TR>';
+			$RET .= MatriculesPeer::getEstatText($M->getEstat()).'<br />'.$M->getComentari().'<br />';
+            $RET .= 'Matrícula '.link_to(image_tag('/images/template/page_white_word.png'),'gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules());
+            if($M->getEstat() == MatriculesPeer::BAIXA):            						
+                $RET .= '&nbsp;Baixa '.link_to(image_tag('/images/template/page_white_word.png'),'gestio/gMatricules?accio=PB&IDP='.$M->getIdmatricules());
+            endif;
+			$RET .= '</TD></TR>';
         endif; 
    endforeach;
    
