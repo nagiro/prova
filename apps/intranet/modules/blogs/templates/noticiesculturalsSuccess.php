@@ -2,6 +2,7 @@
 <script type="text/javascript" src="<?php echo $BASE.'js/fonts/cufon-yui.js'; ?>"></script>
 <script type="text/javascript" src="<?php echo $BASE.'js/fonts/myriad/Myriad_Pro_400.font.js'; ?>"></script>
 <script type="text/javascript" src="<?php echo $BASE.'js/fonts/bauhaus/Bauhaus_93_400.font.js'; ?>"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 
 <script type="text/javascript">
 
@@ -55,7 +56,7 @@
     	$("#val1h").val(rand1);
 		$("#val2h").val(rand2);
 		$("#val1").html(rand1);
-		$("#val2").html(rand2);
+		$("#val2").html(rand2);        
 		
 	}
 	
