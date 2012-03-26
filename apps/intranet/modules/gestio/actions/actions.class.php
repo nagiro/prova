@@ -4017,6 +4017,7 @@ class gestioActions extends sfActions
 	$this->accio = $request->getParameter('accio');
 	$this->getUser()->addLogAction('inside','gInformes');
     if($request->hasParameter('BGENERADOC')) $this->accio = 'RESUM_ACTIVITATS';
+    if($request->hasParameter('BGENERAXML')) $this->accio = 'RESUM_ACTIVITATS';
 	
 	switch($this->accio){
 		case 'MAT_DIA_PAG':
@@ -4040,7 +4041,45 @@ class gestioActions extends sfActions
                 $this->FACTIVITATS   = new InformeActivitatsForm(null,array('IDS'=>$this->IDS));
                 $this->FACTIVITATS->bind($RP);                
                 if($request->hasParameter('BGENERADOC')):                    
-                    $this->LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS);                                                                                                    
+                    $this->LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,true);
+                elseif($request->hasParameter('BGENERAXML')):
+                    $this->setLayout(null);
+                    $this->setTemplate(null);
+                    $LOH = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,false);                                        
+                    $TEXT = "<document>\n"; $i = 1;                    
+                    foreach($LOH as $OH):                                 
+                        $OA = $OH->getActivitats();
+                        $LE = $OH->getArrayEspais();                
+                        $TEXT .= "<caixa>\n";
+                        $TEXT .= "<columna>".$i."</columna>\n";
+                        $TEXT .= "<dia>".$OH->getDia('d')."</dia>\n";
+                        $TEXT .= "<diaT>".strtoupper(myUser::getDiaText($OH->getDia('Y-m-d')))."</diaT>\n";
+                        $TEXT .= "<subtitol>".strtoupper($OA->getNomTipusActivitat())."</subtitol>\n";
+                        $TEXT .= "<subactivitat>\n";
+                        $TEXT .= " <negreta>".$OA->getTmig()."</negreta>\n";
+                        $TEXT .= " <normal>".utf8_encode(strip_tags(html_entity_decode($OA->getDmig())))."</normal>\n";
+                        $TEXT .= " <link>".$this->getController()->genUrl('@web_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl(),true)."</link>\n";
+                        $TEXT .= " <hora>".$OH->getHorainici("H.i")."</hora>\n";
+                        $TEXT .= " <lloc>".implode(",",$LE)."</lloc>\n";
+                        $TEXT .= " <organitza>".html_entity_decode($OA->getOrganitzador())."</organitza>\n";
+                        $TEXT .= " <entrada>".utf8_encode(strip_tags(html_entity_decode($OA->getInfopractica())))."</entrada>\n";                    
+                        $TEXT .= "</subactivitat>\n";
+                        $TEXT .= "</caixa>\n";                        
+                    endforeach;
+                    $TEXT .= "</document>\n";                                                                                                                                                                                    
+                                                        
+          			$nom = OptionsPeer::getString('SF_WEBSYSROOT').'tmp/'.$this->IDS.'NEWS.txt';
+                    fwrite( fopen( $nom , 'w' ) , $TEXT );
+                    $response = sfContext::getInstance()->getResponse();
+            	    $response->setContentType('text/plain');
+                    $response->setHttpHeader('Content-Disposition', 'attachment; filename="News.txt');
+                    $response->setHttpHeader('Content-Length', filesize($nom));
+                    $response->setContent(file_get_contents($nom, false));
+                    $response->sendHttpHeaders();
+                    $response->sendContent();                                							                    
+         					
+        			throw new sfStopException;                			   	  	 
+                                        
                 endif;    									 
 			break;                                                    
 	}	

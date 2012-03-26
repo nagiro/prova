@@ -389,7 +389,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
      * @param mixed $IDS
      * @return
      */
-    static public function getLlistatWord( InformeActivitatsForm $IAF , $IDS )
+    static public function getLlistatWord( InformeActivitatsForm $IAF , $IDS , $returnActivitats )
     {                
         $C = new Criteria();
         $C = ActivitatsPeer::getCriteriaActiu($C,$IDS);
@@ -405,7 +405,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
         $C->add(ActivitatsPeer::TMIG , "" , CRITERIA::NOT_EQUAL );
         $C->addAscendingOrderByColumn(HorarisPeer::DIA);
         $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
-        return ActivitatsPeer::doSelect($C);
+        if($returnActivitats) return ActivitatsPeer::doSelect($C);
+        else return HorarisPeer::doSelect($C);
     }    
 
 

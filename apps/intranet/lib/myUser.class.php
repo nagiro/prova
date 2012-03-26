@@ -4,6 +4,20 @@ class myUser extends sfBasicSecurityUser
 {
     
 
+  public function getDiaText($data){
+    list($year,$month,$day) = explode('-',$data);
+    $data = mktime(0,0,0,$month,$day,$year);
+    switch(date('N',$data)){
+        case 1: return 'Dilluns';
+        case 2: return 'Dimarts';
+        case 3: return 'Dimecres';
+        case 4: return 'Dijous';
+        case 5: return 'Divendres';
+        case 6: return 'Dissabte';
+        case 7: return 'Diumenge';
+    }    
+  }
+
   public function Paginacio($pager,$url){
     
     $RET = "";

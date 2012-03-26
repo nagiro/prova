@@ -21,7 +21,7 @@ class InformeActivitatsForm extends sfForm
      
     
     $this->setWidgets(array(
-      'idCicle'     => new sfWidgetFormChoice(array('choices'=>$choices)),                  
+      'idCicle'     => new sfWidgetFormChoice(array('choices'=>$choices)),                       
       'DataInici'   => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'DataFi'      => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),      
     ));

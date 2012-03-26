@@ -65,10 +65,14 @@
                             <div class="cl" style="text-align:right; padding-top:40px;">	 	
                                 <button type="submit" name="BGENERADOC" class="BOTO_ACTIVITAT">
     				                '.image_tag('template/disk.png').' Genera el llistat
-                                </button>  
+                                </button>  <br />
+                                <button type="submit" name="BGENERAXML" class="BOTO_ACTIVITAT">
+    				                '.image_tag('template/disk.png').' Genera fitxer XML
+                                </button>
+                                <div style="clear:both"></div>
                             </div>                                       	
                         </div>                                                  		 		        			 	 	
-                    </div>     		
+                    </div>     		                    
                 </form>';
                                
     }
