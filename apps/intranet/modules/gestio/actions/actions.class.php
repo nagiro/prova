@@ -2581,11 +2581,11 @@ class gestioActions extends sfActions
             
                 $aeb19 = new AEB19Writter('.');
                 //Número de compte de l'entitat que genera els rebuts.
-                $cuenta = array('2013', '0448', '13', '0200829998');
+                $cuenta = explode('-',OptionsPeer::getString('N19_CCC',$this->IDS));                                
                 //CIF de la nostra entitat. 
-                $cif = '40359575A';
+                $cif = OptionsPeer::getString('N19_CIF',$this->IDS);
                 //Nom de la nostra entitat
-                $empresa = 'Casa de Cultura de Girona';
+                $empresa = OptionsPeer::getString('N19_NOM_EMPRESA',$this->IDS);
                 
                 //Assignem els noms del presentador
                 //El codi del presentador s'ha de presentar a la dreta així que ho fem manualment. 
@@ -2646,17 +2646,17 @@ class gestioActions extends sfActions
                                 //El índice 8 y 9 contendrían el sexto registro opcional, que es distinto a los demás
                                 $conceptosDom = array();
                                 //Los dos primeros índices serán el primer registro opcional
-                                $conceptosDom[] = str_pad("Factura $idFact", 40, ' ', STR_PAD_RIGHT) . str_pad(number_format($pagat, 2, ',', '.'), 40, ' ', STR_PAD_RIGHT);
-                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT) . str_pad("", 40, ' ', STR_PAD_RIGHT);
+                                $conceptosDom[] = str_pad("Pagament matrícula $idFact", 40, ' ', STR_PAD_RIGHT) . str_pad(" del curs {$OC->getCodi()}", 40, ' ', STR_PAD_RIGHT);                                
+                                //$conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT) . str_pad("", 40, ' ', STR_PAD_RIGHT);
                                 //Los dos segundos índices serán el segundo registro opcional
-                                $conceptosDom[] = str_pad( $ODB->getTitular() , 40, ' ', STR_PAD_RIGHT);
-                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT) . 'Base imposable:' . str_pad(number_format($pagat, 2, ',', '.') . ' EUR', 25, ' ', STR_PAD_LEFT);
+                                //$conceptosDom[] = str_pad( $ODB->getTitular() , 40, ' ', STR_PAD_RIGHT);
+                                //$conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT) . 'Base imposable:' . str_pad(number_format($pagat, 2, ',', '.') . ' EUR', 25, ' ', STR_PAD_LEFT);
                                 //Los dos terceros índices serán el tercer registro opcional
-                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT).
-                                    'IVA ' . str_pad(number_format($iva * 100, 2, ',', '.'), 2, '0', STR_PAD_LEFT) . '%:'.
-                                    str_pad(number_format($importeIva, 2, ',', '.') . ' EUR', 29, ' ', STR_PAD_LEFT);
-                                $conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT).
-                                    'Total:' . str_pad(number_format($totalFactura, 2, ',', '.') . ' EUR', 34, ' ', STR_PAD_LEFT);                                                                                                        
+                                //$conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT).
+                                 //   'IVA ' . str_pad(number_format($iva * 100, 2, ',', '.'), 2, '0', STR_PAD_LEFT) . '%:'.
+                                 //   str_pad(number_format($importeIva, 2, ',', '.') . ' EUR', 29, ' ', STR_PAD_LEFT);
+                                //$conceptosDom[] = str_pad('', 40, ' ', STR_PAD_RIGHT).
+                                //    'Total:' . str_pad(number_format($totalFactura, 2, ',', '.') . ' EUR', 34, ' ', STR_PAD_LEFT);                                                                                                        
                     
                                 //Añadimos la domiciliación
                                 $aeb19->guardarRegistro('domiciliacion', $conceptosDom);
@@ -2671,7 +2671,7 @@ class gestioActions extends sfActions
                     endif;
                 endforeach;
                 
-/*      			$nom = OptionsPeer::getString('SF_WEBSYSROOT').'tmp/'.$this->IDS.'REBUTS.txt';
+      			$nom = OptionsPeer::getString('SF_WEBSYSROOT').'tmp/'.$this->IDS.'REBUTS.txt';
                 fwrite( fopen( $nom , 'w' ) , $aeb19->construirArchivo() );
                 $response = sfContext::getInstance()->getResponse();
         	    $response->setContentType('text/plain');
@@ -2680,8 +2680,7 @@ class gestioActions extends sfActions
                 $response->setContent(file_get_contents($nom, false));
                 $response->sendHttpHeaders();
                 $response->sendContent();                                							
-*/
-                echo '<pre>'.$aeb19->construirArchivo().'</pre>';     					
+     					
     			throw new sfStopException;                			   	  	 
                        
             break;
