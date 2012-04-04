@@ -19,7 +19,7 @@
 class sfWidgetFormSchemaFormatterSpanHorizontal extends sfWidgetFormSchemaFormatter
 {
   protected
-    $rowFormat       = '<div style="row">
+    $rowFormat       = '<div class="row">
                             <div class="row_title">%label%</div>
                             <div class="row_field">%error%%field%%help%%hidden_fields%</div>
                         </div>',
