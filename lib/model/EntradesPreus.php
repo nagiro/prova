@@ -63,7 +63,7 @@ class EntradesPreus extends BaseEntradesPreus {
         $RES = 0;
         
         foreach(EntradesReservaPeer::doSelect($C) as $OER) $RES += $OER->getQuantitat();
-        
+                
         return $RES;
     }
     
@@ -73,5 +73,14 @@ class EntradesPreus extends BaseEntradesPreus {
     public function getIsPle(){        
         return ($this->countEntradesVenudes() >= $this->getPlaces()); 
     }
+
+    public function getActivitat(){        
+        return ActivitatsPeer::retrieveByPK($this->getActivitatId());
+    }
+
+    public function getHorari(){        
+        return HorarisPeer::retrieveByPK($this->getHorariId());
+    }    
+
 
 } // EntradesPreus

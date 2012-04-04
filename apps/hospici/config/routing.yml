@@ -125,7 +125,20 @@ hospici_matricula_TPV_KO:
 hospici_matricula_TPV_GET:
   url: /usuaris/matricula/get
   param: { module: web, action:getTPV }
+
+hospici_entrada_TPV_OK:
+  url: /usuaris/entrada/ok
+  param: { module: web, action:usuaris, accio:entrada_OK }
   
+hospici_entrada_TPV_KO:
+  url: /usuaris/entrada/ko
+  param: { module: web, action:usuaris, accio:entrada_KO }
+
+hospici_entrada_TPV_GET:
+  url: /usuaris/entrada/get
+  param: { module: web, action: getTPVEntrades }
+
+
 # Aquest pels formularis de hospici
 hospici_nou_formulari:
   url: /usuaris/formularis/alta

@@ -900,10 +900,11 @@ class ActivitatsPeer extends BaseActivitatsPeer
      * @param $P Pàgina actual
      * @param $idS Site que està consultant
      * @return Pager d'Horaris()
+     * --> Canviada a EntradesPreusPeer per una de més precísa.  
      * */
-    static public function cercaActivitatsVenta($P = 1, $idS = 1)
+/*    static public function cercaActivitatsVenta($P = 1, $idS = 1)
     {
-                
+                                      
         $connection = Propel::getConnection();        
         $query =         
                 "                              
@@ -939,6 +940,6 @@ class ActivitatsPeer extends BaseActivitatsPeer
         return $RET;
         
     }
-
+*/
 
 }

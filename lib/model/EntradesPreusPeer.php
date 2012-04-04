@@ -22,19 +22,40 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
 
     const MODE_HORARI = 0;
     const MODE_ACTIVITAT = 1;
-    
+        
     const TIPUS_DESACTIVAT = 0;
     const TIPUS_RESERVA = 1;
     const TIPUS_VENTA = 2;    
-
-
+    
+    /**
+     * Inicialitzem el formulari de EntradesPreus     
+     * */
+    static public function initialize($idS = 1, $idH = 0, $idA = 0)
+    {
+        $OEP = self::retrieveByPK($idH,$idA);
+        if(!($OEP instanceof EntradesPreus)):
+            $OEP = new EntradesPreus();
+            $OEP->setTipus(0);
+            $OEP->setPreu(0);
+            $OEP->setPlaces(0);
+            $OEP->setDescomptes(null);
+            $OEP->setSiteId($idS);
+            $OEP->setHorariId($idH);
+            $OEP->setActivitatid($idA);
+            $OEP->setActiu(true);
+        endif;
+        
+        return new EntradesPreusForm($OEP,array('IDS'=>$idS,'IDH'=>$idH));    
+            
+    }
+/*
     static public function getPreu($IDH,$NEntrades,$Descompte)
     {
         $OEP = self::getByActivitatOHorari(0,$IDH);
         if(!($OEP instanceof EntradesPreus)) return -1;
         //FALTA ACABAR-HO!!!                        
     }
-
+*/
     static public function isEntradesByActivitat($idA){
         $C = new Criteria();
         $C->add(self::ACTIVITAT_ID, $idA);
@@ -42,19 +63,23 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
         return (self::doCount($C) > 0);
     }
 
-    static public function getEntradesHorarisByActivitat($idA){
+    /**
+     * Retorna tots els horaris que tenen actiu el tema de les entrades.
+     * Esborrada perquè no es fa servir.  
+     * */
+/*    static public function getEntradesHorarisByActivitat($idA){
         
         $C = new Criteria();
         $C->add(self::ACTIVITAT_ID, $idA);
         $C->addJoin(self::HORARI_ID, HorarisPeer::HORARISID);
         $C->add(self::ACTIU, true);
-        $C->add(self::ACTIVITAT_ID, self::HORARI_ID, CRITERIA::NOT_EQUAL); //Agafem els que nom�s s�n horaris ( tenen activitat != horari )
+        $C->add(self::ACTIVITAT_ID, self::HORARI_ID, CRITERIA::NOT_EQUAL); //Agafem els que només són horaris ( tenen activitat != horari )
         $C->add(HorarisPeer::ACTIU, true);
    
         return HorarisPeer::doSelect($C);
                 
     }
-
+*/
     /**
      * Ens retorna les condicions d'entrada segons l'activitat o horaris 
      * */
@@ -98,5 +123,50 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
         if($OEP instanceof EntradesPreus) return $OEP->getTipus();
         else return self::TIPUS_DESACTIVAT;
     } 
+
+
+    /**
+     * Retorna les activitats que tenen compra d'entrada.
+     * */
+    static public function getActivitatsAmbEntrades($idS, $P = 1)
+    {
+        $C = new Criteria();  
+        $C->add(self::SITE_ID, $idS);      
+        $C->addJoin( self::HORARI_ID , HorarisPeer::HORARISID );        
+        $C->addDescendingOrderByColumn( Horarispeer::DIA );
+        
+        $pager = new sfPropelPager('EntradesPreus', 20);
+        $pager->setCriteria($C);    
+        $pager->setPage($P);
+        $pager->init();    	                
+        
+        return $pager;                        
+    }
+
+    static public function getDescomptesArray( $idA, $idH, $ambPreu = false )
+    {
+
+        $OEP = self::retrieveByPK( $idH , $idA );        
+        $RET = array();
+    
+        $RET[DescomptesPeer::CAP]  = 'Sense descompte';
+        if($ambPreu) $RET[DescomptesPeer::CAP] .= ' ('.$OEP->getPreu().'€)';    
+        
+        //Si hem trobat el preu, mostrem els descomptes
+        if($OEP instanceof EntradesPreus):
+        
+            foreach(explode('@',$OEP->getDescomptes()) as $IDD){
+                $OD = DescomptesPeer::retrieveByPK($IDD);
+                if($OD instanceof Descomptes):
+                    $RET[$IDD]  = $OD->getDescripcio();
+                    if($ambPreu) $RET[$IDD] .= ' ('.DescomptesPeer::getPreuAmbDescompte( $OEP->getPreu() , $IDD ).'€)';
+                endif;        
+            } 
+                       
+        endif;
+        
+        return $RET;
+            
+    }
 
 } // EntradesPreusPeer

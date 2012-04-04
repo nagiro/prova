@@ -22,12 +22,7 @@ class EntradesReserva extends BaseEntradesReserva {
 
     public function getEstatString()
     {
-        switch($this->getEstat()){
-            case EntradesReservaPeer::ESTAT_ENTRADA_ANULADA: return 'Anul·lada';
-            case EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA: return 'Confirmada';
-            case EntradesReservaPeer::ESTAT_ENTRADA_EN_ESPERA: return 'En espera';
-            //case EntradesReservaPeer::ENVIADA: return 'Enviada';
-        }
+        return EntradesReservaPeer::getEstatToString($this->getEstat());        
     }
 
     public function setInactiu()
@@ -37,7 +32,59 @@ class EntradesReserva extends BaseEntradesReserva {
     }
 
     public function getActivitat(){                
-        return ActivitatsPeer::retrieveByPK($this->getActivitatsid());                
+        return ActivitatsPeer::retrieveByPK($this->getEntradesPreusActivitatId());                
+    }
+
+    public function getTelefon(){
+        //Si no hem entrat l'usuari i hem entrat el correu.
+        if(!is_null($this->getUsuariId()) && is_null($this->getTelefonReserva())):
+            $OU = UsuarisPeer::retrieveByPK($this->getUsuariId());
+            if($OU instanceof Usuaris) return $OU->getTelefon();
+            else return $this->getTelefonReserva();            
+        else: 
+            return $this->getTelefonReserva();
+        endif;  
+    }
+
+    public function getEmail(){
+        //Si no hem entrat l'usuari i hem entrat el correu.
+        if(!is_null($this->getUsuariId()) && is_null($this->getEmailReserva())):
+            $OU = UsuarisPeer::retrieveByPK($this->getUsuariId());
+            if($OU instanceof Usuaris) return $OU->getEmail();
+            else return $this->getEmailReserva();            
+        else: 
+            return $this->getEmailReserva();
+        endif;  
+    }
+
+    public function getNomUsuari(){
+        //Si és un usuari, el busquem, altrament marquem el nom que hem entrat
+        if(is_null($this->getUsuariId())):
+            $OU = UsuarisPeer::retrieveByPK($this->getUsuariId());
+            if($OU instanceof Usuaris) return $OU->getNomComplet();
+            else return $this->getNomReserva();            
+        else: 
+            return $this->getNomReserva();
+        endif;
+    }
+
+    public function getNomActivitat(){
+        $OA = $this->getActivitat();
+        if($OA instanceof Activitats):
+            return $OA->getNom();;
+        else: 
+            return "n/d";
+        endif;
+    }
+    
+    public function getHorari()
+    {
+        $OH = HorarisPeer::retrieveByPK($this->getEntradesPreusHorariId());
+        if($OH instanceof Horaris):
+            return $OH; 
+        else: 
+            $OH = new Horaris();
+        endif;
     }
 
 } // EntradesReserva

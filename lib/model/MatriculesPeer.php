@@ -544,7 +544,7 @@ class MatriculesPeer extends BaseMatriculesPeer
    * @param STRING $NOM
    * @return ARRAY
    */
-  static function getTPV($PREU , $NOM , $matricula, $idS , $WEB = true)
+  static function getTPV($PREU , $NOM , $matricula, $idS , $WEB = true, $entrades = false)
   {
      $TPV = array();
      
@@ -555,13 +555,25 @@ class MatriculesPeer extends BaseMatriculesPeer
      $TPV['Ds_Merchant_Terminal'] = '1';
      $TPV['Ds_Merchant_TransactionType'] = '0';
      if($WEB):
-        $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_WEB_Merchant_MerchantURL',$idS);
-        $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_WEB_Ds_Merchant_UrlOK',$idS);
-        $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_WEB_Ds_Merchant_UrlKO',$idS);
+        if($entrades):
+            $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_WEB_ENT_Merchant_MerchantURL',$idS);
+            $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_WEB_ENT_Ds_Merchant_UrlOK',$idS);
+            $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_WEB_ENT_Ds_Merchant_UrlKO',$idS);
+        else:      
+            $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_WEB_Merchant_MerchantURL',$idS);
+            $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_WEB_Ds_Merchant_UrlOK',$idS);
+            $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_WEB_Ds_Merchant_UrlKO',$idS);
+        endif;
      else:
-        $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_Merchant_MerchantURL',$idS);                         
-        $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_Ds_Merchant_UrlOK',$idS);
-        $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_Ds_Merchant_UrlKO',$idS);
+        if($entrades):
+            $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_ENT_Merchant_MerchantURL',$idS);                         
+            $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_ENT_Ds_Merchant_UrlOK',$idS);
+            $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_ENT_Ds_Merchant_UrlKO',$idS);
+        else: 
+            $TPV['Ds_Merchant_MerchantURL'] = OptionsPeer::getString('TPV_Merchant_MerchantURL',$idS);                         
+            $TPV['Ds_Merchant_UrlOK'] = OptionsPeer::getString('TPV_Ds_Merchant_UrlOK',$idS);
+            $TPV['Ds_Merchant_UrlKO'] = OptionsPeer::getString('TPV_Ds_Merchant_UrlKO',$idS);        
+        endif;
      endif;
         
      $TPV['Ds_Merchant_ProductDescription'] = OptionsPeer::getString('TPV_ProductDescription',$idS);

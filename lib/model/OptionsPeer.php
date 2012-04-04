@@ -67,5 +67,34 @@ class OptionsPeer extends BaseOptionsPeer {
         endif;         
        	return new OptionsForm($OO,array('IDS'=>$idS,'NEW'=>$new));
     }
+    
+    static public function getMailEnt( $OER )
+    {
+
+        $idS = $OER->getSiteId();  	
+        $Nom = $OER->getNomUsuari();        
+        $Activitat = $OER->getNomActivitat();
+        $OH = $OER->getHoraris();        
+        $OS = SitesPeer::retrieveByPK($OER->getSiteId());
+        if(!($OS instanceof Sites)) $OS = new Sites();
+      	        
+                
+        $TEXT = OptionsPeer::getString( 'BODY_MAIL_ENTRADES' , $idS );            
+        $TEXT = str_replace( '{{NOM}}' , $OER->getNomUsuari() , $TEXT );
+        $TEXT = str_replace( '{{NUM_ENTRADES}}' , $OER->getQuantitat() , $TEXT );
+        $TEXT = str_replace( '{{ACTIVITAT}}' , $OER->getNomActivitat() , $TEXT );
+        $TEXT = str_replace( '{{ENTITAT}}' , $OS->getNom() , $TEXT );
+        $TEXT = str_replace( '{{TEL_ENTITAT}}' , $OS->getTelefon() , $TEXT );
+        $TEXT = str_replace( '{{MAIL_ENTITAT}}' , $OS->getEmail() , $TEXT );
+        $TEXT = str_replace( '{{TEL_ADMIN}}' , '972.20.20.13' , $TEXT );
+        $TEXT = str_replace( '{{MAIL_ADMIN}}' , OptionsPeer::getString('MAIL_ADMIN',$idS) , $TEXT );            
+        $TEXT = str_replace( '{{DIA}}' , $OH->getDia('d/m/Y') , $TEXT );
+        $TEXT = str_replace( '{{HORA}}' , $OH->getHorainici('H:i') , $TEXT );
+        $TEXT = str_replace( '{{ESPAI}}' , implode(',',Horaris::getArrayEspais()) , $TEXT );
+        $TEXT = str_replace( '{{CODI}}' , sha1($OER->getIdentrada()) , $TEXT );
+          	
+       	return $TEXT; 
+        
+    }
 
 } // OptionsPeer

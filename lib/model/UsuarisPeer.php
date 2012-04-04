@@ -253,7 +253,7 @@ class UsuarisPeer extends BaseUsuarisPeer
   }
     
   static public function getNomComplet($idU)
-  {
+  {    
     $OU = self::retrieveByPK($idU);
     if($OU instanceof Usuaris) return $OU->getNomComplet();
     else return 'n/d';

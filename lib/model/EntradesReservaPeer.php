@@ -23,6 +23,32 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
     const ESTAT_ENTRADA_CONFIRMADA = 10;
     const ESTAT_ENTRADA_ANULADA = 20;
     const ESTAT_ENTRADA_EN_ESPERA = 30;
+    const ESTAT_ENTRADA_EN_PROCES = 40;
+    const ESTAT_ENTRADA_RESERVADA = 50;
+    const ESTAT_ENTRADA_ERROR = -1;
+
+    const PAGAMENT_RESERVA = 0;
+    const PAGAMENT_METALIC = 1;
+    const PAGAMENT_TARGETA = 2;     
+
+
+    /**
+     * Retorna els tipus de venta, segons el marcat a l'entrada. 
+     * */
+    static public function getTipusPagaments($IDA, $IDH){
+        $OEP = EntradesPreusPeer::retrieveByPK( $IDH , $IDA );                
+        $A = array();                        
+        
+        if($OEP->getTipus() == EntradesPreusPeer::TIPUS_RESERVA): 
+            $A = array( self::PAGAMENT_RESERVA => 'Només reserva' );
+        elseif($OEP->getTipus() == EntradesPreusPeer::TIPUS_VENTA):
+            $A = array( self::PAGAMENT_TARGETA => 'Targeta de crèdit' , self::PAGAMENT_METALIC => 'En metàl·lic' , self::PAGAMENT_RESERVA => 'Només reserva' );
+        else: 
+            $A = array( self::PAGAMENT_RESERVA => 'Només reserva' );
+        endif; 
+                
+        return $A;
+    }
 
 
     /**
@@ -38,7 +64,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
     static public function setCompraEntrada($IDH, $IDU, $NEntrades, $Descompte, $COMPRA = false)
     {
             
-        //Carreguem l'activitat en q�esti� per carregar les dades.
+        //Carreguem l'activitat en qüestió per carregar les dades.
         $OH = HorarisPeer::retrieveByPK($IDH);
         if(!($OH instanceof Horaris)) return -1;
         $IDA = $OH->getActivitatsActivitatid(); 
@@ -63,7 +89,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         //Generem la nova compra o reserva
         $OER = EntradesReservaPeer::initialize( $idS , '' , 0 , $IDA , $IDH , $IDU , $NEntrades , $Tipus , $Descompte )->getObject();
             
-        //Si �s reserva                    
+        //Si és reserva                    
         if( $Tipus == EntradesPreusPeer::TIPUS_RESERVA ){
         
             $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA);                                            
@@ -87,25 +113,40 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         return $C;
     }
 
+    static public function getEstatToString($estat)
+    {
+        switch($estat){
+            case self::ESTAT_ENTRADA_CONFIRMADA: return 'Pagada'; break;
+            case self::ESTAT_ENTRADA_ANULADA: return 'Anul·lada'; break;
+            case self::ESTAT_ENTRADA_EN_ESPERA: return 'En espera'; break;
+            case self::ESTAT_ENTRADA_EN_PROCES: return 'En procès'; break;
+            case self::ESTAT_ENTRADA_RESERVADA: return 'Reservada'; break;
+            case self::ESTAT_ENTRADA_ERROR: return 'Error'; break; 
+        }
+    }
+
     static public function selectEstats(){
         return array(
-            self::ESTAT_ENTRADA_EN_ESPERA => 'En espera',            
-            self::ESTAT_ENTRADA_CONFIRMADA => 'Confirmada',
-            self::ESTAT_ENTRADA_ANULADA => 'Anulada',        
+            self::ESTAT_ENTRADA_EN_ESPERA => self::getEstatToString(self::ESTAT_ENTRADA_EN_ESPERA),            
+            self::ESTAT_ENTRADA_CONFIRMADA => self::getEstatToString(self::ESTAT_ENTRADA_CONFIRMADA),
+            self::ESTAT_ENTRADA_ANULADA => self::getEstatToString(self::ESTAT_ENTRADA_ANULADA), 
+            self::ESTAT_ENTRADA_RESERVADA => self::getEstatToString(self::ESTAT_ENTRADA_RESERVADA),       
         );
         
     }
 
-	static public function initialize( $idS , $url_ajax_usuaris, $idER = 0, $idA = 0, $idH = 0 , $idU = 0 , $quantitat = 0 , $tipus = EntradesPreusPeer::TIPUS_RESERVA , $Descompte )
+	static public function initialize( $idS , $url_ajax_usuaris, $idER , $idA , $idH , $idU = 0 , $quantitat = 0 , $tipus = EntradesPreusPeer::TIPUS_RESERVA , $Descompte = 0 )
 	{				
-        $OER = self::retrieveByPKs($idER);	
+        $OER = self::retrieveByPK($idER);
         
 		if(!($OER instanceof EntradesReserva)):
 			$OER = new EntradesReserva();
             $OER->setEntradesPreusActivitatId(($idA == 0)?null:$idA);
             $OER->setEntradesPreusHorariId(($idH == 0)?null:$idH);
 			$OER->setUsuariid(($idU == 0)?null:$idU);
-            $OER->setNomReserva("");
+            $OER->setNomReserva(null);
+            $OER->setEmailReserva(null);
+            $OER->setTelefonReserva(null);
             $OER->setQuantitat($quantitat);			
 			$OER->setEstat(self::ESTAT_ENTRADA_EN_ESPERA);
             $OER->setActiu(true);
@@ -114,8 +155,8 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
             $OER->setSiteid($idS);
 			$OER->setData(date('Y-m-d H:i',time()));
 		endif; 		
-		
-        return new EntradesReservaForm($OER,array('ajax'=>$url_ajax_usuaris));
+
+        return new EntradesReservaForm($OER,array('ajax'=>$url_ajax_usuaris, 'IDA'=> $idA , 'IDH' => $idH ));
 	}
 
     /**
@@ -163,7 +204,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
      * @param $idA Activitatid()
      * @return Llistat d'entrades
      * */
-    static public function getEntradesActivitat($idA){
+/*    static public function getEntradesActivitat($idA){
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);
         
@@ -171,7 +212,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C->addDescendingOrderByColumn(self::ENTRADES_RESERVA_ID);
         return self::doSelect($C);        
     }
-
+*/
 
     /**
      * Diu quantes entrades s'han confirmat d'una activitat.
@@ -195,8 +236,18 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
     }
 */
 
+    static public function getEntradesVenudes($idA, $idH)
+    {
+        $C = new Criteria();
+        $C->add(self::ENTRADES_PREUS_ACTIVITAT_ID, $idA);
+        $C->add(self::ENTRADES_PREUS_HORARI_ID, $idH);
+        $C->add(self::ACTIU, true);
+        
+        return self::doSelect($C);
+    }
+
     /**
-     * Places lliures a un horari determinat
+     * Retorna les places lliures en un horari determinat
      * @param $idH Horariid     
      * @return Int Quantes entrades queden lliures.
      * */
@@ -234,6 +285,5 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C->add(self::ESTAT,self::ESTAT_ENTRADA_ANULADA, CRITERIA::NOT_EQUAL);
         return (self::doCount($C)>0);        
     }
-
 
 } // EntradesReservaPeer

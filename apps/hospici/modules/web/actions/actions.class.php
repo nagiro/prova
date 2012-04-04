@@ -540,11 +540,75 @@ class webActions extends sfActions
     
     $this->LMatricules = MatriculesPeer::h_getMatriculesUsuari($this->IDU);
     $this->LReserves = ReservaespaisPeer::h_getReservesUsuaris($this->IDU,$this->IDS);    
-    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);
+    $this->LEntrades = EntradesReservaPeer::getEntradesUsuari($this->IDU);        
     $this->LFormularis = FormularisRespostesPeer::getFormularisUsuari($this->IDU);    
     // $this->LMissatges = MissatgesPeer::getMissatgesUsuari();    
         
   }  
+
+
+
+ /**
+  * 
+  * Funció que tracta el TPV després d'haver comprat unes entrades.
+  * */
+  public function executeGetTPVEntrades(sfWebRequest $request)
+  {
+
+    //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
+    //if( $request->getParameter('Ds_Response') == '0000' )
+    if( $request->getParameter('Ds_Response') == '0000' )                                
+    {
+        
+        $idER = $request->getParameter('Ds_MerchantData',null);
+        
+        $OER  = EntradesReservaPeer::retrieveByPK($idER);
+                            
+        if($OER instanceof EntradesReserva)
+        {
+            $idS = $OER->getSiteid();
+            
+            $from = OptionsPeer::getString( 'MAIL_FROM' , $idS );
+            
+            //Un cop sabem que la matrícula existeix, comprovem la signatura i si és correcta, marquem com a pagat.
+            if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Response') , $request->getParameter('Ds_Signature'), OptionsPeer::getString( 'TPV_PASSWORD' , $idS ) ) ) 
+            {
+
+                $MailEnt    = OptionsPeer::getMailEntrada($OER);
+                $subject    = 'Hospici :: Nova entrada';
+                $preu       = strval($request->getParameter('Ds_Amount')) / 100;                
+                
+                $OER->setEstat(EntradesReservaPeer::PAGAT);
+                $OER->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
+                $OER->setTpvOrder($request->getParameter('Ds_Order'));
+                $OER->setPagat($preu);
+                $OER->save();                            
+                                                
+                $email = $OER->getEmail();
+                if($email <> "") $this->sendMail( $from , $email , $subject , $MailEnt );
+                $this->sendMail( $from , OptionsPeer::getString( 'MAIL_ADMIN' , $idS ) , $subject , $MailEnt );
+                                
+            } else {
+
+     			$this->sendMail($from,'informatica@casadecultura.org','HASH ERRONI',serialize($_POST));
+                
+            }
+                                        
+        } else {
+            
+            $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','CODI MATRÍCULA ERRONI',serialize($_POST));
+            
+        }
+                            
+    } else {
+    
+        $this->sendMail('informatica@casadecultura.org','informatica@casadecultura.org','NO HA ENTRAT AMB TPV',serialize($_POST));
+        
+    }
+    
+    return sfView::NONE;
+
+  }
 
 
   public function executeGetTPV(sfWebRequest $request)

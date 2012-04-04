@@ -1127,7 +1127,7 @@ class gestioActions extends sfActions
     			$this->FENTRADES  = EntradesPeer::initialize( $PE['idEntrada'] , $this->IDS );
     			$this->FENTRADES->bind($PE);
     			if($this->FENTRADES->isValid()):
-    				$this->FENTRADES->save();    		
+    				$this->FENTRADES->save();                                                                                                                                                                    		
     				$this->getUser()->addLogAction($accio,'gEntrades',$this->FENTRADES->getObject());		
     			else: 
     				$this->MODE = 'EDITA';
@@ -1169,9 +1169,10 @@ class gestioActions extends sfActions
         
         //Llista els que han reservat
     	case 'LR':
-                $IDA = $request->getParameter('IDA');                
+                                                        
     			$this->MODE = 'LLISTA_ENTRADES';      
-    			$this->LLISTAT_ENTRADES = EntradesReservaPeer::getEntradesActivitat($IDA); 			
+    			$this->LLISTAT_ENTRADES = EntradesReservaPeer::getEntradesVenudes( $request->getParameter('IDA') , $request->getParameter('IDH') );
+                 			
     		break;    	
         
         //Anul·la la reserva
@@ -1182,24 +1183,162 @@ class gestioActions extends sfActions
                 try{
                     $OR = EntradesReservaPeer::retrieveByPK($IDR);
                     $OR->setInactiu();
-                    $IDA = $OR->getActivitatsid();        
+                    $IDA = $OR->getEntradesPreusActivitatId();
+                    $IDH = $OR->getEntradesPreusHorariId();        
                 } catch (Exception $e) {}
                                 
                 $this->MODE = 'LLISTA_ENTRADES';
-                $this->redirect('gestio/gReserves?accio=LR&IDA='.$IDA);
+                $this->redirect('gestio/gEntrades?accio=LR&IDA='.$IDA.'&IDH='.$IDH);
             break;
+
         
         case 'VE':
-                $IDA = $request->getParameter('IDA',0);
-                $IDH = $request->getParameter('IDH',0);
-                $this->FReserva = EntradesReservaPeer::initialize($this->IDS, $this->URL,0,$IDA,$IDH,0);
+                
                 $this->MODE = 'EDITA_ENTRADA';
-            break;                
-      
+                
+                //Comprem una entrada o guardem una modificació.
+                if($request->hasParameter('BRESERVASAVE'))
+                {
+                    $RS = $request->getParameter('entrades_reserva');
+                    $this->FReserva = EntradesReservaPeer::initialize( $this->IDS , $this->URL , $RS['idEntrada'] , $RS['entrades_preus_activitat_id'] , $RS['entrades_preus_horari_id'] );
+                    $this->FReserva->bind($RS);
+                    if($this->FReserva->isValid()){
+                        try{
+                            $is_new = $this->FReserva->isNew();
+                            $OER = $this->FReserva->save();
+
+                            //Si hem pagat amb targeta
+                            if($OER->getTipuspagament() == EntradesReservaPeer::PAGAMENT_TARGETA && $is_new):                        
+                    			$this->TPV = MatriculesPeer::getTPV( $OER->getPagat() , $OER->getNomUsuari() , $OER->getIdentrada() , $OER->getSiteId() , false );
+                                $this->URL = OptionsPeer::getString( 'TPV_URL' , $OER->getSiteId() );
+                                $this->setLayout('blank');
+                                $this->setTemplate('pagament');
+                            else: 
+                                $this->redirect('gestio/gEntrades?accio=OK&Ds_MerchantData='.$OER->getIdentrada());                                
+                            endif;
+                                
+                        } catch (Exception $e){ $this->MISSATGE = $e->getMessage(); }
+                        
+                    }           
+                }         
+                //Entrem a comprar o editar una entrada normal.                 
+                else 
+                {
+                                
+                    $IDR = $request->getParameter('IDR',0);                    
+                    $IDA = $request->getParameter('IDA',0);
+                    $IDH = $request->getParameter('IDH',0);
+                    
+                    $this->FReserva = EntradesReservaPeer::initialize($this->IDS, $this->URL,$IDR,$IDA,$IDH,0);                     
+                                        
+                }
+                                
+            break;
+
+        //Un cop hem fet una compra d'una entrada, hem de mostrar aquesta pantalla.
+        case 'OK':
+                $this->idER = $request->getParameter('Ds_MerchantData',0);
+                $OER = EntradesReservaPeer::retrieveByPK($this->idER);
+                if($OER instanceof EntradesReserva):
+                              
+                    $email = $OER->getEmail();
+                    if($email <> "") $this->sendMail( $from , $email , $subject , $MailEnt );
+                    $this->sendMail( $from , OptionsPeer::getString( 'MAIL_ADMIN' , $idS ) , $subject , $MailEnt );
+                    $this->MISSATGE = "ENTRADA_OK";
+                     
+                else: 
+                    $this->MISSATGE = "ENTRADA_NO_TROBADA";
+                endif;
+
+                $this->MODE = 'MISSATGE';
+
+            break;
+        
+        case 'KO':
+        
+                $this->MISSATGE = "PROBLEMA_PAGANT";
+                $this->MODE = 'MISSATGE';
+                
+            break;
+            
+        case 'PRINT':
+
+				$idER = $request->getParameter('idER');
+				$OER = EntradesReservaPeer::retrieveByPK($idER);
+                $OEP = EntradesPreusPeer::retrieveByPK($OER->getEntradesPreusHorariId(), $OER->getEntradesPreusActivitatId());                		
+                                                				
+				$preu = DescomptesPeer::getPreuAmbDescompte($OEP->getPreu(),$OER->getDescompte());
+                $desc = DescomptesPeer::getDescomptesArray($OER->getSiteId(),false,false);                
+                
+                $doc = new sfTinyDoc();
+                
+                $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$OER->getSiteId()).'documents/Entrades_Resguard'.$OER->getSiteId().'.docx';
+                $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$OER->getSiteId()).'documents/Entrades_ResguardGen.docx';
+                if(file_exists($url_prop)) $doc->createFrom($url_prop);
+                else $doc->createFrom($url_gen);                                				
+                
+				$doc->loadXml('word/document.xml');
+                                                                                 
+                $doc->mergeXmlField('concepte', $OER->getNomActivitat() );
+                $doc->mergeXmlField('preu', $preu );
+                $doc->mergeXmlField('quantitat', $OER->getQuantitat() );
+                $doc->mergeXmlField('nom', $OER->getPagat() );
+                $doc->mergeXmlField('codi_entrada', sha1($OER->getIdentrada() ));
+                $doc->mergeXmlField('dia', $OER->getHorari()->getDia('d/m/Y') );
+                $doc->mergeXmlField('horari', $OER->getHorari()->getHorainici('H:i') );
+                $doc->mergeXmlField('base', $OER->getPagat() );
+                $doc->mergeXmlField('iva', '0%' );
+                $doc->mergeXmlField('total', $OER->getPagat() );                
+                $doc->mergeXmlField('import', $OER->getPagat() );                
+                $doc->mergeXmlField('descompte', 'Descomtpe: '.$desc[$OER->getDescompte()] );
+                
+				$doc->saveXml();
+				$doc->close();
+				$doc->sendResponse();
+				$doc->remove();
+				
+				throw new sfStopException;         
+                
+        
+            break;
+
+        case 'PRINT_LLISTAT':
+							                            				
+                $LOER = EntradesReservaPeer::getEntradesVenudes( $request->getParameter('IDA') , $request->getParameter('IDH') );                                                                                                                        
+                $desc = DescomptesPeer::getDescomptesArray($this->IDS,false,false);
+                $OA = ActivitatsPeer::retrieveByPK($request->getParameter('IDA'));
+                
+                //Comença la càrrega de la informació
+                $i = 1;
+                $HTML  = "<html><head><style> td { border:1px solid gray; } </style></head><body>"; 
+                $HTML .= "<h1>LLISTAT ASSISTENTS A L'ACTIVITAT</h1>";
+                $HTML .= "<h2>".$OA->getNom()."</h2>";
+                $HTML .= "<table style=\"width:100%; border:1px solid gray;\">";
+                $HTML .= "<tr><td>ID</td><td>NOM</td><td>ENTRADES</td><td>ESTAT</td><td>DESCOMPTE</td><td>COMENTARI</td></tr>";                                                 
+                foreach($LOER as $OER):
+                    $HTML .= '<tr>';
+                    $HTML .= '<td>'.$i++.'</td>';
+                    $HTML .= '<td>'.$OER->getNomUsuari().'<br /><span style="font-size:9px;">'.sha1($OER->getIdentrada()).'</span></td>';
+                    $HTML .= '<td style="text-align:center;">'.$OER->getQuantitat().'</td>';
+                    $HTML .= '<td>'.$OER->getEstatString().'</td>';
+                    $HTML .= '<td>'.$desc[$OER->getDescompte()].'</td>';
+                    $HTML .= '<td>'.$OER->getComentari().'</td>';      
+                    $HTML .= '</tr>';
+                                  
+                endforeach;                
+                $HTML .= '</table>';
+                $HTML .= '</body></html>';
+
+                $OPDF = new HTML2PDF($this->IDS,'Llistat_entrades');
+                $OPDF->doPdf($HTML);                                                
+    					
+    			throw new sfStopException;			   	  	                                                                                                                                 
+            break;                        
+                  
         //Llisto els horaris que disposen d'entrades
         default:
                 //Agafo els horaris que tenen entrades a la venta i els ordeno per data 
-                $this->LLISTAT_ACTIVITATS = ActivitatsPeer::cercaActivitatsVenta( $this->P , $this->IDS );                         
+                $this->LLISTAT_ENTRADES_PREUS = EntradesPreusPeer::getActivitatsAmbEntrades( $this->IDS , $this->P );                                         
                 $this->MODE   = "LLISTA_ACTIVITATS";
             break;
     }        
@@ -1486,7 +1625,7 @@ class gestioActions extends sfActions
 	    elseif($request->hasParameter('BDESCRIPCIOSAVE')) 	$this->accio = 'DESCRIPCIO_SAVE';
 	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $this->accio = 'DESCRIPCIO_DELETE';
 	    elseif($request->hasParameter('BGENERANOTICIA')) 	$this->accio = 'GENERA_NOTICIA';	    
-        elseif($request->hasParameter('BPREUSSAVE')) 	    $this->accio = 'PREUS_SAVE';
+        elseif($request->hasParameter('BPREUSSAVE')) 	    $this->accio = 'PREUS';
 	    
     }                
     
@@ -1730,44 +1869,34 @@ class gestioActions extends sfActions
     		break;
       
       case 'PREUS':
-                $this->CarregaActivitats($request,false);
-                $this->OA = ActivitatsPeer::retrieveByPK($this->IDA);                 
+                            
+                $this->CarregaActivitats($request,false);               //Carreguem la info de context d'activitats
+                $this->OA = ActivitatsPeer::retrieveByPK($this->IDA);         //Carreguem l'activitat en qüestió.
+                $LOH = $this->OA->getHorarisActius($this->IDS);               //Carreguem els horaris actius de l'activitat.
+                $this->FPREUS = array();
+                                                
+                foreach($LOH as $OH):                                   //Per cada horari carreguem el seu formulari d'entrades.
+                    $idH = $OH->getHorarisid();
+                    $this->FPREUS[ $idH ] = EntradesPreusPeer::initialize( $this->IDS , $idH , $this->IDA );                                        
+                endforeach;
+                
+                //Si hem premut el botó de guardar, guardem i si hi ha errors, els mostrem.
+                if($request->hasParameter('BPREUSSAVE')):
+                    $RS = $request->getParameter('entrades_preus');
+                    $FEntrades = EntradesPreusPeer::initialize( $this->IDS ,  $RS['horari_id'] , $RS['activitat_id'] );
+                    $FEntrades->bind($RS);    			    			
+        			if($FEntrades->isValid()): 
+        				$FEntrades->save();
+        				$this->getUser()->addLogAction('PREUS_SAVE','gActivitats',$FEntrades->getObject());
+                             				
+        			endif;
+                    $this->FPREUS[ $RS['horari_id'] ] = EntradesPreusPeer::initialize( $this->IDS ,  $RS['horari_id'] , $RS['activitat_id'] ); //Passem el formulari actual guardat a l'array.  
+                endif;                                                                 
                                                     					    			
 			    $this->MODE['PREUS'] = true;
       
             break;
-            
-      case 'PREUS_SAVE':
-                $this->CarregaActivitats($request,false);                                 
-                                                                                                            
-                foreach($request->getParameter('PREUS') as $idH => $RS):
-                               
-                    print_r($RS);
-                                              
-                                                    
-              		$OEP = EntradesPreusPeer::retrieveByPK($idH,$RS['IDA']);            
-                    if(!($OEP instanceof EntradesPreus)){ $OEP = new EntradesPreus(); }
-                    
-                    $OEP->setHorariid($idH);
-                    $OEP->setPreu($RS['PREU']);
-                    $OEP->setPreuR($RS['PREUR']);
-                    $OEP->setPlaces($RS['PLACES']);
-                    $OEP->setTipus($RS['TIPUS']);
-                    $OEP->setActivitatid($RS['IDA']);
-                    $OEP->setActiu(true);
-                    $OEP->setSiteId($this->IDS);
-                    $OEP->setDescomptesString($RS['DESCOMPTES']);                                		
-                    $OEP->save();
-                    $this->IDA = $RS['IDA'];
-                
-                endforeach;                                                            
-                                                    					    			
-			    $this->MODE['PREUS'] = true;
-                
-                $this->OA = ActivitatsPeer::retrieveByPK($this->IDA);
-      
-            break;
-            
+                        
         //Des d'un horari, creem una activitat nova amb les mateixes dades. Ja està entrat l'error a dalt.
         case 'DESDOBLAR':
                 

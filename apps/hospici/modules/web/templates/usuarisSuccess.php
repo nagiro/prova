@@ -320,7 +320,7 @@
                          
                 if(empty($LEntrades)): echo '<tr><td colspan="4">No s\'ha trobat cap entrada comprada.</td></tr>';
                 else:                           
-                    foreach($LEntrades as $OER):                        
+                    foreach($LEntrades as $OER):                                                
                         $OA = ActivitatsPeer::retrieveByPK($OER->getEntradesPreusActivitatId());
                         $OH = HorarisPeer::retrieveByPK($OER->getEntradesPreusHorariId());
                         if($OA instanceof Activitats && $OH instanceof Horaris)                        
@@ -330,12 +330,12 @@
                             if($OER->getEstat() == EntradesReservaPeer::ESTAT_ENTRADA_ANULADA) $class="class=\"tatxat\"";
                             echo "<tr>
                                     <td $class>{$OH->getDia('d-m-Y')}</td>
-                                    <td $class>{$OH->getHorainici('H:m')}</td>
+                                    <td $class>{$OH->getHorainici('H:i')}</td>
                                     <td $class>{$OA->getTmig()}</td>
                                     <td $class>{$SiteName}</td>
                                     <td $class>{$OER->getQuantitat()}</td>
                                     <td $class>{$OER->getEstatString()}</td>";
-                            if($OER->getEstat() != EntradesReservaPeer::ESTAT_ENTRADA_ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getIdentrada())."\">Anul·lar</a></td>";
+                            //if($OER->getEstat() != EntradesReservaPeer::ESTAT_ENTRADA_ANULADA) echo "<td><a href=\"".url_for('@hospici_anula_entrada?idER='.$OER->getIdentrada())."\">Anul·lar</a></td>";
                             echo "</tr>";                                                                            
                         }
                     endforeach;
