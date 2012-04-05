@@ -150,24 +150,24 @@
                 } else {
                     $total = 0;
                     foreach($LLISTAT_ENTRADES as $OR):
-                        if($OR->getEstat() == EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA):                        
-                            try{
-                                $OU = UsuarisPeer::retrieveByPK($OR->getUsuariId());
-                                echo '<div class="col">';
-                                    if($OU instanceof Usuaris) echo '<div class="col1" style="clear:both;"><b>'.$OU->getNomComplet().'</b> ('.$OU->getDni().')<br />Comentari: '.$OR->getComentari().'<br />'.$OU->getEmail().'<br />'.$OU->getTelefonString().'</div>';
-                                    else echo '<div class="col1" style="clear:both;"><b>'.$OR->getNomUsuari().'</b><br />Comentari: '.$OR->getComentari().'<br />'.$OR->getEmailReserva().'<br />'.$OR->getTelefonReserva().'</div>';                                                        
-                                                                                                                        
-                                    echo '<div class="col2">'.$OR->getEstatString().'</div>';
-                                    echo '<div class="col3"><b>'.$OR->getQuantitat().'</b></div>';                            
-                                    echo '<div class="col4">'.
-                                            link_to(image_tag('template/application_edit.png').'<span>Modificar la reserva</span>','gestio/gEntrades?accio=VE&IDA='.$OR->getEntradesPreusActivitatId().'&IDH='.$OR->getEntradesPreusHorariId().'&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.
-                                            link_to(image_tag('template/cross.png').'<span>Anul·lar la reserva</span>','gestio/gEntrades?accio=AR&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.                                                                        
-                                            link_to(image_tag('template/printer.png').'<span>Imprimir una entrada</span>','gestio/gEntrades?accio=PRINT&idER='.$OR->getIdentrada(),array('class'=>'tt2')).' '
-                                        .'</div>';
-                                echo '</div>';
-                                $total += $OR->getQuantitat();
-                            } catch(Exception $e) { echo $e->getMessage(); }                        
-                        endif;
+                                                
+                        try{
+                            $OU = UsuarisPeer::retrieveByPK($OR->getUsuariId());
+                            echo '<div class="col">';
+                                if($OU instanceof Usuaris) echo '<div class="col1" style="clear:both;"><b>'.$OU->getNomComplet().'</b> ('.$OU->getDni().')<br />Comentari: '.$OR->getComentari().'<br />'.$OU->getEmail().'<br />'.$OU->getTelefonString().'</div>';
+                                else echo '<div class="col1" style="clear:both;"><b>'.$OR->getNomUsuari().'</b><br />Comentari: '.$OR->getComentari().'<br />'.$OR->getEmailReserva().'<br />'.$OR->getTelefonReserva().'</div>';                                                        
+                                                                                                                    
+                                echo '<div class="col2">'.$OR->getEstatString().'</div>';
+                                echo '<div class="col3"><b>'.$OR->getQuantitat().'</b></div>';                            
+                                echo '<div class="col4">'.
+                                        link_to(image_tag('template/application_edit.png').'<span>Modificar la reserva</span>','gestio/gEntrades?accio=VE&IDA='.$OR->getEntradesPreusActivitatId().'&IDH='.$OR->getEntradesPreusHorariId().'&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.
+                                        link_to(image_tag('template/cross.png').'<span>Anul·lar la reserva</span>','gestio/gEntrades?accio=AR&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.                                                                        
+                                        link_to(image_tag('template/printer.png').'<span>Imprimir una entrada</span>','gestio/gEntrades?accio=PRINT&idER='.$OR->getIdentrada(),array('class'=>'tt2')).' '
+                                    .'</div>';
+                            echo '</div>';
+                            $total += $OR->getQuantitat();
+                        } catch(Exception $e) { echo $e->getMessage(); }                        
+                        
                     endforeach;
                     echo '<div class="col">';
                             echo '<div class="col1"><b>TOTAL</b></div>';

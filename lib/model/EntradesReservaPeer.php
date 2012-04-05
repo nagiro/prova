@@ -199,49 +199,21 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         return self::doSelect($C);        
     }
 
-    /**
-     * Retorna les entrades guardades per a una activitat en concret.
-     * @param $idA Activitatid()
-     * @return Llistat d'entrades
-     * */
-/*    static public function getEntradesActivitat($idA){
-        $C = new Criteria();
-        $C = self::getCriteriaActiu($C);
-        
-        $C->add(self::ACTIVITATS_ID, $idA);
-        $C->addDescendingOrderByColumn(self::ENTRADES_RESERVA_ID);
-        return self::doSelect($C);        
+    static public function criteriaEntradesOK($C)
+    {
+        $C1 = $C->getNewCriterion(self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA);
+        $C2 = $C->getNewCriterion(self::ESTAT , self::ESTAT_ENTRADA_RESERVADA);
+        $C1->addOr($C2); $C->add($C1);
+        return $C;
     }
-*/
 
-    /**
-     * Diu quantes entrades s'han confirmat d'una activitat.
-     * @param $idA Activitat id     
-     * @return Int Quantes entrades s'han trobat.
-     * */
-/*    static public function countEntradesActivitatConf($idA,$idH = 0){
-        $RET = 0;
-        
-        $C = new Criteria();
-        $C = self::getCriteriaActiu($C);
-        $C->add( self::ENTRADES_PREUS_ACTIVITAT_ID , $idA );
-        if($idH > 0) $C->add( self::ENTRADES_PREUS_HORARI_ID , $idH ); 
-        $C->add( self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA);
-        
-        foreach(self::doSelect($C) as $OE):            
-            $RET += $OE->getQuantes();
-        endforeach;
-        
-        return $RET;
-    }
-*/
-
-    static public function getEntradesVenudes($idA, $idH)
+    static public function getEntradesVenudes($idA, $idH, $nomesOK = false)
     {
         $C = new Criteria();
         $C->add(self::ENTRADES_PREUS_ACTIVITAT_ID, $idA);
         $C->add(self::ENTRADES_PREUS_HORARI_ID, $idH);
         $C->add(self::ACTIU, true);
+        if($nomesOK) $C = self::criteriaEntradesOK($C);
         
         return self::doSelect($C);
     }
@@ -257,7 +229,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);
         $C->add( self::ENTRADES_PREUS_HORARI_ID , $idH );         
-        $C->add( self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA);
+        $C = self::criteriaEntradesOK($C);
         
         foreach(self::doSelect($C) as $OE):
             $RET += $OE->getQuantes();
