@@ -1209,7 +1209,7 @@ class gestioActions extends sfActions
 
                             //Si hem pagat amb targeta
                             if($OER->getTipuspagament() == EntradesReservaPeer::PAGAMENT_TARGETA && $is_new):                        
-                    			$this->TPV = MatriculesPeer::getTPV( $OER->getPagat() , $OER->getNomUsuari() , $OER->getIdentrada() , $OER->getSiteId() , false );
+                    			$this->TPV = MatriculesPeer::getTPV( $OER->getPagat() , $OER->getNomUsuari() , $OER->getIdentrada() , $OER->getSiteId() , false , true );
                                 $this->URL = OptionsPeer::getString( 'TPV_URL' , $OER->getSiteId() );
                                 $this->setLayout('blank');
                                 $this->setTemplate('pagament');
