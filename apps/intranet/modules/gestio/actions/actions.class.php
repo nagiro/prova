@@ -1314,8 +1314,16 @@ class gestioActions extends sfActions
                 $HTML .= "<h1>LLISTAT ASSISTENTS A L'ACTIVITAT</h1>";
                 $HTML .= "<h2>".$OA->getNom()."</h2>";
                 $HTML .= "<table style=\"width:100%; border:1px solid gray;\">";
-                $HTML .= "<tr><td>ID</td><td>NOM</td><td>ENTRADES</td><td>ESTAT</td><td>DESCOMPTE</td><td>COMENTARI</td></tr>";                                                 
+                $HTML .= "<tr><td>ID</td><td>NOM</td><td>ENTRADES</td><td>ESTAT</td><td>DESCOMPTE</td><td>COMENTARI</td></tr>";
+                $NOMS = array();
+                
+                //Agafem els noms i els ordenem
                 foreach($LOER as $OER):
+                    $NOMS[$OER->getNomUsuari()] = $OER;
+                endforeach;
+                krsort( $NOMS , SORT_STRING );
+                                                                 
+                foreach($NOMS as $OER):
                     $HTML .= '<tr>';
                     $HTML .= '<td>'.$i++.'</td>';
                     $HTML .= '<td>'.$OER->getNomUsuari().'<br /><span style="font-size:9px;">'.sha1($OER->getIdentrada()).'</span></td>';
