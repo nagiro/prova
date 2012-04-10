@@ -990,7 +990,7 @@ class gestioActions extends sfActions
                 $this->arxiu_titol = $mail_dir_site.$this->IDS.'-titol.csv';
                 $this->arxiu_bash  = $mail_dir_site.$this->IDS.'-bash.sh';
                                 
-                $fd = fopen($arxiu_mails,'w+');                
+                $fd = fopen($this->arxiu_mails,'w+');                
                 foreach($this->EMAILS as $OM) fwrite($fd,$OM->getEmail().chr(10));
                 fclose($fd);                
                                 
