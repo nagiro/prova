@@ -981,7 +981,35 @@ class gestioActions extends sfActions
                 $this->MISSATGE->setDataEnviament(date('Y-m-d',time()));
                 $this->MISSATGE->save();
                 //Enviament a totes les llistes
-                        
+                
+                //Generem l'arxiu en bash per utilitzar amb el mutt.                
+                $mail_dir = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'mailing/';
+                $mail_dir_site = $mail_dir;
+                $this->arxiu_mails = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-mails.csv';
+                $this->arxiu_text  = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-missatge.csv';
+                $this->arxiu_titol = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-titol.csv';
+                $this->arxiu_bash  = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-bash.sh';
+                                
+                $fd = fopen($arxiu_mails,'w+');                
+                foreach($this->EMAILS as $OM) fwrite($fd,$OM->getEmail().chr(10));
+                fclose($fd);                
+                                
+                //Guardem els arxius que usarem.                 
+                file_put_contents( $this->arxiu_text , $this->MISSATGE->getText() );
+                file_put_contents( $this->arxiu_titol , $this->MISSATGE->getTitol() );
+                $OS = SitesPeer::retrieveByPK($this->IDS);
+                
+                //Creem el bash que executarem amb el cron.                 
+                $ARXIU  = '#!/bin/bash '.chr(10);                             
+                $ARXIU .= "mails=$(cat {$this->arxiu_mails} | sort | uniq) ".chr(10);
+                $ARXIU .= "contenido=$(cat {$this->arxiu_text}) ".chr(10);                                                
+                $ARXIU .= "export EMAIL=\"{$OS->getNom()} <{$OS->getEmail()}>\"".chr(10);
+                $ARXIU .= "for user in \$mails".chr(10);
+                $ARXIU .= "do".chr(10);
+                $ARXIU .= "echo \$contenido | mutt -e \"set content_type=text/html\" -F \"/home/informatica/www/phplist/CCG/templates/muttrc\" -s \"$(cat {$this->arxiu_titol})\" \$user ".chr(10);                
+                $ARXIU .= "done".chr(10);
+                file_put_contents( $this->arxiu_bash , $ARXIU );
+                                                 
             break;          
            
         case 'EDITLIST':

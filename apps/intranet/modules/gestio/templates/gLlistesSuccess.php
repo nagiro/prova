@@ -106,23 +106,25 @@
         <div class="TITOL">DADES PER ENVIAR</div>
                             
             <div>
-                <div class="titol">TITOL (<?php echo link_to('Edita el titol','gestio/gLlistes?accio=EM&IDM='.$MISSATGE->getIdmissatge()); ?>)</div>
-                <div><?php echo $MISSATGE->getTitol(); ?></div>
+                <div class="titol">TITOL</div>                                
+                <div><a target="_blank" href="/web/mailing/<?php echo $IDS ?>-titol.csv">Baixa't el fitxer</a></div>
+                <div><a target="_blank" href="/web/images/f.jpg">Baixa't el fitxer</a></div>
             </div>
             
             <div style="margin-top: 10px;">
-                <div class="titol">MISSATGE (<?php echo link_to('Edita el missatge','gestio/gLlistes?accio=EM&IDM='.$MISSATGE->getIdmissatge()); ?>)</div>
-                <div><?php echo htmlspecialchars($MISSATGE->getText()); ?></div>
+                <div class="titol">MISSATGE</div>
+                <div><a target="_blank" href="/web/mailing/<?php echo $IDS ?>-missatge.csv">Baixa't el fitxer</a></div>
             </div>
             
             <div style="margin-top: 10px;">
-                <div class="titol">EMAILS DE LES LLISTES</div>
-                <div>                                        
-                    <?php foreach($EMAILS as $OE): ?>
-                        <?php echo $OE->getEmail(); ?><br />                        
-                    <?php endforeach; ?>                    
-                </div>
+                <div class="titol">EMAILS DE LES LLISTES</div>                                                        
+                <div><a target="_blank" href="/web/mailing/<?php echo $IDS ?>-mails.csv">Baixa't el fitxer</a></div>                       
             </div>
+            
+            <div style="margin-top: 10px;">
+                <div class="titol">BASH O EXECUTABLE</div>                                                        
+                <div><a target="_blank" href="/web/mailing/<?php echo $IDS ?>-bash.sh">Baixa't el fitxer</a></div>                       
+            </div>            
     </div>
     
 
