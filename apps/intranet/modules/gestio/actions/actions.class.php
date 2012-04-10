@@ -985,10 +985,10 @@ class gestioActions extends sfActions
                 //Generem l'arxiu en bash per utilitzar amb el mutt.                
                 $mail_dir = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'mailing/';
                 $mail_dir_site = $mail_dir;
-                $this->arxiu_mails = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-mails.csv';
-                $this->arxiu_text  = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-missatge.csv';
-                $this->arxiu_titol = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-titol.csv';
-                $this->arxiu_bash  = $mail_dir_site.$this->MISSATGE->getIdmissatge().'-bash.sh';
+                $this->arxiu_mails = $mail_dir_site.$this->IDS.'-mails.csv';
+                $this->arxiu_text  = $mail_dir_site.$this->IDS.'-missatge.csv';
+                $this->arxiu_titol = $mail_dir_site.$this->IDS.'-titol.csv';
+                $this->arxiu_bash  = $mail_dir_site.$this->IDS.'-bash.sh';
                                 
                 $fd = fopen($arxiu_mails,'w+');                
                 foreach($this->EMAILS as $OM) fwrite($fd,$OM->getEmail().chr(10));
