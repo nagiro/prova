@@ -2,3 +2,6 @@ autoload:
   facebook:
     path:      %SF_LIB_DIR%/vendor/facebook
     recursive: on
+  barcode:
+    path:      %SF_LIB_DIR%/vendor/barcode
+    recursive: on    
