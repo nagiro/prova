@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage blogs
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: actions.class.php 12479 2008-10-31 10:54:40Z fabien $
  */
 class blogsActions extends sfActions
@@ -16,7 +16,7 @@ class blogsActions extends sfActions
       $this->IDS = 1;       
 	  $feed = new sfAtom1Feed();
 	
-	  $feed->setTitle('Notícies Culturals de Girona');
+	  $feed->setTitle('NotÃ­cies Culturals de Girona');
 	  $feed->setLink('http://www.casadecultura.org/noticiesculturals');
 	  $feed->setAuthorEmail('giroscopi@casadecultura.org');
 	  $feed->setAuthorName('Giroscopi || Casa de Cultura de Girona');
@@ -56,7 +56,7 @@ class blogsActions extends sfActions
 		             <h2>{$post->getSubtitle1()}</h2><br />
 		             <h3>{$post->getSubtitle2()}</h3><br />
 		             <a href=\"{$post->getUrl()}\">Web</a><br />
-		             <a href=\"{$url_web}\">Notícia original</a>
+		             <a href=\"{$url_web}\">NotÃ­cia original</a>
 		         </td></tr></table>	             
 	             ";	    
 	             
@@ -197,17 +197,17 @@ class blogsActions extends sfActions
 					$ON->setPageId($this->PAGE_ID_QUE_PASSARA);
 				endif; 			
 		  		
-				$ON->save(); //Guardem la notícia                					  		
+				$ON->save(); //Guardem la notÃ­cia                					  		
 			
 			//Guardem les imatges
 			if(isset($RET['file'])):
                 
                 $WEBSYSROOT = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS);
                 
-				//Mirem l'extensió de l'arxiu
+				//Mirem l'extensiÃ³ de l'arxiu
     			$path_info = pathinfo($WEBSYSROOT.'uploads/formularis/'.$RET['file']);    			    			    			    		
     			
-    			//Si l'arxiu és una imatge, el tractem i el posem com a imatge
+    			//Si l'arxiu Ã©s una imatge, el tractem i el posem com a imatge
     			if(strtolower($path_info['extension']) == 'jpg' || strtolower($path_info['extension']) == 'png'): 			
 			
     				try{
@@ -253,10 +253,10 @@ class blogsActions extends sfActions
 	  	
 	  	
 	  	/**
-	  	 * Procès de canvi de lloc les notícies que ja han passat a una altra pàgina
+	  	 * ProcÃ¨s de canvi de lloc les notÃ­cies que ja han passat a una altra pÃ gina
 	  	 */
 	  	
-	  	//Captem les notícies que han de canviar de pàgina... (Actual->Passades)
+	  	//Captem les notÃ­cies que han de canviar de pÃ gina... (Actual->Passades)
 	  	$C = new Criteria();
         $C = AppBlogsEntriesPeer::getCriteriaActiu($C,$this->IDS);
         
@@ -268,7 +268,7 @@ class blogsActions extends sfActions
 	  		$OO->save();
   		endforeach;
   		
-	  	//Captem les notícies que han de canviar de pàgina... (Futures->actual)
+	  	//Captem les notÃ­cies que han de canviar de pÃ gina... (Futures->actual)
 	  	$C = new Criteria();
         $C = AppBlogsEntriesPeer::getCriteriaActiu($C,$this->IDS);
         
@@ -319,7 +319,7 @@ class blogsActions extends sfActions
   	$this->setLayout('blank');
   	$this->DADES = array('nom'=>'','cognoms'=>'','domicili'=>'','numero'=>'','codi_postal'=>'','localitat'=>'','telefon'=>'','qreu'=>'');
   	$this->ENVIAT = false;
-  	$this->FORM_ID = 1;  //Aquest formulari és el número 1 quan es va entrar :D
+  	$this->FORM_ID = 1;  //Aquest formulari Ã©s el nÃºmero 1 quan es va entrar :D
   	
   	if(!$request->hasParameter('ESTAT')) $this->ESTAT = 'INICI';  	
   	else $this->ESTAT = $request->getParameter('ESTAT');
@@ -337,7 +337,7 @@ class blogsActions extends sfActions
 	  			$this->MISSATGE = array('TEXT'=>"Hi ha hagut algun problema guardant...",'OK'=>false);
 	  		endif;
   		else: 
-	  		$this->MISSATGE = array('TEXT'=>"La suma no és correcta",'OK'=>false);
+	  		$this->MISSATGE = array('TEXT'=>"La suma no Ã©s correcta",'OK'=>false);
 	  	endif;   		
   	endif;
   	
@@ -353,7 +353,7 @@ class blogsActions extends sfActions
   {
   	
 	$PAGE_ID = AppBlogsPagesPeer::retrieveByPK($request->getParameter('PAGE_ID'));
-	$URL = sfConfig::get('sf_webrooturl').'blogs/'.$request->getParameter('URL');
+	$URL = OptionsPeer::getString('SF_WEBROOT',1).'blogs/'.$request->getParameter('URL');
 	if($PAGE_ID instanceof AppBlogsPages && !empty($URL)):
 
 		$feed = new sfAtom1Feed();
@@ -383,7 +383,7 @@ class blogsActions extends sfActions
 		  					$post->getDate('Y'));
 		  					
 		  $R = $post->getImages();
-		  if($R) $text = '<img src="'.sfConfig::get('sf_webrooturl').'images/blogs/'.$R[0]->getUrl().'" align="LEFT">';
+		  if($R) $text = '<img src="'.OptionsPeer::getString('SF_WEBROOT',1).'images/blogs/'.$R[0]->getUrl().'" align="LEFT">';
 		  else $text = "";
 			
 		  $item = new sfFeedItem();
@@ -420,26 +420,26 @@ class blogsActions extends sfActions
   	
   	if(is_array($default)):
   	
-	  	//Si existeix el paràmetre carreguem el nom actual
+	  	//Si existeix el parÃ metre carreguem el nom actual
 	  	if($request->hasParameter($nomCamp)):
 	  	
 	  		$CAMP = $request->getParameter($nomCamp);
 	  		
-	  		//Mirem els elements del formulari i els guardem a la sessió  		  		
+	  		//Mirem els elements del formulari i els guardem a la sessiÃ³  		  		
 	  		foreach( $CAMP as $NOM => $VALOR ):
 	  			$this->getUser()->setAttribute($nomCamp.$NOM,$VALOR);  				
 	  		endforeach;  				  		  		 
 	  		
 	  		$RET = $CAMP;  		
 	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
 	  	elseif($this->existeixAtributArray($nomCamp,$default)):
 	  		$RET = array();
 	  		foreach($default as $NOM => $VALOR):
 	  			$RET[$NOM] = $this->getUser()->getAttribute($nomCamp.$NOM);
 	  		endforeach;
 	  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
 	  	else: 
 	  	
 	  		foreach($default as $NOM => $VALOR):
@@ -452,19 +452,19 @@ class blogsActions extends sfActions
 	  	
 	else:
 		
-		//Si existeix el paràmetre carreguem el nom actual
+		//Si existeix el parÃ metre carreguem el nom actual
 	  	if($request->hasParameter($nomCamp)):
 	  	
 	  		$CAMP = $request->getParameter($nomCamp);	  		
 	  		$this->getUser()->setAttribute($nomCamp,$CAMP);  					  		  				  		  		 	  		
 	  		$RET = $CAMP;  		
 	  
-	  	//Si no existeix el paràmetre mirem si ja el tenim a la sessió
+	  	//Si no existeix el parÃ metre mirem si ja el tenim a la sessiÃ³
 	  	elseif($this->getUser()->hasAttribute($nomCamp)):
 	  		
 	  		$RET = $this->getUser()->getAttribute($nomCamp);
 	  			  		
-	  	//Si no el tenim a la sessió i tampoc l'hem passat per paràmetre carreguem el valor per defecte. 
+	  	//Si no el tenim a la sessiÃ³ i tampoc l'hem passat per parÃ metre carreguem el valor per defecte. 
 	  	else:
 	  	 	  		  		
 	  		$this->getUser()->setAttribute($nomCamp, $default);	  			  	
