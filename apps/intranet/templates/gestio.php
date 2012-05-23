@@ -5,8 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />   
 
   <?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
-    
-  <link rel="shortcut icon" href="/favicon.ico" />
+      
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/gestio.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
@@ -33,8 +32,6 @@
     <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>
     <script>alert('El seu navegador és antic. Si us plau instal·lis qualsevol navegador que no sigui Internet Explorer');</script>
 <![endif]-->
-      
-  <link rel="shortcut icon" href="/favicon.ico" />
   
   <title>L'Hospici :: Gestor d'entitats culturals</title>
   

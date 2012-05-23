@@ -16,7 +16,6 @@
     <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
   <!-- Facebook & Twitter -->
 
-  <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/gestio.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
