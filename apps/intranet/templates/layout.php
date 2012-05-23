@@ -44,33 +44,33 @@
 		<div style="vertical-align:bottom; position:relative; width:768px;">
 			<div class="PESTANYA_SUPERIOR">
 				<a target="_NEW" href="http://www.casadecultura.org/giroscopi">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_03.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_03.png'); ?>" /> 
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">
 				<a target="_NEW" href="http://www.hospici.cat">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_04.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_04.png'); ?>" /> 
 				</a>
 			</div>
             <div class="PESTANYA_SUPERIOR">
 				<a target="_NEW" href="<?php echo url_for('web/index?accio=mc&node=43'); ?>">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_09.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_09.png'); ?>" /> 
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">
 				<a href="<?php echo url_for('web/espais'); ?>">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_05.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_05.png'); ?>" /> 
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">
 				<!-- <a target="_NEW" href="http://www.hospici.cat/cursos_entitat/1"> -->
                 <a href="<?php echo url_for('web/cursos'); ?>">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_06.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_06.png'); ?>" /> 
 				</a>
 			</div>
   	        <div class="PESTANYA_SUPERIOR">
 				<a href="<?php echo $BASE.'web/index?accio=mc&node=42'; ?>">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_08.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_08.png'); ?>" /> 
 				</a>
 			</div>
 			<div class="PESTANYA_SUPERIOR">
