@@ -38,16 +38,16 @@
 				<div style="height:30px;">&nbsp;</div>				
 										
 				<div class="df" style="width:150px;">
-					<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
+					<div><?php if($imatge > 0): ?> <img src="<?php echo OptionsPeer::getString('SF_WEBROOT',1).'images/activitats/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
 						<div style="margin-top:20px; font-size:10px"><a href="<?php echo url_for('@web_cicle?idC='.$idC.'&titol='.$url_cicle); ?>"></a></div>
                         <?php if(!empty($nom_cicle)): ?>
                             <div style="font-size:10px"><a href="<?php echo url_for('@web_cicle?idC='.$idC.'&titol='.$url_cicle) ?>">Veure activitats del cicle</a></div>
                         <?php endif; ?>
 						<div class="pdf_cicle">
                             <?php if($pdf > 0): ?> 
-                                    <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/activitats/'.$pdf ?>">Baixa't el pdf</a>
+                                    <br /><a href="<?php echo OptionsPeer::getString('SF_WEBROOT',1).'images/activitats/'.$pdf ?>">Baixa't el pdf</a>
                             <?php elseif($pdf_cicle > 0): ?>
-                                    <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf_cicle ?>">Baixa't el pdf del cicle</a>
+                                    <br /><a href="<?php echo OptionsPeer::getString('SF_WEBROOT',1).'images/cicles/'.$pdf_cicle ?>">Baixa't el pdf del cicle</a>
                             <?php endif; ?>                            
                         </div>
 

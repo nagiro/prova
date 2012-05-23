@@ -18,14 +18,14 @@
         
         <div style="border:2px solid #96BF0D; clear:both; padding:10px;">					
         	<div class="df" style="width:150px;">
-        		<div><?php if($imatge > 0): ?> <img src="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
+        		<div><?php if($imatge > 0): ?> <img src="<?php echo OptionsPeer::getString('SF_WEBROOT',1).'images/cicles/'.$imatge ?>" style="vertical-align:middle"><?php endif; ?></div>
         		<?php if($CICLE->getCicleid() > 1): ?>
         			<div style="margin-top:20px;font-size:11px;">Del <?php echo $PA ?> al <?php echo $PF ?></div>
         			<div style="margin-top:20px;font-size:11px;">Activitats del cicle: <?php echo $NA ?></div>
         		<?php endif; ?>
         			<div style="margin-top:0px; font-size:10px"><?php echo getLinkActivitats($CICLE); ?></div>
                     <div style="margin-top:10px; font-size:10px"><?php echo getRetorn($CICLE) ?></div>
-        			<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo sfConfig::get('sf_webrooturl').'images/cicles/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
+        			<div class="pdf_cicle"><?php if($pdf > 0): ?> <br /><a href="<?php echo OptionsPeer::getString('SF_WEBROOT',1).'images/cicles/'.$pdf ?>">Baixa't el pdf</a><?php endif; ?></div>						
         	</div>
         	<div class="df" style="width:330px;">
         	

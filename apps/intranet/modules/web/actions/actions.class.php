@@ -160,13 +160,13 @@ class webActions extends sfActions
 			$this->LLISTAT_ACTIVITATS = array(ActivitatsPeer::retrieveByPK($request->getParameter('idA')));
 			$this->NODE = $request->getParameter('node',0);
   			$this->ACCIO = 'mostra_activitat';
-  			$this->TITOL = 'InformaciÃ³ de l\'activitat';
+  			$this->TITOL = 'Informació de l\'activitat';
 
             $OA = $this->LLISTAT_ACTIVITATS[0];              
             $this->getResponse()->addMeta('facebook',
                                     myUser::getFacebookHeaders( $OA->getTmig() , 
                                                                 sfConfig::get('sf_webdomain').$this->getController()->genUrl('@web_activitat?idA='.$OA->getActivitatId().'&titol='.$OA->getNomForUrl()),
-                                                                sfConfig::get('sf_webrooturl').'images/activitats/'.$OA->getActivitatId().'.jpg',
+                                                                OptionsPeer::getString('SF_WEBROOT',1).'images/activitats/'.$OA->getActivitatId().'.jpg',
                                                                 'Casa de Cultura de Girona',
                                                                 '1763108168308'
                                                                 )
@@ -190,7 +190,7 @@ class webActions extends sfActions
                     myUser::getFacebookHeaders(
                         $this->NOTICIA->getTitolnoticia(),
                         sfConfig::get('sf_webdomain').$this->getController()->genUrl('@web_noticia?idN='.$this->NOTICIA->getIdnoticia().'&p='.$this->PAGINA.'&titol='.$this->NOTICIA->getNomForUrl()),
-                        sfConfig::get('sf_webrooturl').'images/noticies/'.$this->NOTICIA->getIdnoticia().'.jpg',
+                        OptionsPeer::getString('SF_WEBROOT',1).'images/noticies/'.$this->NOTICIA->getIdnoticia().'.jpg',
                         'Casa de Cultura de Girona',
                         '1763108168308'));
                                         
