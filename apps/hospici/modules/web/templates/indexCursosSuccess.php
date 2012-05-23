@@ -1,6 +1,5 @@
 <?php use_helper('Form') ?>
 <?php use_helper('Presentation') ?>
-<?php $BASE = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
  
 
 <?php if($MODE  == 'CERCA')   include_partial('web/showCercadorCursos',array('CERCA'=>$CERCA,'VISIBLE'=>($MODE <> 'DETALL'),'DESPLEGABLES'=>$DESPLEGABLES)); ?>

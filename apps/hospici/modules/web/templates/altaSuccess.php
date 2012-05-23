@@ -1,6 +1,6 @@
 <?php use_helper('Form') ?>
 <?php use_helper('Presentation') ?>
-<?php $BASE = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
  
 <script type="text/javascript">
 

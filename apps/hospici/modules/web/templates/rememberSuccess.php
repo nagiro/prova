@@ -1,6 +1,5 @@
 <?php use_helper('Form') ?>
 <?php use_helper('Presentation') ?>
-<?php $BASE = sfConfig::get('sf_webrooturl').'images/hospici'; ?>
  
 <script type="text/javascript">
 
