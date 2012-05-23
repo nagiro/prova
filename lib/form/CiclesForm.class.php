@@ -53,11 +53,11 @@ class CiclesForm extends BaseCiclesForm
       'Nom'      => 'Nom: ',
       'Imatge'   => 'Imatge: ',
       'PDF'      => 'PDF: ',
-      'tCurt'    => 'TÃ­tol curt: ',
+      'tCurt'    => 'Títol curt: ',
       'dCurt'    => 'Text curt: ',
-      'tMig'     => 'TÃ­tol mig: ',
+      'tMig'     => 'Títol mig: ',
       'dMig'     => 'Text mig: ',
-      'tComplet' => 'TÃ­tol complet: ',
+      'tComplet' => 'Títol complet: ',
       'dComplet' => 'Text complet: ',
       
     ));
