@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
 class CiclesForm extends BaseCiclesForm
@@ -24,8 +24,8 @@ class CiclesForm extends BaseCiclesForm
 	  'extingit' => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),    
       'CicleID'  => new sfWidgetFormInputHidden(),
       'Nom'      => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
-      'Imatge'   => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webrooturl').$this->WEB_IMAGE.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
-      'PDF'      => new sfWidgetFormInputFileEditableMy(array('file_src'=>sfConfig::get('sf_webrooturl').$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
+      'Imatge'   => new sfWidgetFormInputFileEditableMy(array('file_src'=>OptionsPeer::getString('SF_WEBROOT',1).$this->WEB_IMAGE.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),
+      'PDF'      => new sfWidgetFormInputFileEditableMy(array('file_src'=>OptionsPeer::getString('SF_WEBROOT',1).$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
       'tCurt'    => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       'dCurt'    => new sfWidgetFormTextareaTinyMCE(),
       'tMig'     => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
@@ -53,11 +53,11 @@ class CiclesForm extends BaseCiclesForm
       'Nom'      => 'Nom: ',
       'Imatge'   => 'Imatge: ',
       'PDF'      => 'PDF: ',
-      'tCurt'    => 'Títol curt: ',
+      'tCurt'    => 'TÃ­tol curt: ',
       'dCurt'    => 'Text curt: ',
-      'tMig'     => 'Títol mig: ',
+      'tMig'     => 'TÃ­tol mig: ',
       'dMig'     => 'Text mig: ',
-      'tComplet' => 'Títol complet: ',
+      'tComplet' => 'TÃ­tol complet: ',
       'dComplet' => 'Text complet: ',
       
     ));
