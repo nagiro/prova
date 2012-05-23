@@ -75,7 +75,7 @@
 			</div>
 			<div class="PESTANYA_SUPERIOR">
 				<a href="<?php echo url_for('web/contacte') ?>">
-					<img src="<?php echo url_for(sfConfig::get('sf_webrooturl').'images/menu_07.png'); ?>" /> 
+					<img src="<?php echo url_for($BASE.'images/menu_07.png'); ?>" /> 
 				</a>
 			</div>
 		</div>		    	    		    		    		    	
