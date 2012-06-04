@@ -3269,42 +3269,14 @@ class gestioActions extends sfActions
 				throw new sfStopException; 
 				
 			break;
+            
         case 'PRINT_PAGAMENT':
 
                 $idM = $request->getParameter('IDM');
                 $OM = MatriculesPeer::retrieveByPK($idM);                                
                 
-                $inici = "9099921002998";
-                $entitat = "1111111";
+                $HTML = MatriculesPeer::DocMatriculaPagamentCaixer($OM, $this->IDS);                                
                 
-                $referencia = str_pad(strval($OM->getIdmatricules()),11,'0',STR_PAD_LEFT);                                
-                
-                //Càlcul de valor de check
-                $ponderacions = array( 10=>2 , 9=>3 , 8=>4 , 7=>5 , 6=>6 , 5=>7 , 4=>8 , 3=>9 , 2=>2 , 1=>3 , 0=>4 );
-                $tot = 0;
-                for($i = 10; $i >= 0; $i--):                                    
-                    $tot += $referencia[$i]*$ponderacions[$i];
-                endfor;                                
-                $cc = ($tot % 11); 
-                if($cc == 10) $cc = 0;
-                //Afegim el valor de check a la referència i seguim.                                 
-                $referencia .= $cc;                                
-                
-                $import = str_pad(strval($OM->getPagat()*100),10,'0',STR_PAD_LEFT);
-                $codi = $inici.$entitat.$referencia.$import;
-
-                $codi = '90999210029990298460';                                                                
-            	$barcode = new phpCode128($codi, 150, false , 18);
-                $barcode->setEanStyle(false);                       
-                $barcode->saveBarcode(OptionsPeer::getString('SF_WEBSYSROOT',1).'tmp/'.$this->IDS.'-barcode.png');
-                                                                                                            
-                //Comença la càrrega d'informació.
-                $i = 1;
-                $HTML  = "<html><head></head><body>"; 
-                $HTML .= '<img src="http://www.casadecultura.tmp/tmp/'.$this->IDS.'-barcode.png" />';
-                $HTML .= '<br /><b>'.$codi.'</b>';
-                $HTML .= '</body></html>';                                
-                                
                 $OPDF = new HTML2PDF();
                 $OPDF->doPdf($HTML);                                                
     					

@@ -239,7 +239,7 @@
                 switch($MISSATGE){
                     case 'PAGAMENT_TPV': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;
                     case 'RESERVA_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break; 
-                    case 'MATRICULA_METALIC_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;                    
+                    case 'MATRICULA_METALIC_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=PRINT_PAGAMENT&IDM='.$IDM)." per veure el reguard."; break;                    
                     case 'PAGAMENT_TPV_KO': echo "Hi ha hagut algun problema fent el pagament de la matrícula a través del TPV. Si us plau, torna-ho a intentar."; break;
                     case 'MATRICULA_FINAL_KO': echo "Hi ha hagut algun problema generant el resguard de la matrícula. Si us plau, posa't en contacte amb informatica@casadecultura.org."; break;
                     case 'ERR_USUARI': echo "Hi ha hagut algun problema amb el codi d'usuari. Si us plau, torna-ho a intentar."; break;

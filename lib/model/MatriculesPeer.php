@@ -606,6 +606,73 @@ class MatriculesPeer extends BaseMatriculesPeer
   	return self::doSelect($C);
   }
   
+
+  /**
+   * Ens torna el codi HTML del document per imprimir quan tenim una matrícula amb pagament en metàl·lic per caixer. 
+   * */
+  static public function DocMatriculaPagamentCaixer($OM, $idS)
+  {
+    
+    $inici = OptionsPeer::getString( 'PAG_CAIXER_CODI_OP' , $idS );                          
+    $entitat = OptionsPeer::getString( 'PAG_CAIXER_CODI_ENTITAT' , $idS );
+    
+    $referencia = str_pad(strval($OM->getIdmatricules()),11,'0',STR_PAD_LEFT);                                
+    
+    //Càlcul de valor de check
+    $ponderacions = array( 10=>2 , 9=>3 , 8=>4 , 7=>5 , 6=>6 , 5=>7 , 4=>8 , 3=>9 , 2=>2 , 1=>3 , 0=>4 );
+    $tot = 0;
+    for($i = 10; $i >= 0; $i--):                                    
+        $tot += $referencia[$i]*$ponderacions[$i];
+    endfor;                                
+    $cc = ($tot % 11); 
+    if($cc == 10) $cc = 0;
+    //Afegim el valor de check a la referència i seguim.                                 
+    $referencia .= $cc;                                
+    
+    $import = str_pad(strval($OM->getPagat()*100),10,'0',STR_PAD_LEFT);
+    $codi = $inici.$entitat.$referencia.$import;
+    
+    $barcode = new phpCode128($codi, 150, false , false);
+    $barcode->setEanStyle(true);
+    $barcode->setAutoAdjustFontSize(true);                                       
+    $barcode->saveBarcode(OptionsPeer::getString('SF_WEBSYSROOT',1).'tmp/'.$idS.'-barcode.png');                
+                                                                                                
+    //Comença la càrrega d'informació.
+    $i = 1;
+    $HTML = OptionsPeer::getString( 'BODY_DOC_MATR_CAIXER' , $idS );
+    
+    //CONSULTEM USUARI
+    $OU = UsuarisPeer::retrieveByPK( $OM->getUsuarisusuariid() );
+    $OC = CursosPeer::retrieveByPK( $OM->getCursosidcursos() );
+                    
+    $HTML = str_replace( '@@LOGO_URL@@' ,       OptionsPeer::getString('LOGO_URL',$idS) ,       $HTML);
+    $HTML = str_replace( '@@CODI_BARRES@@' ,    $idS ,                                          $HTML);
+    $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML);
+    $HTML = str_replace( '@@FACTURA@@',         $OM->getIdmatricules(),                         $HTML);
+    $HTML = str_replace( '@@CODI_CLIENT@@',     $OM->getUsuarisusuariid(),                      $HTML);
+    $HTML = str_replace( '@@DATA_FACTURA@@',    date('d/m/Y',time()),                           $HTML);
+    $HTML = str_replace( '@@NOM@@',             $OU->getNomComplet(),                           $HTML);
+    $HTML = str_replace( '@@TELEFON@@',         $OU->getTelefonString(),                        $HTML);
+    $HTML = str_replace( '@@NIF@@',             $OU->getDni(),                                  $HTML);
+    $HTML = str_replace( '@@CARRER@@',          $OU->getAdreca(),                               $HTML);
+    $HTML = str_replace( '@@POBLE@@',           $OU->getPoblacioString(),                       $HTML);
+    $HTML = str_replace( '@@CODI_POSTAL@@',     $OU->getCodipostal(),                           $HTML);
+    $HTML = str_replace( '@@CONCEPTE@@',        $OC->getTitolcurs(),                            $HTML);
+    $HTML = str_replace( '@@DIA@@',             $OC->getDatainici('d/m/Y'),                     $HTML);
+    $HTML = str_replace( '@@HORARIS@@',         $OC->getHoraris(),                              $HTML);
+    $HTML = str_replace( '@@P@@',               $OM->getPagat(),                                $HTML);
+    $HTML = str_replace( '@@Q@@',               1,                                              $HTML);
+    $HTML = str_replace( '@@I@@',               $OM->getPagat(),                                $HTML);
+    $HTML = str_replace( '@@BASE@@',            $OM->getPagat(),                                $HTML);
+    $HTML = str_replace( '@@IVA@@',             0,                                              $HTML);
+    $HTML = str_replace( '@@TOTAL@@',           $OM->getPagat(),                                $HTML);
+    $HTML = str_replace( '@@TITULAR@@',         "",                                             $HTML);
+    $HTML = str_replace( '@@CCC@@',             "",                                             $HTML);                                
+
+    return $HTML;
+    
+  }
+
   static public function MailMatricula( $OM , $idS )
   {
   	
