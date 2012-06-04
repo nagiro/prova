@@ -59,6 +59,7 @@ class sfWidgetFormTextareaTinyMCE extends sfWidgetFormTextarea
 
     $js = sprintf(<<<EOF
 <script type="text/javascript">
+
   tinyMCE.init({
     mode:                              "exact",
     elements:                          "%s",
@@ -80,7 +81,8 @@ class sfWidgetFormTextareaTinyMCE extends sfWidgetFormTextarea
 	theme_advanced_buttons3 :          "",
 	file_browser_callback:             'ajaxfilemanager',
 	relative_urls:  				   false,
-    convert_urls:                      false,	    
+    convert_urls:                      false,
+    valid_children :                   "+body[style]",	    
     %s
   })
   function ajaxfilemanager(field_name, url, type, win) {
