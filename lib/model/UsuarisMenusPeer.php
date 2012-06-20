@@ -42,9 +42,11 @@ class UsuarisMenusPeer extends BaseUsuarisMenusPeer {
         return new UsuarisMenusForm($OO,array('IDS'=>$idS));
                 
 	}                
-    
+
     static public function doUpdateMy($idU,$idS,$LVALORS)
     {
+
+        //Recorrem tots els menús i els inactivem tots. 
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);
         $C->add(self::USUARI_ID,$idU);
@@ -53,6 +55,7 @@ class UsuarisMenusPeer extends BaseUsuarisMenusPeer {
             $OMU->setActiu(false)->save();
         endforeach;
         
+        // Ara activem els que ja existeixen i sinó els creem de nou. 
         foreach($LVALORS as $idM):
             self::initialize($idU,$idM,$idS)->getObject()->setActiu(true)->save();
         endforeach;
@@ -77,8 +80,8 @@ class UsuarisMenusPeer extends BaseUsuarisMenusPeer {
             foreach($PART as $OUM):
                 $exist = (($OM->getMenuId() == $OUM->getMenuId()) || $exist);
             endforeach;
-            if(!$exist) $RET .= '<option value="'.$OUM->getMenuId().'">'.addslashes($OM->getTitol()).'</option>';
-            else $RET .= '<option selected value="'.$OUM->getMenuId().'">'.addslashes($OM->getTitol()).'</option>';
+            if(!$exist) $RET .= '<option id="'.$OM->getMenuId().'" value="'.$OM->getMenuId().'">'.addslashes($OM->getTitol()).'</option>';
+            else $RET .= '<option selected id="'.$OM->getMenuId().'" value="'.$OM->getMenuId().'">'.addslashes($OM->getTitol()).'</option>';
         endforeach;
         
         return $RET;

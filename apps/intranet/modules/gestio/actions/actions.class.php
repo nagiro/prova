@@ -4646,11 +4646,10 @@ class gestioActions extends sfActions
             break;
                   
         case 'SAVE_USER_MENU':
-            $LMENUS_NOVA = $request->getParameter('dades');
-            $LDADES = $request->getParameter('super_admin_menus');            
-            if(!empty($LMENUS_NOVA)) UsuarisMenusPeer::doUpdateMy( $LDADES['IDU'] , $LDADES['IDS'] , $LMENUS_NOVA );                        
-            $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($LDADES['IDU'],$LDADES['IDS']);            
-            $this->FMENUUSUARI->setWidgetUsers();            
+            $IDS = $request->getParameter('MENU_SITES');
+            $IDU = $request->getParameter('MENU_USUARIS');
+            $LMENUS = $request->getParameter('MENU_DISPONIBLES');                                    
+            if(!empty($LMENUS)) UsuarisMenusPeer::doUpdateMy( $IDU[0] , $IDS[0] , $LMENUS );                                                                                    
             break;
         
         case 'SEARCH_USER_SITES':            

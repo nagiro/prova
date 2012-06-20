@@ -161,7 +161,7 @@
     function MenusgestioTab($LMENUS = "", $FMENUUSUARI)
     {        
 ?>
-        <form id="FMENUS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">                
+        <form id="FMENUS" action="<?php echo url_for('gestio/gConfigSuperAdmin') ?>" method="POST" enctype="multipart/form-data">                
             
             <?php echo select_tag('MENU_SITES',options_for_select(SitesPeer::getSelect(false,false)),array('multiple'=>'multiple','style'=>'height:200px; width:40%;')); ?>
             <?php echo select_tag('MENU_USUARIS',null,array('multiple'=>'multiple','style'=>'height:200px; width:40%;')); ?>
