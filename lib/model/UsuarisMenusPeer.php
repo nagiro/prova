@@ -58,5 +58,30 @@ class UsuarisMenusPeer extends BaseUsuarisMenusPeer {
         endforeach;
     }
     
+    static public function getMenusUsuarisOptions($idU,$idS)
+    {
+        $RET = "";
+        
+        $C = new Criteria();
+        $C->add(GestioMenusPeer::ACTIU, true);
+        $TOTS = GestioMenusPeer::doSelect($C);
+        
+        $C = new Criteria();
+        $C->add(self::USUARI_ID, $idU);
+        $C->add(self::ACTIU, true);
+        $C->add(self::SITE_ID, $idS);     
+        $PART = UsuarisMenusPeer::doSelect($C);           
+        
+        foreach($TOTS as $OM):            
+            $exist = false; 
+            foreach($PART as $OUM):
+                $exist = (($OM->getMenuId() == $OUM->getMenuId()) || $exist);
+            endforeach;
+            if(!$exist) $RET .= '<option value="'.$OUM->getMenuId().'">'.addslashes($OM->getTitol()).'</option>';
+            else $RET .= '<option selected value="'.$OUM->getMenuId().'">'.addslashes($OM->getTitol()).'</option>';
+        endforeach;
+        
+        return $RET;
+    }
 
 } // UsuarisMenusPeer

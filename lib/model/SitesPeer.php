@@ -50,6 +50,23 @@ class SitesPeer extends BaseSitesPeer {
        	return new SitesForm($OO,array('IDS'=>$idS));
     }
 
+    
+    /**
+     * Quan utilitzo un AJAX per carregar un desplegable, agafo aquesta funció 
+     * @param $has_new 1=>add(Opció Nou Site)
+     * @param $no_labels 1=>No apareix ni opció escull entitat ni nou site.     
+     * @return Array('idS'=>'NomSite')
+     * */                    
+    static public function getOptionsForAjax( $has_new = true , $no_labels = false)
+    {
+        $RET = array();
+        foreach( self::getSelect($has_new, $no_labels) as $id => $E ):
+            $RET = '<option id="'.$id.'">'.$E.'</option>';
+        endforeach;
+        return addslashes($RET);
+    }
+    
+
     /**
      * Select de les entitats disponibles. 
      * @param $has_new 1=>add(Opció Nou Site)

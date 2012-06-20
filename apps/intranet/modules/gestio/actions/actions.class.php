@@ -3293,7 +3293,10 @@ class gestioActions extends sfActions
   public function executeAjaxUsuaris(sfWebRequest $request)
   {
     $this->IDS = $this->getUser()->getSessionPar('idS');
-    $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),null);                                          
+    //La q és per el form autocomplete.
+    if($request->hasParameter('q')) $RET = UsuarisPeer::cercaTotsCampsSelect($request->getParameter('q'),$request->getParameter('lim'),null);
+    //Si uso el jqueryui autocomplete.
+    elseif($request->hasParameter('term')) $RET = UsuarisPeer::cercaTotsCampsSelectJqueryUI($request->getParameter('term'),$request->getParameter('lim'),null);                                                   
     return $this->renderText(json_encode($RET));                
   }
   
@@ -4593,24 +4596,7 @@ class gestioActions extends sfActions
     $RSITES = $request->getParameter('sites',array('site_id'=>1));
     $this->FSITES = SitesPeer::initialize($RSITES['site_id']);                   
     $this->SITE = $request->getParameter('SITE','');
-    
-    //Cerquem per SITE, que és més fàcil
-    //Mirem quins usuaris hi ha a un SITE relacionats com a adminstradors
-    //Mirem quins menús tenen els usuaris d'un SITE en general (els menús del primer usuari)
-
-    $OS = SitesPeer::retrieveByPK($this->SITE);
-    if($OS instanceof Sites):         
-        $this->LUSERSITES = UsuarisSitesPeer::getSitesUsers($this->SITE,true);              
-        $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);                
-    else: 
-        $this->USUARI = 0; 
-        $this->LUSERSITES = array();                                                          
-        $this->LMENUSUSUARI = array();
-    endif; 
-    
-    $this->FMENUUSUARI = new ConfigSuperAdminMenusForm(null,array('IDS'=>$this->IDS));
-    $this->FMENUUSUARI->bind($request->getParameter('super_admin_menus'));        
-                   
+                       
     if($request->hasParameter('BSAVESITE')) $this->accio = 'SAVE_SITE';    
     if($request->hasParameter('BDELETESITE')) $this->accio = 'DELETE_SITE';    
     if($request->hasParameter('BSAVEUSERSITE')) $this->accio = 'SAVE_USER_SITE';    
@@ -4673,10 +4659,32 @@ class gestioActions extends sfActions
             if(!empty($IDS)){
                 $this->FMENUUSUARI->setWidgetUsers();
                 if(!empty($IDU)) $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($IDU,$IDS);
-            }           
+            }    
+            break;
+        
+        default:
             break;
                                         
     }
+     
+
+    //Cerquem per SITE, que és més fàcil
+    //Mirem quins usuaris hi ha a un SITE relacionats com a adminstradors
+    //Mirem quins menús tenen els usuaris d'un SITE en general (els menús del primer usuari)
+
+    $OS = SitesPeer::retrieveByPK($this->SITE);
+    if($OS instanceof Sites):         
+        $this->LUSERSITES = UsuarisSitesPeer::getSitesUsers($this->SITE,true);              
+        $this->LMENUSUSUARI = GestioMenusPeer::getMenusUsuariArray($this->USUARI,$this->SITE);                
+    else: 
+        $this->USUARI = 0; 
+        $this->LUSERSITES = array();                                                          
+        $this->LMENUSUSUARI = array();
+    endif; 
+    
+    $this->FMENUUSUARI = new ConfigSuperAdminMenusForm(null,array('IDS'=>$this->IDS));
+    $this->FMENUUSUARI->bind($request->getParameter('super_admin_menus'));        
+
       
   }
   
@@ -4784,5 +4792,26 @@ class gestioActions extends sfActions
     
     return sfView::NONE;
   }  
+   
+  public function executeAjaxGetSitesUsersOptions(sfWebRequest $request)
+  {
+    
+    $IDS = $request->getParameter('IDS');
+    $NIVELL = $request->getParameter('IDN');
+    return $this->renderText(UsuarisSitesPeer::getSitesUsersOptions($IDS, $NIVELL));
+    
+  }
+
+  public function executeAjaxGetMenusUsuarisOptions(sfWebRequest $request)
+  {
+    
+    $IDU = $request->getParameter( 'IDU' );        
+    $IDS = $request->getParameter( 'IDS' );
+    
+    return $this->renderText( UsuarisMenusPeer::getMenusUsuarisOptions( $IDU , $IDS ) );
+    
+  }  
+   
+   
    
 }

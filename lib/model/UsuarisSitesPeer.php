@@ -153,6 +153,25 @@ class UsuarisSitesPeer extends BaseUsuarisSitesPeer {
         return array();        
     }
 
+
+
+    /**
+     * A partir d'un SITE retorna els usuaris vinculats.       
+     * @param $idS Site ID          
+     * @param $nivell Segons el nivell, mostrarà els usuaris
+     * @return Array('Usuari ID'=>'Usuri Nom')
+     * */                    
+    static public function getSitesUsersOptions($idS, $nivell)
+    {
+        $RET = array();        
+        foreach(self::getSitesUsersSelect($idS, $nivell) as $id => $E):
+            $RET .= '<option value="'.$id.'">'.addslashes($E).'</option>';
+        endforeach;
+        
+        return $RET;
+    }
+
+
     /**
      * A partir d'un SITE retorna els usuaris vinculats.       
      * @param $idS Site ID          

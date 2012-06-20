@@ -78,6 +78,21 @@ class UsuarisPeer extends BaseUsuarisPeer
      
   }
   
+
+  static function cercaTotsCampsSelectJqueryUI($text,$limit,$idS)
+  {
+        
+    $RET = self::cercaTotsCampsSelect($text,$limit,$idS);
+    $RET2 = array(); 
+    
+    foreach($RET as $id => $E):
+  		$RET2[] = array('value'=>$E['clau'],'label'=>$E['text']);          	
+  	endforeach;
+       
+    return $RET2;
+     
+  }
+
   
   static function cercaTotsCampsSelect($text,$limit,$idS)
   {

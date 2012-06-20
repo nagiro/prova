@@ -1,6 +1,5 @@
 <?php use_helper('Form') ?>
 <?php $BASE = OptionsPeer::getString('SF_WEBROOT',$IDS); ?>
-<script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script>
 
 <style>
 
@@ -20,16 +19,52 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		$( "#tabs" ).tabs({ cookie: { expires: 1 } });  
+		$( "#tabs" ).tabs({ cookie: { expires: 1 } });
+        
+        $( "#SITE" ).change(function(){ $( "#FPERMISOS" ).submit(); });
+        $( "#super_admin_menus_IDS" ).change(function(){ $( "#FMENUS" ).submit(); });
+        
+        $( "#MENU_SITES" ).change(function(){
+                 
+            
+            $.post("<?php echo url_for('gestio/AjaxGetSitesUsersOptions') ?>", { "IDS": $("#MENU_SITES option:selected").val(), "IDN" : "1" },
+             function(data){
+                $( "#MENU_USUARIS" ).html(data);
+             });                        
+        });        
+        
+        $( "#MENU_USUARIS" ).change(function(){
+                             
+            $.post(
+                "<?php echo url_for('gestio/AjaxGetMenusUsuarisOptions') ?>", 
+                { "IDS": $("#MENU_SITES option:selected").val(), "IDU": $("#MENU_USUARIS option:selected").val() },
+             function(data){                
+                $( "#MENU_DISPONIBLES" ).html(data);
+             });         
+                            
+        });
+
+
+        $( ".autocomplete" ).autocomplete({
+			source: "<?php echo url_for('gestio/ajaxUsuaris') ?>",            
+			minLength: 2,            
+			select: function( event, ui ) {				
+                /*alert( ui.item ?
+					"Selected: " + ui.item.value + " aka " + ui.item.id :
+					"Nothing selected, input was " + this.value );*/
+			}
+		});        
+          
 	});
     	
 	</script>
 
 
   
-<TD colspan="3" class="CONTINGUT_ADMIN">	
+<td colspan="3" class="CONTINGUT_ADMIN">	
 
-	<?php include_partial('breadcumb',array('text'=>'CONFIGURACIÓ')); ?>		
+	<?php include_partial('breadcumb',array('text'=>'CONFIGURACIÓ')); ?>
+    <?php SitesPeer::getSelect(); ?>		
 		                   	                   	
 
     <div class="demo" style=" padding:20px; width:700px; ">    
@@ -47,7 +82,7 @@
     </div>
     
 
-<DIV STYLE="height:40px;"></DIV>
+<div style="height:40px;"></div>
 
 <?php 
 
@@ -87,17 +122,21 @@
     {
    
         $RET = '
-            <form id="FESPAIS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
+            <form id="FPERMISOS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
                 Site : '.select_tag('SITE',options_for_select(SitesPeer::getSelect(),$SITE));
         $RET .= '<br /><br /><table>';
         $RET .= '<tr><td class="titol">User</td><td class="titol">Nivell</td><td class="titol"></td></tr>';  
         foreach( $LUSERSITES as $OUS ):
             $USUARI = $OUS->getUsuariId();            
-            $RET .= '<tr><td>'.select_tag('dades['.$USUARI.'][IDU]',options_for_select(UsuarisPeer::selectAllUsers(),$USUARI)).'</td>';
+            $OU = UsuarisPeer::retrieveByPK($USUARI);
+            $nom = "n/d";
+            if($OU instanceof Usuaris) $nom = $OU->getNomComplet();
+             
+            $RET .= '<tr><td>'.input_tag('dades['.$USUARI.'][IDU]',$USUARI,array('class'=>'autocomplete','style'=>'width:60px;')).' - '.$nom.'</td>';
             $RET .= '<td>'.select_tag('dades['.$USUARI.'][IDN]',options_for_select(NivellsPeer::getSelect(),$OUS->getNivellId())).'</td>';                        
             $RET .= '<td>'.link_to('esborra' , 'gestio/gConfigSuperAdmin?accio=DELETE_USER_SITE&USUARI='.$USUARI.'&SITE='.$SITE).'</td></tr>';
         endforeach;        
-        $RET .= '<tr><td>'.select_tag('dades[0][IDU]',options_for_select(UsuarisPeer::selectAllUsers(),0)).'</td>';
+        $RET .= '<tr><td>'.input_tag('dades[0][IDU]',0,array('class'=>'autocomplete','style'=>'width:60px;')).'</td>';
         $RET .= '<td>'.select_tag('dades[0][IDN]',options_for_select(NivellsPeer::getSelect(),0)).'</td></tr>';                        
         $RET .= '</table>';
                         
@@ -121,29 +160,18 @@
      * */
     function MenusgestioTab($LMENUS = "", $FMENUUSUARI)
     {        
-        
-        $RET = '
-            <form id="FMENUS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">
-            <table>'.$FMENUUSUARI.'</table>';                
-        $RET .= '<br /><br /><table>';        
-        
-        $RET .= '<tr><td class="titol">Menu</td><td class="titol"></td></tr>';                      
-        $RET .= '<tr><td>'.select_tag('dades',options_for_select(GestioMenusPeer::getSelect(),$LMENUS),array('multiple'=>true)).'</td>';                                                
-        $RET .= '</table>';
-                        
-        $RET .='         	 	                                                    
-                <div style="text-align:right">
-                    <button style="margin-top:10px;" name="BSEARCHUSERSITES" class="BOTO_ACTIVITAT">
-                        '.image_tag('template/find.png').' Consulta
-                    </BUTTON>                       
-                    <button type="submit" name="BSAVEUSERMENU" class="BOTO_ACTIVITAT" onClick="return confirm(\'Segur que vols guardar els canvis?\')">
-                        '.image_tag('template/disk.png').' Guardar i sortir
-                    </button>    	            
-                </div>                                                                                            
-            </form>';
-                     
-        return $RET;
-             
+?>
+        <form id="FMENUS" action="'.url_for('gestio/gConfigSuperAdmin').'" method="POST" enctype="multipart/form-data">                
+            
+            <?php echo select_tag('MENU_SITES',options_for_select(SitesPeer::getSelect(false,false)),array('multiple'=>'multiple','style'=>'height:200px; width:40%;')); ?>
+            <?php echo select_tag('MENU_USUARIS',null,array('multiple'=>'multiple','style'=>'height:200px; width:40%;')); ?>
+            <br /><br />
+            <?php echo select_tag('MENU_DISPONIBLES',null,array('multiple'=>'multiple','style'=>'height:400px; width:80%')); ?>
+            <br /><br />
+            <button type="submit" name="BSAVEUSERMENU" class="BOTO_ACTIVITAT"><?php echo image_tag('template/disk.png') ?> Guardar i sortir</button>                                                                                                                                                                                                                    	 	                                                                                                                                                                
+        </form>
+                             
+<?php              
     }
 
 ?>
