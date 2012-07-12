@@ -2571,7 +2571,7 @@ class gestioActions extends sfActions
         
     }                
     
-    //Aquest petit bloc Ã©s per si es modifica amb un POST el que s'ha enviat per GET
+    //Aquest petit bloc és per si es modifica amb un POST el que s'ha enviat per GET
     $this->getUser()->setSessionPar('accio',$accio);
     $this->getUser()->setSessionPar('PAGINA',$this->PAGINA);   //Guardem la pÃ gina per si hem fet una consulta nova  
             
@@ -2648,7 +2648,7 @@ class gestioActions extends sfActions
 				$this->MODE = 'CA';
 			break;					
 		case 'L': 
-				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC') , $this->IDS , true , true );
+				$this->MATRICULES = CursosPeer::getMatricules($request->getParameter('IDC') , $this->IDS , true , true , true );
                 $this->IDC = $request->getParameter('IDC');
 				$this->MODE = 'LLISTAT_ALUMNES'; 
 			break;

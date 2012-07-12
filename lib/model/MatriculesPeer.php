@@ -33,18 +33,20 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TRANSFERENCIA   = '24';
    const PAGAMENT_DOMICILIACIO    = '33'; 
 
-    static public function criteriaMatriculat($C,$amb_llista_espera = false, $amb_baixa = false)
+    static public function criteriaMatriculat($C,$amb_llista_espera = false, $amb_baixa = false , $amb_tots_els_estats = false )
     {
-        $C1 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_PAGAT);
-        $C2 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_NO_PAGAT);
-        $C4 = $C->getNewCriterion(self::ESTAT,self::RESERVAT);                                  //També agafem aquells que estan en estat de plaça reservada
-        if($amb_llista_espera) $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
-        if($amb_llista_espera) $C1->addOr($C3);        
-        if($amb_llista_espera) $C5 = $C->getNewCriterion(self::ESTAT,self::BAIXA);
-        if($amb_llista_espera) $C1->addOr($C5);
-        $C1->addOr($C4);
-        $C1->addOr($C2);         
-        $C->add($C1); 
+        if(!$amb_tots_els_estats):                 
+            $C1 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_PAGAT);
+            $C2 = $C->getNewCriterion(self::ESTAT,self::ACCEPTAT_NO_PAGAT);
+            $C4 = $C->getNewCriterion(self::ESTAT,self::RESERVAT);                                  //També agafem aquells que estan en estat de plaça reservada
+            if($amb_llista_espera) $C3 = $C->getNewCriterion(self::ESTAT,self::EN_ESPERA);
+            if($amb_llista_espera) $C1->addOr($C3);        
+            if($amb_llista_espera) $C5 = $C->getNewCriterion(self::ESTAT,self::BAIXA);
+            if($amb_llista_espera) $C1->addOr($C5);
+            $C1->addOr($C4);
+            $C1->addOr($C2);         
+            $C->add($C1); 
+        endif;
         $C->add(self::ACTIU, true);
         return $C;
     } 
