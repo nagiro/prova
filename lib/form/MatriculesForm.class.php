@@ -22,7 +22,7 @@ class MatriculesForm extends sfFormPropel
       'data_baixa'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'Pagat'        	 => new sfWidgetFormInputText(),
       'tReduccio'        => new sfWidgetFormChoice(array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false))),
-      'tPagament'        => new sfWidgetFormChoice(array('choices'=>MatriculesPeer::selectPagament())),
+      'tPagament'        => new sfWidgetFormChoice(array('choices'=>TipusPeer::getTipusPagamentArray())),
   	  'Comentari'        => new sfWidgetFormTextarea(),
     ));
 

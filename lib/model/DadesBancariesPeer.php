@@ -170,6 +170,7 @@ class DadesBancariesPeer extends BaseDadesBancariesPeer {
             $ODB->setTitular($titular);
             $ODB->setEntitat($entitat);
             $ODB->setPoblacio($poblacio);
+            $ODB->setCcc($CCC);
             $ODB->save();            
         }
         return $ODB;

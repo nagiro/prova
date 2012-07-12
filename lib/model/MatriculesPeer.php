@@ -132,44 +132,49 @@ class MatriculesPeer extends BaseMatriculesPeer
         //Si queden places al curs                
         } else {
             
-            //Si hem dit que el curs és en format reserva en comptes de pagament                        
-            if($OC->isReserva())
+            //Si el tipus de pagament és "reserva" ho guardem com a reservat.                        
+            if( $Mode_pagament == TipusPeer::PAGAMENT_RESERVA )
             {
-                $OM->setPagat(0);
-                $OM->setEstat(MatriculesPeer::RESERVAT);
+                $OM->setPagat( 0 );
+                $OM->setEstat( MatriculesPeer::RESERVAT );
                 $OM->save();
                 $RET['AVISOS']['RESERVA_OK'] = "RESERVA_OK";                
-                self::SendMailMatricula($OM,$OM->getSiteid()); //Enviem el correu electrònic per a la reserva
+                self::SendMailMatricula( $OM , $OM->getSiteid() ); //Enviem el correu electrònic per a la reserva
                 
             } 
-            //Si és una matrícula de compra
-            elseif($OC->isCompra())
-            {                        
-                //Si el mode de pagament és targeta, cridem el tpv                
-                if( $Mode_pagament == MatriculesPeer::PAGAMENT_TARGETA ){
-      		        $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
-                                        
-                //Altrament, acceptem i mostrem la matrícula
-                } else { 
-                    
-                    //Guardem la matrícula tal qual està.
-                    $OM->setEstat(MatriculesPeer::ACCEPTAT_PAGAT);
-                    $OM->setPagat($PREU);
-                    $OM->save();
-                    $RET['AVISOS']['MATRICULA_METALIC_OK'] = "MATRICULA_METALIC_OK";
-                    self::SendMailMatricula($OM,$OM->getSiteid());                
-                }
-            }
             
+            //Si és una matrícula de compra amb targeta, cridem el TPV
+            elseif( $Mode_pagament == TipusPeer::PAGAMENT_TARGETA )                                        
+            {                                                                                        
+                $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
+            } 
+            elseif($Mode_pagament == TipusPeer::PAGAMENT_METALIC) 
+            {                     
+                //Guardem la matrícula tal qual està.
+                $OM->setEstat( MatriculesPeer::ACCEPTAT_PAGAT );
+                $OM->setPagat( $PREU );
+                $OM->save();
+                $RET['AVISOS']['MATRICULA_METALIC_OK'] = "MATRICULA_METALIC_OK";
+                self::SendMailMatricula( $OM , $OM->getSiteid() );                                    
+            }
+            elseif( $Mode_pagament == TipusPeer::PAGAMENT_CODI_BARRES )
+            {
+                //Guardem la matrícula tal qual i marquem com a no pagada fins que vagi al banc a pagar-la.
+                $OM->setEstat( MatriculesPeer::ACCEPTAT_NO_PAGAT );
+                $OM->setPagat( $PREU );
+                $OM->save();
+                $RET['AVISOS']['MATRICULA_CODI_BARRES'] = "MATRICULA_CODI_BARRES";
+                self::SendMailMatricula( $OM , $OM->getSiteid() );            
+            }                        
             //Si és una matrícula amb domiciliació
-            elseif($OC->isDomiciliacio())
+            elseif( $Mode_pagament == TipusPeer::PAGAMENT_DOMICILIACIO )
             {                
-                $OM->setPagat($PREU);
-                $OM->setEstat(MatriculesPeer::ACCEPTAT_NO_PAGAT);
-                $OM->setTpagament(MatriculesPeer::PAGAMENT_DOMICILIACIO);
+                $OM->setPagat( $PREU );
+                $OM->setEstat( MatriculesPeer::ACCEPTAT_NO_PAGAT );
+                $OM->setTpagament( MatriculesPeer::PAGAMENT_DOMICILIACIO );
                 $OM->save();
                 $RET['AVISOS']['MATRICULA_DOMICILIACIO_OK'] = "MATRICULA_DOMICILIACIO_OK";
-                self::SendMailMatricula($OM,$OM->getSiteid());
+                self::SendMailMatricula( $OM , $OM->getSiteid() );
             }
                                     
         }
@@ -227,64 +232,10 @@ class MatriculesPeer extends BaseMatriculesPeer
      $C->add(self::DATAINSCRIPCIO , $time , Criteria::GREATER_EQUAL );
      return self::doCount($C);     
   }
-/*   
-  static function selectDescomptes()
-  {
-     return array(
-              self::REDUCCIO_CAP => 'Cap',
-              self::REDUCCIO_MENOR_25_ANYS => 'Estudiant menor de 25 anys',
-              self::REDUCCIO_JUBILAT => 'Jubilat',
-              self::REDUCCIO_ATURAT => 'Aturat',
-              self::REDUCCIO_ESPECIAL => 'Reducció especial',
-              self::REDUCCIO_GRATUIT => 'Gratuït'
-            );
-  }
-*/  
-/*
-  static function selectDescomptesWeb()
-  {
-     return array(
-              self::REDUCCIO_CAP => 'Cap',
-              self::REDUCCIO_MENOR_25_ANYS => 'Estudiant menor de 25 anys',
-              self::REDUCCIO_JUBILAT => 'Jubilat',
-              self::REDUCCIO_ATURAT => 'Aturat',             
-              self::REDUCCIO_ESPECIAL => 'Reducció especial', 
-            );
-  }
-*/  
-/*  
-  static function textDescomptes($D)
-  {  
-      switch($D){
-         case self::REDUCCIO_CAP : return 'Cap';
-         case self::REDUCCIO_MENOR_25_ANYS : return 'Estudiant menor de 25 anys';
-         case self::REDUCCIO_JUBILAT : return 'Jubilat';
-         case self::REDUCCIO_ATURAT : return 'Aturat';
-         case self::REDUCCIO_ESPECIAL : return 'Reducció especial';
-         default: return 'Desconegut'; 
-      }
-  }
-*/  
-  static function selectPagament()
-  {
-      return array(
-         self::PAGAMENT_METALIC => 'Metal·lic',
-         self::PAGAMENT_TARGETA => 'Targeta',         
-//         self::PAGAMENT_TELEFON => 'Telèfon',
-//         self::PAGAMENT_TRANSFERENCIA => 'Transferència'
-         self::PAGAMENT_DOMICILIACIO => 'Domiciliació',
-      );  
-  }
 
   static function textPagament($P)
   {  
-      switch($P){
-         case self::PAGAMENT_METALIC : return 'Metal·lic a secretaria';
-         case self::PAGAMENT_TARGETA : return 'Targeta de crèdit';
-         case self::PAGAMENT_TELEFON : return 'Matrícula per telèfon';
-         case self::PAGAMENT_TRANSFERENCIA : return 'Ingrés bancari';
-         case self::PAGAMENT_DOMICILIACIO : return 'Domiciliació bancària';
-      }
+      return TipusPeer::getTipusPagamentString($P);      
   }
   
   static function getCursosMatriculacio($idS)
@@ -400,21 +351,6 @@ class MatriculesPeer extends BaseMatriculesPeer
   	
   }
   
-/*  static function cercaUsuariMatricules($idU, $PAGINA = 1)
-  {
-    
-    $C   = new Criteria();
-    $C->add(self::USUARIS_USUARIID, $idU, Criteria::EQUAL);
-                
-    $pager = new sfPropelPager('Matricules', 20);
-    $pager->setCriteria($C);
-    $pager->setPage($PAGINA);
-    $pager->init();
-       
-    return $pager;
-     
-  }
-*/  
   static function getEstatsSelect()
   {
   	
@@ -626,8 +562,8 @@ class MatriculesPeer extends BaseMatriculesPeer
     endfor;                                
     $cc = ($tot % 11); 
     if($cc == 10) $cc = 0;
-    //Afegim el valor de check a la referència i seguim.                                 
-    $referencia .= $cc;                                
+    //Afegim el valor de check a la referència i seguim.
+    $referencia .= $cc;
     
     $import = str_pad(strval($OM->getPagat()*100),10,'0',STR_PAD_LEFT);
     $codi = $inici.$entitat.$referencia.$import;
@@ -645,29 +581,30 @@ class MatriculesPeer extends BaseMatriculesPeer
     $OU = UsuarisPeer::retrieveByPK( $OM->getUsuarisusuariid() );
     $OC = CursosPeer::retrieveByPK( $OM->getCursosidcursos() );
                     
-    $HTML = str_replace( '@@LOGO_URL@@' ,       OptionsPeer::getString('LOGO_URL',$idS) ,       $HTML);
-    $HTML = str_replace( '@@CODI_BARRES@@' ,    $idS ,                                          $HTML);
-    $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML);
-    $HTML = str_replace( '@@FACTURA@@',         $OM->getIdmatricules(),                         $HTML);
-    $HTML = str_replace( '@@CODI_CLIENT@@',     $OM->getUsuarisusuariid(),                      $HTML);
-    $HTML = str_replace( '@@DATA_FACTURA@@',    date('d/m/Y',time()),                           $HTML);
-    $HTML = str_replace( '@@NOM@@',             $OU->getNomComplet(),                           $HTML);
-    $HTML = str_replace( '@@TELEFON@@',         $OU->getTelefonString(),                        $HTML);
-    $HTML = str_replace( '@@NIF@@',             $OU->getDni(),                                  $HTML);
-    $HTML = str_replace( '@@CARRER@@',          $OU->getAdreca(),                               $HTML);
-    $HTML = str_replace( '@@POBLE@@',           $OU->getPoblacioString(),                       $HTML);
-    $HTML = str_replace( '@@CODI_POSTAL@@',     $OU->getCodipostal(),                           $HTML);
-    $HTML = str_replace( '@@CONCEPTE@@',        $OC->getTitolcurs(),                            $HTML);
-    $HTML = str_replace( '@@DIA@@',             $OC->getDatainici('d/m/Y'),                     $HTML);
-    $HTML = str_replace( '@@HORARIS@@',         $OC->getHoraris(),                              $HTML);
-    $HTML = str_replace( '@@P@@',               $OM->getPagat(),                                $HTML);
-    $HTML = str_replace( '@@Q@@',               1,                                              $HTML);
-    $HTML = str_replace( '@@I@@',               $OM->getPagat(),                                $HTML);
-    $HTML = str_replace( '@@BASE@@',            $OM->getPagat(),                                $HTML);
-    $HTML = str_replace( '@@IVA@@',             0,                                              $HTML);
-    $HTML = str_replace( '@@TOTAL@@',           $OM->getPagat(),                                $HTML);
-    $HTML = str_replace( '@@TITULAR@@',         "",                                             $HTML);
-    $HTML = str_replace( '@@CCC@@',             "",                                             $HTML);                                
+    $HTML = str_replace( '@@LOGO_URL@@' ,       OptionsPeer::getString('LOGO_URL',$idS) ,       $HTML );
+    $HTML = str_replace( '@@CODI_BARRES@@' ,    $idS ,                                          $HTML );
+    $HTML = str_replace( '@@TIPUS_PAGAMENT@@' , $OM->getTpagamentString() ,                     $HTML );
+    $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML );
+    $HTML = str_replace( '@@FACTURA@@',         $OM->getIdmatricules(),                         $HTML );
+    $HTML = str_replace( '@@CODI_CLIENT@@',     $OM->getUsuarisusuariid(),                      $HTML );
+    $HTML = str_replace( '@@DATA_FACTURA@@',    date('d/m/Y',time()),                           $HTML );
+    $HTML = str_replace( '@@NOM@@',             $OU->getNomComplet(),                           $HTML );
+    $HTML = str_replace( '@@TELEFON@@',         $OU->getTelefonString(),                        $HTML );
+    $HTML = str_replace( '@@NIF@@',             $OU->getDni(),                                  $HTML );
+    $HTML = str_replace( '@@CARRER@@',          $OU->getAdreca(),                               $HTML );
+    $HTML = str_replace( '@@POBLE@@',           $OU->getPoblacioString(),                       $HTML );
+    $HTML = str_replace( '@@CODI_POSTAL@@',     $OU->getCodipostal(),                           $HTML );
+    $HTML = str_replace( '@@CONCEPTE@@',        $OC->getTitolcurs(),                            $HTML );
+    $HTML = str_replace( '@@DIA@@',             $OC->getDatainici('d/m/Y'),                     $HTML );
+    $HTML = str_replace( '@@HORARIS@@',         $OC->getHoraris(),                              $HTML );
+    $HTML = str_replace( '@@P@@',               $OM->getPagat(),                                $HTML );
+    $HTML = str_replace( '@@Q@@',               1,                                              $HTML );
+    $HTML = str_replace( '@@I@@',               $OM->getPagat(),                                $HTML );
+    $HTML = str_replace( '@@BASE@@',            $OM->getPagat(),                                $HTML );
+    $HTML = str_replace( '@@IVA@@',             0,                                              $HTML );
+    $HTML = str_replace( '@@TOTAL@@',           $OM->getPagat(),                                $HTML );
+    $HTML = str_replace( '@@TITULAR@@',         "",                                             $HTML );
+    $HTML = str_replace( '@@CCC@@',             "",                                             $HTML );                                
 
     return $HTML;
     

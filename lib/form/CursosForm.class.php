@@ -7,9 +7,12 @@
  * @subpackage form
  * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
+ * @deprecated Aquest mòdul ja no és operatiu. S'ha creat un formulari molt més dinàmic.
  */
-class CursosForm extends sfFormPropel
+class CursosForm extends BaseCursosForm
 {
+
+/*
   public function setup()
   {
     
@@ -35,7 +38,7 @@ class CursosForm extends sfFormPropel
       'site_id'         => new sfWidgetFormInputHidden(),
       'VisibleWEB'      => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No'))),
       'actiu'           => new sfWidgetFormInputHidden(),
-      'isEntrada'       => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Només reserva',2=>'Pagament amb targeta',3=>'Domiciliació bancària')),array()),
+      'Pagament'        => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Només reserva',2=>'Pagament amb targeta',3=>'Domiciliació bancària')),array()),
       'PDF'             => new sfWidgetFormInputFileEditableMy(array('file_src'=>'/'.$this->WEB_PDF.$this->getObject()->getPdf() , 'is_image'=>false,'with_delete'=>false)),
       'ADescomptes'     => new sfWidgetFormChoice(array('renderer_class'=>'sfWidgetFormSelectManyMy' , 'choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false) , 'multiple'=>true , 'expanded'=>true),array('class'=>'ul_espais')), 
     ));
@@ -128,5 +131,5 @@ class CursosForm extends sfFormPropel
   	$OC->save();
 
   }
-
+*/
 }

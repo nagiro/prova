@@ -357,6 +357,5 @@ class myUser extends sfBasicSecurityUser
     	
         return array('OK'=>$OK,'MAILS_INC'=>$errors);
     }   
-  
-
+    
 }

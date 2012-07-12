@@ -116,10 +116,32 @@ class Cursos extends BaseCursos
     
   }
   
+  /**
+   * Retorna els tipus de pagament que hi ha pel curs existent. 
+   * @param intranet bool ( Indica si és per a usar a la intranet o a la extranet )
+   * */
+  public function getSelectPagaments($intranet = false){
+    
+    $ALL = TipusPeer::getTipusPagamentArray();
+    $RET = array();
+    $SEL = ($intranet)?$this->getPagamentintern():$this->getPagamentextern();
+    $SEL = explode( '@' , $SEL );
+    
+    foreach($SEL as $E):        
+        $RET[$E] = $ALL[$E];
+    endforeach;
+    
+    return $RET;
+    
+  }
+  
+/*
+//Tret per canvi en el funcionament dels diversos tipus de cobraments.   
   public function isCompra(){
     return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_TARGETA);
   }
-      
+  
+
   public function isReserva(){
     return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_RESERVA);
   }      
@@ -127,7 +149,7 @@ class Cursos extends BaseCursos
   public function isDomiciliacio(){
     return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO);
   }
-
+*/
 /*  public function getMatriculess($C = null, PropelPDO $con = null)
   {
     if ($C === null) $C = new Criteria();    	    	        	        

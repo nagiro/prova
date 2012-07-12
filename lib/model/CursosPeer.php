@@ -25,16 +25,18 @@ class CursosPeer extends BaseCursosPeer
     const TIPUS_PAGAMENT_RESERVA = 1;
     const TIPUS_PAGAMENT_TARGETA = 2;
     const TIPUS_PAGAMENT_DOMICILIACIO = 3;
+    const TIPUS_PAGAMENT_METALIC_CAIXA = 4;
 
     static public function initialize( $idC , $idS )
     {
         $OC = CursosPeer::retrieveByPK($idC);            
         if(!($OC instanceof Cursos)):                    	
             $OC = new Cursos();
+            $OC->setADescomptes(MatriculesPeer::REDUCCIO_CAP);
             $OC->setSiteId($idS);          
             $OC->setActiu(true);                                      	
         endif; 
-        return new CursosForm($OC,array('IDS'=>$idS));
+        return new CursosForm($OC);
     }
 
     static public function getCriteriaActiu( $C , $idS )
@@ -262,16 +264,17 @@ class CursosPeer extends BaseCursosPeer
         $FC->getObject()->setIsactiu(true);
         $FC->getObject()->setDatainmatricula(date('Y-m-d',time()));
         $FC->getObject()->setDatafimatricula(date('Y-m-d',time()));
-        $FC->getObject()->setDatainici(date('Y-m-d',time()));
+        $FC->getObject()->setDatainici(date('Y-m-d',time()));        
     else:
         $OC = new Cursos();
         $OC->setSiteId($idS);
         $OC->setActiu(true); 
         $OC->setCodi($codi);
+        $OC->setAdescomptes(0);
         $FC = new CursosForm($OC);                                	  	
   	endif;
         	
-  	return $FC;
+  	return $FC->getObject();
   }
   
   static public function getByCodi($codi,$idS)

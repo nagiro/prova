@@ -467,18 +467,20 @@ class myUser extends sfBasicSecurityUser
 
     static public function ph_EstatCurs($AUTH, $OC, $url, $CURSOS_MATRICULATS){
         
+        //L'usuari està autentificat?
         $AUTEN = (isset($AUTH) && $AUTH > 0);
+                
+        //Queden places al curs? 
+        $HiHaPlaces =  !$OC->isPle();
         
-        $TNReserva  =  ($OC->getIsEntrada() == CursosPeer::TIPUS_PAGAMENT_NO_RESERVA);
-        $TReserva   =  ($OC->getIsEntrada() == CursosPeer::TIPUS_PAGAMENT_RESERVA);
-        $TReservaT  =  ($OC->getIsEntrada() == CursosPeer::TIPUS_PAGAMENT_TARGETA);
-        $TReservaD  =  ($OC->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO);
-        $HiHaPlaces =  !$OC->isPle();                    
-        $datai      =  $OC->getDatainmatricula('U');        
+        //Quan comença?                    
+        $datai      =  $OC->getDatainmatricula('U');
+        
+        //L'alumne ja està matriculat?
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
+                        
         $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());
-        $idS        = $OC->getSiteId();
-        
+        $idS        = $OC->getSiteId();        
         $OS         = SitesPeer::retrieveByPK($idS);
         $nom        = $OS->getNom();
         $email      = $OS->getEmailString();
@@ -502,14 +504,15 @@ class myUser extends sfBasicSecurityUser
             //Ja ha estat matriculat
             if( $JaMat ){
                 
+                //Seleccionem la matrícula del curs que volem veure l'estat
                 $OM = MatriculesPeer::retrieveByPK($CURSOS_MATRICULATS[$OC->getIdcursos()]);
                 if($OM instanceof Matricules){
                     
                     //Si l'usuari ja està matriculat, doncs li marquem
-                    if(MatriculesPeer::ACCEPTAT_NO_PAGAT == $OM->getEstat() || MatriculesPeer::ACCEPTAT_PAGAT == $OM->getEstat()){
+                    if( MatriculesPeer::ACCEPTAT_NO_PAGAT == $OM->getEstat() || MatriculesPeer::ACCEPTAT_PAGAT == $OM->getEstat() ){
                         return "MATRICULAT";
                         
-                    //L'usuari està en espera'
+                    //L'usuari està en espera
                     } elseif(MatriculesPeer::EN_ESPERA == $OM->getEstat()) {
                         return "EN_ESPERA";
                         
@@ -526,24 +529,25 @@ class myUser extends sfBasicSecurityUser
             } else {
                 
                 //No queden places
-                if( !$HiHaPlaces ){      
+                if( !$HiHaPlaces ){
+                    
                     return "NO_HI_PLACES";                
                                         
-                //No hi ha reserva en línia
-                }elseif( $TNReserva ){
+                //Si no hi ha cap tipus de pagament extern, vol dir que no hi ha reserva en línia.
+                } elseif( $OC->getPagamentextern() == "" ){
+                    
                     return "NO_HI_HA_RESERVA_LINIA";
-        
-                //Encara no es pot matricular i és alumne antic d'idiomes
-                }elseif( $MatAntIdi && $avui < $dataiA ){
-                    return "ABANS_PERIODE_MATRICULA_AA_IDIOMES";                    
-        
-                //Encara no es pot matricular i no és un alumne antic d'idiomes o el curs no és d'idiomes
-                }elseif( !$MatAntIdi && $avui < $datai ){
+                
+                //Encara no ha iniciat el període de matrícules.
+                } elseif( $avui < $datai ){
+                    
                     return "ABANS_PERIODE_MATRICULA";                    
 
-                //Es pot matricular
-                }elseif( $TReserva || $TReservaT || $TReservaD ){
-                    return "POT_MATRICULAR";                                            
+                //Si no és cap de les anteriors, pot matricular-se.
+                } else {
+                    
+                    return "POT_MATRICULAR";
+                                                                
                 }                            
             }            
         }        
@@ -561,7 +565,7 @@ class myUser extends sfBasicSecurityUser
     static public function ph_getEtiquetaCursos($AUTH, $OC, $url, $CURSOS_MATRICULATS)
     {
         
-        $ESTAT = self::ph_EstatCurs($AUTH, $OC, $url, $CURSOS_MATRICULATS);
+        $ESTAT      = self::ph_EstatCurs($AUTH, $OC, $url, $CURSOS_MATRICULATS);
                 
         $datai      =  $OC->getDatainmatricula('U');
         $avui       = time();        

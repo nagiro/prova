@@ -2585,32 +2585,51 @@ class gestioActions extends sfActions
 				$this->MODE = 'NOU';
     		break;
 
-		//Si el codi existeix, carrego les dades, altrament nomÃ©s guardo.    		
+		//Si el codi existeix, carrego les dades, altrament només guardo.    		
     	case 'SC':
 				$RP = $request->getParameter('cursos_codi'); 			                				
 				$codi = ($RP['CodiT'] != "")?$RP['CodiT']:$RP['Codi']; 				
-				$this->FCurs = CursosPeer::getCopyCursByCodi( $codi , $this->IDS ); 	                    			                                                    			    			    		    		        		        		        		    
+				$this->OC = CursosPeer::getCopyCursByCodi( $codi , $this->IDS );                      			                                                    			    			    		    		        		        		        		    
 				$this->MODE = 'EDICIO_CONTINGUT';       		    	   		    	     		        		        		        		        			
     		break;    		
     		
     	//Editem un curs que ja existeix. 
-    	case 'EC':
-                $this->FCurs = CursosPeer::initialize( $request->getParameter('IDC') , $this->IDS );    			    			    							 			
+    	case 'EC':                
+                $this->OC = CursosPeer::retrieveByPK($request->getParameter('IDC'));    			    			    							 			
     			$this->MODE = 'EDICIO_CONTINGUT';    			
     		break;
     	    		
     	//Guarda el contingut del curs
     	case 'SCC':
-                $RP = $request->getParameter('cursos');
-                $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );                                                                           
-    		    $this->FCurs->bind($RP,$request->getFiles('cursos'));                
-    		    if($this->FCurs->isValid()):                    
-    		    	$this->FCurs->save();
-                    $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );
-    		    	$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());
-                    $this->redirect('gestio/gCursos?accio=CA');    		    	     		    
+                        
+                $RP = $request->getParameter('cursos',0);                      
+                $FOC = CursosPeer::initialize($RP['idCursos'] , $this->IDS );                
+    		    $FOC->bind($RP);
+                                
+    		    if($FOC->isValid()):
+                                                        
+                    $FOC->updateObject();
+                    $OC = $FOC->getObject();                                                            
+                                        
+                    //Si no s'assignen pagaments, no es pot vendre entrada
+                    $OC->setPagamentExtern( implode( '@' , $RP['PagamentExtern'] ) );
+                    $OC->setPagamentIntern( implode( '@' , $RP['PagamentIntern'] ) );
+                    
+                    //Si no hi ha cap descompte, ho deixem a 0 => Cap descompte.
+                    if(empty($RP['ADescomptes'])) $OC->setAdescomptes( implode( '@' , array(0) ) );
+                    else $OC->setAdescomptes( implode( '@' , $RP['ADescomptes'] ) );
+                    $OC->save();                        		    	    		    	
+                    
+                    $this->OC = $OC;                    
+                    $this->getUser()->addLogAction($accio,'gCursos',$OC->getIdcursos());
+                    
+                else:
+                                                         
+                    $this->OC = $FOC->getObject();
+                                        		    	     		    
     		    endif;    		        		    
     			$this->MODE = 'EDICIO_CONTINGUT';
+                
     		break;
     	//Esborra un curs	
     	case 'D': 
@@ -3059,18 +3078,18 @@ class gestioActions extends sfActions
         //Carreguem les dades de pagament de la matrícula
         case 'EXTRES':
         
-                $OC = CursosPeer::retrieveByPK($request->getParameter('IDC'));
-                $IDU = $request->getParameter('IDU');
+                $OC = CursosPeer::retrieveByPK( $request->getParameter( 'IDC' ) );
+                $IDU = $request->getParameter( 'IDU' );
                                     
                 //Si no hem trobat el curs, retornem un error
-                if(!($OC instanceof Cursos)):
+                if( !( $OC instanceof Cursos ) ):
                 
                     return $this->renderPartial('matricules',array("OC"=>new Cursos(),"RET"=>array(),"ERROR"=>"ERROR: El curs no s'ha trobat."));
                     
                 //Treiem les dades extres que s'han d'entrar
                 else:
                                 
-                    $MostraPreu = ( !$OC->isReserva() && !$OC->isPle());
+                    $MostraPreu = ( !$OC->isPle());
                                                                                                                                                                                                                                                                    
                     return $this->renderPartial( 'matricules' , array( "IDU" => $IDU , "OC" => $OC , "RET"=>$OC->getDescomptesArray( $MostraPreu ) , "ERROR" => "" ) );
                 
@@ -3084,7 +3103,9 @@ class gestioActions extends sfActions
         
                 //La matrícula pot ser amb pagament de targeta de crèdit o bé en metàl·lic.
                 $RS = $request->getParameter('matricules');
+                                
                 $RET = MatriculesPeer::saveNewMatricula( $RS['idU'] , $RS['idC'] , "" , $RS['descompte'] , $RS['mode_pagament'] , $RS['idDadesBancaries'] );                
+                
                 $AVISOS = $RET['AVISOS'];                                
                                                                      			
                 //Si la matrícula surt amb algun estat que no sigui tpv, fem la redirecció i mostrem el missatge. 
@@ -3094,7 +3115,8 @@ class gestioActions extends sfActions
                 elseif(array_key_exists('CURS_PLE',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=CURS_PLE');
                 elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=RESERVA_OK');                
                 elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_METALIC_OK');
-                elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_DOMICILIACIO_OK');                                
+                elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_DOMICILIACIO_OK');
+                elseif(array_key_exists('MATRICULA_CODI_BARRES',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_METALIC_OK');                                
         
                 //La matrícula es paga amb TPV
                 if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
@@ -3181,6 +3203,9 @@ class gestioActions extends sfActions
 				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC') , $this->IDS );
 				$this->MODE = 'LMATRICULES';
 			break;		
+/**
+ * @deprecated substituit per PRINT_PAGAMENT
+ * 
 		case 'P':
 			
 				$IDP = $request->getParameter('IDP');
@@ -3234,6 +3259,7 @@ class gestioActions extends sfActions
 				throw new sfStopException; 
 				
 			break;
+**/            
 		case 'PB':
 			
 				$IDP = $request->getParameter('IDP');
@@ -3273,12 +3299,14 @@ class gestioActions extends sfActions
         case 'PRINT_PAGAMENT':
 
                 $idM = $request->getParameter('IDM');
+                                
                 $OM = MatriculesPeer::retrieveByPK($idM);                                
                 
                 $HTML = MatriculesPeer::DocMatriculaPagamentCaixer($OM, $this->IDS);                                
                 
-                $OPDF = new HTML2PDF();
-                $OPDF->doPdf($HTML);                                                
+                echo utf8_decode($HTML);
+                //$OPDF = new HTML2PDF();
+                //$OPDF->doPdf($HTML);                                                
     					
     			throw new sfStopException;			   	  	                                                                                                                                                                 
         

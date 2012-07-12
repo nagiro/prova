@@ -12,7 +12,7 @@
 .espai { padding-left:5px; padding-right:5px; }
 #comentari { width:40%; }
 
-	.row { width:600px; padding:10px; margin-top:5px;  }
+	.row { width:600px; padding:5px; margin-top:0px;  }
     .row:hover { background-color:#EEE;  }
 	.row_field { width:70%; }
 	.row_title { width:30%;  }
@@ -22,11 +22,9 @@
    
 <script type="text/javascript">
 
-	$(document).ready( function() { 
-		$('#cerca_select').change( function() {
-			$('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit();			
-		});
-
+	$(document).ready( function() {
+	    $('.select_date').datepicker({ dateFormat: "yy-mm-dd" , constrainInput: true });
+		$('#cerca_select').change( function() { $('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); });
 		$('#cursos_codi_Codi').change(CanviaCodiCurs);
 		$('#FSAVECODICURS').submit(ValidaCodi);
 		
@@ -107,7 +105,7 @@
 	 	<div class="REQUADRE fb">
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCursos?accio=CA')) ?>
 					 	 		
-	 		<div class="FORMULARI fb">
+	 		<div class="FORMULARI fb">                                        
 	 			<?php echo $FCursCodi ?>	 		
 	 			<?php include_partial('botoneraDiv',array('tipus'=>'Blanc','nom'=>'BSAVECODICURS','id'=>'BSAVECODICURS', 'class'=>'BOTO_ACTIVITAT' ,'text'=>'Segueix amb detall...')); ?>		
 	 		</div>
@@ -124,8 +122,98 @@
 	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gCursos?accio=CA')) ?>
 					 	 		
 	 		<div class="FORMULARI fb">
-	 			<?php echo $FCurs ?>
-                
+            
+                <div class="FORMULARI fb">
+                                                          
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Codi">Codi</label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[Codi]',$OC->getCodi(),array('style'=>"width:100px;")); ?></span>
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_TitolCurs">Títol del curs: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[TitolCurs]',$OC->getTitolcurs(),array('style'=>"width:400px;")); ?></span>                        
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_isActiu">Matrícula oberta? </label></span>
+                        <span class="row_field fb"><?php echo select_tag('cursos[isActiu]',options_for_select(array(1=>'Sí',0=>'No'),$OC->getIsactiu())); ?></span>                        
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Places">Núm de places: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[Places]',$OC->getPlaces(),array('style'=>"width:10%;")); ?></span>                        
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Descripcio">Descripció: </label></span>
+                        <span class="row_field fb"><?php echo textarea_tag('cursos[Descripcio]',$OC->getDescripcio(),array('class'=>"autocomplete")); ?></span>                        
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Preu">Preu: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[Preu]',$OC->getPreu(),array('style'=>"width:10%;")); ?></span>                        
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Horaris">Descripció d'horaris: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[Horaris]',$OC->getHoraris(),array('style'=>"width:50%;")); ?></span>                                            
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Categoria">Categoria: </label></span>
+                        <span class="row_field fb"><?php echo select_tag('cursos[Categoria]',options_for_select(CursosPeer::getSelectCategories(),$OC->getCategoria())); ?></span>
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_Datainici">Data inici curs: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[DataInici]',$OC->getDatainici('Y-m-d'),array('style'=>'width:100px','class'=>'select_date')); ?></span>
+                    </div>
+
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_DataInMatricula">Data inici matrícula: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[DataInMatricula]',$OC->getDataInMatricula('Y-m-d'),array('style'=>'width:100px','class'=>'select_date')); ?></span>
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_DataFiMatricula">Data fi matrícula: </label></span>
+                        <span class="row_field fb"><?php echo input_tag('cursos[DataFiMatricula]',$OC->getDatafimatricula('Y-m-d'),array('style'=>'width:100px','class'=>'select_date')); ?></span>
+                    </div>
+                    
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_VisibleAWeb">Visible a web? </label></span>
+                        <span class="row_field fb"><?php echo select_tag('cursos[VisibleWEB]',options_for_select(array(1=>'Sí',2=>'No'),$OC->getVisibleweb())); ?></span>
+                    </div>
+
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_VisibleAWeb">Pagament acceptat? </label></span>
+                        <span class="row_field fb">
+                            <div style="float: left; margin-right:10px;">
+                                <b>Extranet</b><br />
+                                <?php echo select_tag( 'cursos[PagamentExtern]' , options_for_select( TipusPeer::getTipusPagamentArray() , explode( '@' , $OC->getPagamentExtern() ) ) , array('multiple'=>'multiple','style'=>'height:140px; width:200px;')); ?>
+                            </div>                        
+                            <div style="float: left; margin-right:10px;">
+                                <b>Intranet</b><br />
+                                <?php echo select_tag( 'cursos[PagamentIntern]' , options_for_select( TipusPeer::getTipusPagamentArray() , explode( '@' , $OC->getPagamentIntern() ) ) , array('multiple'=>'multiple','style'=>'height:140px; width:200px;')); ?>
+                            </div>
+                        
+                                                                        
+                        </span>
+                    </div>
+
+                    <div class="clear row fb">
+                        <span class="title row_title fb"><label for="cursos_ADescomptes">Descomptes? </label></span>
+                        <span class="row_field fb">                        
+                            <?php echo select_tag( 'cursos[ADescomptes]' , options_for_select( DescomptesPeer::getDescomptesArray($OC->getSiteId(),false) , explode( '@' , $OC->getAdescomptes() ) ) , array('multiple'=>'multiple','style'=>'height:140px; width:400px;')); ?>                                                                        
+                        </span>
+                    </div>
+                    
+                    <?php echo input_hidden_tag('cursos[idCursos]',$OC->getIdcursos()); ?>
+                    <?php echo input_hidden_tag('cursos[site_id]',$OC->getSiteId()); ?>
+                    <?php echo input_hidden_tag('cursos[actiu]',$OC->getActiu()); ?>
+
+
+                </div>                                                                        	 			                
                 
                 <div class="clear" style="text-align:right; padding-top:40px;">                
                     <button type="submit" name="BGENERAACTIVITAT" class="BOTO_ACTIVITAT" >

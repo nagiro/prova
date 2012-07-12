@@ -237,8 +237,8 @@
         <div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gMatricules?accio=CA'); ?></div>
             <?php  
                 switch($MISSATGE){
-                    case 'PAGAMENT_TPV': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;
-                    case 'RESERVA_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break; 
+                    case 'PAGAMENT_TPV': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=PRINT_PAGAMENT&IDM='.$IDM)." per veure el reguard."; break;
+                    case 'RESERVA_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=PRINT_PAGAMENT&IDM='.$IDM)." per veure el reguard."; break; 
                     case 'MATRICULA_METALIC_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=PRINT_PAGAMENT&IDM='.$IDM)." per veure el reguard."; break;                    
                     case 'PAGAMENT_TPV_KO': echo "Hi ha hagut algun problema fent el pagament de la matrícula a través del TPV. Si us plau, torna-ho a intentar."; break;
                     case 'MATRICULA_FINAL_KO': echo "Hi ha hagut algun problema generant el resguard de la matrícula. Si us plau, posa't en contacte amb informatica@casadecultura.org."; break;
@@ -246,7 +246,7 @@
                     case 'ERR_CURS': echo "Hi ha hagut algun problema amb el codi del curs. Si us plau, torna-ho a intentar."; break;
                     case 'ERR_JA_TE_UNA_MATRICULA': echo "Aquest usuari ja té una matrícula a aquest curs. La nova matrícula no s'ha efectuat."; break;
                     case 'CURS_PLE': echo "El curs ja està ple i l'usuari ha quedat en llista d'espera correctament. Quan hi hagi places lliures s'haurà d'avisar. "; break;
-                    case 'MATRICULA_DOMICILIACIO_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=P&IDP='.$IDM)." per veure el reguard."; break;
+                    case 'MATRICULA_DOMICILIACIO_OK': echo "La matrícula s'ha realitzat correctament.<br /> Prem ".link_to('aquí','gestio/gMatricules?accio=PRINT_PAGAMENT&IDM='.$IDM)." per veure el reguard."; break;
                                                              
                 } 
             ?>

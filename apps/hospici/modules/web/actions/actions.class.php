@@ -348,30 +348,32 @@ class webActions extends sfActions
         //Nova matrícula a un curs
         case 'nova_matricula':
             
-            //La matrícula pot ser amb pagament de targeta de crèdit o bé en metàl·lic.            
-            $idC = $request->getParameter('idC'); $idU = $this->getUser()->getSessionPar('idU');
-            $idD = $request->getParameter('idD'); $idMP = $request->getParameter('idMP');
-            $CCC = $request->getParameter('ccc1').$request->getParameter('ccc2').$request->getParameter('ccc3').$request->getParameter('ccc4');
-            $titular = $request->getParameter('titular'); $tutor_dni = $request->getParameter('dni_tutor'); $tutor_nom = $request->getParameter('nom_tutor');                                                
+            //Gestionem el pagament d'una matrícula.
+            $RP = $request->getParameter('matricula');            
+            $idU = $this->getUser()->getSessionPar('idU');
+            $idC = $RP['idC']; $idD = $RP['idD']; $idP = $RP['idP'];
+            $CCC = $RP['ccc1'].$RP['ccc2'].$RP['ccc3'].$RP['ccc4'];
+            $titular = $RP['titular']; $tutor_dni = $RP['dni_tutor']; $tutor_nom = $RP['nom_tutor'];                                                
             
-            $RET = MatriculesPeer::saveNewMatricula( $idU , $idC , "" , $idD , $idMP );
+            $RET = MatriculesPeer::saveNewMatricula( $idU , $idC , "Hospici" , $idD , $idP );
             
             $AVISOS = $RET['AVISOS'];
-            $this->SECCIO = 'MATRICULA';                                
+            $this->SECCIO = 'MATRICULA';
             $this->getUser()->addLogAction('SAVE_MATRICULA','gMatricules',$RET['OM']->getIdmatricules());
                                                                  			
             //Si la matrícula surt amb algun error greu, redireccionem i mostrem un missatge.            
-            $this->redirectIf(array_key_exists('ERR_USUARI',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_USUARI');                                       
+            $this->redirectIf(array_key_exists('ERR_USUARI',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_USUARI');
             $this->redirectIf(array_key_exists('ERR_CURS',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_CURS');
             $this->redirectIf(array_key_exists('ERR_JA_TE_UNA_MATRICULA',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_JA_TE_UNA_MATRICULA');
                                       
             //Si la matrícula surt amb un error o OK normal, mostrem el missatge.
-            if(array_key_exists('CURS_PLE',$AVISOS)) $this->MISSATGE3 = "CURS_PLE";                
-            elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->MISSATGE3 = "OK";                
-            elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->MISSATGE3 = 'OK'; 
+            if(array_key_exists('CURS_PLE',$AVISOS)) $this->MISSATGE3 = "CURS_PLE";
+            elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->MISSATGE3 = "OK";
+            elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->MISSATGE3 = 'OK';            
             elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->MISSATGE3 = 'OK';
+            elseif(array_key_exists('MATRICULA_CODI_BARRES',$AVISOS)) $this->MISSATGE3 = 'OK';
     
-            //Si la matrícula es paga amb TPV fem uns extres.            
+            //Si la matrícula es paga amb TPV posem les dades per a fer el pagament.
             if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
                 $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
     			$this->TPV = MatriculesPeer::getTPV( $RET['OM']->getPagat() , $NOM , $RET['OM']->getIdmatricules() , $RET['OM']->getSiteid() , true );
@@ -381,25 +383,26 @@ class webActions extends sfActions
             endif;
             
             //Si el pagament és amb domiciliació, hem d'afegir el compte corrent i després el podrem donar per validada.
-            if(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)):
+            if( array_key_exists( 'MATRICULA_DOMICILIACIO_OK' , $AVISOS ) ):
                 
                 //Consultem el curs per saber el Siteid
                 $OC = CursosPeer::retrieveByPK($idC);
                 
                 //Afegim el compte corrent
-                $ODB = DadesBancariesPeer::addCCC($CCC,$OC->getSiteId(),$this->IDU,"",$titular);
-                $RET['OM']->setIddadesbancaries($ODB->getIddada());
-                
-                //Si tenim dades del tutor, les guardem.
-                if(!empty($tutor_dni) || !empty($tutor_nom)):
-                    $RET['OM']->setTutordni($tutor_dni);
-                    $RET['OM']->setTutornom($tutor_nom);
-                endif;
-                
+                $ODB = DadesBancariesPeer::addCCC( $CCC , $OC->getSiteId() , $idU , "" , $titular );
+                $RET['OM']->setIddadesbancaries( $ODB->getIddada() );
+                                                
                 $RET['OM']->save();                
 
             endif;
             
+            //Si tenim dades del tutor, les guardem.
+            if(!empty($tutor_dni) || !empty($tutor_nom)):
+                $RET['OM']->setTutordni($tutor_dni);
+                $RET['OM']->setTutornom($tutor_nom);
+                $RET['OM']->save();
+            endif;
+                        
                              
         break;
 
