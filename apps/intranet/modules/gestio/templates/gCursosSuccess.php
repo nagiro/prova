@@ -22,14 +22,19 @@
    
 <script type="text/javascript">
 
-	$(document).ready( function() {
+    $(document).ready( function() {
 	    $('.select_date').datepicker({ dateFormat: "yy-mm-dd" , constrainInput: true });
 		$('#cerca_select').change( function() { $('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); });
 		$('#cursos_codi_Codi').change(CanviaCodiCurs);
-		$('#FSAVECODICURS').submit(ValidaCodi);
-		
-	});
-	
+		$('#FSAVECODICURS').submit(ValidaCodi);                        
+    });
+    
+    InitTinyMCE('cursos_Descripcio');
+  
+  
+  
+  
+    	
 </script>
 
    

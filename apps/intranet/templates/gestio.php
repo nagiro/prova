@@ -33,6 +33,7 @@
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js'; ?>"></script>  
     
   <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>    
+  <script type="text/javascript" src="<?php echo $BASE.'js/gestio.js'; ?>"></script>
     
 <!--[if lt IE 7]>
     <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>
