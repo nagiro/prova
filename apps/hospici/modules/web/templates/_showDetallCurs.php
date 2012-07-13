@@ -112,13 +112,12 @@
                                             case 'RESERVAT'         : echo '<div>Vostè ja ha realitzat una reserva o matrícula a aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
                                             case 'EN_ESPERA'        : echo '<div>Vostè està en espera de plaça per aquest curs.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
                                             case 'ANULADA'          : echo '<div>Vostè ha realitzat una matrícula en aquest curs, però no hi està matriculat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
-                                            case 'NO_HI_PLACES'     : echo '<div>Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /></div>'; break;
+                                            case 'NO_HI_PLACES'     : echo '<div>Aquest curs ja no té places lliures.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /></div>'; break;                                            
                                             case 'NO_HI_HA_RESERVA_LINIA': echo '<div>Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties</div>'; break;
                                             case 'ABANS_PERIODE_MATRICULA_AA_IDIOMES': echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$dataiA).' si vol continuar els estudis d\'idiomes.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
                                             case 'ABANS_PERIODE_MATRICULA': echo '<div>Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b></div>'; break;
-                                            case 'POT_MATRICULAR': 
-                                                echo mostraFormulari( $OS->getNom() , $CURS , $MISSATGE , $ESTAT );
-                                             break;         
+                                            case 'POT_MATRICULAR':  echo mostraFormulari( $OS->getNom() , $CURS , $MISSATGE , $ESTAT ); break;       
+                                            case 'LLISTA_ESPERA':   echo mostraFormulari( $OS->getNom() , $CURS , $MISSATGE , $ESTAT ); break;                                            
                                         }                                                                        
                                         
                                                                                                             
@@ -177,7 +176,19 @@ function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
             <?php   
             
                 //Aquí podem escollir el tipus de pagament que farem pel curs.
-                echo select_tag('matricula[idP]',options_for_select($CURS->getSelectPagaments()));
+                
+                $PAGAMENTS = $CURS->getSelectPagaments();
+                
+                if( $CURS->isPle() && $CURS->getIsLlistaEspera(false) ):
+                
+                    echo select_tag( 'matricula[idP]' , options_for_select( array( TipusPeer::PAGAMENT_LLISTA_ESPERA => $PAGAMENTS[TipusPeer::PAGAMENT_LLISTA_ESPERA] ) ) );
+                    echo ' <span class="tipMy tip" title="El curs és ple i però si vol pot afegir-se a la llista d\'espera del curs. Si en un futur hi ha places ens posarem en contacte amb vostè.">?</span>';
+                    
+                else:
+                
+                    echo select_tag( 'matricula[idP]' , options_for_select($CURS->getSelectPagaments() ) );
+                    
+                endif; 
                 
             ?>
             </div>
@@ -189,8 +200,15 @@ function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
             <?php 
                                 
                 //Si hi ha descompte al curs, el mostrem
-                if(empty($A_Descomptes)) echo 'Cap descompte disponible <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
-                else echo select_tag('matricula[idD]',options_for_select($A_Descomptes,1)).' <span class="tipMy tip" title="Esculli, si s\'escau, el descompte que s\'adeqüi a la seva situació. Aquest haurà de ser demostrat a l\'entitat organitzadora a l\'inici de les classes.">?</span>';
+                if(empty($A_Descomptes)){
+                    
+                    echo 'Cap descompte disponible <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
+                    
+                } else {
+                    
+                    echo select_tag('matricula[idD]',options_for_select($A_Descomptes,1)).' <span class="tipMy tip" title="Esculli, si s\'escau, el descompte que s\'adeqüi a la seva situació. Aquest haurà de ser demostrat a l\'entitat organitzadora a l\'inici de les classes.">?</span>';
+                    
+                }
                 
             ?>
             </div>
@@ -232,8 +250,12 @@ function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
         </div>
                 
         <div style="padding-top:10px; clear:both;">
-            <div style="margin-left:220px;">
-                <input style="width: 100px;" type="submit" value="Matricula't!" />
+            <div style="margin-left:180px;">
+                <?php if( $CURS->isPle() && $CURS->getIsLlistaEspera(false) ): ?>
+                    <input style="width: 150px;" type="submit" value="Posar-me en llista d'espera" />
+                <?php else: ?>
+                    <input style="width: 100px;" type="submit" value="Matricula't!" />
+                <?php endif; ?>
             </div>
         </div>
     </div>

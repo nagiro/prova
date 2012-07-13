@@ -22,7 +22,7 @@ if($MODE == 'LLISTAT_ALUMNES'):
             endif;
 			
             $RET .= MatriculesPeer::getEstatText($M->getEstat()).'<br />'.$M->getComentari().'<br />';
-            $RET .= 'Matrícula '.link_to(image_tag('/images/template/page_white_word.png'),'gestio/gMatricules?accio=P&IDP='.$M->getIdmatricules());
+            $RET .= 'Matrícula '.link_to(image_tag('/images/template/page_white_word.png'),'gestio/gMatricules?accio=PRINT_PAGAMENT&IDM='.$M->getIdmatricules());
             if($M->getEstat() == MatriculesPeer::BAIXA):            						
                 $RET .= '&nbsp;Baixa '.link_to(image_tag('/images/template/page_white_word.png'),'gestio/gMatricules?accio=PB&IDP='.$M->getIdmatricules());
             endif;

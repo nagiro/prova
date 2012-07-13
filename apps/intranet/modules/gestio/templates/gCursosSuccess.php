@@ -187,9 +187,9 @@
                     
                     <div class="clear row fb">
                         <span class="title row_title fb"><label for="cursos_VisibleAWeb">Visible a web? </label></span>
-                        <span class="row_field fb"><?php echo select_tag('cursos[VisibleWEB]',options_for_select(array(1=>'Sí',2=>'No'),$OC->getVisibleweb())); ?></span>
+                        <span class="row_field fb"><?php echo select_tag('cursos[VisibleWEB]',options_for_select(array(1=>'Sí',0=>'No'),$OC->getVisibleweb())); ?></span>
                     </div>
-
+                    
                     <div class="clear row fb">
                         <span class="title row_title fb"><label for="cursos_VisibleAWeb">Pagament acceptat? </label></span>
                         <span class="row_field fb">

@@ -368,6 +368,7 @@ class webActions extends sfActions
                                       
             //Si la matrícula surt amb un error o OK normal, mostrem el missatge.
             if(array_key_exists('CURS_PLE',$AVISOS)) $this->MISSATGE3 = "CURS_PLE";
+            elseif(array_key_exists('CURS_PLE_LLISTA_ESPERA',$AVISOS)) $this->MISSATGE3 = "CURS_PLE_LLISTA_ESPERA";
             elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->MISSATGE3 = "OK";
             elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->MISSATGE3 = 'OK';            
             elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->MISSATGE3 = 'OK';

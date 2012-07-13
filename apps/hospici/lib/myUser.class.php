@@ -478,6 +478,9 @@ class myUser extends sfBasicSecurityUser
         
         //L'alumne ja està matriculat?
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
+        
+        //Hi ha llista d'espera?
+        $LLE        = $OC->getIsLlistaEspera(false);
                         
         $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());
         $idS        = $OC->getSiteId();        
@@ -531,7 +534,16 @@ class myUser extends sfBasicSecurityUser
                 //No queden places
                 if( !$HiHaPlaces ){
                     
-                    return "NO_HI_PLACES";                
+                    //No queden places però hi ha possibilitat de llista d'espera
+                    if( $LLE ){
+                        
+                        return "LLISTA_ESPERA";
+                        
+                    }else{
+                        
+                        return "NO_HI_PLACES";
+                            
+                    }                                                        
                                         
                 //Si no hi ha cap tipus de pagament extern, vol dir que no hi ha reserva en línia.
                 } elseif( $OC->getPagamentextern() == "" ){
@@ -570,7 +582,7 @@ class myUser extends sfBasicSecurityUser
         $datai      =  $OC->getDatainmatricula('U');
         $avui       = time();        
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
-        $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());
+        $url        = url_for('@hospici_detall_curs?idC='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl());        
         
         $OS         = SitesPeer::retrieveByPK($OC->getSiteId());
         $nom        = $OS->getNom();
@@ -601,8 +613,12 @@ class myUser extends sfBasicSecurityUser
             $RET  = '  <div class="tip" title="Vostè s\'ha matriculat en aquest curs, però s\'ha donat de baixa o el procés no s\'ha completat correctament. Matrícula sense efecte.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
             $RET .= ph_getRoundCorner('Matrícula aunl·lada', '#CCCCCC').'</div>';               
         
-        }elseif( $ESTAT == 'NO_HI_PLACES'){                                    
+        }elseif( $ESTAT == 'LLISTA_ESPERA'){                                    
             $RET  = '  <div class="tip" title="Aquest curs no disposa de més places.<br /><br /> Si vol pot matricular-s\'hi igualment i restarà en llista d\'espera. En el cas que s\'alliberi alguna plaça, que vostè pot ocupar, el trucarem el més aviat possible. Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
+            $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Curs ple amb llista d\'espera</a>', '#EFAF01').'</div>';            
+
+        }elseif( $ESTAT == 'NO_HI_PLACES'){                                    
+            $RET  = '  <div class="tip" title="Aquest curs no disposa de més places.<br /><br /> Per a més informació, pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
             $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Curs ple</a>', '#EF0101').'</div>';            
         
         }elseif( $ESTAT == 'NO_HI_HA_RESERVA_LINIA'){            

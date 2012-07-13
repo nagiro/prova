@@ -85,7 +85,8 @@
                 if($MISSATGE3 == 'OK') show_missatge("La matrícula s'ha efectuat correctament.<br /> Si només ha realitzat una reserva, aviat ens posarem en contacte amb vostè per finalitzar-la.");
                 if($MISSATGE3 == 'KO') show_missatge("Hi ha hagut algun problema guardant la seva matrícula. <br />Torni-ho a provar o bé envii un missatge a informatica@casadecultura.org per informar de la incidència. <br /><br />Moltes gràcies i perdoni les molèsties.");
                 if($MISSATGE3 == 'ESPERA')  show_missatge("El curs és ple i vostè ha estat afegit a la llista d'espera.<br /> Si s'alliberen places, ens posarem en contacte amb vostè per saber si encara hi està interessat. <br />Moltes gràcies i perdoni les molèsties.");                
-                if($MISSATGE3 == 'JA_EXISTEIX')  show_missatge("A la nostra base de dades ja existeix una matrícula seva a aquest curs.<br /> Si us plau, posi's en contacte amb l'entitat per solventar-ho. <br />Moltes gràcies i perdoni les molèsties.");                
+                if($MISSATGE3 == 'JA_EXISTEIX')  show_missatge("A la nostra base de dades ja existeix una matrícula seva a aquest curs.<br /> Si us plau, posi's en contacte amb l'entitat per solventar-ho. <br />Moltes gràcies i perdoni les molèsties.");
+                if($MISSATGE3 == 'CURS_PLE_LLISTA_ESPERA') show_missatge("Vostè ha estat incorporat a la llista d'espera del curs. Si en un futur hi ha places lliures ens posarem en contacte amb vostè.  <br />Moltes gràcies i perdoni les molèsties.");                
             }
          
             if(isset($LMatricules)) Matricules_Llista($LMatricules);            

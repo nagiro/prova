@@ -3113,6 +3113,7 @@ class gestioActions extends sfActions
                 elseif(array_key_exists('ERR_CURS',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM=0&MISSATGE=ERR_CURS');
                 elseif(array_key_exists('ERR_JA_TE_UNA_MATRICULA',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM=0&MISSATGE=ERR_JA_TE_UNA_MATRICULA');
                 elseif(array_key_exists('CURS_PLE',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=CURS_PLE');
+                elseif(array_key_exists('CURS_PLE_LLISTA_ESPERA',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=CURS_PLE_LLISTA_ESPERA');
                 elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=RESERVA_OK');                
                 elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_METALIC_OK');
                 elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->redirect('gestio/gMatricules?accio=PAGAMENT&IDM='.$RET['OM']->getIdmatricules().'&MISSATGE=MATRICULA_DOMICILIACIO_OK');

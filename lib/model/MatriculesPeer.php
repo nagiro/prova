@@ -51,13 +51,13 @@ class MatriculesPeer extends BaseMatriculesPeer
         return $C;
     } 
 
-    static public function getMatriculaUsuari($idU,$idC,$idS)
+    static public function getMatriculaUsuari($idU,$idC,$idS , $amb_llista_espera = true)
     {
         $C = new Criteria();
         $C = self::getCriteriaActiu($C,$idS);
         $C->add(self::CURSOS_IDCURSOS, $idC);
         $C->add(self::USUARIS_USUARIID, $idU);
-        $C = self::criteriaMatriculat($C);
+        $C = self::criteriaMatriculat($C , $amb_llista_espera );
                                        
         return self::doSelectOne($C);
     }
@@ -125,11 +125,19 @@ class MatriculesPeer extends BaseMatriculesPeer
         
         //Si el curs és ple, guardem que està en espera i mostrem que el curs està ple i resta en llista d'espera
         if($OC->isPle()){
-                              
-          $OM->setPagat(0);
-          $OM->setEstat(MatriculesPeer::EN_ESPERA);
-          $OM->save();
-          $RET['AVISOS']['CURS_PLE'] = "CURS_PLE";
+                                                   
+          if( $Mode_pagament == TipusPeer::PAGAMENT_LLISTA_ESPERA ):
+          
+            $OM->setPagat(0);
+            $OM->setEstat(MatriculesPeer::EN_ESPERA);
+            $OM->save();
+            $RET['AVISOS']['CURS_PLE_LLISTA_ESPERA'] = "CURS_PLE_LLISTA_ESPERA";
+            
+          else:
+           
+            $RET['AVISOS']['CURS_PLE'] = "CURS_PLE";
+            
+          endif;
           
         //Si queden places al curs                
         } else {

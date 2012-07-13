@@ -10,11 +10,16 @@
 class TipusPeer extends BaseTipusPeer
 {
 
+    /**
+     * Quan afegim un valor aquí, hem d'actualitzar la funció:
+     * self::getTipusPagamentString
+     * */  
     const PAGAMENT_TARGETA = 20;
     const PAGAMENT_METALIC = 21;
     const PAGAMENT_DOMICILIACIO = 33;
     const PAGAMENT_CODI_BARRES = 34;
     const PAGAMENT_RESERVA = 35;
+    const PAGAMENT_LLISTA_ESPERA = 36;
 
     
 	static public function getDataIniciMatriculaAnticsAlumnes()
@@ -55,7 +60,7 @@ class TipusPeer extends BaseTipusPeer
         foreach(self::doSelect($C) as $OT):
             $RET[$OT->getIdtipus()] = $OT->getTipusdesc();
         endforeach;
-        
+                
         return $RET;
     }    
     
@@ -76,6 +81,9 @@ class TipusPeer extends BaseTipusPeer
                 break;
             case self::PAGAMENT_RESERVA:
                 return "Reserva de plaça";
+                break;
+            case self::PAGAMENT_LLISTA_ESPERA:
+                return "Posar en llista d'espera";
                 break;
             default:
                 return "N/D";

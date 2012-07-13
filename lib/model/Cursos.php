@@ -135,25 +135,14 @@ class Cursos extends BaseCursos
     
   }
   
-/*
-//Tret per canvi en el funcionament dels diversos tipus de cobraments.   
-  public function isCompra(){
-    return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_TARGETA);
-  }
-  
-
-  public function isReserva(){
-    return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_RESERVA);
-  }      
-  
-  public function isDomiciliacio(){
-    return ($this->getIsentrada() == CursosPeer::TIPUS_PAGAMENT_DOMICILIACIO);
-  }
-*/
-/*  public function getMatriculess($C = null, PropelPDO $con = null)
+  /**
+   * Ens diu si un curs té actiu la llista d'espera o no
+   * @param $intranet bool ( Indica si estem mirant-ho per a la intranet o bé per a la extranet )
+   **/
+  public function getIsLlistaEspera($intranet = false)
   {
-    if ($C === null) $C = new Criteria();    	    	        	        
-    return MatriculesPeer::doSelect($criteria, $con);                			
+    $A = $this->getSelectPagaments( $intranet );
+    return array_key_exists( TipusPeer::PAGAMENT_LLISTA_ESPERA , $A );    
   }
-*/
+
 }
