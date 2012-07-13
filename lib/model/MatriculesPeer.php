@@ -585,7 +585,7 @@ class MatriculesPeer extends BaseMatriculesPeer
                                                                                                 
     //Comença la càrrega d'informació.
     $i = 1;
-    $HTML = OptionsPeer::getString( 'BODY_DOC_MATR_CAIXER' , $idS );
+    $HTML = OptionsPeer::getString( 'BODY_DOC_MATR_CAIXER' , $idS );    
     
     //CONSULTEM USUARI
     $OU = UsuarisPeer::retrieveByPK( $OM->getUsuarisusuariid() );

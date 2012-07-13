@@ -3304,10 +3304,9 @@ class gestioActions extends sfActions
                 $OM = MatriculesPeer::retrieveByPK($idM);                                
                 
                 $HTML = MatriculesPeer::DocMatriculaPagamentCaixer($OM, $this->IDS);                                
-                
-                //echo utf8_decode($HTML);
-                $OPDF = new HTML2PDF();
-                $OPDF->doPdf($HTML);                                                    					
+                        
+                myUser::Html2PDF($HTML);
+                                
     			throw new sfStopException;			   	  	                                                                                                                                                                 
         
             break;            

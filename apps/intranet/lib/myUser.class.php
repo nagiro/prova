@@ -356,6 +356,15 @@ class myUser extends sfBasicSecurityUser
         endforeach;
     	
         return array('OK'=>$OK,'MAILS_INC'=>$errors);
+    }
+    
+    static public function Html2PDF($HTML){                        
+        include(OptionsPeer::getString( 'SF_DOMPDF_CONFIG' , 1 ) );                                                                
+        $dompdf = new DOMPDF();
+        $dompdf->load_html($HTML);
+        $dompdf->set_paper("A4","portrait");
+        $dompdf->render();
+        $dompdf->stream("/tmp/document.pdf");
     }   
     
 }
