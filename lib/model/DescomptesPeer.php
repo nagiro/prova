@@ -56,6 +56,22 @@ class DescomptesPeer extends BaseDescomptesPeer {
         return $RET;
     }
 
+    static public function getArrayDescomptesAmbPreu($preu, $idS){
+        $C = new Criteria();
+        $C->add( self::SITE_ID , $idS );
+        $C->add( self::ACTIU , true );
+        
+        
+        $RET = array();        
+        $RET[0] = 'Cap descompte ('.$preu.'€)';
+        foreach(self::doSelect($C) as $OD):
+            $import = $preu - round((int)$preu*(float)$OD->getPercentatge()/(int)100);
+            $RET[$OD->getIddescompte()] = $OD->getNom().' ('.$import.'€)';
+        endforeach;
+        
+        return $RET;
+    }
+
     static public function getPreuAmbDescompte($valor,$idD){
         
         //Si no hi ha descompte, tornem el valor. 

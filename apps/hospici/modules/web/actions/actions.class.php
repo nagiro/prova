@@ -288,43 +288,82 @@ class webActions extends sfActions
             endif;
             $this->SECCIO = 'USUARI';
         break;
+
+        //Imprimeix el full de pagament en cas que existeixi. 
+        case 'printFactura':
+            
+            $OER = EntradesReservaPeer::retrieveByPK( $request->getParameter( 'idER' ) );
+            if( !is_null( $OER ) ):
+                $HTML = EntradesReservaPeer::DocReservaEntrades( $OER , $OER->getSiteid() );                                
+                myUser::Html2PDF($HTML);                                
+    			throw new sfStopException;	
+            endif;
+            //Imprimim el comprovant d'entrada.
+        break;
             
         //Usuari que compra o reserva una entrada
         case 'compra_entrada':            
-            $A_E = $request->getParameter('entrades',array());
+            $RA = $request->getParameter('entrades',array());
+                                      
+            $IDA = $RA['idA'];
+            $IDH = $RA['idH'];
+            $NEntrades = (int)$RA['num'];
+            $Descompte = (int)$RA['descomptes'];            
+            $TPagament = (int)$RA['tipus_pagament'];
+            
+            //Comprem o reservem l'entrada
+            $RET = EntradesReservaPeer::setCompraEntrada( $IDH , $this->IDU , $NEntrades , $Descompte , $TPagament );
+            
+            switch( $RET['status'] ){
+                
+                //(OH incorrecte)
+                case -1:    $this->MISSATGE2 = "HORARI_INCORRECTE";         break;                
+                
+                //(OA incorrecte)
+                case -2:    $this->MISSATGE2 = "ACTIVITAT_INCORRECTE";      break;                
+                
+                //(OEP incorrecte)                
+                case -3:    $this->MISSATGE2 = "PREU_INCORRECTE";           break;                
+                
+                //(Repe)
+                case -4:    $this->MISSATGE2 = "ENTRADA_REPE";              break;                
+                
+                //(Exhaurides)
+                case -5:    $this->MISSATGE2 = "NO_QUEDEN_PROU_ENTRADES";   break;                
+                
+                //(Error TPV)
+                case -6:    $this->MISSATGE2 = "ERROR_TPV";                 break;                
+                
+                //(Es volen comprar 0 entrades)
+                case -7:    $this->MISSATGE2 = "ERROR_MINIM_ENTRADES";      break;                
+                
+                //(Compra metàl·lic o codi de barres OK)
+                case 1:     
+                    $this->MISSATGE2 = "COMPRA_OK";
+                    $this->IDER = $RET['OER']->getIdentrada();                 
+                break;
+                                
+                //(Reserva d\'entrada OK)
+                case 2:     
+                    $this->MISSATGE2 = "RESERVA_OK";                
+                    $this->IDER = $RET['OER']->getIdentrada();
+                break;
+                                
+                //(Pagament amb TPV)
+                case 3:
+                    $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
+                    $this->setLayout('blanc');
+                    $this->setTemplate('pagament'); 
+                break;
+                                
+                //(En llista d'espera)
+                case 4:     $this->MISSATGE2 = "LLISTA_ESPERA_OK";          break;
+                                
+                //(Pagament amb domiciliació) || Aquest encara s'ha d'aplicar correctament.
+                case 5:     $this->MISSATGE2 = "DOMICILIACIO_OK";           break;
+                
+            }   
                         
-            foreach($A_E as $IDA => $A_H):
-                $this->IDA = $IDA;
-                foreach($A_H as $IDH => $Descomptes):
-                    foreach($Descomptes as $idD => $data ):
-                        $IDH = $IDH;
-                        $NEntrades = (int)$data['num'];                                    
-                        $Descompte = (int)$data['desc'];
-                        $TOTAL += EntradesPreusPeer::getPreu($IDH,$NEntrades,$Descompte);
-                        //Comprem o reservem l'entrada
-                        $OER = EntradesReservaPeer::setCompraEntrada( $IDH , $this->IDU , $NEntrades , $Descompte );
-                        if($OER instanceof EntradesReserva)
-                        {
-                            if($OER->getTipus() == EntradesPreusPeer::TIPUS_VENTA){
-                                $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
-                                $this->setLayout('blanc');
-                                $this->setTemplate('pagament');    
-                            }                                                        
-                        } 
-                        else  //Falta acabar-ho.
-                        {
-                            switch($OER){
-                                case -1: break;
-                                case -2: break;
-                                case -3: break;
-                                case -4: break;
-                                case -5: break;
-                            }                            
-                        }
-                    endforeach;
-                endforeach;                                                 
-            endforeach;           
-                                                                            
             $this->SECCIO = 'COMPRA_ENTRADA';
                                                 
         break;

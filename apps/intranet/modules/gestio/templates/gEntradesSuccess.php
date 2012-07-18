@@ -1,4 +1,8 @@
 <?php use_helper('Form'); ?>
+
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',$IDS); ?>
+<script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script>
+
 <style>
     .row_title { width:100px; }
     .row_field { width:300px; }

@@ -166,4 +166,12 @@ class Activitats extends BaseActivitats
         return (EntradesReservaPeer::countEntradesActivitatConf($this->getActivitatid()) >= $this->getPlaces());        
    }
    
+   public function getTmig(){
+    
+    $tmig = $this->tmig;
+    if(empty($tmig)) return $this->getNom();
+    else return $tmig;
+    
+   }
+   
 }

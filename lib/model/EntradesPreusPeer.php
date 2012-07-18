@@ -34,15 +34,14 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
     {
         $OEP = self::retrieveByPK($idH,$idA);
         if(!($OEP instanceof EntradesPreus)):
-            $OEP = new EntradesPreus();
-            $OEP->setTipus(0);
+            $OEP = new EntradesPreus();            
             $OEP->setPreu(0);
             $OEP->setPlaces(0);
             $OEP->setDescomptes(null);
             $OEP->setSiteId($idS);
             $OEP->setHorariId($idH);
             $OEP->setActivitatid($idA);
-            $OEP->setActiu(true);
+            $OEP->setActiu(false);
         endif;
         
         return new EntradesPreusForm($OEP,array('IDS'=>$idS,'IDH'=>$idH));    
@@ -113,7 +112,7 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
     /**
      * Ens diu quin tipus de venta hi ha associada a aquesta activitat i/o horari en espeical. 
      * */
-    static public function getTipusVenta($idA = 0, $idH = 0){
+/*    static public function getTipusVenta($idA = 0, $idH = 0){
         $C = new Criteria();
         if($idH > 0) $C->add(self::HORARI_ID, $idH);
         if($idA > 0) $C->add(self::ACTIVITAT_ID, $idA);
@@ -123,7 +122,7 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
         if($OEP instanceof EntradesPreus) return $OEP->getTipus();
         else return self::TIPUS_DESACTIVAT;
     } 
-
+*/
 
     /**
      * Retorna les activitats que tenen compra d'entrada.

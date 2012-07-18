@@ -128,12 +128,18 @@
         
             if(isset($MISSATGE2)){
                 
-                if($MISSATGE2 == 'HORARI_INEXISTENT') show_missatge("Hi ha hagut algun error en l'horari escollit. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
-                if($MISSATGE2 == 'TIPUS_VENDA_INCORRECTE') show_missatge("Hi ha hagut algun error en el tipus de reserva/compra. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
-                if($MISSATGE2 == 'NO_QUEDEN_PROU_ENTRADES') show_missatge("No queden prou entrades per aquesta activitat. <br /> Esculli un nombre inferior d'entrades i torni-ho aprovar. ");
+                if($MISSATGE2 == 'HORARI_INCORRECTE') show_missatge("Hi ha hagut algun error en l'horari escollit. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
+                if($MISSATGE2 == 'ACTIVITAT_INCORRECTE') show_missatge("Hi ha hagut algun error en l'activitat escollida. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
+                if($MISSATGE2 == 'PREU_INCORRECTE') show_missatge("Hi ha hagut algun error en el preu escollit. Si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé)");
                 if($MISSATGE2 == 'ENTRADA_REPE') show_missatge("Vostè ja ha reservat entrades per aquest espectacle. <br /> Si vol fer canvis, primer anul·li la seva reserva prèvia i torni-ho a reservar.");
-                if($MISSATGE2 == 'ERROR') show_missatge("Hi ha hagut un error reservant les entrades. <br />Si us plau, posis en contacte amb informatica@casadecultura.org o bé truqui al telèfon 972.20.20.13.");
-                if($MISSATGE2 == 'OK') show_missatge("La seva entrada ha estat reservada correctament.");                
+                if($MISSATGE2 == 'NO_QUEDEN_PROU_ENTRADES') show_missatge("Entrades exhaurides per aquesta activitat o nombre màxim d'entrades superat. <br /> Per a més informació si us plau contacti amb informatica@casadecultura.org o bé trucant al telèfon 972.20.20.13 (Albert Johé). ");
+                if($MISSATGE2 == 'ERROR_TPV') show_missatge("Hi ha hagut un error reservant les entrades. <br />Si us plau, posis en contacte amb informatica@casadecultura.org o bé truqui al telèfon 972.20.20.13.");                                
+                if($MISSATGE2 == 'ERROR_MINIM_ENTRADES') show_missatge("Ha intentat reservar o comprar un número d'entrades incorrecte. <br />Recordi que en pot comprar entre 1 i 8.");
+                
+                if($MISSATGE2 == 'COMPRA_OK') show_missatge("La seva reserva s'ha efectuat correctament.<br />Ha escollit el pagament en metàl·lic o amb codi de barres. Per finalitzar la reserva, haurà de fer el pagament d'aquesta compra abans d'una setmana o bé quedarà anul·lada. <br /> Pot imprimir el seu full de pagament clicant ".link_to('aquí','@hospici_entrada_factura?idER='.$IDER).". ");
+                if($MISSATGE2 == 'RESERVA_OK') show_missatge("La seva reserva s'ha efectuat correctament.<br />Pot imprimir el seu full de reserva clicant ".link_to('aquí','@hospici_entrada_factura?idER='.$IDER).". ");
+                if($MISSATGE2 == 'LLISTA_ESPERA_OK') show_missatge("Vostè ha estat afegit correctament a la llista d'espera. Si en un futur s'alliberen places, ens posarem en contacte amb vostè per si encara hi està interessat.");
+                if($MISSATGE2 == 'DOMICILIACIO_OK') show_missatge("La seva reserva s'ha efectuat correctament.<br />Per finalitzar el pagament haurà de posar-se en contacte amb l'entitat organitzadora per cedir-li el seu compte corrent en cas que ja no el tinguin.");                                                            
             }
 
             echo Entrades_Llista($LEntrades);    

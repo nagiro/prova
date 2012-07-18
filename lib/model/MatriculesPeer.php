@@ -597,7 +597,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML );
     $HTML = str_replace( '@@FACTURA@@',         $OM->getIdmatricules(),                         $HTML );
     $HTML = str_replace( '@@CODI_CLIENT@@',     $OM->getUsuarisusuariid(),                      $HTML );
-    $HTML = str_replace( '@@DATA_FACTURA@@',    date('d/m/Y',time()),                           $HTML );
+    $HTML = str_replace( '@@DATA_FACTURA@@',    $OM->getDatainscripcio('d/m/Y'),                $HTML );
     $HTML = str_replace( '@@NOM@@',             $OU->getNomComplet(),                           $HTML );
     $HTML = str_replace( '@@TELEFON@@',         $OU->getTelefonString(),                        $HTML );
     $HTML = str_replace( '@@NIF@@',             $OU->getDni(),                                  $HTML );

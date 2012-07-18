@@ -86,5 +86,11 @@ class EntradesReserva extends BaseEntradesReserva {
             $OH = new Horaris();
         endif;
     }
+    
+    public function getDescompteString(){
+        $AD = DescomptesPeer::getDescomptesArray($this->getSiteId(),false,false);
+        return $AD[$this->getDescompte()];
+    }
+    
 
 } // EntradesReserva

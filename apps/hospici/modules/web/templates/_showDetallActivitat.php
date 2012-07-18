@@ -79,31 +79,39 @@
 					<div style="padding:10px; font-size:10px;">
                         <div>                                                                                        
                             <?php 
-/*                                foreach($HORARIS as $OH):
+                                foreach($HORARIS as $OH):
                                 
                                     //Busquem el detall de la venta de tiquets                                
                                     $OEP = EntradesPreusPeer::getByActivitatOHorari($ACTIVITAT->getActivitatid(), $OH->getHorarisid());
                                                                     
                                     //Només mostrem aquells que tenen disponibilitat de comprar o reservar entrades.                                 
                                     if($OEP instanceof EntradesPreus):
-                                        echo '  <form action="'.url_for('@hospici_compra_entrada').'" method="post">';                                
-                                        echo '      <div style="float:left; width:100px"><b>Sessió</b><br/>'.$OH->getDia('d/m/Y').'</div>
-                                                    <div style="float:left; width:50px"><b>Hora</b><br/>'.$OH->getHorainici('H:i').'</div>
-                                                    <div style="float:left; width:50px; "><b>Preu</b><br/>'.$OEP->getPreu().'€</div>
-                                                    <div style="float:left; width:100px; text-align:center;"><br />'.myUser::ph_getEtiquetaActivitats($AUTENTIFICAT, $ACTIVITAT, $HORARIS_AMB_ENTRADES, $OH, $OEP).'</div>';
-                                                    
-                                        echo '      <div style="float:left; width:100px; clear:both; "><b>Descompte</b><br/></div>                                                            
-                                                    <div style="float:left; width:100px;"><b>Entrades</b><br/></div>';                                                                                                        
-
-                                    foreach($OEP->getDescomptesArrayStrings() as $idD => $NomDescompte):                                                                                                                                                            
-                                        echo '      <div style="float:left; width:100px; clear:both;">'.$NomDescompte.input_hidden_tag('entrades['.$ACTIVITAT->getActivitatid().']['.$OH->getHorarisid().']['.$idD.'][descompte]',$idD).'</div>';
-                                        echo '      <div style="float:left; width:100px; ">'.select_tag('entrades['.$ACTIVITAT->getActivitatid().']['.$OH->getHorarisid().']['.$idD.'][num]',options_for_select(array(0=>'0',1=>'1',2=>'2',3=>'3',4=>'4',5=>'5',6=>'6',7=>'7',8=>'8'))).'</div>';                                                                                                                                                            
-                                    endforeach;
-                                    echo '          <div style="clear:both; border-bottom:1px solid black; ">&nbsp;</div>                                                    
-                                                </form>';                                                                                                                                                    
+                                    ?>
+                                    
+                                        <form action="<?php echo url_for('@hospici_compra_entrada') ?>" method="post">                                
+                                            <div style="float:left; width:100px">                       <b>Sessió</b><br/><?php echo $OH->getDia('d/m/Y') ?>                                                                    </div>
+                                            <div style="float:left; width:50px">                        <b>Hora</b><br/><?php echo $OH->getHorainici('H:i') ?>                                                                  </div>
+                                            <div style="float:left; width:50px; ">                      <b>Preu</b><br/><?php echo $OEP->getPreu() ?>€                                                                          </div>
+                                            <div style="float:left; width:100px; text-align:center;">   <br /><?php echo myUser::ph_getEtiquetaActivitats($AUTENTIFICAT, $ACTIVITAT, $HORARIS_AMB_ENTRADES, $OH, $OEP) ?>       </div>
+                                            
+                                            <div style="float:left; width:100px; clear:both; "> <b>Descompte</b>    <br/></div>                                                            
+                                                                                                                                                                                                                            
+                                            <div style="float: left; width:100px; clear:both;"> <?php echo select_tag( 'entrades[descomptes]' , options_for_select( $OEP->getDescomptesArrayStrings() ) , array( 'style' => 'width:180px;' ) ); ?> </div>                                            
+                                                                                        
+                                            <div style="float:left; width:75px; clear:both;">   <b>Entrades</b>     <br/></div>
+                                            <div style="float:left; width:150px; ">             <b>Pagament</b>     <br/></div>
+                                            <div style="float:left; width:75px; clear:both; "> <?php echo select_tag( 'entrades[num]' , options_for_select(array(1=>'1',2=>'2',3=>'3',4=>'4',5=>'5',6=>'6',7=>'7',8=>'8'))) ?> </div>                                                                                                                                                                                                                                            
+                                            <div style="float:left; width:150px; "> <?php echo select_tag( 'entrades[tipus_pagament]' , options_for_select( $OEP->getPagamentExternSelect() ) ) ?> </div>
+                                            <?php echo input_hidden_tag( 'entrades[idH]' , $OEP->getHorariid() ) ?>
+                                            <?php echo input_hidden_tag( 'entrades[idA]' , $OEP->getActivitatid() ) ?>
+                                            <div style="clear:both; border-bottom:1px solid black; ">&nbsp;</div>                                                    
+                                        </form>
+                                        
+                                    <?php                                                                                                                                                     
+                                    
                                     endif;
                                                                         
-                                endforeach;                             */   
+                                endforeach;                                
                                                                                         
                             ?>
                         </div>

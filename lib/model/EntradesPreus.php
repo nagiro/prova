@@ -32,20 +32,70 @@ class EntradesPreus extends BaseEntradesPreus {
 		parent::__construct();
 	}
 
+    /**
+     * Ens informa si hi ha l'opció llista d'espera o no.
+     **/
+    public function hasLlistaEspera()
+    {
+        $A = $this->getPagamentExternArray();        
+        return ( array_search( TipusPeer::PAGAMENT_LLISTA_ESPERA , $A ) > 0 );        
+    }
+
     public function getDescomptesArrayStrings()
     {
         $RET = array();
-        foreach(explode('@',$this->getDescomptes()) as $idT):
-            $OT = TipusPeer::retrieveByPK($idT);
-            if($OT instanceof Tipus) $RET[$idT] = $OT->getTipusDesc();            
+        $AD = DescomptesPeer::getArrayDescomptesAmbPreu( $this->getPreu() , $this->getSiteId() );
+        foreach( $this->getDescomptesArray() as $idT ):
+            $RET[ $idT ] = $AD[$idT];            
         endforeach;
         
         return $RET;            
     }
+    
+    public function getPagamentExternSelect()
+    {
+        $RET = array();
+        $A = $this->getPagamentExternArray();        
+        $A2 = TipusPeer::getTipusPagamentArray();
+                                        
+        foreach($A as $E):                                            
+            $RET[$E] = $A2[$E];            
+        endforeach;                
+                
+        if( $this->getIsPle() && $this->hasLlistaEspera() ):
+            $RET = array();
+            $RET[TipusPeer::PAGAMENT_LLISTA_ESPERA] = $A2[TipusPeer::PAGAMENT_LLISTA_ESPERA]; 
+        elseif( !$this->getIsPle() ):
+            unset($RET[TipusPeer::PAGAMENT_LLISTA_ESPERA]);
+        endif;
+        
+        return $RET;
+    }
+    
 
     public function getDescomptesArray()
     {
         return explode('@',$this->getDescomptes());                
+    }
+    
+    public function getPagamentInternArray()
+    {
+        return explode('@',$this->getPagamentintern());                
+    }
+    
+    public function getPagamentExternArray()
+    {
+        return explode('@',$this->getPagamentextern());                
+    }
+    
+    public function setPagamentInternArray($array)
+    {
+        $this->setPagamentintern(implode("@",$array));                
+    }
+    
+    public function setPagamentExternArray($array)
+    {
+        $this->setPagamentextern(implode("@",$array));                
     }
 
     public function setDescomptesString($array)
@@ -55,14 +105,16 @@ class EntradesPreus extends BaseEntradesPreus {
 
 
     public function countEntradesVenudes(){
+        
         $C = new Criteria();
-        $C->add(EntradesReservaPeer::ENTRADES_PREUS_HORARI_ID, $this->getHorariid());
-        $C->add(EntradesReservaPeer::ENTRADES_PREUS_ACTIVITAT_ID, $this->getActivitatid());
-        $C->add(EntradesReservaPeer::ESTAT, EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA);
-        $C->add(EntradesReservaPeer::ACTIU, true);
+        $C->add( EntradesReservaPeer::ENTRADES_PREUS_HORARI_ID      , $this->getHorariid() );
+        $C->add( EntradesReservaPeer::ENTRADES_PREUS_ACTIVITAT_ID   , $this->getActivitatid() );
+        $C = EntradesReservaPeer::criteriaEntradesOK( $C );                
         $RES = 0;
         
-        foreach(EntradesReservaPeer::doSelect($C) as $OER) $RES += $OER->getQuantitat();
+        foreach( EntradesReservaPeer::doSelect( $C ) as $OER ):            
+            $RES += $OER->getQuantitat();
+        endforeach;
                 
         return $RES;
     }

@@ -17,7 +17,7 @@ class EntradesReservaForm extends BaseEntradesReservaForm
       'idEntrada'                   => new sfWidgetFormInputHidden(),
       'entrades_preus_horari_id'    => new sfWidgetFormInputHidden(),
       'entrades_preus_activitat_id' => new sfWidgetFormInputHidden(),
-      'usuari_id'                   => new sfWidgetFormJQueryAutocompleter(array('url'=>$this->getOption('ajax'),'value_callback'=>array('UsuarisPeer','getNomComplet')),array('style'=>'width:400px;')),
+      'usuari_id'                   => new sfWidgetFormJQueryAutocompleter( array( 'url' => $this->getOption( 'ajax' ) ) , array( 'style' => 'width:400px' ) ) ,                                        
       'nom_reserva'                 => new sfWidgetFormInputText(array(),array('style'=>'width:400px')),
       'email_reserva'               => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
       'telefon_reserva'             => new sfWidgetFormInputText(array(),array('style'=>'width:200px')),
@@ -84,11 +84,11 @@ class EntradesReservaForm extends BaseEntradesReservaForm
         else throw new Exception('Hi ha algun problema amb el nom o codi d\'usuari.');        
         
         //Marquem l'estat actual segons el tipus de pagament. Si és amb targeta, el posem a "EN PROCÉS";
-        if($OER->getTipusPagament() == EntradesReservaPeer::PAGAMENT_TARGETA) $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_PROCES);
-        elseif($OER->getTipusPagament() == EntradesReservaPeer::PAGAMENT_METALIC) $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA);
-        elseif($OER->getTipusPagament() == EntradesReservaPeer::PAGAMENT_RESERVA) $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_RESERVADA);
-        else $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_ERROR);
-        
+        switch($OER->getTipusPagament()){
+            case TipusPeer::PAGAMENT_TARGETA: $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_PROCES); break;
+            default: $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_RESERVADA); break;
+        }
+                
         //Mirem el preu relacionat... i calculem el descompte aplicable
         $OEP = EntradesPreusPeer::retrieveByPK( $OER->getEntradesPreusHorariId() , $OER->getEntradesPreusActivitatId() );
         if(!($OEP instanceof EntradesPreus)) throw new Exception("No s'ha trobat el preu relacionat."); 

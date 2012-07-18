@@ -138,6 +138,9 @@ hospici_entrada_TPV_GET:
   url: /usuaris/entrada/get
   param: { module: web, action: getTPVEntrades }
 
+hospici_entrada_factura:
+  url: /usuaris/entrada/factura/:idER
+  param: { module: web, action: usuaris, accio: printFactura }
 
 # Aquest pels formularis de hospici
 hospici_nou_formulari:

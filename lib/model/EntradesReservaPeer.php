@@ -20,22 +20,22 @@ require 'lib/model/om/BaseEntradesReservaPeer.php';
  */
 class EntradesReservaPeer extends BaseEntradesReservaPeer {
         
-    const ESTAT_ENTRADA_CONFIRMADA = 10;
-    const ESTAT_ENTRADA_ANULADA = 20;
-    const ESTAT_ENTRADA_EN_ESPERA = 30;
-    const ESTAT_ENTRADA_EN_PROCES = 40;
-    const ESTAT_ENTRADA_RESERVADA = 50;
-    const ESTAT_ENTRADA_ERROR = -1;
+    const ESTAT_ENTRADA_CONFIRMADA = 10;    //S'ha comprat i pagat l'entrada.    
+    const ESTAT_ENTRADA_ANULADA = 20;       //L'entrada s'ha anul·lat. 
+    const ESTAT_ENTRADA_EN_ESPERA = 30;     //En espera és que ja està ple i esperen tenir plaça. 
+    const ESTAT_ENTRADA_EN_PROCES = 40;     //En procés és quan es fa un pagament amb targeta i encara no s'ha validat.
+    const ESTAT_ENTRADA_RESERVADA = 50;     //Si una entrada està reservada vol dir que està guardada però no s'ha pagat (encara).
+    const ESTAT_ENTRADA_ERROR = -1;         //Si hi ha hagut algun error, queda amb aquest estat. 
 
-    const PAGAMENT_RESERVA = 0;
+/*    const PAGAMENT_RESERVA = 0;
     const PAGAMENT_METALIC = 1;
     const PAGAMENT_TARGETA = 2;     
-
+*/
 
     /**
      * Retorna els tipus de venta, segons el marcat a l'entrada. 
      * */
-    static public function getTipusPagaments($IDA, $IDH){
+/*    static public function getTipusPagaments($IDA, $IDH){
         $OEP = EntradesPreusPeer::retrieveByPK( $IDH , $IDA );                
         $A = array();                        
         
@@ -49,62 +49,144 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
                 
         return $A;
     }
+*/
 
+    static public function getTipusPagaments( $IDA , $IDH , $intern = false ){
+        $RET = array();
+        $OEP = EntradesPreusPeer::retrieveByPK( $IDH , $IDA );
+        
+        if($intern) $A = $OEP->getPagamentInternArray();
+        else $A = $OEP->getPagamentExternArray();        
+        
+        $AP = TipusPeer::getTipusPagamentArray();
+        foreach($A as $id):
+            $RET[$id] = $AP[$id];
+        endforeach;
+        
+        return $RET; 
+    }
 
     /**
+     * @return array( status , OER )
      * @return -1 (OH incorrecte)
      * @return -2 (OA incorrecte)
      * @return -3 (OEP incorrecte)
      * @return -4 (Repe)
      * @return -5 (Exhaurides)
      * @return -6 (Error TPV)
-     * @return 1 (Reserva OK)
-     * @return 2 (Compra OK)
+     * @return -7 (Es volen comprar 0 entrades)
+     * @return 1 (Compra metàl·lic o codi de barres OK)
+     * @return 2 (Reserva d'entrada OK)
+     * @return 3 (Pagament amb TPV)
+     * @return 4 (En llista d'espera)
+     * @return 5 (Pagament amb domiciliació) || Aquest encara s'ha d'aplicar correctament.
      * */
-    static public function setCompraEntrada($IDH, $IDU, $NEntrades, $Descompte, $COMPRA = false)
+    static public function setCompraEntrada( $IDH , $IDU , $NEntrades , $Descompte , $TPagament )
     {
-            
-        //Carreguem l'activitat en qüestió per carregar les dades.
+        
+        //Paràmetres que retornaré després de la compra d'una entrada.    
+        $RET = array( 'status' => 0 , 'OER' => null );
+                
         $OH = HorarisPeer::retrieveByPK($IDH);
-        if(!($OH instanceof Horaris)) return -1;
-        $IDA = $OH->getActivitatsActivitatid(); 
         
-        $OA = ActivitatsPeer::retrieveByPK($IDA);        
-        if(!($OA instanceof Activitats)) return -2;
-        
-        $OEP = EntradesPreusPeer::getByActivitatOHorari($IDA, $IDH);
-        if(!($OEP instanceof EntradesPreus)) return -3; //HORARI_INEXISTENT
-        
-        
-        //Tenim un horari carregat i una activitat. 
-        $idS = $OA->getSiteid();
-        
-        $HaComprat = EntradesReservaPeer::ExisteixenEntradesComprades($IDU, $IDH);
-        $PlacesLliures = EntradesReservaPeer::countEntradesActivitatConf($IDH);
-        $Tipus = ($COMPRA)?EntradesPreusPeer::TIPUS_VENTA:EntradesPreusPeer::TIPUS_RESERVA;                        
-                            
-        if($HaComprat) return -4; //ENTRADA_REPE
-        if(($PlacesLliures - $this->NEntrades) <= 0) return -5; //NO_QUEDEN_PROU_ENTRADES                                                      
-                                                        
-        //Generem la nova compra o reserva
-        $OER = EntradesReservaPeer::initialize( $idS , '' , 0 , $IDA , $IDH , $IDU , $NEntrades , $Tipus , $Descompte )->getObject();
+        //Comprovem que existeixi l'horari
+        if(!($OH instanceof Horaris)){
             
-        //Si és reserva                    
-        if( $Tipus == EntradesPreusPeer::TIPUS_RESERVA ){
-        
-            $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_CONFIRMADA);                                            
-            $OER->save();
-         
-        } elseif($Tipus == EntradesPreusPeer::TIPUS_VENTA) {
-        
-            $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_ESPERA);
-            $OER->save();            
-                                            
-        }
-               
-        UsuarisPeer::addSite($IDU,$idS);
-        return $OER;                                                                         
-        
+            $RET = array( 'status' => -1 , 'OER' => null );
+             
+        //Horari OK.
+        } else {
+                    
+            $IDA = $OH->getActivitatsActivitatid(); 
+            
+            $OA = ActivitatsPeer::retrieveByPK($IDA);
+                    
+            //Comprovem que existeixi l'activitat
+            if(!($OA instanceof Activitats)) {
+                
+                $RET = array( 'status' => -2 , 'OER' => null ); 
+                
+            //Activitat OK.
+            } else {
+            
+                $OEP = EntradesPreusPeer::getByActivitatOHorari($IDA, $IDH);
+                
+                //No s'ha trobat el preu per aquesta activitat i horari.
+                if(!($OEP instanceof EntradesPreus)){
+                    
+                  $RET = array( 'status' => -3 , 'OER' => null ); //HORARI_INEXISTENT
+                    
+                } else {
+                    
+                    //Comprovem que el nombre d'entrades no sigui 0 o un valor extrany
+                    if(!($NEntrades >= 0)){
+                        
+                        $RET = array( 'status' => -7 , 'OER' => null ); //Número d'entrades incorrecte
+                         
+                    } else {
+
+                        //Tenim un horari carregat i una activitat. 
+                        $idS = $OA->getSiteid();
+                        
+                        $HaComprat = EntradesReservaPeer::ExisteixenEntradesComprades($IDU, $IDH);
+                        $PlacesLliures = EntradesReservaPeer::countEntradesActivitatConf($IDH);
+                                                                            
+                        //Comprovem si l'entrada està repetida
+                        if($HaComprat){
+                            
+                            $RET = array( 'status' => -4 , 'OER' => null ); //ENTRADA_REPE
+                             
+                        //No té cap entrada comprada
+                        } else {
+                            
+                            //Mirem si queden places tenint en cmopte que no hi ha llista d'espera.
+                            if(($PlacesLliures - $NEntrades) <= 0 && $TPagament != TipusPeer::PAGAMENT_LLISTA_ESPERA ){
+                                
+                                return array( 'status' => -5 , 'OER' => null ); //NO_QUEDEN_PROU_ENTRADES i no hi ha llista d'espera
+                                
+                            //Tot OK. Passem al tipus de pagament. 
+                            } else {                                                       
+                                                                        
+                                //Generem la nova compra o reserva
+                                $OER = EntradesReservaPeer::initialize( $idS , '' , 0 , $IDA , $IDH , $IDU , $NEntrades , $Descompte , $TPagament )->getObject();
+                                    
+                                //Marquem el preu
+                                $OER->setPagat( DescomptesPeer::getPreuAmbDescompte( $OEP->getPreu() , $Descompte ) );        
+                                    
+                                //Mirem el tipus de pagament i deixem l'estat oportú.
+                                if( $TPagament == TipusPeer::PAGAMENT_METALIC || $TPagament == TipusPeer::PAGAMENT_CODI_BARRES ):
+                                    $OER->setEstat( EntradesReservaPeer::ESTAT_ENTRADA_RESERVADA );                                            
+                                    $OER->save();
+                                    return array( 'status' => 1 , 'OER' => $OER );
+                                elseif( $TPagament == TipusPeer::PAGAMENT_RESERVA):
+                                    $OER->setEstat( EntradesReservaPeer::ESTAT_ENTRADA_RESERVADA );                                            
+                                    $OER->save();
+                                    return array( 'status' => 2 , 'OER' => $OER );
+                                elseif( $TPagament == TipusPeer::PAGAMENT_TARGETA):
+                                    $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_PROCES);                                            
+                                    $OER->save();
+                                    return array( 'status' => 3 , 'OER' => $OER );
+                                elseif( $TPagament == TipusPeer::PAGAMENT_LLISTA_ESPERA):
+                                    $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_ESPERA);                                            
+                                    $OER->save();
+                                    return array( 'status' => 4 , 'OER' => $OER );
+                                elseif( $TPagament == TipusPeer::PAGAMENT_DOMICILIACIO):
+                                    $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_RESERVADA);                                            
+                                    $OER->save();
+                                    return array( 'status' => 5 , 'OER' => $OER );      
+                                endif;
+                                
+                                UsuarisPeer::addSite($IDU,$idS);
+                                                                
+                            }                            
+                        }                        
+                    }
+                }
+            }
+        }                                                                                                                             
+
+        return $RET;
+                                                                                                                                                                   
     } 
     
     static public function getCriteriaActiu($C)
@@ -135,7 +217,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         
     }
 
-	static public function initialize( $idS , $url_ajax_usuaris, $idER , $idA , $idH , $idU = 0 , $quantitat = 0 , $tipus = EntradesPreusPeer::TIPUS_RESERVA , $Descompte = 0 )
+	static public function initialize( $idS , $url_ajax_usuaris, $idER , $idA , $idH , $idU = 0 , $quantitat = 0 , $Descompte = 0 , $TPagament )
 	{				
         $OER = self::retrieveByPK($idER);
         
@@ -149,11 +231,11 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
             $OER->setTelefonReserva(null);
             $OER->setQuantitat($quantitat);			
 			$OER->setEstat(self::ESTAT_ENTRADA_EN_ESPERA);
-            $OER->setActiu(true);
-            $OER->setTipus($tipus);
+            $OER->setActiu(true);            
             $OER->setDescompte($Descompte);
             $OER->setSiteid($idS);
 			$OER->setData(date('Y-m-d H:i',time()));
+            $OER->setTipusPagament($TPagament);
 		endif; 		
 
         return new EntradesReservaForm($OER,array('ajax'=>$url_ajax_usuaris, 'IDA'=> $idA , 'IDH' => $idH ));
@@ -194,6 +276,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C = new Criteria();
         $C = self::getCriteriaActiu($C);        
         $C->add(self::USUARI_ID, $idU);
+        $C->add(self::ESTAT, self::ESTAT_ENTRADA_EN_PROCES, CRITERIA::NOT_EQUAL);
         
         $C->addDescendingOrderByColumn(self::IDENTRADA);
         return self::doSelect($C);        
@@ -201,9 +284,10 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
 
     static public function criteriaEntradesOK($C)
     {
-        $C1 = $C->getNewCriterion(self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA);
-        $C2 = $C->getNewCriterion(self::ESTAT , self::ESTAT_ENTRADA_RESERVADA);
-        $C1->addOr($C2); $C->add($C1);
+        $C1 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA );
+        $C2 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_RESERVADA );
+        $C3 = $C->getNewCriterion( self::ACTIU , true );
+        $C1->addOr( $C2 ); $C->add( $C1 ); $C->add( $C3 );
         return $C;
     }
 
@@ -232,7 +316,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C = self::criteriaEntradesOK($C);
         
         foreach(self::doSelect($C) as $OE):
-            $RET += $OE->getQuantes();
+            $RET += $OE->getQuantitat();
         endforeach;
         
         $OEP = EntradesPreusPeer::getByActivitatOHorari(0,$idH);
@@ -257,5 +341,104 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         $C->add(self::ESTAT,self::ESTAT_ENTRADA_ANULADA, CRITERIA::NOT_EQUAL);
         return (self::doCount($C)>0);        
     }
+
+
+  /**
+   * Aquest document és una entrada
+   * */
+  static public function DocReservaEntrades($OER, $idS)
+  {
+    
+    $inici = OptionsPeer::getString( 'PAG_CAIXER_CODI_OP' , $idS );
+    $entitat = OptionsPeer::getString( 'PAG_CAIXER_CODI_ENTITAT' , $idS );
+    
+    $referencia = str_pad( strval( $OER->getIdentrada() ) , 11 , '0' , STR_PAD_LEFT );
+    
+    //Càlcul de valor de check
+    $ponderacions = array( 10=>2 , 9=>3 , 8=>4 , 7=>5 , 6=>6 , 5=>7 , 4=>8 , 3=>9 , 2=>2 , 1=>3 , 0=>4 );
+    $tot = 0;
+    for($i = 10; $i >= 0; $i--):                                    
+        $tot += $referencia[$i]*$ponderacions[$i];
+    endfor;
+    $cc = ($tot % 11); 
+    if($cc == 10) $cc = 0;
+    //Afegim el valor de check a la referència i seguim.
+    $referencia .= $cc;
+    
+    $import = str_pad( strval( $OER->getPagat() * 100 ) , 10 , '0' , STR_PAD_LEFT );
+    $codi = $inici.$entitat.$referencia.$import;
+    
+    $barcode = new phpCode128($codi, 150, false , false);
+    $barcode->setEanStyle(true);
+    $barcode->setAutoAdjustFontSize(true);                                       
+    $barcode->saveBarcode(OptionsPeer::getString('SF_WEBSYSROOT',1).'tmp/'.$idS.'-barcode.png');                
+                                                                                                
+    //Comença la càrrega d'informació.
+    $i = 1;
+    $HTML = OptionsPeer::getString( 'BODY_DOC_ENTRADA_CAIXER' , $idS );
+    $OA = $OER->getActivitat();        
+    $OH = $OER->getHorari();    
+    
+    //CONSULTEM USUARI                        
+    $HTML = str_replace( '@@LOGO_URL@@' ,       OptionsPeer::getString('LOGO_URL',$idS) ,       $HTML );
+    $HTML = str_replace( '@@CODI_BARRES@@' ,    $idS ,                                          $HTML );    
+    $HTML = str_replace( '@@CODI@@' ,           $codi,                                          $HTML );
+    $HTML = str_replace( '@@CONCEPTE@@',        $OA->getTmig(),                                 $HTML );
+    $HTML = str_replace( '@@DIA@@',             $OH->getDia('d/m/Y'),                           $HTML );
+    $HTML = str_replace( '@@HORARIS@@',         $OH->getHorainici('H:i'),                       $HTML );
+    $HTML = str_replace( '@@P@@',               $OER->getPagat() / $OER->getQuantitat(),        $HTML );
+    $HTML = str_replace( '@@Q@@',               $OER->getQuantitat(),                           $HTML );
+    $HTML = str_replace( '@@I@@',               $OER->getPagat(),                               $HTML );
+    $HTML = str_replace( '@@BASE@@',            $OER->getPagat(),                               $HTML );
+    $HTML = str_replace( '@@IVA@@',             0,                                              $HTML );
+    $HTML = str_replace( '@@TOTAL@@',           $OER->getPagat(),                               $HTML );
+    $HTML = str_replace( '@@DESCOMPTE@@',       $OER->getDescompteString(),                     $HTML );
+    $HTML = str_replace( '@@CODI_UNIC@@',       substr(sha1($OER->getIdentrada()),0,4),                     $HTML );                                        
+
+    return $HTML;
+    
+  }
+
+
+  /**
+   * Treu un llistat dels assistents a l'espectacle.
+   * */
+  static public function DocLlistatEntrades( $IDH , $IDA , $idS )
+  {
+    
+    //Comença la càrrega d'informació.
+    $LOER = self::getEntradesVenudes( $IDA , $IDH );                                                                                                                        
+    $desc = DescomptesPeer::getDescomptesArray( $idS , false , false );
+    $OA = ActivitatsPeer::retrieveByPK( $IDA );
+    
+    $i = 1;
+    $HTML = file_get_contents('c:\temp\hola.html');
+    //$HTML = OptionsPeer::getString( 'BODY_DOC_LLISTAT_ENTRADES' , $idS );
+                                                    
+    preg_match_all('/^\s*####(.*?)####(.*?)####\/(.*?)####\s*$/sm',$HTML,$A);
+     
+    $FILA = ""; $PATTERN = $A[2][0]; $i = 0; $TMP = "";
+    
+    foreach($LOER as $OER):
+        $TMP = $PATTERN;
+        $TMP = str_replace( '@@ID@@'            , $i++                                              ,    $TMP );
+        $TMP = str_replace( '@@NOM_USUARI@@'    , $OER->getNomUsuari()                              ,    $TMP );
+        $TMP = str_replace( '@@CODI_UNIC@@'     , substr( sha1( $OER->getIdentrada() ) , 0 , 4 )    ,    $TMP );
+        $TMP = str_replace( '@@QUANTITAT@@'     , $OER->getQuantitat()                              ,    $TMP );
+        $TMP = str_replace( '@@ESTAT@@'         , $OER->getEstatString()                            ,    $TMP );
+        $TMP = str_replace( '@@DESCOMPTE@@'     , $desc[$OER->getDescompte()]                       ,    $TMP );
+        $TMP = str_replace( '@@COMENTARI@@'     , $OER->getComentari()                              ,    $TMP );                        
+        $FILA .= $TMP;   
+     endforeach;
+             
+    
+    //CONSULTEM USUARI                        
+    $HTML = str_replace( '@@NOM_ESPECTACLE@@'   , $OA->getNom() ,   $HTML );
+    $HTML = str_replace( $A[0][0]               , $FILA         ,   $HTML );    
+
+    return $HTML;
+    
+  }  
+  
 
 } // EntradesReservaPeer

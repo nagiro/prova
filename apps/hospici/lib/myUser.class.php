@@ -650,6 +650,7 @@ class myUser extends sfBasicSecurityUser
     static public function ph_getEtiquetaActivitats($AUTH, $OA, $HORARIS_AMB_ENTRADES, $OH , $OEP )
     {
         
+        $RET    = "";
         $idS    = $OH->getSiteId();
         $OS     = SitesPeer::retrieveByPK($idS);
         $nom    = $OS->getNom(); $email  = $OS->getEmailString(); $tel    = $OS->getTelefonString();
@@ -662,32 +663,47 @@ class myUser extends sfBasicSecurityUser
             $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i reserva</a>', '#FFCC00');
         } else {
             $JaHaCompratOReservat  = (isset($HORARIS_AMB_ENTRADES[$OH->getHorarisid()]));
-            if($JaHaCompratOReservat){
+            if( $JaHaCompratOReservat && !$OEP->getIsPle() ){
                 $OER =  EntradesreservaPeer::retrieveByPK($HORARIS_AMB_ENTRADES[$OH->getHorarisid()]);
                 if( $OER instanceof EntradesReserva ){
 
-                    $RET  = '  <div class="tip" title="Vostè ha comprat o reservat '.$OER->getQuantitat().' entrades per aquesta activitat correctament. Tot i això pot comprar més entrades per aquesta activitat.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
                     if($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_CONFIRMADA){
-                        $RET  = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,$RET);                                            
-                        $RET .= '</div>';
+                        $RET  = '<div class="tip" title="Vostè ha comprat o reservat '.$OER->getQuantitat().' entrades per aquesta activitat correctament. Tot i això pot comprar més entrades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET  = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,$RET).'</div>';                                                                    
                         
-                    //L'usuari està en espera'
+                    //L'usuari ha reservat                    
+                    } elseif( $OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_RESERVADA ) {
+                        $RET   = '  <div class="tip" title="Vostè ha reservat entrades que encara no han estat pagades o bé ha realitzat una prereserva d\'entrades. <br /><br /> En aquest cas, podrà adquirir més entrades un cop hagi realitzat el pagament corresponent en el cas que n\'hi hagi o bé per a més informació, posi\'s en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET  .= ph_getRoundCorner('Reservat i no pagat', '#FF8D00').'</div>';
+                    
+                    //Té una entrada però ha estat anul·lada. 
                     } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_ANULADA) {
-                        $RET  = '  <div class="tip" title="Vostè ha reservat entrades però han estat anul·lades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                        $RET .= ph_getRoundCorner('Reserva anul·lada', '#F184DD').'</div>';
+                        $RET   = '  <div class="tip" title="Vostè ha reservat entrades però han estat anul·lades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET  .= ph_getRoundCorner('Reserva anul·lada', '#FF1111').'</div>';
+                    
+                    //L'usuari està en espera'
                     } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_EN_ESPERA) {
-                        $RET  = '  <div class="tip" title="Vostè ha sol·licitat una reserva o compra però encara no s\'ha tramitat. <br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                        $RET .= ph_getRoundCorner('En espera', '#F184DD').'</div>';
-                    } 
-                }
+                        $RET   = '  <div class="tip" title="Vostè ha sol·licitat una reserva a una activiat que estava plena. Si s\'alliberen places, l\'informarem pertinentment. <br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET  .= ph_getRoundCorner('En espera', '#F184DD').'</div>';
+                    }
+                                        
+                    //L'usuari està en espera
+                    } else {
+                        $RET   = '  <div class="tip" title="Hi ha hagut algun problema amb la seva compra. <br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                        $RET  .= ph_getRoundCorner('Error', '#FF1111').'</div>';
+                    }
+                    
             //Encara no ha fet cap compra o reserva d'entrades.                
             } else {
                                 
-                //Ja no queden entrades
-                if($OEP->getIsPle()){
+                //Ja no queden entrades però hi ha llista d'espera
+                if($OEP->getIsPle() && $OEP->hasLlistaEspera() ){
+                    $RET  = '  <div class="tip" title="Aquesta activitat ha exhaurit les entrades però pot posar-se en llista d\'espera. Si en un futur s\'alliberen places, ens posarem en contacte amb vostè per si encara hi està interessat/da.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+                    $RET .= ph_getRoundCorner( '<button name="BCOMPRA" style="background-color:inherit; border:0px; color:white;">Entrades exhaurides!</button>', '#EF0101' ).'</div>';                    
+                } elseif( $OEP->getIsPle() && !$OEP->hasLlistaEspera() ) {
                     $RET  = '  <div class="tip" title="Aquesta activitat ha exhaurit les entrades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                    $RET .= ph_getRoundCorner('<a href="'.$url.'#matricula">Entrades exhaurides</a>', '#EF0101').'</div>';                                                        
-                } else {
+                    $RET .= ph_getRoundCorner( 'Entrades exhaurides!', '#EF0101' ).'</div>';
+                } else { 
                     $RET = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,"");
                 }                    
             }
@@ -697,10 +713,8 @@ class myUser extends sfBasicSecurityUser
     }
 
     static function ph_getEtiquetaActivitats_COMPRA($OEP,$RET){
-        if($OEP->getTipus() == EntradesPreusPeer::TIPUS_VENTA){
-            $RET .= ph_getRoundCorner('<button name="BCOMPRA" style="background-color:inherit; border:0px; color:white;">Compra!</button>', '#FF8D00');    
-        } elseif($OEP->getTipus() == EntradesPreusPeer::TIPUS_RESERVA) {
-            $RET .= ph_getRoundCorner('<button name="BRESERVA" style="background-color:inherit; border:0px; color:white;">Reserva!</button>', '#FF8D00');
+        if( sizeof( $OEP->getPagamentextern() ) > 0 ){
+            $RET .= ph_getRoundCorner('<button name="BCOMPRA" style="background-color:inherit; border:0px; color:white;">Compra!</button>', '#FF8D00');            
         } else {
             $RET .= ph_getRoundCorner('<a href="#">No disponible</a>', '#FF8D00');
         }      
@@ -836,5 +850,17 @@ class myUser extends sfBasicSecurityUser
                 
         return $RET;         
     }
+    
+    static public function Html2PDF($HTML){                        
+        include(OptionsPeer::getString( 'SF_DOMPDF_CONFIG' , 1 ) );                                                                
+        $dompdf = new DOMPDF();
+        $dompdf->load_html($HTML);
+        $dompdf->set_paper("A4","portrait");
+        $dompdf->render();
+        $dompdf->stream("/tmp/document.pdf");
+    }   
+
+
+    
   
 }

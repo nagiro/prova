@@ -1236,7 +1236,7 @@ class gestioActions extends sfActions
                             $OER = $this->FReserva->save();
 
                             //Si hem pagat amb targeta
-                            if($OER->getTipuspagament() == EntradesReservaPeer::PAGAMENT_TARGETA && $is_new):                        
+                            if( $OER->getTipuspagament() == TipusPeer::PAGAMENT_TARGETA && $is_new ):                        
                     			$this->TPV = MatriculesPeer::getTPV( $OER->getPagat() , $OER->getNomUsuari() , $OER->getIdentrada() , $OER->getSiteId() , false , true );
                                 $this->URL = OptionsPeer::getString( 'TPV_URL' , $OER->getSiteId() );
                                 $this->setLayout('blank');
@@ -1249,7 +1249,7 @@ class gestioActions extends sfActions
                         
                     }           
                 }         
-                //Entrem a comprar o editar una entrada normal.                 
+                //Entrem a comprar o editar una entrada normal.
                 else 
                 {
                                 
@@ -1291,84 +1291,26 @@ class gestioActions extends sfActions
             
         case 'PRINT':
 
-				$idER = $request->getParameter('idER');
-				$OER = EntradesReservaPeer::retrieveByPK($idER);
-                $OEP = EntradesPreusPeer::retrieveByPK($OER->getEntradesPreusHorariId(), $OER->getEntradesPreusActivitatId());                		
-                                                				
-				$preu = DescomptesPeer::getPreuAmbDescompte($OEP->getPreu(),$OER->getDescompte());
-                $desc = DescomptesPeer::getDescomptesArray($OER->getSiteId(),false,false);                
+                $idER = $request->getParameter('idER');
+                                
+                $OER = EntradesReservaPeer::retrieveByPK($idER);                                
                 
-                $doc = new sfTinyDoc();
-                
-                $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$OER->getSiteId()).'documents/Entrades_Resguard'.$OER->getSiteId().'.docx';
-                $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$OER->getSiteId()).'documents/Entrades_ResguardGen.docx';
-                if(file_exists($url_prop)) $doc->createFrom($url_prop);
-                else $doc->createFrom($url_gen);                                				
-                
-				$doc->loadXml('word/document.xml');
-                                                                                 
-                $doc->mergeXmlField('concepte', $OER->getNomActivitat() );
-                $doc->mergeXmlField('preu', $preu );
-                $doc->mergeXmlField('quantitat', $OER->getQuantitat() );
-                $doc->mergeXmlField('nom', $OER->getPagat() );
-                $doc->mergeXmlField('codi_entrada', sha1($OER->getIdentrada() ));
-                $doc->mergeXmlField('dia', $OER->getHorari()->getDia('d/m/Y') );
-                $doc->mergeXmlField('horari', $OER->getHorari()->getHorainici('H:i') );
-                $doc->mergeXmlField('base', $OER->getPagat() );
-                $doc->mergeXmlField('iva', '0%' );
-                $doc->mergeXmlField('total', $OER->getPagat() );                
-                $doc->mergeXmlField('import', $OER->getPagat() );                
-                $doc->mergeXmlField('descompte', 'Descomtpe: '.$desc[$OER->getDescompte()] );
-                
-				$doc->saveXml();
-				$doc->close();
-				$doc->sendResponse();
-				$doc->remove();
-				
-				throw new sfStopException;         
-                
+                $HTML = EntradesReservaPeer::DocReservaEntrades($OER, $this->IDS);                                
+                        
+                myUser::Html2PDF($HTML);
+                                
+    			throw new sfStopException;			   	  	                                                                                                                                                                 
         
             break;
 
         case 'PRINT_LLISTAT':
-							                            				
-                $LOER = EntradesReservaPeer::getEntradesVenudes( $request->getParameter('IDA') , $request->getParameter('IDH') );                                                                                                                        
-                $desc = DescomptesPeer::getDescomptesArray($this->IDS,false,false);
-                $OA = ActivitatsPeer::retrieveByPK($request->getParameter('IDA'));
+							                            				                
+                $HTML = EntradesReservaPeer::DocLlistatEntrades( $request->getParameter('IDH'), $request->getParameter('IDA') );                                
+                        
+                myUser::Html2PDF($HTML);
                 
-                //Comença la càrrega de la informació
-                $i = 1;
-                $HTML  = "<html><head><style> td { border:1px solid gray; } </style></head><body>"; 
-                $HTML .= "<h1>LLISTAT ASSISTENTS A L'ACTIVITAT</h1>";
-                $HTML .= "<h2>".$OA->getNom()."</h2>";
-                $HTML .= "<table style=\"width:100%; border:1px solid gray;\">";
-                $HTML .= "<tr><td>ID</td><td>NOM</td><td>ENTRADES</td><td>ESTAT</td><td>DESCOMPTE</td><td>COMENTARI</td></tr>";
-                $NOMS = array();
-                
-                //Agafem els noms i els ordenem
-                foreach($LOER as $OER):
-                    $NOMS[$OER->getNomUsuari()] = $OER;
-                endforeach;
-                krsort( $NOMS , SORT_STRING );
-                                                                 
-                foreach($NOMS as $OER):
-                    $HTML .= '<tr>';
-                    $HTML .= '<td>'.$i++.'</td>';
-                    $HTML .= '<td>'.$OER->getNomUsuari().'<br /><span style="font-size:9px;">'.sha1($OER->getIdentrada()).'</span></td>';
-                    $HTML .= '<td style="text-align:center;">'.$OER->getQuantitat().'</td>';
-                    $HTML .= '<td>'.$OER->getEstatString().'</td>';
-                    $HTML .= '<td>'.$desc[$OER->getDescompte()].'</td>';
-                    $HTML .= '<td>'.$OER->getComentari().'</td>';      
-                    $HTML .= '</tr>';
-                                  
-                endforeach;                
-                $HTML .= '</table>';
-                $HTML .= '</body></html>';
+                throw new sfStopException;
 
-                $OPDF = new HTML2PDF($this->IDS,'Llistat_entrades');
-                $OPDF->doPdf($HTML);                                                
-    					
-    			throw new sfStopException;			   	  	                                                                                                                                 
             break;                        
                   
         //Llisto els horaris que disposen d'entrades
@@ -1919,7 +1861,7 @@ class gestioActions extends sfActions
                 //Si hem premut el botó de guardar, guardem i si hi ha errors, els mostrem.
                 if($request->hasParameter('BPREUSSAVE')):
                     $RS = $request->getParameter('entrades_preus');
-                    $FEntrades = EntradesPreusPeer::initialize( $this->IDS ,  $RS['horari_id'] , $RS['activitat_id'] );
+                    $FEntrades = EntradesPreusPeer::initialize( $this->IDS ,  $RS['horari_id'] , $RS['activitat_id'] );                    
                     $FEntrades->bind($RS);    			    			
         			if($FEntrades->isValid()): 
         				$FEntrades->save();
