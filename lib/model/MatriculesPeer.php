@@ -195,8 +195,9 @@ class MatriculesPeer extends BaseMatriculesPeer
     //Envia el correu d'una matrícula
     static public function SendMailMatricula($OM,$idS){
     if($OM->getEstat() == MatriculesPeer::ACCEPTAT_PAGAT):
-        self::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), $OM->getUsuaris()->getEmail(), 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));  			
-    	self::sendMail(OptionsPeer::getString('MAIL_FROM',$idS), 'informatica@casadecultura.org', 'Resguard de matrícula', MatriculesPeer::MailMatricula($OM,$idS));
+        self::sendMail( OptionsPeer::getString('MAIL_FROM',$idS) , $OM->getUsuaris()->getEmail() , 'Resguard de matrícula' , MatriculesPeer::MailMatricula($OM,$idS) );  			
+    	self::sendMail( OptionsPeer::getString('MAIL_FROM',$idS) , 'informatica@casadecultura.org' , 'Resguard de matrícula' , MatriculesPeer::MailMatricula($OM,$idS) );
+        self::sendMail( OptionsPeer::getString('MAIL_FROM',$idS) , OptionsPeer::getString('MAIL_SECRETARIA') , 'Resguard de matrícula' , MatriculesPeer::MailMatricula($OM,$idS) );
      endif; 
     }    
    

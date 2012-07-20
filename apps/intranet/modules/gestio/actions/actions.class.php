@@ -1227,24 +1227,45 @@ class gestioActions extends sfActions
                 //Comprem una entrada o guardem una modificació.
                 if($request->hasParameter('BRESERVASAVE'))
                 {
-                    $RS = $request->getParameter('entrades_reserva');
-                    $this->FReserva = EntradesReservaPeer::initialize( $this->IDS , $this->URL , $RS['idEntrada'] , $RS['entrades_preus_activitat_id'] , $RS['entrades_preus_horari_id'] );
+                    $RS = $request->getParameter('entrades_reserva');                    
+                    $this->FReserva = EntradesReservaPeer::initialize( $this->IDS , $this->URL , $RS['idEntrada'] , $RS['entrades_preus_activitat_id'] , $RS['entrades_preus_horari_id'] );                    
                     $this->FReserva->bind($RS);
                     if($this->FReserva->isValid()){
                         try{
                             $is_new = $this->FReserva->isNew();
-                            $OER = $this->FReserva->save();
+                            $RET = $this->FReserva->saveMy();
+                            $OER = $RET['OER'];
 
                             //Si hem pagat amb targeta
-                            if( $OER->getTipuspagament() == TipusPeer::PAGAMENT_TARGETA && $is_new ):                        
-                    			$this->TPV = MatriculesPeer::getTPV( $OER->getPagat() , $OER->getNomUsuari() , $OER->getIdentrada() , $OER->getSiteId() , false , true );
-                                $this->URL = OptionsPeer::getString( 'TPV_URL' , $OER->getSiteId() );
-                                $this->setLayout('blank');
-                                $this->setTemplate('pagament');
-                            else: 
-                                $this->redirect('gestio/gEntrades?accio=OK&Ds_MerchantData='.$OER->getIdentrada());                                
-                            endif;
+                            switch($RET['status']){
+                                //Compra en metàl·lic o targeta
+                                case 1: 
+                                    $this->redirect('gestio/gEntrades?accio=OK&code=FACT&Ds_MerchantData='.$OER->getIdentrada());
+                                break;
+                                //Reserva d'entrada ok
+                                case 2: 
+                                    $this->redirect('gestio/gEntrades?accio=OK&code=FACT&Ds_MerchantData='.$OER->getIdentrada());
+                                break;
+                                //Pagament amb TPV
+                                case 3: 
+                                    if($is_new):
+                                        $this->TPV = MatriculesPeer::getTPV( $OER->getPagat() , $OER->getNomUsuari() , $OER->getIdentrada() , $OER->getSiteId() , false , true );
+                                        $this->URL = OptionsPeer::getString( 'TPV_URL' , $OER->getSiteId() );
+                                        $this->setLayout('blank');
+                                        $this->setTemplate('pagament');    
+                                    endif;
+                                break;
+                                //En llista d'espera
+                                case 4:
+                                    $this->redirect('gestio/gEntrades?accio=OK&code=LLISTA_ESPERA&Ds_MerchantData='.$OER->getIdentrada());
+                                break;
+                                //Domiciliació
+                                case 5:
+                                    $this->redirect('gestio/gEntrades?accio=OK&code=DOMICILIACIO&Ds_MerchantData='.$OER->getIdentrada());
+                                break;               
                                 
+                            }
+                                                            
                         } catch (Exception $e){ $this->MISSATGE = $e->getMessage(); }
                         
                     }           
@@ -1267,12 +1288,28 @@ class gestioActions extends sfActions
         case 'OK':
                 $this->idER = $request->getParameter('Ds_MerchantData',0);
                 $OER = EntradesReservaPeer::retrieveByPK($this->idER);
+                                
                 if($OER instanceof EntradesReserva):
-                              
+                
+                    switch($request->getParameter('code')){
+                        case 'FACT':
+                            $this->MISSATGE = "ENTRADA_METALIC";
+                        break;
+                        case 'LLISTA_ESPERA':
+                            $this->MISSATGE = "ENTRADA_LLISTA_ESPERA";
+                        break;
+                        case 'DOMICILIACIO':
+                            $this->MISSATGE = "ENTRADA_DOMICILIACIO";
+                        break;
+                        case 'TPV':
+                            $this->MISSATGE = "ENTRADA_OK";
+                        break;
+                    }
+                                                  
                     $email = $OER->getEmail();
+                    $MailEnt = EntradesReservaPeer::DocReservaEntrades( $OER , $OER->getSiteId() );
                     if($email <> "") $this->sendMail( $from , $email , $subject , $MailEnt );
-                    $this->sendMail( $from , OptionsPeer::getString( 'MAIL_ADMIN' , $idS ) , $subject , $MailEnt );
-                    $this->MISSATGE = "ENTRADA_OK";
+                    $this->sendMail( $from , OptionsPeer::getString( 'MAIL_ADMIN' , $idS ) , $subject , $MailEnt );                    
                      
                 else: 
                     $this->MISSATGE = "ENTRADA_NO_TROBADA";

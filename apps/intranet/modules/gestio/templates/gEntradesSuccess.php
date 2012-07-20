@@ -62,6 +62,15 @@
                 case 'ENTRADA_OK':
                         echo 'Entrada venuda correctament.<br />Per imprimir-la, clica '.link_to('aquí','gestio/gEntrades?accio=PRINT&idER='.$idER).'.';
                     break;
+                case 'ENTRADA_METALIC':
+                        echo 'Entrada venuda correctament. Recordeu que l\'entrada encara s\'ha de pagar i cal fer-ho abans d\'una setmana. En cas contrari, s\'anul·larà la reserva.<br />Per imprimir-la, clica '.link_to('aquí','gestio/gEntrades?accio=PRINT&idER='.$idER).'.';
+                    break;
+                case 'ENTRADA_LLISTA_ESPERA':
+                            echo 'Usuari afegit a la llista d\'espera.<br />Si hi ha alguna baixa se l\'avisarà.';
+                        break;    
+                case 'ENTRADA_DOMICILIACIO':
+                            echo 'Entrada venuda correctament.<br />Per imprimir-la, clica '.link_to('aquí','gestio/gEntrades?accio=PRINT&idER='.$idER).'.';
+                        break;                                    
                 case 'ENTRADA_NO_TROBADA':
                         echo 'Hi ha hagut algun problema. No he trobat l\'entrada.';
                     break;

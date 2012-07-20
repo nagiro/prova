@@ -24,7 +24,7 @@ class EntradesReservaForm extends BaseEntradesReservaForm
       'quantitat'                   => new sfWidgetFormChoice(array('choices'=>array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5')),array('style'=>'width:50px')),
       'data'                        => new sfWidgetFormShowText(),
       'estat'                       => new sfWidgetFormInputHidden(),
-      'tipus_pagament'              => new sfWidgetFormChoice(array('choices'=>EntradesReservaPeer::getTipusPagaments( $this->getOption('IDA') , $this->getOption('IDH') ))),
+      'tipus_pagament'              => new sfWidgetFormChoice(array('choices'=>EntradesReservaPeer::getTipusPagaments( $this->getOption('IDA') , $this->getOption('IDH') , true ))),
       'descompte'                   => new sfWidgetFormChoice(array('choices'=>EntradesPreusPeer::getDescomptesArray( $this->getOption('IDA'), $this->getOption('IDH'),true))),
       'actiu'                       => new sfWidgetFormInputHidden(),
       'site_id'                     => new sfWidgetFormInputHidden(),
@@ -70,38 +70,43 @@ class EntradesReservaForm extends BaseEntradesReservaForm
 
   }
     
-  public function save($conn = null){
+  public function saveMy(){
+    
+    //Aquest guardar, no guarda l'objecte en sí, sinó que crida un mètode per igualar-lo amb l'hospici.
     
     $this->updateObject();
     $OER = $this->getObject();
     
-    if($this->isNew()){
-        
-        //S'ha d'haver omplert o bé l'Usuari ID o bé el nom
+    if($this->isNew()){                
+                        
+        //Mirem que hagi entrat o bé el nom d'usuari o bé el codi.
         if( $OER->getNomReserva() == "" && is_null($OER->getUsuariId())) throw new Exception("Selecciona un usuari de l'Hospici o bé entra el seu nom.");
-        elseif(!is_null($OER->getUsuariId())) $OER->setNomReserva(UsuarisPeer::retrieveByPK($OER->getUsuariId())->getNomComplet());
+
+        //D'entrada és correcte, així que fem la compra.
+        $RET = EntradesReservaPeer::setCompraEntrada($OER->getEntradesPreusHorariId() , $OER->getUsuariId() , $OER->getQuantitat() , $OER->getDescompte() , $OER->getTipusPagament() );                
+        
+        switch($RET['status']){
+            case -1: throw new Exception('Hi ha hagut algun problema buscant l\'horari. Informeu-ne a informatica@casadecultura.org'); break;
+            case -2: throw new Exception('Hi ha hagut algun problema buscant l\'activitat. Informeu-ne a informatica@casadecultura.org'); break;
+            case -3: throw new Exception('Hi ha hagut algun problema buscant el preu. Informeu-ne a informatica@casadecultura.org'); break;
+            case -4: throw new Exception('Aquest usuari ja ha comprat una entrada per aquest espectacle.'); break;
+            case -5: throw new Exception('Aquesta activitat ja no té entrades disponibles.'); break;
+            case -6: throw new Exception('Error de TPV.'); break;
+            case -7: throw new Exception('El número d\'entrades comprades ha de ser superior a 0.'); break;            
+        }        
+        
+        if(!is_null($OER->getUsuariId())) $RET['OER']->setNomReserva(UsuarisPeer::retrieveByPK($OER->getUsuariId())->getNomComplet());
         elseif($OER->getNomReserva() != "") {}  
-        else throw new Exception('Hi ha algun problema amb el nom o codi d\'usuari.');        
+        else throw new Exception('Hi ha algun problema amb el nom o codi d\'usuari.');
         
-        //Marquem l'estat actual segons el tipus de pagament. Si és amb targeta, el posem a "EN PROCÉS";
-        switch($OER->getTipusPagament()){
-            case TipusPeer::PAGAMENT_TARGETA: $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_EN_PROCES); break;
-            default: $OER->setEstat(EntradesReservaPeer::ESTAT_ENTRADA_RESERVADA); break;
-        }
-                
-        //Mirem el preu relacionat... i calculem el descompte aplicable
-        $OEP = EntradesPreusPeer::retrieveByPK( $OER->getEntradesPreusHorariId() , $OER->getEntradesPreusActivitatId() );
-        if(!($OEP instanceof EntradesPreus)) throw new Exception("No s'ha trobat el preu relacionat."); 
+        return $RET;
+                                
+    } else {
+    
+        $OER->save();
         
-        //Calculem quant ha pagat, apliquem descomptes i guardem. 
-        $preu = DescomptesPeer::getPreuAmbDescompte($OEP->getPreu(),$OER->getDescompte());
-        $preu = $preu * $OER->getQuantitat(); //Calculem el preu final pagat amb el nombre d'entrades venudes.
-        $OER->setPagat($preu);                                         
-    }
-    
-    $OER->save();
-    
-    return $OER;
-     
+        return $OER;
+        
+    }       
   }
 }

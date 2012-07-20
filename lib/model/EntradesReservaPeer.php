@@ -217,7 +217,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         
     }
 
-	static public function initialize( $idS , $url_ajax_usuaris, $idER , $idA , $idH , $idU = 0 , $quantitat = 0 , $Descompte = 0 , $TPagament )
+	static public function initialize( $idS , $url_ajax_usuaris, $idER , $idA , $idH , $idU = 0 , $quantitat = 0 , $Descompte = 0 , $TPagament = 0 )
 	{				
         $OER = self::retrieveByPK($idER);
         
