@@ -31,7 +31,7 @@ class Sites extends BaseSites {
     public function getEmailString()
     {
         $email = $this->getEmail();
-        if(empty($tel)) $email = 'informatica@casadecultura.org';
+        if(empty($email)) $email = 'informatica@casadecultura.org';
     
         return $email;        
     }
