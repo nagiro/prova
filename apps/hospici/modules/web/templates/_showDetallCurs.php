@@ -200,11 +200,11 @@ function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
             <div style="float: left; width:120px;"><b>Descompte: </b></div>
             <div style="float: left;">
             <?php 
-                                
-                //Si hi ha descompte al curs, el mostrem
-                if(empty($A_Descomptes)){
+                                                
+                //Si hi ha descompte al curs, el mostrem                
+                if(empty($A_Descomptes) || (sizeof($A_Descomptes) == 1 && isset($A_Descomptes[0]))){
                     
-                    echo 'Cap descompte disponible <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
+                    echo 'No hi ha descomptes. <span class="tipMy tip" title="Aquest curs té un preu únic.">?</span>';
                     
                 } else {
                     
