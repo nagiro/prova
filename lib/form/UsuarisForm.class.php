@@ -70,7 +70,7 @@ class UsuarisForm extends sfFormPropel
       'site_id'           => new sfValidatorPass(array(),array()),
       'actiu'             => new sfValidatorInteger(array('required'=>false),array()),
       'facebook_id'       => new sfValidatorInteger(array('required'=>false),array()),
-      'data_naixement'    => new sfValidatorDate(array(),array()),      
+      'data_naixement'    => new sfValidatorDate(array('required' => false),array()),      
     ));
 
     $this->setValidator('DNI', new sfValidatorCallback(array('callback'=>array('UsuarisForm','ComprovaDNI'), 'arguments' => array('idU'=>$this->getObject()->getUsuariId(),'ADMIN'=>$this->getOption('ADMIN')) , 'required'=>true)));
