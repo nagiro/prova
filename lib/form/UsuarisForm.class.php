@@ -18,6 +18,8 @@ class UsuarisForm extends sfFormPropel
     if($OUS->isNew()): $NIVELL = NivellsPeer::REGISTRAT;
     else: $NIVELL = $OUS->getNivellId();
     endif;     
+
+    $years = range(date('Y') - 80, date('Y') + 0);    
     
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
@@ -38,6 +40,9 @@ class UsuarisForm extends sfFormPropel
       'Habilitat'         => new sfWidgetFormChoice(array('choices'=>array(1=>'Sí',0=>'No')),array()),
       'Actualitzacio'     => new sfWidgetFormInputHidden(array(),array()),
       'site_id'           => new sfWidgetFormInputHidden(array(),array()),
+      'actiu'             => new sfWidgetFormInputHidden(array(),array()),
+      'facebook_id'       => new sfWidgetFormInputHidden(array(),array()),
+      'data_naixement'    => new sfWidgetFormDate( array( 'years' => array_combine($years, $years) , 'format' => '%day%/%month%/%year%'),array( 'style' => 'width:60px;' ) ),
     ));
     
     $this->setDefault('Nivells_idNivells',$NIVELL);
@@ -63,6 +68,9 @@ class UsuarisForm extends sfFormPropel
       'Habilitat'         => new sfValidatorBoolean(array('required' => false)),
       'Actualitzacio'     => new sfValidatorDate(array('required'=>false),array()),
       'site_id'           => new sfValidatorPass(array(),array()),
+      'actiu'             => new sfValidatorInteger(array('required'=>false),array()),
+      'facebook_id'       => new sfValidatorInteger(array('required'=>false),array()),
+      'data_naixement'    => new sfValidatorDate(array(),array()),      
     ));
 
     $this->setValidator('DNI', new sfValidatorCallback(array('callback'=>array('UsuarisForm','ComprovaDNI'), 'arguments' => array('idU'=>$this->getObject()->getUsuariId(),'ADMIN'=>$this->getOption('ADMIN')) , 'required'=>true)));
@@ -83,6 +91,7 @@ class UsuarisForm extends sfFormPropel
       'Mobil'             => 'Mòbil: ',
       'Entitat'           => 'Entitat: ',
       'Habilitat'         => 'Habilitat: ',        
+      'data_naixement'    => 'Data Naixement: '
     ));    
     
     $this->widgetSchema->setNameFormat('usuaris[%s]');
