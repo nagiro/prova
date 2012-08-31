@@ -503,12 +503,13 @@ class webActions extends sfActions
             if($this->FReserva->isValid()){
                 //Guardem la reserva
                 $this->FReserva->save();
+                $idReserva = $this->FReserva->getObject()->getReservaespaiid();
                 
                 //Enviem mails per informar que s'ha fet una nova reserva d'espais a secretaria
                 $from = OptionsPeer::getString('MAIL_FROM',$RP['site_id']);
                 $to   = OptionsPeer::getString('MAIL_SECRETARIA',$RP['site_id']);
                 $sub  = "Hospici | Nova reserva d'espai";
-                $miss = "S'ha sol·licitat una nova reserva d'espai amb el codi {$RP['ReservaEspaiID']}";
+                $miss = "S'ha sol·licitat una nova reserva d'espai amb el codi {$idReserva}";                              
                 $this->sendMail($from, $to, $sub, $miss);
                 
                 //Vinculem l'usuari amb el site corresponent
