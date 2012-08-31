@@ -171,6 +171,7 @@ class CursosPeer extends BaseCursosPeer
     $C->add( MatriculesPeer::CURSOS_IDCURSOS , $idC );
   	
   	$C->addJoin( MatriculesPeer::USUARIS_USUARIID , UsuarisPeer::USUARIID );
+    $C->addAscendingOrderByColumn( MatriculesPeer::DATAINSCRIPCIO );
     $C->addAscendingOrderByColumn(UsuarisPeer::COG1);
     $C->addAscendingOrderByColumn(UsuarisPeer::COG2);
     $C->addAscendingOrderByColumn(UsuarisPeer::NOM);
