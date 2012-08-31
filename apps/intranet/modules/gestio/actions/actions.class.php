@@ -3014,14 +3014,21 @@ class gestioActions extends sfActions
     
     //Inicialitzem el formulari de cerca
     $this->FCerca = new CercaTextChoiceForm();
-    $this->FCerca->setChoice(array(1=>'Cursos',2=>'Alumnes')); 
+    $this->FCerca->setChoice(array(1=>'Cursos',2=>'Alumnes',3=>'Matrícula')); 
 	$this->FCerca->bind($this->CERCA);
 	
 	//Inicialitzem variables
 	$this->MODE = array('CONSULTA'=>false,'NOU'=>false,'EDICIO'=>false, 'LMATRICULES'=>false , 'VERIFICA' => false);
 
     if($request->isMethod('POST')){
-	    if($request->hasParameter('BCERCA')) { 			 $accio = ( $this->CERCA['select'] == 2 )?'CA':'CC'; $this->PAGINA = 1; }   
+	    if($request->hasParameter('BCERCA')) {
+	       switch($this->CERCA['select']){
+	           case 1: $accio = 'CC'; break;
+               case 2: $accio = 'CA'; break;               
+               case 3: $accio = 'CM'; break;
+	       }
+	       $this->PAGINA = 1; 
+        }   
 	    elseif($request->hasParameter('BNOU')) 	    	 $accio = 'NU';	    
 	    elseif($request->hasParameter('BSAVENEWUSER')) 	 $accio = 'SAVE_NEW_USER';	    
 	    elseif($request->hasParameter('BSELCURS')) 		 $accio = 'SNU';
@@ -3175,10 +3182,20 @@ class gestioActions extends sfActions
 				$this->SELECT = 1;
 				$this->MODE = 'CONSULTA';
 			break;
+
+		//Cerquem per matrícula
+        case 'CM':					
+				$C = new Criteria();
+                $C->add(MatriculesPeer::IDMATRICULES, $this->CERCA['text']);
+                $this->MATRICULES = MatriculesPeer::doSelect($C);                				
+				$this->MODE = 'LMATRICULES'; 				 
+			break;		
+
 		case 'LMA':
 				$this->MATRICULES = MatriculesPeer::getMatriculesUsuari($request->getParameter('IDA') , $this->IDS );                				
 				$this->MODE = 'LMATRICULES'; 
 			break;
+            
 		case 'LMC':
 				$this->MATRICULES = MatriculesPeer::getMatriculesCurs($request->getParameter('IDC') , $this->IDS );
 				$this->MODE = 'LMATRICULES';

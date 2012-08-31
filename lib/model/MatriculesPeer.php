@@ -294,8 +294,7 @@ class MatriculesPeer extends BaseMatriculesPeer
      $C->add(MatriculesPeer::ESTAT, self::EN_PROCES, CRITERIA::NOT_EQUAL);
      
      //Cerquem tots els camps de l'usuari
-     $C = UsuarisPeer::CriteriaCerca($CERCA,$C);
-               
+     $C = UsuarisPeer::CriteriaCerca($CERCA,$C);               
      $C->addJoin( UsuarisPeer::USUARIID , self::USUARIS_USUARIID );
                
      $C->addAscendingOrderByColumn(UsuarisPeer::COG1);

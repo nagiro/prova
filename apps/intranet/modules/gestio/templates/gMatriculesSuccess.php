@@ -277,17 +277,17 @@
           	<table class="DADES">
                       
      			<?php if( sizeof($MATRICULES) == 0 ): echo '<tr><td class="LINIA">No hi ha cap alumne matriculat.</td></tr>'; endif; ?>                        
-                <?php echo '<tr><td class="TITOL" colspan="3">RESERVATS</td></tr>'.$RET; ?>
+                <?php echo '<tr><td class="TITOL" colspan="3">RESERVATS</td></tr>'; ?>
                 <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::RESERVAT,'MODE'=>'LLISTAT_ALUMNES')); ?>                         
-                <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I PAGAT</td></tr>'.$RET; ?>
+                <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I PAGAT</td></tr>'; ?>
                 <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::ACCEPTAT_PAGAT,'MODE'=>'LLISTAT_ALUMNES')); ?>            
-                <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I NO PAGAT</td></tr>'.$RET; ?>
+                <?php echo '<tr><td class="TITOL" colspan="3">ACCEPTAT I NO PAGAT</td></tr>'; ?>
                 <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::ACCEPTAT_NO_PAGAT,'MODE'=>'LLISTAT_ALUMNES')); ?>            
-                <?php echo '<tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>'.$RET; ?>
+                <?php echo '<tr><td class="TITOL" colspan="3">EN ESPERA</td></tr>'; ?>
                 <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::EN_ESPERA,'MODE'=>'LLISTAT_ALUMNES')); ?>            
-                <?php echo '<tr><td class="TITOL" colspan="3">BAIXA</td></tr>'.$RET; ?>
+                <?php echo '<tr><td class="TITOL" colspan="3">BAIXA</td></tr>'; ?>
                 <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::BAIXA,'MODE'=>'LLISTAT_ALUMNES')); ?>
-                <?php echo '<tr><td class="TITOL" colspan="3">DEVOLUCIÓ</td></tr>'.$RET; ?>
+                <?php echo '<tr><td class="TITOL" colspan="3">DEVOLUCIÓ</td></tr>'; ?>
                 <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::DEVOLUCIO,'MODE'=>'LLISTAT_ALUMNES')); ?>
                                                        			                        	
           	</table>      
