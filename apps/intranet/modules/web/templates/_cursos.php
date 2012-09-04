@@ -18,24 +18,23 @@
             Per a més informació, contacti amb la Casa de Cultura de Girona.
         </fieldset>  
         <?php else: ?>
-       
-      
-        <?php echo mostraCursos($CURSOS,true); ?>  
-      
+             
     	<fieldset class="REQUADRE"><legend class="LLEGENDA">Matricula't</legend>
     		<form method="post" action="<?php echo url_for('web/matriculat') ?>">
                 <div>
                    El període de matriculació s'obre el 19 de setembre i es tancarà el mateix dia d'inici de cadascun dels cursos o quan s'hagin exhaurit les places, tret d'indicacions específiques en sentit contrari.
-                   <br /><br />Els alumnes matriculats a idiomes el curs anterior podran inscriure's a partir del 12 de setembre.
-                   <br /><br />La casa de Cultura de Girona es reserva el dret de modificar els horaris i dates anunciats o d'anul·lar un curs tant per raons organitzatives com si no hi ha un nombre suficient d'alumnes.
-                   <br /><br /> En la majoria de cursos que ofereix la Casa de Cultura de Girona hi ha preus reduïts per a persones aturades, jubilats i estudiants menors de 26 anys. 		   			
-                   <br /><br />Per matricular-vos per internet, cliqueu aquest <a href="http://www.hospici.cat/cursos_entitat/1">enllaç</a>. Per accedir-hi heu de ser usuari de la Casa de Cultura o bé crear-ne un de nou si no en sou. 
+                   <br /><br />Els alumnes matriculats a idiomes el curs anterior podran inscriure's a partir del 12 de setembre. Els altres alumnes hauran de realitzar proves de nivell per saber a quin curs inscriure's. Les proves de llengua anglesa seran el <b>dimecres 12 a les 19:00</b> i les proves de llengua francesa seran el <b>dijous 13 a les 19:00</b> a la Casa de Cultura de Girona. En cas de no haver realitzat prova de nivell, només es podrà matricular a primer. 
+                   <br /><br />La casa de Cultura de Girona es reserva el dret de modificar els horaris i dates anunciats o d'anul·lar un curs tant per raons organitzatives com si no hi ha un nombre suficient d'alumnes.                    		   			
+                   <br /><br />Les matrícules realitzades a través del portal web s'hauran de pagar mitjançant targeta de crèdit. Les matrícules realitzades presencialment podran pagar-se també mitjançant targeta de crèdit o bé amb codi de barres a qualsevol caixer de CaixaBank. 
+                   <br /><br />Per matricular-vos per internet, cliqueu aquest <a href="http://www.hospici.cat/cursos_entitat/1">enllaç</a>. Per accedir-hi heu de ser usuari de l'Hospici o bé crear-ne un de nou si no en sou. 
                    <!-- Per matricular-se, vostè ha de ser usuari registrat de l'Hospici.
                         Per poder-hi accedir si us plau cliqui <a href="<?php echo url_for('gestio/uLogin?idS=1') ?>">aquí</a>. -->            
                 </div>
     		</form>
        </fieldset>
-       
+      
+        <?php echo mostraCursos($CURSOS,true); ?>  
+             
        <?php echo mostraCursos($CURSOS_TANCATS,false); ?>
    
    <?php endif; ?>
@@ -50,8 +49,8 @@
 <?php function mostraCursos($CURSOS,$is_actiu){ ?>
 
     <fieldset class="REQUADRE">
-        <?php if($is_actiu): ?> <legend class="LLEGENDA">Cursos amb matrícula oberta</legend>
-        <?php else: ?> <legend class="LLEGENDA">Cursos amb matrícula tancada</legend>
+        <?php if($is_actiu): ?> <legend class="LLEGENDA">MATRÍCULA OBERTA</legend>
+        <?php else: ?> <legend class="LLEGENDA">MATRÍCULA TANCADA</legend>
         <?php endif; ?>
        <table class="DADES">
                <tr>
