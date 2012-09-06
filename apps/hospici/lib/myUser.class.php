@@ -551,7 +551,7 @@ class myUser extends sfBasicSecurityUser
                     return "NO_HI_HA_RESERVA_LINIA";
                 
                 //Encara no ha iniciat el període de matrícules.
-                } elseif( $avui < $datai ){
+                } elseif( $avui < $datai && date('H') < 9 ){
                     
                     return "ABANS_PERIODE_MATRICULA";                    
 
