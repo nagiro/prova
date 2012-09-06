@@ -476,6 +476,9 @@ class myUser extends sfBasicSecurityUser
         //Quan comença?                    
         $datai      =  $OC->getDatainmatricula('U');
         
+        //La matrícula està activa
+        $isActiu    =  $OC->getIsactiu();
+        
         //L'alumne ja està matriculat?
         $JaMat      = (isset($CURSOS_MATRICULATS[$OC->getIdcursos()]));
         
@@ -556,6 +559,10 @@ class myUser extends sfBasicSecurityUser
                     
                     return "ABANS_PERIODE_MATRICULA";                    
 
+                } elseif( $isActiu ) {
+                    
+                    return "CURS_INACTIU";
+
                 //Si no és cap de les anteriors, pot matricular-se.
                 } else {
                     
@@ -635,7 +642,10 @@ class myUser extends sfBasicSecurityUser
             $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
                         
         }elseif( $ESTAT == 'POT_MATRICULAR'){
-            $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Matriculeu-vos</a>', '#FF8D00');            
+            $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Matriculeu-vos</a>', '#FF8D00');
+                        
+        }elseif( $ESTAT == 'CURS_INACTIU'){
+            $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
         }                
                 
         return $RET;         
