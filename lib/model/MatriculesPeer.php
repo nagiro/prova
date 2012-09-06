@@ -239,7 +239,7 @@ class MatriculesPeer extends BaseMatriculesPeer
   static function QuantesAvui($idS)
   {
      $C = self::getCriteriaActiu(new Criteria(),$idS);     
-     $time = mktime(null,null,null,date('m'),date('d')-1,date('Y'));
+     $time = mktime(null,null,null, date('m'), date('d'), date('Y'));
      $C->add(self::DATAINSCRIPCIO , $time , Criteria::GREATER_EQUAL );
      return self::doCount($C);     
   }
