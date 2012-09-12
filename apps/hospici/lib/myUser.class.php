@@ -560,7 +560,7 @@ class myUser extends sfBasicSecurityUser
                     return "ABANS_PERIODE_MATRICULA";                    
 
                 // Si ja som dins el període de matrícules, mirem si el curs està o no actiu. 
-                } elseif( $isActiu ) {
+                } elseif( !$isActiu ) {
                     
                     return "CURS_INACTIU";
 
