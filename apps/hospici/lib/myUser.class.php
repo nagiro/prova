@@ -555,10 +555,11 @@ class myUser extends sfBasicSecurityUser
                 
                 //Encara no ha iniciat el període de matrícules.
                 } elseif( $avui < $datai 
-                            || ( data('d',$avui) == data('d',$datai) && data('m',$avui) == data('m',$datai) && date('H') < 9 ) ) {
+                            || ( date('d',$avui) == date('d',$datai) && date('m',$avui) == date('m',$datai) && date('H') < 9 ) ) {
                     
                     return "ABANS_PERIODE_MATRICULA";                    
 
+                // Si ja som dins el període de matrícules, mirem si el curs està o no actiu. 
                 } elseif( $isActiu ) {
                     
                     return "CURS_INACTIU";
