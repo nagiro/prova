@@ -777,7 +777,6 @@ class webActions extends sfActions
             case 'ERR_CURS': $this->MISSATGE = "Hi ha hagut algun problema carregant el curs al que es vol matricular. Si us plau posi's en contacte amb informatica@casadecultura.org.";
             case 'ERR_JA_TE_UNA_MATRICULA': $this->MISSATGE = "Vostè ja està matriculat a aquest curs. Si us plau posi's en contacte amb informatica@casadecultura.org.";
         }        
-        
     endif;                                        
     
   }

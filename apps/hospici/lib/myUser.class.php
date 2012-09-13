@@ -469,10 +469,13 @@ class myUser extends sfBasicSecurityUser
         
         //L'usuari està autentificat?
         $AUTEN = (isset($AUTH) && $AUTH > 0);
-                
+              
         //Queden places al curs? 
         $HiHaPlaces =  !$OC->isPle();
-        
+
+        //És antic alumne
+        $IsAnticAlumne = MatriculesPeer::isAnticAlumneArray( substr( $OC->getCodi() , 0 , 3 ) , $CURSOS_MATRICULATS );        
+                                        
         //Quan comença?                    
         $datai      =  $OC->getDatainmatricula('U');
         
@@ -564,6 +567,11 @@ class myUser extends sfBasicSecurityUser
                     
                     return "CURS_INACTIU";
 
+                //Si la data és inferior a la data d'inici de matrícula per a nous alumnes, ho indiquem.
+                } elseif( !$IsAnticAlumne ) {
+                    
+                    return "ANTIC_ALUMNE";
+                
                 //Si no és cap de les anteriors, pot matricular-se.
                 } else {
                     
@@ -599,6 +607,7 @@ class myUser extends sfBasicSecurityUser
         $tel        = $OS->getTelefonString();
         $MatAntIdi  = CursosPeer::IsAnticAlumne($OC->getIdcursos(),$CURSOS_MATRICULATS);
         $dataiA     = mktime(0,0,0,9,12,2011);
+        
 
         $RET = "";                                        
                           
@@ -634,9 +643,9 @@ class myUser extends sfBasicSecurityUser
             $RET  = '  <div class="tip" title="Aquest curs no disposa de matrícula en línia.<br /><br /> Per poder-s\'hi matricular, ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al telèfon <b>'.$tel.'</b>.<br /><br />Disculpi les molèsties.">';
             $RET .= ph_getRoundCorner('Matrícula presencial', '#CCCCCC').'</div>';
                         
-        }elseif( $ESTAT == 'ABANS_PERIODE_MATRICULA_AA_IDIOMES'){                                    
-            $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$dataiA).' si vol continuar els estudis d\'idiomes. Assegureu-vos que us matriculeu al curs que us correspon o la matrícula quedarà invalidada sense guardar plaça. <br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-            $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$dataiA), '#CBAD85').'</div>';
+        }elseif( $ESTAT == 'ANTIC_ALUMNE'){                                    
+            $RET  = '  <div class="tip" title="La matrícula és oberta per a antics alumnes. Vostè podrà matricular-se en el període corresponent. <br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
+            $RET .= ph_getRoundCorner('Només antics alumnes', '#CBAD85').'</div>';
             
         }elseif( $ESTAT == 'ABANS_PERIODE_MATRICULA'){                                    
             $RET  = '  <div class="tip" title="Vostè podrà matricular-se a aquest curs per internet a partir del dia '.date('d/m/Y',$datai).'.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';

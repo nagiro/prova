@@ -344,8 +344,33 @@ class MatriculesPeer extends BaseMatriculesPeer
   	
   }
   
-  //Ens diu si l'alumne ha fet algun curs durant l'últim any i mig. 
-  static function isAnticAlumne( $idU , $idS )
+
+  //Ens retorna OK si la data és superior a la d'inscripció dels nous o bé si és inferior i ha fet algun curs del mateix tipus.  
+  static function isAnticAlumneArray( $codi_original , $ARRAY_CURSOS_ALUMNE )
+  {  	            
+      
+    if( ( $codi_original == 'SPA' || $codi_original == 'ANG' || $codi_original == 'FRA' || $codi_original == 'ART' ) AND ( ( date('U') < mktime(0,0,0,9,19,2012) ) OR ( date('Y-m-d') == '2012-09-19' AND date('H') < 9 ) ) ) 
+    {
+        foreach($ARRAY_CURSOS_ALUMNE as $idC){
+      	     $OC = CursosPeer::retrieveByPK( $idC );
+             if($OC instanceof Cursos):
+                $CODI = $OC->getCodi();
+                if($codi_original == substr($CODI, 0, 3)):
+                    return true; 
+                endif; 
+             endif;                
+      	}
+        return false;    	           
+    } else
+    {
+        return true;    
+    }
+           	
+  }
+
+
+  //Ens diu si l'alumne ha fet algun curs durant l'últim any i mig el mateix concepte... 
+  static function isAnticAlumne( $idU , $idS , $codi )
   {
   	
   	$DATA_ANY_I_MIG_ENRRERA = mktime(0,0,0,date('m',time())-18,date('d',time()),date('Y',time()));
@@ -354,9 +379,13 @@ class MatriculesPeer extends BaseMatriculesPeer
     $C = UsuarisPeer::getCriteriaActiu($C,$idS);
     $C = CursosPeer::getCriteriaActiu($C,$idS);
     
-  	$C->add(self::USUARIS_USUARIID, $idU);
-  	$C->addJoin(self::CURSOS_IDCURSOS,CursosPeer::IDCURSOS);
-  	$C->add(CursosPeer::DATAINICI, $DATA_ANY_I_MIG_ENRRERA, CRITERIA::GREATER_THAN);
+  	//Agafem els cursos que ha fet l'usuari durant l'últim any i mig
+    $C->add( self::USUARIS_USUARIID , $idU );
+  	$C->addJoin( self::CURSOS_IDCURSOS , CursosPeer::IDCURSOS );
+    $C->add(CursosPeer::DATAINICI, $DATA_ANY_I_MIG_ENRRERA, CRITERIA::GREATER_THAN);
+    
+    //També mirem que hagi fet un curs del mateix tipus. 
+    $C->add( CursosPeer::CODI , trim($codi) );
     	
   	return (self::doCount($C) == 0)?false:true;    	
   	
