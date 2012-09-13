@@ -149,14 +149,13 @@ class MatriculesPeer extends BaseMatriculesPeer
                 $OM->setEstat( MatriculesPeer::RESERVAT );
                 $OM->save();
                 $RET['AVISOS']['RESERVA_OK'] = "RESERVA_OK";                
-                self::SendMailMatricula( $OM , $OM->getSiteid() ); //Enviem el correu electrònic per a la reserva
-                
+                self::SendMailMatricula( $OM , $OM->getSiteid() ); //Enviem el correu electrònic per a la reserva                                
             } 
             
             //Si és una matrícula de compra amb targeta, cridem el TPV
             elseif( $Mode_pagament == TipusPeer::PAGAMENT_TARGETA )                                        
             {                                                                                        
-                $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";
+                $RET['AVISOS']['PAGAMENT_TPV'] = "PAGAMENT_TPV";                
             } 
             elseif($Mode_pagament == TipusPeer::PAGAMENT_METALIC) 
             {                     
@@ -165,7 +164,7 @@ class MatriculesPeer extends BaseMatriculesPeer
                 $OM->setPagat( $PREU );
                 $OM->save();
                 $RET['AVISOS']['MATRICULA_METALIC_OK'] = "MATRICULA_METALIC_OK";
-                self::SendMailMatricula( $OM , $OM->getSiteid() );                                    
+                self::SendMailMatricula( $OM , $OM->getSiteid() );                                                    
             }
             elseif( $Mode_pagament == TipusPeer::PAGAMENT_CODI_BARRES )
             {
@@ -174,7 +173,7 @@ class MatriculesPeer extends BaseMatriculesPeer
                 $OM->setPagat( $PREU );
                 $OM->save();
                 $RET['AVISOS']['MATRICULA_CODI_BARRES'] = "MATRICULA_CODI_BARRES";
-                self::SendMailMatricula( $OM , $OM->getSiteid() );            
+                self::SendMailMatricula( $OM , $OM->getSiteid() );                            
             }                        
             //Si és una matrícula amb domiciliació
             elseif( $Mode_pagament == TipusPeer::PAGAMENT_DOMICILIACIO )
@@ -184,8 +183,10 @@ class MatriculesPeer extends BaseMatriculesPeer
                 $OM->setTpagament( MatriculesPeer::PAGAMENT_DOMICILIACIO );
                 $OM->save();
                 $RET['AVISOS']['MATRICULA_DOMICILIACIO_OK'] = "MATRICULA_DOMICILIACIO_OK";
-                self::SendMailMatricula( $OM , $OM->getSiteid() );
+                self::SendMailMatricula( $OM , $OM->getSiteid() );                
             }
+         
+         UsuarisPeer::addSite( $OM->getUsuarisUsuariid() , $OM->getSiteId() );
                                     
         }
         
