@@ -578,14 +578,24 @@ class MatriculesPeer extends BaseMatriculesPeer
   
   static public function getMatriculesPagadesDia( $modePagament = 0 , $idS )
   {
+    //mostrem els últims dos anys.
+    $ultims_anys = date('Y-m-d',mktime(0,0,0,8,30,date('Y')-1));
   	$C = new Criteria();
-    self::getCriteriaActiu( $C , $idS );
-    $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
-    $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
-  	$C1->addOr($C2); $C->add($C1);    
+    self::getCriteriaActiu( $C , $idS );    
+    if($modePagament == MatriculesPeer::PAGAMENT_CODI_DE_BARRES):
+        $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
+        $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
+        $C3 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_NO_PAGAT);        
+      	$C2->addOr($C3); $C1->addOr($C2); $C->add($C1);    
+    else:
+        $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
+        $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
+      	$C1->addOr($C2); $C->add($C1);    
+    endif;
   	$C->addDescendingOrderByColumn(MatriculesPeer::DATAINSCRIPCIO);    
   	$C->addJoin(MatriculesPeer::USUARIS_USUARIID, UsuarisPeer::USUARIID);
   	$C->addJoin(MatriculesPeer::CURSOS_IDCURSOS, CursosPeer::IDCURSOS);
+    $C->add(MatriculesPeer::DATAINSCRIPCIO, $ultims_anys , CRITERIA::GREATER_THAN );
   	if($modePagament > 0) $C->add(matriculesPeer::TPAGAMENT, $modePagament );  	
   	return self::doSelect($C);
   }

@@ -80,9 +80,10 @@
 
 
     function LlistatMatriculats($DADES,$MODE,$accio)
-    {
+    {        
         $RET = "";
         $TARGETA = ($MODE == MatriculesPeer::PAGAMENT_TARGETA || $MODE == MatriculesPeer::PAGAMENT_TELEFON);
+        $PAGAMENT_APLACAT = ($MODE == MatriculesPeer::PAGAMENT_CODI_DE_BARRES);
               
         if($accio == 'MAT_DIA_PAG'):
     
@@ -97,6 +98,7 @@
               			<th>Nom</th>
               			<th>Curs</th>';
         if($TARGETA) $RET .= '<th># Caixa</th>';            
+        if($PAGAMENT_APLACAT) $RET .= '<th>Pagat?</th>';
         $RET .= '</tr>';
   		$DATA = ""; $DATA_ANT = -2; $TOTAL = 0;
   		foreach($DADES as $D):
@@ -121,7 +123,12 @@
               			<td>'.$D['NOM'].'</td>
               			<td>'.$D['CURS'].'</td>';
                         
+            //Si és un pagament amb targeta, mirem el número de comanda.
             if($TARGETA) $RET .= '<td>'.$D['ORDER'].'</td>';
+            
+            //Si és pagament aplaçat, marquem si està pagat o no.
+            $PAGAT = ($D['ESTAT'] == MatriculesPeer::ACCEPTAT_PAGAT)?'Sí':'No';
+            if($PAGAMENT_APLACAT) $RET .= '<td>'.$PAGAT.'</td>';
             $RET .= '</tr>';          		      		      		      		
       		$DATA_ANT = $DATA; 
         
