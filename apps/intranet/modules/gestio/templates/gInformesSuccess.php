@@ -30,7 +30,8 @@
       				<td>Resum de matrícules per dia i mitjà pagament</td>
       				<td>---</td>
       				<td>
-      					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_METALIC) ?>"> M </a>
+      					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_CODI_DE_BARRES) ?>"> C </a>
+                        <a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_METALIC) ?>"> M </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TARGETA) ?>"> Ta </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TELEFON) ?>"> Tf </a>
       					<a href="<?php echo url_for('gestio/gInformes?accio=MAT_DIA_PAG&mode_pagament='.MatriculesPeer::PAGAMENT_TRANSFERENCIA) ?>"> Tr </a>

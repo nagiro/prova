@@ -31,7 +31,10 @@ class MatriculesPeer extends BaseMatriculesPeer
    const PAGAMENT_TARGETA         = '20';
    const PAGAMENT_TELEFON         = '23';
    const PAGAMENT_TRANSFERENCIA   = '24';
-   const PAGAMENT_DOMICILIACIO    = '33'; 
+   const PAGAMENT_DOMICILIACIO    = '33';
+   const PAGAMENT_CODI_DE_BARRES  = '34';
+   const PAGAMENT_RESERVA         = '35';
+   const PAGAMENT_LLISTA_ESPERA   = '36'; 
 
     static public function criteriaMatriculat($C,$amb_llista_espera = false, $amb_baixa = false , $amb_tots_els_estats = false )
     {
