@@ -351,7 +351,7 @@ class MatriculesPeer extends BaseMatriculesPeer
       
     if( ( $codi_original == 'SPA' || $codi_original == 'ANG' || $codi_original == 'FRA' || $codi_original == 'ART' ) AND ( ( date('U') < mktime(0,0,0,9,19,2012) ) OR ( date('Y-m-d') == '2012-09-19' AND date('H') < 9 ) ) ) 
     {
-        foreach($ARRAY_CURSOS_ALUMNE as $idC){
+        foreach( $ARRAY_CURSOS_ALUMNE as $idC => $idM ){
       	     $OC = CursosPeer::retrieveByPK( $idC );
              if($OC instanceof Cursos):
                 $CODI = $OC->getCodi();
