@@ -241,7 +241,12 @@ class MatriculesPeer extends BaseMatriculesPeer
   {
      $C = self::getCriteriaActiu(new Criteria(),$idS);     
      $time = mktime(null,null,null, date('m'), date('d'), date('Y'));
-     $C->add(self::DATAINSCRIPCIO , $time , Criteria::GREATER_EQUAL );
+     $C1 = $C->getNewCriterion( self::ESTAT , self::EN_ESPERA );
+     $C2 = $C->getNewCriterion( self::ESTAT , self::ACCEPTAT_PAGAT );
+     $C3 = $C->getNewCriterion( self::ESTAT , self::ACCEPTAT_NO_PAGAT );
+     $C4 = $C->getNewCriterion( self::ESTAT , self::RESERVAT );
+     $C3->addOr($C4); $C2->addOr($C3); $C1->addOr($C2); $C->add($C1);     
+     $C->add(self::DATAINSCRIPCIO , $time , Criteria::GREATER_EQUAL );     
      return self::doCount($C);     
   }
 
