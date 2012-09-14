@@ -441,7 +441,8 @@ class webActions extends sfActions
                 $RET['OM']->setTutornom($tutor_nom);
                 $RET['OM']->save();
             endif;
-                        
+
+            if(empty($this->MISSATGE3)) $this->MISSATGE3 = "KO";                        
                              
         break;
 
