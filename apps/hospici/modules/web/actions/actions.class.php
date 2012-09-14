@@ -393,10 +393,10 @@ class webActions extends sfActions
             $idC = $RP['idC']; $idD = $RP['idD']; $idP = $RP['idP'];
             $CCC = $RP['ccc1'].$RP['ccc2'].$RP['ccc3'].$RP['ccc4'];
             $titular = $RP['titular']; $tutor_dni = $RP['dni_tutor']; $tutor_nom = $RP['nom_tutor'];                                                
-            
+                        
             $RET = MatriculesPeer::saveNewMatricula( $idU , $idC , "Hospici" , $idD , $idP );
             
-            $AVISOS = $RET['AVISOS'];
+            $AVISOS = $RET['AVISOS'];            
             $this->SECCIO = 'MATRICULA';
             $this->getUser()->addLogAction('SAVE_MATRICULA','gMatricules',$RET['OM']->getIdmatricules());
                                                                  			
@@ -430,8 +430,7 @@ class webActions extends sfActions
                 
                 //Afegim el compte corrent
                 $ODB = DadesBancariesPeer::addCCC( $CCC , $OC->getSiteId() , $idU , "" , $titular );
-                $RET['OM']->setIddadesbancaries( $ODB->getIddada() );
-                                                
+                $RET['OM']->setIddadesbancaries( $ODB->getIddada() );                                                
                 $RET['OM']->save();                
 
             endif;

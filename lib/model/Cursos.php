@@ -120,13 +120,14 @@ class Cursos extends BaseCursos
    * Retorna els tipus de pagament que hi ha pel curs existent. 
    * @param intranet bool ( Indica si és per a usar a la intranet o a la extranet )
    * */
-  public function getSelectPagaments($intranet = false){
+  public function getSelectPagaments( $intranet = false , $mostra_escull = false){
     
     $ALL = TipusPeer::getTipusPagamentArray();
     $RET = array();
     $SEL = ($intranet)?$this->getPagamentintern():$this->getPagamentextern();
     $SEL = explode( '@' , $SEL );
     
+    if($mostra_escull) $RET[0] = 'Escull una modalitat...'; 
     foreach($SEL as $E):        
         $RET[$E] = $ALL[$E];
     endforeach;

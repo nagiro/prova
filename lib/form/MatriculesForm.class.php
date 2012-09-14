@@ -13,6 +13,8 @@ class MatriculesForm extends sfFormPropel
   public function setup()
   {  	
   	    
+    $IDU = $this->getObject()->getUsuarisUsuariid();
+                
   	$this->setWidgets(array(
       'idMatricules'     => new sfWidgetFormInputHidden(),
   	  'Usuaris_UsuariID' => new sfWidgetFormInputHidden(),  	  
@@ -21,8 +23,9 @@ class MatriculesForm extends sfFormPropel
       'DataInscripcio'   => new sfWidgetFormDateTime(array('date'=>array('format'=>'%day%/%month%/%year%'))),
       'data_baixa'       => new sfWidgetFormDate(array('format'=>'%day%/%month%/%year%')),
       'Pagat'        	 => new sfWidgetFormInputText(),
-      'tReduccio'        => new sfWidgetFormChoice(array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false))),
-      'tPagament'        => new sfWidgetFormChoice(array('choices'=>TipusPeer::getTipusPagamentArray())),
+      'tReduccio'        => new sfWidgetFormChoice( array('choices'=>DescomptesPeer::getDescomptesArray($this->getOption('IDS'),false))),
+      'tPagament'        => new sfWidgetFormChoice( array('choices'=>TipusPeer::getTipusPagamentArray())),
+      'idDadesBancaries' => new sfWidgetFormChoice( array( 'choices'=> DadesBancariesPeer::getSelectBySelect( DadesBancariesPeer::getDadesUsuari($IDU) , false , true ) ) ),
   	  'Comentari'        => new sfWidgetFormTextarea(),
     ));
 
@@ -36,7 +39,8 @@ class MatriculesForm extends sfFormPropel
       'data_baixa'       => new sfValidatorDateTime(array('required' => false)),
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
       'tReduccio'        => new sfValidatorInteger(),
-      'tPagament'        => new sfValidatorInteger(),    
+      'tPagament'        => new sfValidatorInteger(),
+      'idDadesBancaries' => new sfValidatorInteger(),    
     ));
     
     $this->widgetSchema->setLabels(array(                        
@@ -48,6 +52,7 @@ class MatriculesForm extends sfFormPropel
       'Descompte'        => 'Te descompte? ',
       'tReduccio'        => 'Te reducció? ',
       'tPagament'        => 'Com ha pagat? ',
+      'idDadesBancaries' => 'CCC',
     ));    
     
     $this->widgetSchema->setNameFormat('matricules[%s]');

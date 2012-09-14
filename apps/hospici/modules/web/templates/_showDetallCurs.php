@@ -18,13 +18,47 @@
             }
                 
        });
+       
+       if($("#matricula_idP option:selected").val() == <?php echo TipusPeer::PAGAMENT_DOMICILIACIO ?>){
+                $("#FORM_DOMICILIACIO").show();
+            } else {
+                $("#FORM_DOMICILIACIO").hide();
+            }
+       
+       /* Mirem si el formulari s'ha omplert correctament */
+       $('#FORMULARI').submit(function(){
+        
+            //Mirem si és correcte el codi bancari entrat.
+            if($("#matricula_idP option:selected").val() == <?php echo TipusPeer::PAGAMENT_DOMICILIACIO ?>){
+                if( $('#matricula_ccc1').val().length < 4 || $('#matricula_ccc2').val().length < 4 || $('#matricula_ccc3').val().length < 2 || $('#matricula_ccc4').val().length < 10 ){
+                    alert('El compte corrent entrat és incomplet.');
+                    return false; 
+                }else if( $('#matricula_titular').val().length == 0 ){
+                    alert('Has d\'entrar algun titular pel compte.');
+                    return false;                 
+                } else if(!validaCCC()) {
+                    alert('El compte corrent entrat és incorrecte.');
+                    return false; 
+                }
+            }
+            
+            //Mirem si s'han omplert totes les dades del tutor.
+            if($('#matricula_menor').attr('checked')){
+                if( $('#matricula_dni_tutor').val().length == 0 || $('#matricula_nom_tutor').val().length == 0 ){
+                    alert('Si és un alumne menor d\'edat s\'ha d\'omplir el dni i el nom del tutor legal.');
+                    return false;
+                };
+            }
+            
+            return true; 
+       });
         
     });
     
 
     function validaCCC() {      
-        if (!(obtenirCheck("00" + $('#ccc1').val() + $('#ccc2').val()) == parseInt($('#ccc3').val().charAt(0))) || !(obtenirCheck($('#ccc4').val()) == parseInt($('#ccc3').val().charAt(1))))
-        { alert("El compte entrat és incorrecte."); return false; }    
+        if (!(obtenirCheck("00" + $('#matricula_ccc1').val() + $('#matricula_ccc2').val()) == parseInt($('#matricula_ccc3').val().charAt(0))) || !(obtenirCheck($('#matricula_ccc4').val()) == parseInt($('#ccc3').val().charAt(1))))
+        { return false; }    
         else { return true; }                  
     }
         
@@ -150,7 +184,7 @@
 function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
 {
 
-    echo '<form method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
+    echo '<form id="FORMULARI" method="post" action="'.url_for('@hospici_nova_matricula').'">';                                            
     
     //Guardem el codi del curs        
     echo input_hidden_tag('matricula[idC]',$CURS->getIdcursos());
@@ -178,10 +212,8 @@ function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
             <div style="float: left;"> 
             <?php   
             
-                //Aquí podem escollir el tipus de pagament que farem pel curs.
-                
-                $PAGAMENTS = $CURS->getSelectPagaments();
-                
+                //Aquí podem escollir el tipus de pagament que farem pel curs.                                                                
+                $PAGAMENTS = $CURS->getSelectPagaments( false , false );                                                                
                 if( $CURS->isPle() && $CURS->getIsLlistaEspera(false) ):
                 
                     echo select_tag( 'matricula[idP]' , options_for_select( array( TipusPeer::PAGAMENT_LLISTA_ESPERA => $PAGAMENTS[TipusPeer::PAGAMENT_LLISTA_ESPERA] ) ) );
@@ -189,7 +221,8 @@ function mostraFormulari( $nom , $CURS , $MISSATGE , $visible )
                     
                 else:
                 
-                    echo select_tag( 'matricula[idP]' , options_for_select($CURS->getSelectPagaments() ) );
+                    if(isset($PAGAMENTS[MatriculesPeer::PAGAMENT_LLISTA_ESPERA])) unset($PAGAMENTS[MatriculesPeer::PAGAMENT_LLISTA_ESPERA]);
+                    echo select_tag( 'matricula[idP]' , options_for_select( $PAGAMENTS ) );
                     
                 endif; 
                 

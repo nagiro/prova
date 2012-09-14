@@ -37,6 +37,16 @@ class Matricules extends BaseMatricules
     return ($this->getTreduccio() != DescomptesPeer::CAP);
   }
   
+  public function getTitularDB()
+  {
+    $ODB = DadesBancariesPeer::retrieveByPK($this->getIddadesbancaries());
+    if($ODB instanceof DadesBancaries):
+        return $ODB->getTitular();        
+    else: 
+        return "";
+    endif;    
+  }
+
   public function getCcc()
   {
     $ODB = DadesBancariesPeer::retrieveByPK($this->getIddadesbancaries());

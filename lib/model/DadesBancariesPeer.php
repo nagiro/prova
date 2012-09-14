@@ -125,12 +125,13 @@ class DadesBancariesPeer extends BaseDadesBancariesPeer {
     }
     
     //S'entra un llistat de self i es llista com un select. 
-    static public function getSelectBySelect($LODB,$nou = false)
+    static public function getSelectBySelect( $LODB , $nou = false , $blanc = false )
     {
         
         $RET = array();        
         if(is_null($LODB)) return $RET;
                 
+        if($blanc) $RET[null] = 'Cap compte corrent associat';
         if($nou) $RET[null] = 'Nou compte corrent';         
         foreach($LODB as $ODB):
             $RET[$ODB->getIddada()] = "xxxx-xxxx-xx-xxxxxx".substr($ODB->getCcc(),16,4);

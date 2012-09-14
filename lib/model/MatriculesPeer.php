@@ -637,7 +637,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     
     //CONSULTEM USUARI
     $OU = UsuarisPeer::retrieveByPK( $OM->getUsuarisusuariid() );
-    $OC = CursosPeer::retrieveByPK( $OM->getCursosidcursos() );
+    $OC = CursosPeer::retrieveByPK( $OM->getCursosidcursos() );    
                     
     $HTML = str_replace( '@@LOGO_URL@@' ,       OptionsPeer::getString('LOGO_URL',$idS) ,       $HTML );
     $HTML = str_replace( '@@CODI_BARRES@@' ,    $idS ,                                          $HTML );
@@ -661,9 +661,8 @@ class MatriculesPeer extends BaseMatriculesPeer
     $HTML = str_replace( '@@BASE@@',            $OM->getPagat(),                                $HTML );
     $HTML = str_replace( '@@IVA@@',             0,                                              $HTML );
     $HTML = str_replace( '@@TOTAL@@',           $OM->getPagat(),                                $HTML );
-    $HTML = str_replace( '@@TITULAR@@',         "",                                             $HTML );
-    $HTML = str_replace( '@@CCC@@',             "",                                             $HTML );                                
-
+    $HTML = str_replace( '@@TITULAR@@',         $OM->getTitularDB(),                            $HTML );
+    $HTML = str_replace( '@@CCC@@',             $OM->getCcc(),                                  $HTML );                                
     return $HTML;
     
   }
