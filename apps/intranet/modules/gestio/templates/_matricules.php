@@ -5,6 +5,7 @@
             if($("#matricules_mode_pagament").val() == '33'){ $("#domiciliacio").show(); }
             else { $("#domiciliacio").hide(); }
         });
+        if($("#matricules_mode_pagament").val() == '33'){ $("#domiciliacio").show(); }
     });
 </script>    
 <div style="margin-top:20px; float:left; background-color:#CCC; color:#555; padding:5px; width:640px; ">PAGAMENT I EXTRES</div>
