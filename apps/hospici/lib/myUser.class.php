@@ -655,6 +655,7 @@ class myUser extends sfBasicSecurityUser
             $RET = ph_getRoundCorner('<a href="'.$url.'#matricula">Matriculeu-vos</a>', '#FF8D00');
                         
         }elseif( $ESTAT == 'CURS_INACTIU'){
+            $RET  = '  <div class="tip" title="La matrícula a aquest curs, està tancada temporalment.<br /><br /> Per a més informació pot posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
             $RET .= ph_getRoundCorner('Tancada fins '.date('d/m/Y',$datai), '#CBAD85').'</div>';
         }                
                 
