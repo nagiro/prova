@@ -40,7 +40,7 @@ class MatriculesForm extends sfFormPropel
       'Pagat'            => new sfValidatorNumber(array('required' => false)),
       'tReduccio'        => new sfValidatorInteger(),
       'tPagament'        => new sfValidatorInteger(),
-      'idDadesBancaries' => new sfValidatorInteger(),    
+      'idDadesBancaries' => new sfValidatorInteger(array('required' => false)),    
     ));
     
     $this->widgetSchema->setLabels(array(                        
