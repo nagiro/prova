@@ -676,7 +676,7 @@ class webActions extends sfActions
             if( MatriculesPeer::valTPV( $request->getParameter('Ds_Amount') , $request->getParameter('Ds_Order') , $request->getParameter('Ds_MerchantCode') , $request->getParameter('Ds_Currency') , $request->getParameter('Ds_Response') , $request->getParameter('Ds_Signature'), OptionsPeer::getString('TPV_PASSWORD',$OM->getSiteid() )))
             {
                                                                         
-                $MailMat    = MatriculesPeer::MailMatricula($OM,$OM->getSiteid());
+                $MailMat    = MatriculesPeer::MailMatricula( $OM , $OM->getSiteid() );
                 $subject    = 'Hospici :: Nova matrícula';
                 $preu       = strval($request->getParameter('Ds_Amount')) / 100;
                 
@@ -686,8 +686,9 @@ class webActions extends sfActions
                 $OM->setPagat($preu);
                 $OM->save();                            
                 
-                $this->sendMail($from,$OM->getUsuaris()->getEmail(),$subject,$MailMat);
-                $this->sendMail($from,'informatica@casadecultura.org',$subject,$MailMat);
+                $this->sendMail( $from , $OM->getUsuaris()->getEmail() , $subject , $MailMat );
+                $this->sendMail( $from , 'informatica@casadecultura.org' , $subject , $MailMat );
+                $this->sendMail( $from , OptionsPeer::getString( 'MAIL_SECRETARIA' , $OM->getSiteid() ) , $subject , $MailMat );                
                                 
             } else {
 
