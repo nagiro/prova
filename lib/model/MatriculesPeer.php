@@ -622,7 +622,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     $referencia .= $cc;
     
     $import = str_pad(strval($OM->getPagat()*100),10,'0',STR_PAD_LEFT);
-    $codi = $inici.$entitat.$referencia.$import;
+    $codi = $inici.$entitat.$referencia.$import;    
     
     $barcode = new phpCode128($codi, 150, false , false);
     $barcode->setEanStyle(true);
@@ -640,7 +640,10 @@ class MatriculesPeer extends BaseMatriculesPeer
     $HTML = str_replace( '@@LOGO_URL@@' ,       OptionsPeer::getString('LOGO_URL',$idS) ,       $HTML );
     $HTML = str_replace( '@@CODI_BARRES@@' ,    $idS ,                                          $HTML );
     $HTML = str_replace( '@@TIPUS_PAGAMENT@@' , $OM->getTpagamentString() ,                     $HTML );
-    $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML );
+    $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML );    
+    $HTML = str_replace( '@@ENTITAT@@' ,        $entitat ,                                      $HTML );
+    $HTML = str_replace( '@@REFERENCIA@@' ,     $OM->getIdmatricules() ,                        $HTML );
+    $HTML = str_replace( '@@IMPORT@@' ,         $OM->getPagat().'€' ,                           $HTML );            
     $HTML = str_replace( '@@FACTURA@@',         $OM->getIdmatricules(),                         $HTML );
     $HTML = str_replace( '@@CODI_CLIENT@@',     $OM->getUsuarisusuariid(),                      $HTML );
     $HTML = str_replace( '@@DATA_FACTURA@@',    $OM->getDatainscripcio('d/m/Y'),                $HTML );
