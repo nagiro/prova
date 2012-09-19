@@ -642,7 +642,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     $HTML = str_replace( '@@TIPUS_PAGAMENT@@' , $OM->getTpagamentString() ,                     $HTML );
     $HTML = str_replace( '@@CODI@@' ,           $codi ,                                         $HTML );    
     $HTML = str_replace( '@@ENTITAT@@' ,        $entitat ,                                      $HTML );
-    $HTML = str_replace( '@@REFERENCIA@@' ,     $OM->getIdmatricules() ,                        $HTML );
+    $HTML = str_replace( '@@REFERENCIA@@' ,     $referencia ,                                   $HTML );
     $HTML = str_replace( '@@IMPORT@@' ,         $OM->getPagat().'€' ,                           $HTML );            
     $HTML = str_replace( '@@FACTURA@@',         $OM->getIdmatricules(),                         $HTML );
     $HTML = str_replace( '@@CODI_CLIENT@@',     $OM->getUsuarisusuariid(),                      $HTML );
