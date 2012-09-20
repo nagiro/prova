@@ -2704,7 +2704,7 @@ class gestioActions extends sfActions
             $fila = 1; $columna = 0;
             
             foreach($LOC as $OC):                
-                foreach( CursosPeer::getMatricules( $OC->getIdcursos() , $this->IDS , false , false ) as $OM ):
+                foreach( CursosPeer::getMatricules( $OC->getIdcursos() , $this->IDS , true , false ) as $OM ):
                     $OU = $OM->getUsuaris();
                     if($OU instanceof Usuaris && $OM instanceof Matricules):                                         
                         $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+0  , $fila , $OC->getIdcursos() );
