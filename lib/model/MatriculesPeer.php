@@ -579,7 +579,7 @@ class MatriculesPeer extends BaseMatriculesPeer
     //mostrem els últims dos anys.
     $ultims_anys = date('Y-m-d',mktime(0,0,0,8,30,date('Y')-1));
   	$C = new Criteria();
-    self::getCriteriaActiu( $C , $idS );    
+    $C = self::getCriteriaActiu( $C , $idS );    
     if($modePagament == MatriculesPeer::PAGAMENT_CODI_DE_BARRES):
         $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
         $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
