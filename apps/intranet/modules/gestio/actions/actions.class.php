@@ -4238,7 +4238,9 @@ class gestioActions extends sfActions
 					$this->DADES[$OM->getIdmatricules()]['CURS'] = $OC->getCodi();
                     $this->DADES[$OM->getIdmatricules()]['HORA'] = $OM->getDatainscripcio('H:i');
                     $this->DADES[$OM->getIdmatricules()]['ORDER'] = $OM->getTpvOperacio();                    
-                    $this->DADES[$OM->getIdmatricules()]['ESTAT'] = $OM->getEstat();                                                            
+                    $this->DADES[$OM->getIdmatricules()]['ESTAT'] = $OM->getEstat();
+                    $this->DADES[$OM->getIdmatricules()]['ESTATS'] = $OM->getEstatString();
+                    $this->DADES[$OM->getIdmatricules()]['PAGAMENT'] = $OM->getTpagamentString();                                                            
 				endforeach;				 
 			break;
 		case 'RESUM_ACTIVITATS':

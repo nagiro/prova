@@ -99,6 +99,7 @@
               			<th>Curs</th>';
         if($TARGETA) $RET .= '<th># Caixa</th>';            
         if($PAGAMENT_APLACAT) $RET .= '<th>Pagat?</th>';
+        if($MODE == 0) $RET .= '<th>Pagament?</th>';
         $RET .= '</tr>';
   		$DATA = ""; $DATA_ANT = -2; $TOTAL = 0;
   		foreach($DADES as $D):
@@ -107,19 +108,25 @@
  			$DATA_ANT = ($DATA_ANT == -2)?$D['DATA']:$DATA_ANT;      		      		
   		    if($DATA <> $DATA_ANT):
     			$RET .= '<tr>';
-    			$RET .= '<td style="font-weight:bold; background:#F2EAEA;">'.$DATA_ANT.'</td>';
-    			$RET .= '<td colspan="6" style="font-weight:bold; background:#F2EAEA;">'.$TOTAL.'</td>';      			      			
-          		$RET .= '</tr>';                  				      		
+    			$RET .= '<td style="font-weight:bold; background:#F2EAEA;">'.$DATA_ANT.'</td><td style="font-weight:bold; background:#F2EAEA;">&nbsp;</td>';
+    			$RET .= '<td colspan="6" style="font-weight:bold; background:#F2EAEA;">'.$TOTAL.'€ || Total alumnes: '.$ALUMNES.'</td>';      			      			
+          		$RET .= '</tr>';
+                $TOTAL = 0;
+                $ALUMNES = 0;                  				      		
           	endif;      		
-                    			      			
+
+            //Sumem l'import que hem de mostrar
+            if($D['ESTAT'] == MatriculesPeer::DEVOLUCIO) { $IMPORT = -1*$D['IMPORT']; $TOTAL -= $D['IMPORT']; }
+            else { $IMPORT = $D['IMPORT']; $TOTAL += $D['IMPORT']; }
+            
+            //Sumem un alumne més
+            $ALUMNES++;
+
             $RET .= '<tr>
               			<td>'.$D['DATA'].'</td>
-                        <td>'.$D['HORA'].'</td>';
-            
-            if($D['ESTAT'] == MatriculesPeer::DEVOLUCIO) $RET .= ' <td>-'.$D['IMPORT'].'</td>';
-            else { $RET .= ' <td>'.$D['IMPORT'].'</td>'; $TOTAL += $D['IMPORT']; }
-            
-            $RET .= '   <td>'.$D['DNI'].'</td>
+                        <td>'.$D['HORA'].'</td>
+                        <td>'.$IMPORT.'</td>
+                        <td>'.$D['DNI'].'</td>
               			<td>'.$D['NOM'].'</td>
               			<td>'.$D['CURS'].'</td>';
                         
@@ -129,6 +136,10 @@
             //Si és pagament aplaçat, marquem si està pagat o no.
             $PAGAT = ($D['ESTAT'] == MatriculesPeer::ACCEPTAT_PAGAT)?'Sí':'No';
             if($PAGAMENT_APLACAT) $RET .= '<td>'.$PAGAT.'</td>';
+            
+            //Si  marquem de mode tots, mostrem l'estat de la matrícula
+            if($MODE == 0) $RET .= '<td>'.$D['ESTATS'].'</td>';
+            
             $RET .= '</tr>';          		      		      		      		
       		$DATA_ANT = $DATA; 
         

@@ -585,6 +585,13 @@ class MatriculesPeer extends BaseMatriculesPeer
         $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
         $C3 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_NO_PAGAT);        
       	$C2->addOr($C3); $C1->addOr($C2); $C->add($C1);    
+    //Mostrem totes les matrícules menys les baixes.
+    elseif($modePagament == 0):
+        $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
+        $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
+        $C3 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_NO_PAGAT);
+        $C4 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::RESERVAT);                        
+      	$C3->addOr($C4); $C2->addOr($C3); $C1->addOr($C2); $C->add($C1);
     else:
         $C1 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::ACCEPTAT_PAGAT);
         $C2 = $C->getNewCriterion(MatriculesPeer::ESTAT, MatriculesPeer::DEVOLUCIO);
