@@ -143,7 +143,13 @@
             $RET .= '</tr>';          		      		      		      		
       		$DATA_ANT = $DATA; 
         
-  		endforeach;    					
+  		endforeach;    				
+
+        $RET .= '<tr>';
+    	$RET .= '<td style="font-weight:bold; background:#F2EAEA;">'.$DATA_ANT.'</td><td style="font-weight:bold; background:#F2EAEA;">&nbsp;</td>';
+    	$RET .= '<td colspan="6" style="font-weight:bold; background:#F2EAEA;">'.$TOTAL.'€ || Total alumnes: '.$ALUMNES.'</td>';      			      			
+        $RET .= '</tr>';
+          	
         $RET .= '  </TABLE>';      
         $RET .= '</DIV>';
       
