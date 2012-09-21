@@ -35,7 +35,7 @@
       
         <?php echo mostraCursos($CURSOS,true); ?>  
              
-       <?php echo mostraCursos($CURSOS_TANCATS,false); ?>
+       <?php // echo mostraCursos($CURSOS_TANCATS,false); ?>
    
    <?php endif; ?>
       
