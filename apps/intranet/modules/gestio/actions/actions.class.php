@@ -4452,6 +4452,12 @@ class gestioActions extends sfActions
     			$FC->getObject()->setActiu(false);
                 $FC->getObject()->save();
     		break;
+        case 'ACTIVACIO':
+                $PC = $request->getParameter( 'IDC' );
+                $OC = CiclesPeer::initialize( $PC , $this->IDS )->getObject();
+                $OC->doActivaInactiva();
+                $OC->save();                
+            break;
     		    		    
     }        
                 

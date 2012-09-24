@@ -96,7 +96,7 @@
                	<?php foreach($CICLES->getResults() as $C): ?>
            	        <?php $NACT = $C->getNumActivitats(); $idC = $C->getCicleid(); ?>
               		<tr>                      				
-                        <td class="LINIA"> <?php echo link_to(image_tag('intranet/Submenu2.png').' '.$C->getNom(),'gestio/gCicles?accio=EDITA&IDC='.$idC ); ?> </td>                        
+                        <td class="LINIA"> <?php echo link_to(image_tag('intranet/Submenu2.png').' '.$C->getNom(),'gestio/gCicles?accio=EDITA&IDC='.$idC ); ?> ( <?php echo link_to('canvi estat','gestio/gCicles?accio=ACTIVACIO&IDC='.$idC,array('style'=>'font-size:8px; color:green;')) ?> ) </td>                        
                         <td class="LINIA"><?php echo $NACT ?></td>
     				    <td class="LINIA"><?php echo $C->getPrimerDia() ?></td>									
                         <?php if($NACT > 0): ?>                        

@@ -10,6 +10,15 @@
 class Cicles extends BaseCicles
 {
 
+    /**
+     * Si el cicle està actiu, l'inactivo i sinó al revés.
+     * */
+    public function doActivaInactiva()
+    {
+        if($this->getExtingit()) $this->setExtingit(false);
+        else $this->setExtingit(true);
+    }
+
     public function getPrimeraActivitat()
     {
         $C = new Criteria();        
