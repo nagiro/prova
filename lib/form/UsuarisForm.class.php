@@ -19,7 +19,7 @@ class UsuarisForm extends sfFormPropel
     else: $NIVELL = $OUS->getNivellId();
     endif;     
 
-    $years = range(date('Y') - 80, date('Y') + 0);    
+    $years = range(date('Y') - 100, date('Y') + 0);    
     
     $this->setWidgets(array(
       'UsuariID'          => new sfWidgetFormInputHidden(),
