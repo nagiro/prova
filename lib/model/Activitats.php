@@ -10,6 +10,21 @@
 class Activitats extends BaseActivitats
 {
 
+    public function getSurtAWeb(){
+
+        $titol = strlen($this->getTmig());
+        $text  = strlen($this->getDmig());
+        $publicable = $this->getPublicaweb();                
+                                 
+        if( ( $titol < 5 || $text < 30 ) && $publicable == 1 ):
+            return "FALTA_INFO";            
+        elseif( $titol > 0 && $text > 0 && $publicable == 1 ):
+            return "OK";
+        else:
+            return "FAIL"; 
+        endif;
+    }
+
     public function getEntradesHoraris()
     {
         //Si de l'activitat actual se'n opden comprar entrades

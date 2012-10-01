@@ -438,21 +438,24 @@
      <div class="REQUADRE">
         <div class="TITOL">Llistat d'activitats <span style="color:gray; font-weight:normal; ">(Ordenat per <a id="ORDENA_HORARIS" href="#">horaris</a> / <a id="ORDENA_ESPAIS" href="#">espais</a> )</span></div>
       	<table id="LLISTAT_ORDENAT_HORARIS" class="DADES">
- 			<?php 	                
+ 			<?php 	             
+                             
                     if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No s\'ha trobat cap activitat.</TD></TR>'; endif;  					  			   			
 					foreach($ACTIVITATS as $idH => $A):			
-	                    
-	                  	$AVIS = ""; $ESP = ""; $MAT = "";                              	                                                        
-	                  	if( !empty( $A['ESPAIS'] ) ):     $ESP = implode("<br />",$A['ESPAIS']); endif;
-	                  	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
-	                  	if( strlen( $A['AVIS'] ) > 2 ):  $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+	                                                                    
+	                  	$AVIS = ""; $ESP = ""; $MAT = ""; $PUBLICAT = "";                                                     
+	                  	if( !empty( $A['ESPAIS'] ) ):       $ESP = implode("<br />",$A['ESPAIS']); endif;
+	                  	if( !empty( $A['MATERIAL'] ) ):     $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
+	                  	if( strlen( $A['AVIS'] ) > 2 ):     $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;                        
+                        if( $A['PUBLICAT'] == 'OK' ):       $PUBLICAT = image_tag('template/exclamation.png', array('size'=>'16x16'));
+                        elseif( $A['PUBLICAT'] == 'FALTA_INFO' ): $PUBLICAT = image_tag('template/stop.png', array('size'=>'16x16')); endif;                                 
 	                  	$j = 1;
 	                  	$PAR = ParImpar($j++);
                         $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
                         $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
                         $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";                                                                           	                            
                   		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
-	                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
+	                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.' '.$PUBLICAT.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
 	                  	echo '	<TR>                      						               							                	
 	                  				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
 				               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>
