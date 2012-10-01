@@ -256,6 +256,8 @@
             <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::BAIXA,'MODE'=>'LLISTAT_ALUMNES')); ?>
             <?php echo '<tr><td class="TITOL" colspan="3">DEVOLUCIÓ</td></tr>'.$RET; ?>
             <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::DEVOLUCIO,'MODE'=>'LLISTAT_ALUMNES')); ?>            
+            <?php echo '<tr><td class="TITOL" colspan="3">CANVIAT DE GRUP</td></tr>'.$RET; ?>
+            <?php include_partial('cursosCommon',array('MATRICULES'=>$MATRICULES,'estat'=>MatriculesPeer::CANVI_GRUP,'MODE'=>'LLISTAT_ALUMNES')); ?>            
                                                    			                        	
       	</table>      
       </div>
