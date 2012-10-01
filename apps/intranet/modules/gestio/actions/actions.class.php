@@ -2717,7 +2717,16 @@ class gestioActions extends sfActions
                         $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+7  , $fila , $OM->getTreduccioString() );
                         $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+8  , $fila , $OM->getEstatString() );
                         $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+9  , $fila , (string)$OM->getCcc() );
-                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+10 , $fila++ , $OM->getComentari() );                        
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+10 , $fila , $OM->getComentari() );
+                        
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+11 , $fila , $OU->getTelefonString() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+12 , $fila , $OU->getMobil() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+13 , $fila , $OU->getEmail() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+14 , $fila , $OU->getDataNaixement('d-m-Y') );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+15 , $fila , $OU->getAdreca() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+16 , $fila , $OU->getCodipostal() );
+                        $doc->getActiveSheet()->setCellValueByColumnAndRow( $columna+17 , $fila++ , $OU->getPoblacioString() );                        
+                                                                        
                     endif;
                 endforeach;
             endforeach;            																
