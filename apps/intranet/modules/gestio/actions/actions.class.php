@@ -2699,7 +2699,7 @@ class gestioActions extends sfActions
 			$doc = new PHPExcel();
             
             //Consultem tots els cursos actius i de cada un llistem els alumnes. Els que tinguin pagament amb domiciliació van a part.
-            $LOC = CursosPeer::getCursos(CursosPeer::CURSACTIU,1,"",$this->IDS,false,null,null);
+            $LOC = CursosPeer::getCursos( CursosPeer::CURSACTIU , 0 , "" , $this->IDS , false , null , null );
             
             $fila = 1; $columna = 0;
             

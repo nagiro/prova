@@ -142,7 +142,11 @@ class CursosPeer extends BaseCursosPeer
 		$C1->addOr($C2); $C->add($C1);  		  	
   	endif; 
     
- 	$pager = new sfPropelPager('Cursos', 50);
+ 	if($PAGINA == 0):
+        $pager = new sfPropelPager('Cursos', false);
+    else:
+        $pager = new sfPropelPager('Cursos', 50);
+    endif;
 	$pager->setCriteria($C);
 	$pager->setPage($PAGINA);
 	$pager->init();  	
