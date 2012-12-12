@@ -90,5 +90,25 @@ class TipusPeer extends BaseTipusPeer
                 break;
         }
     }
-    
+
+    static public function getTipusBy( $nom , $idS = 1 )
+    {
+        $RET = array();
+        $C = new Criteria();
+                
+        $C->add(self::TIPUSNOM , $nom );
+        $C->add(self::SITE_ID , $idS );
+        if( self::doCount($C) == 0 ): 
+            $C = new Criteria();
+            $C->add( self::TIPUSNOM, $nom );
+            $C->add( self::SITE_ID , $idS );
+        endif; 
+        
+        foreach(self::doSelect($C) as $OT):
+            $RET[$OT->getIdtipus()] = $OT->getTipusdesc();
+        endforeach;    
+        
+        return $RET;
+    }
+
 }

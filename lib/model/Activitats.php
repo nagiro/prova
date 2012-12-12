@@ -110,7 +110,7 @@ class Activitats extends BaseActivitats
         return parent::getHorariss($C,null);
    }
    
-   
+      
    public function getPrimeraData()
    {   	                        
    		$H = $this->getHorariss();
@@ -136,6 +136,44 @@ class Activitats extends BaseActivitats
    		$H = $this->getHorariss($C);
         if($H[0] instanceof Horaris) return $H[0];        
         else return null;          	
+   }
+
+   /**
+    * Retorna l'horari que correspòn al dia en qüestió
+    **/    
+   public function getHorariDia($dia){
+        
+        $C = new Criteria();
+        $C->add( HorarisPeer::DIA , $dia );
+        $C->add( HorarisPeer::ACTIVITATS_ACTIVITATID , $this->getActivitatid() );
+        return HorarisPeer::doSelectOne($C);
+   }
+
+   /**
+    * Entrem una variable Time i retorna el següent horari després del dia.
+    * @param $dia (time())
+    * */
+   public function getSeguentHorariDespresDelDia( $dia ){
+        $C = new Criteria();
+        $C->addAscendingOrderByColumn(HorarisPeer::DIA);
+        $C->add( HorarisPeer::DIA , date('Y-m-d',$dia) , CRITERIA::GREATER_EQUAL );
+        
+   		$H = $this->getHorariss($C);
+        if($H[0] instanceof Horaris) return $H[0];        
+        else return null;    
+   }
+
+    /**
+     * Retorna l'últim horari d'una activitat.
+     * */
+   public function getUltimHorari()
+   {
+        $C = new Criteria();
+        $C->addDescendingOrderByColumn(HorarisPeer::DIA);
+        
+   		$H = $this->getHorariss($C);
+        if($H[0] instanceof Horaris) return $H[0];        
+        else return null;        
    }
 
    

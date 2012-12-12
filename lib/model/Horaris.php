@@ -33,12 +33,22 @@ class Horaris extends BaseHoraris
 		return $RET;
 	}
 	
-	public function getArrayEspais()
+	/**
+     * Retorna un array amb els espais que s'han ocupat
+     * */
+    public function getArrayEspais()
 	{
 		$RET = array();		
-		foreach($this->getHorarisespaiss() as $HE):																									
-			$RET[] = $HE->getEspais();									
+		//Primer els espais reglats. 
+        foreach($this->getHorarisespaiss() as $HE):
+            if( $HE->getEspaisEspaiid() > 0):																									
+                $RET[] = $HE->getEspais();
+            else:
+                $OEE = EspaisexternsPeer::retrieveByPK( $HE->getIdespaiextern() );
+                if( $OEE instanceof Espaisexterns ) $RET[] = $OEE;                
+            endif;									
 		endforeach;		
+                        
 		return $RET;
 	}
     

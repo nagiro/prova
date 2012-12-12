@@ -49,15 +49,21 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
                                 
     }
 
+    /**
+     * Afegeix un o més emails entrats amb \n als llistats de correu. 
+     * */
     static public function addEmails($emails, $idL, $idS){
                 
         $RET = array('AFEGITS' => 0, 'ERRORS' => array());
                 
+        //Per cada correu
         foreach(explode("\n",$emails) as $MAIL):
             $email = trim($MAIL);
             $C = new Criteria();
             $C->add(LlistesEmailsPeer::EMAIL, $email);
             $OM = LlistesEmailsPeer::doSelectOne($C);
+            
+            //Si el correu no existeix, el validem i l'entrem
             if(!($OM instanceof LlistesEmails)):            
                 if(ValidaMail($email)):
                 
@@ -81,14 +87,18 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
                 else: 
                     $RET['ERRORS'][] = trim($MAIL).' és invàlid. <br />';                    
                 endif;
+            //Si el correu ja existeix...
             else:
+                //Si no està actiu avisem... 
                 if($OM->getActiu() == false):
                     $RET['ERRORS'][] = trim($MAIL).' està marcat com inactiu. Contacta amb informatica@casadecultura.org. <br />';
+                //Si el correu existeix i està actiu, l'actualitzem a la llista actual...
                 else:    
                     $C = new Criteria();
                     $C->add(self::IDLLISTA, $idL);
                     $C->add(self::IDEMAIL, $OM->getIdemail());        
                     $OLLE = self::doSelectOne($C);
+                    //Si no està a la llista actual, l'hi afegim...
                     if(!($OLLE instanceof LlistesLlistesEmails)):
                         $OLLE = new LlistesLlistesEmails();
                         $OLLE->setIdllista($idL);
@@ -97,6 +107,7 @@ class LlistesLlistesEmailsPeer extends BaseLlistesLlistesEmailsPeer {
                         $OLLE->setActiu(true);
                         $OLLE->setSiteid($idS);
                         $OLLE->save();
+                    //Si ja hi és, l'activem...
                     else: 
                         $OLLE->setActiu(true);
                         $OLLE->save();

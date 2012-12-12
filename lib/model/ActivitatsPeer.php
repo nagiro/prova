@@ -37,8 +37,11 @@ class ActivitatsPeer extends BaseActivitatsPeer
       return self::doSelect($C);
    }
 
-   
-   static function getActivitatsDia( $idS , $dia , $page = 1 )
+
+   /**
+    * Retorna els horaris 
+    * */   
+   static function getActivitatsDia( $idS , $dia , $page = 1 , $mode = 'horari' )
    {
 
       $C = new Criteria();
@@ -50,14 +53,48 @@ class ActivitatsPeer extends BaseActivitatsPeer
       $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
       $C->add(self::PUBLICAWEB,1);
       $C->addAscendingOrderByColumn(HorarisPeer::HORAINICI);
-                
-      $pager = new sfPropelPager('Horaris', 20);
+      
+      if($mode == 'horari'):
+        $pager = new sfPropelPager('Horaris', 20);
+      else:
+        $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
+        $pager = new sfPropelPager('Activitats',20);
+      endif;
 	  $pager->setCriteria($C);
       $pager->setPage($page);
       $pager->init();    	
             
       return $pager; 
    }
+
+   static function getActivitatsProperes( $idS , $dia_inicial , $page = 1 , $mode = 'horari' , $limit = 20 , $tambe_avui = false )
+   {
+
+      $C = new Criteria();
+      $C = self::getCriteriaActiu($C,$idS);
+      $C = HorarisPeer::getCriteriaActiu($C,$idS);
+      
+      $C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+      if($tambe_avui) $C->add(HorarisPeer::DIA , $dia_inicial , CRITERIA::GREATER_EQUAL );
+      else $C->add(HorarisPeer::DIA , $dia_inicial , CRITERIA::GREATER_THAN );
+      $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
+      $C->add(self::PUBLICAWEB,1);
+      $C->add(self::CATEGORIES, '%47%', CRITERIA::NOT_LIKE );      
+      $C->addAscendingOrderByColumn(HorarisPeer::DIA);
+      $C->addAscendingOrderByColumn(HorarisPeer::HORAINICI);
+                
+      if($mode == 'horari'): 
+        $pager = new sfPropelPager('Horaris', $limit );
+      else: 
+        $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
+        $pager = new sfPropelPager('Activitats' , $limit );
+      endif; 
+	  $pager->setCriteria($C);
+      $pager->setPage($page);
+      $pager->init();    	
+            
+      return $pager; 
+   }   
 
    static function getActivitatsCerca( $text , $data , $page = 1 , $idS )
    {
@@ -189,7 +226,17 @@ class ActivitatsPeer extends BaseActivitatsPeer
 				
 	}
    	
-			
+
+    /**
+     * Ens mostra les categories que podem posar a les activitats i que després mostrà als nodes
+     * */
+	static public function selectCategoriaActivitat( $idS , $web = false )
+	{
+		return TipusPeer::getTipusBy('class_activitat');		        		
+	}
+
+		
+    //Entra en mode deprecated, pel nou model de web	
 	static public function selectCategories( $idS , $web = false )
 	{
 		$CAT = array();
@@ -273,6 +320,36 @@ class ActivitatsPeer extends BaseActivitatsPeer
 		return $pager;
 				
 	}
+
+
+    /**
+     * Amb una categoria i un site, em retorna les activitats relacionades amb un pager ordenades per horari. 
+     * */
+    static public function getCategoriaActivitat( $cat , $idS , $page = 1 ){
+        
+        $C = new Criteria();
+        $C = self::getCriteriaActiu($C, $idS);
+        $C->add( ActivitatsPeer::CATEGORIES , '%'.$cat.'%' , CRITERIA::LIKE );
+        
+        //Agafem els horaris i ho ordenem per dia d'inici
+        $C->addJoin( ActivitatsPeer::ACTIVITATID , HorarisPeer::ACTIVITATS_ACTIVITATID );
+        $C->add( HorarisPeer::DIA , date( 'Y-m-d' , time() ) , CRITERIA::GREATER_EQUAL );
+        $C->addAscendingOrderByColumn( HorarisPeer::DIA );
+        
+        //Hem d'haver marcat que es pot publicar al web.
+        $C->add( ActivitatsPeer::PUBLICAWEB , 1 );
+        $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);                
+		        
+        //Obrim el pager... amb 20 propostes d'entrada
+        $pager = new sfPropelPager('Activitats', 20);
+    	$pager->setCriteria($C);
+    	$pager->setPage($page);
+    	$pager->init();    	
+			    	
+		return $pager;
+                
+    }
+
 	
 	/**
 	 * Agafem els cicles que afecten aquesta categoria i la resta d'activitats que no pertanyen a cap cicle.  
@@ -280,8 +357,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	 * @param unknown_type $cat
 	 * @param unknown_type $mode
 	 * @param unknown_type $idC
-	 */	
-	
+     * @deprecated
+	 */		
 	static public function selectCicleCategoriaActivitat( $idS , $cat , $idC = 0 )
 	{
 		

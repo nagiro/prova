@@ -10,6 +10,16 @@
 class NodesPeer extends BaseNodesPeer
 {
 
+
+    const CATEGORIA_MANUAL = 'cap';		
+    const CATEGORIA_EXPOSICIONS = 'exposicions';
+    const CATEGORIA_CURSOS = 'cursos';								
+    const CATEGORIA_ACTIVITATS_DESTACADES = 'activitats-destacades';																
+    const CATEGORIA_ACTIVITATS_NORMALS = 'activitats-normals';
+    const CATEGORIA_ACTIVITATS_ACOLLIDES = 'activitats-acollides'; 
+    const CATEGORIA_GIROSCOPI = 'giroscopi';                			
+    const CATEGORIA_ALTRES = 'altres';												
+   
    static public function getCriteriaActiu($C,$idS)
    {
     $C->add(self::ACTIU, true);
@@ -90,7 +100,43 @@ class NodesPeer extends BaseNodesPeer
   	if($NODE instanceof Nodes) return $NODE;
   	else return new Nodes;  	
   }
-    
+
+
+  /**
+   * Em dóna els fills d'un nivell.
+   * */   
+  static public function getFillsNextLevel($NODE)
+  {
+    $C = new Criteria();
+    $C->add( self::IDPARE , $NODE->getIdnodes() );    
+    $C->add( self::ISACTIVA , true );    
+    $C->addAscendingOrderByColumn( self::ORDRE );
+    return self::doSelect( $C );
+  }
+  
+  /**
+   * Treu un llistat dels nodes que puc escollir com a pare.
+   * */
+  static public function selectNodesPares( $IDS, $objecte = false, $IDNODE = null , $nivell = '' ){
+    $RET = array();
+    $C = new Criteria();
+    $C->add( self::IDPARE  , $IDNODE );
+    $C->add( self::SITE_ID , $IDS ); 
+    $C->addAscendingOrderByColumn(self::ORDRE);
+    $LNODES = self::doSelect($C);
+    $RET[null] = 'BASE';
+    foreach($LNODES as $ON):        
+        $RET[$ON->getIdnodes()] = ($objecte)?$ON:$nivell.$ON->getTitolmenu();
+        $RET2 = self::selectNodesPares( $IDS , $objecte , $ON->getIdnodes() , $nivell.' - ' );
+        foreach($RET2 as $K=>$V) $RET[$K] = $V;        
+    endforeach;
+    return $RET;     
+  }
+  
+
+    /**
+     * @deprecated
+     * */    
   static public function getFills($NODE)
   {
     $C = new Criteria();
@@ -98,7 +144,7 @@ class NodesPeer extends BaseNodesPeer
     $ORDRE = $NODE->getOrdre();
     $C->add(self::ORDRE, $ORDRE , CRITERIA::GREATER_THAN);
     $C->add(self::ISACTIVA, true);
-//    $C->add(self::NIVELL, $NIVELL, CRITERIA::GREATER_EQUAL);
+    //$C->add(self::NIVELL, $NIVELL, CRITERIA::GREATER_THAN);
     $C->addAscendingOrderByColumn(self::ORDRE);
     return self::doSelect($C);
   }
