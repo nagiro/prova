@@ -24,10 +24,10 @@
                     </div>
                 
                     <div style="overflow: hidden;">
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=1&titol=Exposicio') ?>')" class="requadre_doble" style="margin-right:20px; background-image: ;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=58&titol=Exposicio') ?>')" class="requadre_doble" style="margin-right:20px; background-image: ;">
                             <div class="requadre_doble_titol">EXPOSICIÓ</div>
                         </div>
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=2&titol=LaCasa') ?>')" class="requadre_doble" style="background-image: ;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=59&titol=LaCasa') ?>')" class="requadre_doble" style="background-image: ;">
                             <div class="requadre_doble_titol">LA CASA</div>
                         </div>
                     </div>
@@ -36,13 +36,13 @@
                             <div class="requadre_individual_titol">NOTÍCIES</div>
                         </div>
                         
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=4&titol=Activitats') ?>')" class="requadre_individual" style="margin-right:20px; background-color: #9599AF;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=61&titol=Activitats') ?>')" class="requadre_individual" style="margin-right:20px; background-color: #9599AF;">
                             <div class="requadre_individual_titol">ACTIVITATS</div>
                         </div>
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=5&titol=Coneixement') ?>')" class="requadre_individual" style="margin-right:24px; background-color: #B78485;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=62&titol=Coneixement') ?>')" class="requadre_individual" style="margin-right:24px; background-color: #B78485;">
                             <div class="requadre_individual_titol">CURSOS I CONEIXEMENT</div>
                         </div>
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=6&titol=Municipis') ?>')" class="requadre_individual" style="background-color: #E8D131;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=63&titol=Municipis') ?>')" class="requadre_individual" style="background-color: #E8D131;">
                             <div class="requadre_individual_titol">MUNICIPIS</div>
                         </div>
                     </div>
