@@ -200,7 +200,7 @@ class wActions extends sfActions
             break;
      }
           
-     $this->A_MENU = NodesPeer::retornaMenu(1,false);    
+     $this->A_MENU = NodesPeer::retornaMenu(99,false);    
      $avui = date('Y-m-d',time());
      $this->A_ACTIVITATS_AVUI = ActivitatsPeer::getActivitatsDia( $this->IDS , $avui , $this->PAGE , 'activitats' );     
      $this->A_ACTIVITATS_FUTURES = ActivitatsPeer::getActivitatsProperes( $this->IDS , $avui , $this->PAGE ,  'horari' , 100 ); 
