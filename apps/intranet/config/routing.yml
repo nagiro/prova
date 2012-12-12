@@ -52,6 +52,28 @@ noticies_culturals:
   url:  /noticiesculturals
   param: { module:blogs, action:noticiesculturals }
 
+# NOVA WEB CONTINGUTS
+
+web_home:
+  url: /w/inici
+  param: { module: w, action: index, accio: home }
+
+web_menu_click:
+  url: /w/contingut/:node/:titol
+  param: { module: w, action: index, accio: menu_click }
+  
+web_menu_click_noticies:
+  url: /w/noticies/:idNoticia/:titol
+  param: { module: w, action: index, accio: menu_click_noticies }
+  
+web_menu_click_activitat:
+  url: /w/activitats/:idCicle/:idActivitat/:titol
+  param: { module: w, action: index, accio: menu_click_activitats }
+
+web_menu_click_curs:
+  url: /w/cursos/:idCategoria/:idCurs/:titol
+  param: { module: w, action: index, accio: menu_click_cursos }
+
 # WEB CONTINGUTS
 
 web_contingut_auto:
