@@ -19,7 +19,7 @@ class wActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {
 
-     $this->setLayout('blank');
+     $this->setLayout('web');
      $accio = $request->getParameter('accio','home');
      $this->IDS = 1;
      $this->PAGE = $request->getParameter('page',1);
