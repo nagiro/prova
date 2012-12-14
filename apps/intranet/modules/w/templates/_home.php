@@ -24,10 +24,10 @@
                     </div>
                 
                     <div style="overflow: hidden;">
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=58&titol=Exposicio') ?>')" class="requadre_doble" style="margin-right:20px; background-image: ;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=58&titol=Exposicio') ?>')" class="requadre_doble" style="margin-right:20px; background-image: url('/images/front/Expo.jpg');">
                             <div class="requadre_doble_titol">EXPOSICIÓ</div>
                         </div>
-                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=59&titol=LaCasa') ?>')" class="requadre_doble" style="background-image: ;">
+                        <div onclick="segueix_url('<?php echo url_for('@web_menu_click?node=59&titol=LaCasa') ?>')" class="requadre_doble" style="background-image:  url('/images/front/Casa.jpg');">
                             <div class="requadre_doble_titol">LA CASA</div>
                         </div>
                     </div>
