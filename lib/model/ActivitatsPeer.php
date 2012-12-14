@@ -79,7 +79,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
       else $C->add(HorarisPeer::DIA , $dia_inicial , CRITERIA::GREATER_THAN );
       $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
       $C->add(self::PUBLICAWEB,1);
-      $C->add(self::CATEGORIES, '%47%', CRITERIA::NOT_LIKE );      
+      $C->add(self::CATEGORIES, '%46%', CRITERIA::NOT_LIKE );      
       $C->addAscendingOrderByColumn(HorarisPeer::DIA);
       $C->addAscendingOrderByColumn(HorarisPeer::HORAINICI);
                 
