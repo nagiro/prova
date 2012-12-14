@@ -323,8 +323,8 @@ class wActions extends sfActions
     $ultim_dia = date( 'Y-m-d' , mktime( 0 , 0 , 0 , date( 'm' , time() ) , date( 'd' , time() ) + 15 , date( 'Y' , time() ) ) );
     
     $RET[1]['mode'] = 1; $RET[1]['titol'] = "Activitats destacades fins al ".$ultim_dia_text; $RET[1]['elements'] = array();
-    $RET[2]['mode'] = 2; $RET[2]['titol'] = "Activitats de la Casa de Cultura fins al ".$ultim_dia_text; $RET[2]['elements'] = array();    
-    $RET[3]['mode'] = 3; $RET[3]['titol'] = "Activitats acollides fins al ".$ultim_dia_text; $RET[3]['elements'] = array();
+    $RET[2]['mode'] = 2; $RET[2]['titol'] = ""; $RET[2]['elements'] = array();    
+    $RET[3]['mode'] = 3; $RET[3]['titol'] = ""; $RET[3]['elements'] = array();
     
     $A_OA_PAGER = ActivitatsPeer::getActivitatsProperes( $this->IDS , date('Y-m-d',time()) , 1 , "activitat" , 50 , true );    
     
@@ -345,9 +345,10 @@ class wActions extends sfActions
             endif;        
             
             $cat = $OA->getCategories();
+
             
             //Activitats destacades
-            if( substr_count( $cat , 49 ) > 0 ):
+            if( substr_count( $cat , 49 ) > 0 || substr_count( $cat , 52 ) >  0 ):
                     
                 $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-L'))?'/images/activitats/C-'.$OA->getActivitatid().'-L.jpg':'color';                                
                 $RET[1]['elements'][] = array(
@@ -356,7 +357,7 @@ class wActions extends sfActions
                                                 'img' => $img );
             
             //Activitats normals
-            elseif( substr_count( $cat , 46 ) > 0 ):
+            elseif( substr_count( $cat , 47 ) > 0 || substr_count( $cat , 53 ) >  0 ):
     
                 $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-M'))?'/images/activitats/C-'.$OA->getActivitatid().'-M.jpg':'color';                                
                 $RET[2]['elements'][] = array(
@@ -365,7 +366,7 @@ class wActions extends sfActions
                                                 'img' => $img );
                     
             //Activitats acollides
-            elseif( substr_count( $cat , 50 ) > 0 ):
+            elseif( substr_count( $cat , 50 ) > 0  || substr_count( $cat , 54 ) >  0 ):
     
                 //$img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-M'))?'/images/activitats/C-'.$OA->getActivitatid().'-M.jpg':'color';
                 $img = "";                                
