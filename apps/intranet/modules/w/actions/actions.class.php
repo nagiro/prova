@@ -215,7 +215,7 @@ class wActions extends sfActions
   {
     
     $RET = array();        
-    $A_OA_PAGER = ActivitatsPeer::getCategoriaActivitat( 'Exposicions' , $this->IDS );
+    $A_OA_PAGER = ActivitatsPeer::getCategoriaActivitat( 46 , $this->IDS );
             
     $RET[1]['mode'] = 1; $RET[2]['mode'] = 2;
     $RET[1]['titol'] = "Exposicions actuals"; $RET[2]['titol'] = "Exposicions futures";
@@ -226,7 +226,7 @@ class wActions extends sfActions
         $titol = $OA->getTMig().' | Del '.$primer->getDia('d/m').' al '.$ultim->getDia('d/m');
         
         //Si la expo és acutal, ho posem al primer , sinó al segon.
-        if( $avui < $ultim->getDia('U') ): 
+        if( $avui < $ultim->getDia('U') && $primer->getDia('U') < $avui ): 
             $i = 1;            
             $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-L'))?'/images/activitats/C-'.$OA->getActivitatid().'-L.jpg':'color'; 
         else: 
