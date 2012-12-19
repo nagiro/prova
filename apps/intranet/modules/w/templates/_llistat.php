@@ -26,9 +26,11 @@
 <?php } ?>
                                 
                     <?php foreach( $A_LLISTA as $LLISTA ): ?>                            
-                    
-                        <div class="menu_titol_llarg"><div><?php echo $LLISTA['titol']?></div></div>                        
-                        <?php if( !empty( $LLISTA['elements'] ) ): ?>                                                
+                                                                    
+                        <?php if( !empty( $LLISTA['elements'] ) ): ?>
+                        
+                            <div class="menu_titol_llarg"><div><?php echo $LLISTA['titol']?></div></div>
+                                                                            
                             <?php $i = 1; foreach($LLISTA['elements'] as $ID => $LLE): ?>
                     
                                 <?php if($LLISTA['mode'] == 1): ?>
