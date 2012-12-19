@@ -226,7 +226,7 @@ class wActions extends sfActions
         $titol = $OA->getTMig().' | Del '.$primer->getDia('d/m').' al '.$ultim->getDia('d/m');
         
         //Si la expo és acutal, ho posem al primer , sinó al segon.
-        if( $avui < $ultim->getDia('Y-m-d') ): 
+        if( $avui < $ultim->getDia('U') ): 
             $i = 1;            
             $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-L'))?'/images/activitats/C-'.$OA->getActivitatid().'-L.jpg':'color'; 
         else: 
