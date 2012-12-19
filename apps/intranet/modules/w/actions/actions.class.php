@@ -278,7 +278,8 @@ class wActions extends sfActions
     
     $RET = array();
     $A_OA_PAGER = null;    
-    if(is_null($idCicle)) $A_OA_PAGER = ActivitatsPeer::getCategoriaActivitat( $CATEGORIA , $this->IDS );
+    //Si el cicle és null o bé és igual a 1 ( no pertany a cap cicle )
+    if(is_null($idCicle) || $idCicle == 1 ) $A_OA_PAGER = ActivitatsPeer::getCategoriaActivitat( $CATEGORIA , $this->IDS );
     else $A_OA_PAGER = ActivitatsPeer::getActivitatsCicles( $idCicle , 1 , true );
     
     $RET[1]['mode'] = $TIPUS;
