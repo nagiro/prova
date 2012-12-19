@@ -222,11 +222,11 @@ class wActions extends sfActions
     //Agafem les exposicions que tenen la data igual al dia d'avui. Les altres, les posem com exposicions properes 
     foreach($A_OA_PAGER->getResults() as $OA):        
                 
-        $primer = $OA->getPrimerHorari(); $ultim = $OA->getUltimHorari(); $avui = date('Y-m-d',time());
+        $primer = $OA->getPrimerHorari(); $ultim = $OA->getUltimHorari(); $avui = date('U',time());
         $titol = $OA->getTMig().' | Del '.$primer->getDia('d/m').' al '.$ultim->getDia('d/m');
         
         //Si la expo és acutal, ho posem al primer , sinó al segon.
-        if( $avui < $ultim ): 
+        if( $avui < $ultim->getDia('Y-m-d') ): 
             $i = 1;            
             $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-L'))?'/images/activitats/C-'.$OA->getActivitatid().'-L.jpg':'color'; 
         else: 
