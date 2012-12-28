@@ -33,10 +33,10 @@ abstract class BaseCursosForm extends BaseFormPropel
       'site_id'         => new sfWidgetFormInputText(),
       'actiu'           => new sfWidgetFormInputText(),
       'activitat_id'    => new sfWidgetFormInputText(),
-      'PagamentExtern'  => new sfWidgetFormInputText(),
-      'PagamentIntern'  => new sfWidgetFormInputText(),
       'PDF'             => new sfWidgetFormTextarea(),
       'ADescomptes'     => new sfWidgetFormTextarea(),
+      'PagamentExtern'  => new sfWidgetFormInputText(),
+      'PagamentIntern'  => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -59,10 +59,10 @@ abstract class BaseCursosForm extends BaseFormPropel
       'site_id'         => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'actiu'           => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
       'activitat_id'    => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
-      'PagamentExtern'  => new sfValidatorString(array('max_length' => 50, 'required' => false)),
-      'PagamentIntern'  => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'PDF'             => new sfValidatorString(array('required' => false)),
       'ADescomptes'     => new sfValidatorString(array('required' => false)),
+      'PagamentExtern'  => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'PagamentIntern'  => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cursos[%s]');

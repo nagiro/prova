@@ -15,6 +15,7 @@ abstract class BaseNodesForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'idNodes'     => new sfWidgetFormInputHidden(),
+      'idPare'      => new sfWidgetFormInputText(),
       'TitolMenu'   => new sfWidgetFormTextarea(),
       'HTML'        => new sfWidgetFormTextarea(),
       'isCategoria' => new sfWidgetFormInputText(),
@@ -30,6 +31,7 @@ abstract class BaseNodesForm extends BaseFormPropel
 
     $this->setValidators(array(
       'idNodes'     => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdnodes()), 'empty_value' => $this->getObject()->getIdnodes(), 'required' => false)),
+      'idPare'      => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'TitolMenu'   => new sfValidatorString(array('required' => false)),
       'HTML'        => new sfValidatorString(array('required' => false)),
       'isCategoria' => new sfValidatorInteger(array('min' => -128, 'max' => 127, 'required' => false)),
