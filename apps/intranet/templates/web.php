@@ -39,6 +39,7 @@ body {
 .requadre_no_imatge { border-top:1px solid gray; font-size:12px; padding:10px; }
 .requadre_no_imatge:hover { opacity:0.7; cursor:pointer; filter: alpha(opacity = 70); }
 .requadre_no_imatge a { text-decoration:none; color:inherit; }
+.requadre_no_imatge_more { border-top:1px solid gray; font-size:12px; padding:10px; cursor:pointer; background-color: #D0C8BA; }
 
 .menu_titol_llarg { width:610px; height:24px; color:white; background-color: #817D74; margin-bottom:10px; }
 .menu_titol_llarg > div { padding-top:3px; margin-left:5px; font-size:15px; font-weight: bolder;  }
@@ -69,6 +70,11 @@ body {
 
     function segueix_url(url){
         window.location.href = url;
+    }
+
+    function mostra(id){
+        $('#mostra_' + id).show();
+        $('#amaga_'  + id).hide();                
     }
 
     $(document).ready(function(){
