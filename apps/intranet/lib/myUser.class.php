@@ -2,9 +2,9 @@
 
 class myUser extends sfBasicSecurityUser
 {
-    
 
-  public function getDiaText($data){
+      
+  static public function getDiaText($data){
     list($year,$month,$day) = explode('-',$data);
     $data = mktime(0,0,0,$month,$day,$year);
     switch(date('N',$data)){

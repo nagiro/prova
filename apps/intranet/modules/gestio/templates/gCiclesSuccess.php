@@ -1,4 +1,5 @@
 <?php use_helper('Form'); ?>
+<?php $BASE = ''; ?>
 
 <script>
 
@@ -8,8 +9,19 @@
         });    
     });
     
-    
-    
+    /** Aquesta funció genera un botó d'upload **/
+    function genUpload( ELEMENT , TIPUS , TEXT , ACTIVITAT ){
+            
+        var uploader = new qq.FileUploader({
+            element: document.getElementById( ELEMENT ),
+            uploadButtonText: TEXT,
+            action: '<?php echo url_for('gestio/Upload') ?>',
+            debug: false,
+            onSubmit: function(){ uploader.setParams({ IDA: ACTIVITAT , TIPUS: TIPUS , OPCIO: 'CICLE' }); },                        
+        });
+        
+    }
+        
 </script>
 
 <style>
@@ -58,6 +70,8 @@
 					 	 		
 	 		<div class="FORMULARI fb">
 	 			<?php echo $FCICLES ?>
+                <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/cicles/' , 'NOM_ARXIU' => 'C-'.$FCICLES->getObject()->getCicleid())); ?>                 
+                
 	 			<?php include_partial('botoneraDiv',array('element'=>'TOTA la descripció')); ?>	 					
 	 		</div>
 	 			 	 	

@@ -1,4 +1,5 @@
 <?php use_helper('Form') ?>
+<?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
 
 <style>
 	
@@ -14,6 +15,7 @@
     #formulari_lloc_extern { background-color:#FCD1A7; }
 		
 </style>
+
 
 	<script type="text/javascript">
 
@@ -39,25 +41,7 @@
         $("#ORDENA_HORARIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").show(); $("#LLISTAT_ORDENAT_ESPAIS").hide(); });
         $("#ORDENA_ESPAIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").hide(); $("#LLISTAT_ORDENAT_ESPAIS").show(); });
 
-         
-//		 $("#horaris_HoraPre_hour").change(function(){
-//		      hora = parseInt($("#horaris_HoraPre_hour").val());              
-//		      $("#horaris_HoraInici_hour").val(hora);
-//            $("#horaris_HoraPost_hour").val(hora+1);
-//              $("#horaris_HoraFi_hour").val(hora+1);
-//            });
-            
-//         $("#horaris_HoraInici_hour").change(function(){
-//		      hora = parseInt($("#horaris_HoraInici_hour").val());              		      
-//              $("#horaris_HoraPost_hour").val(hora+1);
-//              $("#horaris_HoraFi_hour").val(hora+1);
-//            });
-            
-//         $("#horaris_HoraFi_hour").change(function(){
-//		      hora = parseInt($("#horaris_HoraFi_hour").val());
-//              $("#horaris_HoraPost_hour").val(hora);
-//            });
-        
+                 
         //Si l'espai que tenim és un espai extern ho mostrem directament.
         <?php if(isset($EXTRES['ESPAIEXTERN']) && $EXTRES['ESPAIEXTERN']->getObject()->getPoble() <= 0){ ?>                                
         $("#formulari_lloc_extern").hide(0);
@@ -68,8 +52,10 @@
         <?php } else { ?>
             $('#div_lloc_extern').hide(); 
             $('#formulari_lloc_extern').fadeIn(1000);              
-        <?php } ?>                    
+        <?php } ?>                         
+                                            
 	 });
+        
 
 	function jq(myid)
 	  { return '#'+myid.replace(/:/g,"\\:").replace(/\./g,"\\.");}
@@ -414,7 +400,10 @@
 				
 	 		<div style="padding-top:10px;" class="FORMULARI fb">
 	 		
-	 			<?php echo $FActivitat ?>
+	 			<?php echo $FActivitat ?> 
+                <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/activitats/' , 'NOM_ARXIU' => 'A-'.$IDA)); ?>
+
+                </div>                    
 	 			
 				<div class="clear" style="text-align:right; padding-top:40px;">
 					<button type="submit" name="BDESCRIPCIOSAVE" class="BOTO_ACTIVITAT">

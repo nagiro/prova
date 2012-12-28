@@ -12,7 +12,8 @@
   
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery.autocompleter.css'; ?>" />
-  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/thickbox.css'; ?>" />    
+  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/thickbox.css'; ?>" />
+  <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'js/uploader/client/fileuploader.css'; ?>" />    
 
   <!--[if lte IE 7]>
     <link type="text/css" rel="stylesheet" media="all" href="css/screen_ie.css" />
@@ -34,6 +35,8 @@
     
   <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>    
   <script type="text/javascript" src="<?php echo $BASE.'js/gestio.js'; ?>"></script>
+  
+  <script type="text/javascript" src="<?php echo $BASE.'js/uploader/client/fileuploader.js'; ?>" ></script>
     
 <!--[if lt IE 7]>
     <script type="text/javascript" src="<?php echo $BASE.'js/buttonfix.js'; ?>"></script>

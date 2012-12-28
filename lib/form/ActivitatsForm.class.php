@@ -22,7 +22,8 @@ class ActivitatsForm extends sfFormPropel
       'Responsable'		 			    => new sfWidgetFormInputText(),
       'site_id'                         => new sfWidgetFormInputHidden(array(),array()),
       'actiu'                           => new sfWidgetFormInputHidden(array(),array()),            
-      'Publicable'                      => new sfWidgetFormInputHidden(array(),array()),      
+      'Publicable'                      => new sfWidgetFormInputHidden(array(),array()),
+      'isImportant'                     => new sfWidgetFormChoice(array('choices'=>array(0=>'No', 1=>'Sí')))      
 //      'Preu'                            => new sfWidgetFormInputText(),
 //      'PreuReduit'                      => new sfWidgetFormInputText(),
 //      'Places'                          => new sfWidgetFormInputText(),
@@ -43,6 +44,7 @@ class ActivitatsForm extends sfFormPropel
       'Responsable'					    => new sfValidatorString(array('required'=>false),array()),
       'site_id'                         => new sfValidatorPass(),
       'actiu'                           => new sfValidatorPass(),          
+      'isImportant'                     => new sfValidatorBoolean(),
 //      'isEntrada'                       => new sfValidatorBoolean(),
     ));
 
@@ -55,7 +57,8 @@ class ActivitatsForm extends sfFormPropel
       'Publicable'                      => 'Visible al web?',
       'Estat'                           => 'Estat actual: ',
       'Organitzador'				    => 'Organitzador',
-      'Responsable'				    	=> 'Responsable',      
+      'Responsable'				    	=> 'Responsable',
+      'isImportant'                     => 'Avisar hospici',      
 //      'isEntrada'                       => 'Vendre entrades?',
 //      'Places'                          => 'Num. entrades',
     ));

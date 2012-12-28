@@ -217,6 +217,7 @@
                     <?php echo input_hidden_tag('cursos[site_id]',$OC->getSiteId()); ?>
                     <?php echo input_hidden_tag('cursos[actiu]',$OC->getActiu()); ?>
 
+                    <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/cursos/' , 'NOM_ARXIU' => 'C-'.$OC->getIdcursos())); ?>
 
                 </div>                                                                        	 			                
                 

@@ -829,7 +829,8 @@ class gestioActions extends sfActions
             break;       
     }    
         
-    $this->NODES = NodesPeer::retornaMenu($this->IDS,true);
+    $this->NODES = NodesPeer::selectNodesPares($this->IDS, true);
+    // $this->NODES = NodesPeer::retornaMenu($this->IDS,true);
     
   }  
       
@@ -1859,18 +1860,18 @@ class gestioActions extends sfActions
     	case 'DESCRIPCIO_SAVE':
     			
     			$RP = $request->getParameter('activitats');
-    			$this->IDA = $RP['ActivitatID'];
+    			$this->IDA = $RP['ActivitatID'];                
     			
     			$this->CarregaActivitats($request,false);
     			$this->FActivitat = ActivitatsPeer::initializeDescription($this->IDA,$this->IDS);    			
     			$this->FActivitat->bind($RP,$request->getFiles('activitats'));
-    			if($this->FActivitat->isValid()): 
-    				$this->FActivitat->save();
+    			if($this->FActivitat->isValid()):                        				
+                    $this->FActivitat->save();
     				$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
     				$this->redirect('gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$this->IDA);
     			endif; 
     			
-    			$THIS->MODE['DESCRIPCIO'] = true;
+    			$this->MODE['DESCRIPCIO'] = true;
     		
     		break;
 
@@ -2597,7 +2598,20 @@ class gestioActions extends sfActions
                     //Si no hi ha cap descompte, ho deixem a 0 => Cap descompte.
                     if(empty($RP['ADescomptes'])) $OC->setAdescomptes( implode( '@' , array(0) ) );
                     else $OC->setAdescomptes( implode( '@' , $RP['ADescomptes'] ) );
-                    $OC->save();                        		    	    		    	
+                    $OC->save();
+                    
+                    //Si guardem el curs per primera vegada, mirem les imatges que s'han entrat i que no tenen curs. Les assignarem a aquest.
+                    $dir = getcwd().'/images/cicles/';
+                    $mini = false; $normal = false; $big = false; $pdf = false; 
+                    $IDC = $OC->getIdcursos();
+                    foreach ( glob( $dir.'C--*' ) as $K => $arxiu ) {
+                        $a = str_replace( $dir , "", $arxiu );
+                        //Si té un -M és la foto mini.
+                        if( substr_count( $arxiu , "-M" ) > 0)      rename( $arxiu , str_replace( '--' , '-'.$IDC.'-' , $arxiu ) );
+                        if( substr_count( $arxiu , "-L" ) > 0)      rename( $arxiu , str_replace( '--' , '-'.$IDC.'-' , $arxiu ) );
+                        if( substr_count( $arxiu , "-XL" ) > 0)     rename( $arxiu , str_replace( '--' , '-'.$IDC.'-' , $arxiu ) );
+                        if( substr_count( $arxiu , "-PDF" ) > 0)    rename( $arxiu , str_replace( '--' , '-'.$IDC.'-' , $arxiu ) );
+                    }          		    	    		    	
                     
                     $this->OC = $OC;                    
                     $this->getUser()->addLogAction($accio,'gCursos',$OC->getIdcursos());
@@ -4832,6 +4846,7 @@ class gestioActions extends sfActions
     return sfView::NONE;
   }  
    
+  
   public function executeAjaxGetSitesUsersOptions(sfWebRequest $request)
   {
     
@@ -4851,6 +4866,70 @@ class gestioActions extends sfActions
     
   }  
    
+    /**
+     * Aquest funció serveix per fer UPLOAD d'arxius a una activitat
+     * */
+  public function executeUpload(sfWebRequest $request){
+  
+    $base = getcwd();
+    $Opcio = $request->getParameter('OPCIO');
+                
+    if( $Opcio == 'DELETE' ):
+    
+        //Abans d'esborrar un arxiu, comprovaré que l'activitat sigui del site de l'usuari.
+        $url = $request->getParameter('NOM_ARXIU');        
+        $A = explode('-',$url); $id = $A[1]; $B = explode('/',$A[0]); $tipus = $B[2];
+        $IDS = $this->getUser()->getSessionPar('idS');        
+           
+        if($tipus == 'activitats'):                                     
+            $OA = ActivitatsPeer::retrieveByPK($id);
+            if( $OA instanceof Activitats && $IDS == $OA->getSiteid() ):                
+                unlink( $base.$url );
+                return $this->renderText( "ok" );                                         
+            endif;            
+        elseif( $tipus == 'cicles' ):
+            $OC = CiclesPeer::retrieveByPK($id);            
+            if( $OC instanceof Cicles && $IDS == $OC->getSiteid() ):                
+                unlink( $base.$url );
+                return $this->renderText( "ok" );                                         
+            endif;                                
+        elseif( $tipus == 'cursos' ):
+            $OC = CursosPeer::retrieveByPK($id);            
+            if( $OC instanceof Cursos && $IDS == $OC->getSiteid() ):                
+                unlink( $base.$url );
+                return $this->renderText( "ok" );                                         
+            endif;            
+        endif; 
+                                
+        return $this->renderText( "ko" );         
+    
+    elseif( $Opcio == 'UPLOAD' ):
+     
+        $nom = $request->getParameter('qqfile');        
+        $parts = explode(".", $nom); $extensio = end($parts);                
+        $url = $request->getParameter('NOM_ARXIU'); 
+        $url .= '.'.$extensio;                        
+        
+        $input = fopen("php://input", "r");
+        $temp = tmpfile();
+        $realSize = stream_copy_to_stream($input, $temp);
+        fclose($input);        
+                
+        $target = fopen( $base.$url , "w" );        
+        fseek($temp, 0, SEEK_SET);
+        $size = stream_copy_to_stream($temp, $target);
+        fclose($target);
+        
+        $result = true; 
+        
+        if($realSize > 0 && $size == $realSize) $result = array('success' => true); 
+        else $return = array('error' => 'Hi ha hagut algun error carregant l\'arxiu.'); 
+                   
+        return $this->renderText( htmlspecialchars(json_encode($result), ENT_NOQUOTES) );
+
+    endif; 
+
+  }
    
    
 }

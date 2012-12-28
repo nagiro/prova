@@ -14,6 +14,11 @@
 
 #submit { width:100px; }
 
+.row { width:500px; } 
+.row_field { width:80%; } 
+.row_title { width:20%; }
+.row_field input { width:100%; }     
+
 </style>
 
     <TD colspan="3" class="CONTINGUT_ADMIN">
@@ -42,24 +47,26 @@
 <?php if($MODE == 'FORMULARI'): ?>
 		
 		<form action="<?php echo url_for('gestio/gNoticies') ?>" method="POST" enctype="multipart/form-data">
-		    <DIV class="REQUADRE">	    
-		    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gNoticies?accio=CC'))?>
-		    	<table class="FORMULARI">
-		    		<tr><td width="100px"></td><td></td></tr>	    			    		        
-		            <?php echo $FORMULARI ?>
-		            <?php $ON = $FORMULARI->getObject(); ?>
-		            <?php if($ON->getIdactivitat() > 0): ?>
-		            	<?php $nom = ActivitatsPeer::retrieveByPK($ON->getIdactivitat())->getNom(); ?>	            
-		            	<tr><td width="100px"><b>Activitat relacionada:</b></td><td><a target="_NEW" href="<?php echo url_for('gestio/gActivitats?accio=ACTIVITAT&IDA='.$ON->getIdactivitat()) ?>"><?php echo $nom ?></a></td></tr>
-		            <?php endif;  ?>
-		            <tr>		            	
-		            	<td colspan="2" class="dreta">
-							<?php include_partial('botonera',array('element'=>'la notícia')); ?>		            	
-						</td>
-		            </tr>
-		        </table>
-		     </DIV>
-	     </form>		
+		    <div class="REQUADRE fb">	    
+    		    <?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gNoticies?accio=CC'))?>
+    	    	<div class="FORMULARI fb">		    			    			    		        
+    	            <?php echo $FORMULARI ?>
+                    <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/noticies/' , 'NOM_ARXIU' => 'N-'.$FORMULARI->getObject()->getIdnoticia())); ?>
+    	            <?php $ON = $FORMULARI->getObject(); ?>
+    	            <?php if($ON->getIdactivitat() > 0): ?>
+    	            	<?php $nom = ActivitatsPeer::retrieveByPK($ON->getIdactivitat())->getNom(); ?>
+                        <div class="clear row fb">
+                            <span class="title row_title fb"><label for="noticies_ARelacionada">Activitat relacionada: </label></span>
+                            <span class="row_field fb"><a target="_NEW" href="<?php echo url_for('gestio/gActivitats?accio=ACTIVITAT&IDA='.$ON->getIdactivitat()) ?>"><?php echo $nom ?></a></span>
+                        </div>    	            	                        
+    	            <?php endif;  ?>
+    	            		            	
+                    <?php include_partial('botoneraDiv',array('element'=>'la notícia')); ?>		            	
+    					
+    	            
+    	        </div>
+    	     </div>
+        </form>		
 
 <?php else: ?>
 

@@ -27,8 +27,8 @@ class NoticiesForm extends BaseNoticiesForm
       'DataDesaparicio' => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'Activa'         	=> new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'SÃ­'))),
       'Ordre'           => new sfWidgetFormInputHidden(array(),array()),
-      'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$this->WEB_URL_IMAGE, 'is_image'=>true , 'with_delete'=>false)),
-      'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$this->WEB_URL_PDF,'with_delete'=>false)),
+      //'Imatge'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$this->WEB_URL_IMAGE, 'is_image'=>true , 'with_delete'=>false)),
+      //'Adjunt'         	=> new sfWidgetFormInputFileEditableMy(array('file_src'=>$this->WEB_URL_PDF,'with_delete'=>false)),
       'idActivitat'    	=> new sfWidgetFormInputHidden(),      
     ));
 
@@ -39,8 +39,8 @@ class NoticiesForm extends BaseNoticiesForm
       'DataPublicacio' 	=> new sfValidatorDate(array('required' => false)),
       'Activa'         	=> new sfValidatorBoolean(array('required' => false)),
       'Ordre'           => new sfValidatorPass(array(),array()),
-      'Imatge'         	=> new sfValidatorFile(array('path'=> $this->URL_IMAGE , 'required'=>false)),
-      'Adjunt'         	=> new sfValidatorFile(array('path'=> $this->URL_PDF , 'required'=>false)),
+      //'Imatge'         	=> new sfValidatorFile(array('path'=> $this->URL_IMAGE , 'required'=>false)),
+      //'Adjunt'         	=> new sfValidatorFile(array('path'=> $this->URL_PDF , 'required'=>false)),
       'idActivitat'    	=> new sfValidatorInteger(array('required' => false)),
       'DataDesaparicio' => new sfValidatorDate(array('required' => false)),
     ));
@@ -52,14 +52,16 @@ class NoticiesForm extends BaseNoticiesForm
     	'DataDesaparicio' 	=> 'Data desapariciÃ³: ',
       	'Activa'         	=> 'Activa? ',
         'Order'             => 'Ordre: ',
-      	'Imatge'         	=> 'Imatge: ',
-      	'Adjunt'         	=> 'Doc. adjunt: ',
+      	//'Imatge'         	=> 'Imatge: ',
+      	//'Adjunt'         	=> 'Doc. adjunt: ',
       	'idActivitat'    	=> 'Activitat relacionada: ',    
     ));
 
     $this->widgetSchema->setNameFormat('noticies[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+    
+    $this->widgetSchema->setFormFormatterName('Span');
     
   }
 
@@ -72,8 +74,21 @@ class NoticiesForm extends BaseNoticiesForm
   {
   	
   	parent::save();
+
+    //Si guardem el cicle per primera vegada, mirem les imatges que s'han entrat i que no tenen cicle. Les assignarem a aquest.
+    $dir = getcwd().'/images/noticies/';
+    $mini = false; $normal = false; $big = false; $pdf = false; 
+    $IDN = $this->getObject()->getIdnoticia();
+    foreach ( glob( $dir.'N--*' ) as $K => $arxiu ) {
+        $a = str_replace( $dir , "", $arxiu );
+        //Si té un -M és la foto mini.
+        if( substr_count( $arxiu , "-M" ) > 0)      rename( $arxiu , str_replace( '--' , '-'.$IDN.'-' , $arxiu ) );
+        if( substr_count( $arxiu , "-L" ) > 0)      rename( $arxiu , str_replace( '--' , '-'.$IDN.'-' , $arxiu ) );
+        if( substr_count( $arxiu , "-XL" ) > 0)     rename( $arxiu , str_replace( '--' , '-'.$IDN.'-' , $arxiu ) );
+        if( substr_count( $arxiu , "-PDF" ) > 0)    rename( $arxiu , str_replace( '--' , '-'.$IDN.'-' , $arxiu ) );
+    }        
   	
-  	$BASE = $this->URL_IMAGE;  	
+/*  	$BASE = $this->URL_IMAGE;  	
   	$ON = $this->getObject(); 	
   	if($ON instanceof Noticies):
   	  		
@@ -95,7 +110,7 @@ class NoticiesForm extends BaseNoticiesForm
 		    $ON->setAdjunt($nom)->save();		    
 	    endif;	    	      	    	    	      	    
 	endif;
-	
+*/	
   }
 
 }
