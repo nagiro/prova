@@ -359,7 +359,7 @@ class wActions extends sfActions
             //Activitats destacades
             if( substr_count( $cat , 49 ) > 0 || substr_count( $cat , 52 ) >  0 ):
                     
-                $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-L'))?'/images/activitats/C-'.$OA->getActivitatid().'-L.jpg':'color';                                
+                $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-L'))?'/images/activitats/A-'.$OA->getActivitatid().'-L.jpg':'color';                                
                 $RET[1]['elements'][] = array(
                                                 'url' => '@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() ,
                                                 'titol' => $titol , 
@@ -368,7 +368,7 @@ class wActions extends sfActions
             //Activitats normals
             elseif( substr_count( $cat , 47 ) > 0 || substr_count( $cat , 53 ) >  0 ):
     
-                $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-M'))?'/images/activitats/C-'.$OA->getActivitatid().'-M.jpg':'color';                                
+                $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-M'))?'/images/activitats/A-'.$OA->getActivitatid().'-M.jpg':'color';                                
                 $RET[2]['elements'][] = array(
                                                 'url' => '@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() ,
                                                 'titol' => $titol , 
