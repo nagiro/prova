@@ -6,7 +6,7 @@
         <div style="margin-bottom:40px; ">
         
             <!-- MENÚ ESQUERRA -->
-                <?php include_partial('menu', array( 'MODE' => $mode , 'A_MENU' => $A_MENU , 'A_ACTIVITATS_AVUI' => $A_ACTIVITATS_AVUI , 'A_ACTIVITATS_FUTURES' => $A_ACTIVITATS_FUTURES , 'PAGE' => $PAGE , 'SUBMENU' => $A_NODE )); ?>
+                <?php include_partial('menu', array( 'MODE' => $mode , 'A_MENU' => $A_MENU , 'A_ACTIVITATS_AVUI' => $A_ACTIVITATS_AVUI , 'A_ACTIVITATS_FUTURES' => $A_ACTIVITATS_FUTURES , 'PAGE' => $PAGE , 'SELECCIONAT' => $SELECCIONAT )); ?>
             <!-- MENÚ ESQUERRA -->                
             
             <!-- CONTINGUT -->                    

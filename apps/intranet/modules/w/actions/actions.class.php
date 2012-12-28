@@ -28,7 +28,8 @@ class wActions extends sfActions
      $val1 = rand(0,9); $val2 = rand(0,9);
      $this->getUser()->setAttribute('CAPTCHA1', $val1 );
      $this->getUser()->setAttribute('CAPTCHA2', $val2 );     
-     $this->CAPTCHA = "i la suma de ".$val1." + ".$val2;               
+     $this->CAPTCHA = "i la suma de ".$val1." + ".$val2;
+     $this->SELECCIONAT = "CAP";               
      
      switch($accio){
         //Cliquem del menú esquerra, i mostrem els submenús a la dreta. Si no hi ha submenús, mostrem el home
@@ -37,7 +38,7 @@ class wActions extends sfActions
                 $ON = NodesPeer::retrieveByPK($request->getParameter('node'));
                 if($ON instanceof Nodes):                
                     $AON = NodesPeer::getFillsNextLevel($ON);
-                    
+                    $this->SELECCIONAT = array_pop($ON->getArbre());                    
                                                              
                     switch($ON->getCategories()){
                         
@@ -81,7 +82,7 @@ class wActions extends sfActions
                         //Si el node és d'exposicions, mostrem un llistat amb les exposicions
                         case NodesPeer::CATEGORIA_EXPOSICIONS:
                         
-                                //Carreguem les exposicions actuals ( Sala Fita i Sala d'exposicions ) i les futures, si hi són.                                
+                                //Carreguem les exposicions actuals ( Sala Fita i Sala d'exposicions ) i les futures, si hi són.                                                                
                                 $this->A_LLISTA = $this->CarregaInfoExposicions( );
                                 $this->mode = 'llista';
                                                                                         
@@ -114,6 +115,8 @@ class wActions extends sfActions
         //Quan cliquem l'enllaç d'un curs, mostrem el seu contingut.
         case 'menu_click_cursos':
         
+                $this->SELECCIONAT = NodesPeer::retrieveByPK(62);
+                
                 $idC = $request->getParameter('idCurs');
                 //Si no hem seleccionat el curs, mostrem els cursos dins una categoria
                 if($idC == 0):
@@ -141,11 +144,13 @@ class wActions extends sfActions
 
         //Quan cliquem l'enllaç d'una activitat mostrem el contingut
         case 'menu_click_activitats':
-        
-                $idA = $request->getParameter('idActivitat');
+                                        
+                $idA = $request->getParameter('idActivitat');                                
                                                  
                 $OA = ActivitatsPeer::retrieveByPK( $idA );
                 if( $OA instanceof Activitats ):
+             
+                    $this->SELECCIONAT = NodesPeer::retrieveByPK( ( substr_count( $OA->getCategories() , '46' ) > 0 )?58:61 );
 
                     $OC = CiclesPeer::retrieveByPK($OA->getCiclesCicleid());                    
                                     
@@ -168,6 +173,8 @@ class wActions extends sfActions
             
         //Quan cliquem l'enllaç d'un curs, mostrem el seu contingut.
         case 'menu_click_noticies':
+        
+                $this->SELECCIONAT = NodesPeer::retrieveByPK(60);
         
                 $idN = $request->getParameter('idNoticia',0);
                 //Si no hem escollit una notícia, mostrem les notícies

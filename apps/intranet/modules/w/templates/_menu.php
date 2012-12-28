@@ -26,10 +26,11 @@
 
                     <div style="margin-bottom: 50px;">                                                
                         <?php foreach($A_MENU as $ON): ?>
+                            <?php if( $SELECCIONAT instanceof Nodes ) $color = ( $SELECCIONAT->getIdnodes() == $ON->getIdnodes() )?"background-color:inherit":""; ?>
                             <?php if($ON->getIdnodes() == 60): ?>                                               
-                                <div class="menu_titol menu_esquerra" onclick="segueix_url('<?php echo url_for('@web_menu_click_noticies?idNoticia=0&titol=Noticies') ?>')" id="menu_<?php echo $ON->getIdnodes() ?>"><div><?php echo $ON->getTitolMenu() ?></div></div>                                                                                                                        
-                            <?php elseif($ON->getNivell() == 1): ?>     
-                                <div class="menu_titol menu_esquerra" onclick="segueix_url('<?php echo url_for('@web_menu_click?node='.$ON->getIdnodes().'&titol='.$ON->getNomForUrl()) ?>')" id="menu_<?php echo $ON->getIdnodes() ?>"><div><?php echo $ON->getTitolMenu() ?></div></div>                                
+                                <div class="menu_titol menu_esquerra" style="<?php echo $color ?>" onclick="segueix_url('<?php echo url_for('@web_menu_click_noticies?idNoticia=0&titol=Noticies') ?>')" id="menu_<?php echo $ON->getIdnodes() ?>"><div><?php echo $ON->getTitolMenu() ?></div></div>                                                                                                                        
+                            <?php elseif($ON->getNivell() == 1): ?>                                                                                                         
+                                <div class="menu_titol menu_esquerra" style="<?php echo $color ?>" onclick="segueix_url('<?php echo url_for('@web_menu_click?node='.$ON->getIdnodes().'&titol='.$ON->getNomForUrl()) ?>')" id="menu_<?php echo $ON->getIdnodes() ?>"><div><?php echo $ON->getTitolMenu() ?></div></div>                                
                             <?php endif; ?>                            
                         <?php endforeach ?>                        
                     </div>

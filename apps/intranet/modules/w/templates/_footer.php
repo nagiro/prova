@@ -1,7 +1,8 @@
+<?php $base = '/'; ?>
             <div style="overflow: hidden;">
             
                 <div style="width: 180px; height:50px; border-right: 2px solid #1D1D1B; float:left;"> 
-                    <div style="font-size:12px; margin-left: 10px; margin-top:8px;"> LOGO </div>                     
+                    <div style="font-size:12px; margin-left: 0px; margin-top:0px;"> <img src="<?php echo $base ?>images/front/logo_ccg_baix.png" width="170" height="50" /> </div>                     
                 </div>  
                 <div style="width: 137px; height:50px; border-right: 2px solid #1D1D1B; float:left;"> 
                     <div style="font-size:12px; margin-left: 10px; margin-top:8px;">Plaça de l'Hospital, 6<br />17002 Girona </div>
