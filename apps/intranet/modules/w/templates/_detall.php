@@ -38,7 +38,7 @@
                         </div>                    
                     <?php endif; ?>
                                         
-                    <?php include_partial( 'llistat', array( 'A_LLISTA' => $A_LLISTA ) ) ?>                    
+                    <?php include_partial( 'llistat', array( 'A_LLISTA' => $A_LLISTA , 'MAX_FILES' => 5 ) ) ?>                    
                                         
                 </div>
                 <div style="clear: both;"></div>
