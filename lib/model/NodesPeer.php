@@ -18,7 +18,8 @@ class NodesPeer extends BaseNodesPeer
     const CATEGORIA_ACTIVITATS_NORMALS = 'activitats-normals';
     const CATEGORIA_ACTIVITATS_ACOLLIDES = 'activitats-acollides'; 
     const CATEGORIA_GIROSCOPI = 'giroscopi';                			
-    const CATEGORIA_ALTRES = 'altres';												
+    const CATEGORIA_ALTRES = 'altres';
+    const CATEGORIA_FORMACIO = 'formacio';												
    
    static public function getCriteriaActiu($C,$idS)
    {
