@@ -132,7 +132,7 @@ class wActions extends sfActions
                         $this->CONTINGUT = $OC->getDescripcio();
                         $this->HORARIS = $OC->getHoraris();
                         $this->TITOL = $OC->getTitolcurs();                        
-                        $this->IMG = ($this->Image_exists('cursos','C-'.$OC->getIdcursos().'-L'))?'/images/cursos/C-'.$OC->getIdcursos().'-L.jpg':'';
+                        $this->IMG = ($this->Image_exists('cursos','C-'.$OC->getIdcursos().'-XL'))?'/images/cursos/C-'.$OC->getIdcursos().'-XL.jpg':'';
                         $this->mode = "detall";
                     else: 
                         $this->mode = "home";
@@ -157,7 +157,7 @@ class wActions extends sfActions
                     $this->CONTINGUT = $OA->getDMig();
                     $this->HORARIS = $OA->getHorariss();
                     $this->TITOL = $OA->getTMig();
-                    $this->IMG = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-L'))?'/images/activitats/A-'.$OA->getActivitatid().'-L.jpg':'';
+                    $this->IMG = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-XL'))?'/images/activitats/A-'.$OA->getActivitatid().'-XL.jpg':'';
                     $this->INFO_PRACTICA = $OA->getInfopractica();
                     $this->A_LLISTA = $this->CarregaInfoCategories( 
                                                             null, 
@@ -235,10 +235,10 @@ class wActions extends sfActions
         //Si la expo és acutal, ho posem al primer , sinó al segon.
         if( $avui < $ultim->getDia('U') && $primer->getDia('U') < $avui ): 
             $i = 1;            
-            $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-L'))?'/images/activitats/C-'.$OA->getActivitatid().'-L.jpg':'color'; 
+            $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-L'))?'/images/activitats/A-'.$OA->getActivitatid().'-L.jpg':'color'; 
         else: 
             $i = 2;             
-            $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-M'))?'/images/activitats/C-'.$OA->getActivitatid().'-M.jpg':'color';
+            $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-M'))?'/images/activitats/A-'.$OA->getActivitatid().'-M.jpg':'color';
         endif;            
                 
         $RET[$i]['elements'][] = array(                                        
@@ -307,7 +307,7 @@ class wActions extends sfActions
         endif; 
         
         //Mirem si la imatge existeix
-        $img = ($this->Image_exists('activitats','C-'.$OA->getActivitatid().'-M'))?'/images/activitats/C-'.$OA->getActivitatid().'-M.jpg':'color';                                
+        $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-M'))?'/images/activitats/A-'.$OA->getActivitatid().'-M.jpg':'color';                                
         $RET[1]['elements'][] = array(                                        
                                         'url' => '@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() ,
                                         'titol' => $titol , 
