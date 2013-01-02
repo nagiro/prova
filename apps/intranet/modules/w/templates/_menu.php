@@ -65,7 +65,7 @@
                                                
                         <?php 
                             
-                            $i = 0; $quants = 3; $j = 0; $activitats_ja_aparegudes = array();                            
+                            $i = -1; $quants = 3; $j = 0; $activitats_ja_aparegudes = array();                            
                             foreach( $A_ACTIVITATS_FUTURES as $OH ){
                                                                                                                                                                
                                 //Inicialitzem les variables
@@ -112,18 +112,25 @@
                                             <div>'.$Nom_Activitat.' | '.$OH->getHorainici('H.i').'h</div>
                                         </div>
                                     </div>';
-                                     
-                                    if($i % $quants == 0) { echo '<div class="menu_hidden" id="properament_'.$j++.'">'; }
+                                                                         
+                                    if(++$i % $quants == 0) { echo '<div class="menu_hidden" id="properament_'.$j++.'">'; }
                                     
                                     echo $requadre;
-                                                                                                                                                                                                                                                                                
-                                    if( $i++ % $quants == ( $quants - 1 ) ){
+ 
+                                    if( ( $i % $quants ) == ( $quants - 1 ) ){
                                         echo BotoMes( 'properament_' , $j );
                                         echo '</div>';
                                     }
-                                }                                                                                                                                                    
-                            }   
-                            if( ( ( $i - 1 ) % $quants ) < ( $quants - 1) ){
+                                }
+                            }                               
+                            
+                            //Si arribem aquí i no hem quadrat, tanquem el div i marquem per tornar al principi. 
+                            if( ( $i % $quants ) < ( $quants - 1) ){
+                                echo BotoMes( 'properament_' , 0 );
+                                echo '</div>';
+                            //Si arribem aquí, que hem quadrat, afegim el botó per tornar al principi. 
+                            }elseif( ( $i % $quants ) == ( $quants - 1 ) ){
+                                echo '<div class="menu_hidden" id="properament_'.$j++.'">';
                                 echo BotoMes( 'properament_' , 0 );
                                 echo '</div>';
                             }
@@ -139,10 +146,11 @@
 
     function BotoMes($qui , $i)
     {
+        $text = ($i == 0)?"Torna al principi":"Veure més activitats";
         $RET = '
                 <div style="background-color: #817D74;" class="menu_activitat_prop" onclick="visible(\''.$qui.'\',\''.$i.'\')">                                                    
                     <div class="menu_activitat_prop_text">
-                        <div style="font-weight:bold; color:white; margin-left:80px; margin-top:8px;">Veure més activitats</div>
+                        <div style="font-weight:bold; color:white; margin-left:80px; margin-top:8px;">'.$text.'</div>
                     </div>
                 </div>';                 
         return $RET;
