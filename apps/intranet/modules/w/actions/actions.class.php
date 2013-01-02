@@ -99,6 +99,8 @@ class wActions extends sfActions
                         
                                 $this->A_LLISTA = $this->CarregaInfoCategories('44','CICLES DE FORMACIÓ',null,3);
                                 $this->mode = 'llista';
+                                
+                            break;
                         
                         case NodesPeer::CATEGORIA_CURSOS:
                         
