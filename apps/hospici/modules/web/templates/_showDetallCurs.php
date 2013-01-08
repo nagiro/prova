@@ -100,8 +100,15 @@
             
     ?>
 			<div style="border:0px solid #96BF0D; clear:both; padding:10px;">
-				<div style="font-size:11px"><b><?php echo $CURS->getTitolcurs() ?></b><br /><span style="color: gray;"><?php echo $OS->getNom(); ?></span></div>
-				<div style="font-size:10px"><?php // echo generaHoraris($ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
+				<div style="font-size:11px">
+                    <b><?php echo $CURS->getTitolcurs() ?></b>
+                    <br />
+                    <span style="color: gray;"><?php echo $CURS->getHoraris(); ?> _ Inici: <?php echo $CURS->getDatainici('d-m-Y'); ?></span>
+                    <br />
+                    <span style="color: gray;"><?php echo $OS->getNom(); ?></span>                    
+                </div>
+                
+				<div style="font-size:10px"><?php //echo generaHoraris($ACTIVITAT->getHorarisOrdenats(HorarisPeer::DIA)); ?></div>
 				<div style="height:30px;">&nbsp;</div>				
 										
 				<div style="width:150px; float:left">                    

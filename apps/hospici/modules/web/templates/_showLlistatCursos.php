@@ -36,8 +36,14 @@
                     echo '<div style="float:right; margin-top: 5px;">'.myUser::ph_getEtiquetaCursos($AUTH, $OC, $url, $CURSOS_MATRICULATS).'</div>';                      
                                         
                     echo '</div>';
-                    echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';
-                    echo '<div class="h_llistat_activitat_organitzador">|&nbsp;&nbsp;Organitza: '.$OC->getNomSite().'</div>';
+                    $HORARIS = $OC->getHoraris();
+                    if(!empty($HORARIS)):
+                        echo '<div style="clear:both" class="h_llistat_activitat_horari">'.$OC->getHoraris().'</div>';
+                        echo '<div class="h_llistat_activitat_horari"> _ &nbsp;&nbsp; Inici: '.$DATA_INICI.'</div>';
+                    else:                        
+                        echo '<div style="clear:both" class="h_llistat_activitat_horari">Inici: '.$DATA_INICI.'</div>';                        
+                    endif; 
+                    echo '<div style="clear:both; margin-top:3px; margin-left:20px;" class="h_llistat_activitat_organitzador">Organitza: '.$OC->getNomSite().'</div>';
                     echo '<div style="clear:both"></div>';
                 echo '</div>';
                 echo '<div style="height:1px; background-color:#CCCCCC; clear:both;"></div>';
