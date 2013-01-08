@@ -405,7 +405,7 @@ class wActions extends sfActions
   {
                     
     $RET = array();        
-    $A_OC_PAGER = CursosPeer::getCursos( CursosPeer::CURSACTIU , 0 , '' , $idS , true );                                                                       
+    $A_OC_PAGER = CursosPeer::getCursos( CursosPeer::CURSACTIU , 0 , '' , $idS , true );
             
     foreach($A_OC_PAGER->getResults() as $OC):
     
@@ -418,7 +418,7 @@ class wActions extends sfActions
                      
         $RET[$OC->getCategoria()]['elements'][$OC->getIdcursos()] = array(
                                         'url' => '@web_menu_click_curs?idCategoria='.$OC->getCategoria().'&idCurs='.$OC->getIdcursos().'&titol='.$OC->getNomForUrl() ,  
-                                        'titol' => '&nbsp;<div style="float:left; width: 400px;">'.$OC->getTitolcurs().'</div><div style="float:left;">'.$OC->getHoraris().'</div>' , 
+                                        'titol' => '&nbsp;<div style="float:left; width: 400px;"><span style="font-size:8px; color:black;"> '.$OC->getCodi().' </span><br />'.$OC->getTitolcurs().'</div><div style="float:left;">'.$OC->getHoraris().'<br /><span style="font-size:9px; color:gray;">Inici: '.$OC->getDatainici('d-m-Y').'</div><div style="clear:both"></div>' , 
                                         'img' => 'color' );                                                            
     endforeach;
     
