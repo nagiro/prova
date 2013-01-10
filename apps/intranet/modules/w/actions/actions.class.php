@@ -97,7 +97,7 @@ class wActions extends sfActions
 
                         case NodesPeer::CATEGORIA_FORMACIO:
                         
-                                $this->A_LLISTA = $this->CarregaInfoCategories('44','CICLES DE FORMACIÓ',null,3);
+                                $this->A_LLISTA = $this->CarregaInfoCategories('44','CICLES DE FORMACIÓ',null,2);
                                 $this->mode = 'llista';
                                 
                             break;
