@@ -38,7 +38,8 @@ class wActions extends sfActions
                 $ON = NodesPeer::retrieveByPK($request->getParameter('node'));
                 if($ON instanceof Nodes):                
                     $AON = NodesPeer::getFillsNextLevel($ON);
-                    $this->SELECCIONAT = array_pop($ON->getArbre());                    
+                    $Arbre = $ON->getArbre();
+                    $this->SELECCIONAT = array_pop($Arbre);                    
                                                              
                     switch($ON->getCategories()){
                         
@@ -112,6 +113,13 @@ class wActions extends sfActions
                         case NodesPeer::CATEGORIA_GIROSCOPI:
                             break;                                 
                         
+                        case NodesPeer::CATEGORIA_CICLES:
+                        
+                                $this->A_LLISTA = $this->CarregaInfoCicles();
+                                $this->mode = 'llista';
+                                                
+                            break;                        
+                        
                     }                                                                                                                             
                     
                 else: 
@@ -176,7 +184,40 @@ class wActions extends sfActions
                     $this->mode = "home";
                 endif;
                                                                               
-            break;
+            break;            
+
+            //Quan cliquem el botó de cicles, els mostrem tots.
+            case 'menu_click_cicles':
+            
+                $idC = $request->getParameter('idCicle');                                
+                                                                 
+                $OC = CiclesPeer::retrieveByPK( $idC );
+                if( $OC instanceof Cicles ):
+             
+                    $this->SELECCIONAT = NodesPeer::retrieveByPK( 61 );                    
+
+                    //Miro el primer i últim horari. 
+                    $PH = ""; $PA = $OC->getPrimeraActivitat(); if($PA instanceof Activitats) $PH = $PA->getPrimerHorari();
+                    $UH = ""; $UA = $OC->getUltimaActivitat(); if($UA instanceof Activitats) $UH = $UA->getUltimHorari();
+                    $HORARIS = array($PH,$UH);                    
+                                                        
+                    $this->CONTINGUT = $OC->getDMig();
+                    $this->HORARIS = $HORARIS;
+                    $this->TITOL = $OC->getTMig();                                                            
+                    $this->INFO_PRACTICA = "";
+                    $this->IMG = ($this->Image_exists('cicles','C-'.$OC->getCicleid().'-XL'))?'/images/cicles/C-'.$OC->getCicleid().'-XL.jpg':'';                                                                                    
+                    $this->A_LLISTA = $this->CarregaInfoCategories( 
+                                                        null, 
+                                                        'Activitats del cicle', 
+                                                        $OC->getCicleid() ,
+                                                        2 );                                         
+                    $this->mode = "detall";
+                else: 
+                    $this->mode = "home";
+                endif;
+                                     
+        break;
+
             
         //Quan cliquem l'enllaç d'un curs, mostrem el seu contingut.
         case 'menu_click_noticies':
@@ -314,7 +355,7 @@ class wActions extends sfActions
         endif; 
         
         //Mirem si la imatge existeix
-        $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-M'))?'/images/activitats/A-'.$OA->getActivitatid().'-M.jpg':'color';                                
+        $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-L'))?'/images/activitats/A-'.$OA->getActivitatid().'-L.jpg':'color';                                
         $RET[1]['elements'][] = array(                                        
                                         'url' => '@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() ,
                                         'titol' => $titol , 
@@ -400,6 +441,63 @@ class wActions extends sfActions
     return $RET;                        
                                         
   }
+  
+  
+  /**
+   * Carrego els cicles d'activitats amb l'ordre que a mi m'interessa.         
+   * */
+  private function CarregaInfoCicles(  )
+  {
+    
+    $RET = array();    
+    
+    //Quinzena 
+    $avui = date('Y-m-d',time());
+    $avui_text = date('d/m',time());
+    $ultim_dia_text = date( 'd/m' , mktime( 0 , 0 , 0 , date( 'm' , time() ) , date( 'd' , time() ) + 15 , date( 'Y' , time() ) ) );
+    $ultim_dia = date( 'Y-m-d' , mktime( 0 , 0 , 0 , date( 'm' , time() ) , date( 'd' , time() ) + 15 , date( 'Y' , time() ) ) );
+    
+    $RET[1]['mode'] = 1; $RET[1]['titol'] = "Cicles de la Casa de Cultura de Girona"; $RET[1]['elements'] = array();
+    $RET[2]['mode'] = 2; $RET[2]['titol'] = ""; $RET[2]['elements'] = array();    
+    $RET[3]['mode'] = 3; $RET[3]['titol'] = ""; $RET[3]['elements'] = array();
+    
+    $A_OA_PAGER = ActivitatsPeer::getActivitatsProperes( $this->IDS , date('Y-m-d',time()) , 1 , "activitat" , 50 , true );
+    $A_OC = CiclesPeer::getList( 1 , array('select' => 1) , 1 , false , true );
+            
+    //Mostro tots els cicles actius de la Casa que encara han de venir...    
+    foreach( $A_OC as $OC ):
+
+        //Carreguem el primer horari de la primera activitat del cicle
+        $primera_activitat = $OC->getPrimeraActivitat();
+        $primer_horari = "";         
+        if($primera_activitat instanceof Activitats) $primer_horari = $primera_activitat->getPrimerHorari();
+        
+        //Carreguem l'últim horari de la última activitat del cicle. 
+        $ultima_activitat = $OC->getUltimaActivitat();
+        $ultim_horari = "";         
+        if($ultima_activitat instanceof Activitats) $ultim_horari = $ultima_activitat->getUltimHorari();
+        
+        $titol = $OC->getTmig();
+        $desc  = $OC->getDmig();
+        
+        //Si el cicle té activitats, encara es pot veure, i disposa de descripció i títol, la mostrem.
+        if( $ultim_horari <> "" && $ultim_horari->getDia('Y-m-d') > $avui && !empty( $titol ) && !empty( $desc ) ):                    
+                        
+            //Mostro els cicles que hi ha                    
+            $img = ($this->Image_exists('cicles','A-'.$OC->getCicleid().'-L'))?'/images/cicles/C-'.$OC->getCicleid().'-L.jpg':'color';                                
+            $RET[1]['elements'][] = array(
+                                            'url' => '@web_menu_click_cicle?idCicle='.$OC->getCicleid().'&titol='.$OC->getNomForUrl() ,
+                                            'titol' => $titol.'<br />Del '.$primer_horari->getDia('d/m').' fins al '.$ultim_horari->getDia('d/m') , 
+                                            'img' => $img );
+        endif; 
+                                                                                              
+    endforeach;
+    
+    return $RET;                        
+                                        
+  }
+
+  
 
   private function CarregaInfoCursos( $idS , $cat = 0 )
   {

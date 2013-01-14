@@ -54,24 +54,49 @@ class CiclesPeer extends BaseCiclesPeer
  * Return: Pager
  * Parameters: PAGE(Page), $CERCA(Search), $IDS (IdSite)
  * */  
-  static public function getList($PAGE = 1 , $CERCA = "" , $idS )
+  static public function getList($PAGE = 1 , $CERCA = "" , $idS , $pager = true , $ordre_data = false )
   {
-           
-    $C = new Criteria();
-    $C = self::getCriteriaActiu( $C , $idS );    
-    if(!empty($CERCA)) $C->add(self::NOM,'%'.$CERCA['text'].'%',CRITERIA::LIKE);
-    if($CERCA['select'] == 1) $C->add(self::EXTINGIT,false);
-    else $C->add(self::EXTINGIT, true);    
-    $C->addAscendingOrderByColumn(self::NOM);           
-       
-    $pager = new sfPropelPager('Cicles', 20);
-    $pager->setCriteria($C);
-    $pager->setPage($PAGE);
-    $pager->init();
-    return $pager;
 
+    if($ordre_data):
+
+        $C = new Criteria();        
+        $C = CiclesPeer::getCriteriaActiu( $C , $idS );
+        $C = ActivitatsPeer::getCriteriaActiu( $C , $idS );
+        $C = HorarisPeer::getCriteriaActiu( $C , $idS );                
+        
+        $C->addJoin(CiclesPeer::CICLEID, ActivitatsPeer::CICLES_CICLEID);
+        $C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+        $C->addAscendingOrderByColumn(HorarisPeer::DIA);        
+        $C->add(CiclesPeer::EXTINGIT, false);                                
+                        
+        $C->addGroupByColumn(CiclesPeer::CICLEID);
+        
+        return CiclesPeer::doSelect($C);
+                
+    else: 
+           
+        $C = new Criteria();
+        $C = self::getCriteriaActiu( $C , $idS );    
+        if(!empty($CERCA)) $C->add(self::NOM,'%'.$CERCA['text'].'%',CRITERIA::LIKE);
+        if($CERCA['select'] == 1) $C->add(self::EXTINGIT,false);
+        else $C->add(self::EXTINGIT, true);    
+        $C->addAscendingOrderByColumn(self::NOM);               
+           
+        if($pager):
+            $pager = new sfPropelPager('Cicles', 20);
+            $pager->setCriteria($C);
+            $pager->setPage($PAGE);
+            $pager->init();
+            return $pager;
+        else: 
+            return self::doSelect($C);
+        endif;
+         
+    endif;
+    
   }
   
+
   static public function getDataPrimeraActivitat( $idC , $idS )
   {
   	$C = new Criteria();

@@ -17,7 +17,7 @@ class Cicles extends BaseCicles
     {
         if($this->getExtingit()) $this->setExtingit(false);
         else $this->setExtingit(true);
-    }
+    }    
 
     public function getPrimeraActivitat()
     {
@@ -37,6 +37,26 @@ class Cicles extends BaseCicles
         else return null;
                 
     }
+    
+    public function getUltimaActivitat()
+    {
+        $C = new Criteria();        
+        $C = CiclesPeer::getCriteriaActiu($C,$this->getSiteId());
+        $C = ActivitatsPeer::getCriteriaActiu($C,$this->getSiteId());
+        $C = HorarisPeer::getCriteriaActiu($C,$this->getSiteId());
+        
+        $C->add(CiclesPeer::CICLEID, $this->getCicleid());
+        
+        $C->addJoin(CiclesPeer::CICLEID, ActivitatsPeer::CICLES_CICLEID);
+        $C->addJoin(ActivitatsPeer::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
+        $C->addDescendingOrderByColumn(HorarisPeer::DIA);                
+                        
+        $OA = ActivitatsPeer::doSelectOne($C);
+        if($OA instanceof Activitats) return $OA;
+        else return null;
+                
+    }
+    
     
     public function getPrimerDia()
     {
@@ -73,4 +93,13 @@ class Cicles extends BaseCicles
         $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
         return HorarisPeer::doCount($C);        
     }
+    
+    public function getNomForUrl()
+    {
+        $nom = $this->getTmig();
+        return myUser::text2url($nom);        
+    }
+    
+    
+    
 }
