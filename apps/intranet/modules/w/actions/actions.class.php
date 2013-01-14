@@ -481,7 +481,7 @@ class wActions extends sfActions
         $desc  = $OC->getDmig();
         
         //Si el cicle té activitats, encara es pot veure, i disposa de descripció i títol, la mostrem.
-        if( $ultim_horari <> "" && $ultim_horari->getDia('Y-m-d') > $avui && !empty( $titol ) && !empty( $desc ) ):                    
+        if( $ultim_horari <> "" && $ultim_horari->getDia('Y-m-d') > $avui && !empty( $titol ) && !empty( $desc ) && $OC->getVisibleweb() ):                    
                         
             //Mostro els cicles que hi ha                    
             $img = ($this->Image_exists('cicles','A-'.$OC->getCicleid().'-L'))?'/images/cicles/C-'.$OC->getCicleid().'-L.jpg':'color';                                

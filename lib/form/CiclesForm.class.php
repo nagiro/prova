@@ -20,8 +20,9 @@ class CiclesForm extends BaseCiclesForm
   	$this->WEB_IMAGE  = 'images/cicles/'; 
   	$this->WEB_PDF    = 'images/cicles/';
   	
-    $this->setWidgets(array(
-	  'extingit' => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),    
+    $this->setWidgets(array(	  
+      'extingit' => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),
+      'Visibleweb' => new sfWidgetFormChoice(array('choices'=>array(0=>'No',1=>'Sí')),array()),    
       'CicleID'  => new sfWidgetFormInputHidden(),
       'Nom'      => new sfWidgetFormInputText(array(),array('style'=>'width:300px')),
       /*'Imatge'   => new sfWidgetFormInputFileEditableMy(array('file_src'=>OptionsPeer::getString('SF_WEBROOT',1).$this->WEB_IMAGE.$this->getObject()->getImatge() , 'is_image'=>true,'with_delete'=>false),array('style'=>'width:100px')),*/
@@ -46,6 +47,7 @@ class CiclesForm extends BaseCiclesForm
       'tComplet' => new sfValidatorString(array('required' => false)),
       'dComplet' => new sfValidatorString(array('required' => false)),
       'extingit' => new sfValidatorChoice(array('choices'=>array(0,1)),array()),
+      'Visibleweb' => new sfValidatorChoice(array('choices'=>array(0,1)),array()),
     ));
     
     $this->widgetSchema->setLabels(array(
@@ -59,6 +61,7 @@ class CiclesForm extends BaseCiclesForm
       'dMig'     => 'Text mig: ',
       'tComplet' => 'Títol complet: ',
       'dComplet' => 'Text complet: ',
+      'Visibleweb'=> 'Visible WEB?',
       
     ));
     
