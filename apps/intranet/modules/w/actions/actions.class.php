@@ -355,7 +355,10 @@ class wActions extends sfActions
         endif; 
         
         //Mirem si la imatge existeix
-        $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-L'))?'/images/activitats/A-'.$OA->getActivitatid().'-L.jpg':'color';                                
+        $img = "";
+        if($TIPUS == 1) $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-L'))?'/images/activitats/A-'.$OA->getActivitatid().'-L.jpg':'color';
+        elseif($TIPUS == 2) $img = ($this->Image_exists('activitats','A-'.$OA->getActivitatid().'-M'))?'/images/activitats/A-'.$OA->getActivitatid().'-M.jpg':'color';
+        elseif($TIPUS == 3) $img = "";                                
         $RET[1]['elements'][] = array(                                        
                                         'url' => '@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() ,
                                         'titol' => $titol , 
