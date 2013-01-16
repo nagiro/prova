@@ -23,7 +23,7 @@ body {
 	background-image: url(<?php echo $base ?>images/front/indianaccg.jpg);    
 	}
 
-#marc { margin:60px auto; width:1024px; background-color:white; overflow:hidden; }
+#marc { margin:00px auto; width:1024px; background-color:white; overflow:hidden; }
 #contingut { margin: 32px; background-color:red; background-color: #E1D9CB; }
 #logo { width:310px; height:90px; float:left; background-image: url('<?php echo $base ?>images/front/logo_ccg.jpg'); cursor:pointer; }
 #franja_superior { width:650px; height:90px; background-color:#E1D9CB; float:left; }
@@ -87,6 +87,9 @@ body {
 </head>
 
 <body>
+    
+    <div style="position:relative; height: 50px; background-color:#000000;">
+        <div><img style="position:absolute; right:60px;" src="/images/front/LogoDiputacioSuperior.png" /></div></div>
     
     <?php echo $sf_content ?>
      
