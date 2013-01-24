@@ -4311,7 +4311,45 @@ class gestioActions extends sfActions
         			throw new sfStopException;                			   	  	 
                                         
                 endif;    									 
-			break;                                                    
+			break;
+        
+        //Mostra les activitats a quatre mesos vista que estan marcats com a publicables per web.  
+        case 'CONTINGUT_WEB':
+                                
+                //Carrego les activitats
+                $mes = date('m'); $any = date('Y'); $inici = mktime(0,0,0,$mes,1,$any); $fi = mktime(0,0,0,$mes+5,1,$any);                
+                $LLISTAT_ACTIVITATS_WEB = array();
+                
+                $LOH = HorarisPeer::cerca(null,null,$inici,$fi,null,$this->IDS);
+                foreach( $LOH as $id => $OH ):
+                    $OA = $OH->getActivitats();
+                    //Si és una activitat correcta... la consultem.
+                    if($OA instanceof Activitats){
+                        $id = $OA->getActivitatid();
+                        //Si es pot publicar al web
+                        if( !isset( $LLISTAT_ACTIVITATS_WEB[$id] ) && $OA->getPublicaweb()){
+                            $LLISTAT_ACTIVITATS_WEB[$id]['OA']     = $OA;
+                            $LLISTAT_ACTIVITATS_WEB[$id]['text']   = ( strlen( $OA->getTmig() ) > 5 );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['desc']   = ( strlen( $OA->getDmig() ) > 5 );                                                                    
+                            $LLISTAT_ACTIVITATS_WEB[$id]['img_m']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-M.jpg' );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['img_l']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-L.jpg' );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['img_xl'] = file_exists( getcwd().'/images/activitats/A-'.$id.'-XL.jpg' );                            
+                        } else {
+                            $LLISTAT_ACTIVITATS_WEB[$id]['OA']     = $OA;
+                            $LLISTAT_ACTIVITATS_WEB[$id]['text']   = ( strlen( $OA->getTmig() ) > 5 );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['desc']   = ( strlen( $OA->getDmig() ) > 5 );                                                                    
+                            $LLISTAT_ACTIVITATS_WEB[$id]['img_m']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-M.jpg' );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['img_l']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-L.jpg' );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['img_xl'] = file_exists( getcwd().'/images/activitats/A-'.$id.'-XL.jpg' );
+                        }                                        
+                                        
+                    }       
+                     
+                endforeach;
+                $this->LLISTAT_ACTIVITATS_WEB = $LLISTAT_ACTIVITATS_WEB;                                                                			   	  	                                                             									 
+			break;      
+
+                                                                
 	}	
 	
   }    

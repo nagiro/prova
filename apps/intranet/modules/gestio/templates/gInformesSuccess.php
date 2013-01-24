@@ -39,6 +39,7 @@
    				</td></tr>
                 <tr><td>Programació</td><td>Document Word amb les activitats</td><td><a href="<?php echo url_for('gestio/gInformes?accio=RESUM_ACTIVITATS') ?>">Anar-hi</a></td><td>Cap</td></tr>
                 <tr><td>Programació</td><td>Planificació d'ocupació d'espais i material</td><td><a href="<?php echo url_for('gestio/gEstadistiques?accio=CC') ?>">Anar-hi</a></td><td>Cap</td></tr>
+                <tr><td>Programació</td><td>Repàs contingut mensual web/news</td><td><a href="<?php echo url_for('gestio/gInformes?accio=CONTINGUT_WEB') ?>">Anar-hi</a></td><td>Cap</td></tr>
       	</table>      
       </div>
       
@@ -48,6 +49,8 @@
       <?php if(isset($DADES)) echo LlistatMatriculats($DADES,$MODE,$accio); ?>
             
       <?php if(isset($LOA,$IDS)) echo LlistatWord($LOA,$IDS); ?>
+      
+      <?php if( isset( $LLISTAT_ACTIVITATS_WEB , $IDS ) ) echo LlistatWeb( $LLISTAT_ACTIVITATS_WEB , $IDS ); ?>
       
       <div style="height:40px;"></div>
                 
@@ -188,4 +191,47 @@
         return $RETF;
     }    
  
+
+    function LlistatWeb( $LLISTAT_ACTIVITATS_WEB , $IDS )
+    {
+
+        $RET = "";
+        $URLWEB = OptionsPeer::getString('SF_WEBROOTURL',$IDS);
+
+        $RET = '<div class="REQUADRE"><div class="TITOL">Llistat properes activitats visibles a web (4 mesos)</div>'; 
+        $RET .= '<table width="100%"><tr><td class="titol">Quan</td><td class="titol">Què</td><td class="titol">Falta</td></tr>';
+        
+        foreach( $LLISTAT_ACTIVITATS_WEB as $id => $A_OA ):
+                                    
+            if($A_OA['OA']->getPublicaweb()){
+                //Dia, activitat, (què li falta...)
+                $PH = $A_OA['OA']->getPrimerHorari()->getDia('d/m');
+                $UH = $A_OA['OA']->getUltimHorari()->getDia('d/m');
+                $horari = $PH;
+                if($PH <> $UH) $horari = $PH.' a '.$UH;
+                $falta  = (!$A_OA['text'])?' TXT ':'';                 
+                $falta .= (!$A_OA['desc'])?' DES ':'';
+                $falta .= (!$A_OA['img_m'])?' IP ':'';
+                $falta .= (!$A_OA['img_l'])?' IN ':'';
+                $falta .= (!$A_OA['img_xl'])?' IG ':'';
+                
+                $url = link_to('edita',url_for('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$id,array('target'=>'_blank')));
+
+                $RET .= '
+                    <tr>                                                
+                        <td>'.$horari.'</td>
+                        <td>'.$A_OA['OA']->getTmig().' ('.$url.') <br /><span style="font-size:8px;"><i>'.$A_OA['OA']->getCicles()->getNom().'</i></span></td>                        
+                        <td>'.$falta.'</td>                                                
+                    </div>                                            
+                        ';
+                
+            }                        
+                        
+        endforeach;                        
+        
+        $RET .= '</table></div>';
+                                                  
+        return $RET;
+    }    
+
  
