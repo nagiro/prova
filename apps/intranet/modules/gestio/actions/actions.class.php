@@ -2542,6 +2542,7 @@ class gestioActions extends sfActions
                         $doc->mergeXmlField('amortitzacio'              ,   $OM->getAmortitzacio());
                         $doc->mergeXmlField('vida_util'                 ,   $OM->getVidautil());
                         $doc->mergeXmlField('notes'                     ,   $OM->getNotesmanteniment());
+                        $doc->mergeXmlField('data_avui'                 ,   date('d/m/Y'));
                         
         				$doc->saveXml();
         				$doc->close();
@@ -2589,10 +2590,12 @@ class gestioActions extends sfActions
                         $doc->mergeXmlField('responsable'               ,   $OU->getNomComplet() );                        
                         $doc->mergeXmlField('num_serie'                 ,   $OM->getNumserie());
                         $doc->mergeXmlField('data_compra'               ,   $OM->getDatacompra('d/m/Y'));                                                                                                
+                        $doc->mergeXmlField('data_baixa'                ,   $OM->getDatabaixa('d/m/Y'));
                         $doc->mergeXmlField('preu_inicial'              ,   $OM->getPreu());
                         $doc->mergeXmlField('total_amortitzat'          ,   $total_amortitzat );
                         $doc->mergeXmlField('valor_actual'              ,   $OM->getPreu() - $total_amortitzat );
                         $doc->mergeXmlField('notes'                     ,   $OM->getNotesmanteniment());
+                        $doc->mergeXmlField('data_avui'                 ,   date('d/m/Y'));
                         
         				$doc->saveXml();
         				$doc->close();
