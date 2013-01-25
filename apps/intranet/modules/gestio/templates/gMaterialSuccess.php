@@ -109,35 +109,44 @@
 
 <?php ELSE: ?>
 
-      <DIV class="REQUADRE">
-        <DIV class="TITOL">Llistat de material</DIV>
-      	<TABLE class="DADES">
+      <div class="REQUADRE">
+        <div class="TITOL">Llistat de material</div>
+      	<table class="DADES">
  			<?php 
 				if( empty( $MATERIALS ) ):
 					echo '<tr><td class="LINIA" colspan="3">No s\'ha trobat material disponible.</td></tr>';
 				else: 
 					$i = 0;
-                    echo "<tr><td class=\"titol\">Id</td><td class=\"titol\">Nom</td><td class=\"titol\">Unit.</td></tr>";                                                                    
+                    echo "<tr>
+                            <td class=\"titol\">Id</td>
+                            <td class=\"titol\">Nom</td>
+                            <td class=\"titol\">Unit.</td>
+                            <td class=\"titol\">Accions</td>                            
+                        </tr>";                                                                    
 					foreach($MATERIALS->getResults() as $M):
                       	$PAR = ParImpar($i++);
                         $extres = (!$M->getDisponible())?'style="text-decoration: line-through;"':"";                        
                       	echo "<tr>                            
                       			<td class=\"$PAR\" $extres>".link_to($M->getIdentificador(), 'gestio/gMaterial'.getParam('E',$M->getIdmaterial(),$TIPUS,$PAGINA))."</td>
                       			<td class=\"$PAR\" $extres>{$M->getNom()}</td>
-                                <td class=\"$PAR\" $extres>{$M->getUnitats()}</td>                      			
+                                <td class=\"$PAR\" $extres>{$M->getUnitats()}</td>
+                                <td class=\"$PAR\" $extres>".
+                                    link_to(image_tag('template/book_open.png').'<span>Imprimeix el full d\'alta</span>','gestio/gMaterial?accio=PRINT_ALTA&IDM='.$M->getIdmaterial(),array('class'=>'tt2')).' '.
+                                    link_to(image_tag('template/book_next.png').'<span>Imprimeix el full de baixa</span>','gestio/gMaterial?accio=PRINT_BAIXA&IDM='.$M->getIdmaterial(),array('class'=>'tt2')).' '.
+                                "</td>                                                      			
                       		  </tr>";
                     endforeach;
                  endif;                     
              ?>      
-              <TR><TD colspan="3" class="TITOL"><?php echo gestorPagines($TIPUS , $MATERIALS);?></TD></TR>    	
-      	</TABLE>      
-      </DIV>
+              <tr><td colspan="4" class="TITOL"><?php echo gestorPagines($TIPUS , $MATERIALS);?></td></tr>    	
+      	</table>      
+      </div>
 
-<?php ENDIF; ?>
+<?php endif; ?>
     
-      <DIV STYLE="height:40px;"></DIV>
+      <div style="height:40px;"></div>
                 
-    </TD>    
+    </td>    
     
 
   <?php 

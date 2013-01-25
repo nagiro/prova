@@ -5,7 +5,7 @@
  *
  * @package    intranet
  * @subpackage form
- * @author     Albert Joh� i Mart�
+ * @author     Albert Johé i Martí
  * @version    SVN: $Id: sfPropelFormTemplate.php 10377 2008-07-21 07:10:32Z dwhittle $
  */
 class MaterialForm extends sfFormPropel
@@ -28,6 +28,7 @@ class MaterialForm extends sfFormPropel
       'idMaterial'                        => new sfWidgetFormInputHidden(),
       'MaterialGeneric_idMaterialGeneric' => new sfWidgetFormChoice($OPTIONS),
       'Identificador'                     => new sfWidgetFormInputText(),
+      'Identificador_comptable'           => new sfWidgetFormInputText(),
       'Nom'                               => new sfWidgetFormInputText(),
 	  'Ubicacio'                          => new sfWidgetFormInputText(),
       'Responsable'                       => new sfWidgetFormChoice(array('choices'=>UsuarisPeer::selectTreballadors($this->getOption('IDS')))),
@@ -41,7 +42,10 @@ class MaterialForm extends sfFormPropel
       'DataCessio'                        => new sfWidgetFormInputHidden(),
       'DataRetorn'                        => new sfWidgetFormInputHidden(),
       'NumFactura'                        => new sfWidgetFormInputText(),
+      'Proveidor'                         => new sfWidgetFormInputText(),
       'Preu'                              => new sfWidgetFormInputText(),
+      'Amortitzacio'                      => new sfWidgetFormInputText(),
+      'Vida_util'                         => new sfWidgetFormInputText(),
       'DataBaixa'                         => new sfWidgetFormJQueryDate(array('format'=>'%day%/%month%/%year%'),array()),
       'DataReparacio'                     => new sfWidgetFormInputHidden(),
       'AltaRegistre'                      => new sfWidgetFormInputHidden(),
@@ -63,6 +67,7 @@ class MaterialForm extends sfFormPropel
       'Ubicacio'                          => new sfValidatorString(array('required' => false)),
       'DataCompra'                        => new sfValidatorDate(array('required' => false)),
       'Identificador'                     => new sfValidatorString(array('required' => false)),
+      'Identificador_comptable'           => new sfValidatorString(array('required' => false)),
       'NumSerie'                          => new sfValidatorString(array('required' => false)),
       'DataGarantia'                      => new sfValidatorDate(array('required' => false)),
       'DataRevisio'                       => new sfValidatorDate(array('required' => false)),
@@ -70,7 +75,10 @@ class MaterialForm extends sfFormPropel
       'DataCessio'                        => new sfValidatorDate(array('required' => false)),
       'DataRetorn'                        => new sfValidatorDate(array('required' => false)),
       'NumFactura'                        => new sfValidatorString(array('required' => false)),
+      'Proveidor'                         => new sfValidatorString(array('required'=>false)),
       'Preu'                              => new sfValidatorNumber(array('required' => false)),
+      'Amortitzacio'                      => new sfValidatorNumber(array('required' => false)),
+      'Vida_util'                         => new sfValidatorNumber(array('required' => false)),
       'NotesManteniment'                  => new sfValidatorString(array('required' => false)),
       'DataBaixa'                         => new sfValidatorDate(array('required' => false)),
       'DataReparacio'                     => new sfValidatorDate(array('required' => false)),
@@ -86,6 +94,7 @@ class MaterialForm extends sfFormPropel
     $this->widgetSchema->setLabels(array(
       'MaterialGeneric_idMaterialGeneric' => 'Grup: ',            
       'Identificador'                     => 'Identificador: ',
+      'Identificador_comptable'           => 'Id. comptable: ',
       'Nom'                               => 'Nom: ',
 	  'Ubicacio'                          => 'Ubicació: ',
       'Responsable'                       => 'Responsable: ',
@@ -96,7 +105,10 @@ class MaterialForm extends sfFormPropel
       'DataGarantia'                      => 'Fi garantia: ',
       'DataRevisio'                       => 'Propera revisió: ',      
       'NumFactura'                        => 'Núm. factura: ',
+      'Proveidor'                         => 'Proveïdor: ',
       'Preu'                              => 'Preu: ',
+      'Amortitzacio'                      => 'Amort. (%): ',
+      'Vida_util'                         => 'Vida útil (anys): ',
       'DataBaixa'                         => 'Baixa: ',      
       'NotesManteniment'                  => 'Notes: ',
       'isTransferible'					  => 'Es pot moure?',

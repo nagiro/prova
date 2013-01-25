@@ -2507,6 +2507,107 @@ class gestioActions extends sfActions
                 $OMG->save();
                 return $this->renderText('Tot ok. ');                
             break;         	 
+        case 'PRINT_ALTA':
+        
+                    $doc = new sfTinyDoc();
+                    
+                    $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullInventariAlta'.$this->IDS.'.docx';
+                    $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullInventariAlta1.docx';
+                    if(file_exists($url_prop)) $doc->createFrom($url_prop);
+                    else $doc->createFrom($url_gen);
+                                                          
+                    //Carreguem l'article que volem imprimir.
+                    $idM = $request->getParameter('IDM');
+                    $OM = MaterialPeer::retrieveByPK($idM);
+                    if($OM instanceof Material):
+                    
+                        $OU = UsuarisPeer::retrieveByPK($OM->getResponsable());
+                    
+                        $doc->loadXml('word/document.xml');
+                        
+                        $doc->mergeXmlField( 'grup'                     ,   $OM->getMaterialgeneric()->getNom()   );
+                        $doc->mergeXmlField( 'identificador'            ,   $OM->getIdentificador()               );
+                        $doc->mergeXmlField( 'identificador_comptable'  ,   $OM->getIdentificadorcomptable() );
+                        $doc->mergeXmlField( 'nom'                      ,   $OM->getNom() );
+                        $doc->mergeXmlField( 'ubicacio'                 ,   $OM->getUbicacio() );
+                        $doc->mergeXmlField('responsable'               ,   $OU->getNomComplet() );
+                        $doc->mergeXmlField('descripcio'                ,   $OM->getDescripcio());
+                        $doc->mergeXmlField('num_serie'                 ,   $OM->getNumserie());
+                        $doc->mergeXmlField('data_compra'               ,   $OM->getDatacompra('d/m/Y'));
+                        $doc->mergeXmlField('data_garantia'             ,   $OM->getDatagarantia('d/m/Y'));
+                        $doc->mergeXmlField('data_revisio'              ,   $OM->getDatarevisio('d/m/Y'));
+                        $doc->mergeXmlField('num_factura'               ,   $OM->getNumfactura());
+                        $doc->mergeXmlField('proveidor'                 ,   $OM->getProveidor());
+                        $doc->mergeXmlField('preu'                      ,   $OM->getPreu());
+                        $doc->mergeXmlField('amortitzacio'              ,   $OM->getAmortitzacio());
+                        $doc->mergeXmlField('vida_util'                 ,   $OM->getVidautil());
+                        $doc->mergeXmlField('notes'                     ,   $OM->getNotesmanteniment());
+                        
+        				$doc->saveXml();
+        				$doc->close();
+        				$doc->sendResponse();
+        				$doc->remove();
+        				
+        				throw new sfStopException;
+                    
+                    else: 
+                    
+                        echo "No he pogut trobar l'element a l'inventari. Torna a provar-ho! ";
+                                        
+                    endif;
+        
+            break;
+            
+        case 'PRINT_BAIXA':
+        
+            $doc = new sfTinyDoc();
+                    
+                    $url_prop = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullInventariBaixa'.$this->IDS.'.docx';
+                    $url_gen = OptionsPeer::getString('SF_WEBSYSROOT',$this->IDS).'documents/FullInventariBaixa1.docx';
+                    if(file_exists($url_prop)) $doc->createFrom($url_prop);
+                    else $doc->createFrom($url_gen);
+                                                          
+                    //Carreguem l'article que volem imprimir.
+                    $idM = $request->getParameter('IDM');
+                    $OM = MaterialPeer::retrieveByPK($idM);
+                    if($OM instanceof Material):
+                    
+                        $OU = UsuarisPeer::retrieveByPK($OM->getResponsable());
+                        
+                        $diferencia_segons = $OM->getDatabaixa('U') - $OM->getDatacompra('U');
+                        $dies = $diferencia_segons / (60 * 60 * 24);                        
+                        $dism_diaria = floatval($OM->getAmortitzacio())/(365*100);
+                        $total_amortitzat = intval($OM->getPreu() * ( $dies * $dism_diaria ));                                                                        
+                    
+                        $doc->loadXml('word/document.xml');
+                        
+                        $doc->mergeXmlField( 'grup'                     ,   $OM->getMaterialgeneric()->getNom()   );
+                        $doc->mergeXmlField( 'identificador'            ,   $OM->getIdentificador()               );
+                        $doc->mergeXmlField( 'identificador_comptable'  ,   $OM->getIdentificadorcomptable() );
+                        $doc->mergeXmlField( 'nom'                      ,   $OM->getNom() );
+                        $doc->mergeXmlField( 'ubicacio'                 ,   $OM->getUbicacio() );
+                        $doc->mergeXmlField('responsable'               ,   $OU->getNomComplet() );                        
+                        $doc->mergeXmlField('num_serie'                 ,   $OM->getNumserie());
+                        $doc->mergeXmlField('data_compra'               ,   $OM->getDatacompra('d/m/Y'));                                                                                                
+                        $doc->mergeXmlField('preu_inicial'              ,   $OM->getPreu());
+                        $doc->mergeXmlField('total_amortitzat'          ,   $total_amortitzat );
+                        $doc->mergeXmlField('valor_actual'              ,   $OM->getPreu() - $total_amortitzat );
+                        $doc->mergeXmlField('notes'                     ,   $OM->getNotesmanteniment());
+                        
+        				$doc->saveXml();
+        				$doc->close();
+        				$doc->sendResponse();
+        				$doc->remove();
+        				
+        				throw new sfStopException;
+                    
+                    else: 
+                    
+                        echo "No he pogut trobar l'element a l'inventari. Torna a provar-ho! ";
+                                        
+                    endif;
+        
+            break;
     }
         
     $this->MATERIALS = MaterialPeer::getMaterial($this->TIPUS, $this->PAGINA , $this->IDS );
