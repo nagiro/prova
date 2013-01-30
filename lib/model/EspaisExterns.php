@@ -20,6 +20,14 @@ require 'lib/model/om/BaseEspaisExterns.php';
  */
 class EspaisExterns extends BaseEspaisExterns {
 
+    public function __toString()
+    {
+        //Carreguem el poble i el nom.
+        $OP = PoblacionsPeer::retrieveByPK($this->getPoble());
+        if($OP instanceof Poblacions) return $this->getNom().' ('.$OP->getNom().') ';
+        else return $this->getNom();
+    }
+
     public function setInactiu()
     {
         $this->setActiu(false);

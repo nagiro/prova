@@ -4383,7 +4383,7 @@ class gestioActions extends sfActions
                     $TEXT = "<document>\n"; $i = 1;                    
                     foreach($LOH as $OH):                                 
                         $OA = $OH->getActivitats();
-                        $LE = $OH->getArrayEspais();                
+                        $LE = $OH->getArrayEspais();                                                                                                                                      
                         $TEXT .= "<caixa>\n";
                         $TEXT .= "<columna>".$i."</columna>\n";
                         $TEXT .= "<dia>".$OH->getDia('d')."</dia>\n";
@@ -4400,9 +4400,9 @@ class gestioActions extends sfActions
                         $TEXT .= "</subactivitat>\n";
                         $TEXT .= "</caixa>\n";                        
                     endforeach;
-                    $TEXT .= "</document>\n";                                                                                                                                                                                    
-                                                        
-          			$nom = OptionsPeer::getString('SF_WEBSYSROOT').'tmp/'.$this->IDS.'NEWS.txt';
+                    
+                    $TEXT .= "</document>\n";                                                                                                                                                                                                                    
+          			$nom = OptionsPeer::getString( 'SF_WEBSYSROOT' , $this->IDS ).'tmp/'.$this->IDS.'NEWS.txt';
                     fwrite( fopen( $nom , 'w' ) , $TEXT );
                     $response = sfContext::getInstance()->getResponse();
             	    $response->setContentType('text/plain');

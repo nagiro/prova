@@ -4,7 +4,7 @@
 # default rules
 homepage:
   url:   /
-  param: { module: web, action: index }
+  param: { module: w, action: index }
 
 # admin 
 
