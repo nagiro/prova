@@ -66,8 +66,8 @@
                             Les dades que ha entrat no són correctes. O el correu o la suma són incorrectes. Si té cap consulta pot trucar a la Casa de Cultura al 972.20.20.13.    
                         </div>                        
                         <!-- Enviament de l'usuari del web -->
-                        <div style="margin-top: 10px; font-size:12px; color:#534741;"><b>Política de privadesa de dades:</b> 
-                        En virtut de les lleis vigents en matèria de protecció de dades (LOPD) us informem que l'adreça electrònica serà incorporada al nostre arxiu d'usuaris. Teniu dret a sol·licitar l'accés, la modificació o la cancel·lació de les vostres dades, incloent-hi l'adreça de correu electrònic, del nostre arxiu enviant un correu a informatica@casadecultura.org o bé a la secretaria de la Casa de Cultura de Girona. 
+                        <div style="margin-top: 10px; font-size:12px; color:#534741; text-align:justify;"><b>Política de privadesa de dades:</b> 
+                        La seva adreça electrònica s’incorporarà al fitxer Mailing, creat per la Fundació Casa de Cultura per a enviar informació dels nostres serveis i activitats. Entenem que, si us apunteu a aquesta llista, ens autoritzeu a portar a terme aquest tractament. En qualsevol moment podeu modificar la vostra adreça electrònica o donar-vos de baixa de la llista enviant un correu electrònic a informatica@casadecultura.org o adreçant-vos a la secretaria de la Casa de Cultura. 
                         </div> 
                     </div>                      
                 </div>
