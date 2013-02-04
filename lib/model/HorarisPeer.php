@@ -12,6 +12,21 @@ class HorarisPeer extends BaseHorarisPeer
 
   const DESCRIPCIO_WEB = "WEB";
 
+  static public function initialize($idH , $idA = 0, $idS )
+  {
+    	$OH = HorarisPeer::retrieveByPK($idH);
+    	if(!($OH instanceof Horaris)):            			
+    		$OH = new Horaris();                        
+            $OH->setSiteId($idS);        
+            $OH->setActiu(true);                               
+    		if($idA > 0) $OH->setActivitatsActivitatid($idA);
+    		else $OH->setActivitatsActivitatid(null);    								
+    	endif; 
+                
+    return new HorarisForm( $OH , array( 'IDS' => $idS ) );
+  }
+
+
   static public function getCriteriaActiu( $C , $idS )
   {
     $C->add(self::ACTIU,true);
@@ -300,6 +315,102 @@ class HorarisPeer extends BaseHorarisPeer
                 
     	return self::doSelect($C);
     }
+
+
+  public function GuardaHorari($horaris , $EXTRES , $idS )
+  {
+  	
+  	$ERRORS = array();  	
+  	$DBDD[] = array();  	  	
+  	
+	//Comprovem que s'hagi entrat un dia
+    if( empty($horaris['Dia']) ): 
+		$ERRORS[] = "No has entrat cap data";
+		$DBDD['DIES'] = array(); 	
+	else:
+		$DIES = explode(',',$horaris['Dia']);
+		foreach($DIES as $D):  		
+  			list($dia,$mes,$any) = explode('/',$D);  		
+  	  		if(!($any > 2000 && $mes < 13 && $dia < 32 )) $ERRORS[] = "La data que has entrat és incorrecta";
+  			$DBDD['DIES'][] = "$any-$mes-$dia";  		  		
+  		endforeach;  	     		
+	endif;  	
+  	  	       
+	//Passem l'hora a format numèric per fer les comprovacions
+  	$DBDD['HoraPre']  = strval($horaris['HoraPre']['hour'])*60+strval($horaris['HoraPre']['minute']);
+  	$DBDD['HoraIn']   = strval($horaris['HoraInici']['hour'])*60+strval($horaris['HoraInici']['minute']);
+  	$DBDD['HoraFi']   = strval($horaris['HoraFi']['hour'])*60+strval($horaris['HoraFi']['minute']);
+  	$DBDD['HoraPost'] = strval($horaris['HoraPost']['hour'])*60+strval($horaris['HoraPost']['minute']);  	  	      
+    
+    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )    $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
+    if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran o igual que la d'acabament.";
+    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] && $DBDD['HoraPost'] > (8*60) )  $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                    
+    
+    //Un cop fetes les verificacions... tornem a posar els valors que guardarem
+    $DBDD['HoraPre']  = $horaris['HoraPre']['hour'].':'.$horaris['HoraPre']['minute'];
+  	$DBDD['HoraIn']   = $horaris['HoraInici']['hour'].':'.$horaris['HoraInici']['minute'];
+  	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
+  	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
+      	    
+    //Hem d'entrar algun espai ja sigui intern o extern i no podem entrar espais interns i a més externs       
+    if(  empty($EXTRES['ESPAISOUT']) && !$EXTRES['ESPAIEXTERN']->isBound() ) $ERRORS[] = "Has d'entrar algun espai intern o extern";
+    if( !empty($EXTRES['ESPAISOUT']) && $EXTRES['ESPAIEXTERN']->isBound() ) $ERRORS[] = "No pots entrar espais interns i externs a la vegada";
+
+    //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
+    foreach($DBDD['DIES'] as $D):
+
+        //Per tots els espais interns       	    
+    	foreach($EXTRES['ESPAISOUT'] as $E=>$idE):    		
+    		//Si l'usuari bloqueja un espai hem de mirar que no hi hagi cap activitat aquell dia. 
+    		if($idE == 22)
+    		{
+				$RS = HorarisPeer::getActivitatsDia( $D , $idS );
+				if(sizeof($RS) > 0) { $ERRORS[] = "El dia $D hi ha ".sizeof($RS)." activitat(s) que impedeixen el bloqueig."; }
+			}
+			else
+			{			     
+	    		//Mirem si encaixa amb alguna altra activitat solta
+                $LOH = HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] , $idS );
+		    	if(sizeof($LOH) > 0)
+		    	{
+		    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
+                    foreach($LOH as $OH):                    
+                        $OA = $OH->getActivitatss();
+                        $nomActivitat = $OA->getNom();                        
+			    	    $ERRORS[] = "El dia $D coincideix a l'espai $Espai amb l'activitat '".$nomActivitat."'";
+                    endforeach;
+		    	}
+			    //Comprovem que no hi hagi un problema amb un dia bloquejat
+			    elseif( HorarisPeer::validaDiaBloqueig( $D , $horaris['HorarisID'] , $this->IDS ) )
+			    {			    		
+		    			$ERRORS[] = "El dia $D hi ha una activitat que bloqueja tots els espais!";		    					    			    		 
+			    }                	    			    	                                 
+    		}    	            
+    	endforeach;
+
+        //Comprovem l'ocupació del material                        
+        foreach($EXTRES['MATERIALOUT'] as $M=>$idM):
+            
+            if(!MaterialPeer::isLliure( $idM['material'] , $this->IDS , $D , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'])):
+                $OM = MaterialPeer::retrieveByPK($idM['material']);
+                if($OM instanceof Material) $nom = $OM->toString(); else $nom = "n/d";
+                $ERRORS[] = "El material ".$nom." està ocupat el dia ".$D;
+            endif;
+            
+        endforeach;
+        	    	
+    endforeach;
+       
+    //Si no hem trobat cap error, guardem els registres d'ocupació.    
+    if(empty($ERRORS)):
+
+ 		HorarisPeer::save( $horaris , $DBDD , $EXTRES , $idS );
+       
+    endif;
+  
+    return $ERRORS;
+     
+  }
     
       
 }

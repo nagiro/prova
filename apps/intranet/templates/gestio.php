@@ -7,7 +7,6 @@
   <?php $BASE = OptionsPeer::getString('SF_WEBROOT',1); ?>
       
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/gestio.css'; ?>" />
-  <!-- <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/smoothness/jquery-ui-1.7.2.custom.css'; ?>" /> -->
   <link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/smoothness/jquery-ui.css" />
   
   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $BASE.'css/jquery-datepick/jquery.datepick.css'; ?>" />
@@ -18,18 +17,15 @@
   <!--[if lte IE 7]>
     <link type="text/css" rel="stylesheet" media="all" href="css/screen_ie.css" />
   <![endif]-->
-
-  <!-- <script type="text/javascript" src="<?php echo $BASE.'js/jquery-1.4.2.min.js'; ?>"></script> -->    
+      
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
   
   
-  <script type="text/javascript" src="<?php echo $BASE.'js/tiny_mce/tiny_mce.js'; ?>"></script>            
-<!--  <script type="text/javascript" src="<?php echo $BASE.'js/jquery-ui/js/jquery-ui-1.7.2.custom.min.js'; ?>"></script> -->  
+  <script type="text/javascript" src="<?php echo $BASE.'js/tiny_mce/tiny_mce.js'; ?>"></script>              
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.datepick.package-3.7.1/jquery.datepick-ca.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery.cookie.js'; ?>"></script>
-<!--  <script type="text/javascript" src="<?php echo $BASE.'js/jquery.autocompleter.js'; ?>"></script> -->
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/jquery.validate.min.js'; ?>"></script>
   <script type="text/javascript" src="<?php echo $BASE.'js/jquery-validate/localization/messages_es.js'; ?>"></script>  
     

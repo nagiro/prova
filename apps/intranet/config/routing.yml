@@ -78,6 +78,10 @@ web_menu_click_curs:
   url: /cursos/:idCategoria/:idCurs/:titol
   param: { module: w, action: index, accio: menu_click_cursos }
 
+web_biennal:
+  url: /biennal
+  param: { module: w, action: index, accio: menu_click_activitats, idCicle: 212, idActivitat: 9526, titol: biennal-d-art}
+
 # WEB CONTINGUTS
 
 web_contingut_auto:

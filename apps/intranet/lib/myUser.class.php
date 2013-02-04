@@ -4,18 +4,30 @@ class myUser extends sfBasicSecurityUser
 {
 
       
-  static public function getDiaText($data){
+  static public function getDiaText( $data , $dim = false ){
     list($year,$month,$day) = explode('-',$data);
     $data = mktime(0,0,0,$month,$day,$year);
-    switch(date('N',$data)){
-        case 1: return 'Dilluns';
-        case 2: return 'Dimarts';
-        case 3: return 'Dimecres';
-        case 4: return 'Dijous';
-        case 5: return 'Divendres';
-        case 6: return 'Dissabte';
-        case 7: return 'Diumenge';
-    }    
+    if($dim):
+        switch(date('N',$data)){
+            case 1: return 'Dl';
+            case 2: return 'Dm';
+            case 3: return 'Dc';
+            case 4: return 'Dj';
+            case 5: return 'Dv';
+            case 6: return 'Ds';
+            case 7: return 'Dg';
+        }    
+    else: 
+        switch(date('N',$data)){
+            case 1: return 'Dilluns';
+            case 2: return 'Dimarts';
+            case 3: return 'Dimecres';
+            case 4: return 'Dijous';
+            case 5: return 'Divendres';
+            case 6: return 'Dissabte';
+            case 7: return 'Diumenge';
+        }        
+    endif; 
   }
 
   public function Paginacio($pager,$url){

@@ -51,57 +51,58 @@ foreach ( glob( $dir.$NOM_ARXIU."*" ) as $K => $arxiu ) {
 
 <div style="clear: both; padding-top:20px;">
 
-<div style="float:left;" id="B1">
-
-    <?php if( !$mini ): ?>
-        <script>genUpload( "B1" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-M' ?>" , "FOTO MINI" );</script>
-    <?php else: ?>                                                
-        <img width="100px" src="<?php echo $DIRECTORI_WEB . $mini ?>" />
-        <br /><a id="DEL_B1" href="#" >Esborra-la</a>
-        <script>genDelete( '#DEL_B1' , '#B1' , '<?php echo $DIRECTORI_WEB.$mini ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-M' ?>' , 'FOTO MINI' );</script>
-    <?php endif; ?>
-                      
-</div>                                      
-
-<div style="float:left; margin-left:20px;" id="B2">
-
-    <?php if( !$normal ): ?>
-        <script> genUpload( "B2" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-L' ?>" , "FOTO NORMAL" ); </script>
-    <?php else: ?>                                                
-        <img width="100px" src="<?php echo $DIRECTORI_WEB.$normal ?> " />
-        <br /><a id="DEL_B2" href="#" >Esborra-la</a>
-        <script>genDelete( '#DEL_B2' , '#B2' , '<?php echo $DIRECTORI_WEB.$normal ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-L' ?>' , 'FOTO NORMAL' );</script>        
-    <?php endif; ?>
-                            
-</div>
-
-
-<div style="float:left; margin-left:20px;" id="B3">
-
-    <?php if( !$big ): ?>
+    <div style="float:left;" id="B1">
     
-        <script>genUpload( "B3" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-XL' ?>" , "FOTO GRAN" );</script>
+        <?php if( !$mini ): ?>
+            <script>genUpload( "B1" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-M' ?>" , "FOTO MINI" );</script>
+        <?php else: ?>                                                
+            <img width="100px" src="<?php echo $DIRECTORI_WEB . $mini ?>" />
+            <br /><a id="DEL_B1" href="#" >Esborra-la</a>
+            <script>genDelete( '#DEL_B1' , '#B1' , '<?php echo $DIRECTORI_WEB.$mini ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-M' ?>' , 'FOTO MINI' );</script>
+        <?php endif; ?>
+                          
+    </div>                                      
+
+    <div style="float:left; margin-left:20px;" id="B2">
+    
+        <?php if( !$normal ): ?>
+            <script> genUpload( "B2" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-L' ?>" , "FOTO NORMAL" ); </script>
+        <?php else: ?>                                                
+            <img width="100px" src="<?php echo $DIRECTORI_WEB.$normal ?> " />
+            <br /><a id="DEL_B2" href="#" >Esborra-la</a>
+            <script>genDelete( '#DEL_B2' , '#B2' , '<?php echo $DIRECTORI_WEB.$normal ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-L' ?>' , 'FOTO NORMAL' );</script>        
+        <?php endif; ?>
+                                
+    </div>
+
+
+    <div style="float:left; margin-left:20px;" id="B3">
+    
+        <?php if( !$big ): ?>
         
-    <?php else: ?>
-                                                    
-        <img width="100px" src="<?php echo $DIRECTORI_WEB.$big ?>" />
-        <br /><a id="DEL_B3" href="#" >Esborra-la</a>
-        <script>genDelete( '#DEL_B3' , '#B3' , '<?php echo $DIRECTORI_WEB.$big ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-XL' ?>' , 'FOTO GRAN' );</script>
-                                    
-    <?php endif; ?>                        
-
-</div>
+            <script>genUpload( "B3" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-XL' ?>" , "FOTO GRAN" );</script>
+            
+        <?php else: ?>
+                                                        
+            <img width="100px" src="<?php echo $DIRECTORI_WEB.$big ?>" />
+            <br /><a id="DEL_B3" href="#" >Esborra-la</a>
+            <script>genDelete( '#DEL_B3' , '#B3' , '<?php echo $DIRECTORI_WEB.$big ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-XL' ?>' , 'FOTO GRAN' );</script>
+                                        
+        <?php endif; ?>                        
+    
+    </div>
                                         
 
-<div style="float:left; margin-left:20px;" id="B4">
-
-    <?php if( !$pdf ): ?>
-        <script>genUpload( "B4" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-PDF' ?>" , "PDF" );</script>
-    <?php else: ?>                                                
-        <a href="<?php echo $DIRECTORI_WEB.$pdf ?>" >Baixa't el pdf</a>
-        <br /><a id="DEL_B4" href="#" >Esborra'l</a>
-        <script>genDelete( '#DEL_B4' , '#B4' , '<?php echo $DIRECTORI_WEB.$pdf ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-PDF' ?>' , 'PDF' );</script>        
-    <?php endif; ?>      
-
-</div>
-                                        
+    <div style="float:left; margin-left:20px;" id="B4">
+    
+        <?php if( !$pdf ): ?>
+            <script>genUpload( "B4" , "<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-PDF' ?>" , "PDF" );</script>
+        <?php else: ?>                                                
+            <a href="<?php echo $DIRECTORI_WEB.$pdf ?>" >Baixa't el pdf</a>
+            <br /><a id="DEL_B4" href="#" >Esborra'l</a>
+            <script>genDelete( '#DEL_B4' , '#B4' , '<?php echo $DIRECTORI_WEB.$pdf ?>' , '<?php echo $DIRECTORI_WEB . $NOM_ARXIU . '-PDF' ?>' , 'PDF' );</script>        
+        <?php endif; ?>      
+    
+    </div>
+               
+</div>                         

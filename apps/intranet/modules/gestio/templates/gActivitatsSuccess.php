@@ -12,140 +12,168 @@
 	#TD1 td { border: 0px solid #DB9296; padding:0px 2px; font-size:10px; }
 	#TD1 { border-collapse:collapse; }
 	.LIST2 { padding:10px;  } 
-    #formulari_lloc_extern { background-color:#FCD1A7; }
+    #formulari_lloc_extern { background-color:#FCD1A7; display:none; }
+    .ui-datepicker { z-index: 9999 !important; }
+    a { cursor: pointer; }
 		
 </style>
 
 
 	<script type="text/javascript">
 
-    var hora;
-
-	 $(document).ready(function() {	
-		 $("#id").val(1);														//Inicialitzem el valor identificador de nou camp a 1								
-		 $("#mesmaterial").click( function() { creaFormMaterial(); });			//Marquem que a cada click es farà un nou formulari
-		 $("#mesespais").click( function () { creaFormEspais(); });
-                                                                                                      
-         $('#activitats_form_new').validate({            
-                rules:{
-                    "activitats[Preu]": { number: true },
-                    "activitats[PreuReduit]": { number: true }
-                }                                                             
-         });                            
-		 
-		 $("#activitats_cicle").change(function (){ Cicle(this.value); });
-		 
-		 $("#activitats_nom").fadeOut(0);						 
-		 $("label[for=activitats_nom]").fadeOut(0);
-
+    var hora;    
+    
+    //----------------------------- FUNCIONS DE CARREGA D'HORARIS ------------------------------
+    $(document).ready(function() {
+        
+        //Al llistat d'activitats podem canviar d'un mode a l'altre.
         $("#ORDENA_HORARIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").show(); $("#LLISTAT_ORDENAT_ESPAIS").hide(); });
         $("#ORDENA_ESPAIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").hide(); $("#LLISTAT_ORDENAT_ESPAIS").show(); });
-
-                 
-        //Si l'espai que tenim és un espai extern ho mostrem directament.
-        <?php if(isset($EXTRES['ESPAIEXTERN']) && $EXTRES['ESPAIEXTERN']->getObject()->getPoble() <= 0){ ?>                                
-        $("#formulari_lloc_extern").hide(0);
-        $('#a_lloc_extern').click(function(){ 
-            $('#div_lloc_extern').hide(); 
-            $('#formulari_lloc_extern').fadeIn(1000); 
-        });
-        <?php } else { ?>
-            $('#div_lloc_extern').hide(); 
-            $('#formulari_lloc_extern').fadeIn(1000);              
-        <?php } ?>                         
-                                            
-	 });
         
+        //Afegim els layouts als botons                
+        $( "#B-GUARDA-ACTIVITAT" ).button({ icons: { primary: 'ui-icon-disk' } , label: "Guarda l'activitat"});
+        $( "#B-ESBORRA-ACTIVITAT" ).button({ icons: { primary: 'ui-icon-trash' } , label: "Esborra l'activitat"});
+        
+        $( "#H-0" ).button({ icons: { primary: 'ui-icon-circle-plus' } , label: "Afegir un nou horari a l'activitat"});         
+        
+        $( "#B-GUARDA-DESCRIPCIO" ).button({ icons: { primary: 'ui-icon-disk' } , label: "Guarda la descripció"});
+        $( "#FORMULARI_DESCRIPCIO" ).submit(function(){ EnviaFormulariDescripcio(); return false; });                        
+
+        //A l'edició d'una activitat mostrem els tabs
+        <?php if( isset($OA) && ! $OA->isNew()): ?>
+            $( "#tabs_cicles" ).tabs({ cache: true , select: function(event, ui) { window.location.replace(ui.tab.hash); } });
+            LoadIfActivitatExisteix(<?php echo $OA->getActivitatid(); ?>);            
+        <?php else: ?>        
+            $( "#tabs_cicles" ).tabs({ cache: true, disabled: [1, 2, 3, 4, 5] });
+        <?php endif; ?>
+                         
+    });
+    
+    function LoadIfActivitatExisteix(idActivitat)
+    {
+
+        //Quan fem click a un horari, entrem a aquesta funció. 
+        $("[id^='H-']").click(function(){ 
+            
+            //Capturem el codi d'horari
+            var a = $(this).attr('id').split('-');
+            
+            //Carreguem el formulari que toca al div i després ho mostrem amb el dialog. 
+            LoadHorari(a[1] , idActivitat );
+            
+            //Mostrem el diàleg
+            $( "#FORMULARI_HORARI" ).dialog( "open" );
+             
+        });                        
+        
+                
+         $( "#FORMULARI_HORARI" ).dialog({
+            autoOpen: false,
+            height: 600,
+            width: 700,
+            modal: true,
+            buttons: {
+            "Guarda": function() {
+                //Hem d'enviar el post per formulari i esperar resposta. Si ok, passem sinó mostrem l'error.  
+                $.post( 
+                    '<?php echo url_for('gestio/gActivitats?accio=HORARI_SAVE'); ?>', 
+                    { FORMULARI: $("#FORM_HORARI").serialize() } , 
+                    function(data){ 
+                        if(data != "") {
+                            alert(data); 
+                            return false; 
+                        //Tot ha anat bé, i tanquem el formulari
+                        } else {                                                   
+                            $("#FORM_HORARI").html("");                            
+                            window.location.reload();
+                            return true; 
+                        }
+                    }
+                );                                
+            },                                                
+            "Esborra": function() {
+                //Enviem el formulari i ho esborrem.   
+                $.post( 
+                    '<?php echo url_for('gestio/gActivitats?accio=HORARI_DELETE'); ?>', 
+                    { FORMULARI: $("#FORM_HORARI").serialize() } , 
+                    function(data){ 
+                        if(data != "") {
+                            alert(data); 
+                            return false; 
+                        //Tot ha anat bé, i tanquem el formulari
+                        } else {
+                            $("#FORM_HORARI").html("");                            
+                            window.location.reload();
+                            return true; 
+                        }
+                    }
+                );                
+            },
+            
+            },            
+            close: function() {
+                $("#FORM_HORARI").html("");
+                $( "#FORMULARI_HORARI" ).dialog( "close" );
+            }         
+        });                        
+    }        
+    
+    function LoadHorari( idHorari , idActivitat ){        
+        $.post(
+            '<?php echo url_for('gestio/gActivitats?accio=HORARI') ?>',  
+            { idH: idHorari , idA: idActivitat } , 
+            function(data) { $( "#FORMULARI_HORARI" ).html(data); }
+        );
+    }
+    
+    function EnviaFormulariDescripcio(){
+
+        $.post( 
+            '<?php echo url_for('gestio/gActivitats?accio=DESCRIPCIO_SAVE'); ?>', 
+            { FORMULARI: $("#FORMULARI_DESCRIPCIO").serialize() } , 
+            function(data){ 
+                if(data != "") {
+                    alert(data); 
+                    return false; 
+                //Tot ha anat bé, i tanquem el formulari
+                } else {                                                                                                   
+                    //window.location.reload();
+                    alert('Descripció guardada correctament.');
+                    return false; 
+                }
+            }
+        );                
+    }
+    
+    
+    //----------------------------- FUNCIONS DE CARREGA D'HORARIS ------------------------------
 
 	function jq(myid)
 	  { return '#'+myid.replace(/:/g,"\\:").replace(/\./g,"\\.");}
 	
-
-	function Cicle(val)
-	{	
-		if(val == 1){
-			$("#activitats_nom").fadeOut(1000);						 
-			$("label[for=activitats_nom]").fadeOut(1000);
-		} else {
-			$("#activitats_nom").fadeIn(1000);
-			$("label[for=activitats_nom]").fadeIn(1000); 
-		}
-	}
-
-    //Funció que captura de quin genèric parlem i busca els disponibles. 
-	function ajax(d, iCtrl)
-	{
-												
-        $.get(
-                '<?php echo url_for('gestio/AjaxSelectMaterial') ?>',  
-                { dies: $('#multi999Datepicker').val() , 
-                  horapre: $('#horaris_HoraPre_hour').val()+':'+$('#horaris_HoraPre_minute').val() ,
-                  horapost: $('#horaris_HoraPost_hour').val()+':'+$('#horaris_HoraPost_minute').val(),
-                  generic: d.value 
-                } , 
-                function(data) { $("select#material\\["+iCtrl+"\\]").html(data); }
-            );                                                
-                                                
-    }
-    
-    //Generem el desplegable de material genèric
-	function creaFormMaterial()
-	{
-		
-		var id = $("#idV").val();        		
-		id = (parseInt(id) + parseInt(1));
-		$("#idV").val(id);				                        
-        				
-        var options = '<?php echo MaterialgenericPeer::selectAjax($IDS) ?>';        
-		$("#divTxt").append(
-                        '<span id="row['+id+']">'+
-                        '<select onChange="ajax(this,'+id+')" name="generic[' + id + ']"> id="generic[' + id + ']">' + options + '</select>'+
-                        '<select name="material[' + id + ']" id="material[' + id + ']"></select>' +
-                        '<input type="button" style="width:30px;" onClick="esborraLinia('+id+');" id="mesmaterial" value="-"></input><br /></span>');
-		ajax($("generic\\["+id+"\\]"),id);  //Carreguem el primer																	
-	}
-
-    //Generem el desplegable dels espais
-	function creaFormEspais()
-	{
-				
-		var id = $("#idE").val();
-		id = (parseInt(id) + parseInt(1));
-		$("#idE").val(id);
-		
-		var options = '<?php echo EspaisPeer::selectJavascript($IDS); ?>';
-		$("#divTxtE").append(
-            '<span id="rowE['+id+']">' +
-            '<select name="espais['+id+']" id="espais['+id+']">'+ options +'</select>'+
-            ' <input type="button" style="width:30px;" onClick="esborraLiniaE('+id+');" id="mesespais" value="-"></input>' + 
-            '<br /></span>');
-
-	}
-	
-	function esborraLinia(id) { $("#row\\["+id+"\\]").remove(); }
-	function esborraLiniaE(id) { $("#rowE\\["+id+"\\]").remove(); }
-	
+       
 	</script>
   
 <td colspan="3" class="CONTINGUT_ADMIN">	
 
 
-	<?php 
-    
+	<?php         
+        
         include_partial('breadcumb',array('text'=>'ACTIVITATS'));
+        if(isset($MISSATGE)){ echo "<h1>".$MISSATGE."</h1>"; }        
         if(!isset($MISSATGE)) $MISSATGE = null;
         
         if(isset($MODE['ERROR_GREU'])){ formErrorGreu($MISSATGE); }
     
         if ( isset($MODE['CONSULTA']) || isset($MODE['LLISTAT']) ) formConsulta($FCerca,$DATAI,$CALENDARI);
         
-        if( (isset($MODE['ACTIVITAT_CICLE']) || isset($MODE['ACTIVITAT_ALONE'])) ){            
+        if( (isset($MODE['ACTIVITAT_CICLE']) ) ){            
             if( isset($FActivitat) && isset($MODE['ACTIVITAT_EDIT']) ){ formEditaActivitat($IDA,$FActivitat); }
             if( isset($FHorari)) { formEditaHoraris($IDA,$FHorari,$MISSATGE,$EXTRES,$IDS);  }
             if( isset($MODE['HORARI']) ){ formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS,$FHorari);  }            
             if( isset($MODE['DESCRIPCIO']) ) { formEditaDescripcio($IDA,$FActivitat); }
             if( isset($MODE['PREUS']) ){ formLlistaPreus( $OA , $FPREUS );  }
-            formLlistaActivitatsEdicio($CICLE,$ACTIVITATS,$IDS);                    
+            formLlistaActivitatsEdicio($OA, $OC, $L_OA_REL, $FA , $IDS);                    
         }
         
         if( isset($MODE['LLISTAT']) && isset($ACTIVITATS) ) { formLlistaActivitats($ACTIVITATS,$PAGINA,$IDS);  }
@@ -177,7 +205,7 @@
      </form>
 
     <div class="REQUADRE">
-    <div class="TITOL">Calendari d'activitats<SPAN id="MESOS"> <?php echo getSelData($DATAI); ?></SPAN></div>
+    <div class="TITOL">Calendari d'activitats<span id="MESOS"> <?php echo getSelData($DATAI); ?></span></div>
     	<table id="CALENDARI_ACTIVITATS">          
             <?php                 
               
@@ -189,239 +217,132 @@
                   
 <?php } ?>
 	  
-
-<?php function formEditaActivitat($IDA,$FActivitat){ ?>
-	    
-    <form id="activitats_form_new" action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
-     		
-     	<div class="REQUADRE fb">	 	
-    	 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&form=0&IDA='.$IDA)) ?>
-    	 	
-    		<div class="titol">Descripció de l'activitat</div>
-    			
-     		<div style="padding-top:10px;" class="FORMULARI fb">
-     		
-     			<?php echo $FActivitat ?>
-     			<div style="text-align:right; padding-top:40px;">
-        			<button type="submit" name="BACTIVITATSAVE" class="BOTO_ACTIVITAT">
-        				<?php echo image_tag('template/disk.png').' Guarda ' ?>
-        			</button>
-        			<button type="submit" name="BACTIVITATDELETE" class="BOTO_PERILL" onClick="return confirm('Segur que vols esborrar-ho? No ho podràs recuperar! ')">
-        				<?php echo image_tag('tango/16x16/status/user-trash-full.png').' Eliminar' ?>
-        			</button>	 				 				 				 				 				 				 			
-     			</div>	
-     		</div>
-     			 	 	
-    	</div>
-    	     
-    </form>         
-     
-<?php } ?>
-
-<?php function formLlistaActivitatsEdicio($CICLE,$ACTIVITATS,$IDS){ ?>
+      
+<?php function formLlistaActivitatsEdicio( $OA , $OC , $L_OA_REL , $FA , $IDS ){ ?>
 	    
     <div class="REQUADRE fb">
-	<?php echo include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')) ?>		
-	<div class="titol">Editant les activitats ( <?php echo $CICLE ?> )</div>
+	<?php echo include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=C')); ?>		
+	<div class="titol">Editant les activitats ( <?php echo ($OC instanceof Cicles)?$OC->getNom():"No pertany a cap cicle"; ?> )</div>
 		
-		<div class="TITOL">Activitats actuals <?php IF( isset($MODE['ACTIVITAT_CICLE']) ): ?> ( <?php echo link_to('Nova activitat','gestio/gActivitats?accio=ACTIVITAT&IDC='.$IDC,array('class'=>'blau')) ?> )<?php ENDIF; ?></div>
-      	<table class="DADES">
- 			<?php if( sizeof($ACTIVITATS) == 0 ): echo '<TR><TD class="LINIA">No hi ha cap activitat definida.</TD></TR>'; endif; ?>  
-			<?php 	foreach($ACTIVITATS as $A):
-						$NH = ($A->countHorarisActius($IDS) == 0)?'Afegeix l\'horari':'Inf. pràctica';
-						$DESC = ($A->getDMig()=="")?'Afegeix descripció':'Edita descripció';
-                        $PrimerDia = $A->getPrimeraData();
-						echo '<TR>
-								<TD class="" width="">'.link_to($A->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A->getActivitatid()).' ('.$PrimerDia.')</TD>
-                                <TD class="" width="100px">
-                                    <ul>
-                                        <li>'.link_to('Preus','gestio/gActivitats?accio=PREUS&IDA='.$A->getActivitatid()).'</li>
-                                        <li>'.link_to($NH,'gestio/gActivitats?accio=HORARI&IDA='.$A->getActivitatid()).'</li>
-                                        <li>'.link_to($DESC,'gestio/gActivitats?accio=DESCRIPCIO&IDA='.$A->getActivitatid()).'</li>
-                                    </ul>
-                                </TD>                                								 
-							  </TR>';
-					endforeach;				
-			?>			                   	
-    	</table>
-    	<!-- 
-    	<table class="DADES">
-    	  <tr>
-    	    <td class="dreta">	            			            		
-    			<?php // echo link_to('<input type="button" value="Finalitza i tanca" class="BOTO_ACTIVITAT" >','gestio/gActivitats?accio=C'); ?>    				            
-	        </td>
-	      </tr>     
-    	</table>
-    	 -->     
+        
+        <div id="tabs_cicles">
+            <ul>
+            <li><a href="#tabs-1">Dades generals</a></li>
+            <li><a href="#tabs-2">Horaris</a></li>
+            <li><a href="#tabs-3">Descripció</a></li>
+            <li><a href="#tabs-4">Preus</a></li>
+            <li><a href="#tabs-5">Altres activitats del cicle</a></li>
+            </ul>
+            
+            
+            <!-- COMENÇA ACTIVITAT -->
+            
+            <div id="tabs-1">
+                    			
+         		<div style="padding-top:10px;" class="FORMULARI fb">
+         		
+                    <form action="<?php echo url_for('gestio/gActivitats?accio=ACTIVITAT_SAVE') ?>" method="POST">
+             			<?php echo $FA; ?>
+             			<div style="text-align:right; padding-top:40px;">
+                			<button id="B-GUARDA-ACTIVITAT" name="B-GUARDA-ACTIVITAT" type="submit"></button>
+                			<button id="B-ESBORRA-ACTIVITAT" name="B-ESBORRA-ACTIVITAT" type="submit"></button>
+             			</div>
+                    </form>	
+         		</div>
+                <div style="clear: both;">&nbsp;</div>
+                
+            </div>
+            
+            <!-- FI ACTIVITAT -->
+            <!-- COMENÇA HORARIS -->
+            
+            <div id="tabs-2">
+
+              	<table class="DADES">
+                    <?php $L_OH = $OA->getHorariss(); $RET = ""; ?>
+         			<?php if( sizeof($L_OH) == 0 ): echo '<tr><td class="LINIA">Aquesta activitat no té cap horari definit.</td></tr>'; endif; ?>  
+        			<?php 	foreach($L_OH as $OH): $M = $OH->getArrayHorarisEspaisMaterial(); $HE = $OH->getArrayHorarisEspaisActiusAgrupats();                                                                                                
+        						echo '<tr>                                
+        								<td class="" width=""><a id="H-'.$OH->getHorarisid().'">'.$OH->getHorarisid().'</td>
+        								<td class="" width="">'.myUser::getDiaText($OH->getDia('Y-m-d'), true).', '.$OH->getDia('d/m/Y').'</td>
+        								<td class="" width="">'.$OH->getHorapre('H:i').'</td>
+        								<td class="" width="">'.$OH->getHorainici('H:i').'</td>
+        								<td class="" width="">'.$OH->getHorafi('H:i').'</td>
+        								<td class="" width="">'.$OH->getHorapost('H:i').'</td>
+        								<td class="" width="">'; foreach($HE as $HESPAI): echo $HESPAI.'<br />'; endforeach; echo '</td>'; 
+        						echo   '<td class="" width="">'; foreach($M as $MATERIAL): echo $MATERIAL['nom'].'<br />'; endforeach; echo '</td>'; 
+        						echo '</tr>';                                                                                                
+                                
+        					endforeach;
+        				
+        			?>			                   	
+            	</table>    	
+                <br />
+                <?php echo '<button id="H-0"></button>'; ?>
+
+                <div id="FORMULARI_HORARI"></div>                                                    
+            
+            </div>
+            
+            <!-- FI HORARIS -->
+            <!-- COMENÇA DESCRIPCIÓ -->
+            
+            <div id="tabs-3">
+
+         		<div style="padding-top:10px;" class="FORMULARI fb">
+         		
+                    <form id="FORMULARI_DESCRIPCIO" method="POST">
+             			<?php echo new ActivitatsTextosForm($OA); ?>
+                        <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/activitats/' , 'NOM_ARXIU' => 'A-'.$IDA)); ?>
+             			<div style="text-align:right; padding-top:40px;">
+                			<input id="B-GUARDA-DESCRIPCIO" name="B-GUARDA-DESCRIPCIO" type="submit" value="Guarda" />                						 				 				 			
+             			</div>	
+                    </form>
+                                    
+         		</div>                
+            <div style="clear: both;">&nbsp;</div>
+            </div>
+            
+            <!-- FI DESCRIPCIÓ -->
+            <!-- COMENÇA PREUS -->
+            
+            <div id="tabs-4">                               	        
+
+                En desenvolupament.
+                 
+            </div>
+            
+            <!-- FI PREUS -->
+            <!-- COMENÇA CICLES -->
+            
+            <div id="tabs-5">                 
+              	<table class="DADES">   
+                    <tr><th>Activitat</th><th>Data</th></tr>
+                    <tr><th>&nbsp;</th><th>&nbsp;</th></tr>                 
+         			<?php if( sizeof($L_OA_REL) == 0 ): echo '<tr><td class="LINIA">El cicle no té cap activitat.</td></tr>'; endif; ?>          			
+                    <?php foreach($L_OA_REL as $OA):
+                                    						
+        						$PrimerDia = $OA->getPrimeraData();                                
+                                echo '<tr>
+        								<td class="" width="">'.link_to($OA->getNom(),'gestio/gActivitats?accio=ACTIVITAT&IDA='.$OA->getActivitatid()).'</td>
+                                        <td class="" width="">'.$PrimerDia.'</td>                                                  								 
+        							  </tr>';
+                        endforeach;				
+        			?>		                   	                   	
+            	</table>    
+                <br />                                    
+            
+            </div>
+            
+            <!-- FI CICLES -->            
+                        
+        </div>                                                		    	     
     	
 	</div>
 
 <?php } ?>
 
-	
-<?php function formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS,$FHorari=null){ ?>    
-    	    	            
-	<div class="REQUADRE">
-	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&form=0&IDA='.$IDA); ?></div>	
-	<div class="titol">
-	 		<?php echo 'Editant horaris de l\'activitat: '.$NOMACTIVITAT; ?>
-	 	</div>
-		<div class="TITOL">Horaris actuals ( <?php echo link_to('Nou horari','gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&nou=2',array('class'=>'blau')) ?> )</div>
-      	<table class="DADES">
- 			<?php if( sizeof($HORARIS) == 0 ): echo '<TR><TD class="LINIA">Aquesta activitat no té cap horari definit.</TD></TR>'; endif; ?>  
-			<?php 	foreach($HORARIS as $H): $M = $H->getArrayHorarisEspaisMaterial(); $HE = $H->getArrayHorarisEspaisActiusAgrupats();                        
-                        $sel = (!is_null($FHorari) && $H->getHorarisid() == $FHorari->getObject()->getHorarisId())?"&middot; ":"";                    
-						echo '<TR>                                
-								<TD class="" width="">'.$sel.link_to($H->getHorarisid(),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&IDH='.$H->getHorarisid()).'</TD>
-								<TD class="" width="">'.$H->getDia('d/m/Y').'</TD>
-								<TD class="" width="">'.$H->getHorapre('H:i').'</TD>
-								<TD class="" width="">'.$H->getHorainici('H:i').'</TD>
-								<TD class="" width="">'.$H->getHorafi('H:i').'</TD>
-								<TD class="" width="">'.$H->getHorapost('H:i').'</TD>
-								<TD class="" width="">'; foreach($HE as $HESPAI): echo $HESPAI.'<br />'; endforeach; echo '</TD>'; 
-						echo 	'<TD class="" width="">'; foreach($M as $MATERIAL): echo $MATERIAL['nom'].'<br />'; endforeach; echo '</TD>'; 
-						echo '</TR>';
-					endforeach;
-				
-			?>			                   	
-    	</table>    	
-	</div>
-<?php } ?>
-
-<?php function formEditaHoraris($IDA,$FHorari,$MISSATGE,$EXTRES,$IDS){ ?>
-			 
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST">          	            
-     	<div class="REQUADRE">
-     	<div class="OPCIO_FINESTRA"><?php echo link_to(image_tag('icons/Grey/PNG/action_delete.png'),'gestio/gActivitats?accio=HORARI&IDA='.$IDA.'&form=0'); ?></div> 		
-     		<div class="TITOL">
-             
-             Edició horaris ( <?php echo link_to('convertir en activitat independent','gestio/gActivitats?accio=DESDOBLAR&IDH='.$FHorari->getObject()->getHorarisid()); ?> )
-               
-            </div>
-
-            <?php if(isset($MISSATGE)):  ?>
-              <div style="margin:10px 0px; padding:5px; border:3px solid red; width:500px; list-style: none; background-color: black; color:yellow; font-weight:bold;"><?php echo '<ul>'; if(!isset($MISSATGE)) $MISSATGE = array(); foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	echo '</ul>'; ?></div>	     	
-            <?php endif; ?>
-                                                
-            <div class="FORMULARI">                   
-    
-               	<?php echo $FHorari?>
-                                                        
-                <div class="clear row fb">
-                    <span class="title row_title fb"><b>Espais: </b></span>
-                    <span class="row_field fb">
-                     	<?php                         
-            				$id = 1;  $VAL = "";                             	            	
-                     		foreach($EXTRES['ESPAISOUT'] AS $idE=>$nom):                                
-                                if(!empty($idE)){	
-                             		$VAL .= '<span id="rowE['.$id.']">
-                             					<select name="espais['.$id.']" id="espais['.$id.']">'.EspaisPeer::selectJavascript($IDS,$idE).'</select>
-                             					<input type="button" style="width:30px;" onClick="esborraLiniaE('.$id.');" id="mesespais" value="-"></input>
-                             					<br />
-                             			  	 </span>
-                             			  ';
-                             		      $id++;      	
-                                }
-                     		endforeach;
-            
-                     		echo '<input type="button" id="mesespais" style="width:30px;" value="+"></input><br />';             		             		             		             		    				   
-            				echo '<input type="hidden" id="idE" value="'.$id.'"></input>';   					
-            			    echo '<div id="divTxtE">'.$VAL.'</div>';
-                     	?>
-                    </span>
-                </div>
-                <div class="clear row fb">
-                    <span class="title row_title fb"><b>Material: </b></span>
-                    <span class="row_field fb">
-                     	<?php 
-            				$id = 1;  $VAL = "";                                                				                                                        	
-                     		foreach($EXTRES['MATERIALOUT'] AS $M=>$idM):                
-                     		$VAL .= '
-             	  	        		<span id="row['.$id.']">
-             	  	        			<select onChange="ajax(this,'.$id.')" name="generic['.$id.']"> id="generic['.$id.']">'.options_for_select(MaterialgenericPeer::select($IDS),$idM['generic']).'</select>
-             	  	        			<select name="material['.$id.']" id="material['.$id.']">'.options_for_select(MaterialPeer::selectGeneric($idM['generic'],$IDS,$idM['material']),$idM['material']).'</select>	
-             	  	        			<input type="button" style="width:30px;" onClick="esborraLinia('.$id.');" id="mesmaterial" value="-"></input>
-             	  	        			<br />
-             	  	        		</span>  	 	  	        			
-                     			  ';
-                     		      $id++;      	             		      
-                     		                   		      	
-                     		endforeach;					
-                     		echo '<input type="button" id="mesmaterial" style="width:30px;" value="+"></input><br />';
-                     		echo '<input type="hidden" id="idV" value="'.$id.'"></input>';   					
-            			    echo '<div id="divTxt">'.$VAL.'</div>';
-                     						    
-                     	?>             	             	                         		
-                    </span>
-                </div>
-                <div class="clear"></div>
-                <div id="div_lloc_extern" class="clear row fb">
-                    <span class="title row_title fb"><b>Opcions: </b></span>
-                    <span class="row_field fb">
-                        <a href="#" id="a_lloc_extern">L'activitat es realitza a un lloc extern</a>                     	          	             	            
-                    </span>
-                </div>                    
-                
-                <div id="formulari_lloc_extern">
-                    <div><b>Població externa</b><br /><br /></div>                    
-                    <?php echo $EXTRES['ESPAIEXTERN']; ?>                            
-                    <div class="clear"></div>                                        
-                </div>
-
-                                       				
-                <div class="clear row fb">            		                	
-                	<div style="text-align:right">
-    	            	<?php include_partial('botonera',array('element'=>'l\\\'horari','tipus'=>'Guardar','nom'=>'BHORARISAVE')); ?>			 				            		
-    	            	<?php include_partial('botonera',array('element'=>'l\\\'horari','tipus'=>'Esborrar','nom'=>'BHORARIDELETE')); ?>
-                	</div>
-                </div>                	       		
-      	 </div>
-         <div class="clear"></div>
-    </div>
-        
-    <script type="text/javascript">
-    	$(function() {			     
-                   $('#multi999Datepicker').datepick({numberOfMonths: 3, multiSelect: 999, showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo image_path('template/calendar_1.png')?>'});               			
-        });   
-    </script>
-            
-     </form>     
-     
-<?php } ?>
-    
-<?php function formEditaDescripcio($IDA,$FActivitat){ ?>
-      
-     <form action="<?php echo url_for('gestio/gActivitats') ?>" method="POST" enctype="multipart/form-data">
- 	 		
-	 	<div class="REQUADRE fb">	 	
-		 	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&form=0&IDA='.$IDA)) ?>
-		 	
-			<div class="titol">Informació relativa a l'activitat</div>
-				
-	 		<div style="padding-top:10px;" class="FORMULARI fb">
-	 		
-	 			<?php echo $FActivitat ?> 
-                <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/activitats/' , 'NOM_ARXIU' => 'A-'.$IDA)); ?>
-
-                </div>                    
-	 			
-				<div class="clear" style="text-align:right; padding-top:40px;">
-					<button type="submit" name="BDESCRIPCIOSAVE" class="BOTO_ACTIVITAT">
-						Guarda i tanca
-					</button>
-					<button type="submit" name="BGENERANOTICIA" class="BOTO_ACTIVITAT">
-						Genera notícia (text mig)
-					</button>
-				</div>
-	 			
-	 					
-	 		</div>
-	 			 	 	
-		</div>
- 		               	   
-     </form>
-<?php } ?> 
-
+  
 <?php function formLlistaActivitats($ACTIVITATS,$PAGINA,$IDS){ ?>
 
      <div class="REQUADRE">
@@ -440,8 +361,8 @@
                         elseif( $A['PUBLICAT'] == 'FALTA_INFO' ): $PUBLICAT = image_tag('template/stop.png', array('size'=>'16x16')); endif;                                 
 	                  	$j = 1;
 	                  	$PAR = ParImpar($j++);
-                        $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
-                        $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
+                        $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
+                        $url_hor = ""; //link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
                         $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";                                                                           	                            
                   		echo '	<tr><td style="background-color:#EEEEEE; border:1px solid #EEEEEE; height:15px;" colspan="6"></td></tr>';		                  	
 	                  	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.' '.$PUBLICAT.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
@@ -482,13 +403,15 @@
                     foreach($HORA as $idH):			
                         $A = $ACTIVITATS[$idH];
                         //Per cada horari, agafem l'espai i fem un vector on guardarem els resultats.'                    
-                      	$AVIS = ""; $ESP = ""; $MAT = "";                              	                                                        
+                      	$AVIS = ""; $ESP = ""; $MAT = ""; $PUBLICAT = "";                              	                                                        
                       	if( !empty( $A['ESPAIS'] ) ):     $ESP = $A['ESPAIS'][$idE]; endif;
                       	if( !empty( $A['MATERIAL'] ) ):   $MAT = implode("<br />",$A['MATERIAL']); endif;            		 
                       	if( strlen( $A['AVIS'] ) > 2 ):   $AVIS = '<a href="#" class="tt2">'.image_tag('tango/32x32/emblems/emblem-important.png', array('size'=>'16x16')).'<span>'.$A['AVIS'].'</span></a>'; else: $AVIS = ""; endif;
+                        if( $A['PUBLICAT'] == 'OK' ):       $PUBLICAT = image_tag('template/exclamation.png', array('size'=>'16x16'));
+                        elseif( $A['PUBLICAT'] == 'FALTA_INFO' ): $PUBLICAT = image_tag('template/stop.png', array('size'=>'16x16')); endif;
                       	$j = 1; $PAR = ParImpar($j++);
-                        $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
-                        $url_hor = link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
+                        $url_act = link_to($A['NOM_ACTIVITAT'],'gestio/gActivitats?accio=ACTIVITAT&IDA='.$A['ID'],array('style'=>'font-size:12px'));
+                        $url_hor = //link_to('Edita informació pràctica','gestio/gActivitats?accio=HORARI&IDA='.$A['ID'].'&IDH='.$idH,array('style'=>'font-size:10px'));                            
                         $org = (empty($A['ORGANITZADOR']))?"":"<span style=\"font-size:8px; color:gray; \"> (".$A['ORGANITZADOR'].") </span>";
                         
                         if($ANT <> $ESP):                                                                                               	                            
@@ -498,7 +421,7 @@
                         endif;		                  	
                         $ANT = $ESP;
                         
-                      	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
+                      	echo '	<tr><td class="LIST2 '.$PAR.'" colspan="6">'.$url_act.$AVIS.' '.$PUBLICAT.$org.' <div style="float:right">'.$url_hor.'</div></td></tr>';		                  	
                       	echo '	<TR>                      						               							                	
                       				<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:10px; color:#880000;">'.$A['HORA_PRE'].'</span></TD>	
     			               		<TD class="LIST2 '.$PAR.'"><span style="font-weight:bold; font-size:12px; color:green;">'.$A['HORA_INICI'].'</span></TD>
@@ -560,52 +483,7 @@
 
 
 
-<?php function formErrorGreu($MISSATGE){ ?>
-	             		
-        <div class="REQUADRE fb">	 	
-         	<?php include_partial('botonera',array('tipus'=>'Tancar','url'=>'gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&form=0&IDA='.$IDA)) ?>
-         	
-        	<div class="titol">ERROR GREU</div>        		
-        	<div style="padding-top:10px;" class="FORMULARI fb">                        	                
-                <div style="margin:10px 0px; padding:5px; border:3px solid red; width:500px; list-style: none; background-color: black; color:yellow; font-weight:bold;">
-                    <?php 
-                        echo '<ul>'; 
-                        if(!isset($MISSATGE)) $MISSATGE = array(); 
-                        foreach($MISSATGE as $M) echo '<li>'.$M.'</li>';	
-                        echo '</ul>'; 
-                    ?>
-                </div>	     	                 
-                <p>Si heu arribat aquí és perquè s'ha produit un error greu. Inforeu el més aviat possible a informatica@casadecultura.org sobre les circumstàncies en les que s'ha produit aquest error i no repetiu el procès ja que podria incrementar-se.<br /><br />Disculpeu les molèsties.</p>
-        	</div>        		 	 	
-        </div>    	                  
-     
-<?php } ?>
-
-
 <?php 
-
-function menu($seleccionat = 1,$nova = false)
-{     
-	echo "<TABLE class=\"REQUADRE\"><tr>";
-		
-	if(!$nova): 
-	    if($seleccionat == 1) echo '<td class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</td>';
-	    else  echo '<td class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=CA').'</td>';             
-        if($seleccionat == 2) echo '<td class="SUBMEN1">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</td>';
-        else echo '<td class="SUBMEN">'.link_to('Horaris','gestio/gActivitats?accio=CH').'</td>';
-        if($seleccionat == 3) echo '<td class="SUBMEN1">'.link_to('Descripció','gestio/gActivitats?accio=T').'</td>';
-        else echo '<td class="SUBMEN">'.link_to('Descripció','gestio/gActivitats?accio=T').'</td>';
-        if($seleccionat == 4) echo '<td class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';
-        else echo '<td class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';        
-      else:
-        if($seleccionat == 1) echo '<TD class="SUBMEN1">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</td>';
-	    else  echo '<td class="SUBMEN">'.link_to('Dades activitat','gestio/gActivitats?accio=N').'</td>';
-	    if($seleccionat == 4) echo '<TD class="SUBMEN1">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';
-        else echo '<td class="SUBMEN">'.link_to('Cicles','gestio/gActivitats?accio=AC').'</td>';                             
-      endif;
-     
-     echo "</tr></table>";
-}
 
 
 function getPar($CERCA = NULL, $PAGINA = NULL, $IDA = NULL, $ACCIO = NULL , $ANY = NULL , $MES = NULL , $DIA = NULL , $DATAI = NULL )

@@ -1628,20 +1628,13 @@ class gestioActions extends sfActions
 
     if($request->isMethod('POST')){
 	    if($request->hasParameter('BCERCA')) { $this->accio = 'C'; $this->PAGINA = 1; }   
-	    elseif($request->hasParameter('BNOU')) 	    		$this->accio = 'ACTIVITAT';
-	    elseif($request->hasParameter('BCICLE')) 			$this->accio = 'CICLE';
-	    elseif($request->hasParameter('BCICLESAVE'))		$this->accio = 'CICLE_SAVE';
-	    elseif($request->hasParameter('BACTIVITAT')) 		$this->accio = 'ACTIVITAT';
-	    elseif($request->hasParameter('BACTIVITATSAVE')) 	$this->accio = 'ACTIVITAT_SAVE';
-	    elseif($request->hasParameter('BACTIVITATDELETE')) 	$this->accio = 'ACTIVITAT_DELETE';
-	    elseif($request->hasParameter('BHORARI')) 			$this->accio = 'HORARI';
-	    elseif($request->hasParameter('BHORARISAVE')) 		$this->accio = 'HORARI_SAVE';
-	    elseif($request->hasParameter('BHORARIDELETE')) 	$this->accio = 'HORARI_DELETE';
-	    elseif($request->hasParameter('BDESCRIPCIO')) 		$this->accio = 'DESCRIPCIO';
-	    elseif($request->hasParameter('BDESCRIPCIOSAVE')) 	$this->accio = 'DESCRIPCIO_SAVE';
-	    elseif($request->hasParameter('BDESCRIPCIODELETE')) $this->accio = 'DESCRIPCIO_DELETE';
-	    elseif($request->hasParameter('BGENERANOTICIA')) 	$this->accio = 'GENERA_NOTICIA';	    
-        elseif($request->hasParameter('BPREUSSAVE')) 	    $this->accio = 'PREUS';
+	    elseif($request->hasParameter('BNOU')) 	    		   $this->accio = 'ACTIVITAT';
+	    elseif($request->hasParameter('BCICLE'))               $this->accio = 'CICLE';
+	    elseif($request->hasParameter('BCICLESAVE'))		   $this->accio = 'CICLE_SAVE';	    
+	    elseif($request->hasParameter('B-GUARDA-ACTIVITAT'))   $this->accio = 'ACTIVITAT_SAVE';
+	    elseif($request->hasParameter('B-ESBORRA-ACTIVITAT'))  $this->accio = 'ACTIVITAT_DELETE';	    
+	    elseif($request->hasParameter('BGENERANOTICIA')) 	   $this->accio = 'GENERA_NOTICIA';	    
+        elseif($request->hasParameter('BPREUSSAVE')) 	       $this->accio = 'PREUS';
 	    
     }                
     
@@ -1693,40 +1686,57 @@ class gestioActions extends sfActions
     		    		
     	//Entrem les activitats... que necessitem
     	case 'ACTIVITAT':
-
-    		$this->CarregaActivitats($request,$request->getParameter('form',true));
-            $this->MODE['ACTIVITAT_EDIT'] = true;
-    		     			
-    		break;
-    		
-    	case 'ACTIVITAT_NO_EDIT':
-
-    		$this->CarregaActivitats($request,$request->getParameter('form',true));            
+        
+            $this->IDA = $request->getParameter('IDA');
+            
+            //Carrego l'activitat i també les relacionades del cicle... si n'hi ha.
+            $OA = ActivitatsPeer::retrieveByPK($this->IDA);
+            if($OA instanceof Activitats):
+                                
+                $OC = $OA->getCicles();
+                $idC = 0;
+                if($OC instanceof Cicles) $idC = $OC->getCicleid();
+                $FA = ActivitatsPeer::initialize( $this->IDA , $idC , $this->IDS );
+                
+                //Si l'activitat té un cicle, carreguem les activitats relacionades
+                $L_OA_REL = array();
+                $this->N = CiclesPeer::getActivitatsCicle($idC, $this->IDS);
+                
+                if( ( $OC instanceof Cicles ) && ( $this->N < 50 ) ) $L_OA_REL = CiclesPeer::getActivitatsCicleList( $idC , $this->IDS );
+                $this->OC = $OC; $this->OA = $OA; $this->L_OA_REL = $L_OA_REL; $this->FA = $FA;
+                $this->MODE['ACTIVITAT_CICLE'] = true;
+                    		            
+            //Si no hi ha l'activitat, vol dir que és nova...
+            else: 
+                                        
+                $FA = ActivitatsPeer::initialize( 0 , 0 , $this->IDS );                                
+                $L_OA_REL = array(); $this->N = 0;
+                                
+                $this->OC = null; $this->OA = $FA->getObject(); $this->L_OA_REL = $L_OA_REL; $this->FA = $FA;
+                $this->MODE['ACTIVITAT_CICLE'] = true;
+            
+            endif; 
     		     			
     		break;      
-            
+    		            
     	//Guardem l'activitat
     	case 'ACTIVITAT_SAVE':
 
-    			$RP = $request->getParameter('activitats');
+    			$RP = $request->getParameter('activitats');                
     			$this->IDA = $RP['ActivitatID'];
     			$this->IDC = $RP['Cicles_CicleID'];
     		
 	    		$this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC, $this->IDS);	    		
-	    		$this->FActivitat->bind($request->getParameter('activitats'));
+	    		$this->FActivitat->bind($RP);
 	    		if($this->FActivitat->isValid()):
 	    			$nova = $this->FActivitat->isNew();                    
 	    			$this->FActivitat->save();	    			
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
-	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();                    
-	    			if($nova):	    				                        
-	    				$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA.'&nou='.$this->IDA);
-	    			else:                         
-	    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);
-	    			endif; 	    			
-	    		else:                                         
-                    $this->CarregaActivitats($request,$request->getParameter('form',true));
-	    		endif; 
+	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();                    	    			
+	    			$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);	    			 	    				    		                                                             
+	    		else:                 
+                    $this->MISSATGE = "HI HA HAGUT ALGUN PROBLEMA CREANT L'ACTIVITAT.";                
+                endif; 
     			
     		break;
 
@@ -1748,104 +1758,100 @@ class gestioActions extends sfActions
     		break;
     		
     		
-    	//Entrem els horaris de les activitats
+    	//Crida AJAX per carregar un horari
     	case 'HORARI':
-    			
-				$this->CarregaActivitats($request,false); 
-    			    			    							
- 				$OActivitat = ActivitatsPeer::retrieveByPK($this->IDA); 				    		
-    			$this->HORARIS = $OActivitat->getHorarisActius($this->IDS);
-    			$this->NOMACTIVITAT = $OActivitat->getNom();
-    			    			    			    			
-    			$OHorari = new Horaris();
-    			$OHorari->setActivitatsActivitatid($this->IDA);    			    			
-    			if($request->hasParameter('nou')) $this->FHorari = new HorarisForm($OHorari);     			
-    			$this->HORARI = $OHorari;
-                $this->EXTRES = array('ESPAISOUT'=>array(),'MATERIALOUT'=>array(),'ESPAIEXTERN' => EspaisExternsPeer::initialize(null));    			   				    			 	
-    			$this->getUser()->setSessionPar('IDH',0);
-    			    			
-    			if($request->hasParameter('IDH')):
-    				$H = HorarisPeer::retrieveByPK($request->getParameter('IDH'));
-    				$this->getUser()->setSessionPar('IDH',$request->getParameter('IDH'));    				
-    				$this->FHorari = new HorarisForm($H);
-    				$this->HORARI  = $H;                    
-                    $this->EXTRES['ESPAISOUT'] = $H->getArrayHorarisEspaisActiusAgrupats();                    
-                    $this->EXTRES['MATERIALOUT'] = $H->getArrayHorarisEspaisMaterial();                                        
-                    $this->EXTRES['ESPAIEXTERN'] = $H->getEspaiExternForm();                                                                                                                   
-    			endif;    		    
-    					    			
- 				 $this->MODE['HORARI'] = true;
+    			                                  
+                 $idH = $request->getParameter('idH');
+                 $idA = $request->getParameter('idA');
+                 $OH = HorarisPeer::retrieveByPK($idH);                 
+                 if($OH instanceof Horaris):
+                    return $this->renderPartial('formHorari',array("OH"=>$OH));
+                 else:                     
+                    return $this->renderPartial('formHorari',array("OH"=>HorarisPeer::initialize($idH , $idA, $this->IDS)->getObject()));
+                 endif;
+                 
     		break;
 		
-    	case 'HORARI_SAVE':
-    		
-    			$RP = $request->getParameter('horaris');
-    			$this->IDA = $RP['Activitats_ActivitatID'];
-    			$this->IDH = $RP['HorarisID'];                
-    			    		
-                $OActivitat = ActivitatsPeer::retrieveByPK($this->IDA);                
-	    		$this->NOMACTIVITAT = $OActivitat->getNom();
-	    		$this->HORARIS = $OActivitat->getHorarisActius($this->IDS);                
+    	//Crida per AJAX que emmagatzema els horaris i fa les comprovacions pertinents
+        case 'HORARI_SAVE':
+    		    			                                                
+                //Carreguem els paràmetres a la variable enviats per ajax. 
+                parse_str($request->getParameter('FORMULARI') , $RP );                
+                $ERRORS = array();                                                
+                 
+    			$IDA = $RP['horaris']['Activitats_ActivitatID'];                
+    			$IDH = $RP['horaris']['HorarisID'];                
+    			               		
+                //Comprovem si existeix l'activitat... si no existeix li diem que primer l'han de guardar.                 
+                $OA = ActivitatsPeer::retrieveByPK($IDA);
+                                 
+                //Si no podem carregar l'activitat, mostrem un error... 
+                if( ! $OA instanceof Activitats ){
                 
-	    		$OHorari = HorarisPeer::retrieveByPK($this->IDH);
-	    		if($this->IDH == 0) 	$this->FHorari = new HorarisForm();
-	    		else					$this->FHorari = new HorarisForm($OHorari);
+                    $ERRORS['OA'] = 'ERROR: ABANS DE CREAR UN HORARI HAS DE GUARDAR L\'ACTIVITAT.';
+                    return $this->renderText( implode( '<br />' , $ERRORS ) );
                 
-                //Fem un bind de les dades generals per si hi ha un error
-                $this->FHorari->bind($RP);	    		                
-                
-                //Creem la variable EXTRES
-                $this->EXTRES = array('ESPAISOUT'=>array(),'MATERIALOUT'=>array());
+                //Hem pogut carregar l'activitat relacionada i podem donar d'alta l'horari.
+                } else {
                                 
-	    		//Guardem a extres el material que volem reservar.                	    		
-	    		foreach($request->getParameter('material',array()) as $M=>$idM):
-	    			$OM = MaterialPeer::retrieveByPK($idM);
-                    if($OM instanceof Material){
-                        $this->EXTRES['MATERIALOUT'][] = array('material'=>$idM,'generic'=>$OM->getMaterialgenericIdmaterialgeneric());
-                    }	    			    	    			
-	    		endforeach;
-	    		
-                //Guardem a extres els espais que volem reservar de la nostra entitat
-	    		$this->EXTRES['ESPAISOUT'] =  $request->getParameter('espais',array());
-                                
-                //Tractem els espais externs, si n'hi ha algun.                
-                $RPEE = $request->getParameter('espais_externs',null);
-                $this->EXTRES['ESPAIEXTERN'] = EspaisExternsPeer::initialize($RPEE['idEspaiextern']);
-                if($RPEE['Poble'] > 0):                                     
-                    $this->EXTRES['ESPAIEXTERN']->bind($RPEE);
-                    $RET = array();
-                    if(!$this->EXTRES['ESPAIEXTERN']->isValid()):
-                        $RET = array('Hi ha algun error a la localització externa.');                    
-                    else:
-                        $this->EXTRES['ESPAIEXTERN']->save();
+    	    		//Carreguem l'Horari que s'ha entrat... o en creem un de nou.
+                    $OH = HorarisPeer::retrieveByPK($IDH);
+    	    		if($OH instanceof Horaris) 	 $FHorari = new HorarisForm($OHorari);
+    	    		else                         $FHorari = new HorarisForm();					                                
+                    
+                    //Fem un bind de les dades generals per si hi ha un error
+                    $FHorari->bind($RP);                                      
+                    
+                    //Creem la variable EXTRES
+                    $EXTRES = array('ESPAISOUT'=>array(),'MATERIALOUT'=>array());
+                    
+                    //Guardem a extres els espais que volem reservar de la nostra entitat
+    	    		$EXTRES['ESPAISOUT'] =  $RP['espais'];                                                                            
+                                    
+    	    		//Comprovem l'existència del material i el guardem en format de save
+    	    		foreach($RP['material'] as $M=>$idM):
+    	    			$OM = MaterialPeer::retrieveByPK($idM);
+                        if($OM instanceof Material) $EXTRES['MATERIALOUT'][] = array('material'=>$idM,'generic'=>$OM->getMaterialgenericIdmaterialgeneric());                        			
+    	    		endforeach;
+    	    		                    
+                    //Tractem els espais externs, i el guardem si n'hi ha algun.                                
+                    $EXTRES['ESPAIEXTERN'] = EspaisExternsPeer::initialize( $RP['espais_externs'] );
+                    if($RP_EE['espais_externs']['Poble'] > 0):                                                             
+                        $EXTRES['ESPAIEXTERN']->bind($RP['espais_externs']);                        
+                        if( ! $EXTRES['ESPAIEXTERN']->isValid()) $ERRORS['EE'] = "ERROR: HI HA ALGUN ERROR EN L'ESPAI EXTERN.";                            
+                        else $EXTRES['ESPAIEXTERN']->save();                        
                     endif;
-                endif;
-                                                                                                
-                if(empty($RET)) $RET = $this->GuardaHorari( $request->getParameter('horaris') , $this->EXTRES , $this->IDS , $this->MISSATGE );
-                                		
-	    		if(empty($RET)):
-	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FHorari->getObject());
-	    			$this->MISSATGE = array(1=>'Horari guardat correctament');                    
-	    			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$this->IDA);
-	    		else:
-	    			$this->MISSATGE = $RET;
-	    		endif; 
-	    		
-	    		$this->CarregaActivitats($request,false);
-	    		
-	    		$this->MODE['HORARI'] = true;
+                                        
+                    //Si no hi ha cap error, passem a guardar.                                                                                 
+                    if(empty($ERRORS)) $ERRORS = HorarisPeer::GuardaHorari( $RP['horaris'] , $EXTRES , $this->IDS );
+                                    		
+    	    		//Si no hi ha hagut cap error, ho guardem al log com un canvi en l'horari
+                    if(empty($ERRORS)): 
+    	    			$this->getUser()->addLogAction('HORARI_SAVE','gActivitats',$FHorari->getObject());    	    			
+                        return $this->renderText( implode( "\n" , $ERRORS ) );
+                        //Hem d'informar que ha anat tot bé.                         	    			
+    	    		else:                         
+    	    			//Hem d'informar que hi ha hagut algun error                        
+                        return $this->renderText( implode( "\n" , $ERRORS ) );
+    	    		endif; 
+    	    		    	    		    	    		    	    		
+                }
 	    			    			    		    	    			
     		break;
     		
-    	case 'HORARI_DELETE':
+    	//Funció AJAX que esborra un horari determinat. 
+        case 'HORARI_DELETE':
 
-    			$RH = $request->getParameter('horaris');    			
-    			$OH = HorarisPeer::retrieveByPK($RH['HorarisID']);
+                //Llegim el que s'envia per ajax.
+    			parse_str($request->getParameter('FORMULARI') , $RP );                
+    			$OH = HorarisPeer::retrieveByPK($RP['horaris']['HorarisID']);
     			if($OH instanceof Horaris):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OH);
-	    			$OH->setInactiu();    			    			
-	    		endif; 
-	   			$this->redirect('gestio/gActivitats?accio=HORARI&IDA='.$RH['Activitats_ActivitatID']);
+	    			$OH->setInactiu();
+                    return $this->renderText( "" );
+                else: 
+                    return $this->renderText( "ERROR: No s'ha trobat l'horari. ");    			    			
+	    		endif; 	   			
 	   			
     		break;
     		
@@ -1859,20 +1865,20 @@ class gestioActions extends sfActions
     	
     	case 'DESCRIPCIO_SAVE':
     			
-    			$RP = $request->getParameter('activitats');
-    			$this->IDA = $RP['ActivitatID'];                
-    			
-    			$this->CarregaActivitats($request,false);
+    			parse_str($request->getParameter('FORMULARI') , $RP );                
+    			$RP = $RP['activitats'];                
+                $this->IDA = $RP['ActivitatID'];                
+		    			
     			$this->FActivitat = ActivitatsPeer::initializeDescription($this->IDA,$this->IDS);    			
-    			$this->FActivitat->bind($RP,$request->getFiles('activitats'));
+    			$this->FActivitat->bind($RP);
     			if($this->FActivitat->isValid()):                        				
                     $this->FActivitat->save();
     				$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
-    				$this->redirect('gestio/gActivitats?accio=ACTIVITAT_NO_EDIT&IDA='.$this->IDA);
+    				return $this->renderText('');
+                else: 
+                    return $this->renderText('ERROR: No s\'ha trobat la descripció.');
     			endif; 
-    			
-    			$this->MODE['DESCRIPCIO'] = true;
-    		
+    			    			    		
     		break;
 
 		case 'GENERA_NOTICIA':
@@ -1883,7 +1889,7 @@ class gestioActions extends sfActions
     			$this->redirect('gestio/gNoticies?accio=E&idn='.$ONoticia->getIdnoticia());
     			    			    		
     		break;
-      
+/*      
       case 'PREUS':
                             
                 $this->CarregaActivitats($request,false);               //Carreguem la info de context d'activitats
@@ -1912,7 +1918,7 @@ class gestioActions extends sfActions
 			    $this->MODE['PREUS'] = true;
       
             break;
-                        
+*/                        
         //Des d'un horari, creem una activitat nova amb les mateixes dades. Ja està entrat l'error a dalt.
         case 'DESDOBLAR':
                 
@@ -1934,7 +1940,7 @@ class gestioActions extends sfActions
                 $OH->setActivitatsActivitatid($NOVA_ACTIVITAT->getActivitatid());
                 $OH->save();
                                 
-                $this->redirect("gestio/gActivitats?accio=HORARI&IDA={$NOVA_ACTIVITAT->getActivitatid()}&IDH={$OH->getHorarisid()}");
+                $this->redirect("gestio/gActivitats?accio=ACTIVITAT&IDA={$NOVA_ACTIVITAT->getActivitatid()}");
                                                                                                          
             break;
             
@@ -1946,145 +1952,6 @@ class gestioActions extends sfActions
     }                                
     
   }  
-  
-  
-  private function CarregaActivitats($request,$with_form)
-  {
-    
-        //Si és una activitat que pertany a un cicle se li haurà de passar el cicle. 
-    
-    	//Si una activitat pertany a un cicle ensenyo totes les del cicle
-	    $OA = ActivitatsPeer::retrieveByPK($this->IDA);
-	    
-		//Editem una activitat d'un cicle.
-	    if($OA instanceof Activitats && $OA->getCiclesCicleid() > 1):
-	    	
-	    	$this->IDC = $OA->getCiclesCicleid();
-	    	$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();    			
-	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,$this->IDS,false,1,false);
-	    	if($with_form) $this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC,$this->IDS);    			
-	    	$this->MODE['ACTIVITAT_CICLE'] = true;
-	    		    	
-	    //Creem una activitat d'un cicle 
-	    elseif($request->hasParameter('IDC')):
-        
-            $this->IDC = $request->getParameter('IDC');
-	    	$this->CICLE = CiclesPeer::retrieveByPK($this->IDC)->getNom();    			
-	    	$this->ACTIVITATS = ActivitatsPeer::getActivitatsCicles($this->IDC,$this->IDS,false,1,false);
-	    	if($with_form) $this->FActivitat = ActivitatsPeer::initialize(null,$this->IDC,$this->IDS);    			
-	    	$this->MODE['ACTIVITAT_CICLE'] = true;
-            
-        //Una sola activitat    	    	
-        else:  
-	    	$this->CICLE = "No pertany a cap cicle";   		
-	    	$this->MODE['ACTIVITAT_ALONE'] = true;
-	    	$OA = ActivitatsPeer::retrieveByPK($this->IDA);
-	    	
-	    	if($OA instanceof Activitats):
-	    		$this->ACTIVITATS = array(1=>ActivitatsPeer::retrieveByPK($this->IDA));
-	    	else:
-	    		$this->ACTIVITATS = array();
-	    	endif; 
-	    	
-	    	if($with_form) $this->FActivitat = ActivitatsPeer::initialize($this->IDA,false,$this->IDS);
-	    	
-	    endif;		
-  	  	
-  }
-  
-  public function GuardaHorari($horaris , $EXTRES , $idS )
-  {
-  	
-  	$ERRORS = array();  	
-  	$DBDD[] = array();  	  	
-  	
-	if( empty($horaris['Dia']) ): 
-		$ERRORS[] = "No has entrat cap data";
-		$DBDD['DIES'] = array(); 	
-	else:
-		$DIES = explode(',',$horaris['Dia']);
-		foreach($DIES as $D):  		
-  			list($dia,$mes,$any) = explode('/',$D);  		
-  	  		if(!($any > 2000 && $mes < 13 && $dia < 32 )) $ERRORS[] = "La data que has entrat és incorrecta";
-  			$DBDD['DIES'][] = "$any-$mes-$dia";  		  		
-  		endforeach;  	     		
-	endif;  	
-  	  	       
-	//Passem l'hora a format numèric per fer les comprovacions
-  	$DBDD['HoraPre']  = strval($horaris['HoraPre']['hour'])*60+strval($horaris['HoraPre']['minute']);
-  	$DBDD['HoraIn']   = strval($horaris['HoraInici']['hour'])*60+strval($horaris['HoraInici']['minute']);
-  	$DBDD['HoraFi']   = strval($horaris['HoraFi']['hour'])*60+strval($horaris['HoraFi']['minute']);
-  	$DBDD['HoraPost'] = strval($horaris['HoraPost']['hour'])*60+strval($horaris['HoraPost']['minute']);  	  	
-  	
-    if( $DBDD['HoraPre'] > $DBDD['HoraIn'] )    $ERRORS[] = "L'hora de preparació no pot ser més gran que la d'inici.";
-    if( $DBDD['HoraIn']  >= $DBDD['HoraFi'] )   $ERRORS[] = "L'hora d'inici no pot ser més gran o igual que la d'acabament.";
-    if( $DBDD['HoraFi']  > $DBDD['HoraPost'] && $DBDD['HoraPost'] > (8*60) )  $ERRORS[] = "L'hora d'acabament no pot ser més gran que la de desmuntatge.";                    
-    
-    //Un cop fetes les verificacions... tornem a posar els valors que guardarem
-    $DBDD['HoraPre']  = $horaris['HoraPre']['hour'].':'.$horaris['HoraPre']['minute'];
-  	$DBDD['HoraIn']   = $horaris['HoraInici']['hour'].':'.$horaris['HoraInici']['minute'];
-  	$DBDD['HoraFi']   = $horaris['HoraFi']['hour'].':'.$horaris['HoraFi']['minute'];
-  	$DBDD['HoraPost'] = $horaris['HoraPost']['hour'].':'.$horaris['HoraPost']['minute'];
-      	    
-    //Hem d'entrar algun espai ja sigui intern o extern i no podem entrar espais interns i a més externs       
-    if(  empty($EXTRES['ESPAISOUT']) && !$EXTRES['ESPAIEXTERN']->isBound() ) $ERRORS[] = "Has d'entrar algun espai intern o extern";
-    if( !empty($EXTRES['ESPAISOUT']) && $EXTRES['ESPAIEXTERN']->isBound() ) $ERRORS[] = "No pots entrar espais interns i externs a la vegada";
-
-    //Mirem que la data no es solapi amb alguna altra activitat al mateix espai
-    foreach($DBDD['DIES'] as $D):
-
-        //Per tots els espais interns       	    
-    	foreach($EXTRES['ESPAISOUT'] as $E=>$idE):    		
-    		//Si l'usuari bloqueja un espai hem de mirar que no hi hagi cap activitat aquell dia. 
-    		if($idE == 22)
-    		{
-				$RS = HorarisPeer::getActivitatsDia( $D , $idS );
-				if(sizeof($RS) > 0) { $ERRORS[] = "El dia $D hi ha ".sizeof($RS)." activitat(s) que impedeixen el bloqueig."; }
-			}
-			else
-			{			     
-	    		//Mirem si encaixa amb alguna altra activitat solta
-                $LOH = HorarisPeer::validaDia( $D , $idE , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'] , $idS );
-		    	if(sizeof($LOH) > 0)
-		    	{
-		    		$Espai = EspaisPeer::retrieveByPK($idE)->getNom();
-                    foreach($LOH as $OH):                    
-                        $OA = $OH->getActivitatss();
-                        $nomActivitat = $OA->getNom();                        
-			    	    $ERRORS[] = "El dia $D coincideix a l'espai $Espai amb l'activitat '".$nomActivitat."'";
-                    endforeach;
-		    	}
-			    //Comprovem que no hi hagi un problema amb un dia bloquejat
-			    elseif( HorarisPeer::validaDiaBloqueig( $D , $horaris['HorarisID'] , $this->IDS ) )
-			    {			    		
-		    			$ERRORS[] = "El dia $D hi ha una activitat que bloqueja tots els espais!";		    					    			    		 
-			    }                	    			    	                                 
-    		}    	            
-    	endforeach;
-
-        //Comprovem l'ocupació del material                        
-        foreach($EXTRES['MATERIALOUT'] as $M=>$idM):
-            
-            if(!MaterialPeer::isLliure( $idM['material'] , $this->IDS , $D , $DBDD['HoraPre'] , $DBDD['HoraPost'] , $horaris['HorarisID'])):
-                $OM = MaterialPeer::retrieveByPK($idM['material']);
-                if($OM instanceof Material) $nom = $OM->toString(); else $nom = "n/d";
-                $ERRORS[] = "El material ".$nom." està ocupat el dia ".$D;
-            endif;
-            
-        endforeach;
-        	    	
-    endforeach;
-       
-    //Si no hem trobat cap error, guardem els registres d'ocupació.    
-    if(empty($ERRORS)):
-
- 		HorarisPeer::save( $horaris , $DBDD , $EXTRES , $idS );
-       
-    endif;
-  
-    return $ERRORS;
-     
-  }
     
   function sumarmesos($data,$mesos)
   { 
