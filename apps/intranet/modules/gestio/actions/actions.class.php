@@ -2097,7 +2097,7 @@ class gestioActions extends sfActions
                 $this->FAgenda = AgendatelefonicaPeer::initialize( $this->AID , $this->IDS );      
                 if(!$this->FAgenda->isNew()):
                     $this->FAgenda->getObject()->setInactiu();                                                   
-                    $this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
+                    $this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());                    
                     myUser::addLogTimeline( 'baixa' , 'agenda' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FAgenda->getObject()->getAgendatelefonicaId() );
                 endif;  
                 break;       
@@ -2185,7 +2185,8 @@ class gestioActions extends sfActions
                 $this->FMissatge->bind($request->getParameter('missatges'));                
                 if ($this->FMissatge->isValid()) { 
                 	$this->FMissatge->save();
-                	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());
+                	$this->getUser()->addLogAction($accio,'gMisatges',$this->FMissatge->getObject());                    
+                    myUser::addLogTimeline( 'alta' , 'taulell' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FMissatge->getObject()->getMissatgeid() );
                     
                     //Si el missatge és global, enviarem un mail a tothom. 
                     if($this->FMissatge->getObject()->getIsglobal()):
@@ -2208,7 +2209,12 @@ class gestioActions extends sfActions
       case 'D':
       			$this->IDM = $this->getUser()->getSessionPar('IDM');                
                 $M = MissatgesPeer::retrieveByPK($this->IDM);
-                if($M instanceof Missatges) { $M->setActiu(false); $M->save(); $this->getUser()->addLogAction($accio,'gMisatges',$M); }
+                if($M instanceof Missatges) { 
+                    $M->setActiu(false); 
+                    $M->save(); 
+                    $this->getUser()->addLogAction($accio,'gMisatges',$M);
+                    myUser::addLogTimeline( 'baixa' , 'taulell' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->IDM ); 
+                }
                 $this->redirect('gestio/gMissatges?accio=I');                
                 break;
       case 'SF':
@@ -2356,7 +2362,10 @@ class gestioActions extends sfActions
     		    $this->FMaterial->bind($PM);
     		    if($this->FMaterial->isValid()):
     		    	$this->FMaterial->save();
-    		    	$this->getUser()->addLogAction($accio,'gMaterial',$this->FMaterial->getObject());
+                    
+    		    	$this->getUser()->addLogAction($accio,'gMaterial',$this->FMaterial->getObject());                    
+                    myUser::addLogTimeline( 'alta' , 'material' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FMaterial->getObject()->getIdmaterial() );
+                    
     		    	$this->redirect('gestio/gMaterial?accio=C');
     		    endif;     		        		    
     			$this->EDICIO = true;
@@ -2369,6 +2378,7 @@ class gestioActions extends sfActions
                     $OM->setActiu(false);
                     $OM->save(); 
                     $this->getUser()->addLogAction($accio,'gMaterial',$OM);
+                    myUser::addLogTimeline( 'baixa' , 'material' , $this->getUser()->getSessionPar('idU') , $this->IDS , $PM['idMaterial'] );
                 endif;                     	                            	            	          	        
     	        break;    	
         case 'AJAX_NEW_GRUP':
@@ -3482,7 +3492,8 @@ class gestioActions extends sfActions
 			    $this->FIncidencia->bind($RP);
 			    if($this->FIncidencia->isValid()):
 			    	$this->FIncidencia->save();
-			    	$this->getUser()->addLogAction($accio,'gIncidencies',$this->FIncidencia->getObject());
+			    	$this->getUser()->addLogAction($accio,'gIncidencies',$this->FIncidencia->getObject());                    
+                    myUser::addLogTimeline( 'alta' , 'incidencies' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FIncidencia->getObject()->getIdincidencia() );
 			    	$this->redirect('gestio/gIncidencies?accio=C');
 			    endif; 
 			    $this->MODE['EDICIO'] = true;    		        		        			
@@ -3491,7 +3502,8 @@ class gestioActions extends sfActions
                 $RP = $request->getParameter('incidencies');
                 $this->FIncidencia = IncidenciesPeer::initialize( $RP['idIncidencia'] , $this->IDU , $this->IDS );
                 $this->FIncidencia->getObject()->setActiu(false)->save();		        
-		        $this->getUser()->addLogAction($accio,'gNoticies',$this->FIncidencia->getObject());		            	        
+		        $this->getUser()->addLogAction($accio,'gIncidencies',$this->FIncidencia->getObject());
+                myUser::addLogTimeline( 'baixa' , 'incidencies' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['idIncidencia'] );		            	        
 		        break;        
         
             $this->INCIDENCIES = IncidenciesPeer::getIncidencies( $this->CERCA['text'] , $this->PAGINA , $this->IDS , true );    	         	 
@@ -3610,8 +3622,11 @@ class gestioActions extends sfActions
         		    if($request->hasParameter('material_no_inventariat')):
         		    	$this->FCessio->getObject()->setMaterialNoInventariat($RMATERIALNOINV);
         		    	$this->FCessio->getObject()->save();    		    
-        		    endif;                                                       
-    	            $this->getUser()->addLogAction($accio,'gCessio',$this->FCessio->getObject());                                        
+        		    endif;
+                                                                           
+    	            $this->getUser()->addLogAction($accio,'gCessio',$this->FCessio->getObject());                    
+                    myUser::addLogTimeline( 'alta' , 'cessio' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FCessio->getObject()->getCessioId() );
+                                                            
         		    $this->MODE = 'FINALITZAT';
                 endif; 
                     		        		        			
@@ -3621,6 +3636,7 @@ class gestioActions extends sfActions
     	case 'DC': 
     	        $OC = CessioPeer::retrieveByPK($this->getUser()->getSessionPar('IDC'));
     	        $this->getUser()->addLogAction($accio,'gCessio',$OC);
+                myUser::addLogTimeline( 'baixa' , 'cessio' , $this->getUser()->getSessionPar('idU') , $this->IDS , $OC );                
     	        $OC->setActiu(false)->save();    	        
     	        break;
     	        
@@ -3634,6 +3650,7 @@ class gestioActions extends sfActions
     		    if($this->FCessio->isValid()): 
     		    	$this->FCessio->save();
     		    	$this->getUser()->addLogAction($accio,'gCessio',$this->FCessio->getObject());
+                    myUser::addLogTimeline( 'retorn' , 'cessio' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RCESSIO['cessio_id'] );
     		    	$this->redirect('gestio/gCessio?accio=C');
     		    endif;
     		    $this->MODE = 'EDICIO_RETORN';
@@ -4393,7 +4410,8 @@ class gestioActions extends sfActions
   				
   				if($this->FPERSONAL->isValid()):
   					$this->FPERSONAL->save();
-  					$this->getUser()->addLogAction($accio,'gPersonal',$this->FPERSONAL->getObject());
+  					$this->getUser()->addLogAction($accio,'gPersonal',$this->FPERSONAL->getObject());                    
+                    myUser::addLogTimeline( 'alta' , 'personal' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FPERSONAL->getObject()-> Incidencia->getObject()->getIdpersonal() );
   					$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$idD.'&IDU='.$idU);
   				else: 
   					$this->ERROR[] = "Hi ha algun problema amb el formulari.";
@@ -4410,6 +4428,7 @@ class gestioActions extends sfActions
                 $OP->setActiu(false);                
                 $OP->save();
                 $this->getUser()->addLogAction($accio,'gPersonal',$OP);
+                myUser::addLogTimeline( 'baixa' , 'personal' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['idData'] );
 				$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$idD.'&IDU='.$idU);				  			
   			break;
   	}

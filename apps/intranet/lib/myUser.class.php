@@ -380,7 +380,7 @@ class myUser extends sfBasicSecurityUser
     }           
     
     /**
-     * Afegeix una línia al registre temporal per saber les novetats d'un usuari.  
+     * Agafa tots els usuaris de l'entitat i hi guarda la línia.   
      * @param $accio = Quina acció ha realitzat ( Alta , baixa, etc... )
      * @param $ON = A quina part de l'aplicatiu
      * @param $qui = Qui ha fet aquesta acció
@@ -389,18 +389,26 @@ class myUser extends sfBasicSecurityUser
      * */
     static public function addLogTimeline( $accio , $ON , $qui , $idS , $idElement )
     {
-   	    $time = time();
-  
-        $REG  = "<dades>";
-        $REG .=  "<quan>".$time.'</quan>';
-        $REG .=  "<accio>".$accio."</accio>";
-        $REG .=  "<lloc>".$ON."</lloc>";
-        $REG .=  "<qui>".$qui."</qui>";
-      	$REG .=  "<site>".$idS."</site>";        
-        $REG .=  "<id>".$idElement.'</id>';
-        $REG .= "</dades>".PHP_EOL;
-              	  	  	  	  		  	
-        file_put_contents('log_timeline.txt', $REG, FILE_APPEND);
+   	 
+        $A_OUS = UsuarisSitesPeer::getSitesUsers($idS);                                
+        
+        //Per cada usuari, guardem al seu registre
+        foreach($A_OUS as $OUS):
+        
+            $time = time();
+      
+            $REG  = "<dades>";
+            $REG .=  "<quan>".$time."</quan>";
+            $REG .=  "<accio>".$accio."</accio>";
+            $REG .=  "<lloc>".$ON."</lloc>";
+            $REG .=  "<qui>".$qui."</qui>";
+          	$REG .=  "<site>".$idS."</site>";        
+            $REG .=  "<id>".$idElement."</id>";
+            $REG .= "</dades>".PHP_EOL;
+                  	  	  	  	  		  	
+            file_put_contents(getcwd().'/timelines/log_'.$OUS->getUsuariId().'.txt', $REG, FILE_APPEND);
+        
+        endforeach;                     
 
     }
     
