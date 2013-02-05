@@ -128,6 +128,7 @@
     
     function EnviaFormulariDescripcio(){
 
+        tinyMCE.triggerSave();        
         $.post( 
             '<?php echo url_for('gestio/gActivitats?accio=DESCRIPCIO_SAVE'); ?>', 
             { FORMULARI: $("#FORMULARI_DESCRIPCIO").serialize() } , 

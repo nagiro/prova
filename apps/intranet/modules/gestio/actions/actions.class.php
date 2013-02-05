@@ -1866,7 +1866,7 @@ class gestioActions extends sfActions
     	case 'DESCRIPCIO_SAVE':
     			
     			parse_str($request->getParameter('FORMULARI') , $RP );                
-    			$RP = $RP['activitats'];                
+    			$RP = $RP['activitats'];                       
                 $this->IDA = $RP['ActivitatID'];                
 		    			
     			$this->FActivitat = ActivitatsPeer::initializeDescription($this->IDA,$this->IDS);    			
@@ -2077,7 +2077,10 @@ class gestioActions extends sfActions
       			$this->FAgenda->bind($RA);
       			if($this->FAgenda->isValid()):
 					$this->FAgenda->save();
-					$this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
+					
+                    $this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
+                    myUser::addLogTimeline( 'alta' , 'agenda' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FAgenda->getObject()->getAgendatelefonicaId() );
+                    
                     $this->AID = $this->FAgenda->getObject()->getAgendatelefonicaid();													
 					AgendatelefonicadadesPeer::update( $request->getParameter('Dades') , $this->AID , $this->IDS ); //Actualitzem tambÃ© les dades relacionades
 					$this->MISSATGE = "El registre s'ha modificat correctament.";
@@ -2095,6 +2098,7 @@ class gestioActions extends sfActions
                 if(!$this->FAgenda->isNew()):
                     $this->FAgenda->getObject()->setInactiu();                                                   
                     $this->getUser()->addLogAction($this->accio,'gAgenda',$this->FAgenda->getObject());
+                    myUser::addLogTimeline( 'baixa' , 'agenda' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FAgenda->getObject()->getAgendatelefonicaId() );
                 endif;  
                 break;       
       default:                 

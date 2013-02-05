@@ -377,6 +377,31 @@ class myUser extends sfBasicSecurityUser
         $dompdf->set_paper("A4","portrait");
         $dompdf->render();
         $dompdf->stream("/tmp/document.pdf");
-    }   
+    }           
+    
+    /**
+     * Afegeix una línia al registre temporal per saber les novetats d'un usuari.  
+     * @param $accio = Quina acció ha realitzat ( Alta , baixa, etc... )
+     * @param $ON = A quina part de l'aplicatiu
+     * @param $qui = Qui ha fet aquesta acció
+     * @param $idS = Entitat que està fent l'acció
+     * @param Accions: Contactes, Taulell, Material, Cessió, Reserva d'espais, Incidències, Horaris ( canvi ), Cursos, Matrícula, Cicle, Entrada, Usuari, email-llista, Notícia, 
+     * */
+    static public function addLogTimeline( $accio , $ON , $qui , $idS , $idElement )
+    {
+   	    $time = time();
+  
+        $REG  = "<dades>";
+        $REG .=  "<quan>".$time.'</quan>';
+        $REG .=  "<accio>".$accio."</accio>";
+        $REG .=  "<lloc>".$ON."</lloc>";
+        $REG .=  "<qui>".$qui."</qui>";
+      	$REG .=  "<site>".$idS."</site>";        
+        $REG .=  "<id>".$idElement.'</id>';
+        $REG .= "</dades>".PHP_EOL;
+              	  	  	  	  		  	
+        file_put_contents('log_timeline.txt', $REG, FILE_APPEND);
+
+    }
     
 }
