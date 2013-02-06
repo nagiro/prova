@@ -298,6 +298,7 @@ class CursosPeer extends BaseCursosPeer
     elseif( $m > 3 && $m <=6 ) $RET = array('ID'=>"4-".$y, 'NOM'=> "Segon trimestre");
     elseif( $m > 6 && $m <=9 ) $RET = array('ID'=>"7-".$y, 'NOM'=> "Tercer trimestre");
     elseif( $m > 9 && $m <= 12 ) $RET = array('ID'=>"10-".$y, 'NOM'=> "Quart trimestre");
+    else $RET = array('ID'=>0, 'NOM'=>'N/D');
     return $RET;
   }
 

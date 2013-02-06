@@ -883,6 +883,58 @@ class myUser extends sfBasicSecurityUser
     }   
 
 
-    
-  
+    /**
+     * Agafa tots els usuaris de l'entitat i hi guarda la línia. Els canvis s'han de repetir a Intranet   
+     * @param $accio = Quina acció ha realitzat ( Alta , baixa, etc... )
+     * @param $ON = A quina part de l'aplicatiu
+     * @param $qui = Qui ha fet aquesta acció
+     * @param $idS = Entitat que està fent l'acció
+     * @param Accions: Contactes, Taulell, Material, Cessió, Reserva d'espais, Incidències, Horaris ( canvi ), Cursos, Matrícula, Cicle, Entrada, Usuari, email-llista, Notícia, 
+     * */
+    static public function addLogTimeline( $accio , $ON , $qui , $idS , $idElement )
+    {
+   	 
+        //Si estem fent una operació sobre "HOspici" marquem l'arxiu de l'Hospici. 
+        if($idS == 0):
+                                
+            $time = time();
+      
+            $REG  = "<dades>";
+            $REG .=  "<quan>".$time."</quan>";
+            $REG .=  "<accio>".$accio."</accio>";
+            $REG .=  "<lloc>".$ON."</lloc>";
+            $REG .=  "<qui>".$qui."</qui>";
+          	$REG .=  "<site>".$idS."</site>";        
+            $REG .=  "<id>".$idElement."</id>";
+            $REG .= "</dades>".PHP_EOL;
+                  	  	  	  	  		  	
+            file_put_contents(getcwd().'/timelines/log_0.txt', $REG, FILE_APPEND);                        
+        
+        //Sinó marquem a tots
+        else:
+        
+            $A_OUS = UsuarisSitesPeer::getSitesUsers($idS);                                
+            
+            //Per cada usuari, guardem al seu registre
+            foreach($A_OUS as $OUS):
+            
+                $time = time();
+          
+                $REG  = "<dades>";
+                $REG .=  "<quan>".$time."</quan>";
+                $REG .=  "<accio>".$accio."</accio>";
+                $REG .=  "<lloc>".$ON."</lloc>";
+                $REG .=  "<qui>".$qui."</qui>";
+              	$REG .=  "<site>".$idS."</site>";        
+                $REG .=  "<id>".$idElement."</id>";
+                $REG .= "</dades>".PHP_EOL;
+                      	  	  	  	  		  	
+                file_put_contents(getcwd().'/timelines/log_'.$OUS->getUsuariId().'.txt', $REG, FILE_APPEND);
+            
+            endforeach;
+                                 
+          endif;
+
+    }
+
 }

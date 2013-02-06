@@ -249,6 +249,7 @@ class webActions extends sfActions
             $this->FUSUARI->save();
             $this->SECCIO = 'GUARDAT';
             $OU = $this->FUSUARI->getObject();
+            myUser::addLogTimeline( 'alta' , 'Usuari (Hospici)' , $OU->getUsuariId() , 0 , $OU->getUsuariId() );
             $this->makeLogin($OU->getDni(),$OU->getPasswd());                        
         else: 
             $this->SECCIO = 'INICI';        
@@ -283,6 +284,7 @@ class webActions extends sfActions
                 $FU->bind($RS);                
                 if($FU->isValid()):
                     $FU->save();
+                    myUser::addLogTimeline( 'modificacio' , 'Usuari (Hospici)' , $FU->getObject()->getUsuariId() , 0 , $FU->getObject()->getUsuariId() );
                     $this->MISSATGE1 = "OK";                                                 
                 endif;                                                       
             endif;
@@ -398,7 +400,7 @@ class webActions extends sfActions
             
             $AVISOS = $RET['AVISOS'];            
             $this->SECCIO = 'MATRICULA';
-            $this->getUser()->addLogAction('SAVE_MATRICULA','gMatricules',$RET['OM']->getIdmatricules());
+            $this->getUser()->addLogAction('SAVE_MATRICULA','gMatricules',$RET['OM']->getIdmatricules());            
                                                                  			
             //Si la matrícula surt amb algun error greu, redireccionem i mostrem un missatge.            
             $this->redirectIf(array_key_exists('ERR_USUARI',$AVISOS),'web/cursos?accio=detall_curs&idC='.$idC.'&mis=ERR_USUARI');
@@ -411,8 +413,8 @@ class webActions extends sfActions
             elseif(array_key_exists('RESERVA_OK',$AVISOS)) $this->MISSATGE3 = "OK";
             elseif(array_key_exists('MATRICULA_METALIC_OK',$AVISOS)) $this->MISSATGE3 = 'OK';            
             elseif(array_key_exists('MATRICULA_DOMICILIACIO_OK',$AVISOS)) $this->MISSATGE3 = 'OK';
-            elseif(array_key_exists('MATRICULA_CODI_BARRES',$AVISOS)) $this->MISSATGE3 = 'OK';
-    
+            elseif(array_key_exists('MATRICULA_CODI_BARRES',$AVISOS)) $this->MISSATGE3 = 'OK';                
+            
             //Si la matrícula es paga amb TPV posem les dades per a fer el pagament.
             if(array_key_exists('PAGAMENT_TPV',$AVISOS)):
                 $NOM  = UsuarisPeer::retrieveByPK($RET['OM']->getUsuarisUsuariid())->getNomComplet();
@@ -442,8 +444,13 @@ class webActions extends sfActions
                 $RET['OM']->save();
             endif;
 
-            if(empty($this->MISSATGE3)) $this->MISSATGE3 = "KO";                        
-                             
+            if(empty($this->MISSATGE3)) $this->MISSATGE3 = "KO";
+                        
+            //Si no hi ha cap error i no és un pagament amb targeta, marquem com a matrícula feta
+            if($this->MISSATGE3 == 'OK' && !array_key_exists('PAGAMENT_TPV',$AVISOS) ):
+                myUser::addLogTimeline( 'alta' , 'Matricules (Hospici)' , $RET['OM']->getUsuarisUsuariid() , $RET['OM']->getSiteId() , $RET['OM']->getIdmatricules() );
+            endif;
+                                                                             
         break;
 
         //S'ha matriculat correctament i TPV ok
@@ -470,7 +477,7 @@ class webActions extends sfActions
             $this->SECCIO = "RESERVA";
             $OR = ReservaespaisPeer::retrieveByPK($request->getParameter('idR'));
             if($OR instanceof Reservaespais):
-                $this->FReserva = new HospiciReservesForm($OR,array('IDS'=>$OR->getSiteid()));
+                $this->FReserva = new HospiciReservesForm($OR,array('IDS'=>$OR->getSiteid()));                
                 $this->OPCIONS = 'VISUALITZA'; 
             else: 
                 $this->redirect('@hospici_llista_reserves');
@@ -511,6 +518,9 @@ class webActions extends sfActions
                 $sub  = "Hospici | Nova reserva d'espai";
                 $miss = "S'ha sol·licitat una nova reserva d'espai amb el codi {$idReserva}";                              
                 $this->sendMail($from, $to, $sub, $miss);
+                
+                //Guardem el registre al timeline
+                myUser::addLogTimeline( 'alta' , 'Reserva (Hospici)' , $idU , $RP['site_id'] , $this->FReserva->getObject()->getReservaespaiid() );
                 
                 //Vinculem l'usuari amb el site corresponent
                 UsuarisPeer::addSite($idU,$RP['site_id']);
@@ -560,12 +570,14 @@ class webActions extends sfActions
                 if($request->hasParameter('B_ACCEPTO')){
                     $OR->setEstat(ReservaespaisPeer::ACCEPTADA);
                     $OR->setDataacceptaciocondicions(date('Y-m-d',time()));
-                    $OR->save();            
+                    $OR->save();   
+                    myUser::addLogTimeline( 'acceptada' , 'Reserva (Hospici)' , $idU , $OR->getSiteId() , $OR->getReservaespaiid() );         
                     $this->redirect('@hospici_llista_reserves?estat=RESERVA_ACCEPTADA');
                 } elseif($request->hasParameter('B_NO_ACCEPTO')){
                     $OR->setEstat(ReservaespaisPeer::ANULADA);
                     $OR->setDataacceptaciocondicions(date('Y-m-d',time()));
                     $OR->save();
+                    myUser::addLogTimeline( 'no_acceptada' , 'Reserva (Hospici)' , $idU , $OR->getSiteId() , $OR->getReservaespaiid() );
                     $this->redirect('@hospici_llista_reserves?estat=RESERVA_ANULADA');
                 } else {
                     $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');
@@ -626,7 +638,8 @@ class webActions extends sfActions
                 $OER->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
                 $OER->setTpvOrder($request->getParameter('Ds_Order'));
                 $OER->setPagat($preu);
-                $OER->save();                            
+                $OER->save();
+                myUser::addLogTimeline( 'compra targ.' , 'Entrades (Hospici)' , $OER->getUsuariid() , $OER->getSiteId() , $OER->getIdentrada() );                            
                                                 
                 $email = $OER->getEmail();
                 if($email <> "") $this->sendMail( $from , $email , $subject , $MailEnt );
@@ -657,12 +670,12 @@ class webActions extends sfActions
 
   public function executeGetTPV(sfWebRequest $request)
   {
-
+    
     //Comprovem que vingui la crida per POST i que la resposta sigui 0000. Tot OK. 
     //if( $request->getParameter('Ds_Response') == '0000' )
     if( $request->getParameter('Ds_Response') == '0000' )                                
     {
-        
+    
         $idM = $request->getParameter('Ds_MerchantData',null);
         
         $OM     = MatriculesPeer::retrieveByPK($idM);
@@ -684,7 +697,8 @@ class webActions extends sfActions
                 $OM->setTpvOperacio($request->getParameter('Ds_AuthorisationCode'));
                 $OM->setTpvOrder($request->getParameter('Ds_Order'));
                 $OM->setPagat($preu);
-                $OM->save();                            
+                $OM->save();    
+                myUser::addLogTimeline( 'matricula targ.' , 'Matricules (Hospici)' , $OM->getUsuarisUsuariid() , $OM->getSiteId() , $OM->getIdmatricules() );                        
                 
                 $this->sendMail( $from , $OM->getUsuaris()->getEmail() , $subject , $MailMat );
                 $this->sendMail( $from , 'informatica@casadecultura.org' , $subject , $MailMat );
@@ -983,6 +997,7 @@ class webActions extends sfActions
                     $this->makeLogin($OU->getDNI(),$OU->getPasswd());
                     
                     if($OR instanceof Reservaespais && $OR->setAcceptada()):
+                        myUser::addLogTimeline( 'acceptada' , 'Reserva (Hospici)' , $this->IDU , $OR->getSiteId() , $OR->getReservaespaiid() );
                         $this->redirect('@hospici_llista_reserves?estat=RESERVA_ACCEPTADA');                        
                     else:
                         $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');                        
@@ -1000,6 +1015,7 @@ class webActions extends sfActions
                     $this->makeLogin($OU->getDNI(),$OU->getPasswd());
                                         
                     if($OR instanceof Reservaespais && $OR->setRebutjada()):        
+                        myUser::addLogTimeline( 'no_acceptada' , 'Reserva (Hospici)' , $this->IDU , $OR->getSiteId() , $OR->getReservaespaiid() );
                         $this->redirect('@hospici_llista_reserves?estat=RESERVA_ANULADA');                        
                     else:
                         $this->redirect('@hospici_llista_reserves?estat=ERROR_TECNIC');                        

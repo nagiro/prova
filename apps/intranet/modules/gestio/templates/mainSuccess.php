@@ -1,8 +1,14 @@
 <script>
 
 	$(document).ready(function() {    
-        $("#ORDENA_HORARIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").show(); $("#LLISTAT_ORDENAT_ESPAIS").hide(); });
-        $("#ORDENA_ESPAIS").click(function(){ $("#LLISTAT_ORDENAT_HORARIS").hide(); $("#LLISTAT_ORDENAT_ESPAIS").show(); });
+        $( "#ORDENA_HORARIS" ).click(function(){ $("#LLISTAT_ORDENAT_HORARIS").show(); $("#LLISTAT_ORDENAT_ESPAIS").hide(); });
+        $( "#ORDENA_ESPAIS" ).click(function(){ $("#LLISTAT_ORDENAT_HORARIS").hide(); $("#LLISTAT_ORDENAT_ESPAIS").show(); });
+        $( "#B-NETEJA-NOVETATS" ).button({ icons: { primary: 'ui-icon-trash' } , label: "Buida el llistat"}).click(function(){
+            $.post( '<?php echo url_for('gestio/main?accio=NETEJA_LLISTAT'); ?>' ); 
+            $(".fila_novetats").hide();            
+            return false;
+            
+        });                                                     
     });
     
 </script>
@@ -12,22 +18,6 @@
 </style>
 <td colspan="3" class="CONTINGUT_ADMIN">
      
-	<div class="REQUADRE">
-		<div class="TITOL">Resum d'avui</div>        
-      	<table class="DADES">
-            <tr>
-                <td class="titol" colspan="2">ESPAIS</td>
-                <td class="titol" >MATRÍCULES</td>
-                <td class="titol" >ENTRADES</td>
-            </tr>
-			<tr>
-                <td>Nova petició: <?php echo $N_PETICIONS_ESPERA ?></td>
-                <td>Pendent acceptar: <?php echo $N_PETICIONS_PENDENTS_ACCEPTAR ?></td>
-    			<td>Matrícules avui: <?php echo $N_MATRICULES ?></td>    			
-    			<td>Entrades avui: <?php echo $N_ENTRADES_VENUDES ?></td>    			
-            </tr> 	 				    	
-      	</table>      
-      </div>
 	  
 	<div class="REQUADRE">
 		<div class="TITOL">Missatges d'avui</div>
@@ -211,6 +201,60 @@
                 ?>                                                       
 		</table>        
 	</div>
+
+
+	<div class="REQUADRE">
+		<div class="TITOL">Novetats</div>
+        
+        <table width="100%">
+            <tr><td class="titol">On</td><td class="titol">Quan</td><td class="titol">Qui</td><td class="titol">Què</td><td class="titol">ID</td></tr>                                
+  
+      	<?php 
+            foreach( myUser::getLogTimeline( $IDU , $IDS ) as $id => $A ):
+            
+                foreach($A as $E):
+                                                                                                                     
+                     $link = "";
+                     switch( $id ){
+                        case 'agenda':              $link = link_to( 'clica' , 'gestio/gAgenda?accio=E&AID='.$E->id,array('target'=>'_new'));   break;
+                        case 'taulell':             $link = link_to( 'clica' , 'gestio/gMissatges?accio=E&IDM='.$E->id , array('target'=>'_new'));  break;                            
+                        case 'material':            $link = link_to( 'clica' , 'gestio/gMaterial?accio=E&IDM='.$E->id.'&PAGINA=1' , array('target'=>'_new'));   break;
+                        case 'cessio':              $link = link_to( 'clica' , 'gestio/gCessio?accio=EC&IDC='.$E->id.'&PAGINA=1' , array('target'=>'_new'));    break;
+                        case 'incidencies':         $link = link_to( 'clica' , 'gestio/gIncidencies?accio=E&IDI='.$E->id.'&PAGINA=1' , array('target'=>'_new'));    break;
+                        case 'personal':            $link = link_to( 'clica' , 'gestio/gPersonal?accio=EDIT_CHANGE&IDPERSONAL='.$E->id , array('target'=>'_new'));  break;
+                        case 'cursos':              $link = link_to( 'clica' , 'gestio/gCursos?accio=EC&IDC='.$E->id , array('target'=>'_new'));    break;                                 
+                        case 'matricules':          $link = link_to( 'clica' , 'gestio/gMatricules?accio=E&IDM='.$E->id , array('target'=>'_new')); break;        
+                        case 'activitats':          $link = link_to( 'clica' , 'gestio/gActivitats?accio=ACTIVITAT&IDA='.$E->id , array('target'=>'_new')); break;
+                        case 'horaris':             $link = link_to( 'clica' , 'gestio/gActivitats?accio=ACTIVITAT&IDA='.$E->id , array('target'=>'_new')); break;
+                        case 'cicles':              $link = link_to( 'clica' , 'gestio/gCicles?accio=EDITA&IDC='.$E->id , array('target'=>'_new')); break;
+                        case 'usuaris':             $link = link_to( 'clica' , 'gestio/gUsuaris?PAGINA=1&id_usuari='.$E->id.'&accio=E' , array('target'=>'_new')); break;     
+                        case 'usuaris_llistes':     $link = link_to( 'clica' , 'gestio/gLlistes?accio=EDITLIST&IDL='.$E->id , array('target'=>'_new')); break;                            
+                        case 'reserves':            $link = link_to( 'clica' , 'gestio/gReserves?accio=E&IDR='.$E->id , array('target'=>'_new'));   break;
+                        case 'Usuari (Hospici)':    $link = link_to( 'clica' , 'gestio/gUsuaris?PAGINA=1&id_usuari='.$E->id.'&accio=E' , array('target'=>'_new')); break;
+                        case 'Reserva (Hospici)':   $link = link_to( 'clica' , 'gestio/gReserves?accio=E&IDR='.$E->id , array('target'=>'_new'));   break;
+                        //case 'Entrades (Hospici)':  $link = link_to( 'clica' , 'gestio/gReserves?accio=E&IDR='.$E->id , array('target'=>'_new'));   break;
+                        case 'Matricules (Hospici)':$link = link_to( 'clica' , 'gestio/gMatricules?accio=E&IDM='.$E->id , array('target'=>'_new')); break;                                                    
+                     }
+                                                               
+                ?> 
+                    <tr class="fila_novetats">
+                        <td><?php echo $id ?></td>
+                        <td><?php echo date('d/m/Y H:i',(string)$E->quan) ?></td>
+                        <td><?php echo UsuarisPeer::getNomComplet( (string)$E->qui ) ?></td>
+                        <td><?php echo $E->accio ?></td>
+                        <td><?php echo $link ?></td>                        
+                    </tr>  
+                <?php                 
+                endforeach;
+            endforeach;
+          
+          ?>
+        </table>
+        <br />
+        <button id="B-NETEJA-NOVETATS"></button>
+      </div>
+
+
 
     <!-- FINALITZA ACTIVITATS PER AVUI -->
             

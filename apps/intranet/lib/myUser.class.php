@@ -412,4 +412,57 @@ class myUser extends sfBasicSecurityUser
 
     }
     
+
+    /**
+     * Agafa un fitxer de timeline i retorna les dades en format d'array.   
+     * @param $accio = Quina acció ha realitzat ( Alta , baixa, etc... )
+     * @param $ON = A quina part de l'aplicatiu
+     * @param $qui = Qui ha fet aquesta acció
+     * @param $idS = Entitat que està fent l'acció
+     * @param Accions: Contactes, Taulell, Material, Cessió, Reserva d'espais, Incidències, Horaris ( canvi ), Cursos, Matrícula, Cicle, Entrada, Usuari, email-llista, Notícia, 
+     * */
+    static public function getLogTimeline( $idU , $idS )
+    {
+   	         
+        $ARXIU = file_get_contents(getcwd().'/timelines/log_'.$idU.'.txt');        
+        $dades = simplexml_load_string('<info>'.$ARXIU.'</info>');                
+        $RET = array();
+        
+        foreach($dades->dades as $id => $E):
+                
+            $L = (string)$E->lloc;                        
+            $RET[$L][] = $E;                                    
+        
+        endforeach;
+        
+        if($idU == 1):
+
+            $ARXIU = file_get_contents(getcwd().'/timelines/log_0.txt');        
+            $dades = simplexml_load_string('<info>'.$ARXIU.'</info>');                            
+            
+            foreach($dades->dades as $id => $E):
+                    
+                $L = (string)$E->lloc;                        
+                $RET[$L][] = $E;                                    
+            
+            endforeach;
+
+        endif;
+        
+        
+        return $RET;
+                             
+    }
+
+    /**
+     * Aquesta funció deixa el fitxer de l'usuari buit.          
+     * */
+    static public function setEmptyTimeline( $idU )
+    {   
+        //Si és l'usuari 1, també buida les novetats de l'Hospici.
+        if($idU == 1){ file_put_contents(getcwd().'/timelines/log_0.txt',""); }
+        return file_put_contents(getcwd().'/timelines/log_'.$idU.'.txt',"");                                                              
+    }
+
+    
 }

@@ -127,9 +127,9 @@ class Cursos extends BaseCursos
     $SEL = ($intranet)?$this->getPagamentintern():$this->getPagamentextern();
     $SEL = explode( '@' , $SEL );
     
-    if($mostra_escull) $RET[0] = 'Escull una modalitat...'; 
-    foreach($SEL as $E):        
-        $RET[$E] = $ALL[$E];
+    if($mostra_escull) $RET[0] = 'Escull una modalitat...';           
+    foreach($SEL as $E):                
+        if(!empty($E)) $RET[$E] = $ALL[$E];
     endforeach;
     
     return $RET;

@@ -309,7 +309,7 @@ class gestioActions extends sfActions
 
      switch($this->accio){
         
-        case 'LOGOUT':                
+        case 'LOGOUT':                                
                 $this->getUser()->setSessionPar('idU',0);
                 $this->getUser()->setSessionPar('idS',0);
                 $this->getUser()->setSessionPar('idN',NivellsPeer::CAP);
@@ -469,10 +469,11 @@ class gestioActions extends sfActions
   /**
    * Primera crida de l'aplicatiu per a registrats   
    */        
-  public function executeMain()
+  public function executeMain(sfWebRequest $request)
   { 
   	                               	  	                                                   
-  	$this->getUser()->addLogAction('inside','Main');
+  	
+    $this->getUser()->addLogAction('inside','Main');
   	
     $this->setLayout('gestio');
     $this->IDS = $this->getUser()->getSessionPar('idS');
@@ -481,11 +482,11 @@ class gestioActions extends sfActions
     
     //Carreguem quantes incidències noves hi ha
     //$this->NINCIDENCIES = IncidenciesPeer::QuantesAvui($this->IDS);
-    $this->N_PETICIONS_ESPERA = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::EN_ESPERA); 
-    $this->N_PETICIONS_PENDENTS_ACCEPTAR = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::PENDENT_CONFIRMACIO);
+    //$this->N_PETICIONS_ESPERA = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::EN_ESPERA); 
+    //$this->N_PETICIONS_PENDENTS_ACCEPTAR = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::PENDENT_CONFIRMACIO);
         
     //Carreguem quantes matrícules noves hi ha
-    $this->N_MATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
+    //$this->N_MATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
     //Carreguem quant material nou hi ha
     //$this->NMATERIAL    = 0;
     //Carreguem quants missatges nous hi ha
@@ -506,7 +507,14 @@ class gestioActions extends sfActions
     
     //Carreguem les activitats d'avui :D
     $this->ACTIVITATS = HorarisPeer::getActivitats(time() , null , null , null , null, $this->IDS );
-    $this->ACTIVITATS = $this->ACTIVITATS['ACTIVITATS'];    
+    $this->ACTIVITATS = $this->ACTIVITATS['ACTIVITATS'];
+    $this->IDU = $idU;
+    
+    $PAR = $request->getParameter('accio',"");
+    if($PAR == 'NETEJA_LLISTAT'):
+        myUser::setEmptyTimeline($this->IDU);
+        return $this->renderText();
+    endif;        
   
   }
   
@@ -596,8 +604,9 @@ class gestioActions extends sfActions
         	$RP = $request->getParameter('usuaris');
             $this->IDU = $RP['UsuariID']; 
             $this->FUsuari = UsuarisPeer::initialize( $this->IDU , $this->IDS , false );
-            $this->FUsuari->getObject()->setActiu(false)->save();        	        	
-        	$this->getUser()->addLogAction($accio,'gUsuaris',$this->FUsuari->getObject());        	        	
+            $this->FUsuari->getObject()->setActiu(false)->save();                    	        	
+        	$this->getUser()->addLogAction($accio,'gUsuaris',$this->FUsuari->getObject());
+            myUser::addLogTimeline( 'baixa' , 'usuaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['UsuariID'] );        	        	
         	$this->redirect('gestio/gUsuaris?accio=FC');        	
         	break;
        
@@ -632,6 +641,8 @@ class gestioActions extends sfActions
 		    { 		     	
 	    	  $this->FUsuari->save();
               $this->getUser()->addLogAction($accio,'gUsuaris',null, $this->FUsuari->getObject());
+              myUser::addLogTimeline( 'alta' , 'usuaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FUsuari->getObject()->getUsuariId() );
+
               $this->MISSATGE = 'Usuari guardat correctament'; 
 		    }                		     
 		    $this->MODE['EDICIO'] = true;      		     
@@ -1030,6 +1041,7 @@ class gestioActions extends sfActions
                 $this->IDL = $this->LLISTA->getIdllista();            
                 $this->INPUTS = LlistesLlistesEmailsPeer::addEmails( $request->getParameter('llistat_mails') , $this->IDL , $this->IDS );
                 $this->EMAILS = LlistesLlistesEmailsPeer::getEmailsFromLlistes( array( $this->IDL ) , $request->getParameter('P',1) );
+                myUser::addLogTimeline( 'alta' , 'usuaris_llistes' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->IDL );
                 $this->MODE = 'EDIT_LIST';
                         
             break;
@@ -1732,6 +1744,7 @@ class gestioActions extends sfActions
 	    			$nova = $this->FActivitat->isNew();                    
 	    			$this->FActivitat->save();	    			
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
+                    myUser::addLogTimeline( 'alta' , 'activitats' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['ActivitatID'] );
 	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();                    	    			
 	    			$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);	    			 	    				    		                                                             
 	    		else:                 
@@ -1750,7 +1763,8 @@ class gestioActions extends sfActions
 	    		$this->FActivitat = ActivitatsPeer::initialize($this->IDA,$this->IDC,$this->IDS);
 	    		$OA = $this->FActivitat->getObject();
 	    		if($OA instanceof Activitats):
-	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);                    
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OA);
+                    myUser::addLogTimeline( 'baixa' , 'activitats' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['ActivitatID'] );                    
                     $OA->setInactiu();
 	    			$this->redirect('gestio/gActivitats?accio=CC');
 	    		endif; 	    		
@@ -1827,7 +1841,8 @@ class gestioActions extends sfActions
                                     		
     	    		//Si no hi ha hagut cap error, ho guardem al log com un canvi en l'horari
                     if(empty($ERRORS)): 
-    	    			$this->getUser()->addLogAction('HORARI_SAVE','gActivitats',$FHorari->getObject());    	    			
+    	    			$this->getUser()->addLogAction('HORARI_SAVE','gActivitats',$FHorari->getObject());
+                        myUser::addLogTimeline( 'alta' , 'horaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $IDA );    	    			
                         return $this->renderText( implode( "\n" , $ERRORS ) );
                         //Hem d'informar que ha anat tot bé.                         	    			
     	    		else:                         
@@ -1847,6 +1862,7 @@ class gestioActions extends sfActions
     			$OH = HorarisPeer::retrieveByPK($RP['horaris']['HorarisID']);
     			if($OH instanceof Horaris):
 	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$OH);
+                    myUser::addLogTimeline( 'baixa' , 'horaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['horaris']['Activitats_ActivitatID'] );
 	    			$OH->setInactiu();
                     return $this->renderText( "" );
                 else: 
@@ -2600,6 +2616,7 @@ class gestioActions extends sfActions
                     
                     $this->OC = $OC;                    
                     $this->getUser()->addLogAction($accio,'gCursos',$OC->getIdcursos());
+                    myUser::addLogTimeline( 'alta' , 'cursos' , $this->getUser()->getSessionPar('idU') , $this->IDS , $OC->getIdcursos() );
                     
                 else:
                                                          
@@ -2614,7 +2631,8 @@ class gestioActions extends sfActions
                 $RP = $request->getParameter('cursos');
                 $this->FCurs = CursosPeer::initialize( $RP['idCursos'] , $this->IDS );
                 $this->FCurs->getObject()->setActiu(false)->save();                            			    			
- 				$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());    	        					
+ 				$this->getUser()->addLogAction($accio,'gCursos',$this->FCurs->getObject());
+                 myUser::addLogTimeline( 'baixa' , 'cursos' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['idCursos'] );    	        					
 				$this->redirect('gestio/gCursos?accio=CA');
     	    break;
 		case 'CI' :	
@@ -2989,7 +3007,8 @@ class gestioActions extends sfActions
 	    $this->FReserva->bind($RP);    		    
 	    if($this->FReserva->isValid()):
 	    	$this->FReserva->save();
-	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);	    	
+	    	$this->getUser()->addLogAction($accio,'gReserves',$this->FReserva);
+            myUser::addLogTimeline( 'alta' , 'reserves' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['ReservaEspaiID'] );	    	
             return true; 
         else:
             return false;  
@@ -3131,7 +3150,7 @@ class gestioActions extends sfActions
                 $this->OM = MatriculesPeer::retrieveByPK( $this->IDM );                    			 
                 $this->MISSATGE = $request->getParameter('MISSATGE');                      			
     			$this->MODE = 'PAGAMENT';                
-                $this->getUser()->addLogAction($accio,'gMatricules',$this->IDM);
+                $this->getUser()->addLogAction($accio,'gMatricules',$this->IDM);                
                  					
     		break;
             
@@ -3153,6 +3172,7 @@ class gestioActions extends sfActions
                 $OM->setActiu(false);
                 $OM->save(); 
     			$this->getUser()->addLogAction($accio,'gMatricules',$OM);
+                myUser::addLogTimeline( 'baixa' , 'matricules' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RM['idMatricules'] );
     			
     	    break;
     	    
@@ -3171,7 +3191,8 @@ class gestioActions extends sfActions
     			$this->FMATRICULA->bind($RS);    			
     			if($this->FMATRICULA->isValid()):
     				$this->FMATRICULA->save();
-    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMATRICULA->getObject());    				
+    				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMATRICULA->getObject());
+                    myUser::addLogTimeline( 'alta' , 'matricules' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RS['idMatricules'] );    				
     				$this->redirect('gestio/gMatricules?accio=CA');
     			endif;
     			$this->MODE = 'EDICIO';    		
@@ -4411,7 +4432,7 @@ class gestioActions extends sfActions
   				if($this->FPERSONAL->isValid()):
   					$this->FPERSONAL->save();
   					$this->getUser()->addLogAction($accio,'gPersonal',$this->FPERSONAL->getObject());                    
-                    myUser::addLogTimeline( 'alta' , 'personal' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FPERSONAL->getObject()-> Incidencia->getObject()->getIdpersonal() );
+                    myUser::addLogTimeline( 'alta' , 'personal' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FPERSONAL->getObject()->getIdpersonal() );
   					$this->redirect('gestio/gPersonal?accio=EDIT_DATE&DATE='.$idD.'&IDU='.$idU);
   				else: 
   					$this->ERROR[] = "Hi ha algun problema amb el formulari.";
@@ -4495,6 +4516,7 @@ class gestioActions extends sfActions
     			if($this->FCICLES->isValid()):
     				$this->FCICLES->save();                        				
     				$this->getUser()->addLogAction($accio,'gCicles',$this->FCICLES->getObject());
+                    myUser::addLogTimeline( 'alta' , 'cicles' , $this->getUser()->getSessionPar('idU') , $this->IDS , $PC['CicleID'] );
     			else: 
     				$this->MODE = 'EDITA';
     			endif; 
@@ -4504,6 +4526,7 @@ class gestioActions extends sfActions
     			$PC = $request->getParameter('cicles');
     			$FC = CiclesPeer::initialize($PC['CicleID'],$this->IDS);
     			$this->getUser()->addLogAction($accio,'gCicles',$FC);
+                myUser::addLogTimeline( 'baixa' , 'cicles' , $this->getUser()->getSessionPar('idU') , $this->IDS , $PC['CicleID'] );
     			$FC->getObject()->setActiu(false);
                 $FC->getObject()->save();
     		break;
