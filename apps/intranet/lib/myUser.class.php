@@ -407,6 +407,7 @@ class myUser extends sfBasicSecurityUser
             $REG .= "</dades>".PHP_EOL;
                   	  	  	  	  		  	
             file_put_contents(getcwd().'/timelines/log_'.$OUS->getUsuariId().'.txt', $REG, FILE_APPEND);
+            file_put_contents(getcwd().'/timelines/log_general.txt', $REG, FILE_APPEND);
         
         endforeach;                     
 

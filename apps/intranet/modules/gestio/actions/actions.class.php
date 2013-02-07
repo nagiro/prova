@@ -1743,9 +1743,12 @@ class gestioActions extends sfActions
 	    		if($this->FActivitat->isValid()):
 	    			$nova = $this->FActivitat->isNew();                    
 	    			$this->FActivitat->save();	    			
-	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());
-                    myUser::addLogTimeline( 'alta' , 'activitats' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RP['ActivitatID'] );
-	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();                    	    			
+	    			$this->getUser()->addLogAction($this->accio,'gActivitats',$this->FActivitat->getObject());                                        
+	    			$this->IDA = $this->FActivitat->getObject()->getActivitatid();                    	    
+                    
+                    if($RP['ActivitatID'] > 0) myUser::addLogTimeline( 'alta' , 'activitats' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FActivitat->getObject()->getActivitatid() );
+                    myUser::addLogTimeline( 'modificació' , 'activitats' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->FActivitat->getObject()->getActivitatid() );
+                    			
 	    			$this->redirect('gestio/gActivitats?accio=ACTIVITAT&IDA='.$this->IDA);	    			 	    				    		                                                             
 	    		else:                 
                     $this->MISSATGE = "HI HA HAGUT ALGUN PROBLEMA CREANT L'ACTIVITAT.";                
@@ -1842,7 +1845,9 @@ class gestioActions extends sfActions
     	    		//Si no hi ha hagut cap error, ho guardem al log com un canvi en l'horari
                     if(empty($ERRORS)): 
     	    			$this->getUser()->addLogAction('HORARI_SAVE','gActivitats',$FHorari->getObject());
-                        myUser::addLogTimeline( 'alta' , 'horaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $IDA );    	    			
+                        if($RP['horaris']['HorarisID'] > 0) myUser::addLogTimeline( 'modificació' , 'horaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $IDA );
+                        else myUser::addLogTimeline( 'alta' , 'horaris' , $this->getUser()->getSessionPar('idU') , $this->IDS , $IDA );
+                                                        	    			
                         return $this->renderText( implode( "\n" , $ERRORS ) );
                         //Hem d'informar que ha anat tot bé.                         	    			
     	    		else:                         
@@ -2616,7 +2621,8 @@ class gestioActions extends sfActions
                     
                     $this->OC = $OC;                    
                     $this->getUser()->addLogAction($accio,'gCursos',$OC->getIdcursos());
-                    myUser::addLogTimeline( 'alta' , 'cursos' , $this->getUser()->getSessionPar('idU') , $this->IDS , $OC->getIdcursos() );
+                    if($RP['idCursos'] > 0 ) myUser::addLogTimeline( 'alta' , 'cursos' , $this->getUser()->getSessionPar('idU') , $this->IDS , $OC->getIdcursos() );
+                    else myUser::addLogTimeline( 'modificació' , 'cursos' , $this->getUser()->getSessionPar('idU') , $this->IDS , $OC->getIdcursos() );
                     
                 else:
                                                          
@@ -3150,7 +3156,9 @@ class gestioActions extends sfActions
                 $this->OM = MatriculesPeer::retrieveByPK( $this->IDM );                    			 
                 $this->MISSATGE = $request->getParameter('MISSATGE');                      			
     			$this->MODE = 'PAGAMENT';                
-                $this->getUser()->addLogAction($accio,'gMatricules',$this->IDM);                
+                $this->getUser()->addLogAction($accio,'gMatricules',$this->IDM);                                
+                myUser::addLogTimeline( 'alta' , 'matricules' , $this->getUser()->getSessionPar('idU') , $this->IDS , $this->IDM );
+                
                  					
     		break;
             
@@ -3192,7 +3200,7 @@ class gestioActions extends sfActions
     			if($this->FMATRICULA->isValid()):
     				$this->FMATRICULA->save();
     				$this->getUser()->addLogAction($accio,'gMatricules',$this->FMATRICULA->getObject());
-                    myUser::addLogTimeline( 'alta' , 'matricules' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RS['idMatricules'] );    				
+                    myUser::addLogTimeline( 'modificació' , 'matricules' , $this->getUser()->getSessionPar('idU') , $this->IDS , $RS['idMatricules'] );    				
     				$this->redirect('gestio/gMatricules?accio=CA');
     			endif;
     			$this->MODE = 'EDICIO';    		
