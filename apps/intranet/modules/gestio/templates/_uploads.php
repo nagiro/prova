@@ -10,12 +10,12 @@
 $dir = getcwd().$DIRECTORI_WEB; 
 $mini = false; $normal = false; $big = false; $pdf = false; 
 foreach ( glob( $dir.$NOM_ARXIU."*" ) as $K => $arxiu ) {    
-    $a = str_replace( $dir , "", $arxiu );
+    $a = str_replace( $dir , "", $arxiu );    
     //Si té un -M és la foto mini.
-    if( substr_count( $arxiu , "-M" ) > 0)      $mini    = $a;
-    if( substr_count( $arxiu , "-L" ) > 0)      $normal  = $a;
-    if( substr_count( $arxiu , "-XL" ) > 0)     $big     = $a;
-    if( substr_count( $arxiu , "-PDF" ) > 0)    $pdf     = $a;
+    if( substr_count( $arxiu , "-M" ) > 0   && !substr_count($arxiu , "--" ) )      $mini    = $a;
+    if( substr_count( $arxiu , "-L" ) > 0   && !substr_count($arxiu , "--" ) )      $normal  = $a;
+    if( substr_count( $arxiu , "-XL" ) > 0  && !substr_count($arxiu , "--" ) )     $big     = $a;
+    if( substr_count( $arxiu , "-PDF" ) > 0 && !substr_count($arxiu , "--" ) )    $pdf     = $a;
 }
 
 ?>
