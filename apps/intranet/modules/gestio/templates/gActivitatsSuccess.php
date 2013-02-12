@@ -294,7 +294,7 @@
          		
                     <form id="FORMULARI_DESCRIPCIO" method="POST">
              			<?php echo new ActivitatsTextosForm($OA); ?>
-                        <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/activitats/' , 'NOM_ARXIU' => 'A-'.$IDA)); ?>
+                        <?php include_partial('uploads',array('DIRECTORI_WEB' => '/images/activitats/' , 'NOM_ARXIU' => 'A-'.$OA->getActivitatid() )); ?>
              			<div style="text-align:right; padding-top:40px;">
                 			<input id="B-GUARDA-DESCRIPCIO" name="B-GUARDA-DESCRIPCIO" type="submit" value="Guarda" />                						 				 				 			
              			</div>	
