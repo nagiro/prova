@@ -79,10 +79,13 @@
                                 
                             <?php endforeach; ?>
                             
-                            <?php // En el cas que el total d'elements, no sigui parell, posem l'últim div per tancar. ?>
-                                                    
+                            <?php 
+                            
+                            //En el cas de columnes: Si tenim una fila amb només una columna i mode 1 o 2, tanquem amb el div final.  
+                            //En el cas de les files: Si tenim mode 3, i més de 5 elements, tancarem amb el div. ?>                                                                                
+                            
                             <?php if( ( sizeof( $LLISTA['elements'] ) % $COLUMNES ) != 0 && ( $LLISTA['mode'] == 1 || $LLISTA['mode'] == 2 ) ): echo "</div>"; endif; ?>
-                            <?php if( ( sizeof( $LLISTA['elements'] ) % $FILES ) != 0 && ( sizeof( $LLISTA['elements'] ) ) > 5 &&  $LLISTA['mode'] == 3 && $FILES > 0 ) echo '</div>'; ?>
+                            <?php if( $LLISTA['mode'] == 3 && ( sizeof( $LLISTA['elements'] ) ) > 5 ) echo '</div>'; ?>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 
