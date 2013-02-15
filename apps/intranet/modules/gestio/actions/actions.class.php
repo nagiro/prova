@@ -479,25 +479,7 @@ class gestioActions extends sfActions
     $this->IDS = $this->getUser()->getSessionPar('idS');
     
     $idU = $this->getUser()->getSessionPar('idU');    
-    
-    //Carreguem quantes incidències noves hi ha
-    //$this->NINCIDENCIES = IncidenciesPeer::QuantesAvui($this->IDS);
-    //$this->N_PETICIONS_ESPERA = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::EN_ESPERA); 
-    //$this->N_PETICIONS_PENDENTS_ACCEPTAR = ReservaespaisPeer::countByEstat($this->IDS, ReservaespaisPeer::PENDENT_CONFIRMACIO);
         
-    //Carreguem quantes matrícules noves hi ha
-    //$this->N_MATRICULES  = MatriculesPeer::QuantesAvui($this->IDS);
-    //Carreguem quant material nou hi ha
-    //$this->NMATERIAL    = 0;
-    //Carreguem quants missatges nous hi ha
-    //$this->NMISSATGES   = MissatgesPeer::QuantsAvui($idU , $this->getUser()->getSessionPar('idS'));
-    //Carreguem quantes feines s'han fet
-    //$this->NFEINES      = 0; //TasquesPeer::QuantesAvui(false,$idU);    
-    //Carreguem quantes feines ens toca fer
-    //$this->NFINES       = 0; //TasquesPeer::QuantesAvui(true,$idU);
-    //Carreguem quantes activitats hi ha
-    //$this->NACTIVITATS  = ActivitatsPeer::QuantesAvui();
-    
     //Carreguem els missatges d'avui    
     $this->MISSATGES = MissatgesPeer::getMissatgesAvui( $this->getUser()->getSessionPar('idS') );
         
@@ -515,7 +497,50 @@ class gestioActions extends sfActions
         myUser::setEmptyTimeline($this->IDU);
         return $this->renderText();
     endif;        
+    
+   
+  }
   
+  /**
+   * Aquesta funció fa la crida a google i espera la resposta. 
+   * 
+   * */ 
+  public function executeConnectaGoogleCalendars(sfWebRequest $request){
+          
+    if($request->hasParameter('code')):        
+        $authCode = $request->getParameter('code');        
+        $C = new Connectivitat( $this->getUser()->getSessionPar('idS') );
+        $C->setCodeAuth( $request->getParameter('code') );                
+        $this->getUser()->setSessionPar( 'google_auth_code' , $C->getAuthCode() );
+    else:                     
+        $C = new Connectivitat( $this->getUser()->getSessionPar('idS') );                                
+        $C->setAuthCode( $this->getUser()->getSessionPar('google_auth_code', null ) );        
+    endif;                    
+    
+    if( $C->IsConnected( $this->IDS )):           
+                        
+        $C->AddActivitat(   1 , 
+                            mktime(12,00,00,2,18,2013) , 
+                            mktime(12,00,00,2,18,2013) , 
+                            'Aquí hi va el propietari' , 
+                            'informatica@casadecultura.org' , 
+                            'http://www.casadecultura.org' , 
+                            'Sala fita' , 
+                            'Això és el títol' , 
+                            'Descripció' , 
+                            'albert.johe@gmail.com' , 
+                            1 , 
+                            1 );
+   
+    else:
+    
+        $url = $C->ConnectaGoogle( $this->IDS );
+        echo "Per poder publicar al calendari, t'has d'autentificar a google clicant <a href=\"".$url."\">aquí</a>";
+    
+    endif;
+    
+    return sfView::NONE;
+    
   }
   
   /**
@@ -4308,8 +4333,8 @@ class gestioActions extends sfActions
                         $TEXT .= "<subtitol>".strtoupper($OA->getNomTipusActivitat())."</subtitol>\n";
                         $TEXT .= "<subactivitat>\n";
                         $TEXT .= " <negreta>".$OA->getTmig()."</negreta>\n";
-                        $TEXT .= " <normal>".utf8_encode(strip_tags(html_entity_decode($OA->getDmig())))."</normal>\n";
-                        $TEXT .= " <link>".$this->getController()->genUrl('@web_activitat?idA='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl(),true)."</link>\n";
+                        $TEXT .= " <normal>".utf8_encode(strip_tags(html_entity_decode($OA->getDmig())))."</normal>\n";                          
+                        $TEXT .= " <link>".$this->getController()->genUrl('@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() , true )."</link>\n";
                         $TEXT .= " <hora>".$OH->getHorainici("H.i")."</hora>\n";
                         $TEXT .= " <lloc>".implode(",",$LE)."</lloc>\n";
                         $TEXT .= " <organitza>".html_entity_decode($OA->getOrganitzador())."</organitza>\n";
@@ -4992,7 +5017,6 @@ class gestioActions extends sfActions
 
     endif; 
 
-  }
-   
+  }  
    
 }
