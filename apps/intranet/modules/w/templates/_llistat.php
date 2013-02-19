@@ -84,8 +84,8 @@
                             //En el cas de columnes: Si tenim una fila amb només una columna i mode 1 o 2, tanquem amb el div final.  
                             //En el cas de les files: Si tenim mode 3, i més de 5 elements, tancarem amb el div. ?>                                                                                
                             
-                            <?php if( ( sizeof( $LLISTA['elements'] ) % $COLUMNES ) != 0 && ( $LLISTA['mode'] == 1 || $LLISTA['mode'] == 2 ) ): echo "</div>"; endif; ?>
-                            <?php if( $LLISTA['mode'] == 3 && ( sizeof( $LLISTA['elements'] ) ) > 5 ) echo '</div>'; ?>
+                            <?php if( ( sizeof( $LLISTA['elements'] ) % $COLUMNES ) != 0 && ( $LLISTA['mode'] == 1 || $LLISTA['mode'] == 2 ) ): echo "</div>"; endif; ?>                            
+                            <?php if( $LLISTA['mode'] == 3 && ( sizeof( $LLISTA['elements'] ) > 5 && $FILES > 0 ) ) echo '</div>'; ?>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 
