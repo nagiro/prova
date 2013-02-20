@@ -232,7 +232,7 @@
             <li><a href="#tabs-2">Horaris</a></li>
             <li><a href="#tabs-3">Descripció</a></li>
             <li><a href="#tabs-4">Preus</a></li>
-            <li><a href="#tabs-5">Altres activitats del cicle</a></li>
+            <li><a href="#tabs-5">Totes les activitats del cicle</a></li>
             </ul>
             
             
