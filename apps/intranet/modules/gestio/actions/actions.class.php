@@ -2722,9 +2722,10 @@ class gestioActions extends sfActions
                                                           
                     //Comença la càrrega de la informació                                                     
                     $alumnes = array();
+                    $i = 1;
                     foreach($LMAT as $OM):
                         $OU = $OM->getUsuaris();
-                        $alumnes[]['nom'] = $OU->getNomComplet();                                                
+                        $alumnes[$i++]['nom'] = $OU->getNomComplet();                                                
                     endforeach;
                        
                     
@@ -4312,40 +4313,56 @@ class gestioActions extends sfActions
                     $this->DADES[$OM->getIdmatricules()]['PAGAMENT'] = $OM->getTpagamentString();                                                            
 				endforeach;				 
 			break;
-		case 'RESUM_ACTIVITATS':
+		
+        //Treu un resum de les activitats aplicant-hi les etiquetes corresponents
+        case 'RESUM_ACTIVITATS':
                 $RP = $request->getParameter('informe_activitats');
                 $this->FACTIVITATS   = new InformeActivitatsForm(null,array('IDS'=>$this->IDS));
                 $this->FACTIVITATS->bind($RP);                
-                if($request->hasParameter('BGENERADOC')):                    
+                if($request->hasParameter('BGENERADOC')):
                     $this->LOA = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,true);
                 elseif($request->hasParameter('BGENERAXML')):
                     $this->setLayout(null);
                     $this->setTemplate(null);
-                    $LOH = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,false);                                        
-                    $TEXT = "<document>\n"; $i = 1;                    
-                    foreach($LOH as $OH):                                 
-                        $OA = $OH->getActivitats();
-                        $LE = $OH->getArrayEspais();                                                                                                                                      
-                        $TEXT .= "<caixa>\n";
-                        $TEXT .= "<columna>".$i."</columna>\n";
-                        $TEXT .= "<dia>".$OH->getDia('d')."</dia>\n";
-                        $TEXT .= "<diaT>".strtoupper(myUser::getDiaText($OH->getDia('Y-m-d')))."</diaT>\n";
-                        $TEXT .= "<subtitol>".strtoupper($OA->getNomTipusActivitat())."</subtitol>\n";
-                        $TEXT .= "<subactivitat>\n";
-                        $TEXT .= " <negreta>".$OA->getTmig()."</negreta>\n";
-                        $TEXT .= " <normal>".utf8_encode(strip_tags(html_entity_decode($OA->getDmig())))."</normal>\n";                          
-                        $TEXT .= " <link>".$this->getController()->genUrl('@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() , true )."</link>\n";
-                        $TEXT .= " <hora>".$OH->getHorainici("H.i")."</hora>\n";
-                        $TEXT .= " <lloc>".implode(",",$LE)."</lloc>\n";
-                        $TEXT .= " <organitza>".html_entity_decode($OA->getOrganitzador())."</organitza>\n";
-                        $TEXT .= " <entrada>".utf8_encode(strip_tags(html_entity_decode($OA->getInfopractica())))."</entrada>\n";                    
-                        $TEXT .= "</subactivitat>\n";
-                        $TEXT .= "</caixa>\n";                        
-                    endforeach;
+                    $LOH = ActivitatsPeer::getLlistatWord($this->FACTIVITATS,$this->IDS,false);
                     
-                    $TEXT .= "</document>\n";                                                                                                                                                                                                                    
+                    //Creem l'objecte XML                                                                                                                                                                                                                                                
+                    $i = 1;  
+                    $document = "<document>\n";                    
+                    foreach($LOH as $OH):
+                                                                    
+                        $OA = $OH->getActivitats();
+                        $LE = $OH->getArrayEspais();
+                        
+                        $nivell = 3;                        
+                        if( stripos( '54', $OA->getCategories() ) > 0 || stripos( '50', $OA->getCategories() ) > 0 || stripos( '51', $OA->getCategories() ) > 0 || stripos( '45', $OA->getCategories() ) > 0 ) $nivell = 3;
+                        if( stripos( '53', $OA->getCategories() ) > 0 || stripos( '47', $OA->getCategories() ) > 0  ) $nivell = 2;
+                        if( stripos( '52', $OA->getCategories() ) > 0 || stripos( '49', $OA->getCategories() ) > 0 || stripos( '46', $OA->getCategories() ) > 0 || stripos( '44', $OA->getCategories() ) > 0 ) $nivell = 1;
+                        
+                        $document .= "<caixa>\n";
+                        $document .= "  <data>".$OH->getDia( 'Y-m-d' )."</data>\n";
+                        $document .= "  <tipus_activitat>".$OA->getNomTipusActivitat()."</tipus_activitat>\n";
+                        $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>\n";
+                        $document .= "  <tipologia>".$OA->getCategories()."</tipologia>\n";
+                        $document .= "  <importancia>".$nivell."</importancia>\n";
+                        $document .= "  <subactivitat>\n";
+                        $document .= "    <titol>".$OA->getTmig()."</titol>\n";
+                        $document .= "    <text>".utf8_encode(strip_tags(html_entity_decode($OA->getDmig())))."</text>\n";
+                        $document .= "    <url>".$this->getController()->genUrl('@web_menu_click_activitat?idCicle='.$OA->getCiclesCicleid().'&idActivitat='.$OA->getActivitatid().'&titol='.$OA->getNomForUrl() , true )."</url>\n";
+                        $document .= "    <hora_inici>".$OH->getHorainici("H.i")."</hora_inici>\n";
+                        $document .= "    <hora_fi>".$OH->getHorafi("H.i")."</hora_fi>\n";
+                        $document .= "    <espais>".implode(",",$LE)."</espais>\n";
+                        $document .= "    <organitzador>".html_entity_decode( $OA->getOrganitzador() )."</organitzador>\n";
+                        $document .= "    <info_practica>".utf8_encode( strip_tags( html_entity_decode( $OA->getInfopractica() ) ) )."</info_practica>\n";
+                        $document .= "  </subactivitat>\n";
+                        $document .= "</caixa>\n";                                                                                                
+                                                                                                                                               
+                    endforeach;
+                        
+                    $document .= "</document>\n";                                                   
+                                                                                                                                                                                                                                                            
           			$nom = OptionsPeer::getString( 'SF_WEBSYSROOT' , $this->IDS ).'tmp/'.$this->IDS.'NEWS.txt';
-                    fwrite( fopen( $nom , 'w' ) , $TEXT );
+                    fwrite( fopen( $nom , 'w' ) , $document );
                     $response = sfContext::getInstance()->getResponse();
             	    $response->setContentType('text/plain');
                     $response->setHttpHeader('Content-Disposition', 'attachment; filename="News.txt');
