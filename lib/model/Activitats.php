@@ -226,5 +226,14 @@ class Activitats extends BaseActivitats
     else return $tmig;
     
    }
+
+   public function getImportancia()
+   {
+        $nivell = 3;                        
+        if( stripos( '54', $this->getCategories() ) > 0 || stripos( '50', $this->getCategories() ) > 0 || stripos( '51', $this->getCategories() ) > 0 || stripos( '45', $this->getCategories() ) > 0 ) $nivell = 3;
+        if( stripos( '53', $this->getCategories() ) > 0 || stripos( '47', $this->getCategories() ) > 0  ) $nivell = 2;
+        if( stripos( '52', $this->getCategories() ) > 0 || stripos( '49', $this->getCategories() ) > 0 || stripos( '46', $this->getCategories() ) > 0 || stripos( '44', $this->getCategories() ) > 0 ) $nivell = 1;
+        return $nivell;
+   }
    
 }

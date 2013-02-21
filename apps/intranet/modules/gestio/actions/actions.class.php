@@ -4379,18 +4379,13 @@ class gestioActions extends sfActions
                                                                     
                         $OA = $OH->getActivitats();
                         $LE = $OH->getArrayEspais();
-                        
-                        $nivell = 3;                        
-                        if( stripos( '54', $OA->getCategories() ) > 0 || stripos( '50', $OA->getCategories() ) > 0 || stripos( '51', $OA->getCategories() ) > 0 || stripos( '45', $OA->getCategories() ) > 0 ) $nivell = 3;
-                        if( stripos( '53', $OA->getCategories() ) > 0 || stripos( '47', $OA->getCategories() ) > 0  ) $nivell = 2;
-                        if( stripos( '52', $OA->getCategories() ) > 0 || stripos( '49', $OA->getCategories() ) > 0 || stripos( '46', $OA->getCategories() ) > 0 || stripos( '44', $OA->getCategories() ) > 0 ) $nivell = 1;
-                        
+                                                                                                                        
                         $document .= "<caixa>\n";
                         $document .= "  <data>".$OH->getDia( 'Y-m-d' )."</data>\n";
                         $document .= "  <tipus_activitat>".$OA->getNomTipusActivitat()."</tipus_activitat>\n";
                         $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>\n";
                         $document .= "  <tipologia>".$OA->getCategories()."</tipologia>\n";
-                        $document .= "  <importancia>".$nivell."</importancia>\n";
+                        $document .= "  <importancia>".$OA->getImportancia()."</importancia>\n";
                         $document .= "  <subactivitat>\n";
                         $document .= "    <titol>".$OA->getTmig()."</titol>\n";
                         $document .= "    <text>".utf8_encode(strip_tags(html_entity_decode($OA->getDmig())))."</text>\n";
@@ -4443,6 +4438,7 @@ class gestioActions extends sfActions
                             $LLISTAT_ACTIVITATS_WEB[$id]['img_m']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-M.jpg' );
                             $LLISTAT_ACTIVITATS_WEB[$id]['img_l']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-L.jpg' );
                             $LLISTAT_ACTIVITATS_WEB[$id]['img_xl'] = file_exists( getcwd().'/images/activitats/A-'.$id.'-XL.jpg' );                            
+                            $LLISTAT_ACTIVITATS_WEB[$id]['nivell'] = $OA->getImportancia();                            
                         } else {
                             $LLISTAT_ACTIVITATS_WEB[$id]['OA']     = $OA;
                             $LLISTAT_ACTIVITATS_WEB[$id]['text']   = ( strlen( $OA->getTmig() ) > 5 );
@@ -4450,6 +4446,7 @@ class gestioActions extends sfActions
                             $LLISTAT_ACTIVITATS_WEB[$id]['img_m']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-M.jpg' );
                             $LLISTAT_ACTIVITATS_WEB[$id]['img_l']  = file_exists( getcwd().'/images/activitats/A-'.$id.'-L.jpg' );
                             $LLISTAT_ACTIVITATS_WEB[$id]['img_xl'] = file_exists( getcwd().'/images/activitats/A-'.$id.'-XL.jpg' );
+                            $LLISTAT_ACTIVITATS_WEB[$id]['nivell'] = $OA->getImportancia(); 
                         }                                        
                                         
                     }       

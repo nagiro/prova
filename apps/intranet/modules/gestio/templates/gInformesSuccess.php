@@ -199,7 +199,7 @@
         $URLWEB = OptionsPeer::getString('SF_WEBROOTURL',$IDS);
 
         $RET = '<div class="REQUADRE"><div class="TITOL">Llistat properes activitats visibles a web (4 mesos)</div>'; 
-        $RET .= '<table width="100%"><tr><td class="titol">Quan</td><td class="titol">Què</td><td class="titol">Falta</td></tr>';
+        $RET .= '<table width="100%"><tr><td class="titol">Quan</td><td class="titol">Què</td><td class="titol">Nivell</td><td class="titol">Falta</td></tr>';
         
         foreach( $LLISTAT_ACTIVITATS_WEB as $id => $A_OA ):
                                     
@@ -211,16 +211,17 @@
                 if($PH <> $UH) $horari = $PH.' a '.$UH;
                 $falta  = (!$A_OA['text'])?' TXT ':'';                 
                 $falta .= (!$A_OA['desc'])?' DES ':'';
-                $falta .= (!$A_OA['img_m'])?' IP ':'';
-                $falta .= (!$A_OA['img_l'])?' IN ':'';
-                $falta .= (!$A_OA['img_xl'])?' IG ':'';
+                $falta .= (!$A_OA['img_m'])?'S':'';
+                $falta .= (!$A_OA['img_l'])?'M':'';
+                $falta .= (!$A_OA['img_xl'])?'L':'';                
                 
                 $url = link_to('edita',url_for('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$id,array('target'=>'_blank')));
 
                 $RET .= '
                     <tr>                                                
                         <td>'.$horari.'</td>
-                        <td>'.$A_OA['OA']->getTmig().' ('.$url.') <br /><span style="font-size:8px;"><i>'.$A_OA['OA']->getCicles()->getNom().'</i></span></td>                        
+                        <td>'.$A_OA['OA']->getTmig().' ('.$url.') <br /><span style="font-size:8px;"><i>'.$A_OA['OA']->getCicles()->getNom().'</i></span></td>
+                        <td>'.$A_OA['nivell'].'                        
                         <td>'.$falta.'</td>                                                
                     </div>                                            
                         ';
