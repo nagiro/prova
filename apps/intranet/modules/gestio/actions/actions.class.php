@@ -502,40 +502,86 @@ class gestioActions extends sfActions
   }
   
   /**
+   * Aquesta funció és cridada per ajax des de la intranet
+   * @param 
+   * */
+  public function executeAjaxDifusio(sfWebRequest $request){
+    
+        parse_str($request->getParameter('FORMULARI') , $RP );
+        if( array_key_exists( 'calendars' , $RP ) ) $this->redirect('gestio/ConnectaGoogleCalendars?idA='.$RP['idA']);
+        if( array_key_exists( 'facebook' , $RP ) ) return $this->renderText('El facebook encara no es pot utilitzar.');
+        if( array_key_exists( 'twitter' , $RP ) ) return $this->renderText('El twitter encara no es pot utilitzar.');                                 
+        if( array_key_exists( 'ddg' , $RP ) ) return $this->renderText('El Diari de Girona encara no es pot utilitzar.');
+        if( array_key_exists( 'elpunt' , $RP ) ) return $this->renderText('El Punt - Avui encara no es pot utilitzar.');
+        if( array_key_exists( 'ara' , $RP ) ) return $this->renderText('El diari Ara encara no es pot utilitzar.');
+        if( array_key_exists( 'giroque' , $RP ) ) return $this->renderText('El web Giroquè encara no es pot utilitzar.');
+        if( array_key_exists( 'femxarxa' , $RP ) ) return $this->renderText('El web Fem Xarxa encara no es pot utilitzar.');
+        if( array_key_exists( 'forfree' , $RP ) ) return $this->renderText('El web Forfree encara no es pot utilitzar.');
+        if( array_key_exists( 'ddgi' , $RP ) ) return $this->renderText('La Diputació de Girona encara no es pot utilitzar.');
+        
+                            
+  }
+  
+  
+  public function SendMailDifusio(){
+    
+  }
+  
+  /**
    * Aquesta funció fa la crida a google i espera la resposta. 
    * 
    * */ 
-  public function executeConnectaGoogleCalendars(sfWebRequest $request){
-          
-    if($request->hasParameter('code')):        
+  public function executeConnectaGoogleCalendars(sfWebRequest $request){               
+              
+    //Guardem IDS per si l'hem d'usar a la funció
+    $IDS = $this->getUser()->getSessionPar('idS');
+    
+    //Si entra una IDA la guardem a la variable de sessió.
+    if($request->hasParameter('idA')) $this->getUser()->setSessionPar('google_ida',$request->getParameter('idA'));
+
+    //Si ha entrat el procés de validació, agafem el codi i el guardem. Altrament, carreguem el que tenim guardat ( dura 3600 s ) 
+    if( $request->hasParameter('code') ):        
         $authCode = $request->getParameter('code');        
         $C = new Connectivitat( $this->getUser()->getSessionPar('idS') );
-        $C->setCodeAuth( $request->getParameter('code') );                
+        $C->setCodeAuth( $request->getParameter('code') );            
         $this->getUser()->setSessionPar( 'google_auth_code' , $C->getAuthCode() );
     else:                     
-        $C = new Connectivitat( $this->getUser()->getSessionPar('idS') );                                
-        $C->setAuthCode( $this->getUser()->getSessionPar('google_auth_code', null ) );        
+        $C = new Connectivitat( $IDS );                                
+        $C->setAuthCode( $this->getUser()->getSessionPar('google_auth_code', null ) );                        
     endif;                    
     
-    if( $C->IsConnected( $this->IDS )):           
-                        
-        $C->AddActivitat(   1 , 
-                            mktime(12,00,00,2,18,2013) , 
-                            mktime(12,00,00,2,18,2013) , 
-                            'Aquí hi va el propietari' , 
-                            'informatica@casadecultura.org' , 
-                            'http://www.casadecultura.org' , 
-                            'Sala fita' , 
-                            'Això és el títol' , 
-                            'Descripció' , 
-                            'albert.johe@gmail.com' , 
-                            1 , 
-                            1 );
+    //Si estem connectats i estic afegint una activitat, ho faig.
+    if( $C->IsConnected( $this->IDS ) && $request->hasParameter('idA') && !$request->hasParameter('login') ):           
+                                
+        $OA = ActivitatsPeer::retrieveByPK( $request->getParameter('idA') );
+        
+        foreach( $OA->getHorarisActius( $IDS ) as $OH ):
+        
+            $OS = SitesPeer::retrieveByPK( $IDS );
+            $C->AddActivitat(   $OA->getActivitatid() , 
+                                mktime( $OH->getHorainici('H') , $OH->getHorainici('i') , $OH->getHorainici('s') , $OH->getDia('m') , $OH->getDia('d') , $OH->getDia('Y') ) , 
+                                mktime( $OH->getHorafi('H') , $OH->getHorafi('i') , $OH->getHorafi('s') , $OH->getDia('m') , $OH->getDia('d') , $OH->getDia('Y') ) ,
+                                $OS->getNom() , 
+                                $OS->getEmailString() ,
+                                $OA->getTmig() ,
+                                'http://www.hospici.cat/detall_activitat/'.$OA->getActivitatid().'/'.$OA->getNomForUrl() ,
+                                implode( ',' , $OH->getArrayEspais() ) ,
+                                $OA->getTmig() ,
+                                $OA->getDMig() ,                                                                 
+                                OptionsPeer::getString( 'google_calendar_id' , $IDS ) , 
+                                1 , 
+                                $this->getUser()->getSessionPar('idS') );                                                              
+        endforeach;                
    
+        return $this->renderText("Activitat afegida al Google Calendars");
+   
+    //Si no estic entrant una activitat, miro si m'estic connectant
     else:
-    
-        $url = $C->ConnectaGoogle( $this->IDS );
-        echo "Per poder publicar al calendari, t'has d'autentificar a google clicant <a href=\"".$url."\">aquí</a>";
+            
+        $url = $C->ConnectaGoogle( $this->IDS , $request->hasParameter('login') );
+        //Si m'estic connectant, mostro la url de connexió, altrament, entrem on estàvem...         
+        if( !empty( $url ) ) echo "Per poder publicar al calendari, t'has d'autentificar a google clicant <a href=\"".$url."\">aquí</a>";
+        else $this->redirect('http://localhost/gestio/gActivitats/accio/ACTIVITAT/IDA/'.$this->getUser()->getSessionPar('google_ida').'#tabs-6');
     
     endif;
     

@@ -54,7 +54,7 @@
         	<div id="tabs-1"> <?php echo OptionsTab($FOPTIONS); ?> </div>
         	<div id="tabs-2"> <?php echo EspaisTab($FESPAIS); ?> </div>              	
             <div id="tabs-3"> <?php echo MaterialTab($FMATERIAL); ?> </div>
-            <div id="tabs-4"> <?php echo AutentificacioTab($PARS,$FBI,$ERROR); ?> </div>
+            <div id="tabs-4"> <?php // echo AutentificacioTab($PARS,$FBI,$ERROR); ?> </div>
             <div id="tabs-5"> <?php echo EntitatTab($FENTITAT); ?> </div>
             <div id="tabs-6"> <?php echo DescomptesTab($FDESCOMPTE); ?> </div>
         </div>

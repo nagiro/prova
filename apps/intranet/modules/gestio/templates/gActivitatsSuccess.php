@@ -15,6 +15,7 @@
     #formulari_lloc_extern { background-color:#FCD1A7; display:none; }
     .ui-datepicker { z-index: 9999 !important; }
     a { cursor: pointer; }
+    #accordion > h3 { padding:5px; padding-left:25px; }
 		
 </style>
 
@@ -33,6 +34,9 @@
         //Afegim els layouts als botons                
         $( "#B-GUARDA-ACTIVITAT" ).button({ icons: { primary: 'ui-icon-disk' } , label: "Guarda l'activitat"});
         $( "#B-ESBORRA-ACTIVITAT" ).button({ icons: { primary: 'ui-icon-trash' } , label: "Esborra l'activitat"});
+        $("#BDIFUSIO").button({ icons: { primary: 'ui-icon-plus' } , label: "Fes difusió ara!"});
+        $("#FORMULARI_DIFUSIO").submit(function(){ EnviaFormulariDifusio(); return false; });                                  
+        
         
         $( "#H-0" ).button({ icons: { primary: 'ui-icon-circle-plus' } , label: "Afegir un nou horari a l'activitat"});         
         
@@ -44,8 +48,10 @@
             $( "#tabs_cicles" ).tabs({ cache: true , select: function(event, ui) { window.location.replace(ui.tab.hash); } });
             LoadIfActivitatExisteix(<?php echo $OA->getActivitatid(); ?>);            
         <?php else: ?>        
-            $( "#tabs_cicles" ).tabs({ cache: true, disabled: [1, 2, 3, 4, 5] });
+            $( "#tabs_cicles" ).tabs({ cache: true, disabled: [1, 2, 3, 4, 5, 6] });
         <?php endif; ?>
+        
+        $("#accordion").accordion();
                          
     });
     
@@ -124,6 +130,17 @@
             { idH: idHorari , idA: idActivitat } , 
             function(data) { $( "#FORMULARI_HORARI" ).html(data); }
         );
+    }
+    
+    function EnviaFormulariDifusio(){
+        
+        $.post( 
+            '<?php echo url_for('gestio/AjaxDifusio'); ?>' , 
+            { FORMULARI: $("#FORMULARI_DIFUSIO").serialize() } , 
+            function(data){ 
+                if(data != "") { alert(data); return false; }                
+                else { alert('Descripció guardada correctament.'); return false; }                                                            
+            });
     }
     
     function EnviaFormulariDescripcio(){
@@ -232,7 +249,8 @@
             <li><a href="#tabs-2">Horaris</a></li>
             <li><a href="#tabs-3">Descripció</a></li>
             <li><a href="#tabs-4">Preus</a></li>
-            <li><a href="#tabs-5">Totes les activitats del cicle</a></li>
+            <li><a href="#tabs-5">Activitats del cicle</a></li>
+            <li><a href="#tabs-6">Difusió</a></li>
             </ul>
             
             
@@ -335,8 +353,36 @@
             
             </div>
             
-            <!-- FI CICLES -->            
-                        
+            <!-- FI CICLES -->
+            
+            <!-- COMENÇA DIFUSIÓ -->
+            
+            <div id="tabs-6">              
+                <div class="TITOL">Llocs on fer difusió de l'activitat</div>   
+                <div style="padding:10px;">
+                    <a href="<?php echo url_for('gestio/ConnectaGoogleCalendars?login=true&idA='.$OA->getActivitatid()); ?>">Connecta a Google</a>
+                    <br /><br />
+                    <form id="FORMULARI_DIFUSIO" action="POST">                                            
+                        <div style="width: 150px; float:left; "><input type="checkbox" value="calendars" name="calendars" /> Google calendars</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="facebook" name="facebook" /> Facebook</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="twitter" name="twitter" /> Twitter</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="DdG" name="ddg" /> Diari de Girona</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="elpunt" name="elpunt" /> El punt - Avui</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="ara" name="ara" /> Ara</div>                                                        
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="giroque" name="giroque" /> Giroquè</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="femxarxa" name="femxarxa" /> Fem Xarxa</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="forfree" name="forfree" /> For Free</div>
+                        <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="ddgi" name="ddgi" /> Diputació de Girona</div>
+                        <div style="clear: both;" >&nbsp;</div>
+                        <div style="font-size: 9px; color: gray;">Si cliqueu el botó, s'afegirà automàticament la informació que hi ha al text mig i titol mig de l'apartat descripció de l'activitat així com s'adjuntarà l'enllaç a la "foto normal" (habitualment quadrada). S'utilitzaran els horaris que heu entrat i les categories seleccionades per classificar l'activitat. Si torneu a prèmer el botó es tornarà a publicar la informació. En cap cas es substituirà. Així doncs abans de fer difusió assegureu-vos que la informació està entrada correctament.</div>
+                        <div><input type="submit" id="BDIFUSIO" name="BDIFUSIO" style="margin-top: 10px;" /></div>
+                        <input type="hidden" name="idA" value="<?php echo $OA->getActivitatid() ?>" />
+                    </form>               
+                </div> 
+            </div>
+            
+            <!-- FI DIFUSIÓ -->            
+                                                
         </div>                                                		    	     
     	
 	</div>
