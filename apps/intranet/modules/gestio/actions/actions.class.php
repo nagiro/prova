@@ -4421,7 +4421,7 @@ class gestioActions extends sfActions
         case 'CONTINGUT_WEB':
                                 
                 //Carrego les activitats
-                $mes = date('m'); $any = date('Y'); $inici = mktime(0,0,0,$mes,1,$any); $fi = mktime(0,0,0,$mes+5,1,$any);                
+                $dia = date('d'); $mes = date('m'); $any = date('Y'); $inici = mktime(0,0,0,$mes,$dia,$any); $fi = mktime(0,0,0,$mes+5,$dia,$any);                
                 $LLISTAT_ACTIVITATS_WEB = array();
                 
                 $LOH = HorarisPeer::cerca(null,null,$inici,$fi,null,$this->IDS);
