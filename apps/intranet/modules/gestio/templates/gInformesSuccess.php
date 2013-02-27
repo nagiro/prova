@@ -215,7 +215,7 @@
                 $falta .= (!$A_OA['img_l'])?'M':'';
                 $falta .= (!$A_OA['img_xl'])?'L':'';                
                 
-                $url = link_to('edita',url_for('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$id,array('target'=>'_blank')));
+                $url = link_to('edita',url_for('gestio/gActivitats?accio=ACTIVITAT&IDA='.$id,array('target'=>'_blank')));
 
                 $RET .= '
                     <tr>                                                

@@ -1946,7 +1946,7 @@ class gestioActions extends sfActions
 	    		endif; 	   			
 	   			
     		break;
-    		
+/*    		
     	case 'DESCRIPCIO':
     		
     			$this->CarregaActivitats($request,false);
@@ -1954,7 +1954,7 @@ class gestioActions extends sfActions
     			$this->MODE['DESCRIPCIO'] = true;
     				    			     			    			
     		break;
-    	
+*/    	
     	case 'DESCRIPCIO_SAVE':
     			
     			parse_str($request->getParameter('FORMULARI') , $RP );                
