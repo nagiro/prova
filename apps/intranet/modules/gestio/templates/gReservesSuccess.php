@@ -58,7 +58,61 @@
 	    				if($OUsuari instanceof Usuaris) $qui = $OUsuari->getDni().' - '.$OUsuari->getNomComplet(); ?>
 	 			<?php include_partial('fieldSpan',array('label'=>'Qui sol·licita?','field'=>$qui)); ?>
 
-				<?php echo $FReserva ?>	 				 				 			    	    
+				<?php echo $FReserva ?>
+                
+                <!-- Comença el formulari per entrar info sobre l'activitat -->
+                
+                <div class="clear row fb" style="background-color: #EEEEEE; font-weight:bold; margin-bottom:10px;">
+                    <span style="padding: 5px; ">Dades per difusió WEB</span>                    
+                </div>
+                
+                <div class="clear row fb">                    
+                    <span class="title row_title fb"><label>Vol que fem difusió? </label></span>
+                    <span class="row_field fb"><select id="reservaespais_sidifu" name="extres[sidifu]"><?php echo options_for_select(array(1=>'Sí',0=>'No'),$FReserva->getObject()->getHasDifusio()) ?></select></span>
+                </div>
+                
+                <div class="clear row fb">                    
+                    <span class="title row_title fb"><label>Text descriptiu</label></span>
+                    <span class="row_field fb"><textarea id="reservaespais_descweb" name="extres[descweb]" cols="50" rows="10"><?php echo $FReserva->getObject()->getWebDescripcio() ?></textarea></span>
+                </div>
+
+                <div class="clear row fb">                    
+                    <span class="title row_title fb"><label>Imatge</label></span>
+                    <span class="row_field fb">
+                    
+                        <input type="file" id="reservaespais_img" name="img" /><br />                                                                        
+                        <?php   
+                                //Si existeix l'arxiu, el carreguem perquè poguem veure'l
+                                $FILES = glob( getcwd().'/uploads/arxius/'.'RE-'.$FReserva->getObject()->getReservaespaiid().'-IMG-*' );                                
+                                if( sizeof($FILES) > 0 ):
+                                    $A = explode('/uploads/arxius/',$FILES[0]);
+                                    $arxiu = array_pop($A);
+                                    echo '<a target="_new" href="http://www.hospici.cat/uploads/arxius/'.$arxiu.'">Baixa\'t l\'arxiu</a>';
+                                endif;                                                                       
+                        ?>
+                    
+                    </span>
+                </div>
+
+                <div class="clear row fb">                    
+                    <span class="title row_title fb"><label>PDF</label></span>
+                    <span class="row_field fb">
+                    
+                        <input type="file" id="reservaespais_pdf" name="pdf" style="width:400px;" /><br />
+                        <?php 
+                                //Si existeix l'arxiu, el carreguem perquè poguem veure'l
+                                $FILES = glob( getcwd().'/uploads/arxius/'.'RE-'.$FReserva->getObject()->getReservaespaiid().'-PDF-*' );                                
+                                if( sizeof($FILES) > 0 ):
+                                    $A = explode('/uploads/arxius/',$FILES[0]);
+                                    $arxiu = array_pop($A);
+                                    echo '<a target="_new" href="http://www.hospici.cat/uploads/arxius/'.$arxiu.'">Baixa\'t l\'arxiu</a>';
+                                endif;                                                                                         
+                        ?>
+                    
+                    </span>
+                </div>
+
+                <!-- Acaba el formulari per entrar info sobre l'activitat -->                                                 
 	 			
                 <div class="" style="text-align:right; padding-top:40px;">
                 <?php if($FReserva->getObject()->getEstat() == ReservaespaisPeer::EN_ESPERA): ?>

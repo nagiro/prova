@@ -27,8 +27,7 @@
                             </div>
                         </div>
                                                                         
-                        <?php $url = url_for('@hospici_nova_reserva_espai?idE='.$ESPAI->getEspaiid()); ?>
-                        <?php echo myUser::ph_getEtiquetaReservaEspais($AUTH,$url); ?>
+                        <?php $url = url_for('@hospici_nova_reserva_espai?idE='.$ESPAI->getEspaiid()); ?>                        
                         
                     <div style="margin-top:20px;">
                         <?php echo ph_getAddThisDiv(); ?>

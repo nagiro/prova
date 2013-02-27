@@ -502,14 +502,28 @@ class webActions extends sfActions
         case 'save_nova_reserva':
             
             $RP = $request->getParameter('reservaespais');
+            $EP = $request->getParameter('extres');
             $idU = $this->getUser()->getSessionPar('idU');
             $this->SECCIO = 'RESERVA';
             $this->FReserva = ReservaespaisPeer::initializeHospici(null,$RP['site_id'],null,$idU);
-            $this->FReserva->bind($RP);
-                        
+            $this->FReserva->bind($RP);            
             if($this->FReserva->isValid()){
                 //Guardem la reserva
                 $this->FReserva->save();
+                $ORE = $this->FReserva->getObject();
+                
+                //A partir d'aquí guardem camps extres que surten del formulari
+                $ORE->setHasDifusio($EP['sidifu']);
+                $ORE->setWebDescripcio($EP['descweb']);
+                $ORE->save();
+                $Img = $request->getFiles('img');
+                $Pdf = $request->getFiles('pdf');                
+                $nom_img_final = getcwd().'/uploads/arxius/'.'RE-'.$ORE->getReservaespaiid().'-IMG-'.$Img['name'];
+                $nom_pdf_final = getcwd().'/uploads/arxius/'.'RE-'.$ORE->getReservaespaiid().'-PDF-'.$Pdf['name'];                
+                move_uploaded_file($Img['tmp_name'], $nom_img_final);
+                move_uploaded_file($Pdf['tmp_name'], $nom_pdf_final);                                                         
+                //Finalitzem l'emmagatzematge                                                                          
+                
                 $idReserva = $this->FReserva->getObject()->getReservaespaiid();
                 
                 //Enviem mails per informar que s'ha fet una nova reserva d'espais a secretaria

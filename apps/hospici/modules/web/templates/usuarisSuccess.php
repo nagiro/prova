@@ -260,10 +260,50 @@
     
 <?php function ReservaEspais_VisualitzaFormulari($FReserva){ ?>
     
-        <form action="<?php echo url_for('@hospici_nova_reserva_espai_save'); ?>" method="POST">            
+        <form action="<?php echo url_for('@hospici_nova_reserva_espai_save'); ?>" method="POST" enctype="multipart/form-data">            
             <div style="background-color:#EEEEEE; padding:5px; font-weight:bold; text-align:center;">FORMULARI DE RESERVA D'ESPAI</div>                                    
             <table class="taula_dades">
                 <?php echo $FReserva; ?>
+                <tr><td style="background-color: #EEEEEE; font-weight:bold;" colspan="2">Dades per difusió WEB <span style="font-weight: normal;"> | Aquesta informació s'utilitzarà per a fer la difusió de la seva activitat <br />En el cas que no disposi encara de la difusió, marqui que vol difusió i enviï-la a <?php echo OptionsPeer::getString( 'MAIL_SECRETARIA' , $FReserva->getObject()->getSiteId() )?>.</span></td></tr>
+                <tr>
+                    <th><label for="reservaespais_TipusActe">Vol que fem difusió?</label></th>
+                    <td><select id="reservaespais_sidifu" name="extres[sidifu]">
+                            <?php echo options_for_select(array(1=>'Sí',0=>'No'),$FReserva->getObject()->getHasDifusio()) ?>                            
+                        </select></td>
+                </tr>
+                <tr>
+                    <th><label for="reservaespais_TipusActe">Text descriptiu</label></th>
+                    <td><textarea id="reservaespais_descweb" name="extres[descweb]" style="width:400px; height:200px;"><?php echo $FReserva->getObject()->getWebDescripcio() ?></textarea></td>
+                </tr>
+                <tr>
+                    <th><label for="reservaespais_TipusActe">Imatge</label></th>
+                    <td><input type="file" id="reservaespais_img" name="img" style="width:400px;" />                                                                        
+                        <?php   
+                                //Si existeix l'arxiu, el carreguem perquè poguem veure'l
+                                $FILES = glob( getcwd().'/uploads/arxius/'.'RE-'.$FReserva->getObject()->getReservaespaiid().'-IMG-*' );                                
+                                if( sizeof($FILES) > 0 ):
+                                    $A = explode('/uploads/arxius/',$FILES[0]);
+                                    $arxiu = array_pop($A);
+                                    echo '<a target="_new" href="http://www.hospici.cat/uploads/arxius/'.$arxiu.'">Baixa\'t l\'arxiu</a>';
+                                endif;                                                                       
+                        ?> 
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="reservaespais_TipusActe">PDF</label></th>
+                    <td><input type="file" id="reservaespais_pdf" name="pdf" style="width:400px;" />
+                    <?php 
+                            //Si existeix l'arxiu, el carreguem perquè poguem veure'l
+                            $FILES = glob( getcwd().'/uploads/arxius/'.'RE-'.$FReserva->getObject()->getReservaespaiid().'-PDF-*' );                                
+                            if( sizeof($FILES) > 0 ):
+                                $A = explode('/uploads/arxius/',$FILES[0]);
+                                $arxiu = array_pop($A);
+                                echo '<a target="_new" href="http://www.hospici.cat/uploads/arxius/'.$arxiu.'">Baixa\'t l\'arxiu</a>';
+                            endif;                                                                                         
+                    ?>
+                        
+                    </td>
+                </tr>                
                 <tr>
                     <td></td>
                     <td style="text-align: right;">

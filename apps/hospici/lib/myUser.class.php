@@ -809,7 +809,7 @@ class myUser extends sfBasicSecurityUser
         if( isset($AUTH) && $AUTH > 0 ):                                                                           
             $RET = '<div style="margin-top: 5px;">
                         <div class="requadre_mini" style="background-color: #FF8D00;">
-                            <a href="'.$url.'">RESERVA L\'ESPAI</a>
+                            <a href="'.$url.'">> CLICA PER RESERVAR</a>
                         </div>
                     </div>';                                                                                        
         else:
