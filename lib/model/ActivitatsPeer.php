@@ -50,7 +50,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
       
       $C->addJoin(self::ACTIVITATID, HorarisPeer::ACTIVITATS_ACTIVITATID);
       $C->add(HorarisPeer::DIA, $dia);
-      $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
+      $C->add(self::DMIG, '', CRITERIA::NOT_EQUAL);
       $C->add(self::PUBLICAWEB,1);
       $C->addAscendingOrderByColumn(HorarisPeer::HORAINICI);
       
@@ -102,7 +102,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
 	  $df = mktime(0,0,0,date('m',$data)+1,1,date('Y',$data));
 	  
 	  $C = HorarisPeer::cercaCriteria(null,$text,$di,$df,null,$idS);	  
-      $C->add(self::TMIG, '', CRITERIA::NOT_EQUAL);
+      $C->add(self::DMIG, '', CRITERIA::NOT_EQUAL);
       $C->add(self::PUBLICAWEB,1);      
       $C->addDescendingOrderByColumn(HorarisPeer::DIA);
       $C->addGroupByColumn(self::ACTIVITATID);
@@ -127,7 +127,7 @@ class ActivitatsPeer extends BaseActivitatsPeer
                   AND H.HorarisID = HE.Horaris_HorarisID 
                   AND HE.Espais_EspaiID = E.EspaiID                  
                   AND H.Dia = '$dia'
-                  AND A.tMig <> '' ";
+                  AND A.dMig <> '' ";
       
      $con = Propel::getConnection(); $stmt = $con->prepare($SQL); $stmt->execute();     
 	 
