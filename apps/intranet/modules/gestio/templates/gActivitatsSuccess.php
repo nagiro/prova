@@ -350,7 +350,7 @@
          			<?php if( sizeof($L_OH) == 0 ): echo '<div class="row_horaris"><div class="col_horaris">Aquesta activitat no té cap horari definit.</div></div>'; endif; ?>  
         			<?php 	foreach($L_OH as $OH): $M = $OH->getArrayHorarisEspaisMaterial(); $HE = $OH->getArrayHorarisEspaisActiusAgrupats();                                                                                                
         						echo '<div class="row_horaris">                                        								
-        								<div class="col_horaris" style="width:100px;"><a class="a_horaris" >'.myUser::getDiaText($OH->getDia('Y-m-d'), true).', '.$OH->getDia('d/m/Y').'</a></div>        								
+        								<div class="col_horaris" style="width:100px;">'.myUser::getDiaText($OH->getDia('Y-m-d'), true).', '.$OH->getDia('d/m/Y').'</div>        								
         								<div class="col_horaris" style="width:50px;">'.$OH->getHorainici('H:i').'</div>        								                                        
                                         <div class="col_horaris" style="width:50px;">'.$OH->getHorafi('H:i').'</div>
         								<div class="col_horaris" style="width:200px;">'; foreach($HE as $HESPAI): echo $HESPAI.'<br />'; endforeach; echo '</div>';         						
