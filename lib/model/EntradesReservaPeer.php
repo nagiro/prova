@@ -118,7 +118,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
                     
                 } else {
                     
-                    //Comprovem que el nombre d'entrades no sigui 0 o un valor extrany
+                    //Comprovem que el nombre d'entrades no sigui 0 o un valor extrany                    
                     if(!($NEntrades >= 0)){
                         
                         $RET = array( 'status' => -7 , 'OER' => null ); //Número d'entrades incorrecte
@@ -128,8 +128,9 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
                         //Tenim un horari carregat i una activitat. 
                         $idS = $OA->getSiteid();
                         
-                        $HaComprat = EntradesReservaPeer::ExisteixenEntradesComprades($IDU, $IDH);
-                        $PlacesLliures = EntradesReservaPeer::countEntradesActivitatConf($IDH);
+                        //Aquest no el farem servir perquè acceptem que les entrades siguin repetides pels usuaris.
+                        $HaComprat = 0; //EntradesReservaPeer::ExisteixenEntradesComprades($IDU, $IDH);
+                        $PlacesLliures = EntradesReservaPeer::countEntradesActivitatConf($IDH);                        
                                                                             
                         //Comprovem si l'entrada està repetida
                         if($HaComprat){
@@ -140,7 +141,7 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
                         } else {
                             
                             //Mirem si queden places tenint en cmopte que no hi ha llista d'espera.
-                            if(($PlacesLliures - $NEntrades) <= 0 && $TPagament != TipusPeer::PAGAMENT_LLISTA_ESPERA ){
+                            if(($PlacesLliures - $NEntrades) < 0 && $TPagament != TipusPeer::PAGAMENT_LLISTA_ESPERA ){
                                 
                                 return array( 'status' => -5 , 'OER' => null ); //NO_QUEDEN_PROU_ENTRADES i no hi ha llista d'espera
                                 
@@ -150,8 +151,9 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
                                 //Generem la nova compra o reserva
                                 $OER = EntradesReservaPeer::initialize( $idS , '' , 0 , $IDA , $IDH , $IDU , $NEntrades , $Descompte , $TPagament )->getObject();
                                     
-                                //Marquem el preu
-                                $OER->setPagat( DescomptesPeer::getPreuAmbDescompte( $OEP->getPreu() , $Descompte ) );        
+                                //Marquem el preu                                
+                                $OER->setPagat( DescomptesPeer::getPreuAmbDescompte( $OEP->getPreu() , $Descompte ) );                                                                        
+                                $OER->setData( date('Y-m-d H:i', time() ) );
                                     
                                 //Mirem el tipus de pagament i deixem l'estat oportú.
                                 if( $TPagament == TipusPeer::PAGAMENT_METALIC || $TPagament == TipusPeer::PAGAMENT_CODI_BARRES ):
@@ -286,8 +288,9 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
     {
         $C1 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_CONFIRMADA );
         $C2 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_RESERVADA );
-        $C3 = $C->getNewCriterion( self::ACTIU , true );
-        $C1->addOr( $C2 ); $C->add( $C1 ); $C->add( $C3 );
+        $C3 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_EN_ESPERA );
+        $C4 = $C->getNewCriterion( self::ACTIU , true );
+        $C1->addOr( $C2 ); $C1->addOr( $C3 ); $C->add( $C1 ); $C->add( $C4 );
         return $C;
     }
 
@@ -301,6 +304,20 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
         
         return self::doSelect($C);
     }
+
+    static public function getEntradesNoComptades( $idA , $idH )
+    {
+        $C = new Criteria();
+        $C->add(self::ENTRADES_PREUS_ACTIVITAT_ID, $idA);
+        $C->add(self::ENTRADES_PREUS_HORARI_ID, $idH);        
+        $C1 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_EN_ESPERA );
+        $C2 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_ANULADA );
+        $C3 = $C->getNewCriterion( self::ESTAT , self::ESTAT_ENTRADA_ERROR );        
+        $C1->addOr( $C2 ); $C1->addOr( $C3 ); $C->add( $C1 );
+        
+        return self::doSelect($C);
+    }
+
 
     /**
      * Retorna les places lliures en un horari determinat
@@ -407,17 +424,16 @@ class EntradesReservaPeer extends BaseEntradesReservaPeer {
   {
     
     //Comença la càrrega d'informació.
-    $LOER = self::getEntradesVenudes( $IDA , $IDH );                                                                                                                        
+    $LOER = self::getEntradesVenudes( $IDA , $IDH , true );                                                                                                                        
     $desc = DescomptesPeer::getDescomptesArray( $idS , false , false );
     $OA = ActivitatsPeer::retrieveByPK( $IDA );
-    
-    $i = 1;
-    $HTML = file_get_contents('c:\temp\hola.html');
-    //$HTML = OptionsPeer::getString( 'BODY_DOC_LLISTAT_ENTRADES' , $idS );
+        
+    //$HTML = file_get_contents('c:\temp\hola.html');
+    $HTML = OptionsPeer::getString( 'BODY_DOC_LLISTAT_ENTRADES' , $idS );
                                                     
     preg_match_all('/^\s*####(.*?)####(.*?)####\/(.*?)####\s*$/sm',$HTML,$A);
      
-    $FILA = ""; $PATTERN = $A[2][0]; $i = 0; $TMP = "";
+    $FILA = ""; $PATTERN = $A[2][0]; $i = 1; $TMP = "";
     
     foreach($LOER as $OER):
         $TMP = $PATTERN;

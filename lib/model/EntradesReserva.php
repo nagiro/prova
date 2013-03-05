@@ -59,7 +59,7 @@ class EntradesReserva extends BaseEntradesReserva {
 
     public function getNomUsuari(){
         //Si és un usuari, el busquem, altrament marquem el nom que hem entrat
-        if(is_null($this->getUsuariId())):
+        if(!is_null($this->getUsuariId())):
             $OU = UsuarisPeer::retrieveByPK($this->getUsuariId());
             if($OU instanceof Usuaris) return $OU->getNomComplet();
             else return $this->getNomReserva();            

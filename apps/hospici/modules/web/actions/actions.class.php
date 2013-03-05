@@ -296,7 +296,7 @@ class webActions extends sfActions
             
             $OER = EntradesReservaPeer::retrieveByPK( $request->getParameter( 'idER' ) );
             if( !is_null( $OER ) ):
-                $HTML = EntradesReservaPeer::DocReservaEntrades( $OER , $OER->getSiteid() );                                
+                $HTML = EntradesReservaPeer::DocReservaEntrades( $OER , $OER->getSiteid() );                                                                                        
                 myUser::Html2PDF($HTML);                                
     			throw new sfStopException;	
             endif;
@@ -352,8 +352,11 @@ class webActions extends sfActions
                 break;
                                 
                 //(Pagament amb TPV)
-                case 3:
-                    $this->URL = OptionsPeer::getString('TPV_URL',$OC->getSiteId());
+                case 3:                    
+                    $NOM  = UsuarisPeer::retrieveByPK( $RET['OER']->getUsuariid() )->getNomComplet();
+                    $PREU_TOTAL = $RET['OER']->getPagat() * $RET['OER']->getQuantitat(); 
+        			$this->TPV = MatriculesPeer::getTPV( $PREU_TOTAL , $NOM , $RET['OER']->getIdEntrada() , $RET['OER']->getSiteid() , true , true );
+                    $this->URL = OptionsPeer::getString('TPV_URL',$RET['OER']->getSiteId());                    
                     $this->setLayout('blanc');
                     $this->setTemplate('pagament'); 
                 break;

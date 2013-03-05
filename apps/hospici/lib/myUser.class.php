@@ -683,7 +683,7 @@ class myUser extends sfBasicSecurityUser
         
         if(!$EstaAutentificat){
             $RET = ph_getRoundCorner('<a class="auth" href="'.$url.'">Autentifica\'t i reserva</a>', '#FFCC00');
-        } else {
+        } else {            
             $JaHaCompratOReservat  = (isset($HORARIS_AMB_ENTRADES[$OH->getHorarisid()]));
             if( $JaHaCompratOReservat && !$OEP->getIsPle() ){
                 $OER =  EntradesreservaPeer::retrieveByPK($HORARIS_AMB_ENTRADES[$OH->getHorarisid()]);
@@ -701,7 +701,7 @@ class myUser extends sfBasicSecurityUser
                     //Té una entrada però ha estat anul·lada. 
                     } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_ANULADA) {
                         $RET   = '  <div class="tip" title="Vostè ha reservat entrades però han estat anul·lades.<br /><br /> Per a més informació ha de posar-se en contacte amb <b>'.$nom.'</b> enviant un correu electrònic a <b>'.$email.'</b> o bé trucant al <b>'.$tel.'</b>">';
-                        $RET  .= ph_getRoundCorner('Reserva anul·lada', '#FF1111').'</div>';
+                        $RET = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,"");
                     
                     //L'usuari està en espera'
                     } elseif($OER->getEstat() == EntradesreservaPeer::ESTAT_ENTRADA_EN_ESPERA) {
@@ -728,7 +728,7 @@ class myUser extends sfBasicSecurityUser
                 } else { 
                     $RET = myUser::ph_getEtiquetaActivitats_COMPRA($OEP,"");
                 }                    
-            }
+            }            
         }                
                 
         return $RET;         
@@ -874,7 +874,7 @@ class myUser extends sfBasicSecurityUser
     }
     
     static public function Html2PDF($HTML){                        
-        include(OptionsPeer::getString( 'SF_DOMPDF_CONFIG' , 1 ) );                                                                
+        include( OptionsPeer::getString( 'SF_DOMPDF_CONFIG' , 1 ) );                                                                
         $dompdf = new DOMPDF();
         $dompdf->load_html($HTML);
         $dompdf->set_paper("A4","portrait");

@@ -70,20 +70,40 @@ class EntradesReservaForm extends BaseEntradesReservaForm
 
   }
     
+  /**
+   * Retorna un array ( status, OER );
+   * */
   public function saveMy(){
     
-    //Aquest guardar, no guarda l'objecte en sí, sinó que crida un mètode per igualar-lo amb l'hospici.
-    
+    //Aquest guardar, no guarda l'objecte en sí, sinó que crida un mètode per igualar-lo amb l'hospici.    
     $this->updateObject();
     $OER = $this->getObject();
-    
-    if($this->isNew()){                
-                        
-        //Mirem que hagi entrat o bé el nom d'usuari o bé el codi.
-        if( $OER->getNomReserva() == "" && is_null($OER->getUsuariId())) throw new Exception("Selecciona un usuari de l'Hospici o bé entra el seu nom.");
+                                            
+    //Mirem que hagi entrat o bé el nom d'usuari o bé el codi.
+    if( $OER->getNomReserva() == "" && is_null($OER->getUsuariId())) throw new Exception("Selecciona un usuari de l'Hospici o bé entra el seu nom.");
 
-        //D'entrada és correcte, així que fem la compra.
-        $RET = EntradesReservaPeer::setCompraEntrada($OER->getEntradesPreusHorariId() , $OER->getUsuariId() , $OER->getQuantitat() , $OER->getDescompte() , $OER->getTipusPagament() );                
+    //Si hem entrat el codi d'usuari, guardem la info amb les dades de l'usuari.
+    if(!is_null($OER->getUsuariId())):    
+        $OU = UsuarisPeer::retrieveByPK($OER->getUsuariId());        
+        if($OU instanceof Usuaris):        
+            $OER->setNomReserva( $OU->getNomComplet() );
+            $OER->setEmailReserva( $OU->getEmail() );
+            $OER->setTelefonReserva( $OU->getTelefonString() );            
+        else:        
+            throw new Exception('L\'usuari seleccionat, no s\'ha trobat a la base de dades.');            
+        endif;
+    elseif($OER->getNomReserva() != ""):
+        //No cal fer res, perquè se suposa que les dades ja s'han entrat correctament i quan guardem quedarà guardada.        
+    else:
+        throw new Exception('Hi ha algun problema amb el nom o codi d\'usuari.');
+    endif;    
+    
+    //D'entrada és correcte, així que si l'entrada és nova, fem la compra.
+    if( $this->isNew() ):
+        $RET = EntradesReservaPeer::setCompraEntrada($OER->getEntradesPreusHorariId() , $OER->getUsuariId() , $OER->getQuantitat() , $OER->getDescompte() , $OER->getTipusPagament() );
+        
+        //Tornem a posar OER amb els nous valors després de la compra
+        $OER = $RET['OER'];                
         
         switch($RET['status']){
             case -1: throw new Exception('Hi ha hagut algun problema buscant l\'horari. Informeu-ne a informatica@casadecultura.org'); break;
@@ -92,21 +112,17 @@ class EntradesReservaForm extends BaseEntradesReservaForm
             case -4: throw new Exception('Aquest usuari ja ha comprat una entrada per aquest espectacle.'); break;
             case -5: throw new Exception('Aquesta activitat ja no té entrades disponibles.'); break;
             case -6: throw new Exception('Error de TPV.'); break;
-            case -7: throw new Exception('El número d\'entrades comprades ha de ser superior a 0.'); break;            
-        }        
-        
-        if(!is_null($OER->getUsuariId())) $RET['OER']->setNomReserva(UsuarisPeer::retrieveByPK($OER->getUsuariId())->getNomComplet());
-        elseif($OER->getNomReserva() != "") {}  
-        else throw new Exception('Hi ha algun problema amb el nom o codi d\'usuari.');
-        
-        return $RET;
-                                
-    } else {
+            case -7: throw new Exception('El número d\'entrades comprades ha de ser superior a 0.'); break;                        
+        } 
+    else: 
+        $RET['OER'] = $OER; //L'objecte que hem creat al principi el guardem a l'array per passar-lo.
+        $RET['status'] = 0;       //Marquem l'status a 0 perquè no és nou... només és una modificació
+    endif;
+                
+    //Si no hi ha cap error, guardem. 
+    if( $RET['status'] >= 0 ) $RET['OER']->save();
     
-        $OER->save();
-        
-        return $OER;
-        
-    }       
+    return $RET;                                                    
+       
   }
 }

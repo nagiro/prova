@@ -3,6 +3,9 @@
 
 <style>
 	
+    .col_horaris { float:left; padding:5px; font-size:11px; }
+    .row_horaris { clear:both; width:600px; border-bottom: 1px solid gray; }
+    .a_horaris { font-size:11px; }
 	.row { width:600px; } 
 	.row_field { width:500px; } 
 	.row_title { width:100px; }
@@ -35,8 +38,8 @@
         $( "#B-GUARDA-ACTIVITAT" ).button({ icons: { primary: 'ui-icon-disk' } , label: "Guarda l'activitat"});
         $( "#B-ESBORRA-ACTIVITAT" ).button({ icons: { primary: 'ui-icon-trash' } , label: "Esborra l'activitat"});
         $("#BDIFUSIO").button({ icons: { primary: 'ui-icon-plus' } , label: "Fes difusió ara!"});
-        $("#FORMULARI_DIFUSIO").submit(function(){ EnviaFormulariDifusio(); return false; });                                  
-        
+        $("#FORMULARI_DIFUSIO").submit(function(){ EnviaFormulariDifusio(); return false; });
+        $("#BPREUSSAVE").button({ icons: { primary: 'ui-icon-disk' } , label: "Actualitza el preu"});                                          
         
         $( "#H-0" ).button({ icons: { primary: 'ui-icon-circle-plus' } , label: "Afegir un nou horari a l'activitat"});         
         
@@ -46,12 +49,13 @@
         //A l'edició d'una activitat mostrem els tabs
         <?php if( isset($OA) && ! $OA->isNew()): ?>
             $( "#tabs_cicles" ).tabs({ cache: true , select: function(event, ui) { window.location.replace(ui.tab.hash); } });
-            LoadIfActivitatExisteix(<?php echo $OA->getActivitatid(); ?>);            
+            LoadIfActivitatExisteix(<?php echo $OA->getActivitatid(); ?>);
+            LoadDialogPreus( <?php echo $OA->getActivitatid(); ?> );            
         <?php else: ?>        
             $( "#tabs_cicles" ).tabs({ cache: true, disabled: [1, 2, 3, 4, 5, 6] });
         <?php endif; ?>
         
-        $("#accordion").accordion();
+        $("#accordion").accordion( );
                          
     });
     
@@ -72,6 +76,8 @@
              
         });                        
         
+        
+        /********* FORMULARI QUE S'OBRE PELS HORARIS **********/        
                 
          $( "#FORMULARI_HORARI" ).dialog({
             autoOpen: false,
@@ -132,6 +138,8 @@
         );
     }
     
+    /********* FI FORMULARI QUE S'OBRE PELS HORARIS **********/
+    
     function EnviaFormulariDifusio(){
         
         $.post( 
@@ -164,6 +172,66 @@
     }
     
     
+    function LoadDialogPreus( idActivitat )
+    {
+
+        //Quan fem click a un horari, entrem a aquesta funció. 
+        $("[id^='P-']").click(function(){ 
+            
+            //Capturem el codi d'horari
+            var a = $(this).attr('id').split('-');
+            
+            //Carreguem el formulari que toca al div i després ho mostrem amb el dialog. 
+            LoadPreu( a[1] , idActivitat );
+            
+            //Mostrem el diàleg
+            $( "#FORMULARI_PREU" ).dialog( "open" );            
+             
+        });                        
+        
+        
+        /********* FORMULARI QUE S'OBRE PELS PREUS **********/        
+                
+         $( "#FORMULARI_PREU" ).dialog({
+            autoOpen: false, height: 400, width: 400, modal: true,
+            buttons: {
+            "Guarda": function() {
+                //Hem d'enviar el post per formulari i esperar resposta. Si ok, passem sinó mostrem l'error.  
+                $.post( 
+                    '<?php echo url_for('gestio/gActivitats?accio=PREUS'); ?>', 
+                    { FORMULARI: $("#FORM_PREU").serialize() } , 
+                    function(data){ 
+                        if(data != "") {
+                            alert(data); 
+                            return false; 
+                        //Tot ha anat bé, i tanquem el formulari
+                        } else {                                                   
+                            $("#FORM_PREU").html("");                            
+                            window.location.reload();
+                            return true; 
+                        }
+                    }
+                );                                
+            },                                                                        
+            },            
+            close: function() {
+                $( "#FORM_PREU" ).html("");
+                $( "#FORMULARI_PREU" ).dialog( "close" );
+            }         
+        });                        
+    }        
+    
+    function LoadPreu( idHorari , idActivitat ){        
+        $.post(
+            '<?php echo url_for('gestio/gActivitats?accio=PREUS') ?>',  
+            { idH: idHorari , idA: idActivitat } , 
+            function(data) { $( "#FORMULARI_PREU" ).html(data); }
+        );
+    }
+    
+    /********* FI FORMULARI QUE S'OBRE PELS PREUS **********/
+
+    
     //----------------------------- FUNCIONS DE CARREGA D'HORARIS ------------------------------
 
 	function jq(myid)
@@ -191,7 +259,7 @@
             if( isset($MODE['HORARI']) ){ formLlistaHoraris($IDA,$NOMACTIVITAT,$HORARIS,$FHorari);  }            
             if( isset($MODE['DESCRIPCIO']) ) { formEditaDescripcio($IDA,$FActivitat); }
             if( isset($MODE['PREUS']) ){ formLlistaPreus( $OA , $FPREUS );  }
-            formLlistaActivitatsEdicio($OA, $OC, $L_OA_REL, $FA , $IDS);                    
+            formLlistaActivitatsEdicio( $OA, $OC, $L_OA_REL, $FA , $IDS , $FPREUS );                    
         }
         
         if( isset($MODE['LLISTAT']) && isset($ACTIVITATS) ) { formLlistaActivitats($ACTIVITATS,$PAGINA,$IDS);  }
@@ -247,10 +315,9 @@
             <ul>
             <li><a href="#tabs-1">Dades generals</a></li>
             <li><a href="#tabs-2">Horaris</a></li>
-            <li><a href="#tabs-3">Descripció</a></li>
-            <li><a href="#tabs-4">Preus</a></li>
-            <li><a href="#tabs-5">Activitats del cicle</a></li>
-            <li><a href="#tabs-6">Difusió</a></li>
+            <li><a href="#tabs-3">Descripció</a></li>            
+            <li><a href="#tabs-4">Activitats del cicle</a></li>
+            <li><a href="#tabs-5">Difusió</a></li>
             </ul>
             
             
@@ -277,29 +344,34 @@
             
             <div id="tabs-2">
 
-              	<table class="DADES">
+              	<div>       
+                    <?php $A_OH_PREU = $OA->getHorarisAmbPreu(); ?>                                                                                     
                     <?php $L_OH = $OA->getHorariss(); $RET = ""; ?>
-         			<?php if( sizeof($L_OH) == 0 ): echo '<tr><td class="LINIA">Aquesta activitat no té cap horari definit.</td></tr>'; endif; ?>  
+         			<?php if( sizeof($L_OH) == 0 ): echo '<div class="row_horaris"><div class="col_horaris">Aquesta activitat no té cap horari definit.</div></div>'; endif; ?>  
         			<?php 	foreach($L_OH as $OH): $M = $OH->getArrayHorarisEspaisMaterial(); $HE = $OH->getArrayHorarisEspaisActiusAgrupats();                                                                                                
-        						echo '<tr>                                
-        								<td class="" width=""><a id="H-'.$OH->getHorarisid().'">'.$OH->getHorarisid().'</td>
-        								<td class="" width="">'.myUser::getDiaText($OH->getDia('Y-m-d'), true).', '.$OH->getDia('d/m/Y').'</td>
-        								<td class="" width="">'.$OH->getHorapre('H:i').'</td>
-        								<td class="" width="">'.$OH->getHorainici('H:i').'</td>
-        								<td class="" width="">'.$OH->getHorafi('H:i').'</td>
-        								<td class="" width="">'.$OH->getHorapost('H:i').'</td>
-        								<td class="" width="">'; foreach($HE as $HESPAI): echo $HESPAI.'<br />'; endforeach; echo '</td>'; 
-        						echo   '<td class="" width="">'; foreach($M as $MATERIAL): echo $MATERIAL['nom'].'<br />'; endforeach; echo '</td>'; 
-        						echo '</tr>';                                                                                                
+        						echo '<div class="row_horaris">                                        								
+        								<div class="col_horaris" style="width:100px;"><a class="a_horaris" >'.myUser::getDiaText($OH->getDia('Y-m-d'), true).', '.$OH->getDia('d/m/Y').'</a></div>        								
+        								<div class="col_horaris" style="width:50px;">'.$OH->getHorainici('H:i').'</div>        								                                        
+                                        <div class="col_horaris" style="width:50px;">'.$OH->getHorafi('H:i').'</div>
+        								<div class="col_horaris" style="width:200px;">'; foreach($HE as $HESPAI): echo $HESPAI.'<br />'; endforeach; echo '</div>';         						
+                                echo   '<div class="col_horaris" style="width:50px; float:right;">';
+                                
+                                    echo '<a id="H-'.$OH->getHorarisid().'" class="tt2">'.image_tag('template/door.png').'<span>Edita l\'horari.</span></a>';                                                                        
+                                    if(array_key_exists( $OH->getHorarisid() , $A_OH_PREU ) ) echo '&nbsp;&nbsp;<a id="P-'.$OH->getHorarisid().'" class="tt2">'.image_tag('template/money.png').'<span>Edita els preus.</span></a>';
+                                    else echo '&nbsp;&nbsp;<a id="P-'.$OH->getHorarisid().'" class="tt2">'.image_tag('template/money_euro.png').'<span>Edita els preus.</span></a>';
+                                
+                                echo   '</div>';  
+        						echo '</div>';                                                                                                
                                 
         					endforeach;
         				
         			?>			                   	
-            	</table>    	
+            	</div>    	
                 <br />
                 <?php echo '<button id="H-0"></button>'; ?>
 
                 <div id="FORMULARI_HORARI"></div>                                                    
+                <div id="FORMULARI_PREU"></div>                
             
             </div>
             
@@ -323,18 +395,10 @@
             </div>
             
             <!-- FI DESCRIPCIÓ -->
-            <!-- COMENÇA PREUS -->
             
-            <div id="tabs-4">                               	        
-
-                En desenvolupament.
-                 
-            </div>
-            
-            <!-- FI PREUS -->
             <!-- COMENÇA CICLES -->
             
-            <div id="tabs-5">                 
+            <div id="tabs-4">                 
               	<table class="DADES">   
                     <tr><th>Activitat</th><th>Data</th></tr>
                     <tr><th>&nbsp;</th><th>&nbsp;</th></tr>                 
@@ -357,7 +421,7 @@
             
             <!-- COMENÇA DIFUSIÓ -->
             
-            <div id="tabs-6">              
+            <div id="tabs-5">              
                 <div class="TITOL">Llocs on fer difusió de l'activitat</div>   
                 <div style="padding:10px;">
                     <a href="<?php echo url_for('gestio/ConnectaGoogleCalendars?login=true&idA='.$OA->getActivitatid()); ?>">Connecta a Google</a>

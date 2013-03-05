@@ -28,11 +28,13 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
     const TIPUS_VENTA = 2;    
     
     /**
-     * Inicialitzem el formulari de EntradesPreus     
+     * Inicialitzem el formulari de EntradesPreus
+     * Aquest inicialitza el formulari a un objecte per poder-lo passar a un template     
      * */
     static public function initialize($idS = 1, $idH = 0, $idA = 0)
     {
-        $OEP = self::retrieveByPK($idH,$idA);
+        
+        $OEP = self::retrieveByPK($idH,$idA);        
         if(!($OEP instanceof EntradesPreus)):
             $OEP = new EntradesPreus();            
             $OEP->setPreu(0);
@@ -41,10 +43,10 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
             $OEP->setSiteId($idS);
             $OEP->setHorariId($idH);
             $OEP->setActivitatid($idA);
-            $OEP->setActiu(false);
+            $OEP->setActiu(false);                    
         endif;
         
-        return new EntradesPreusForm($OEP,array('IDS'=>$idS,'IDH'=>$idH));    
+        return $OEP;    
             
     }
 /*
@@ -167,5 +169,23 @@ class EntradesPreusPeer extends BaseEntradesPreusPeer {
         return $RET;
             
     }
+    
+    static public function doSave( $A )
+    {
+        
+        $OP = self::retrieveByPK( $A['horari_id'] , $A['activitat_id'] );
+        if( ! ( $OP instanceof EntradesPreus ) ) $OP = new EntradesPreus(); 
+        
+        $OP->setHorariId($A['horari_id']);
+        $OP->setActivitatid($A['activitat_id']);
+        $OP->setSiteId($A['site_id']);
+        $OP->setActiu($A['actiu']);
+        $OP->setPreu($A['Preu']);
+        $OP->setPlaces($A['Places']);
+        $OP->setPagamentExtern( implode( '@' , $A['PagamentExtern'] ) );
+        $OP->setPagamentIntern( implode( '@' , $A['PagamentIntern'] ) );
+        $OP->setDescomptes( implode( '@' , $A['Descomptes'] ) );                                                                                                               
+        return $OP->save();
+    } 
 
 } // EntradesPreusPeer

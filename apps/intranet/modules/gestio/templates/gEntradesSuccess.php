@@ -40,7 +40,7 @@
         include_partial('breadcumb',array('text'=>'RESERVES D\'ENTRADES'));
     
         if($MODE == 'LLISTA_ACTIVITATS') Entrades_LlistaActivitats( $LLISTAT_ENTRADES_PREUS , $P );        
-        elseif($MODE == 'LLISTA_ENTRADES') Entrades_LlistaEntrades( $LLISTAT_ENTRADES , $P );
+        elseif($MODE == 'LLISTA_ENTRADES') Entrades_LlistaEntrades( $LLISTAT_ENTRADES , $LLISTAT_ENTRADES_ANULADES , $P );
         elseif($MODE == 'EDITA_ENTRADA') Entrades_EditaReserva( $FReserva , $MISSATGE );
         elseif($MODE == 'MISSATGE') Entrades_Missatge( $MISSATGE , $idER );                                    
     
@@ -136,8 +136,40 @@
     
 <?php } ?>
     
+
+<?php 
+
+function LlistaLinia( $OR ){
+    
+    $RET = "";
+    try{
+        $OU = UsuarisPeer::retrieveByPK($OR->getUsuariId());
+        $RET .= '<div class="col">';
+            if($OU instanceof Usuaris):
+                $RET .= '<div class="col1" style="clear:both;"><b>'.$OU->getNomComplet().'</b> ('.$OU->getDni().')<br />Comentari: '.$OR->getComentari().'<br />'.$OU->getEmail().'<br />'.$OU->getTelefonString().'</div>';
+            else:
+                $comentari = ($OR->getComentari() == "")?"":"<br />Comentari: ".$OR->getComentari();
+                $RET .= '<div class="col1" style="clear:both;"><b>'.$OR->getNomUsuari().'</b><br />'.$OR->getEmailReserva().'<br />'.$OR->getTelefonReserva().$comentari.'</div>';
+            endif;
+                                                                                                
+            $RET .= '<div class="col2">'.$OR->getEstatString().'</div>';
+            $RET .= '<div class="col3"><b>'.$OR->getQuantitat().'</b></div>';                            
+            $RET .= '<div class="col4">'.
+                    link_to(image_tag('template/application_edit.png').'<span>Modificar la reserva</span>','gestio/gEntrades?accio=VE&IDA='.$OR->getEntradesPreusActivitatId().'&IDH='.$OR->getEntradesPreusHorariId().'&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.
+                    link_to(image_tag('template/cross.png').'<span>Anul·lar la reserva</span>','gestio/gEntrades?accio=AR&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.                                                                        
+                    link_to(image_tag('template/printer.png').'<span>Imprimir una entrada</span>','gestio/gEntrades?accio=PRINT&idER='.$OR->getIdentrada(),array('class'=>'tt2')).' '
+                .'</div>';
+        $RET .= '</div>';        
+    } catch(Exception $e) { echo $e->getMessage(); }
+    
+    return $RET;    
+    
+}
+
+?>
+
             
-<?php function Entrades_LlistaEntrades( $LLISTAT_ENTRADES , $P ){ ?>
+<?php function Entrades_LlistaEntrades( $LLISTAT_ENTRADES , $LLISTAT_ENTRADES_ANULADES , $P ){ ?>
 
     <style>
         .col1 { float:left; width:350px; clear:both; }
@@ -156,31 +188,12 @@
             <div class="titolb col4 no_pad">Accions</div>
             <?php 
                 
-                if( sizeof($LLISTAT_ENTRADES) == 0 ){ 
-                    
-                    echo '<div style="clear:both">No hi ha cap reserva a aquesta activitat.</div>';
-                    
-                } else {
+                if( sizeof($LLISTAT_ENTRADES) == 0 ){ echo '<div style="clear:both">No hi ha cap reserva a aquesta activitat.</div>'; } 
+                else {
                     $total = 0;
                     foreach($LLISTAT_ENTRADES as $OR):
-                                                
-                        try{
-                            $OU = UsuarisPeer::retrieveByPK($OR->getUsuariId());
-                            echo '<div class="col">';
-                                if($OU instanceof Usuaris) echo '<div class="col1" style="clear:both;"><b>'.$OU->getNomComplet().'</b> ('.$OU->getDni().')<br />Comentari: '.$OR->getComentari().'<br />'.$OU->getEmail().'<br />'.$OU->getTelefonString().'</div>';
-                                else echo '<div class="col1" style="clear:both;"><b>'.$OR->getNomUsuari().'</b><br />Comentari: '.$OR->getComentari().'<br />'.$OR->getEmailReserva().'<br />'.$OR->getTelefonReserva().'</div>';                                                        
-                                                                                                                    
-                                echo '<div class="col2">'.$OR->getEstatString().'</div>';
-                                echo '<div class="col3"><b>'.$OR->getQuantitat().'</b></div>';                            
-                                echo '<div class="col4">'.
-                                        link_to(image_tag('template/application_edit.png').'<span>Modificar la reserva</span>','gestio/gEntrades?accio=VE&IDA='.$OR->getEntradesPreusActivitatId().'&IDH='.$OR->getEntradesPreusHorariId().'&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.
-                                        link_to(image_tag('template/cross.png').'<span>Anul·lar la reserva</span>','gestio/gEntrades?accio=AR&IDR='.$OR->getIdentrada(),array('class'=>'tt2')).' '.                                                                        
-                                        link_to(image_tag('template/printer.png').'<span>Imprimir una entrada</span>','gestio/gEntrades?accio=PRINT&idER='.$OR->getIdentrada(),array('class'=>'tt2')).' '
-                                    .'</div>';
-                            echo '</div>';
-                            $total += $OR->getQuantitat();
-                        } catch(Exception $e) { echo $e->getMessage(); }                        
-                        
+                        $total += $OR->getQuantitat();                                                
+                        echo LlistaLinia($OR);                                                                        
                     endforeach;
                     echo '<div class="col">';
                             echo '<div class="col1"><b>TOTAL</b></div>';
@@ -192,7 +205,28 @@
             ?>
             
         </div>
+        <div style="clear: both;">&nbsp;</div>
+        
+        <div class="TITOL">Entrades anul·lades o incorrectes</div>
+        <div class="DADIV">
+            <div class="titolb col1 no_pad">Nom</div>             
+            <div class="titolb col2 no_pad">Estat</div>            
+            <div class="titolb col3 no_pad">#Reser.</div>
+            <div class="titolb col4 no_pad">Accions</div>
+            <?php 
+                
+                if( sizeof($LLISTAT_ENTRADES_ANULADES) == 0 ){ echo '<div style="clear:both">No hi ha cap reserva a aquesta activitat.</div>'; } 
+                else {                    
+                    foreach($LLISTAT_ENTRADES_ANULADES as $OR):                                                                       
+                        echo LlistaLinia($OR);                                                                        
+                    endforeach;                    
+                }
+            ?>
+            
+        </div>
         <div style="clear: both;">&nbsp;</div>  		                         
+
+          		                         
   	</div>
         
 <?php } ?>                                    

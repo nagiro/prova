@@ -238,4 +238,21 @@ class Activitats extends BaseActivitats
         return $nivell;
    }
    
+   /**
+    * Retorna els horaris que tenen pagament activat. 
+    * */
+   public function getHorarisAmbPreu()
+   {
+        $RET = array();
+        $C = new Criteria();
+        $C->add( EntradesPreusPeer::ACTIVITAT_ID , $this->getActivitatid() );
+        $C->add( EntradesPreusPeer::ACTIU , true );        
+        
+        foreach( EntradesPreusPeer::doSelect($C) as $OP ):
+            $RET[$OP->getHorariId()] = $OP->getHorariId();        
+        endforeach;
+         
+        return $RET;                 
+   }
+   
 }
