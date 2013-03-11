@@ -531,7 +531,7 @@ class gestioActions extends sfActions
    * Aquesta funció fa la crida a google i espera la resposta. 
    * 
    * */ 
-  public function executeConnectaGoogleCalendars(sfWebRequest $request){               
+  public function executeConnectaGoogleCalendars(sfWebRequest $request){                                           
               
     //Guardem IDS per si l'hem d'usar a la funció
     $IDS = $this->getUser()->getSessionPar('idS');
@@ -551,13 +551,14 @@ class gestioActions extends sfActions
     endif;                    
     
     //Si estem connectats i estic afegint una activitat, ho faig.
-    if( $C->IsConnected( $this->IDS ) && $request->hasParameter('idA') && !$request->hasParameter('login') ):           
+    if( $request->hasParameter('idA') ):           
                                 
         $OA = ActivitatsPeer::retrieveByPK( $request->getParameter('idA') );
         
         foreach( $OA->getHorarisActius( $IDS ) as $OH ):
         
             $OS = SitesPeer::retrieveByPK( $IDS );
+            
             $C->AddActivitat(   $OA->getActivitatid() , 
                                 mktime( $OH->getHorainici('H') , $OH->getHorainici('i') , $OH->getHorainici('s') , $OH->getDia('m') , $OH->getDia('d') , $OH->getDia('Y') ) , 
                                 mktime( $OH->getHorafi('H') , $OH->getHorafi('i') , $OH->getHorafi('s') , $OH->getDia('m') , $OH->getDia('d') , $OH->getDia('Y') ) ,
@@ -570,21 +571,15 @@ class gestioActions extends sfActions
                                 $OA->getDMig() ,                                                                 
                                 OptionsPeer::getString( 'google_calendar_id' , $IDS ) , 
                                 1 , 
-                                $this->getUser()->getSessionPar('idS') );                                                              
+                                $this->getUser()->getSessionPar('idS') );                                                                                              
         endforeach;                
+   
+   endif;
    
         return $this->renderText("Activitat afegida al Google Calendars");
    
-    //Si no estic entrant una activitat, miro si m'estic connectant
-    else:
-            
-        $url = $C->ConnectaGoogle( $this->IDS , $request->hasParameter('login') );
-        //Si m'estic connectant, mostro la url de connexió, altrament, entrem on estàvem...         
-        if( !empty( $url ) ) echo "Per poder publicar al calendari, t'has d'autentificar a google clicant <a href=\"".$url."\">aquí</a>";
-        else $this->redirect('http://localhost/gestio/gActivitats/accio/ACTIVITAT/IDA/'.$this->getUser()->getSessionPar('google_ida').'#tabs-6');
-    
-    endif;
-    
+    // http://www.casadecultura.com/gestio/gActivitats/accio/ACTIVITAT/IDA/8816
+    // http://www.casadecultura.com/gestio/AjaxDifusio?FORMULARI=calendars%3Dcalendars%26idA%3D8816
     return sfView::NONE;
     
   }

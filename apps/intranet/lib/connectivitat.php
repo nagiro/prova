@@ -6,25 +6,27 @@ require_once '../lib/vendor/googleapis/contrib/Google_CalendarService.php';
 class Connectivitat 
 {
 
-    public static $client;
-    public static $cal; 
-    public static $AccessToken;
+    public $client;
+    public $cal; 
+    public $AccessToken;    
 
-
-    public function __construct( $idS ){
+    public function __construct( $idS ){                
         
         $apiConfig['use_objects'] = true;
-        $this->client = new Google_Client();
-        //$client->setApplicationName("Google Calendar PHP Starter Application");
+        $this->client = new Google_Client();        
         
         // Visit https://code.google.com/apis/console?api=calendar to generate your
         // client id, client secret, and to register your redirect uri.
-        
         $this->client->setClientId( OptionsPeer::getString( 'GOOGLE_CLIENT_ID' , $idS ) );
-        $this->client->setClientSecret( OptionsPeer::getString( 'GOOGLE_CLIENT_PASSWORD' , $idS ) );
-        $this->client->setRedirectUri( OptionsPeer::getString( 'GOOGLE_REDIRECT_URI' , $idS ) );
         
-        $this->cal = new Google_CalendarService($this->client);                                                
+        $key = file_get_contents(OptionsPeer::getString( 'SF_WEBSYSROOT' , $idS ).'documents\\clau_privada_calendars.p12');        
+        $GAC = new Google_AssertionCredentials(
+                        OptionsPeer::getString( 'GOOGLE_SERVICE_ID' , $idS ),
+                        array('https://www.googleapis.com/auth/calendar'),
+                        $key);                                        
+        $this->client->setAssertionCredentials($GAC);                
+        $this->cal = new Google_CalendarService($this->client);
+        $calList = $this->cal->calendarList->listCalendarList();                                                        
         
     }
     
@@ -82,7 +84,7 @@ class Connectivitat
         $E->setSummary( $titol );
         $E->setHtmlLink( $link );
         $E->setLocation( $location );
-        $E->setDescription( $description );
+        $E->setDescription( html_entity_decode( strip_tags( $description ) ) );
         
         $start = new Google_EventDateTime();
         $start->setDateTime( date( DateTime::RFC3339, $timestamp_inici ) );
@@ -92,11 +94,9 @@ class Connectivitat
         $end->setDateTime( date( DateTime::RFC3339, $timestamp_fi ) );
         $E->setEnd($end);
         $E->setColorId( $color_id );
-        
-        $this->cal->events->insert( OptionsPeer::getString( 'GOOGLE_CALENDAR_ID' , $idS ) , $E );                
+                                                                
+        $this->cal->events->insert( OptionsPeer::getString( 'GOOGLE_CALENDAR_ID' , $idS ) , $E );                              
                     
     }
-      
-
-    
+          
 }
