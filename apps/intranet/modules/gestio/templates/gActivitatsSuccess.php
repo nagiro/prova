@@ -423,9 +423,7 @@
             
             <div id="tabs-5">              
                 <div class="TITOL">Llocs on fer difusió de l'activitat</div>   
-                <div style="padding:10px;">
-                    <a href="<?php echo url_for('gestio/ConnectaGoogleCalendars?login=true&idA='.$OA->getActivitatid()); ?>">Connecta a Google</a>
-                    <br /><br />
+                <div style="padding:10px;">                    
                     <form id="FORMULARI_DIFUSIO" action="POST">                                            
                         <div style="width: 150px; float:left; "><input type="checkbox" value="calendars" name="calendars" /> Google calendars</div>
                         <div style="width: 150px; float:left; "><input disabled="disabled" type="checkbox" value="facebook" name="facebook" /> Facebook</div>

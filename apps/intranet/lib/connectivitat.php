@@ -19,9 +19,9 @@ class Connectivitat
         // client id, client secret, and to register your redirect uri.
         $this->client->setClientId( OptionsPeer::getString( 'GOOGLE_CLIENT_ID' , $idS ) );
         
-        $key = file_get_contents(OptionsPeer::getString( 'SF_WEBSYSROOT' , $idS ).'documents\\clau_privada_calendars.p12');        
+        $key = file_get_contents(OptionsPeer::getString( 'SF_WEBSYSROOT' , $idS ).'documents/clau_privada_calendars.p12');        
         $GAC = new Google_AssertionCredentials(
-                        OptionsPeer::getString( 'GOOGLE_SERVICE_ID' , $idS ),
+                        OptionsPeer::getString( 'GOOGLE_SERVICE_ID' , $idS ) ,
                         array('https://www.googleapis.com/auth/calendar'),
                         $key);                                        
         $this->client->setAssertionCredentials($GAC);                

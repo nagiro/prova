@@ -577,9 +577,7 @@ class gestioActions extends sfActions
    endif;
    
         return $this->renderText("Activitat afegida al Google Calendars");
-   
-    // http://www.casadecultura.com/gestio/gActivitats/accio/ACTIVITAT/IDA/8816
-    // http://www.casadecultura.com/gestio/AjaxDifusio?FORMULARI=calendars%3Dcalendars%26idA%3D8816
+       
     return sfView::NONE;
     
   }
