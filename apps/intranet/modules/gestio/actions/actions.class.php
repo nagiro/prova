@@ -523,6 +523,74 @@ class gestioActions extends sfActions
   }
   
   
+  /**
+   * RSS que mostra les activitats que vindran en 7 dies.  
+   * 
+   * */ 
+  public function executeRSS(){
+    
+      require_once '../lib/vendor/rss/FeedWriter.php';
+      require_once '../lib/vendor/rss/FeedItem.php';
+      
+      $IDS = $this->getUser()->getSessionPar('idS');
+      $OS = SitesPeer::retrieveByPK($IDS);
+            
+      $Feed = new FeedWriter(ATOM);
+            
+      $Feed->setTitle( 'Canal RSS del site: ' . $OS->getNom() );
+      $Feed->setLink( $OS->getWeburl() );
+      $Feed->setDescription( 'En aquest canal veurà les activitats a 7 dies vista del site: ' . $OS->getNom() );       
+                  
+      $temps = strtotime( '+7 day' , time() );      
+      $data = date( 'Y-m-d', $temps );      
+      
+      $LACT = ActivitatsPeer::getActivitatsDia( $IDS , $data , 1 , "activitats" );
+      
+      foreach($LACT->getResults() as $OA):
+      
+          
+          $newItem = $Feed->createNewItem();
+          
+          //Mirem que sigui el primer horari... si ho és el mostrem...
+          if( $OA->getPrimeraData() == $data ):
+                                                                                   
+              $newItem->setTitle(  html_entity_decode( $OA->getTmig() ) );
+              if($IDS == 1) $newItem->setLink( 'http://www.casadecultura.org/activitats/0/'.$OA->getActivitatid().'/'.$OA->getNomForUrl() );
+              else $newItem->setLink( 'http://www.hospici.cat/detall_activitat/'.$OA->getActivitatid().'/'.$OA->getNomForUrl() );                    
+              $newItem->setDate( time() );
+              
+              //Regstrem els horaris que s'usaran                                        
+              $PH = $OA->getPrimerHorari(); $UH = $OA->getUltimHorari();
+              $horaris = "Del dia ".$PH->getDia('d/m').' al '.$UH->getDia('d/m'); 
+              if( $PH->getDia() == $UH->getDia() ) $horaris = "El dia ".$PH->getDia('d/m');
+              $A_E = $PH->getArrayEspais(); $horaris .= ' a '.$A_E[0];
+              
+              $image = '<p>
+                            <img class="center" src="http://www.hospici.cat/images/activitats/A-'.$OA->getActivitatid().'-L.jpg"  alt="Imatge"/>
+                            <br /><b>'.$horaris.'</b>
+                        </p>';
+                                                                       
+              $D = $image . $OA->getDmig();
+                        
+              $newItem->setDescription( $D );
+                                  
+              //Now add the feed item
+              $Feed->addItem($newItem);
+                  
+          endif;
+          
+      endforeach;            
+      
+      $Feed->genarateFeed();
+            
+      return sfView::NONE;
+  }
+
+
+  /**
+   * Envia un mail de difusió on toqui. 
+   * 
+   * */ 
   public function SendMailDifusio(){
     
   }
