@@ -122,7 +122,18 @@ class CursosPeer extends BaseCursosPeer
   	$C = new Criteria();  	
     $C = self::getCriteriaActiu($C,$idS);
     
-  	if($mode == self::CURSACTIU): $C->add(self::ISACTIU , true); else: $C->add(self::ISACTIU , false); endif;
+  	//Mirem només els cursos que estan en actiu o sigui amb matrícula oberta. 
+      if($mode == self::CURSACTIU): 
+        $C->add(self::ISACTIU , true);
+         
+        //Si estem carregant per mirar pel web, tampoc mostrem els que ja estan fora de període de matriculació.
+        if($visibleWeb):
+            $C->add(self::DATAFIMATRICULA, date('Y-m-d',time()) , CRITERIA::GREATER_THAN);
+        endif;
+    else: 
+        $C->add(self::ISACTIU , false); 
+    endif;
+    
     if(!is_null($datai) && !is_null($dataf)):
         $C1 = $C->getNewCriterion(self::DATAINICI, $datai, CRITERIA::GREATER_THAN);
         $C2 = $C->getNewCriterion(self::DATAINICI, $dataf, CRITERIA::LESS_THAN);        
