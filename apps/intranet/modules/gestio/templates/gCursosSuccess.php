@@ -24,7 +24,7 @@
 
     $(document).ready( function() {
         $.datepicker.regional['ca'];
-	    $('.select_date').datepicker({ dateFormat: "yyyy-mm-dd" , constrainInput: true , gotoCurrent: true });
+	    $('.select_date').datepicker({ dateFormat: "yy-mm-dd" , constrainInput: true , gotoCurrent: true });
 		$('#cerca_select').change( function() { $('#FCERCA').append('<input type="hidden" name="BCERCA"></input>').submit(); });
 		$('#cursos_codi_Codi').change(CanviaCodiCurs);
 		$('#FSAVECODICURS').submit(ValidaCodi);                        
