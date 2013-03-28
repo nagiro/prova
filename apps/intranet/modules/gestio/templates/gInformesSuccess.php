@@ -177,7 +177,7 @@
             $desc           = $OA->getDmig();
             $OC             = $OA->getCicles(); if($OC instanceof Cicles) $cicle = $OC->getTmig();
             $organitzador   = $OA->getOrganitzador();
-            $horaris        =  generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
+            $horaris        = generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
             $imatge         = $OA->getImatge('M');                                                                        
             $link           = url_for('gestio/gActivitats?IDA='.$OA->getActivitatid());
                                     
@@ -193,7 +193,7 @@
                         <div style="clear:both"></div>
                         <br /><br /><br /><br />
                         ';
-                        
+                                                
         endforeach;
         
         $RETF = '<DIV class="REQUADRE">
