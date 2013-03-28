@@ -261,14 +261,11 @@ class Activitats extends BaseActivitats
     * */
    public function getImatge($mida)
    {
-        $dir = '/images/activitats/';
+        $dir = getcwd().'/images/activitats/';
         $base = OptionsPeer::getString('SF_WEBSYSROOT' , $this->getSiteId() );
         $mini = false; $normal = false; $big = false; $pdf = false;
-        if ( file_exists( $base.'/images/activitats/A-'.$this->getActivitatid().'-'.$mida.'.jpg') ):
-            return $dir.'A-'.$this->getActivitatid().'-'.$mida.'.jpg';        
-        else: 
-            return null; 
-        endif;  
+        
+        return $dir.'A-'.$this->getActivitatid().'-'.$mida.'.jpg';                  
    }
    
 }
