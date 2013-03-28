@@ -162,32 +162,45 @@
     }
     
 
+    /**
+     * Treu el llistat de les activitats setmanals...
+     * */
     function LlistatWord($LOA,$IDS)
     {
         $RET = "";
         $URLWEB = OptionsPeer::getString('SF_WEBROOTURL',$IDS);
         
         foreach($LOA as $OA):
-            $img = image_tag('activitats/'.$OA->getImatge());
-            $OC = $OA->getCicles(); if($OC instanceof Cicles) $cicle = "Cicle: ".$OC->getTmig();
-            $title = $OA->getTmig();
-            $body = $OA->getDmig();
-            $horaris = generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
-            $link = url_for('gestio/gActivitats?accio=DESCRIPCIO&IDA='.$OA->getActivitatid());
             
-            $RET .= "<div style=\"margin-bottom:20px\">                                                
-                        <div class=\"title\"><b>{$title}</b> (<a href=\"{$link}\">edita</a>)</div>
-                        <div><i>{$cicle}</i></div>
-                        <div><i>{$horaris}</i></div>                        
-                        <div>{$img}{$body}</div>                                                
-                    </div>                                            
-                        ";
+            //Mostrem el títol, cicle, Organitzador, Espais, dies i hores.
+            $titol          = $OA->getTmig();
+            $desc           = $OA->getDmig();
+            $OC             = $OA->getCicles(); if($OC instanceof Cicles) $cicle = $OC->getTmig();
+            $organitzador   = $OA->getOrganitzador();
+            $horaris        =  generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
+            $imatge         = $OA->getImatge('M');
+            echo $imatge;                                                             
+            $link           = url_for('gestio/gActivitats?IDA='.$OA->getActivitatid());
+                                    
+            $RET .= '                    
+                        <div style="clear:both; float:left"><img align="top" src="'.$imatge.'" /></div>
+                        <div style="float:left">
+                            <b>'.$titol.'</b> (<a href="'.$link.'">edita</a>)
+                            <br /><i>Cicle: '.$cicle.'</i>
+                            <br /><i>Organitzador: '.$organitzador.'</i>
+                            <br /><i>'.$horaris.'</i>                        
+                            <br /><br />'.$desc.'
+                        </div>                  
+                        <div style="clear:both"></div>
+                        <br /><br /><br /><br />
+                        ';
                         
         endforeach;
         
         $RETF = '<DIV class="REQUADRE">
                     <DIV class="TITOL">Llistat d\'activitats</DIV>
-                        <div>'.$RET.'</div></div>';                              
+                        <div>'.$RET.'</div>
+                 </div>';                              
         return $RETF;
     }    
  

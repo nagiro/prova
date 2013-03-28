@@ -479,7 +479,8 @@ class ActivitatsPeer extends BaseActivitatsPeer
         $C2 = $C->getNewCriterion(HorarisPeer::DIA,$IAF->getValue('DataFi'),CRITERIA::LESS_EQUAL);                
         if(!is_null($IAF->getValue('DataInici'))) $C->addAnd($C1);
         if(!is_null($IAF->getValue('DataFi'))) $C->addAnd($C2);
-        $C->add(ActivitatsPeer::DMIG , "" , CRITERIA::NOT_EQUAL );
+        $C->add(ActivitatsPeer::PUBLICAWEB, true);
+        //$C->add(ActivitatsPeer::DMIG , "" , CRITERIA::NOT_EQUAL );
         $C->addAscendingOrderByColumn(HorarisPeer::DIA);
         $C->addGroupByColumn(ActivitatsPeer::ACTIVITATID);
         if($returnActivitats) return ActivitatsPeer::doSelect($C);

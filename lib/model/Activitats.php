@@ -255,4 +255,20 @@ class Activitats extends BaseActivitats
         return $RET;                 
    }
    
+   /**
+    * Aquesta funció retorna la URL de la imatge segons la mida.
+    * @param Mida: "S,M,L" 
+    * */
+   public function getImatge($mida)
+   {
+        $dir = getcwd().'/images/activitats/';
+        $base = OptionsPeer::getString('SF_WEBSYSROOT' , $this->getSiteId() );
+        $mini = false; $normal = false; $big = false; $pdf = false;
+        if ( file_exists( $base.'/images/activitats/A-'.$this->getActivitatid().'-'.$mida.'.jpg') ):
+            return $dir.'A-'.$this->getActivitatid().'-'.$mida.'.jpg';        
+        else: 
+            return null; 
+        endif;  
+   }
+   
 }
