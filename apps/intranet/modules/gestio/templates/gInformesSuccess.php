@@ -182,8 +182,8 @@
             $link           = url_for('gestio/gActivitats?accio=ACTIVITAT&IDA='.$OA->getActivitatid());
                                     
             $RET .= '                    
-                        <div style="clear:both; float:left"><img align="top" src="'.$imatge.'" /></div>
-                        <div style="float:left">
+                        <div style="float:left; margin-right:10px;"><img width="195px" height="195px" align="top" src="'.$imatge.'" /></div>
+                        <div style="">
                             <b>'.$titol.'</b> (<a href="'.$link.'">edita</a>)
                             <br /><i>Cicle: '.$cicle.'</i>
                             <br /><i>Organitzador: '.$organitzador.'</i>
