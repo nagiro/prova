@@ -178,8 +178,7 @@
             $OC             = $OA->getCicles(); if($OC instanceof Cicles) $cicle = $OC->getTmig();
             $organitzador   = $OA->getOrganitzador();
             $horaris        =  generaHoraris($OA->getHorarisOrdenats(HorarisPeer::DIA));
-            $imatge         = $OA->getImatge('M');
-            echo $imatge;                                                             
+            $imatge         = $OA->getImatge('M');                                                                        
             $link           = url_for('gestio/gActivitats?IDA='.$OA->getActivitatid());
                                     
             $RET .= '                    
