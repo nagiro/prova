@@ -1111,5 +1111,65 @@ class webActions extends sfActions
       return sfView::NONE;
   }
 
+  /**
+   * RSS que mostra les activitats que vindran en 7 dies.  
+   * 
+   * */ 
+  public function executeGetActXML( sfWebRequest $request ){
+                
+      //Entrem el SiteID del que volem recuperar l'xml i el carreguem. 
+      $IDS = $request->getParameter( 'IDS' , 0 );            
+      $OS = SitesPeer::retrieveByPK($IDS);
+      
+      //Si existeix el site que demanem, seguim. 
+      if($OS instanceof Sites):
+            
+        $this->setLayout(null);
+        $this->setTemplate(null);
+        $LOH = ActivitatsPeer::getActivitatsProperes( $IDS , date('Y-m-d',time()), 1 , 'horari' , 50 , true );        
+        
+        //Creem l'objecte XML                                                                                                                                                                                                                                                
+        $i = 1;          
+        $document = "<document>";                    
+        foreach($LOH as $OH):
+                                                        
+            $OA = $OH->getActivitats();
+            $LE = $OH->getArrayEspais();
+                                                                                                            
+            $document .= "<caixa>";
+            $document .= "  <id_activitat>".$OA->getActivitatid()."</id_activitat>";
+            $document .= "  <data_inicial>".$OA->getPrimerHorari()->getDia('Y-m-d')."</data_inicial>";
+            $document .= "  <data_fi>".$OA->getUltimHorari()->getDia('Y-m-d')."</data_fi>";
+            $document .= "  <tipus_activitat>".$OA->getNomTipusActivitat()."</tipus_activitat>";
+            $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>";
+            $document .= "  <tipologia>".$OA->getCategories()."</tipologia>";
+            $document .= "  <importancia>".$OA->getImportancia()."</importancia>";                        
+            $document .= "  <titol>".$OA->getTmig()."</titol>";
+            $document .= "  <text>".htmlspecialchars($OA->getDmig())."</text>";
+            $document .= "  <url>".$this->getController()->genUrl('http://www.hospici.cat/http://www.hospici.cat/detall_activitat/'.$OA->getActivitatid().'/'.$OA->getNomForUrl() , true )."</url>";
+            $document .= "  <hora_inici>".$OH->getHorainici("H.i")."</hora_inici>";
+            $document .= "  <hora_fi>".$OH->getHorafi("H.i")."</hora_fi>";
+            $document .= "  <espais>".implode(",",$LE)."</espais>";
+            $document .= "  <organitzador>".html_entity_decode( $OA->getOrganitzador() )."</organitzador>";
+            $document .= "  <info_practica>".utf8_encode( strip_tags( html_entity_decode( $OA->getInfopractica() ) ) )."</info_practica>";
+            $document .= "  <url_img_s>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-M.jpg</url_img_s>";
+            $document .= "  <url_img_m>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-L.jpg</url_img_m>";
+            $document .= "  <url_img_l>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-XL.jpg</url_img_l>";                                                
+            $document .= "</caixa>";                                                                                                
+                                                                                                                                   
+        endforeach;
+            
+        $document .= "</document>";
+ 		        
+        $response = sfContext::getInstance()->getResponse();	    
+        $response->setHttpHeader('Content-type','text/xml');        
+        $response->setContent($document);
+        $response->sendHttpHeaders();
+                            
+      endif;
+            
+      return sfView::NONE;
+  }
+
 
 }
