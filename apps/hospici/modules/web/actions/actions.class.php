@@ -1138,8 +1138,8 @@ class webActions extends sfActions
                                                                                                             
             $document .= "<caixa>";
             $document .= "  <id_activitat>".$OA->getActivitatid()."</id_activitat>";
-            $document .= "  <data_inicial>".$OA->getPrimerHorari()->getDia('Y-m-d')."</data_inicial>";
-            $document .= "  <data_fi>".$OA->getUltimHorari()->getDia('Y-m-d')."</data_fi>";
+            $document .= "  <data_inicial>".$OH->getDia('Y-m-d')."</data_inicial>";
+            $document .= "  <data_fi>".$OH->getDia('Y-m-d')."</data_fi>";
             $document .= "  <tipus_activitat>".$OA->getNomTipusActivitat()."</tipus_activitat>";
             $document .= "  <cicle>".$OA->getCicles()->getTmig()."</cicle>";
             $document .= "  <tipologia>".$OA->getCategories()."</tipologia>";
