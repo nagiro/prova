@@ -1150,8 +1150,8 @@ class webActions extends sfActions
             $document .= "  <hora_inici>".$OH->getHorainici("H.i")."</hora_inici>";
             $document .= "  <hora_fi>".$OH->getHorafi("H.i")."</hora_fi>";
             $document .= "  <espais>".implode(",",$LE)."</espais>";
-            $document .= "  <organitzador>".html_entity_decode( $OA->getOrganitzador() )."</organitzador>";
-            $document .= "  <info_practica>".utf8_encode( strip_tags( html_entity_decode( $OA->getInfopractica() ) ) )."</info_practica>";
+            $document .= "  <organitzador>".htmlspecialchars( $OA->getOrganitzador() )."</organitzador>";
+            $document .= "  <info_practica>".htmlspecialchars( $OA->getInfopractica() )."</info_practica>";
             $document .= "  <url_img_s>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-M.jpg</url_img_s>";
             $document .= "  <url_img_m>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-L.jpg</url_img_m>";
             $document .= "  <url_img_l>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-XL.jpg</url_img_l>";                                                
