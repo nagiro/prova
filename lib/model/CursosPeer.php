@@ -142,11 +142,18 @@ class CursosPeer extends BaseCursosPeer
     endif;
        
     if($visibleWeb) $C->add(self::VISIBLEWEB, true); //Si ha de ser només per web, marquem com a només els visibles. 
-              	
-  	$C->addAscendingOrderByColumn( self::CATEGORIA );
-  	$C->addAscendingOrderByColumn( self::DATAINICI );
-  	$C->addAscendingOrderByColumn( self::CODI );
-  	
+              	  	
+    //Fem l'ordenació. Si el curs és inactiu a més ordenem per l'any... 
+    if( $mode != self::CURSACTIU ):
+        $C->addAscendingOrderByColumn( self::DATAINICI );
+        $C->addAscendingOrderByColumn( self::CATEGORIA );      	
+      	$C->addAscendingOrderByColumn( self::CODI );
+    else:
+        $C->addAscendingOrderByColumn( self::CATEGORIA );
+      	$C->addAscendingOrderByColumn( self::DATAINICI );
+      	$C->addAscendingOrderByColumn( self::CODI );
+    endif;          	        
+    
   	if(!empty($CERCA)):
   		$C1 = $C->getNewCriterion(self::CODI, "%$CERCA%" , CRITERIA::LIKE);
   		$C2 = $C->getNewCriterion(self::TITOLCURS , "%$CERCA%" , CRITERIA::LIKE );

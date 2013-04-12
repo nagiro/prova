@@ -35,5 +35,18 @@ class Sites extends BaseSites {
     
         return $email;        
     }
+    
+    public function getPobleString()
+    {
+        
+        $OP = PoblacionsPeer::retrieveByPK( $this->getPoble() );
+        
+        $nom = "n/d";
+        
+        if( $OP instanceof Poblacions ) $nom = $OP->getNom();        
+        
+        return $nom; 
+        
+    }
 
 } // Sites

@@ -67,6 +67,14 @@ class ActivitatsPeer extends BaseActivitatsPeer
       return $pager; 
    }
 
+   /**
+    * @param idS = Site id
+    * @param dia_inicial = 'yyyy-mm-dd'
+    * @param page = 1
+    * @param mode = 'horari' o 'activitats'
+    * @param limit = 20
+    * @param tambe_avui (Retorna també les d'avui).
+    * */
    static function getActivitatsProperes( $idS , $dia_inicial , $page = 1 , $mode = 'horari' , $limit = 20 , $tambe_avui = false )
    {
 

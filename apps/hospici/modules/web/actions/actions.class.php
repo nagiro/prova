@@ -1134,8 +1134,8 @@ class webActions extends sfActions
         foreach($LOH as $OH):
                                                         
             $OA = $OH->getActivitats();
-            $LE = $OH->getArrayEspais();
-                                                                                                            
+            $LE = $OH->getArrayEspais();            
+                                                                                                                        
             $document .= "<caixa>";
             $document .= "  <id_activitat>".$OA->getActivitatid()."</id_activitat>";
             $document .= "  <data_inicial>".$OH->getDia('Y-m-d')."</data_inicial>";
@@ -1146,12 +1146,13 @@ class webActions extends sfActions
             $document .= "  <importancia>".$OA->getImportancia()."</importancia>";                        
             $document .= "  <titol>".$OA->getTmig()."</titol>";
             $document .= "  <text>".htmlspecialchars($OA->getDmig())."</text>";
-            $document .= "  <url>".$this->getController()->genUrl('http://www.hospici.cat/http://www.hospici.cat/detall_activitat/'.$OA->getActivitatid().'/'.$OA->getNomForUrl() , true )."</url>";
+            $document .= "  <url>".$this->getController()->genUrl('http://www.hospici.cat/detall_activitat/'.$OA->getActivitatid().'/'.$OA->getNomForUrl() , true )."</url>";
             $document .= "  <hora_inici>".$OH->getHorainici("H.i")."</hora_inici>";
             $document .= "  <hora_fi>".$OH->getHorafi("H.i")."</hora_fi>";
             $document .= "  <espais>".implode(",",$LE)."</espais>";
             $document .= "  <organitzador>".htmlspecialchars( $OA->getOrganitzador() )."</organitzador>";
             $document .= "  <info_practica>".htmlspecialchars( $OA->getInfopractica() )."</info_practica>";
+            $document .= "  <poblacio>".$OS->getPobleString()."</poblacio>";
             $document .= "  <url_img_s>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-M.jpg</url_img_s>";
             $document .= "  <url_img_m>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-L.jpg</url_img_m>";
             $document .= "  <url_img_l>http://www.hospici.cat/images/activitats/A-".$OA->getActivitatid()."-XL.jpg</url_img_l>";                                                
