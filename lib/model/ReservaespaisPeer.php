@@ -105,19 +105,20 @@ class ReservaespaisPeer extends BaseReservaespaisPeer
       $C = new Criteria();
       if(!empty($CERCA)):
       
-	      $C1 = $C->getNewCriterion(self::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C2 = $C->getNewCriterion(self::REPRESENTACIO , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C3 = $C->getNewCriterion(self::RESPONSABLE , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C4 = $C->getNewCriterion(self::PERSONALAUTORITZAT , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C5 = $C->getNewCriterion(self::ORGANITZADORS , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C6 = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);          
+	      $C1  = $C->getNewCriterion(self::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C2  = $C->getNewCriterion(self::REPRESENTACIO , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C3  = $C->getNewCriterion(self::RESPONSABLE , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C4  = $C->getNewCriterion(self::PERSONALAUTORITZAT , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C5  = $C->getNewCriterion(self::ORGANITZADORS , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C6  = $C->getNewCriterion(self::DATAACTIVITAT , '%'.$CERCA.'%', CRITERIA::LIKE);
+          $C11 = $C->getNewCriterion(self::CODI, $CERCA , CRITERIA::EQUAL );          
 	      	      	      
 	      $C7 = $C->getNewCriterion(UsuarisPeer::NOM , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C8 = $C->getNewCriterion(UsuarisPeer::DNI , '%'.$CERCA.'%', CRITERIA::LIKE);
 	      $C9 = $C->getNewCriterion(UsuarisPeer::COG1 , '%'.$CERCA.'%', CRITERIA::LIKE);
-	      $C10 = $C->getNewCriterion(UsuarisPeer::COG2 , '%'.$CERCA.'%', CRITERIA::LIKE);
+	      $C10 = $C->getNewCriterion(UsuarisPeer::COG2 , '%'.$CERCA.'%', CRITERIA::LIKE);                    
 	            
-	      $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5); $C1->addOr($C6); 
+	      $C1->addOr($C2); $C1->addOr($C3); $C1->addOr($C4); $C1->addOr($C5); $C1->addOr($C6);  $C1->addOr($C11); 
 	      $C1->addOr($C7); $C1->addOr($C8); $C1->addOr($C9); $C1->addOr($C10);
 	      
 	      $C->add($C1);                            
